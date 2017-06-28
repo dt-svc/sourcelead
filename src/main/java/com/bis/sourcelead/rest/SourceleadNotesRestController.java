@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -60,9 +62,13 @@ public class SourceleadNotesRestController {
 	InvoiceService invoiceService;
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
+	
 	@Autowired
-	SourceleadNotesService sourceleadNotesService;
+	private SourceleadNotesService sourceleadNotesService;
+	
+	@Autowired
+	private ContractsTemplateService contractsTemplateService;
 	
 	
 	
@@ -73,7 +79,7 @@ public class SourceleadNotesRestController {
 		JSONObject jsonObj = new JSONObject(jsonc);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		sourceleadNotesService.storeComments(jsonObj, user);
+		sourceleadNotesService.storeComments(jsonObj, user,orgLocation);
 		return "success";
 	}
 	
@@ -92,6 +98,17 @@ public class SourceleadNotesRestController {
 		String notesList;
 			Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByInvoiceID(invoice.getId());
+		notesList = commonUtil.toJSON(list);
+		return notesList;
+	}
+	
+	
+	@RequestMapping(value = "/getContractNotes", method = RequestMethod.POST)
+	public @ResponseBody String getContractNotes(@RequestParam(value = "contractUUID", required = false) String contractUUID) throws Exception
+	{
+		String notesList;
+		Contracts contracts = contractsTemplateService.getContractByContractUUID(contractUUID);
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByContractId(contracts.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}

@@ -12,6 +12,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SourceleadNotesDao;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -31,22 +32,29 @@ import com.ibm.icu.text.SimpleDateFormat;
 public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	@Autowired
 	private SourceleadNotesDao sourceleadNotesDao;
+	
 	@Autowired
 	private CommonUtil commonUtil;
+	
 	@Autowired
-	OrgRelationsService orgRelationsService;
+	private OrgRelationsService orgRelationsService;
+	
 	@Autowired
-	RequirementService requirementService;
+	private RequirementService requirementService;
+	
 	@Autowired
-	ContractsTemplateService contractsTemplateService;
+	private ContractsTemplateService contractsTemplateService;
+	
 	@Autowired
-	InvoiceService invoiceService;
+	private InvoiceService invoiceService;
+	
 	@Autowired
-	OrgSpocService orgSpocService;
+	private OrgSpocService orgSpocService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadNotesServiceImpl.class);
 	
 	@Override
-	public SourceleadNotes storeComments(JSONObject jsonObj, User user) throws Exception
+	public SourceleadNotes storeComments(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception
 	{
 		SourceleadNotes sourceleadNotes = new SourceleadNotes();
 		
@@ -56,11 +64,19 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 			sourceleadNotes.setInvoicdeId(invoice);
 		}
 		
+		if(jsonObj.has("contractUUID")&& jsonObj.getString("contractUUID") != null){
+			Contracts contracts = contractsTemplateService.getContractByContractUUID(jsonObj.getString("contractUUID"));
+			sourceleadNotes.setContractId(contracts);
+		}
+		
 		if (jsonObj.has("noteDescription") && jsonObj.getString("noteDescription") != null) {
 			sourceleadNotes.setComment(jsonObj.getString("noteDescription"));
 		}
 		if (jsonObj.has("noteType") && jsonObj.getString("noteType") != null) {
 			sourceleadNotes.setNoteType(jsonObj.getString("noteType"));
+		}
+		if(orgLocations != null){
+			sourceleadNotes.setOrgLocationID(orgLocations);
 		}
 		if (jsonObj.has("orgRelationId")
 				&& !"".equalsIgnoreCase(jsonObj.getString("orgRelationId"))) {
@@ -171,15 +187,20 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	}
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId) throws Exception{
+	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId) throws Exception
+	{
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByRequirementId(requirementId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			notes.setUserName(notes.getUserId().getFirstName());
+			StringBuilder sb = new StringBuilder();
+			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
+			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
+			}else{
+			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			}
 			if (notes.getRequirementId() != null) {
 				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
 			}
-			
 			notes.setCheckBox(notes.getCheckBox());
 			notes.setUserIdStr(notes.getUserId().getId());
 			// date time format conversion.
@@ -207,17 +228,21 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				notes.setCreatedDateString(commonDateFormat.toString());
 			}
 		}
-		return notesList;}
-	
+		return notesList;
+	}
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception{
+	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception
+	{
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByInvoiceID(invoiceId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			notes.setUserName(notes.getUserId().getFirstName());
-			
-			
+			StringBuilder sb = new StringBuilder();
+			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
+			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
+			}else{
+			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			}
 			if (notes.getInvoicdeId() != null) {
 				notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
 			}
@@ -248,21 +273,25 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				notes.setCreatedDateString(commonDateFormat.toString());
 			}
 		}
-		return notesList;}
-	
+		return notesList;
+	}
 	
 	
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception{
+	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception
+	{
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByContractId(contractId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			notes.setUserName(notes.getUserId().getFirstName());
-			
-			
-			if (notes.getInvoicdeId() != null) {
-				notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
+			StringBuilder sb = new StringBuilder();
+			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
+			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
+			}else{
+			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			}
+			if (notes.getContractId() != null) {
+				notes.setContract(notes.getContractId().getContractTitle());
 			}
 			notes.setCheckBox(notes.getCheckBox());
 			notes.setUserIdStr(notes.getUserId().getId());
@@ -291,7 +320,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				notes.setCreatedDateString(commonDateFormat.toString());
 			}
 		}
-		return notesList;}
-	
+		return notesList;
+	}
 	
 }

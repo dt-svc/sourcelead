@@ -10,6 +10,9 @@
     width: 100% !important;
 }
 .fullWid {width: 100% !important;}
+.viewontracts .tab-content {
+background-color: #fff;
+}
 </style>
 
 <!-- these files for autocomplete with tagit -->
@@ -33,21 +36,192 @@ $(document).ready(function(){
      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
     </section>
     <div class="content-area content-new clearfix">
-     <div id="loading"></div>
+    
+     <div class="quickviewTabs viewontracts">
+		<ul class="nav nav-tabs">
+		   <li class="active" id="candQuickView"><a data-toggle="tab" href="#contractDetails">Contract Details</a></li>
+		   <li id="candDetailView" onclick="addContractNotes();"><a data-toggle="tab" href="#notes" >Notes</a></li>
+		 </ul>
+		
+		 <div class="tab-content">
+		   <div id="contractDetails" class="tab-pane fade in active">
+		   
+		        <div id="loading"></div>
       <div class="clearfix form-horizontal">
-       
         <div class="row newContrWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
            	<h2>Contract Details</h2>
 			<div id="viewPopupDiv"></div>
-            
-            
         	</div>
       	</div>
-       </div>      
+       </div> 
+		   
+		  </div>
+		  <div id="notes" class="tab-pane fade">
+		   <div class="clients_side_wrap_inn">
+				<div class="timesheet_head project_tabs_inn_head">
+<ul class="padding_right">
+	<a href="javascript:void(0)" onclick="addClientNotes();" class="addUser-org"><i class="glyphicon glyphicon-plus paddingRight"></i>Add Note</a>
+	<div id="popUpDiv" class="edit-details col-md-4">
+		<form role="form" id="notes_Contracts" name="notes_Contracts" method="post">
+	<i class="fa fa-close close-div" onclick="closeDocPopup();"></i>
+	<input type="hidden" name="noteType" id="noteType" value = "Contract">
+		<div class="col-md-12 inputOther mt10 inputOther">
+		<div class="form-horizontal clearfix"><div class="clearfix">
+		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required" field-name="Note" class="form-control"></textarea></div>
+		<div class="clearfix checkBox">
+		<input type="checkbox" value="Y" id="allowAll" name="allowAll" checked="checked">
+		<span>Allow All Users</span>
+		</div>
+		<div class="clearfix mt5" id="docAddButton">
+		<div class="pull-right">
+			<input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onclick="storeContractNotes();"></div>
+		</div>
+		</div></div>
+		</div>
+		</form>
+	</div>
+<div class="clearfix"></div>
+</ul>
+				</div>
+				<div class="clearfix">
+					<div id="viewNotesDiv"></div>	
+				</div>
+				
+		   </div>
+		    </div>
+		</div>			     
+		  </div>
      </div>
      <!-- Content Area Ends--> 
 </section>
+
+
+<script>
+var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+</script>
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+<script>
+function addContractNotes(){
+	var urlForm = "";
+	var contractUUID = getParameterByName('contractUUID');
+	    urlForm = "/getContractNotes?${_csrf.parameterName}=${_csrf.token}&contractUUID="+contractUUID;
+		
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+urlForm,        
+         success :function(data) {
+	var output = "";
+    if(data != null && data != 'undefined' && data != "" && data != '[]'){
+    var json = JSON.parse(data);
+	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+     for(var i=0;i<json.length;i++){
+       	var report = json[i];
+    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+   	  	output = output+'<div class="comments-div comments-inner clearfix">';
+   	    output = output+'    <div class="commentsimg">';
+   	    output = output+'    <i class="fa fa-comments"></i>';
+   	    output = output+'        <div class="commentsimg-inner">';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.userId+'"/>';
+   	    output = output+'        </div>';
+   	    output = output+'    </div>';
+   	    output = output+'     <div class="comments-content comments-notes">';
+   	    output = output+'         <div class="pull-left comments-text">';
+   	    output = output+'         <p class="comment-by">';
+   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+   	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
+   	    output = output+'         </div>';
+   	    output = output+'     </div>';
+   	    output = output+'</div>';
+    	}
+     }
+}else{
+     var output ="";
+    output = output+"   <div class='dataTables_empty'>"; 
+	 output = output+"  </div> ";
+}
+output  = output + '              </div>';
+output  = output + '        </div>';
+
+	$("#viewNotesDiv").empty(); 
+    $("#viewNotesDiv").append(output);
+ },
+         
+      });
+}
+</script>
+<script type="text/javascript">
+	function storeContractNotes(){
+		var contractUUID = getParameterByName('contractUUID');
+		if ($('#notes_Contracts').validate(false, validationSettings)){
+				var frm = $('#notes_Contracts').serializeFormJSON();
+				var conOne = JSON.stringify(frm);
+				var json_obj = JSON.parse(conOne);
+				json_obj['contractUUID'] = contractUUID;
+				var con = JSON.stringify(json_obj);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#notes_Contracts')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							closeDocPopup();
+							addContractNotes();
+							
+							
+						},
+					});
+					
+					return true;
+		}else {
+			return false;	
+		}
+		}
+		$('body').on('blur', '#notes_Contracts', function() {
+		$("#notes_Contracts").showHelpOnFocus();
+		$("#notes_Contracts").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
 
 <script>
 function displyContract(stage){
@@ -399,6 +573,21 @@ function editClo(contractId){
     },
 });  
 	
+}
+</script>
+
+<script>
+$(".addUser-org").click(function(){
+$(".edit-details").toggleClass("edit-details-active");
+});
+$(".close-div").click(function(){ 
+	 $(this).parent("div.edit-details").removeClass("edit-details-active");
+});
+$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .ui-datepicker-prev, .ui-datepicker-next").click(function(e){
+	 e.stopPropagation();
+});
+function closeDocPopup(){
+$("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
 

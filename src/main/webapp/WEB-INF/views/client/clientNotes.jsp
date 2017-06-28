@@ -186,7 +186,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
 	
 	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
      result = result +" <div class='dropdown-select mb10' id='categoryTypeListDiv'>";
-     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='selectCategory(this);' data-validation='required' field-name='Category'>";
+     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='selectCategory(this);'  field-name='Category'>";
      result = result +"<option selected value=''>--Select Category--</option>";
      result = result +"<option value='Jobs'>Jobs</option>";
      result = result +"<option value='Contacts'>Contacts</option>";
