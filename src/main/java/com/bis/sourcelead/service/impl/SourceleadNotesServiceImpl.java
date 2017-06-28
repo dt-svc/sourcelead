@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
@@ -47,6 +49,9 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	@Autowired
 	private InvoiceService invoiceService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
@@ -141,12 +146,18 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByOrglocationIdAndType(orgrelationId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			StringBuilder sb = new StringBuilder();
-			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
-			}else{
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			
+			User user = userService.getUserByUserCode(notes.getCreatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				notes.setCommentAuthorUserId(user.getId());
 			}
+			
 			if (notes.getRequirementId() != null) {
 				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
 			}
@@ -192,11 +203,15 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByRequirementId(requirementId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			StringBuilder sb = new StringBuilder();
-			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
-			}else{
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			User user = userService.getUserByUserCode(notes.getCreatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				notes.setCommentAuthorUserId(user.getId());
 			}
 			if (notes.getRequirementId() != null) {
 				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
@@ -237,11 +252,15 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByInvoiceID(invoiceId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			StringBuilder sb = new StringBuilder();
-			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
-			}else{
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			User user = userService.getUserByUserCode(notes.getCreatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				notes.setCommentAuthorUserId(user.getId());
 			}
 			if (notes.getInvoicdeId() != null) {
 				notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
@@ -284,11 +303,15 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByContractId(contractId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			StringBuilder sb = new StringBuilder();
-			if(notes.getUserId().getLastName() != null && notes.getUserId().getLastName() != "undefined"){
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).append(" ").append(notes.getUserId().getLastName()).toString());
-			}else{
-			notes.setUserName(sb.append(notes.getUserId().getFirstName()).toString());
+			User user = userService.getUserByUserCode(notes.getCreatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				notes.setUserName(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				notes.setCommentAuthorUserId(user.getId());
 			}
 			if (notes.getContractId() != null) {
 				notes.setContract(notes.getContractId().getContractTitle());

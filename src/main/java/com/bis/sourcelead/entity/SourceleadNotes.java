@@ -65,6 +65,9 @@ public class SourceleadNotes {
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
 	
+	@Transient
+	private Long commentAuthorUserId;
+	
 	@Column(name = "COMMENT",columnDefinition = "TEXT default NULL")
 	private String comment;
 	
@@ -352,6 +355,16 @@ public class SourceleadNotes {
 	public void setOrgLocationID(OrgLocations orgLocationID)
 	{
 		this.orgLocationID = orgLocationID;
+	}
+
+	public Long getCommentAuthorUserId()
+	{
+		return commentAuthorUserId;
+	}
+
+	public void setCommentAuthorUserId(Long commentAuthorUserId)
+	{
+		this.commentAuthorUserId = commentAuthorUserId;
 	}
 	
 	
