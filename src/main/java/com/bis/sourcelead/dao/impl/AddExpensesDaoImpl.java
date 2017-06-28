@@ -60,7 +60,7 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Expenses checkExpensIdNumberInDatebase(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses left join fetch expenses.orgLocationId  where  expenses.id =(SELECT MAX(exp.id)  FROM Expenses exp where exp.orgLocationId.id =:orgLocationId)";  
+		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch proMembers.employee left join fetch expenses.orgLocationId  where  expenses.id =(SELECT MAX(exp.id)  FROM Expenses exp where exp.orgLocationId.id =:orgLocationId)";  
 		List<Expenses> expenses  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		if(expenses.isEmpty()){
 			return null;

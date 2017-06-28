@@ -72,7 +72,7 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="vendorDocumentsList" ></div>';
+		result  = result + '   <div id="vendorDocumentsList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -82,7 +82,8 @@ function vendorDocuments(orgRelationId,vendorLocationId){
     $("#tab-3").empty();  
     $("#tab-4").empty();  
     $("#tab-6").empty();  
-    $("#tab-7").empty();  
+    $("#tab-8").empty();
+    $("#tab-7").empty();
     $("#tab-3").append(result);  
 	
     vendorDocumentsList(vendorLocationId,orgRelationId);
@@ -213,7 +214,7 @@ function documentpagination(){
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

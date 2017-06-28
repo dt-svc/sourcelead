@@ -75,7 +75,7 @@ display: none;
                       </div>
                     </div>
                     <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
-                     <div id="clientsList"></div>
+                     <div id="clientsList" class="datatable_filter"></div>
                     </div>
                   </div> 
                   
@@ -136,7 +136,7 @@ display: none;
                             <option value="hotlistConsultants">Hostlist Associates</option>
                           </select>
                         </div>                    
-                     <div id="candidatesList" class="mailFil"></div>
+                     <div id="candidatesList" class="mailFil datatable_filter"></div>
                      <div id="candidatesLoading"></div>
                     </div>
                      
@@ -612,7 +612,7 @@ function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
     	"ordering": true,
@@ -771,8 +771,8 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
     	"ordering": true,
@@ -949,7 +949,7 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
@@ -982,7 +982,7 @@ function getCheckedCandidates(){
 
 		    var selectone, chosenone;
 		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {

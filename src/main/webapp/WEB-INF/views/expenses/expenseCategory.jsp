@@ -193,7 +193,7 @@ function expenseCategoryList(){
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getExpensesCategoryList",    
-            success :function(data) {
+            success :function(json) {
 			    	     $("#expenseCategoryLoading").removeAttr("style");
 	                	 $("#expenseCategoryList").empty();
 	                	 var result = "";
@@ -210,7 +210,7 @@ function expenseCategoryList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     var json = JSON.parse(data);
+	                     /* var json = JSON.parse(data); */
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";

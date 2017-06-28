@@ -105,7 +105,7 @@ function templatepagination(){
     $('#templatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
@@ -465,7 +465,7 @@ function validateTemplateName(){
 	        <div class="clearfix"></div>
 	      </div>
 	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <div id="clientSubmissionTemplateList"></div>
+	          <div id="clientSubmissionTemplateList" class="datatable_filter"></div>
 	       </div> 
 	       
 	       <div id="templateList"></div>
