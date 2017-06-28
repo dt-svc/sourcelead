@@ -94,7 +94,7 @@ window.onload = function () {
                   <a href="javascript:void(0)" class="bulk_addconpop"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_payroll_form" method="post">
-                  <div class="collapse-bulk-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-bulk-adduser col-md-4" id="adddocDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                         <div class="col-md-12 mt10">
                           <div class="input-group ratetype" id="uploadBulkFileGroup">
