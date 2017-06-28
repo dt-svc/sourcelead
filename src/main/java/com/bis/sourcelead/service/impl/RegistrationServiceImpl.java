@@ -268,7 +268,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		Candidate candidate = getCandidateDetails(user,orgLocations,masterCandidate);
 		try {
-			candidateService.addCandidate(candidate);
+			Candidate savedCandidate = candidateService.addCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
