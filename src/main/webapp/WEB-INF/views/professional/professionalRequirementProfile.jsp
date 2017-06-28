@@ -253,8 +253,10 @@ function requirementProfile(requirementUUID){
 			     '<sec:authorize access="hasRole(\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getSubmissionDetails(\''+requirementUUID+'\');">Submissions</a></li>';
 			     '</sec:authorize>';
-			     
-			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getRateNegotiationDetails(\''+json.submissionId+'\', '+candidateId+');" >Rate Negotiation</a></li>';
+			    
+			     if(json.isJobApplied != 'N'){
+			     	result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getRateNegotiationDetails(\''+json.submissionId+'\', '+candidateId+');" >Rate Negotiation</a></li>';
+			     }
 			     
 			     result = result+'      <div class="clearfix"></div>';
 			     result = result+'    </ul>';
