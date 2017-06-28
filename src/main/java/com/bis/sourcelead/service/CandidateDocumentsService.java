@@ -30,4 +30,6 @@ public interface CandidateDocumentsService {
 	public CandidateDocuments updateCandidateDocuments(CandidateDocuments candidateDocuments) throws Exception;
 	
 	public CandidateDocuments getCandidateDocumentByDocumentUUID(String documentUUID) throws Exception;
+
+	public List<CandidateDocuments>  getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception;
 }
