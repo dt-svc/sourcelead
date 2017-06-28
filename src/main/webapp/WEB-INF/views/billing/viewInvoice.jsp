@@ -75,7 +75,7 @@ $(document).ready(function(){
           
             <div class="tab-pane fade positionRelative" id="paymentHistory">
                 <div class="invoiceview_area clearfix candidate_wrap_table filter_position">
-                  <div id="paymentHistorytId"></div>
+                  <div id="paymentHistorytId" class="datatable_filter"></div>
                     
               </div>
             </div>
@@ -593,7 +593,7 @@ function paymentHistoryPagination(){
     $('#paymentHistoryPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

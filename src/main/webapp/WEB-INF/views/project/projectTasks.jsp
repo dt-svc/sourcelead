@@ -409,7 +409,7 @@ function taskPagination(){
     $('#projectTaskPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"autoWidth": false,
@@ -489,7 +489,6 @@ function saveUpdateTask(taskId,projectId,status){
 	}else {
 		return false;
 	}
-	alert("ello");
 }
 $('body').on('blur', '#editTask_form', function() {
 	$("#editTask_form").showHelpOnFocus();

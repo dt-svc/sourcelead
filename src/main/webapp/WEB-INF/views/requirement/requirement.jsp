@@ -2637,6 +2637,7 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"bPaginate":false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0

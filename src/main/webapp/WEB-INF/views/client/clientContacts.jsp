@@ -34,7 +34,7 @@ function clientContacts(orgRelationID,clientLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientContactList" ></div>';
+		result  = result + '   <div id="clientContactList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -262,7 +262,7 @@ function contactPagination(){
     $('#clientContactsPagination').DataTable( {
         "scrollCollapse": false,
         "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-        "bLengthChange": false,
+        "bLengthChange": true,
         "bDestroy": true,
         "ordering": true,
         "oLanguage": {

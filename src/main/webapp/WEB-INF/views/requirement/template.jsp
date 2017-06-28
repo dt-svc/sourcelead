@@ -38,7 +38,7 @@
       <!-- list requirement -->
       <div class="require_wrap_table overflow_inherint">
      
-          <div id="requirementTemplateList"></div>
+          <div id="requirementTemplateList" class="datatable_filter"></div>
       </div>
     </div>
    
@@ -170,8 +170,8 @@ function requirementTemplateList(){
 function temppagination(){ 
     $('#temppagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
