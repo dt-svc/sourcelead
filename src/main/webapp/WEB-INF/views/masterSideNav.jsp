@@ -48,6 +48,8 @@
         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterDashboard'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
         </c:if> 
+        
+        <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalProfile'/>" title="Profile"><span><i class="fa fa-address-card-o"></i></span><i class="subMenu">Profile</i></a></li>
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
@@ -88,9 +90,9 @@
 	                	  <li class="${sessionData.nav == 'Projects' ? 'side-nav-active' : ''}"><a href="<c:url value='/projectDashboard'/>" title="Projects"><span><i class="fa fa-bar-chart"></i></span><i class="subMenu">Projects</i></a></li>
 	                 </c:if>
 	                 
-	                 <c:if test="${userTabs.tabName == 'Profile'}">
+	                 <%-- <c:if test="${userTabs.tabName == 'Profile'}">
 	                	  <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalProfile'/>" title="Profile"><span><i class="fa fa-users"></i></span><i class="subMenu">Profile</i></a></li>
-	                 </c:if>
+	                 </c:if> --%>
 	                 
 	                 <c:if test="${timesheetTabExist == 'N' && (userTabs.tabName == 'My Timesheets' || userTabs.tabName == 'Timesheet Approval')}">
 	                 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')"> 
@@ -285,8 +287,7 @@
           </c:forEach>
          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
           <li class=""><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
-          	</c:if>			 
-     <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
+          	</c:if>	
         </ul>
       </div>
     </div>
