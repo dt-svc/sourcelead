@@ -283,9 +283,9 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-      <h2>Add Requirement</h2>
+      <h2>Add Job</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -293,7 +293,7 @@ $(document).ready(function () {
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Requirement Details</h3>
+          <h3>Job Details</h3>
         </div>
 	       <div class="col-md-12 clearfix">
         	  <div class="col-md-12">
@@ -705,7 +705,7 @@ $(document).ready(function () {
               <div class="form-group">
               <label class="col-md-3">Visa</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Skills" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
                <c:forEach var="visaList" items="${visaList}">
                		<c:set var = "NUM" value = "${0}"/>
                		<c:forEach var="existedVisa" items="${requirement.visaType}">
@@ -2637,6 +2637,7 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"bPaginate":false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0

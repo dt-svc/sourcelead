@@ -126,8 +126,8 @@ function teamList(){
 function pagination(){
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -509,8 +509,8 @@ function projectMemberList(teamId){
 		                     result = result+ '                <th>Name</th>';
 		                     result = result+ '                <th>Email ID</th>';
 		                     result = result+ '                <th>Role</th>';
-		                     result = result+ '                <th>Requirement</th>';
-		                     result = result+ '                <th>Active<br>Requirement</th>';
+		                     result = result+ '                <th>Jobs</th>';
+		                     result = result+ '                <th>Active<br>Jobs</th>';
 		                     result = result+ '                <th>Action</th>';
 		                     result = result+ '              </tr>';
 		                     result = result +"</thead>";
@@ -681,7 +681,7 @@ function TeamMemberpagination(){
     <div class="pull-left">
       <h2>Team</h2>
     </div>
-    <div class="pull-right brud-crum"> <a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Team</div>
+    <div class="pull-right brud-crum"> <a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Team</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -708,7 +708,7 @@ function TeamMemberpagination(){
       </div>
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
        			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
-      			<div id="teamList"></div>
+      			<div id="teamList" class="datatable_filter"></div>
       			<div id="deleteTeamPopUp"></div>
               </div>
         </div>      
@@ -720,7 +720,7 @@ function TeamMemberpagination(){
       <!-- <div class="clients_side_wrap_inn candidate_wrap_table"> -->
       <div class="clients_side_wrap_inn candidate_wrap_table candidatewrap_Table">
       
-      <div id="teamSideDiv">
+      <div id="teamSideDiv" class="datatable_filter">
 	  </div>
 
       
@@ -1260,8 +1260,8 @@ function getCandidateListForTeam(teamId,teamName){
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

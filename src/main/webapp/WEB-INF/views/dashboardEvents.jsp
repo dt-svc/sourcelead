@@ -228,9 +228,9 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row"></div>';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft mt10">Requirement<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft mt10">Job<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list" id="reqDiv">';
-	result = result + '<select class="form-control" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
+	result = result + '<select class="form-control" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Job" data-validation="required">';
 	
 	result = result + '</select>';
 	result = result + '</div>';
@@ -579,10 +579,10 @@ function getRequirements(){
 	                .end().trigger('chosen:updated');
 	              	$("#reqDiv").find('p.jquery_form_error_message').remove();
 	              	$("#reqDiv").find('p.text-primary').empty();
-	              	$("#reqDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>Select Requirement</p>");
+	              	$("#reqDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>Select Job</p>");
               }else{
             	  var result = "";
-            	  	 result = result + '<option value="">--- Select Requirement ---</option>';
+            	  	 result = result + '<option value="">--- Select Job ---</option>';
             	  $("#requirementsList").empty();
                   $("#requirementsList").append(result);
                   $("#requirementsList").chosen();
@@ -592,7 +592,7 @@ function getRequirements(){
 	                .end().trigger('chosen:updated');
 	             $("#reqDiv").find('p.jquery_form_error_message').remove();
 	             $("#reqDiv").find('p.text-primary').empty();
-	             $("#reqDiv").append("<p class='jquery_form_error_message'>No requirements found</span>");
+	             $("#reqDiv").append("<p class='jquery_form_error_message'>No Jobs found</span>");
               }
           	$("#1applicant").attr("data-placeholder", "Select Applicants");
           	$("#1applicant").empty();

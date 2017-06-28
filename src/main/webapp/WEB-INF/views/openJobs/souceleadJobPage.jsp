@@ -199,9 +199,9 @@ display: none;}
               </div>
               <div class="clearfix">
                 <div class="col-md-4">
-                  <label>Requirement Title</label>
+                  <label>Job Title</label>
                   <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
+                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
                   </div>
                 </div>
                 <div class="col-md-8">

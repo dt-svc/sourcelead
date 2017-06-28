@@ -91,9 +91,9 @@
             </div>   -->
             
             <div class="form-group" id="requirementDiv" style="display: none;">
-              <label class="col-md-4">Select Requirement</label>
+              <label class="col-md-4">Select Job</label>
               <div class="col-md-8">
-                  <select class="form-control" id="requirementsList" name="requirementsList" field-name="Requirement" onchange="submissionOffers1();">
+                  <select class="form-control" id="requirementsList" name="requirementsList" field-name="Job" onchange="submissionOffers1();">
                   </select>
               </div>
             </div>
@@ -1315,7 +1315,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Requirement</option>';
+	            	  result = result + '<option value="">Select Job</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';

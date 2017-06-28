@@ -86,11 +86,12 @@
             </div>
                        
            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'? 'block' : 'none'};">
-              <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Select Job<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
               	<c:choose>
               		<c:when test="${fn:length(requirementList) gt 0}">
-	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList"  onchange="submissionOffers();" field-name="Requirement">
+
+	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList"  onchange="submissionOffers();" field-name="Job">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
 							         <option selected="selected"  value="${element.id}">${element.jobTitle}${element.spocName}</option>
@@ -102,7 +103,7 @@
 						</select>
 				    </c:when>
 				    <c:otherwise>
-				        <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement"></select>
+				        <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Job"></select>
 				    </c:otherwise>
 				 </c:choose>
               </div>
@@ -1370,7 +1371,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Requirement</option>';
+	            	  result = result + '<option value="">Select Job</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';

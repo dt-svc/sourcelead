@@ -17,11 +17,11 @@
       	  <div class="content-wraper">
 <section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Requirement Template Details</h2>
+			<h2>Job Template Details</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="/sourcelead/dashboard/1">Home</a>»<a href="/sourcelead/template">Requirement Template List </a>»
-			View Requirement Template
+			<a href="/sourcelead/dashboard/1">Home</a>»<a href="/sourcelead/template">Job Template List </a>»
+			View Job Template
 		</div>
 	</section>
 		      <div class="content-area">

@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.payroll.entity.WageTaxSummaryBulk;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -61,7 +63,8 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	}
 
 	@Override
-	public Integer saveWagesTaxSummary(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj) throws Exception {
+	public Integer saveWagesTaxSummary(MultipartFile multipartFile, OrgLocations orgLocation, User user,
+			JSONObject jsonObj) throws Exception {
 
 		String fileName = multipartFile.getOriginalFilename();
 		int count = 0;
@@ -79,153 +82,157 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
-			Map<String,String> map = new HashMap<String,String>();
+			Map<String, String> map = new HashMap<String, String>();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				String emppID = null;
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					
-						if (row.getRowNum() > 0) { // Excluding column names
-							WageTaxSummary  wageTaxSummary = new WageTaxSummary();
-							String ssnNumber = getSsnNumber(row.getCell(1),fileName);
-							if(!StringUtils.containsIgnoreCase(ssnNumber, "SSN:") && !StringUtils.containsIgnoreCase(ssnNumber, "Total")){
-								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-									emppID = getCellValueAsString(row.getCell(0), fileName);
+
+					if (row.getRowNum() > 0) { // Excluding column names
+						WageTaxSummary wageTaxSummary = new WageTaxSummary();
+						String ssnNumber = getSsnNumber(row.getCell(1), fileName);
+						if (!StringUtils.containsIgnoreCase(ssnNumber, "SSN:")
+								&& !StringUtils.containsIgnoreCase(ssnNumber, "Total")) {
+							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+								emppID = getCellValueAsString(row.getCell(0), fileName);
+							}
+
+							float gross = 0f;
+							float fwt = 0f;
+							float ssec = 0f;
+							float med = 0f;
+							float swt = 0f;
+							float sdiSui = 0f;
+							float local = 0f;
+							float deds = 0f;
+							float net = 0f;
+							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+								String empId = getCellValueAsString(row.getCell(0), fileName);
+								wageTaxSummary.setEmployeeId(empId);
+
+							}
+
+							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+								String employeeName = getCellValueAsString(row.getCell(1), fileName);
+								wageTaxSummary.setEmployeeName(employeeName);
+
+							}
+							if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+								String checkDate = getCellValueAsString(row.getCell(2), fileName);
+								wageTaxSummary.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDate));
+
+							}
+							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+								String checkNo = getCellValueAsString(row.getCell(3), fileName);
+								wageTaxSummary.setCheckNo(checkNo);
+
+							}
+							if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+								gross = Float.parseFloat(getCellValueAsString(row.getCell(4), fileName));
+								wageTaxSummary.setGross(gross);
+
+							}
+							if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+								fwt = Float.parseFloat(getCellValueAsString(row.getCell(5), fileName));
+								wageTaxSummary.setFwt(fwt);
+
+							}
+							if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+								ssec = Float.parseFloat(getCellValueAsString(row.getCell(6), fileName));
+								wageTaxSummary.setSsec(ssec);
+
+							}
+							if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+								med = Float.parseFloat(getCellValueAsString(row.getCell(7), fileName));
+								wageTaxSummary.setMed(med);
+
+							}
+							if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+								swt = Float.parseFloat(getCellValueAsString(row.getCell(8), fileName));
+								wageTaxSummary.setSwt(swt);
+
+							}
+							if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+								sdiSui = Float.parseFloat(getCellValueAsString(row.getCell(9), fileName));
+								wageTaxSummary.setSdiSui(sdiSui);
+
+							}
+							if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+								local = Float.parseFloat(getCellValueAsString(row.getCell(10), fileName));
+								wageTaxSummary.setLocal(local);
+
+							}
+							if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+								deds = Float.parseFloat(getCellValueAsString(row.getCell(11), fileName));
+								wageTaxSummary.setDeds(deds);
+
+							}
+							if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+								net = Float.parseFloat(getCellValueAsString(row.getCell(12), fileName));
+								wageTaxSummary.setNet(net);
+							}
+							if (jsonObj.has("fromDate")) {
+								if (jsonObj.getString("fromDate") != null
+										&& !"".equalsIgnoreCase(jsonObj.getString("fromDate"))) {
+									wageTaxSummary.setFromDate(
+											conversionUtil.getDateFromString(jsonObj.getString("fromDate")));
 								}
 
-								float gross = 0f;
-								float fwt = 0f;
-								float ssec = 0f;
-								float med = 0f;
-								float swt = 0f; 
-								float sdiSui = 0f;
-								float local = 0f; 
-								float deds = 0f; 
-								float net = 0f;
-								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-									String empId = getCellValueAsString(row.getCell(0), fileName);
-									wageTaxSummary.setEmployeeId(empId);
-									
-								} 
-							
-								if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
-									String employeeName = getCellValueAsString(row.getCell(1), fileName);
-									wageTaxSummary.setEmployeeName(employeeName);
-									
-								} 
-								if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-									String checkDate = getCellValueAsString(row.getCell(2), fileName);
-									wageTaxSummary.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDate));
-									
-								} 
-								if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
-									String checkNo = getCellValueAsString(row.getCell(3), fileName);
-									wageTaxSummary.setCheckNo(checkNo);
-									
-								} 
-								if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-									gross = Float.parseFloat(getCellValueAsString(row.getCell(4), fileName));
-									wageTaxSummary.setGross(gross);
-									
-								} 
-								if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-									fwt = Float.parseFloat(getCellValueAsString(row.getCell(5), fileName));
-									wageTaxSummary.setFwt(fwt);
-									
-								} 
-								if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
-									ssec = Float.parseFloat(getCellValueAsString(row.getCell(6), fileName));
-									wageTaxSummary.setSsec(ssec);
-									
-								} 
-								if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-									med = Float.parseFloat(getCellValueAsString(row.getCell(7), fileName));
-									wageTaxSummary.setMed(med);
-									
-								} 
-								if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-									swt = Float.parseFloat(getCellValueAsString(row.getCell(8), fileName));
-									wageTaxSummary.setSwt(swt);
-									
-								} 
-								if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-									sdiSui = Float.parseFloat(getCellValueAsString(row.getCell(9), fileName));
-									wageTaxSummary.setSdiSui(sdiSui);
-									
-								} 
-								if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-									local = Float.parseFloat(getCellValueAsString(row.getCell(10), fileName));
-									wageTaxSummary.setLocal(local);
-									
-								} 
-								if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
-									deds = Float.parseFloat(getCellValueAsString(row.getCell(11), fileName));
-									wageTaxSummary.setDeds(deds);
-									
-								} 
-								if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-									net = Float.parseFloat(getCellValueAsString(row.getCell(12), fileName));
-									wageTaxSummary.setNet(net);
-								} 
-								if(jsonObj.has("fromDate")){
-									if(jsonObj.getString("fromDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("fromDate"))){
-										wageTaxSummary.setFromDate(conversionUtil.getDateFromString(jsonObj.getString("fromDate")));
-									}
-									
-								}
-								if(jsonObj.has("toDate")){
-									if(jsonObj.getString("toDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("toDate"))){
-										wageTaxSummary.setToDate(conversionUtil.getDateFromString(jsonObj.getString("toDate")));
-									}
-								}
-								if(jsonObj.has("batchNumber")){
-									if(jsonObj.getString("batchNumber") !=null && !"".equalsIgnoreCase(jsonObj.getString("batchNumber"))){
-										wageTaxSummary.setBatchNumber(jsonObj.getString("batchNumber"));
-									}
-								}
-								wageTaxSummary.setCreatedBy(user.getUserCode());
-								wageTaxSummary.setCreatedDate(new Date());
-								wageTaxSummary.setUpdatedBy(user.getUserCode());
-								wageTaxSummary.setUpdatedDate(new Date());
-								wageTaxSummary.setOrgLocationId(orgLocation);
-								wageTaxSummaryList.add(wageTaxSummary);
-							}else{
-								if(StringUtils.containsIgnoreCase(ssnNumber, "SSN:")) {
-									if(emppID !=null){
-										map.put(emppID, ssnNumber);
-									}
+							}
+							if (jsonObj.has("toDate")) {
+								if (jsonObj.getString("toDate") != null
+										&& !"".equalsIgnoreCase(jsonObj.getString("toDate"))) {
+									wageTaxSummary
+											.setToDate(conversionUtil.getDateFromString(jsonObj.getString("toDate")));
 								}
 							}
-							
+							if (jsonObj.has("batchNumber")) {
+								if (jsonObj.getString("batchNumber") != null
+										&& !"".equalsIgnoreCase(jsonObj.getString("batchNumber"))) {
+									wageTaxSummary.setBatchNumber(jsonObj.getString("batchNumber"));
+								}
+							}
+							wageTaxSummary.setCreatedBy(user.getUserCode());
+							wageTaxSummary.setCreatedDate(new Date());
+							wageTaxSummary.setUpdatedBy(user.getUserCode());
+							wageTaxSummary.setUpdatedDate(new Date());
+							wageTaxSummary.setOrgLocationId(orgLocation);
+							wageTaxSummaryList.add(wageTaxSummary);
+						} else {
+							if (StringUtils.containsIgnoreCase(ssnNumber, "SSN:")) {
+								if (emppID != null) {
+									map.put(emppID, ssnNumber);
+								}
+							}
 						}
+
 					}
-				for(WageTaxSummary wageTaxSummary:wageTaxSummaryList){
+				}
+				for (WageTaxSummary wageTaxSummary : wageTaxSummaryList) {
 					StringBuilder sb = new StringBuilder();
 					String ssnNumber = map.get(wageTaxSummary.getEmployeeId());
 					String[] arr = ssnNumber.split(":");
-					String ssn =  arr[1];
+					String ssn = arr[1];
 					String last4DigitsSsn = ssn.substring(ssn.length() - 4);
 					String enCodedSsnNumber = sourceleadPasswordEncoder.encode(ssn);
 					sb.append(last4DigitsSsn).append("-").append(enCodedSsnNumber);
 					wageTaxSummary.setSsnNumber(sb.toString());
 					WageTaxSummary wageTax = wageTaxSummaryDao.saveWageTaxSummary(wageTaxSummary);
-					if(wageTax != null){
+					if (wageTax != null) {
 						count++;
 					}
 				}
-				}
+			}
 
-			
-			
 			fis.close();
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
 		return count;
-	
+
 	}
 	
 	private  String getSsnNumber(Cell cell, String fileName) {
@@ -288,6 +295,178 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			}
 		}
 		return wagesAndTaxList;
+	}
+
+	@Override
+	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user) throws Exception {
+
+
+		String fileName = multipartFile.getOriginalFilename();
+		int count = 0;
+		Workbook workbook = null;
+		List<WageTaxSummaryBulk> wageTaxSummaryList = new ArrayList<>();
+		if (fileName.endsWith("xlsx")) {
+			workbook = new XSSFWorkbook();
+		} else if (fileName.endsWith("xls")) {
+			workbook = (Workbook) new HSSFWorkbook();
+		}
+
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			multipartFile.transferTo(file);
+			FileInputStream fis = new FileInputStream(file);
+			workbook = WorkbookFactory.create(fis);
+			int numberOfSheets = workbook.getNumberOfSheets();
+			Map<String,String> map = new HashMap<String,String>();
+			for (int i = 0; i < numberOfSheets; i++) {
+				Sheet sheet = workbook.getSheetAt(i);
+				Iterator<Row> rowIterator = sheet.iterator();
+				String employeeId = null;
+				String ssn = null;
+				String employeeName = null;
+				while (rowIterator.hasNext()) {
+					Row row = rowIterator.next();
+					
+						if (row.getRowNum() > 0) { // Excluding column names
+							WageTaxSummaryBulk  wageTaxSummaryBulk = new WageTaxSummaryBulk();
+							String ssnNumber = getSsnNumber(row.getCell(1),fileName);
+							if(!StringUtils.containsIgnoreCase(ssnNumber, "Total")){
+								/*if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+									emppID = getCellValueAsString(row.getCell(0), fileName);
+									!StringUtils.containsIgnoreCase(ssnNumber, "SSN:") && 
+								}*/
+								
+								float gross = 0f;
+								float fwt = 0f;
+								float ssec = 0f;
+								float med = 0f;
+								float swt = 0f; 
+								float sdiSui = 0f;
+								float local = 0f; 
+								float deds = 0f; 
+								float net = 0f;
+								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+									String empId = getCellValueAsString(row.getCell(0), fileName);
+									employeeId = empId;
+								} 
+								if(employeeId !=null){
+									wageTaxSummaryBulk.setEmployeeId(employeeId);
+								}
+							
+								if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+									String empName = getCellValueAsString(row.getCell(1), fileName);
+									if(StringUtils.containsIgnoreCase(empName, "SSN:")){
+										ssn = empName;
+									}else{
+										 employeeName = empName;
+									}
+									
+								} 
+								if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+									String checkDate = getCellValueAsString(row.getCell(2), fileName);
+									wageTaxSummaryBulk.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDate));
+									
+								} 
+								if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+									String checkNo = getCellValueAsString(row.getCell(3), fileName);
+									wageTaxSummaryBulk.setCheckNo(checkNo);
+									
+								} 
+								if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+									gross = Float.parseFloat(getCellValueAsString(row.getCell(4), fileName));
+									wageTaxSummaryBulk.setGross(gross);
+									
+								} 
+								if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+									fwt = Float.parseFloat(getCellValueAsString(row.getCell(5), fileName));
+									wageTaxSummaryBulk.setFwt(fwt);
+									
+								} 
+								if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+									ssec = Float.parseFloat(getCellValueAsString(row.getCell(6), fileName));
+									wageTaxSummaryBulk.setSsec(ssec);
+									
+								} 
+								if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+									med = Float.parseFloat(getCellValueAsString(row.getCell(7), fileName));
+									wageTaxSummaryBulk.setMed(med);
+									
+								} 
+								if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+									swt = Float.parseFloat(getCellValueAsString(row.getCell(8), fileName));
+									wageTaxSummaryBulk.setSwt(swt);
+									
+								} 
+								if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+									sdiSui = Float.parseFloat(getCellValueAsString(row.getCell(9), fileName));
+									wageTaxSummaryBulk.setSdiSui(sdiSui);
+									
+								} 
+								if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+									local = Float.parseFloat(getCellValueAsString(row.getCell(10), fileName));
+									wageTaxSummaryBulk.setLocal(local);
+									
+								} 
+								if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+									deds = Float.parseFloat(getCellValueAsString(row.getCell(11), fileName));
+									wageTaxSummaryBulk.setDeds(deds);
+									
+								} 
+								if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+									net = Float.parseFloat(getCellValueAsString(row.getCell(12), fileName));
+									wageTaxSummaryBulk.setNet(net);
+								}
+								
+								wageTaxSummaryBulk.setEmployeeName(employeeName);
+								wageTaxSummaryBulk.setEmployeeId(employeeId);
+								wageTaxSummaryBulk.setSsnNumber(ssn);
+								wageTaxSummaryBulk.setCreatedBy(user.getUserCode());
+								wageTaxSummaryBulk.setCreatedDate(new Date());
+								wageTaxSummaryBulk.setUpdatedBy(user.getUserCode());
+								wageTaxSummaryBulk.setUpdatedDate(new Date());
+								wageTaxSummaryBulk.setOrgLocationId(orgLocation);
+								wageTaxSummaryList.add(wageTaxSummaryBulk);
+								}/*else{
+								if(StringUtils.containsIgnoreCase(ssnNumber, "SSN:")) {
+									if(emppID !=null){
+										map.put(emppID, ssnNumber);
+									}
+								}
+							}*/
+							
+						}
+					}
+			for(WageTaxSummaryBulk wageTaxSummaryBulk:wageTaxSummaryList){
+				StringBuilder sb = new StringBuilder();
+				String ssnNumber = null;
+				if(wageTaxSummaryBulk.getSsnNumber() != null){
+					 ssnNumber = wageTaxSummaryBulk.getSsnNumber();
+				}else{
+					ssnNumber = wageTaxSummaryList.get(2).getSsnNumber();
+				}
+				String[] arr = ssnNumber.split(":");
+				String ssNbr = arr[1];
+				String last4DigitsSsn = ssNbr.substring(ssNbr.length() - 4);
+				String enCodedSsnNumber = sourceleadPasswordEncoder.encode(ssNbr);
+				sb.append(last4DigitsSsn).append("-").append(enCodedSsnNumber);
+				wageTaxSummaryBulk.setSsnNumber(sb.toString());
+				WageTaxSummaryBulk wageTaxBulk = wageTaxSummaryDao.saveWageTaxSummaryBulk(wageTaxSummaryBulk);
+				if (wageTaxBulk != null) {
+					count++;
+				}
+			}
+				}
+
+			
+			
+			fis.close();
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+
+		return count;
+	
+	
 	}
 
 
