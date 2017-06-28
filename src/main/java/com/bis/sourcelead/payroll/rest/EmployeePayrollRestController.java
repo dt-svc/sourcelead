@@ -62,6 +62,8 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = "/uploadPayrollDocument", method = RequestMethod.POST)
 	@ResponseBody 
 	public String fileUploaded(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		long startTime = System.currentTimeMillis();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String json1 = "{" + json + "}";
@@ -86,7 +88,9 @@ public class EmployeePayrollRestController {
 		}else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
 		}
-		
+		long endTime   = System.currentTimeMillis();
+		long totalTime = endTime - startTime;
+		logger.info("final Time responser time is: "+totalTime);
 		return commonUtil.toJSON(isInserted);
 	}
 	
