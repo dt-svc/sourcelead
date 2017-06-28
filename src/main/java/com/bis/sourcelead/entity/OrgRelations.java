@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="ORG_RELATIONS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
@@ -31,12 +33,20 @@ public class OrgRelations implements Serializable{
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )   
+	@JsonBackReference
     private OrgLocations responderLocationId;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="LOCATION_ID", nullable=false )        
+    @JoinColumn(name="LOCATION_ID", nullable=false )  
+	@JsonBackReference
     private OrgLocations locationId;
+	
+	@Transient
+	private Long responderJsonLocationId;
+	
+	@Transient
+	private Long locationJsonId;
     
     /*@Column(name="RELATION_TYPE")
 	private String relationType;*/
@@ -616,4 +626,17 @@ public class OrgRelations implements Serializable{
 		this.paymentTerms = paymentTerms;
 	}
 
+	public Long getResponderJsonLocationId() {
+		if(responderLocationId != null && responderLocationId.getId() != null){
+			responderJsonLocationId = responderLocationId.getId();
+		}
+		return responderJsonLocationId;
+	}
+
+	public Long getLocationJsonId() {
+		if(locationId != null && locationId.getId() != null){
+			locationJsonId = locationId.getId();
+		}
+		return locationJsonId;
+	}
 }
