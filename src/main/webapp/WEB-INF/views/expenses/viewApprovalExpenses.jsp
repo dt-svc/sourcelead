@@ -125,8 +125,8 @@
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}"> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></div></td>
+			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="6">
@@ -134,11 +134,11 @@
 							<ul>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
 								<li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
-								<li><strong>Receipt Issued by :</strong><span>${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
+								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amount}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><p>${entry.description}</p>
+								<li><strong>Amount :</strong><span> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></span><div class="clearfix"></div></li>
+								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix"></div>

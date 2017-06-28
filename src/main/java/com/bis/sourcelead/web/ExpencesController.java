@@ -91,13 +91,11 @@ public class ExpencesController {
 		
 		Expenses expenses = null;
 		if(null != expenseId && !expenseId.isEmpty()){
-			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
-			
-
 			ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			 Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
@@ -179,7 +177,7 @@ public class ExpencesController {
 		
 		Expenses expenses = null;
 		if(null != expenseId && !expenseId.isEmpty()){
-			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));

@@ -55,7 +55,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user "
+		String query = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver  left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user "
 			+ " where exp.id = :expenseId ";
 				
 		@SuppressWarnings("unchecked")

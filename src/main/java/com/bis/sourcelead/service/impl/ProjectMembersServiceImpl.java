@@ -655,6 +655,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId) {
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(startDate,endDate,locationsId,approverUserId);
+	}
+	
+	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate, Date endDate, Long locationsId, Long projectId) throws Exception
 	{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,locationsId,projectId);
