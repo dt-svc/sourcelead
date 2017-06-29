@@ -67,7 +67,7 @@ function professionalCandidateDocuments(candidateId){
 		 '<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
 		    result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+');" title="Reject"></i></a></span>';
 			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+');" title="Accept"></i></a></span>';
-			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
+			/* result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>'; */
 			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		
@@ -115,7 +115,7 @@ function candDocumentsList(candidateId){
 	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
+	                     /* result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>'; */
 	                     result  = result + '<th>Document Type</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
@@ -130,11 +130,11 @@ function candDocumentsList(candidateId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 
-	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
+	                    	/*  if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
 	                    	 }else{
 	                    		 result = result +"  <td><div>--</div></td>"; 
-	                    	 }
+	                    	 } */
 	                    	 
 	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
@@ -207,7 +207,7 @@ function candDocumentsList(candidateId){
 }
 </script>
 
-<script>
+<!-- <script>
 	function toggleAllDocuments(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
 	    for (var i = 0; i < checkboxes.length; i++) {
@@ -221,10 +221,10 @@ function candDocumentsList(candidateId){
 	    }
 	});
 	}
-</script>
+</script> -->
 
 
-<script>
+<!-- <script>
 function deleteRequestedDoc(){
 	
 	 var documentsIds = [];
@@ -241,9 +241,9 @@ function deleteRequestedDoc(){
 	 }
 	 
 }
-</script> 
+</script>  -->
 
-<script>
+<!-- <script>
  function rejectRequestedDocs(candidateId){
 	
 	 var result = "";
@@ -305,7 +305,7 @@ function cancelDocumentRejectedReason(){
 	$(".vendor_wrap_mask").fadeOut(200);
 }
 </script>  
-
+ -->
 <!-- Show success message after form submission script -->
 <script>
 	function eduMsgFadein() {
@@ -755,7 +755,7 @@ function refreshDocList(candidateId){
 }
 </script>
 
-<script>
+<!-- <script>
 
 //Request Documents
     function requestDoc(){
@@ -766,9 +766,9 @@ function refreshDocList(candidateId){
     $(".modalInvite").fadeOut();
     $(".requestDocSideMask").fadeOut();
     }
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function createDocsType(candidateId){
 	
 	$("#documentsTypeDiv").empty();
@@ -873,9 +873,9 @@ function getSelectedDocumentType(id){
 		  }
 	}
 }
-</script>
+</script> -->
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 $('body').on('submit', '#requestForDocuments_form', function(e){
 	
 	var validationSettings = {
@@ -1023,3 +1023,4 @@ $(document).ready(function() {
 });		
 	
 </script>  
+ -->
