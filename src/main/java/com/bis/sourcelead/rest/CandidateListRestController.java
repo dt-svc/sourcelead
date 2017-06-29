@@ -186,7 +186,8 @@ public class CandidateListRestController {
 					
 				}
 //			}
-			
+				
+		    boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
