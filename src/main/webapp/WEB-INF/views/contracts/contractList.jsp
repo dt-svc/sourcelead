@@ -241,307 +241,9 @@ padding: 2px 300px 2px 0px;
 
 <script>
 function PopUp(contractUUID,stage){
-	$(".mask_time").fadeIn(200);
-	$(".contPopup").fadeIn(100);
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#viewPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 $.ajax({
-      type : "GET",
-       url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
-       success :function(data) {
-    	   $("#viewPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-    	   
-    	    var result = '';
-    	    var json = JSON.parse(data);
-			result = result +	'<div class="contPopupHead clearfix">';
-			result = result +	'<h4>'+json.contractTitle+'</h4>';
-			result = result +	'<span>';
-			
-			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
-				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
-				}else if('Existing' == json.typeOfContract){
-					result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
-				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
-				}
-			}else{
-				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
-			}
-			
-			result = result +	'</span>';
-			result = result +	'</div>';
-		
-			result = result +	'<div class="modal-body clearfix">';
-			result = result +	'<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mt10">';
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contract Title</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractTitle+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
-			result = result +	'	</div>';
-			
-			if(json.templateName != null && 'Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.tempUUID+'\', \''+json.templateName+'\')"></i></a></div>';
-				result = result +	'	</div>';
-			}
-			if(null != json.startDateStr && "" != json.startDateStr && 'undefined' != json.startDateStr){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.joinedDateStr && "" != json.joinedDateStr && 'undefined' != json.joinedDateStr){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Join Date</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.joinedDateStr+'</div>';
-				result = result +	'	</div>';
-			}
-			if(null != json.workLocation && "" != json.workLocation && 'undefined' != json.workLocation){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Work Location</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.workLocation+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(json.contractType!="Full time offer"){
-					if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
-						result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
-							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
-						}
-						else{
-							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+'</div>';	
-						}
-						result = result +	'	</div>';
-						result = result +	'	</div>';
-					}
-					else{
-						result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
-							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
-						}
-						else{
-							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: -- </div>';	
-						}
-						result = result +	'	</div>';
-						result = result +	'	</div>';
-					}
-				
-			}
-			if(json.contractType =="Full time offer"){
-				if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingRateType+' '+json.billingAmount+' / '+json.billingRatePer+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.ownerName && "" != json.ownerName && 'undefined' != json.ownerName){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.approverUserName && "" != json.approverUserName && 'undefined' != json.approverUserName){
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Approver</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUserName+'</div>';
-			result = result +	'	</div>';
-			}
-			
-			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.offerValue && "" != json.offerValue && 'undefined' != json.offerValue){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.offerValue+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.duration && "" != json.duration && 'undefined' != json.duration){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Duration</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: </div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
-				result = result +	'	</div>';
-			}
-			if(json.contractType!="Full time offer"){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.stateJurisdiction && "" != json.stateJurisdiction && 'undefined' != json.stateJurisdiction){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">State of Jurisdiction</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.stateJurisdiction+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.description && "" != json.description && 'undefined' != json.description && json.contractType!="Full time offer"){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'<div class="clearfix"/>';
-			
-		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
-			result = result +	'<h4>Billing Details</h4>';
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.hoursPerWeek && "" != json.hoursPerWeek && 'undefined' != json.hoursPerWeek){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Hours Per Week</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.hoursPerWeek+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.overTimeHours && "" != json.overTimeHours && 'undefined' != json.overTimeHours){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Overtime Hours</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overTimeHours+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.overtimeRate && "" != json.overtimeRate && 'undefined' != json.overtimeRate){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Overtime rate</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overtimeRate+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.totalHours && "" != json.totalHours && 'undefined' != json.totalHours){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Total Estimated Hours</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.totalHours+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Billing Amount</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingRateType+' '+json.billingAmount+' / '+json.billingRatePer+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.invoiceFrequency && "" != json.invoiceFrequency && 'undefined' != json.invoiceFrequency){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Billing Cycle</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.invoiceFrequency+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.paymentTerm && "" != json.paymentTerm && 'undefined' != json.paymentTerm){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.tax && "" != json.tax && 'undefined' != json.tax){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
-				var abc = json.taxType;
-				if(abc == "Percentage"){
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' %</div>';
-				}else{
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
-				}
-				
-				//result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'<div class="clearfix"/>';
-		}
-			result = result +	'<h4>History</h4>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
-			result = result +	'	</div>';
-			if(null != json.updatedDateStr && 'undefined' != json.updatedDateStr && json.updatedDateStr != json.createdDateStr){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Updated On</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedDateStr+'</div>';
-				result = result +	'	</div>';
-				
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Updated By</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedByName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-		
-
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Added From</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.typeOfContract+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'</div>';
-			result = result +	'</div>';
-			$("#viewPopupDiv").empty();
-			$("#viewPopupDiv").append(result);
-       },
-	  }); 
+	localStorage.setItem("stage",stage);
+ 	window.location.replace(sourceleadUrl+'/viewContract?contractUUID='+contractUUID);
 }
 
 
@@ -673,6 +375,7 @@ function getTemplateList(){
 
 <script>
 function preparedContractListDraft(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -944,25 +647,25 @@ function preparedContractListDraft(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res); 
-    listContractsPagination();	
-    vendorListContractsPagination();
-    appListContractsPagination();
+    listContractsPagination(SourceLeadWeb_loginOrg);	
+    vendorListContractsPagination(SourceLeadWeb_loginOrg);
+    appListContractsPagination(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPagination(){
+function listContractsPagination(SourceLeadWeb_loginOrg){
 	$('#contractListTableDraft1').DataTable({ 
 		dom: 'Bfrtip',
         buttons: [
         	{
                 extend: 'excel',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
 		"scrollCollapse": false,
@@ -978,17 +681,17 @@ function listContractsPagination(){
 	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPagination(){ 
+function vendorListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft').DataTable( { 
     	dom: 'Bfrtip',
         buttons: [
         	{
                 extend: 'excel',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
     	"scrollCollapse": false,
@@ -1004,7 +707,7 @@ function vendorListContractsPagination(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function appListContractsPagination(){ 
+function appListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft2').DataTable( { 
     	
     	"scrollCollapse": false,
@@ -1022,6 +725,7 @@ function appListContractsPagination(){
 
 <script>
 function preparedContractListWFA(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
@@ -1351,25 +1055,25 @@ function preparedContractListWFA(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res); 
-    listContractsPaginationWFA();	
-    vendorListContractsPaginationWFA();
-    appListContractsPaginationWFA();
+    listContractsPaginationWFA(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg);
+    appListContractsPaginationWFA(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationWFA(){
+function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	$('#contractListTableWFA1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -1386,17 +1090,17 @@ function listContractsPaginationWFA(){
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 
 }
-function vendorListContractsPaginationWFA(){ 
+function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWFA').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -1414,17 +1118,17 @@ function vendorListContractsPaginationWFA(){
 
 }
 
-function appListContractsPaginationWFA(){ 
+function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTA2').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -1445,6 +1149,7 @@ function appListContractsPaginationWFA(){
 
 <script>
 function preparedContractListWTS(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -1708,24 +1413,24 @@ function preparedContractListWTS(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationWTS();	
-    vendorListContractsPaginationWTS();
-    appListContractsPaginationWTS();
+    listContractsPaginationWTS(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg);
+    appListContractsPaginationWTS(SourceLeadWeb_loginOrg);
 }
 </script>
 
 <script>
-function listContractsPaginationWTS(){
+function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTS1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -1741,17 +1446,17 @@ function listContractsPaginationWTS(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationWTS(){ 
+function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTS').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -1767,17 +1472,17 @@ function vendorListContractsPaginationWTS(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function appListContractsPaginationWTS(){
+function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTS2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -1797,6 +1502,7 @@ function appListContractsPaginationWTS(){
 
 <script>
 function preparedContractListWTV(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2090,25 +1796,25 @@ function preparedContractListWTV(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationWTV();	
-    vendorListContractsPaginationWTV();
-    applicantsContractsPaginationWTV();	
+    listContractsPaginationWTV(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg);	
 	
 }
 </script>
 
 <script>
-function listContractsPaginationWTV(){
+function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTV1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2125,17 +1831,17 @@ function listContractsPaginationWTV(){
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 	$("#contractListTableWTV1").wrap("<div class='overflow_Auto'></div>");
 }
-function vendorListContractsPaginationWTV(){ 
+function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTV').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2153,17 +1859,17 @@ function vendorListContractsPaginationWTV(){
 	$("#contractListTableWTV").wrap("<div class='overflow_Auto'></div>");
 }
 
-function applicantsContractsPaginationWTV(){ 
+function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTV2').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2184,6 +1890,7 @@ function applicantsContractsPaginationWTV(){
 
 <script>
 function preparedContractListFinalize(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2434,25 +2141,25 @@ function preparedContractListFinalize(data){
     $("#clientContractsList").append(opt);
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationFinalize();	
-    vendorListContractsPaginationFinalize();
-    applicantsContractsPaginationFinalize();	
+    listContractsPaginationFinalize(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg);	
 	
 }
 </script>
 
 <script>
-function listContractsPaginationFinalize(){
+function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	$('#contractListTableFinalize1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2468,17 +2175,17 @@ function listContractsPaginationFinalize(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationFinalize(){ 
+function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){ 
     $('#contractListTableFinalize').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2494,17 +2201,17 @@ function vendorListContractsPaginationFinalize(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function applicantsContractsPaginationFinalize(){
+function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	$('#contractListTableFinalize2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2524,6 +2231,7 @@ function applicantsContractsPaginationFinalize(){
 <!-- preparedContractListExpired -->
 <script>
 function preparedContractListExpired(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2747,25 +2455,25 @@ function preparedContractListExpired(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationEXP();	
-    vendorListContractsPaginationEXP();
-    applicantsContractsPaginationEXP();
+    listContractsPaginationEXP(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationEXP(){
+function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	$('#contractListTableEXP1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2781,17 +2489,17 @@ function listContractsPaginationEXP(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationEXP(){ 
+function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){ 
     $('#contractListTableEXP').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2807,17 +2515,17 @@ function vendorListContractsPaginationEXP(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function applicantsContractsPaginationEXP(){
+function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	$('#contractListTableEXP2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2837,6 +2545,7 @@ function applicantsContractsPaginationEXP(){
 
 <script>
 function preparedContractListRejected(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -3094,25 +2803,25 @@ function preparedContractListRejected(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationREJ();	
-    vendorListContractsPaginationREJ();
-    applicantsContractsPaginationREJ();
+    listContractsPaginationREJ(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationREJ(){
+function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	$('#contractListTableREJ1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -3128,17 +2837,17 @@ function listContractsPaginationREJ(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationREJ(){ 
+function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){ 
     $('#contractListTableREJ').DataTable( { 
     	dom: 'Bfrtip', 
     	buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -3154,17 +2863,17 @@ function vendorListContractsPaginationREJ(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function applicantsContractsPaginationREJ(){
+function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	$('#contractListTableREJ2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
 		"scrollCollapse": false,

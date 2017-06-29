@@ -43,7 +43,7 @@
 				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels(); submissionOffers();" data-validation="required" field-name="Contract Type">
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -86,11 +86,12 @@
             </div>
                        
            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'? 'block' : 'none'};">
-              <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Select Job<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
               	<c:choose>
               		<c:when test="${fn:length(requirementList) gt 0}">
-	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList"  field-name="Requirement">
+
+	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList"  onchange="submissionOffers();" field-name="Job">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
 							         <option selected="selected"  value="${element.id}">${element.jobTitle}${element.spocName}</option>
@@ -102,7 +103,7 @@
 						</select>
 				    </c:when>
 				    <c:otherwise>
-				        <select class="form-control" id="requirementsList" name="requirementsList" field-name="Requirement"></select>
+				        <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Job"></select>
 				    </c:otherwise>
 				 </c:choose>
               </div>
@@ -1370,7 +1371,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Requirement</option>';
+	            	  result = result + '<option value="">Select Job</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
@@ -1392,9 +1393,8 @@ function hideCommonSOWFields(){
 		
 	function submissionOffers(){
 		var sourceleadUrl ='${sourceleadUrl}';
-		var requirementId = "";
+		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		if(sowType == 'Client SOW' || sowType == 'Vendor SOW'){
 		$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
@@ -1434,7 +1434,6 @@ function hideCommonSOWFields(){
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
-		}
 	}
 	
 	function getOfferRate(){

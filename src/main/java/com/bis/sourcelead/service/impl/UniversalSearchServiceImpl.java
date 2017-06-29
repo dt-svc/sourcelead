@@ -516,7 +516,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		for(Tabs tabs :tabList){
-			if("Requirement".equals(tabs.getTabName())){
+			if(Constants.JOBS.equals(tabs.getTabName())){
 				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 				

@@ -59,7 +59,7 @@ function interviews(dateRange){
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
-	            				resultToday = resultToday+'	    <th>Requirement</th>';
+	            				resultToday = resultToday+'	    <th>Job</th>';
 	            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
 	            				if(orgATS == 'Y'){
 	            				resultToday = resultToday+'	    <th>Client</th>';

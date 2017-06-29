@@ -46,6 +46,7 @@ function getApplicantSubmittedReports(){
 
 <script>
 function prepareReportDataDiv(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -54,7 +55,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Client</th>';
 	result = result + '    <th>Submitted By</th>';
 	result = result + '    <th>Submitted on</th>';
-	result = result + '    <th>Requirement Title</th>';
+	result = result + '    <th>Job Title</th>';
 	result = result + '    <th>Applicant Status</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
@@ -115,22 +116,22 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
-    requirementReportPagination();
+    requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
 </script>
 <script>
-function requirementReportPagination(){
+function requirementReportPagination(SourceLeadWeb_loginOrg){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Applicants Submitted',
+	                title: SourceLeadWeb_loginOrg+' - Applicants Submitted Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Applicants Submitted',
+	                title: SourceLeadWeb_loginOrg+' - Applicants Submitted Reports',
 	            }
 	        ],
 		
@@ -190,12 +191,12 @@ function requirementReportPagination(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Applicants Submitted</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>

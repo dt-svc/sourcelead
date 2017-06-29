@@ -16,6 +16,7 @@ import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
+
 @Repository
 public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 
@@ -50,5 +51,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		}
 		return wagesAndTaxlist;
 	}
+
+	
 
 }

@@ -52,14 +52,15 @@
 			<a title="Reports"><i class="fa fa-pie-chart"></i></a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
+				    <li><a href="<c:url value='/expensesReportsList'/>"><span><i class="fa fa-briefcase"></i></span>Expenses Reports</a></li>
 				</ul>
 			</div>
 		</div> 
@@ -104,7 +105,7 @@
   </div>
       
       <div class="candidate_wrap_table recruiterReports_table">
-        <div id="usersList"></div>
+        <div id="usersList" class="datatable_filter"></div>
       </div> 
  </div>
  </c:if>
@@ -145,7 +146,7 @@
  <div class="clearfix">
 <section class="candidate_wrap_table recruiterReports_table">
 
-<div id="vendorReportsDiv" class=""></div>
+<div id="vendorReportsDiv" class="datatable_filter"></div>
 
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 
@@ -229,10 +230,10 @@
           </ul>
           <div class="project_tabs">
             
-            <div id="tab-1" class="project_tabs_inn">
+            <div id="tab-1" class="project_tabs_inn datatable_filter">
             </div>
 
-			<div id="tab-2" class="project_tabs_inn">
+			<div id="tab-2" class="project_tabs_inn datatable_filter">
           </div>
         </div> 
               </div>
@@ -257,7 +258,7 @@
 
 <div class="pavPop">
 <span class="pavClose" onclick="pavClose();"><i class="fa fa-times"></i></span>
-		<div id="vendorspc" class="clients_wrap_table"></div>
+		<div id="vendorspc" class="clients_wrap_table datatable_filter"></div>
 </div> 
     
     
@@ -308,7 +309,7 @@ function usersList(){
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"<th><i class='fa fa-address-book-o fa-2x'></i> <div class='small'>Name</div></th>";
-	                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Requirements</div></th>";
+	                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Jobs</div></th>";
 	                     result = result +"<th><i class='fa fa-user-circle fa-2x'></i><div class='small'>Candidates</div></th>";
 	                     result = result +"<th><i class='fa fa-users fa-2x'></i><div class='small'>Applicants</div></th>"; 
 	                     result = result +"<th><i class='fa fa-list-ul fa-2x'></i><div class='small'>Shortlisted</div></th>"; 
@@ -428,8 +429,8 @@ function usersList(){
 function reportpagination(){ 
     $('#reportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -600,7 +601,7 @@ function getCustomReports(){
                      result = result +"<thead>"; 
                      result = result +"  <tr>"; 
                      result = result +"<th><i class='fa fa-address-book-o fa-2x'></i> <div class='small'>Name</div></th>";
-                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Requirements</div></th>";
+                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Jobs</div></th>";
                      result = result +"<th><i class='fa fa-user-circle fa-2x'></i><div class='small'>Candidates</div></th>";
                      result = result +"<th><i class='fa fa-users fa-2x'></i><div class='small'>Applicants</div></th>"; 
                      result = result +"<th><i class='fa fa-list-ul fa-2x'></i><div class='small'>Shortlisted</div></th>"; 
@@ -844,8 +845,8 @@ function getPayableBillingReports(invoiceType){
 function billingReportPagination(){ 
     $('#billingReportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -860,8 +861,8 @@ function billingReportPagination(){
 function billingPayableReportPagination(){ 
     $('#billingPayableReportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

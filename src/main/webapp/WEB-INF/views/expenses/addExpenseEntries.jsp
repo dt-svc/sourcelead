@@ -138,12 +138,19 @@ function addAttachment(entityRowId,from){
 		 document.getElementById("divEntityTsRow"+rowId).value= '';
 		 var  rId = "divEntityTsRow"+rowId;
 		 var r = document.getElementById("categoryTable").rows[rId];
-		    
 	    document.getElementById("divEntityTsRow"+detailsRowId).style.display = 'none';
 		document.getElementById("divEntityTsRow"+detailsRowId).value= '';
 		var  rId1 ="divEntityTsRow"+detailsRowId;
 		var r1 = document.getElementById("categoryTable").rows[rId1];
 	    
+		//subtract row amount
+		var totlaMount = $("#expenseAmountDivId").val();
+		var expenseAmount = $("#expenseAmount"+rowId).val();
+		var sub = totlaMount - expenseAmount; 
+		var toFixed = sub.toFixed(2);
+		$("#expenseAmountDivId").val(toFixed);
+		 
+		 
 	    var count = 2*(r.cells.length);
 	     for(i=0;i<=count;i++){
 	        if(i==0){
@@ -152,8 +159,11 @@ function addAttachment(entityRowId,from){
 	    	
 	        r.deleteCell(0);
 	     } 
+	     
+	     
 	}
 </script>
+
 <div id="divAttachmentTd1" style="display: none; float: left;">
 	   <div id='REPLACEROWIDdocFileuploadFileGroupENTITYROWID'>
  			<input type='file' name='REPLACEROWIDdocFileENTITYROWID' id='REPLACEROWIDdocFileENTITYROWID' VALIDATIONCONDITION  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID,ENTITYROWID)'> 
@@ -182,7 +192,7 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID);"></i></span>
-			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID)"></i>
+			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
 <div id="divAddRowTr2" style="display: none; float: left;">
@@ -199,7 +209,7 @@ function addAttachment(entityRowId,from){
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Date<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly" onclick="displayCalendar('REPLACEROWID')" class="form-control calendar" value="" placeholder="Date" field-name="Date" data-validation="required"> 
+							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
@@ -225,16 +235,16 @@ function addAttachment(entityRowId,from){
 											  	<option value="AUD" ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>
 											  	<option value="USD" ${currencyCode  == "USD" ? "selected" : ""}>USD</option>
 											  	<option value="GBP" ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>
-											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</opton>
+											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</option>
 											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
 											  </select>
 									 </div>
-							         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float">
+							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description</label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation="validate_Space validate_length length5-500"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation-optional="true" data-validation="validate_Space validate_length length5-500"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -253,8 +263,8 @@ function addAttachment(entityRowId,from){
 					</div>
 					      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 						      <div class="pull-right  mr mt10">
-						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);">
-						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);">
+						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);calculateTotalamount(REPLACEROWID)">
+						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
 						      </div>
 					      </div>
 						 <div class="clearfix"></div>
@@ -277,6 +287,8 @@ function addExpenseRow(){
 			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
 			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divRowTd1Str;
+			
+			
 			
 			
 			var cell1 = row.insertCell(1);
@@ -326,6 +338,23 @@ function addExpenseRow(){
 			cell2_0.innerHTML = divRowTd2_0Str;
 			cell2_0.colSpan = 7;
 			
+			$("#categoryDate"+maxRowNum).datepicker("destroy");
+			var projectStartDate = $('#projectStartDateExpensesId').val();
+			var projectEndDate =   $('#projectEndDateExpensesId').val();
+			if((projectStartDate != null && projectStartDate != '' && projectStartDate != 'undefined') || 
+				(projectEndDate != null && projectEndDate != '' && projectEndDate != 'undefined')){
+					$('#categoryDate'+maxRowNum).datepicker({
+						dateFormat : 'dd-mm-yy',
+						changeMonth : true,
+						changeYear : true,
+						minDate : projectStartDate,
+						maxDate : projectEndDate,
+			       }); 
+			}
+			else {
+				alert("Please Select StartDate & EndDate")
+			} 
+			
 	   }
 	else{
 		var maxRecCount = $("#maxRecCount").val();
@@ -338,7 +367,12 @@ function addExpenseRow(){
 			
 		}
 	}
-			
+	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+		    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+		        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+		            event.preventDefault();
+		        }
+		    });	
   }			
 </script>
 <script>
@@ -396,7 +430,7 @@ function addExpenseRow(){
 		}
 	}
 </script>
-<script>
+ <!-- <script>
 function displayCalendar(entityId){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
@@ -416,7 +450,7 @@ function displayCalendar(entityId){
 	}
 	
 }
-</script>
+</script> -->
 <script type="text/javascript">
 function validate_fileupload(fileName)
 {
@@ -461,3 +495,24 @@ function validate_fileupload(fileName)
 		
 	 }
 </script>
+
+<script>
+function calculateTotalamount(rowId){
+	var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+    var sum = 0;
+ 	    for(var i=1; i< maxRowNum; i++){
+ 	    	 if(document.getElementById("expenseAmount"+i)){
+ 	    		 if(document.getElementById("expenseAmount"+i).value){
+ 	    			var rowAmount = $('#expenseAmount'+i).val();
+		 	    	sum = parseFloat(sum) + parseFloat(rowAmount);
+ 	    		 }
+ 	    		
+ 	    	 }
+ 	    }
+ 	    var toFixed = sum.toFixed(2);
+	$("#expenseAmountDivId").val(toFixed);
+	
+}
+
+</script>
+

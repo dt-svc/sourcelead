@@ -235,6 +235,7 @@ public class Constants {
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER="UserNewActionAssignedAsaTeamOwnerUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_NOTIFICATION ="UserNewActionAssignedNotification";
+	public static final String REQUESTED_DOCUMENTS = "RequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
@@ -296,6 +297,7 @@ public class Constants {
 	public static final String List_by_status = "List by status";
 	public static final String TimeSheet_Approval = "Timesheet Approval";
 	public static final String Requirement = "Requirement";
+	public static final String JOBS = "Jobs";
 	public static final String Vendors = "Vendors";
 	public static final String Candidates = "Candidates";
 	public static final String Associates = "Associates";
@@ -346,6 +348,11 @@ public class Constants {
 	
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
+	
+	public static final String NOTES_JOBS = "Jobs";
+    public static final String NOTES_CONTRACTS = "Contracts";
+    public static final String NOTES_BILLING = "Billing";
+    public static final String NOTES_CONTACTS = "Contacts";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ADMIN = "Admin";
@@ -426,6 +433,11 @@ public class Constants {
 	public static final String[] BILLING_PAYABLE_HEADERS = { "Bill Id", "Vendor Name",
 			"Vendor Contact Name"," Vendor Contact Email", "Vendor Phone ", "Bill Date", "Due Date", "Total Amount", "Due Amount",
 			"Paid Amount", "Status", "Payment Status", "Linked Bill Id"};
+	
+	public static final String[] EXPENSES_REPORTS_HEADERS = {"Expense id","Employee Name","Email id","Phone Number","Emp Type","Vendor","Vendor Contact","Project","Client"};
+	public static final String[] EXPENSES_REPORTS_HEADERS_1 = {"Amount","Claimed"};
+	
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -611,7 +623,7 @@ public class Constants {
 	public static final String EXPENSES_STATUS = "1";
 	
 
-	public static final String[] MY_EXPENSES_HEADERS ={"Expense Type","Date","Receipt Issued by","Payment Mode","Currency","Amount","Conversion Rate","Description"};
+	public static final String[] MY_EXPENSES_HEADERS ={"Expense Type","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description"};
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
@@ -628,6 +640,9 @@ public class Constants {
     public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
     public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
+    public static final String DOCUMENT_UPLOAD_MANUALLY = "Manually";
+    public static final String DOCUMENT_UPLOAD_REQUESTED = "Requested";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
+    public static final String PERCENTAGE = "percentage";
      
 }

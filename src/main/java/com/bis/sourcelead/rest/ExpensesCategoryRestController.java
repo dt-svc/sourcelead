@@ -85,12 +85,12 @@ public class ExpensesCategoryRestController {
 	 */
 	
 	@RequestMapping(value = "/getExpensesCategoryList", method = RequestMethod.GET)
-	public @ResponseBody String getExpensesCategoryList(HttpServletRequest request) throws Exception {
-		String resultJson = null;
+	public @ResponseBody List<ExpensesCategory> getExpensesCategoryList(HttpServletRequest request) throws Exception {
+		/*String resultJson = null;*/
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLocations.getId());
-		resultJson = toJSON(expensesCategoryList);
-		return resultJson;
+		/*resultJson = toJSON(expensesCategoryList);*/
+		return expensesCategoryList;
 	}
 	
 		

@@ -272,6 +272,7 @@ public class LoginSessionController {
 			
 			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(user.getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
+			SourceLeadSessionManager.setSessionAttribute(request,"isAdmin",isAdmin);
 			
 			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			model.addObject("timezone",timezone.getTimeZoneId());
@@ -652,6 +653,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
+			SourceLeadSessionManager.setSessionAttribute(request, "loginOrg", org.getOrgName());
 			
 			List<Long> tabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 			if(null != tabIds){

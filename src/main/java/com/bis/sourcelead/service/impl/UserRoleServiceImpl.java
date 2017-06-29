@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
@@ -67,6 +68,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Autowired
 	ProjectsDao projectsDao;
+	
+	@Autowired
+	EmployeesService employeesService;
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -272,21 +276,20 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,7);
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles) {
-		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
-		 for(Employees emp : employeeSet){
-			 if(emp.getEmployeeId() !=null){
-				 writeRow.createCell(0).setCellValue(emp.getEmployeeId()); 
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles) throws Exception {
+//		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
+		 Employees empl = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
+			 if(empl.getEmployeeId() !=null){
+				 writeRow.createCell(0).setCellValue(empl.getEmployeeId()); 
 			 }
-			 if(emp.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
+			 if(empl.getHireDate() !=null){
+				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
-			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
+			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){
 				 StringBuilder sb = new StringBuilder();
-				 writeRow.createCell(6).setCellValue(sb.append(emp.getRate()).append("/").append(emp.getRatePer()).toString());
+				 writeRow.createCell(6).setCellValue(sb.append(empl.getRate()).append("/").append(empl.getRatePer()).toString());
 			 }
-  	    } 
 		   if(userRoles.getUser().getFirstName() !=null){
 			   writeRow.createCell(1).setCellValue(userRoles.getUser().getFirstName());
 		   }
@@ -443,7 +446,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				}
 				
 				
-				else if(tabs.getTabName().equalsIgnoreCase(Constants.Requirement)){
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.JOBS)){
 					
 					 /*To change requirement Manager*/
 					 Integer requirementsCountAsManager = requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);

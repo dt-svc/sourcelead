@@ -9,6 +9,12 @@
  
  <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
+ <style type="text/css">
+.ReadTextFli {
+	 text-align: -webkit-left;
+}
+</style>
+
  <script type="text/javascript">
 		window.onload = function () {
 			getClientBasedOnSelectedProject();
@@ -54,13 +60,13 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
+					<div class="col-md-9" id="errProject">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<option value="">Select Project</option>
 							<c:forEach var="projMembers" items="${projectMembersList}">
 							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
@@ -81,8 +87,8 @@
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
-						  <div class="col-lg-6">
-							  <input type="text" class="form-control calendar" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+						  <div class="col-lg-6" id="errEnd">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
@@ -92,6 +98,12 @@
 	</div>
 </div>
 <div class="expensHead">
+<div class="form-group">
+<span class="col-md-3">Expenses Amount Total:</span>
+<div class="col-md-9">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+</div>
+</div>
 	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
@@ -158,25 +170,25 @@
 		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
 								</select>
 							</div>	
-		                  <div class="col-md-4 mb10">
-			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-								  <div class="input-group er ratetype">
-										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
-												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="expenseRateType${entryCount.count}" field-name="Rate Type" field-name="Rate Type" data-validation="required">
-												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
-												  	<option value="AUD" ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
-												  	<option value="USD" ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
-												  	<option value="GBP" ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
-												  	<option value="SGD" ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
-												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
+		                  <div class='col-md-4 mb10'>
+			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
+								  <div class='input-group er'>
+										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
+												  <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+												  	<option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
+												  	<option value='AUD' ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
+												  	<option value='USD' ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
+												  	<option value='GBP' ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
+												  	<option value='SGD' ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
+												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
 										 </div>
-								         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float">
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float'>
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10">
 							<label>Description</label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description">${entry.description}</textarea>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" data-validation-optional="true">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -224,7 +236,7 @@
 		  <div class="col-lg-12">
 			<div class="pull-right">
 			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
-			  <input type="button" id ="submitForApprovalExpensesId"value="Sub for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
+			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
 			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
 			</div>
 		  </div>
@@ -272,7 +284,7 @@
 	        	    dataType : 'json',
 					url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 					success : function(data) {
-						$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+						$( "#submitForApprovalExpensesId" ).addClass('button').val('Submit for Approval');
 						window.location.replace(sourceleadUrl+'/expenses');
 					},
 				});
@@ -368,6 +380,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
@@ -378,9 +391,21 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
 					}
 				});
 	}
+</script>
+<script>
+function removeErrStr(){
+	$('#dateDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrEnd(){
+	$('#errEnd').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProject(){
+	$('#errProject').find('p.jquery_form_error_message').remove(); 
+}
 </script>
 
 <script>
