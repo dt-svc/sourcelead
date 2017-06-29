@@ -1964,4 +1964,4 @@ function  removeValiationVendorContact() {
  }  
 </script>
  
- <!-- Visa Type Script View/edit script end here -->
+ <!--  Type Script View/edit script end here -->

@@ -717,18 +717,18 @@ public class CandidateListRestController {
 			can.setAllAndCandidateSkills(lhs);
 			
 			// visa type
-			LinkedHashSet<String> lhs1 = new LinkedHashSet<String>();
+			LinkedHashSet<String> visa = new LinkedHashSet<String>();
 			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
 			for(LookUpData lookUpData :visaList){
-				lhs.add(lookUpData.getName());
+				visa.add(lookUpData.getName());
 			}
 			if(null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())){
 				String [] csl = can.getVisaType().split(",");
 				for(String sl : csl){
-					lhs1.add(sl);
+					visa.add(sl);
 				}
 			}
-			can.setAllAndCandidateVisa(lhs1);
+			can.setAllAndCandidateVisa(visa);
 			
 			if(null != can.getExpectedRateCurrencey()){
 				  can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
