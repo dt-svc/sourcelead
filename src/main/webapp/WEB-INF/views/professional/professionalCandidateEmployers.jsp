@@ -25,7 +25,7 @@
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
 		result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result = result + '   <div id="candidateEmployersList" ></div>';
+		result = result + '   <div id="candidateEmployersList" class="datatable_filter"></div>';
 		result = result + '   </div>';
 
 		$("#tab-1").empty();
@@ -490,8 +490,8 @@ function closeCertificatePopup(){
 function employeePagination(){  
     $('#candidateEmployersPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

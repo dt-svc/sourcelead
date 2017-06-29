@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -233,7 +239,7 @@ public class ExpensesReportsRestController {
 						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
 					 }
 					 else{
-						 if(projectMember.getFebExpenseUnApprovedTotal() != null){
+						 if(projectMember.getMarExpenseUnApprovedTotal() != null){
 							 unApprovedTotal = projectMember.getMarExpenseUnApprovedTotal();
 						 }
 						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
@@ -520,15 +526,31 @@ public class ExpensesReportsRestController {
 	
 	@RequestMapping(value = "/expensesReportExportList")
 	public void expensesReportExportList(HttpServletRequest request,HttpServletResponse response,
-			   @RequestParam(value="frequencyYear", required=false) String frequencyYear,
 			   @RequestParam(value="frequencyMonth", required=false) String frequencyMonth,
 			   @RequestParam(value="exportType", required=false) String exportType) throws Exception {
+		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if(exportType.equalsIgnoreCase("pdf")){
-		expensesReportService.expensesReportExportListPdf();
+			file = expensesReportService.expensesReportExportListPdf(frequencyMonth,orgLoc,loginUser);
 		}else{
-			expensesReportService.expensesReportExportListExcel();	
+			file = expensesReportService.expensesReportExportListExcel(frequencyMonth,orgLoc,loginUser);
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file != null){
+			file.delete();
 		}
 	}
 	
