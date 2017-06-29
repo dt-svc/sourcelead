@@ -686,6 +686,7 @@ function clearRatediv(){
 function proposeNewRate(submissionId, candidateId) {
 	 if ($('#rate_form').validate(false, validationSettings)){
 			var sourceleadUrl ='${sourceleadUrl}';
+			var type = "Candidate";
 			var frm = $('#rate_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
@@ -693,7 +694,7 @@ function proposeNewRate(submissionId, candidateId) {
 		    $("#add_rate").attr("disabled", "disabled");
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/proposeRate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
+			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&type="+type,
 				success: function(data) {
 					getRateNegotiationDetails(submissionId, candidateId);
 				},
