@@ -104,7 +104,7 @@ public class ExpencesController {
 		 	String type = request.getParameter("type");
 		 	
 		 	Boolean isEditable = false;
-		 	if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+		 	if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
 		 		isEditable = true;
 		 	}
 		 	
@@ -196,7 +196,7 @@ public class ExpencesController {
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
-		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
 		 		isEditable = true;
 		 	 }
 		 	
@@ -240,5 +240,10 @@ public class ExpencesController {
 		model.setViewName("expenses/addApprovalExpense");
 		return model;
 	}
+	
+	
+	
+	
+	
 
 }

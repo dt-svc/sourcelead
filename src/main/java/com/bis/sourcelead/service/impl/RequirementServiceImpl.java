@@ -797,7 +797,9 @@ public class RequirementServiceImpl implements RequirementService {
 					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+						  if(!approverUser.getId().equals(user.getId())){
 						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+						  }
 					}
 					
 					//send mail to parallel approver
@@ -817,7 +819,9 @@ public class RequirementServiceImpl implements RequirementService {
 						    String[] approvers = parallelApprovers.split(",");
 						    for(String approver : approvers){
 						    	User approverUser = userService.getUserById(Long.parseLong(approver));
-						    	approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
+						    	if(!approverUser.getId().equals(user.getId())){
+						    		approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
+						    	}
 						    }
 					 }
 					
