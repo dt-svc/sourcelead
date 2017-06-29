@@ -8,11 +8,11 @@ public interface SourceleadNotesDao {
 	
 	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws Exception;
 	
-	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelationId) throws Exception;
+	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelationId,Long orgLocationId) throws Exception;
 	
-	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId) throws Exception;
+	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId,Long orgLocationId) throws Exception;
 	
-	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception;
+	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId,Long orgLocationId) throws Exception;
 	
-	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception;
+	public List<SourceleadNotes> getNotesListByContractId(Long contractId,Long orgLocationId) throws Exception;
 }

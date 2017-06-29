@@ -121,6 +121,9 @@ public class AssociateController {
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
+		
 		model.addObject("candidateType", "Associates");
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
