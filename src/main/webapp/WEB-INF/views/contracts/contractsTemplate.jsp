@@ -74,7 +74,7 @@ $(document).ready(function(){
             
         </div>
     <div class="project_wrap_table">
-    <div id="templateList"></div>
+    <div id="templateList" class="datatable_filter"></div>
 	</div>
     
 </div>
@@ -169,7 +169,7 @@ function listTemplatePagination(){
 	$('#contractTemplateTable').DataTable({ 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {

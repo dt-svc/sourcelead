@@ -451,7 +451,6 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
-			
 			String[] modules = org.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
 				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
@@ -655,6 +654,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
+			SourceLeadSessionManager.setSessionAttribute(request, "loginOrg", org.getOrgName());
 			
 			List<Long> tabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 			if(null != tabIds){

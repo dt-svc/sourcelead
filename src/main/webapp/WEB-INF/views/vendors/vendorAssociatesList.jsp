@@ -38,7 +38,7 @@ function vendorAssociatesList(orgRelationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table mt">';
-		result  = result + '   <div id="vendorAssociatesListTab" ></div>';
+		result  = result + '   <div id="vendorAssociatesListTab" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -78,6 +78,7 @@ function vendorAssociatesList(orgRelationId){
 			            result = result + '	     <th>Location</th>';
 			            result = result + '	     <th>Primary Skill</th>';
 			            result = result + '	     <th>Vendor Contact</th>';
+			            result = result + '	     <th>Project Count</th>';
 			            result = result + '	     <th>Updated On</th>';
 		            result = result + '	 </tr>';
 		            result = result +'</thead>';
@@ -110,6 +111,12 @@ function vendorAssociatesList(orgRelationId){
 	
 			               	}
 			            	result = result +"<td><div>"+opt.vendorContactName+"</div></td>";
+			            	if(opt.assignedProjectsCount != null && opt.assignedProjectsCount != '' && opt.assignedProjectsCount !='undefined'){
+			            		result = result +"<td><div>"+opt.assignedProjectsCount+"</div></td>";	
+			            	}else{
+			            		result = result +"<td><div>--</div></td>";
+			            	}
+			            	
 			            	
 			            	result = result +"<td><div>"+opt.candidateUpdateDateToString+"</div></td>";
 			            	
@@ -134,7 +141,7 @@ function vendorAssociatesPagination(){
     $('#vendorAssociatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

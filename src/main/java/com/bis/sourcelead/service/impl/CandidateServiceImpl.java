@@ -62,6 +62,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -143,6 +144,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     MasterCandidateService masterCandidateService;
+    
+    @Autowired
+	private ProjectsService projectsService;
 	
 	/**
 	 * @author prasad k
@@ -1167,6 +1171,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+			if(candidate.getConsultantUser() != null){
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
+				candidate.setAssignedProjectsCount(assignedProjectsCount);
+			}
 		}
 		return candidateList;
 	}
