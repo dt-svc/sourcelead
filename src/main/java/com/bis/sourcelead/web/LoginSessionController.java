@@ -201,6 +201,9 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			
+			Candidate candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
 			String[] modules = org.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
@@ -277,8 +280,6 @@ public class LoginSessionController {
 			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			model.addObject("timezone",timezone.getTimeZoneId());
 			
-			SourceLeadSessionManager.setSessionAttribute(request, "candidate", null);
-			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", null);
 		}
 		else{
 			commonUtil.highLightMenu(Constants.Dashboard, request);
@@ -446,6 +447,9 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			
+			Candidate candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
 			String[] modules = org.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
@@ -510,9 +514,6 @@ public class LoginSessionController {
 			
 			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			model.addObject("timezone",timezone.getTimeZoneId());
-			
-			SourceLeadSessionManager.setSessionAttribute(request, "candidate", null);
-			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", null);
 			
 			}
 			else{
