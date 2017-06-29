@@ -1181,8 +1181,12 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Created By:</b>'+json.createdByName+'';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
-				            
+				            if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Visa:</b><span>'+json.visaType+'</span>';
+				            }else{
+				            	result = result +'     <div class="require_wrap_details_cta"> <b>Visa:</b><span>--</span>';
+				            	}
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';				            
 				            
