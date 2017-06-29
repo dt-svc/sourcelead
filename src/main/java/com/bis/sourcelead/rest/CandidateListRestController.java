@@ -637,6 +637,7 @@ public class CandidateListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
@@ -1281,7 +1282,7 @@ public class CandidateListRestController {
 			 }
 		   
 		   
-		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+		    @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
 			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 				

@@ -254,6 +254,20 @@ public class AssociatesRestController {
 			candidate.setAllAndCandidateSkills(lhs);
 			
 			
+			LinkedHashSet<String> lhs1 = new LinkedHashSet<String>();
+			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+			for(LookUpData lookUpData :visaList){
+				lhs1.add(lookUpData.getName());
+			}
+			if(null != candidate.getVisaType() && StringUtils.isNotEmpty(candidate.getVisaType())){
+				String [] csl = candidate.getVisaType().split(",");
+				for(String sl : csl){
+					lhs1.add(sl);
+				}
+			}
+			candidate.setAllAndCandidateVisa(lhs1);
+			
+			
 			LinkedHashSet<String> eduList = new LinkedHashSet<String>();
 			List<LookUpData> eduLookupList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			for(LookUpData lookUpData :eduLookupList){

@@ -2,16 +2,6 @@ package com.bis.sourcelead.elk.index;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.RequirementSubmission;
 
 public class CandidateIndex implements Serializable {
 
@@ -65,7 +55,8 @@ public class CandidateIndex implements Serializable {
 
 	private String summary;
 	
-	private String visaType;
+	
+	private String[] visaType;
 
 	private String invitationstatus;
 
@@ -774,13 +765,15 @@ public class CandidateIndex implements Serializable {
 		this.candidateUUID = candidateUUID;
 	}
 
-	public String getVisaType() {
+	public String[] getVisaType() {
 		return visaType;
 	}
 
-	public void setVisaType(String visaType) {
+	public void setVisaType(String[] visaType) {
 		this.visaType = visaType;
 	}
+
+	
 
 	
 }
