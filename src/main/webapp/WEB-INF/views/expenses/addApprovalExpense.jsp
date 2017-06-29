@@ -50,8 +50,8 @@
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+					<div class="col-md-9" id="errProject">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 							 <option value="">Select Project</option>
 							<c:forEach var="projects" items="${projectsList}">
 							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
@@ -72,16 +72,16 @@
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
-						  <div class="col-lg-6">
-							  <input type="text" class="form-control calendar" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+						  <div class="col-lg-6" id="errEnd">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
 	            </div>
-	             <div class="form-group">
+	             <div class="form-group" id="errEmployeeRemove">
 				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required">
+					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="removeErrProjectEmployee();">
 					    <c:forEach var="projectMember" items="${projectMembers}">
 							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
 					   </c:forEach>
@@ -516,6 +516,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
@@ -526,6 +527,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
 					}
 				});
 	}
@@ -547,4 +549,22 @@ function expensesDateCheck(){
 	}
 }
 </script>
+
+<script>
+function removeErrStr(){
+	$('#dateDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrEnd(){
+	$('#errEnd').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProject(){
+	$('#errProject').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProjectEmployee(){
+	$('#errEmployeeRemove').find('p.jquery_form_error_message').remove(); 
+}
+</script>
+
+
+
 <jsp:include page="../masterFooter.jsp" />
