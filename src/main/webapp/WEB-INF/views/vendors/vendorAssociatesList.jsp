@@ -38,7 +38,7 @@ function vendorAssociatesList(orgRelationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table mt">';
-		result  = result + '   <div id="vendorAssociatesListTab" ></div>';
+		result  = result + '   <div id="vendorAssociatesListTab" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -134,7 +134,7 @@ function vendorAssociatesPagination(){
     $('#vendorAssociatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

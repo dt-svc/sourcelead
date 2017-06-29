@@ -73,7 +73,7 @@ function vendorRequirementListInclude(orgRelationID){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="vendorRequirmentListDiv" ></div>';
+		result  = result + '   <div id="vendorRequirmentListDiv" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -234,7 +234,7 @@ function contactRequirmentlistPagination(){
     $('#vendorRequirmentPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
