@@ -100,7 +100,7 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 
 	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JodaModule());
+		mapper.registerModule(new Hibernate5Module());
 		return mapper;
 	}
 
