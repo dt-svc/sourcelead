@@ -186,7 +186,8 @@ public class CandidateListRestController {
 					
 				}
 //			}
-			
+				
+		    boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
@@ -637,6 +638,7 @@ public class CandidateListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
@@ -1281,7 +1283,7 @@ public class CandidateListRestController {
 			 }
 		   
 		   
-		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+		    @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
 			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 				

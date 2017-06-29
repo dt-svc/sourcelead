@@ -483,7 +483,6 @@ $(".add-skills").click(function(e){
 	 e.stopPropagation();
  });
 
-
 // Bar chat pop
 $(document).ready(function() {
     $(".graf_icon").click(function(){

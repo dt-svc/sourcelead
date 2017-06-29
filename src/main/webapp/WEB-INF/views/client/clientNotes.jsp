@@ -58,14 +58,7 @@ function clientNotesList(orgRelationId,clientLocationId){
     result  = result + '<i class="fa fa-check-circle"></i><span id="clientNotesMsgDiv"></span>';
     result  = result + '</div>';
 	    result = result + '<ul class="padding_right">';
-	    
-	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 	        	result = result  +'    	<a href="javascript:void(0)" onClick="addClientNotes('+orgRelationId+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
-		 '</sec:authorize>';
-		 
-		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
-		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
-		 '</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
@@ -111,15 +104,15 @@ function clientNotes(orgRelationId){
      for(var i=0;i<json.length;i++){
        	var report = json[i];
     	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
-   	  	output = output+'<div class="comments-div comments-inner clearfix">';
+   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.userId+'"/>';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
-   	    output = output+'     <div class="comments-content comments-notes">';
-   	    output = output+'         <div class="pull-left comments-text">';
+   	    output = output+'     <div class="comments-content">';
+   	    output = output+'         <div class="commentsNotes_inner">';
    	    output = output+'         <p class="comment-by">';
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
    	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
@@ -137,7 +130,7 @@ function clientNotes(orgRelationId){
    		 output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
    	    }
    	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
-   	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
+   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
@@ -186,13 +179,12 @@ function addClientNotes(orgRelationId,clientLocationId) {
 	
 	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
      result = result +" <div class='dropdown-select mb10' id='categoryTypeListDiv'>";
-     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='selectCategory(this);' data-validation='required' field-name='Category'>";
+     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='selectCategory(this);'  field-name='Category'>";
      result = result +"<option selected value=''>--Select Category--</option>";
      result = result +"<option value='Jobs'>Jobs</option>";
      result = result +"<option value='Contacts'>Contacts</option>";
      result = result +"<option value='Contracts'>Contracts</option>";
      result = result +"<option value='Billing'>Billing</option>";
-     result = result +"<option value='Project'>Project</option>";
      result = result +"<option value='Other'>Other</option>";
      result = result +"</select>";
      result = result +"    </div>";
@@ -203,7 +195,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Note" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
