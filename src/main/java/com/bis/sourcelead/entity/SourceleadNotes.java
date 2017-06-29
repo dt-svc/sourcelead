@@ -41,6 +41,10 @@ public class SourceleadNotes {
 	private OrgRelations orgRelationID;
 	
 	@ManyToOne
+    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
+	private OrgLocations orgLocationID;
+	
+	@ManyToOne
     @JoinColumn(name="USER_ID", nullable=false )     
 	private User userId;
 	
@@ -60,6 +64,9 @@ public class SourceleadNotes {
 	@ManyToOne
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
+	
+	@Transient
+	private Long commentAuthorUserId;
 	
 	@Column(name = "COMMENT",columnDefinition = "TEXT default NULL")
 	private String comment;
@@ -339,4 +346,26 @@ public class SourceleadNotes {
 	{
 		this.userIdStr = userIdStr;
 	}
+
+	public OrgLocations getOrgLocationID()
+	{
+		return orgLocationID;
+	}
+
+	public void setOrgLocationID(OrgLocations orgLocationID)
+	{
+		this.orgLocationID = orgLocationID;
+	}
+
+	public Long getCommentAuthorUserId()
+	{
+		return commentAuthorUserId;
+	}
+
+	public void setCommentAuthorUserId(Long commentAuthorUserId)
+	{
+		this.commentAuthorUserId = commentAuthorUserId;
+	}
+	
+	
 }

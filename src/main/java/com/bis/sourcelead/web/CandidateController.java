@@ -179,7 +179,7 @@ public class CandidateController {
 		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
 		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
 		 }
 	  
 	   model.addObject("candidateCount", candidateCount);
@@ -204,6 +204,9 @@ public class CandidateController {
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
+		
+		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+		model.addObject("visaList", visaList);
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
@@ -300,6 +303,9 @@ public class CandidateController {
 		 
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		 model.addObject("skillsList", skillsList);
+		 
+		 List<String> visaList = lookUpDataService.getAllVisaByCategory();
+		 model.addObject("visaList", visaList);
 		
 		return model;
 		
@@ -331,11 +337,12 @@ public class CandidateController {
 		public ModelAndView candidateListForReports(@RequestParam(value="serachValue", required=false)String serachValue,HttpServletRequest request) throws Exception {
 		 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("candidates/candidatesReports");
 		 
-		 Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+		 Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
 //		 Long consultantCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Consultant");
          
 		 List<User> ownersList = candidateService.getAllCandidateOwnersByLocationIdAndCandidateType(orgLocations.getId(), "");

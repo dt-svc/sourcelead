@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.FinalPayrollReport;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -59,6 +60,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	@Autowired
 	ProjectMembersService projectMembersService;
 
+	@Autowired
+	PayrollHelper payrollHelper;
+
 	@Override
 	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
 			throws Exception {
@@ -79,11 +83,17 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int isValid = 0;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForEmployeePayRoll(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
+					
 				/*	if (true) {*/
 						if (row.getRowNum() > 0) { // Excluding column names
 							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
@@ -166,10 +176,11 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							employerPayrollCostList.add(employerPayrollCost);
 						}
 					}
+				}else{
+					return count;
+				}
 				}
 
-			
-			
 			fis.close();
 		} catch (IOException e) {
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
@@ -177,6 +188,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 		return count;
 	}
+
 
 	/**
 	 * save EmployerPayrollCost 
@@ -306,3 +318,4 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			
 	}
 }
+

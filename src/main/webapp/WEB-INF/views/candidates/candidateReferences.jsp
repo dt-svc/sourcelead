@@ -84,9 +84,9 @@ function candReferencesList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
+          success :function(json) {
            
-             			 var json = JSON.parse(data); 
+             			/*  var json = JSON.parse(data);  */
 	                	 $("#candidateReferencesList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateReferencesPagination' class='display' cellspacing='0' width='100%' >"; 

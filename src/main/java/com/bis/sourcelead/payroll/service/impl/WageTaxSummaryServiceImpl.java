@@ -30,10 +30,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
@@ -55,6 +57,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	@Autowired
+	PayrollHelper payrollHelper;
 	
 	@Override
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
@@ -82,10 +87,16 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			Map<String, String> map = new HashMap<String, String>();
+			int isValid = 0;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				String emppID = null;
+				
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForWagesTaxSummary(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 
@@ -209,6 +220,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 
 					}
 				}
+				}else{
+					return count;
+				}
 				for (WageTaxSummary wageTaxSummary : wageTaxSummaryList) {
 					StringBuilder sb = new StringBuilder();
 					String ssnNumber = map.get(wageTaxSummary.getEmployeeId());
@@ -234,6 +248,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 
 	}
 	
+
 	private  String getSsnNumber(Cell cell, String fileName) {
 		return getCellValueAsString(cell, fileName);
 	
@@ -467,6 +482,4 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	
 	}
-
-
 }

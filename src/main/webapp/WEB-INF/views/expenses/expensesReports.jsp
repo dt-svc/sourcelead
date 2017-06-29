@@ -590,9 +590,8 @@ $.ajax({
  <script>
  function exportExpensesReports(type){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var frequencyYear =document.getElementById("selectedYear").value;
 	var frequencyMonth =document.getElementById("selectedQuarter").value;
- window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
+ window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&exportType="+type;
  }
  </script>
  

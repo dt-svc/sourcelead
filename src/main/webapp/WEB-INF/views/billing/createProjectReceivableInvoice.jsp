@@ -373,7 +373,7 @@ function populateInlineItemsGrid(data){
             result = result +' <thead>';
             result = result +' <tr>';
             result = result +' <th>Date</th>';
-            result = result +' <th>Candiate</th>';
+            result = result +' <th>Associate</th>';
             result = result +' <th>SOW / PO</th>';
             result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
@@ -512,7 +512,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <thead>';
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
-	    result = result +' <th>Candiate</th>';
+	    result = result +' <th>Associate</th>';
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate</th>';
 	    result = result +' <th>Total Hours</th>';

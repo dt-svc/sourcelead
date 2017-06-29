@@ -184,6 +184,7 @@ window.onload = function () {
 	</div>
 	
  </div>
+ <div id="popUp">
 </div>
 </section>
 
@@ -469,12 +470,17 @@ $(".addcon-pop").click(function() {
 					url : sourceleadUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
 						/* var json = JSON.parse(result); */
-						$("#mainloading").removeAttr('style');
-						$("#selector1").removeAttr("style");
-		    			$("#selector1").css("display", "block");
-		    			$("#msgDiv").html(result+" Records Imported Successfully.");
-						msgFadein();
-						loadEmployeePayrollCost();
+						if(result == 0){
+							$("#mainloading").removeAttr('style');
+							showAlertMessage();
+						}else{
+							$("#mainloading").removeAttr('style');
+							$("#selector1").removeAttr("style");
+			    			$("#selector1").css("display", "block");
+			    			$("#msgDiv").html(result+" Records Imported Successfully.");
+							msgFadein();
+							loadEmployeePayrollCost();
+						}
 					},
 				});
 		
@@ -569,6 +575,28 @@ $("ul#parentUl").on("click","li", function(){
 	}
 </script> 
 
+<script type="text/javascript">
+function showAlertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Upload Correct file</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />

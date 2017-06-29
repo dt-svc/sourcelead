@@ -741,8 +741,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType) {
-		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(orgLocationId,candidateType);
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId,String candidateType) {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(userId,orgLocationId,candidateType);
 	}
 	
 	
@@ -1174,21 +1174,29 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
-		Candidate candidate = new Candidate();
-		candidate.setConsultantUser(user);
-		candidate.setMasterCandidateId(masterCandidate);
-		candidate.setOrgLocationId(orgLocations);
-		candidate.setCandidateType(Constants.CANDIDATE);
-		candidate.setFirstName(user.getFirstName());
-		candidate.setLastName(user.getLastName());
-		candidate.setCountry(orgLocations.getCountry());
-		candidate.setIsAssociate(Constants.NO);
-		candidate.setEmail(user.getEmail());
-		candidate.setStatus(Constants.RECORD_ACTIVE);
-		candidate.setCreatedBy(user.getUserCode());
-		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		candidate.setCreatedDate(commonUtil.currentDate());
+		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+		if(null == candidate){
+			candidate = new Candidate();
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setOrgLocationId(orgLocations);
+			candidate.setCandidateType(Constants.CANDIDATE);
+			candidate.setFirstName(user.getFirstName());
+			candidate.setLastName(user.getLastName());
+			candidate.setCountry(orgLocations.getCountry());
+			candidate.setIsAssociate(Constants.NO);
+			candidate.setEmail(user.getEmail());
+			candidate.setStatus(Constants.RECORD_ACTIVE);
+			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setCreatedDate(commonUtil.currentDate());
+		}else{
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+		}
+		
 		candidateDao.storeCandidate(candidate);
+		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
 	}
 
