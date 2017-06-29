@@ -141,7 +141,7 @@ public class InvoicePdfHelper {
 			else {
 				address.append(orgLocation.getCountry()).toString();
 			}
-			PdfPCell from = getAddress("Billing From:", user.getFullName(), user.getEmail(), user.getMobilePhone(), orgLocation.getOrg().getOrgName(), address.toString());
+			PdfPCell from = getAddress("Billing From:", user.getFullName(), user.getEmail(), user.getMobilePhone(), orgLocation.getOrgLocationName(), address.toString());
 			table.addCell(from);
 			StringBuilder clientAddress = new StringBuilder();
 			if (null != orgRel.getResponderLocationId().getCity()) {
@@ -153,7 +153,7 @@ public class InvoicePdfHelper {
 			else {
 				clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
 			}
-			PdfPCell to = getAddress("Billing To:", invoice.getContactUser().getFullName(), invoice.getContactUser().getEmail(), invoice.getContactUser().getMobilePhone(), orgRel.getResponderLocationId().getOrg().getOrgName(), clientAddress.toString());
+			PdfPCell to = getAddress("Billing To:", invoice.getContactUser().getFullName(), invoice.getContactUser().getEmail(), invoice.getContactUser().getMobilePhone(), orgRel.getResponderLocationId().getOrgLocationName(), clientAddress.toString());
 			table.addCell(to);
 			document.add(table);
 			table = new PdfPTable(6);
@@ -349,7 +349,7 @@ public class InvoicePdfHelper {
 				else {
 					address.append(orgLocation.getCountry()).toString();
 				}
-				PdfPCell from = getAddress("Invoice From:", user.getFullName(), user.getEmail(), user.getMobilePhone(), orgLocation.getOrg().getOrgName(), address.toString());
+				PdfPCell from = getAddress("Invoice From:", user.getFullName(), user.getEmail(), user.getMobilePhone(), orgLocation.getOrgLocationName(), address.toString());
 				table.addCell(from);
 				StringBuilder clientAddress = new StringBuilder();
 				if (null != orgRel.getResponderLocationId().getCity()) {
@@ -361,7 +361,7 @@ public class InvoicePdfHelper {
 				else {
 					clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
 				}
-				PdfPCell to = getAddress("Invoice To:", invoice.getContactUser().getFullName(), invoice.getContactUser().getEmail(), invoice.getContactUser().getMobilePhone(), orgRel.getResponderLocationId().getOrg().getOrgName(), clientAddress.toString());
+				PdfPCell to = getAddress("Invoice To:", invoice.getContactUser().getFullName(), invoice.getContactUser().getEmail(), invoice.getContactUser().getMobilePhone(), orgRel.getResponderLocationId().getOrgLocationName(), clientAddress.toString());
 				table.addCell(to);
 				document.add(table);
 				table = new PdfPTable(6);

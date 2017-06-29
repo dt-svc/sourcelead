@@ -192,19 +192,19 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    
 			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}else{
 					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocation.getId());
 				    if(requirementSubmission != null){
-				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrgLocationName());
 				    }else if(requirementInterview.getSubmissionId().getSourceSubmission() != null && requirementInterview.getSubmissionId().getSourceSubmission().getId() != null){
 				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getSourceSubmission().getId(),orgLocation.getId());
 				    	 if(parentRequirementSubmission != null){
-						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrgLocationName());
 				    	 }
 				    }
 				}
@@ -357,19 +357,19 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			
 			 if(interviewHistory.getSubmissionId().getRequirement().getClientId() != null){
 					if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(interviewHistory.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						interviewHistory.setClientName(interviewHistory.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}else{
 					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getId(),loginOrgLocations.getId());
 				    if(requirementSubmission != null){
-				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrgLocationName());
 				    }else if(interviewHistory.getSubmissionId().getSourceSubmission() != null && interviewHistory.getSubmissionId().getSourceSubmission().getId() != null){
 				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(interviewHistory.getSubmissionId().getSourceSubmission().getId(),loginOrgLocations.getId());
 				    	 if(parentRequirementSubmission != null){
-						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrgLocationName());
 				    	 }
 				    }
 				}
@@ -498,19 +498,19 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			    
 			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						interviewHistory.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}else{
 					RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
 				    if(requirementSubmission != null){
-				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	interviewHistory.setClientName(requirementSubmission.getOrgLocations().getOrgLocationName());
 				    }else if(requirementInterview.getSubmissionId().getSourceSubmission() != null && requirementInterview.getSubmissionId().getSourceSubmission().getId() != null){
 				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getSourceSubmission().getId());
 				    	 if(parentRequirementSubmission != null){
-						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+						     interviewHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrgLocationName());
 				    	 }
 				    }
 				}

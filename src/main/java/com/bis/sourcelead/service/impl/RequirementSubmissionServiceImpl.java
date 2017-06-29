@@ -664,8 +664,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 }else{
 				 globalVarsMap.put("requirementName","--");
 			 }
-		 if(null!= orgLocations.getOrg().getOrgName() && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
-			 globalVarsMap.put("organizationName", orgLocations.getOrg().getOrgName());
+		 if(null!= orgLocations.getOrgLocationName() && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
+			 globalVarsMap.put("organizationName", orgLocations.getOrgLocationName());
 			 }else{
 				 globalVarsMap.put("organizationName","--");
 			 }
@@ -1216,8 +1216,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("requirementName","--");
 			 }
-		 if(null!= orgLocations.getOrg().getOrgName() && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
-			 globalVarsMap.put("organizationName", orgLocations.getOrg().getOrgName());
+		 if(null!= orgLocations.getOrgLocationName() && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
+			 globalVarsMap.put("organizationName", orgLocations.getOrgLocationName());
 			 }else{
 				 globalVarsMap.put("organizationName","--");
 			 }
@@ -2333,8 +2333,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 			 }
-		 if(null != orgLocations.getOrg().getOrgName() && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
-			 globalVarsMap.put("organizationName", orgLocations.getOrg().getOrgName());
+		 if(null != orgLocations.getOrgLocationName() && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
+			 globalVarsMap.put("organizationName", orgLocations.getOrgLocationName());
 			 }else{
 				 globalVarsMap.put("organizationName","--");
 			 }
@@ -2769,7 +2769,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		else {
 			globalVarsMap.put("assignedUser", assignedUser.getFirstName());
 		}
-		globalVarsMap.put("loginOrg", loginOrgLocation.getOrg().getOrgName());
+		globalVarsMap.put("loginOrg", loginOrgLocation.getOrgLocationName());
 		globalVarsMap.put("loginUser", loginUser.getFirstName());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager, Constants.ENTITY_TYPE_EMAIL);
@@ -3832,8 +3832,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 globalVarsMap.put("reason","--"); 
 		 }
 		 
-		 if(null != submission.getOrgLocations().getOrg().getOrgName() && !"".equalsIgnoreCase(submission.getOrgLocations().getOrg().getOrgName())){
-		 globalVarsMap.put("clientOrgName", submission.getOrgLocations().getOrg().getOrgName());
+		 if(null != submission.getOrgLocations().getOrgLocationName() && !"".equalsIgnoreCase(submission.getOrgLocations().getOrgLocationName())){
+		 globalVarsMap.put("clientOrgName", submission.getOrgLocations().getOrgLocationName());
 		 }else{
 		 globalVarsMap.put("clientOrgName","--"); 
 		 }
@@ -3938,8 +3938,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 globalVarsMap.put("requirementTitle","--"); 
 								 }
 								 
-								 if(null != reqsub.getOrgLocations().getOrg().getOrgName() && !"".equalsIgnoreCase(reqsub.getOrgLocations().getOrg().getOrgName())){
-								 globalVarsMap.put("clientOrgName", reqsub.getOrgLocations().getOrg().getOrgName());
+								 if(null != reqsub.getOrgLocations().getOrgLocationName() && !"".equalsIgnoreCase(reqsub.getOrgLocations().getOrgLocationName())){
+								 globalVarsMap.put("clientOrgName", reqsub.getOrgLocations().getOrgLocationName());
 								 }else{
 								 globalVarsMap.put("clientOrgName","--"); 
 								 }

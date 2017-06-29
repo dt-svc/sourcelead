@@ -170,7 +170,7 @@ public class ClientRestController {
 			if(orgLocationsList != null)
 			{
 				for(OrgLocations orgLocations: orgLocationsList){
-					hm.put(orgLocations.getOrg().getOrgName(), orgLocations.getId());
+					hm.put(orgLocations.getOrgLocationName(), orgLocations.getId());
 				}
 			}
 			return commonUtil.toJSON(hm);
@@ -212,7 +212,7 @@ public class ClientRestController {
 			
 			Org org = orgService.getOrgByOrgName(orgName);
 			if(org != null){
-				OrgLocations orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				
 				try {
 					orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
@@ -646,12 +646,12 @@ public class ClientRestController {
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
 			for(OrgRelations orgRelations : relationsList){
 				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
 						flag = true;
 					}
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrg().getOrgName())){
+					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
 						flag = true;
 					}
 					
