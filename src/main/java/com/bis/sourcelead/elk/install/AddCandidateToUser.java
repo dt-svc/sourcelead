@@ -11,23 +11,20 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 
-import org.hibernate.dialect.pagination.FirstLimitHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.docusign.esign.model.FirstName;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddCandidateToUser {
 	private ComboPooledDataSource comboPooledDataSource;
 	
 /**
- * @author LAxman
- * this method is using for update the RequirmentUUID	
+ * @author Venkat I
+ * this method is using for adding candidate to user	
  * @throws IOException
  * @throws SQLException
  */
@@ -36,6 +33,7 @@ public void addCandidteToUser() throws IOException, SQLException {
 	Statement stmt1 = null;
 	try {
 		
+		System.out.println("Adding Candidate To User Starts");
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 			 String sql1 = "SELECT * FROM sourcelead.USER_ROLE userRole";
@@ -53,10 +51,16 @@ public void addCandidteToUser() throws IOException, SQLException {
 			     pstmt.setLong(1, userId); // set input parameter 1
 			     ResultSet rs2 = pstmt.executeQuery(); 
 			     
+			     
 			     while(rs2.next()){
 			    	 String email = rs2.getString("EMAIL");
-			    	 String fristName = rs2.getString("FIRST_NAME");
+			    	 String firstName = rs2.getString("FIRST_NAME");
 			    	 String lastName = rs2.getString("LAST_NAME");
+			    	 String mobilePhone = rs2.getString("MOBILE_PHONE");
+			    	 if(null == mobilePhone || "".equals(mobilePhone.trim())){
+			    		 mobilePhone = null;
+			    	 }
+			    	 
 				     
 				     String query2 = "SELECT * FROM sourcelead.CANDIDATE where ORG_LOCATION_ID = ? and EMAIL = ? ";
 				     PreparedStatement pstmt2 = conn.prepareStatement(query2); // create a statement
@@ -67,7 +71,7 @@ public void addCandidteToUser() throws IOException, SQLException {
 				     if (rs3.next()) {
 				    	    do {
 				    	    	Long candidateId = rs3.getLong("ID");
-				    	    	String query3 = "UPDATE sourcelead.CANDIDATE set CONSULTANT_USER_ID = ? where ID = ? ";
+				    	    	String query3 = "UPDATE sourcelead.CANDIDATE set CONSULTANT_USER_ID = ?  where ID = ? ";
 							    PreparedStatement pstmt3 = conn.prepareStatement(query3); // create a statement
 							    pstmt3.setLong(1, userId);
 							    pstmt3.setLong(2, candidateId);
@@ -77,8 +81,8 @@ public void addCandidteToUser() throws IOException, SQLException {
 				    	} else {
 				    	    
 				    		String query4 = " insert into sourcelead.CANDIDATE (ORG_LOCATION_ID, CONSULTANT_USER_ID, CANDIDATE_TYPE, FIRST_NAME, LAST_NAME, EMAIL, IS_FAVOURITE, "
-									+ "IS_ASSOCIATE, CANDIDATE_UUID, CREATED_DATE, CREATED_BY)"
-									+ " values (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+									+ "IS_ASSOCIATE, CANDIDATE_UUID, CREATED_DATE, CREATED_BY, MOBILE_PHONE, STATUS)"
+									+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				    		
 				    		try {
 				    			
@@ -86,7 +90,7 @@ public void addCandidteToUser() throws IOException, SQLException {
 					    		 pstmt4.setLong(1, orgLocationId);
 					    		 pstmt4.setLong(2, userId);
 					    		 pstmt4.setString(3, "Candidate");
-					    		 pstmt4.setString(4, fristName);
+					    		 pstmt4.setString(4, firstName);
 					    		 pstmt4.setString(5, lastName);
 					    		 pstmt4.setString(6, email);
 					    		 pstmt4.setInt(7, 0);
@@ -94,6 +98,8 @@ public void addCandidteToUser() throws IOException, SQLException {
 					    		 pstmt4.setString(9, SourceLeadRandomCodeHelper.generateRandomUUID());
 					    		 pstmt4.setDate(10,(java.sql.Date) createdDate);
 					    		 pstmt4.setString(11,createdBy);
+					    		 pstmt4.setString(12, mobilePhone);
+					    		 pstmt4.setInt(13, 1);
 					    		 pstmt4.executeUpdate();	
 					    		 
 				    		}catch (Exception e){   
@@ -106,7 +112,7 @@ public void addCandidteToUser() throws IOException, SQLException {
 			     }
 			}
 			
-		
+		 System.out.println("Adding Candidate To User Ends");
 	}catch(Exception e){
 		e.printStackTrace();
 	}finally {

@@ -134,7 +134,7 @@ import com.docusign.esign.model.LoginInformation;
 * 2
 * </pre>
 */
-public class EMailJobScheduler {/*
+public class EMailJobScheduler {
 	
 	
 	@Value("${sourceleadUrl}")
@@ -249,10 +249,10 @@ public class EMailJobScheduler {/*
 	
 	//=============================================== EMPLOYEE TIME SHEETS MAILS STARTED==========================================
 	
-	*//**
+	/**
 	 * @author Rajashekar & Prasad salina
 	 * Fires on Every Firday at 11:45 PM and send mails to employees those who are not submited their timesheets
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 ? * FRI ")
 	public void runJobSchedulerByWeekly() {
 		logger.info("******************  Notification Job Scheduler started..! **********");
@@ -272,10 +272,10 @@ public class EMailJobScheduler {/*
 		}
     }
 	
-	*//**
+	/**
 	 * @author Rajashekar & Prasad salina
 	 * Fires on Every Firday at 11:45 PM and send mails to employees those who are not submited their timesheets
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 ? * FRI ")
 	public void runJobSchedulerByBi_Weekly() {
 		logger.info("******************  Notification Job Scheduler Every two weeks started..! **********");
@@ -295,10 +295,10 @@ public class EMailJobScheduler {/*
 		}
     }
 
-	*//**
+	/**
 	 * @author Rajashekar & Prasad salina
 	 * Fires on Every 15 (semi_monthly) days at 11:45 PM and send mails to employees those who are not submited their timesheets
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 1/15 * ?")
 	public void runJobSchedulerBySemi_Monthly() {
 		logger.info("******************  Notification Job Scheduler Every 15 days in a month started..! **********");
@@ -317,10 +317,10 @@ public class EMailJobScheduler {/*
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-	*//**
+	/**
 	 * @author Rajashekar
 	 * Fires on Every month at 11:45 PM and send mails to employees those who are not submited their timesheets
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 30 1/1 ?")
 	public void runJobSchedulerByMonthly() {
 		logger.info("******************  Notification Job Scheduler  Every month 30th started..! **********");
@@ -376,11 +376,11 @@ public class EMailJobScheduler {/*
  	
 	
 	//=============================================== LEVEL 1 TIME SHEETS MAILS STARTED==========================================
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to level1 Managers Weekly
 	 * Fires on Monday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 ? * MON")
 	public void runJobSchedulerByMondayForWeeklyAndBiWeekly() {
 		try {
@@ -395,11 +395,11 @@ public class EMailJobScheduler {/*
 		}
 	}
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to level1 Managers Semi-Monthly
 	 * Fires every 17th of the month at 11:45 PM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 17 1/1 ?")
 	public void runJobSchedulerBy17thForSemiMonthly() {
 		logger.info("******************  Notification Job Scheduler every 17th of the month at 11:45 PM started (Semi_Monthly) to Level 1 Manager..! **********");
@@ -411,11 +411,11 @@ public class EMailJobScheduler {/*
 		}
 	}
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to level1 Managers Semi-Monthly and Monthly
 	 * Fires every 2nd of the month at 11:45 PM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 2 1/1 ?")
 	public void runJobSchedulerBy2ndForSemiMonthly() {
 		try {
@@ -435,11 +435,11 @@ public class EMailJobScheduler {/*
 	
 	
 	//=============================================== LEVEL 2 TIME SHEETS MAILS STARTED==========================================
-	*//**
+	/**
 	 * Prasanna vadla
 	 * this is for level 2
 	 * Fires on Wednesday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 ? * WED")
 	public void runJobSchedulerByWedDayWeeklyAndBiWeekly() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Level 2 Manager..! **********");
@@ -453,11 +453,11 @@ public class EMailJobScheduler {/*
 		}
 	}
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to level2 Managers Semi-Monthly
 	 * Fires every 19th of the month at 11:45 PM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 19 1/1 ?")
 	public void runJobSchedulerBy19thForSemiMonthly() {
 		logger.info("******************  Notification Job Scheduler every 19th of the month at 11:45 PM started (Semi_Monthly) to Level 2 Manager..! **********");
@@ -469,11 +469,11 @@ public class EMailJobScheduler {/*
 		}
 	}
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to level2 Managers Semi-Monthly and Monthly
 	 * Fires every 4th of the month at 11:45 PM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 4 1/1 ?")
 	public void runJobSchedulerBy4thForSemiMonthly() {
 		try {
@@ -574,11 +574,11 @@ public class EMailJobScheduler {/*
 	
 	//=============================================== ADMIN TIME SHEETS MAILS STARTED==========================================
 	
-	*//**
+	/**
 	 * @author Prasad Salina
 	 * this is for Admin
 	 * Fires on Friday at 11:45 PM of every week of the month emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 ? * FRI")
 	public void runJobSchedulerByFRIDay() {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the Month started (Weekly) to Admin..! **********");
@@ -592,11 +592,11 @@ public class EMailJobScheduler {/*
 		}
 	}
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to Admin Semi-Monthly
 	 * Fires every 21st of the month at 11:45 PM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 21 1/1 ?")
 	public void runJobSchedulerBy21stForSemiMonthly() {
 		logger.info("******************  Notification Job Scheduler every 21st of the month at 11:45 PM started (Semi_Monthly) to Admin..! **********");
@@ -608,11 +608,11 @@ public class EMailJobScheduler {/*
 		}
 	}
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * mail to Admin Semi-Monthly and Monthly
 	 * Fires every 6th of the month at 11:45 PM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 45 23 2 1/1 ?")
 	public void runJobSchedulerBy6thForSemiMonthly() {
 		try {
@@ -715,11 +715,11 @@ public class EMailJobScheduler {/*
 	
 	
 	
-	*//**
+	/**
 	 * @author Prasad salina
 	 * for terminate projects when current date is crossed project end date
 	 * Fires on Every Day at 12:05 AM emailJobScheduler.job.cron.everyfriday.expression
-	 *//*
+	 */
 	@Scheduled(cron = "0 5 0 1/1 * ?")
 	public void runJobSchedulerProjectsAndMembers() {
 		try {
@@ -740,11 +740,11 @@ public class EMailJobScheduler {/*
 	
 	
 	
-	*//**
+	/**
 	 * @author prasanna
 	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
-	 *//*
+	 */
 	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void runRemainderEmailScheduler() throws Exception {
@@ -806,11 +806,11 @@ public class EMailJobScheduler {/*
 		}
     }
 	
-	*//**
+	/**
 	 * @author David Raju
 	 * This Cron Method is to add  the Candidates which are consultants  to  HotList (i,e making  them favorite list ) When they are going to terminate  from  the Project within  the given noticePeriod 
 	 * This Cron Runs Daily once at 3 AM
-	 *//*
+	 */
 	@Scheduled(cron = "0 0 3 1/1 * ? ")
 	public void runHotlistCandidatesDaily() throws Exception {
 		logger.info("******************  Daily HotList Candidates Started **********");
@@ -877,7 +877,7 @@ public class EMailJobScheduler {/*
 			}
     }
 
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	/*@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void scheduleUserMail() throws Exception {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -900,7 +900,7 @@ public class EMailJobScheduler {/*
 		  }
 		}
 
-	}
+	}*/
 	
 	
 	
@@ -1034,7 +1034,7 @@ public class EMailJobScheduler {/*
 	}
 	
 	
-	
+	/*
 	 * This method is for sending mail for Reporting manager 
 	 *  while creating user in an organization we assign a reporting manager for every individual user ,this is optional 
 	 
@@ -1749,12 +1749,12 @@ public class EMailJobScheduler {/*
 			 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
-
-	*//**
+*/
+	/**
 	 * @author prasanna
 	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
-	 *//*
+	 */
 	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void runContractDocumentStatus() throws Exception {
@@ -1765,9 +1765,9 @@ public class EMailJobScheduler {/*
 				String Password = "Pwd!123";    
 				String IntegratorKey = "1bf5d901-629e-4ec3-a915-8991fd08206a";
 				
-				String UserName = "rajasekhar@businessintelli.com";
+				/*String UserName = "rajasekhar@businessintelli.com";
 				String Password = "rajashekar";    
-				String IntegratorKey = "04e0361f-eebe-47ab-b3b2-d5d36c2d4dd4";
+				String IntegratorKey = "04e0361f-eebe-47ab-b3b2-d5d36c2d4dd4";*/
 
 				// for production environment update to "www.docusign.net/restapi"
 				String BaseUrl = "https://demo.docusign.net/restapi";
@@ -1939,14 +1939,14 @@ public class EMailJobScheduler {/*
 		        }
 	}
 	
-	*//**
+	/**
 	 * @author : Pavan Jampana
 	 * this cron will used to send the remainder emails to respective owners about expiring of the contract. 
 	 * 
 	 * this cron will be fired once a day at 3'O clock
 	 * 
 	 * Morning 8 Am for us/canada
-	 *//*
+	 */
 
 	@Scheduled(cron = "0 0 15 1/1 * ?")
 	@Async
@@ -2439,4 +2439,4 @@ public class EMailJobScheduler {/*
 	 }
 	
 	
-*/}
+}
