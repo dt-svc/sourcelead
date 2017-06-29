@@ -1080,6 +1080,19 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Visa</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="candidateVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Skills</label>
@@ -1092,26 +1105,6 @@ function cancel(candidateId){
 							 </div>
 						</div>
 						
-						<div class="form-group">
-              <label class="col-md-3">Visa</label>
-              <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
-               <c:forEach var="visaList" items="${visaList}">
-               		<c:set var = "NUM" value = "${0}"/>
-               		<c:forEach var="existedVisa" items="${requirement.visaType}">
-					    <c:if test="${existedVisa eq visaList}">
-					    	<c:set var = "NUM" value = "${1}"/>
-					       <option  selected value="${visaList}">${visaList}</option>
-					    </c:if>
-					</c:forEach>
-					
-					<c:if test="${NUM == 0}">
-						<option  value="${visaList}">${visaList}</option>
-					</c:if>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
 						
 						<div class="col-md-4">
 						<label>Primary Skill</label>
@@ -1911,6 +1904,7 @@ function getCities(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#candidateVisa").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
