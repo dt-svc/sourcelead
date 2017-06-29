@@ -257,30 +257,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		
-		List<Integer> moduleIds = new ArrayList<Integer>();
-		 for (String s : orgLocations.getModulesId().split(",")){
-			 moduleIds.add(Integer.parseInt(s));
-		 }
-		 
 		 MasterCandidate masterCandidate = null; 
 		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 		 if(null == masterCandidate){
 			 masterCandidate = getMasterCandidateDetails(registration,user);
 		 }
-		
-		
-		/*List<Integer> moduleIds = new ArrayList<Integer>();
-		 for (String s : orgLocations.getModulesId().split(",")){
-			 moduleIds.add(Integer.parseInt(s));
-		 }
-		 
-		 MasterCandidate masterCandidate = null; 
-		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
-		 if(null == masterCandidate){
-			 masterCandidate = getMasterCandidateDetails(registration,user);
-		 }
-		 }*/
 		
 		try {
 			masterCandidateService.saveMasterCandidate(masterCandidate);

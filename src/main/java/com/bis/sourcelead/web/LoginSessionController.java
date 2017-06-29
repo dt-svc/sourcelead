@@ -207,6 +207,10 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
+			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
+			
 			String[] modules = orgLocations.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
 				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
@@ -421,6 +425,7 @@ public class LoginSessionController {
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		UserRole productionUserRole = null;
+		Candidate candidate = null;
 		if(isNullOrEmpty(switchUserType)){
 			if(null != loginOrgLocatonId){
 				productionUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), loginOrgLocatonId);
@@ -483,8 +488,20 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+
+			if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
+				candidate = candidateService.findByCandidateEmail(orgLocations.getUser().getEmail(), orgLocations.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", orgLocations.getUser().getFirstName());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", orgLocations.getUser().getLastName());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", orgLocations.getUser().getEmail());
+			}else{
+				candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
+			}
 			
-			Candidate candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
@@ -630,7 +647,6 @@ public class LoginSessionController {
 				}
 				
 							
-				Candidate candidate = null;
 				if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 					candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 					StringBuilder redirectUrl = new StringBuilder();
