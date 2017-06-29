@@ -300,6 +300,9 @@ public class CandidateController {
 		 
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		 model.addObject("skillsList", skillsList);
+		 
+		 List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);
 		
 		return model;
 		
