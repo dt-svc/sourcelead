@@ -117,6 +117,10 @@ public class CandidateIndex implements Serializable {
 	private String candidateScore;
 	
 	private float skillPercentage;
+	
+	private float visaTypePercentage;
+	
+	private float educationPercentage;
 	 
 	private float expPercentage;
 	 
@@ -139,6 +143,10 @@ public class CandidateIndex implements Serializable {
 	private int totalRatePercentage;
 	       
 	private int totalNoticePeriodPercentage;
+	
+	private int totalVisaTypePercentage;
+	
+	private int totalEducationPercentage;
 	       
 	private int keyWordPerPercentage;
 	
@@ -561,6 +569,38 @@ public class CandidateIndex implements Serializable {
 
 	public void setSkillPercentage(float skillPercentage) {
 		this.skillPercentage = skillPercentage;
+	}
+	
+	public float getVisaTypePercentage() {
+		return visaTypePercentage;
+	}
+
+	public void setVisaTypePercentage(float visaTypePercentage) {
+		this.visaTypePercentage = visaTypePercentage;
+	}
+
+	public float getEducationPercentage() {
+		return educationPercentage;
+	}
+
+	public void setEducationPercentage(float educationPercentage) {
+		this.educationPercentage = educationPercentage;
+	}
+
+	public int getTotalVisaTypePercentage() {
+		return totalVisaTypePercentage;
+	}
+
+	public void setTotalVisaTypePercentage(int totalVisaTypePercentage) {
+		this.totalVisaTypePercentage = totalVisaTypePercentage;
+	}
+
+	public int getTotalEducationPercentage() {
+		return totalEducationPercentage;
+	}
+
+	public void setTotalEducationPercentage(int totalEducationPercentage) {
+		this.totalEducationPercentage = totalEducationPercentage;
 	}
 
 	public float getExpPercentage() {
