@@ -48,6 +48,7 @@ public class AssociateController {
 	@Autowired
 	StatesService statesService;
 	
+	
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
@@ -118,8 +119,14 @@ public class AssociateController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		
+		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+		model.addObject("visaList", visaList);
+		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
+		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
 		
 		model.addObject("candidateType", "Associates");
 		
@@ -199,6 +206,9 @@ public class AssociateController {
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		
 		 model.addObject("skillsList", skillsList);
+		 
+		 List<String> visaList = lookUpDataService.getAllVisaByCategory();
+		 model.addObject("visaList", visaList);
 		 
 	return model;
 	}

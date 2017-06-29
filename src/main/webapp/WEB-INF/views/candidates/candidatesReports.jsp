@@ -58,7 +58,8 @@ window.onload = function() {
 
  <script>
   function prepareCandidateReportsDataDiv(data){
-	 	     $("#candidateList").removeAttr("style");
+	  var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';	     
+	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -143,7 +144,7 @@ window.onload = function() {
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
-	          cpagination();  
+	          cpagination(SourceLeadWeb_loginOrg);  
 	 
   }
 </script>
@@ -155,17 +156,17 @@ window.onload = function() {
 
 
 <script>
-function cpagination(){ 
+function cpagination(SourceLeadWeb_loginOrg){ 
     $('#candidatePagination').DataTable( { 
     	 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Added Candidates',
+	                title: SourceLeadWeb_loginOrg+' - Added Candidates Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Added Candidates',
+	                title: SourceLeadWeb_loginOrg+' - Added Candidates Reports',
 	            }
 	        ],
     	"scrollCollapse": false,

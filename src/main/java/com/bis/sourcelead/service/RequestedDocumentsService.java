@@ -13,4 +13,8 @@ public interface RequestedDocumentsService {
 	public void storeRequestedDocumentsDetails(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception;
 	
 	RequestedDocuments getRequestedDocumentsByRequestDocUUID(String requestDocUUID) throws Exception;
+	
+	public void rejectRequestedDocuments(JSONObject jsonObj,User user,OrgLocations orgLocations,String documentsIds) throws Exception;
+	
+	public void acceptRequestedDocuments(User user,String documentsIds) throws Exception;
 }

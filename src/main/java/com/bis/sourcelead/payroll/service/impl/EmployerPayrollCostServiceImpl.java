@@ -29,12 +29,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.mysql.fabric.xmlrpc.base.Array;
@@ -49,6 +51,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	PayrollHelper payrollHelper;
 
 	@Override
 	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
@@ -70,11 +75,17 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int isValid = 0;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForEmployeePayRoll(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
+					
 				/*	if (true) {*/
 						if (row.getRowNum() > 0) { // Excluding column names
 							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
@@ -157,10 +168,11 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							employerPayrollCostList.add(employerPayrollCost);
 						}
 					}
+				}else{
+					return count;
+				}
 				}
 
-			
-			
 			fis.close();
 		} catch (IOException e) {
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
@@ -168,6 +180,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 		return count;
 	}
+
 
 	/**
 	 * save EmployerPayrollCost 
@@ -213,3 +226,4 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation);
 	}
 }
+

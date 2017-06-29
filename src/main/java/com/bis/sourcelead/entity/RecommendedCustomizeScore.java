@@ -97,6 +97,18 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CUSTOMIZE_LOCATION_SCORE")
 	private String customizeLocationScore;
 	
+	@Column(name = "CUSTOMIZE_EDUCATION", columnDefinition = "TEXT default NULL")
+	private String customizeEducation;
+	
+	@Column(name = "CUSTOMIZE_EDUCATION_SCORE")
+	private String customizeEducationScore;
+	
+	@Column(name = "CUSTOMIZE_VISATYPE", columnDefinition = "TEXT default NULL")
+	private String customizeVisatype;
+	
+	@Column(name = "CUSTOMIZE_VISATYPE_SCORE")
+	private String customizeVisatypecore;
+	
 	@Column(name="STATUS")
 	private Integer status;
 	
@@ -115,6 +127,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String dbSkills;
 	
+	@Transient
+	private String dbVisaType;
+	
+	@Transient
+	private String dbEducation;
 	
 	public Long getId() {
 		return id;
@@ -315,6 +332,52 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setDbSkills(String dbSkills) {
 		this.dbSkills = dbSkills;
 	}
-	
-	
+
+	public String getCustomizeEducation() {
+		return customizeEducation;
+	}
+
+	public void setCustomizeEducation(String customizeEducation) {
+		this.customizeEducation = customizeEducation;
+	}
+
+	public String getCustomizeEducationScore() {
+		return customizeEducationScore;
+	}
+
+	public void setCustomizeEducationScore(String customizeEducationScore) {
+		this.customizeEducationScore = customizeEducationScore;
+	}
+
+	public String getCustomizeVisatype() {
+		return customizeVisatype;
+	}
+
+	public void setCustomizeVisatype(String customizeVisatype) {
+		this.customizeVisatype = customizeVisatype;
+	}
+
+	public String getCustomizeVisatypecore() {
+		return customizeVisatypecore;
+	}
+
+	public void setCustomizeVisatypecore(String customizeVisatypecore) {
+		this.customizeVisatypecore = customizeVisatypecore;
+	}
+
+	public String getDbVisaType() {
+		return dbVisaType;
+	}
+
+	public void setDbVisaType(String dbVisaType) {
+		this.dbVisaType = dbVisaType;
+	}
+
+	public String getDbEducation() {
+		return dbEducation;
+	}
+
+	public void setDbEducation(String dbEducation) {
+		this.dbEducation = dbEducation;
+	}
 }

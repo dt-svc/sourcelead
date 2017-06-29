@@ -9,7 +9,7 @@ function candidateHistory(candidateId){
 	result  = result + '   <div class="project_tabs_inn_head addUser-org"> ';
 	result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)"></a></span> ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result  = result + '   <div id="candidateHistoryList" ></div>';
+	result  = result + '   <div id="candidateHistoryList" class="datatable_filter"></div>';
 	result  = result + '   </div>';
 	result = result+'	    </div>';
 
@@ -36,7 +36,7 @@ function candidateHistoryList(candidateId){
              		 
 	                	 $("#candidateHistoryList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='candidateHistoryPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result +"           <th>Job Name</th>";
@@ -75,7 +75,7 @@ function candidateHistoryList(candidateId){
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateHistoryList").append(result); 
-	                     certificationPagination(); 
+	                     candidateHistoryPagination(); 
         },
           
      }); 
@@ -87,8 +87,8 @@ function candidateHistoryPagination(){
     $('#candidateHistoryPagination').DataTable( { 
     	"scrollCollapse": false,
     	"scrollX": true,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

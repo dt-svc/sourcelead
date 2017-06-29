@@ -87,7 +87,7 @@ $(document).ready(function() {
            
         </div>
         <div class="candidate_wrap_table">
-          <div id="departmentresultId"></div>
+          <div id="departmentresultId" class="datatable_filter"></div>
         </div>
         
         <div class="vendor_wrap_mask"></div>
@@ -172,7 +172,7 @@ function departmentPagination(){
     $('#departmentPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

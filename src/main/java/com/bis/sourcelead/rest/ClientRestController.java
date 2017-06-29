@@ -795,15 +795,16 @@ public class ClientRestController {
 						submitToClient = submitToClient + vendorSubmittoClientCount;
 						
 					}else{
+						// this is for isclientjob check box Y count 
 						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(reqsub.getId());
 						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(submission.getId(),null,null);
 						for(RequirementSubmissionHistory subhistory : requirementSubmissionHistoryList){
 							// iterate here for client interview and client offer and get the counts
 							
-							if (ApplicantSubmissionStatus.INTERVIEW.toString().equalsIgnoreCase(subhistory.getToStage())) {
+							if (ApplicantSubmissionStatus.CLIENT_INTERVIEW.toString().equalsIgnoreCase(subhistory.getToStage())) {
 								vendorInterviewsCount++;
 							}
-							else if (ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
+							else if (ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
 								vendorOfferedCount++;
 							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equalsIgnoreCase(subhistory.getToStage())){
 								vendorSubmittoClientCount++;

@@ -46,14 +46,18 @@ public class CandidateDocuments implements Serializable{
     @JoinColumn(name="REQUESTED_DOC_ID")        
     private RequestedDocuments requestedDocumentsId;
 	
-	@Column(name = "DOC_UPLOAD_STATUS ")
+	@Column(name = "DOC_UPLOAD_STATUS")
 	private String docUploadStatus;
 	
-	@Column(name = "IS_REQUESTED_DOC_REQUIRED ")
+	@Column(name = "IS_REQUESTED_DOC_REQUIRED")
 	private String isRequestedDocRequired;
 
 	@Column(name = "REQUESTED_DOC_STATUS ")
 	private String requestedDocStatus;
+	
+	@Column(name = "REQUESTED_DOC_REJECTED_REASON")
+	@Type(type="text")
+	private String requestedDocRejectedReason;
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
@@ -255,6 +259,16 @@ public class CandidateDocuments implements Serializable{
 	public void setRequestedDocStatus(String requestedDocStatus)
 	{
 		this.requestedDocStatus = requestedDocStatus;
+	}
+
+	public String getRequestedDocRejectedReason()
+	{
+		return requestedDocRejectedReason;
+	}
+
+	public void setRequestedDocRejectedReason(String requestedDocRejectedReason)
+	{
+		this.requestedDocRejectedReason = requestedDocRejectedReason;
 	}
 	
 }

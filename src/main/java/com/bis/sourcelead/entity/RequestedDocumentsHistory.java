@@ -35,7 +35,7 @@ public class RequestedDocumentsHistory implements Serializable{
 	@Column(name = "DOCUMENT_TYPE ")
 	private String documentType ;
 	
-	@Column(name = "DESCRIPTION ")
+	@Column(name = "DESCRIPTION")
 	@Type(type="text")
 	private String description ;
 	

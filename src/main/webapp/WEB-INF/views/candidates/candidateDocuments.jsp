@@ -65,6 +65,9 @@ function candidateDocuments(candidateId){
 		'</sec:authorize>';
 		}else{
 		 '<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+		    result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+');" title="Reject"></i></a></span>';
+			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+');" title="Accept"></i></a></span>';
+			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
 			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		
@@ -78,7 +81,7 @@ function candidateDocuments(candidateId){
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		
-		result  = result + '   <div id="candidateDocumentsList" ></div>';
+		result  = result + '   <div id="candidateDocumentsList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	    result = result+'	    </div>';
 	  
@@ -101,7 +104,7 @@ function candidateDocuments(candidateId){
 <script>
 function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateDocumentsListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -116,9 +119,10 @@ function candDocumentsList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
 	                     result  = result + '<th>Document Type</th>';
-	                     result  = result + '<th>Upload Status</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
+	                 	 result  = result + '<th>Upload Status</th>';
+	                     result  = result + '<th>Document Status</th>';
 	                 	 result  = result + '<th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -128,7 +132,7 @@ function candDocumentsList(candidateId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 
-	                    	 if(opt.requestedDocumentsId != null){
+	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
 	                    	 }else{
 	                    		 result = result +"  <td><div>--</div></td>"; 
@@ -146,8 +150,6 @@ function candDocumentsList(candidateId){
 	    	             		 result = result +"  <td><div>----</div></td>"; 
 	    	             	 }
 	                    	 
-	                    	 result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
 	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
@@ -160,6 +162,22 @@ function candDocumentsList(candidateId){
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
 		                    	
+	                    	 
+							result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
+	                    	 
+	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
+	                    		 result = result +"<td>";
+	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
+	                    		 if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined'){
+					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
+					        	   }
+	                    		 result = result +"</div>";
+	                    		 result = result +"</td>";
+	                    	 
+	                    	 }else{
+	                    		 result = result +"  <td><div>----</div></td>"; 
+	                    	 }
+	                    	 
 		                   
 		                   result = result+'<td><div class="tblicons">';
 			           		if(window.candidateStatusGlobal == 0){
@@ -264,6 +282,24 @@ function deleteRequestedDoc(){
  }
  </script> 
  
+ <script>
+ function acceptRequestedDocs(candidateId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var documentsIds = [];
+ 	 $("input[name='documents[]']:checked").each( function (i) {
+ 		 documentsIds[i] = $(this).val();
+ 	});
+ 	 
+	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/acceptRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&documentsIds="+documentsIds, 
+	        success: function(result) {
+	        	candidateDocuments(candidateId);
+	        },
+	    });
+ }
+ </script>
+ 
  
 <script>
 function cancelDocumentRejectedReason(){
@@ -306,8 +342,8 @@ function candidateDocumentsList(candidateId){
 function documentsPagination(){  
     $('#candidateDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
@@ -953,7 +989,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
 	 	 
        $("#submit_rejectedReason").attr("disabled", "disabled");
        $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
- /* 	   $.ajax({
+  	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/rejectRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&documentsIds="+documentsIds, 
 	        success: function(result) {
@@ -961,7 +997,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
 	        	$("#docsrejectedLoading").removeAttr("style"); 
 	        	candidateDocuments(rejectedDocsCandidateId);
 	        },
-	    });  */  
+	    });    
       return true; 
     }
     else{
