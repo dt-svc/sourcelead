@@ -160,6 +160,9 @@ public class AddElkCandidate{
 					candidateIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
 					 	
 					candidateIndex.setSkillsName(rs.getString("SKILLS_NAME"));
+					if(rs.getString("VISA_TYPE") !=null){
+						candidateIndex.setVisaType(rs.getString("VISA_TYPE").split(","));
+					}
 
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 				    if (createdDateTimestamp != null){
