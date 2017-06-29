@@ -29,6 +29,11 @@ $(document).ready(function(){
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
 <section class="content-wraper">
     <section class="content-header clearfix">
+    <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Receivables</h2>
       </div>
@@ -1377,5 +1382,10 @@ function cancelExport(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	
+	 
+</script> 
  <jsp:include page="../masterFooter.jsp" />	
