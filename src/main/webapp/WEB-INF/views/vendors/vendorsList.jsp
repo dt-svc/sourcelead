@@ -530,13 +530,14 @@ function clearSearch(){
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	var anyKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
 		            select.append(option);
@@ -552,13 +553,14 @@ function clearSearch(){
 		  //Adding Customized Any Of Keyword to the list
 		    var selectone, chosenone;
 		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var allKeyword = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e1); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(allKeyword).text(allKeyword);
 		            selectone.append(option);
@@ -574,13 +576,14 @@ function clearSearch(){
 		    
 		    var selecttwo, chosentwo;
 		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
+		    chosentwo.search_field.on('keydown keyup', function(e2)
 		    {
 		    	var excludeKeyword = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e2) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e2); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
 		            selecttwo.append(option);
@@ -601,13 +604,14 @@ function clearSearch(){
 		    
 		    var selectthree, chosenthree;
 		    selectthree = $("#orgNameAdvanced");
-		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Vendor Name:' });
+		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Vendor Name:' });
 		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keyup', function(e3)
+		    chosenthree.search_field.on('keydown keyup', function(e3)
 		    {
 		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        if (tagItBykeyForSkills(e3) && (desg != null  && desg != '' && desg != 'undefined'))
 		        {
+		        	preventTabkey(e3); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(desg).text(desg);
 		            selectthree.append(option);
@@ -624,13 +628,14 @@ function clearSearch(){
 		   // This is for Created By 
 		    var selectcreatedByAdvanced, chosencreatedByAdvanced;
 		    selectcreatedByAdvanced = $("#createdByAdvanced");
-		    selectcreatedByAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Document Type:' });
+		    selectcreatedByAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:' });
 		    chosencreatedByAdvanced = selectcreatedByAdvanced.data('chosen');
-		    chosencreatedByAdvanced.search_field.on('keyup', function(e3)
+		    chosencreatedByAdvanced.search_field.on('keydown keyup', function(e4)
 		    {
 		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        if (tagItBykeyForSkills(e4) && (desg != null  && desg != '' && desg != 'undefined'))
 		        {
+		        	preventTabkey(e4); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(desg).text(desg);
 		            selectcreatedByAdvanced.append(option);
@@ -1748,9 +1753,9 @@ function getVendorDashboardName(vendorDashboardName){
 		 '</sec:authorize>';
 		 
 		 // vendors notes list
-		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
+		
 		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes List</a></li>';
-		 '</sec:authorize>';
+		
 
 
 		result = result + '<div class="clearfix"></div>'

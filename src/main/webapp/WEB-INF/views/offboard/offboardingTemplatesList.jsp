@@ -31,7 +31,7 @@
             </div>
 			
 			    <div class="clients_wrap_table datatable_scroll">
-				    <div id="offboardingTemplatesList"></div>
+				    <div id="offboardingTemplatesList" class="datatable_filter"></div>
 				</div>	   
 					
 			</div>
@@ -114,8 +114,8 @@ function offboardingPagenation(){
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

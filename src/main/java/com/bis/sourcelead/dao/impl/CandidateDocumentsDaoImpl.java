@@ -66,7 +66,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (candidateDocuments != null) {
-				session.save(candidateDocuments);
+				session.saveOrUpdate(candidateDocuments);
 			}
 			logger.debug("CandidateDocuments Stored Successfully");
 		} catch (Exception exception) {

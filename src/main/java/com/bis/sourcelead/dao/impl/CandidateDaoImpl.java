@@ -617,7 +617,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId, String candidateType) {
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId, String candidateType) {
 		
 		logger.debug("..getCandidatesCount() Method Started..");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -630,8 +630,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 			
 		
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "
+				+ " and (candidate.consultantUser IS NULL OR candidate.consultantUser.id <> :userId) "+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
