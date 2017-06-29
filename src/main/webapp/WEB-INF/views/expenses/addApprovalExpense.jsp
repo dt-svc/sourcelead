@@ -45,7 +45,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" id="expensePurpose" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
@@ -493,7 +493,11 @@ function getClientBasedOnSelectedProject(){
 					  var projectStartDate = json.startDateStr;
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }		
+		    	  }	
+		    	  $('#expensePurpose').val('');
+		    	  $('#projectStartDateExpensesId').val('');
+		    	  $('#projectEndDateExpensesId').val('');
+		    	    
 	    	   }
 	       },
 	});
