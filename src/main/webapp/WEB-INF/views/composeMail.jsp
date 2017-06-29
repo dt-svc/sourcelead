@@ -80,7 +80,7 @@ display: none;
                   
                    <div class="modal-body mail-body clearfix">
                     <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
-                     <div id="userList"></div>
+                     <div id="userList" class="datatable_filter"></div>
                     </div>
                   </div> 
                   
@@ -528,9 +528,14 @@ function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": ""
      	}

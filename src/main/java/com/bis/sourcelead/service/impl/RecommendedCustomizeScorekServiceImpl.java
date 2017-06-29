@@ -88,12 +88,22 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 			res.setCustomizeNoticeperiod(requirement.getNoticePeriod());	
 		}
 		
+		if(null != requirement.getVisaType()){
+			res.setCustomizeVisatype(requirement.getVisaType());
+		}
+		if(null != requirement.getEducation()){
+			res.setCustomizeEducation(requirement.getEducation());
+		}
+		
 		res.setCustomizeSkillScore(Constants.SCORE_20);
-		res.setCustomizeRateScore(Constants.SCORE_20);
-		res.setCustomizeExperienceScore(Constants.SCORE_20);
+		res.setCustomizeRateScore(Constants.SCORE_10);
+		res.setCustomizeExperienceScore(Constants.SCORE_10);
 		res.setCustomizeLocationScore(Constants.SCORE_10);
 		res.setCustomizeNoticeperiodScore(Constants.SCORE_10);
 		res.setCustomizeKeywordsScore(Constants.SCORE_20);
+		res.setCustomizeVisatypecore(Constants.SCORE_10);
+		res.setCustomizeEducationScore(Constants.SCORE_10);
+		
 		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
 		}

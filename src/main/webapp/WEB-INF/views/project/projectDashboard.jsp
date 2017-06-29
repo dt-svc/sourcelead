@@ -444,7 +444,7 @@ $(document).ready(function() {
 		  	result = result + '<p> "hi" </p>';
 		  	result = result + '</div>';
 		  	
-		  	result = result + '<div id="tab-3" class="project_tabs_inn">';
+		  	result = result + '<div id="tab-3" class="project_tabs_inn datatable_filter">';
 		  	result = result + '</div>';
 		  	
 		  	result = result + '</div>'; 

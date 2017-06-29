@@ -219,10 +219,10 @@ public class AssociatesRestController {
 			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
 			if(null != candidate.getOrgRelationId()){
 				candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
-				if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 					candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
 				}
-				if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				if(candidate.getOrgRelationId().getLocationId().getId().equals(orgLocations.getId())){
 					candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
 				}
 				
@@ -252,6 +252,20 @@ public class AssociatesRestController {
 				}
 			}
 			candidate.setAllAndCandidateSkills(lhs);
+			
+			
+			LinkedHashSet<String> lhs1 = new LinkedHashSet<String>();
+			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+			for(LookUpData lookUpData :visaList){
+				lhs1.add(lookUpData.getName());
+			}
+			if(null != candidate.getVisaType() && StringUtils.isNotEmpty(candidate.getVisaType())){
+				String [] csl = candidate.getVisaType().split(",");
+				for(String sl : csl){
+					lhs1.add(sl);
+				}
+			}
+			candidate.setAllAndCandidateVisa(lhs1);
 			
 			
 			LinkedHashSet<String> eduList = new LinkedHashSet<String>();

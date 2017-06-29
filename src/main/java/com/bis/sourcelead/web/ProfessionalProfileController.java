@@ -59,7 +59,7 @@ public class ProfessionalProfileController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
+	/* @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")*/
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
 		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -107,7 +107,8 @@ public class ProfessionalProfileController {
 		public String getProfessionalInfo(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
+		        Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		        //Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
 		        	if(null != candidate.getConsultantUser().getLastName()){

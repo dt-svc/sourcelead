@@ -301,21 +301,35 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 
-	private Candidate getCandidateDetails(User user, OrgLocations orgLocations,MasterCandidate masterCandidate) {
-		Candidate candidate = new Candidate();
-		candidate.setConsultantUser(user);
-		candidate.setMasterCandidateId(masterCandidate);
-		candidate.setOrgLocationId(orgLocations);
-		candidate.setCandidateType(Constants.CANDIDATE);
-		candidate.setFirstName(user.getFirstName());
-		candidate.setLastName(user.getLastName());
-		candidate.setCountry(orgLocations.getCountry());
-		candidate.setEmail(user.getEmail());
-		candidate.setIsAssociate(Constants.NO);
-		candidate.setStatus(Constants.RECORD_ACTIVE);
-		candidate.setCreatedBy(user.getUserCode());
-		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		candidate.setCreatedDate(commonUtil.currentDate());
+	private Candidate getCandidateDetails(User user, OrgLocations orgLocations,MasterCandidate masterCandidate){
+		
+		Candidate candidate = null;
+		try {
+			candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(candidate == null){
+			candidate = new Candidate();
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setOrgLocationId(orgLocations);
+			candidate.setCandidateType(Constants.CANDIDATE);
+			candidate.setFirstName(user.getFirstName());
+			candidate.setLastName(user.getLastName());
+			candidate.setCountry(orgLocations.getCountry());
+			candidate.setEmail(user.getEmail());
+			candidate.setIsAssociate(Constants.NO);
+			candidate.setStatus(Constants.RECORD_ACTIVE);
+			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setCreatedDate(commonUtil.currentDate());
+		}else{
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+		}
+		
 		return candidate;
 	}
 	
