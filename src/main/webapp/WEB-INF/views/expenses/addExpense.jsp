@@ -77,7 +77,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
