@@ -247,13 +247,31 @@ public class InvoiceRestController {
 		}
 
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org,currencyCode);
+		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
+		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Invoice");
+		 
+		}
+		if(invoiceType.equals("payable") && saveType.equals("SENT")){
+			 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Invoice");
+			 
+			}
+		if(invoiceType.equals("Receivable") && saveType.equals("DRAFT"))
+		{
+			
+			 SourceLeadSessionManager.setSessionAttribute(request, "invoiceCreateMsg", "Successfully you have created a Invoice");	
+		}
+		
+		if(invoiceType.equals("Receivable") && saveType.equals("SENT")){
+			 SourceLeadSessionManager.setSessionAttribute(request, "invoiceCreateMsg", "Successfully you have sent a Invoice");
+			 
+			}
 		if(null !=invoice){
 			if(null != invoice.getProjectID()){
 				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency(),invoiceType);
 			}
 			invoiceSaved = "success";
 		}
-		return invoiceSaved;
+		return invoiceSaved;	
 	} 
 	
 	@RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
@@ -1016,7 +1034,7 @@ public class InvoiceRestController {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		}
 	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
@@ -1103,7 +1121,7 @@ public class InvoiceRestController {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), loginOrgLocation, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,  invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		}
 	
 	/**
