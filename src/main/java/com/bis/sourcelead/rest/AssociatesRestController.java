@@ -219,10 +219,10 @@ public class AssociatesRestController {
 			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
 			if(null != candidate.getOrgRelationId()){
 				candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
-				if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 					candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
 				}
-				if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				if(candidate.getOrgRelationId().getLocationId().getId().equals(orgLocations.getId())){
 					candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
 				}
 				

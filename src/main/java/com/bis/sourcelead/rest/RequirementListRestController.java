@@ -1611,7 +1611,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		    		 //calling the sendEmail method of emailScenerioUtil
 		    		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		    		 String actionLink="";
-		    		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContact, loginOrgLocation, notificationScenario);
+		    		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContact, releasedRequirement.getSpocId().getVendorLocationId(), notificationScenario);
 
         		}
         	}

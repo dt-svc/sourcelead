@@ -29,6 +29,11 @@ font-size: 13px; width: 75px;
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
 <section class="content-wraper">
     <section class="content-header clearfix">
+     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Payables</h2>
       </div>
@@ -1406,5 +1411,10 @@ function generateAutomaticInvoice(){
     });  
 }
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	
+	 
+</script> 
  <jsp:include page="../masterFooter.jsp" />	
