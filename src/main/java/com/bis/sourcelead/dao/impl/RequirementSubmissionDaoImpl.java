@@ -1482,7 +1482,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}else if("requestSent".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
-				 
+				else if("REJECTED".equalsIgnoreCase(status)){
+					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				
@@ -1493,6 +1495,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
+				else if("REJECTED".equalsIgnoreCase(status)){
+					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  reqSub.requirement.managerUserId.id  =:userId and "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
