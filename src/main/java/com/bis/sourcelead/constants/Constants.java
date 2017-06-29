@@ -631,5 +631,7 @@ public class Constants {
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
     public static final String PERCENTAGE = "percentage";
+    
+    public static final String OOOEXECUTABLE_FOLDER = "C:/Program Files (x86)/OpenOffice 4/program/";
      
 }
