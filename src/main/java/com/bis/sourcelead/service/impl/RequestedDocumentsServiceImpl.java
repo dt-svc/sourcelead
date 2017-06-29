@@ -172,10 +172,10 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			 userName = sb.append(user.getFirstName()).toString();
 		 }
 		 
-		 if(!isNullOrEmpty(candidate.getConsultantUser().getLastName())){
-			 candidateName = sb.append(candidate.getConsultantUser().getFirstName()).append(" ").append(candidate.getConsultantUser().getLastName()).toString();
+		 if(!isNullOrEmpty(candidate.getLastName())){
+			 candidateName = sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
 		 }else{
-			 candidateName = sb.append(candidate.getConsultantUser().getFirstName()).toString();
+			 candidateName = sb.append(candidate.getFirstName()).toString();
 		 }
 		 
 		 emailMessage.setToEmail(candidate.getEmail());
