@@ -673,7 +673,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 					
 					if(null  != candidateIndex.getVisaType()){
-						String[] visa = candidateIndex.getVisaType().split(",");
+						String[] visa = candidateIndex.getVisaType();
 						Set<String> set = new HashSet<String>(Arrays.asList(visa));
 						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType);
 					}
