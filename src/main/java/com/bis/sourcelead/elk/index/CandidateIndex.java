@@ -8,6 +8,10 @@ public class CandidateIndex implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long candidateId;
+	
+	private Long userId;
+	
+	private Long masterCandidateId;
 
 	private Long orgLocationId;
 
@@ -771,6 +775,26 @@ public class CandidateIndex implements Serializable {
 
 	public void setVisaType(String[] visaType) {
 		this.visaType = visaType;
+	}
+
+	public Long getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
+	}
+
+	public Long getMasterCandidateId()
+	{
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId)
+	{
+		this.masterCandidateId = masterCandidateId;
 	}
 
 	
