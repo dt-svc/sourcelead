@@ -94,6 +94,12 @@
 	</div>
 </div>
 <div class="expensHead">
+<div class="form-group">
+<span class="col-md-3">Expenses Amount Total:</span>
+<div class="col-md-9">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+</div>
+</div>
 	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
