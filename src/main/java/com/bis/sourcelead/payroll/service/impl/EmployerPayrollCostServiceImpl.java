@@ -2,26 +2,26 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.LocalDate;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +29,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UsersImport;
-import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.FinalPayrollReport;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
+import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.ConversionUtil;
-import com.mysql.fabric.xmlrpc.base.Array;
 
 @Service
 public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostService {
@@ -49,6 +52,12 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 
 	@Override
 	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
@@ -211,5 +220,89 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	@Override
 	public List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation) throws Exception {
 		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation);
+	}
+
+	@Override
+	public List<FinalPayrollReport> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception {
+		
+		List<FinalPayrollReport> finalReportList  = new ArrayList<>();
+		if(jsonObj.has("payrollCycle")){
+			Date[] dates = null;
+			String payrollCycle = jsonObj.getString("payrollCycle");
+			String[] cycle = payrollCycle.split("_");
+			if(cycle.length >1){
+				dates = get15thToEndDateOfMonth(Integer.parseInt(cycle[0]));
+			}else{
+				 dates = get1to15thDateOfMonth(Integer.parseInt(cycle[0]));
+			}
+			Date startDate = dates[0];
+			Date endDate = dates[1];
+			List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectsByOrgLocationId(orgLocation.getId());
+			if(projectMembersList !=null && projectMembersList.size() >0){
+				for(ProjectMembers pm:projectMembersList){
+					FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
+					StringBuilder sb = new StringBuilder();
+					double amount = 0;
+					double finalAmount = 0;
+					Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
+					finalPayrollReport.setEmpId(pm.getEmployee().getEmployeeId());
+					if(pm.getEmployee().getUser().getLastName() !=null){
+						sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
+					}else{
+						sb.append(pm.getEmployee().getUser().getFirstName());
+					}
+					finalPayrollReport.setName(sb.toString());
+					finalPayrollReport.setTotalMarchHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)));
+					finalPayrollReport.setHalfHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)/2));
+					if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
+						finalPayrollReport.setPayRate(pm.getEmployee().getRate());
+						 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS)/2,pm);
+						 finalAmount = amount;
+					}
+					finalPayrollReport.setAmount(amount);
+					finalPayrollReport.setFinalAmount(finalAmount);
+					finalReportList.add(finalPayrollReport);
+				}
+				
+			}
+		}
+		return finalReportList;
+	}
+
+	private double getAmount(float halgHours, ProjectMembers pm) {
+		double amount = 0;
+		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
+			float rate = Float.parseFloat(pm.getEmployee().getRate());
+			amount = halgHours*rate;
+		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
+			float rate = Float.parseFloat(pm.getEmployee().getRate());
+			amount = rate/2;
+		}
+		return amount;
+	}
+
+	private Date[] get15thToEndDateOfMonth(int month) {
+		Date[] dates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.MONTH, month-1);
+		cal.set(Calendar.DATE, 15);
+		cal.set(Calendar.DATE, cal.get(Calendar.DAY_OF_MONTH));
+		dates[0] = cal.getTime();
+		cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		dates[1] = cal.getTime();
+		return dates;
+	}
+
+	private Date[] get1to15thDateOfMonth(int month) {
+		Date[] dates = new Date[2];
+		Calendar calendar = Calendar.getInstance(); 
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.DATE, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+		dates[0] = calendar.getTime();
+		calendar.set(Calendar.DATE, calendar.get(Calendar.DAY_OF_MONTH));
+		calendar.add(Calendar.DAY_OF_MONTH,14);
+		dates[1] = calendar.getTime();
+		return dates;
+			
 	}
 }

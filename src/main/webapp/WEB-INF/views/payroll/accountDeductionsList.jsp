@@ -89,8 +89,10 @@ function accountDeductionsList(){
 						result = result + ' </table>';
 						$("#employerCostDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
-						$("#hrDeductionsListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
+						$("#hrDeductionsListDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
+						$("#finalPayrollReportDiv").empty();
 						$("#accountDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
 						accountDeductionsListTablePagination();

@@ -1420,7 +1420,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 */
 	private void updateSubmissionApproverHierachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency, String invoiceType) throws Exception
 	{
-		if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
+		
+		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
+			for(String id :submissionApproverHierarchyIds){
+				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
+				}
+			}
+		}
+		/*if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
 			for (String id : submissionApproverHierarchyIds) {
 				SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
 				if (Constants.PAYABLES.equalsIgnoreCase(invoiceType)) {
@@ -1431,7 +1439,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				}
 				submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 			}
-		}
+		}*/
 	}
 	
 	/**

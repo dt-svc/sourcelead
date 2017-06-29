@@ -35,6 +35,8 @@ window.onload = function () {
 			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a onclick="hrDeductionsList();">HR Deductions</a></li>
+			<li title="Paylist"><a onclick="runPayrollCycles();">Run Payroll</a></li>
+			<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 		</ul>
 		<div class="clearfix"></div>
 	</section>
@@ -99,10 +101,10 @@ window.onload = function () {
                   
                   <!-- <ul class="popdiv_two"> -->
                   <li>
-                  <a href="javascript:void(0)" class="bulk_addconpop" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
+                  <a href="javascript:void(0)" class="bulk_addconpop paddingRight" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
-                  <div class="collapse-bulk-adduser col-md-4" id="addbulkDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-bulk-adduser col-md-4" id="addbulkDiv" style='width:400px; right: 20px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                         <div class="col-md-12 mt10">
                           <div class="input-group ratetype" id="uploadBulkFileGroup">
@@ -120,6 +122,48 @@ window.onload = function () {
                     </div>
                     </form:form>
                     </li>
+                    
+                    <!--  Run Payroll Html -->
+<li>
+                  <a href="javascript:void(0)" class="runpayroll paddingRight"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
+                  <!-- Popup Div -->
+                  	<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
+                  <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                    <div class="form-horizontal clearfix">
+                        <div class="col-md-12 mt10 dropdown-select">
+							<select class="form-control" id="payrollCycle" name="payrollCycle"  field-name="PayRoll Cycle"  data-validation="required">
+							<option value="">---Select Payroll Cycle---</option>
+							<option value="2">MAR 15th</option>
+							<option value="3_FIRST">April 1st</option>
+							<option value="3">April 15th</option>
+							<option value="4_FIRST">May 1st</option>
+							<option value="4">May 15th</option>
+							<option value="5_FIRST">June 1st</option>
+							<option value="5">June 15th</option>
+							<option value="6_FIRST">July 1st</option>
+							<option value="6">July 15th</option>
+							<option value="7_FIRST"> Aug 1st</option>
+							<option value="7">Aug 15th</option>
+							<option value="8_FIRST">Sep 1st</option>
+							<option value="8">Sep 15th</option>
+							<option value="9_FIRST">Oct 1st</option>
+							<option value="9">Oct 15th</option>
+							<option value="10_FIRST">Nov 1st</option>
+							<option value="10">Nov 15th</option>
+							<option value="11_FIRST">Dec 1st</option>
+							<option value="11">Dec 15th</option>
+							</select>
+                        </div>
+                      </div>
+                      <div class="clearfix mr mt">
+                        <button type="button" class="btn btn-sm btn-primary pull-right" id="runPayrollCycle" onclick="runPayrollCycles();">Run Payroll</button>
+                      </div>
+                    </div>
+                    </form:form>
+                    </li>
+
+                    <!--  Run Payroll Html Ends -->
+                    
                   </ul>
                   </div>
                   <!-- End -->
@@ -134,14 +178,48 @@ window.onload = function () {
     	<div id="mainloading"></div>
     	<div id="employerCostDiv" class="datatable_filter"></div>
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
-    	<div id="accountDeductionsListDiv" class="datatable_filter"></div>
+    	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
-       
+    	<div id="finalPayrollReportDiv" class="datatable_filter"></div>
 	</div>
 	
  </div>
 </div>
 </section>
+
+
+<script>
+function runPayrollCycles(){
+	if ($('#run_payroll_cycle').validate(false, validationSettings)) { 
+		$('#addPayrollDiv').removeClass("show-div");
+		var payrollCycle = $('#payrollCycle :selected').text();
+	var frm = $('#run_payroll_cycle').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	var jsonData = encodeURIComponent(con);
+	var form = $('#run_payroll_cycle')[0];
+	var formData = new FormData(form);
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+				type : "GET",
+				data : formData,
+				contentType : 'application/json; charset=utf-8',
+				enctype : 'multipart/form-data',
+				processData : false,
+				contentType : false,
+				dataType : 'json',
+				url : sourceleadUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+				success : function(result) {
+					generatrPayroll(result,payrollCycle);
+					$("#loading").removeAttr("style");
+				},
+			});
+	
+	}  
+}
+
+</script>
 
 <script>
 function flushValues(){
@@ -225,6 +303,8 @@ function loadEmployeePayrollCost(){
 						$("#wagesAndTaxListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
+						$("#finalPayrollReportDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
 						employeePayrollCostPagination();
@@ -284,10 +364,19 @@ function employeePayrollCostPagination(){
 $(".bulk_addconpop").click(function() {
 	$(".collapse-bulk-adduser").toggleClass("show-div");
 	$(".collapse-div-adduser").removeClass("show-div");
+	$(".runpayroll_div").removeClass("show-div");
+	$(".collapse-div").removeClass("show-div");
+});
+//Run Payroll script
+$(".runpayroll").click(function() {
+	$(".runpayroll_div").toggleClass("show-div");
+	$(".collapse-bulk-adduser").removeClass("show-div");
+	$(".collapse-div-adduser").removeClass("show-div");
 	$(".collapse-div").removeClass("show-div");
 });
 $(".addcon-pop").click(function() {
 	$(".collapse-div-adduser").toggleClass("show-div");
+	$(".runpayroll_div").removeClass("show-div");
 	$(".collapse-bulk-adduser").removeClass("show-div");
 	$(".collapse-div").removeClass("show-div");
 });
@@ -480,8 +569,9 @@ $("ul#parentUl").on("click","li", function(){
 	}
 </script> 
 
+
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />
 <jsp:include page="hrDeductionsList.jsp" />
-
+<jsp:include page="finalPayrollReport.jsp" />
 <jsp:include page="../masterFooter.jsp" />

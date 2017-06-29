@@ -670,6 +670,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	{
 		return projectMembersDao.getTotalHours(projectMemberId, startDate, endDate);
 	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
+		return projectMembersDao.getAllProjectsByOrgLocationId(orglocationId);
+	}
 	
 
 }

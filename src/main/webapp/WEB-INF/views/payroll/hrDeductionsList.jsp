@@ -91,6 +91,8 @@ function hrDeductionsList(){
 						$("#wagesAndTaxListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
+						$("#finalPayrollReportDiv").empty();
 						$("#hrDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
 						hrDeductionsListTablePagination();
