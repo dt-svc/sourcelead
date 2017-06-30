@@ -35,7 +35,7 @@ window.onload = function () {
 			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a onclick="hrDeductionsList();">HR Deductions</a></li>
-			<li title="Paylist"><a onclick="runPayrollCycles();">Run Payroll</a></li>
+			<li title="Paylist"><a onclick="runPayrollCycles('main');">Run Payroll</a></li>
 			<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 		</ul>
 		<div class="clearfix"></div>
@@ -128,10 +128,10 @@ window.onload = function () {
                   <a href="javascript:void(0)" class="runpayroll paddingRight"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
                   <!-- Popup Div -->
                   	<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
-                  <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                  <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div" onClick="flushPayrollCycle();"></i>
                     <div class="form-horizontal clearfix">
-                        <div class="col-md-12 mt10 dropdown-select">
-							<select class="form-control" id="payrollCycle" name="payrollCycle"  field-name="PayRoll Cycle"  data-validation="required">
+                        <div class="col-md-12 mt10 dropdown-select" id="payrollCycleDiv">
+							<select class="chosen-select" id="payrollCycle" name="payrollCycle"  field-name="Payroll Cycle"  data-validation="required">
 							<option value="">---Select Payroll Cycle---</option>
 							<option value="2">MAR 15th</option>
 							<option value="3_FIRST">April 1st</option>
@@ -180,7 +180,7 @@ window.onload = function () {
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
     	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
-    	<div id="finalPayrollReportDiv" class="datatable_filter"></div>
+    	<div id="finalPayrollReportDiv" class="repoPositiAs repoPositiRunPay"></div>
 	</div>
 	
  </div>
@@ -190,34 +190,54 @@ window.onload = function () {
 
 
 <script>
-function runPayrollCycles(){
-	if ($('#run_payroll_cycle').validate(false, validationSettings)) { 
-		$('#addPayrollDiv').removeClass("show-div");
-		var payrollCycle = $('#payrollCycle :selected').text();
-	var frm = $('#run_payroll_cycle').serializeFormJSON();
-	var con = JSON.stringify(frm);
-	con = con.replace(/[{}]/g, "");
-	var jsonData = encodeURIComponent(con);
-	var form = $('#run_payroll_cycle')[0];
-	var formData = new FormData(form);
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-				type : "GET",
-				data : formData,
-				contentType : 'application/json; charset=utf-8',
-				enctype : 'multipart/form-data',
-				processData : false,
-				contentType : false,
-				dataType : 'json',
-				url : sourceleadUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-				success : function(result) {
-					generatrPayroll(result,payrollCycle);
-					$("#loading").removeAttr("style");
-				},
-			});
-	
-	}  
+function runPayrollCycles(type){
+	var payrollValue = $('#payrollCycle').val();
+	if(type != "main" || (payrollValue != "" && payrollValue != 'undefined' && payrollValue != null)){
+		if ($('#run_payroll_cycle').validate(false, validationSettings)) { 
+			$('#addPayrollDiv').removeClass("show-div");
+			var payrollCycle = $('#payrollCycle :selected').text();
+		var frm = $('#run_payroll_cycle').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var form = $('#run_payroll_cycle')[0];
+		var formData = new FormData(form);
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "GET",
+					data : formData,
+					contentType : 'application/json; charset=utf-8',
+					enctype : 'multipart/form-data',
+					processData : false,
+					contentType : false,
+					dataType : 'json',
+					url : sourceleadUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+						generatrPayroll(result,payrollCycle);
+						$("#loading").removeAttr("style");
+					},
+				});
+		
+		} 
+	}else if(type == "main"){
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Please Select Payroll Cycle</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input class='width100percnt' id='confirm-id' type='button' value='Ok' onclick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	 
+}
+
+function flushPayrollCycle(){
+	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle :selected').text("---Select Payroll Cycle---");
 }
 
 </script>
@@ -582,7 +602,7 @@ function showAlertMessage(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Upload Correct file</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input class='width100percnt' id='confirm-id' type='button' value='Ok' onclick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
