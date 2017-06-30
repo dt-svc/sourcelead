@@ -448,7 +448,7 @@ function getAmountValue(rowId){
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
 	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
-		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded then Allocated-(Allocated Amount:"+amountArray[1]+")");
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
 	}else{
 		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
 	}
@@ -467,7 +467,7 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
 	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
-		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded then Allocated-(Allocated Amount:"+amountArray[1]+")");
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
 	}else{
 		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
 	}
