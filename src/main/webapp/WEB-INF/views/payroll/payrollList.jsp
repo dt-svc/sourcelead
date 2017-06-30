@@ -125,7 +125,7 @@ window.onload = function () {
                     
                     <!--  Run Payroll Html -->
 <li>
-                  <a href="javascript:void(0)" class="runpayroll paddingRight"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
+                  <a href="javascript:void(0)" class="runpayroll paddingRight" onclick="flushPayrollCycle();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
                   <!-- Popup Div -->
                   	<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
                   <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div" onClick="flushPayrollCycle();"></i>
@@ -237,7 +237,7 @@ function runPayrollCycles(type){
 
 function flushPayrollCycle(){
 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
-	$('#payrollCycle :selected').text("---Select Payroll Cycle---");
+	$('#payrollCycle').val('').trigger("chosen:updated");
 }
 
 </script>

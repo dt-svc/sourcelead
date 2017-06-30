@@ -57,7 +57,7 @@ function generatrPayroll(data,payrollCycle){
 							result = result + ' <td><div>--</div></td>';
 						}
 						if(opt.amount !=null && opt.checkDateStr !='' && opt.amount !='undefined'){
-							result = result + '<td><div class="tblminwidth-50">'+opt.amount+'</div></td>';
+							result = result + '<td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-125 text-right">'+opt.amount+'</div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
