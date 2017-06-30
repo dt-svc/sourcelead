@@ -828,7 +828,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
  		 cell3.setCellStyle(style);
  		 
  		 Cell cell4 = writeRow.createCell(1);
- 		 cell4.setCellValue(org.getOrgName());
+ 		 cell4.setCellValue(loginOrgLocation.getOrgLocationName());
  		 cell4.setCellStyle(style);
  		 
  		 writeRow = createExcelsheet.createRow(3);
@@ -1049,7 +1049,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 globalVarsMap.put("clientLastName",emailMessage.getLastName());
 		 globalVarsMap.put("loginUser", emailMessage.getFromName());
 		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
-		 globalVarsMap.put("loginOrgName",org.getOrgName());
+		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 		 globalVarsMap.put("LoginUser",fullName);
 		 globalVarsMap.put("totalNoOfApplicants", String.valueOf(submissionId.length));
 		 
@@ -1729,7 +1729,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	 Workbook createExcelworkbook =  new XSSFWorkbook();
    	 Row writeRow = null;
    	DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy"); 
-   	Sheet createExcelsheet = createSubmissionTracker(org,fullName,submissionId,requirementName,createExcelworkbook,writeRow,dateFormat);
+   	Sheet createExcelsheet = createSubmissionTracker(org,fullName,submissionId,requirementName,createExcelworkbook,writeRow,dateFormat,loginOrgLocation);
    	 for(int i=0; i < submissionId.length; i++){
    		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
    		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
@@ -2200,7 +2200,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
  * @throws NumberFormatException
  * @throws Exception
  */
-	private Sheet createSubmissionTracker(Org org, String fullName, String[] submissionIds, String requirementName, Workbook createExcelworkbook, Row writeRow, DateFormat dateFormat) throws NumberFormatException, Exception {
+	private Sheet createSubmissionTracker(Org org, String fullName, String[] submissionIds, String requirementName, Workbook createExcelworkbook, Row writeRow, DateFormat dateFormat,OrgLocations loginOrgLocation) throws NumberFormatException, Exception {
 		StringBuilder sb = new StringBuilder(); 
 		Sheet createExcelsheet = createExcelworkbook.createSheet(sb.append("submissions ").append(dateFormat.format(new Date())).toString());
 		 
@@ -2233,7 +2233,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 cell3.setCellStyle(style);
 		 
 		 Cell cell4 = writeRow.createCell(1);
-		 cell4.setCellValue(org.getOrgName());
+		 cell4.setCellValue(loginOrgLocation.getOrgLocationName());
 		 cell4.setCellStyle(style);
 		 
 		 writeRow = createExcelsheet.createRow(3);
@@ -2418,8 +2418,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("candidateName",requirementSubmissionTemplateFields.getFirstName());
 			 }
-		 if(loginOrg.getOrgName() != null && !"".equalsIgnoreCase(loginOrg.getOrgName())){
-			 globalVarsMap.put("loginOrgName", loginOrg.getOrgName());
+		 if(orgLocations.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
+			 globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
 			 }else{
 				 globalVarsMap.put("loginOrgName","--");
 			 }
@@ -2824,8 +2824,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("LoginUser",loginUser.getFirstName());
 		 }
 		 
-		 if(loginOrg.getOrgName()!= null && !"".equalsIgnoreCase(loginOrg.getOrgName())){
-			 globalVarsMap.put("LoginOrg",loginOrg.getOrgName());
+		 if(loginOrgLocation.getOrgLocationName()!= null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())){
+			 globalVarsMap.put("LoginOrg",loginOrgLocation.getOrgLocationName());
 		 }else{
 			 globalVarsMap.put("LoginOrg","--");
 		 }
@@ -2984,8 +2984,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("candidateName",requirementSubmissionTemplateFields.getFirstName());
 			 }
-		 if(loginOrg.getOrgName() != null && !"".equalsIgnoreCase(loginOrg.getOrgName())){
-			 globalVarsMap.put("loginOrgName", loginOrg.getOrgName());
+		 if(orgLocations.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
+			 globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
 			 }else{
 				 globalVarsMap.put("loginOrgName","--");
 			 }
@@ -3158,8 +3158,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 }else{
 					 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 				 }
-			 if(null != loginOrg.getOrgName() && !"".equalsIgnoreCase(loginOrg.getOrgName())){
-				 globalVarsMap.put("clientOrg", loginOrg.getOrgName());
+			 if(null != loginOrgLocation.getOrgLocationName() && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())){
+				 globalVarsMap.put("clientOrg", loginOrgLocation.getOrgLocationName());
 				 }else{
 					 globalVarsMap.put("clientOrg","--");
 				 }
@@ -3198,8 +3198,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 }else{
 					 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 				 }
-			 if(null != loginOrg.getOrgName() && !"".equalsIgnoreCase(loginOrg.getOrgName())){
-				 globalVarsMap.put("loginOrg", loginOrg.getOrgName());
+			 if(null != loginOrg.getOrgName() && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())){
+				 globalVarsMap.put("loginOrg", loginOrgLocation.getOrgLocationName());
 				 }else{
 					 globalVarsMap.put("loginOrg","--");
 				 }

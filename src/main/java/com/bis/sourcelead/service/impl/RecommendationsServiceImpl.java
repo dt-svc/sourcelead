@@ -454,8 +454,15 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		String candidateScore = null; 
 		if(null != recommendedCustomizeScore && null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
-		     String visaType = recommendedCustomizeScore.getCustomizeVisatype();
-		     String education  = recommendedCustomizeScore.getCustomizeEducation();
+		     String visaType = null;
+		     if(recommendedCustomizeScore.getCustomizeVisatype() !=null){
+		    	  visaType = recommendedCustomizeScore.getCustomizeVisatype();
+		     }
+		     String education = null;
+		    if(recommendedCustomizeScore.getCustomizeEducation() !=null){
+		    	education = recommendedCustomizeScore.getCustomizeEducation();	
+		    }
+		     
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
@@ -463,11 +470,26 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		     }
 		     
 		    	String [] reqMaxSkills = reqSkills.split(",");
-		    	String [] visatype = visaType.split(",");
-		    	String [] educations = education.split(",");
+		    	String [] visatypeArr = null;
+		    	String [] educationsArr = null;
+		    	if(visatypeArr !=null){
+		    		visatypeArr = visaType.split(",");
+    			}
+		    	if(education !=null){
+		    		educationsArr = education.split(",");
+		    	}
+		    	
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
-				float visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatype.length;
-				float educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educations.length; 
+				float visaTypePercentage = 0;
+				float educationPercentage = 0;
+				if(visatypeArr !=null){
+					 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
+				}
+				if(educationsArr !=null){
+					 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationsArr.length;
+				}
+				 
+				
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
@@ -491,7 +513,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
-					if(null  != candidate.getVisaType()){
+					if(candidate.getVisaType() !=null && !"".equalsIgnoreCase(candidate.getVisaType())){
 						String[] visa = candidate.getVisaType().split(",");
 						Set<String> set = new HashSet<String>(Arrays.asList(visa));
 						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType);
@@ -583,8 +605,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
-		     String visaType = recommendedCustomizeScore.getCustomizeVisatype();
-		     String education  = recommendedCustomizeScore.getCustomizeEducation();
+		     String visaType = null;
+		     if(recommendedCustomizeScore.getCustomizeVisatype() != null){
+		    	 visaType = recommendedCustomizeScore.getCustomizeVisatype();
+		     }
+		    
+		     String education = null;
+		     if(recommendedCustomizeScore.getCustomizeEducation() != null){
+		    	 education  = recommendedCustomizeScore.getCustomizeEducation();
+		     }
+		     
+		     
+		     
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
@@ -598,16 +630,21 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				}
 			}
 			
-			String [] visatype = visaType.split(",");
-			if(visatype != null && visatype.length >0){
-				for(String visa : visatype){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
+			String [] visatypeArr = null;
+			if(visaType != null){
+				visatypeArr = visaType.split(",");
+				if(visatypeArr != null && visatypeArr.length >0){
+					for(String visa : visatypeArr){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
+					}
 				}
 			}
 			
-			String [] Education = education.split(",");
-			if(Education != null && Education.length >0){
-				for(String edu : Education){
+			
+			String [] educationArr = null;
+			if(education != null){
+				educationArr = education.split(",");
+				for(String edu : educationArr){
 					boolQueryBuilder.should(QueryBuilders.matchQuery("education", edu));
 				}
 			}
@@ -620,8 +657,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
-				float visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatype.length;
-				float educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)Education.length; 
+				float visaTypePercentage = 0;
+				float educationPercentage = 0;
+				if(visatypeArr !=null && visatypeArr.length >0){
+					 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
+				}
+				if(educationArr != null && educationArr.length >0){
+					 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationArr.length; 	
+				}
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
@@ -803,14 +846,17 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType) {
-		if(set != null && set.size() >0){
-			for(String visa : set){
-					if(visaType.contains(visa)){
-						matchedSkillCount++;
-					}
-			}
-		}
-		return matchedSkillCount*visaTypePercentage;
+       if(visaType !=null){
+    	   if(set != null && set.size() >0){
+   			for(String visa : set){
+   					if(visaType.contains(visa)){
+   						matchedSkillCount++;
+   					}
+   			}
+   		}
+   
+       }
+				return matchedSkillCount*visaTypePercentage;
 		
 	}
 	

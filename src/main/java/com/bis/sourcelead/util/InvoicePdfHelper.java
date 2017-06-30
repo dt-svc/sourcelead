@@ -99,7 +99,7 @@ public class InvoicePdfHelper {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		String countryCurrency  = countries.getCurrency();
 		
-		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
+		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + ".pdf");
 		if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
 		//StringBuilder fileSB = new StringBuilder();
 		Document document = new Document();
@@ -110,7 +110,7 @@ public class InvoicePdfHelper {
 			PdfWriter.getInstance(document, os);
 			document.open();
 			// save image file in pdf
-			document = addLogoToPdfFile(document, org);
+			document = addLogoToPdfFile(document, org,orgLocation);
 			Paragraph p;
 			p = new Paragraph("Billing Id :" + invoice.getInvoiceId(), font10);
 			p.setAlignment(Element.ALIGN_RIGHT);
@@ -318,7 +318,7 @@ public class InvoicePdfHelper {
 				PdfWriter.getInstance(document, os);
 				document.open();
 				// save image file in pdf
-				document = addLogoToPdfFile(document, org);
+				document = addLogoToPdfFile(document, org,orgLocation);
 				Paragraph p;
 				p = new Paragraph("Invoice Id :" + invoice.getInvoiceId(), font10);
 				p.setAlignment(Element.ALIGN_RIGHT);
@@ -517,7 +517,7 @@ public class InvoicePdfHelper {
 		return invoiceFile;
 	}
 	
-	private Document addLogoToPdfFile(Document document, Org org) throws MalformedURLException, IOException, DocumentException
+	private Document addLogoToPdfFile(Document document, Org org, OrgLocations orgLocations) throws MalformedURLException, IOException, DocumentException
 	{
 		if (null != org.getDocFile()) {
 			Image image = Image.getInstance(org.getDocFile());
@@ -531,7 +531,7 @@ public class InvoicePdfHelper {
 			document.add(image);
 		}else{
 		Paragraph p;
-		p = new Paragraph("Org Name: " + org.getOrgName(), font12b);
+		p = new Paragraph("Org Name: " + orgLocations.getOrgLocationName(), font12b);
 		p.setAlignment(Element.ALIGN_TOP);
 		document.add(p);
 		}
@@ -793,14 +793,14 @@ public class InvoicePdfHelper {
 		billingArray[0] = "--";
 	}
 	
-	Org org = null;
+	OrgLocations orgLocations = null;
 	if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
-			org = invoice.getOrgRelationID().getLocationId().getOrg();
+		orgLocations = invoice.getOrgRelationID().getLocationId();
 	}else if(invoice.getOrgRelationID().getLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
-			 org = invoice.getOrgRelationID().getResponderLocationId().getOrg();
+		orgLocations = invoice.getOrgRelationID().getResponderLocationId();
 	}
-	if(null != org){
-			billingArray[1] = org.getOrgName();
+	if(null != orgLocations){
+			billingArray[1] = orgLocations.getOrgLocationName();
 	}else{
 			billingArray[1] = "--";
 	}
