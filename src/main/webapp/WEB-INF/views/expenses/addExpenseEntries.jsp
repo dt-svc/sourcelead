@@ -36,38 +36,52 @@
  }
  </style>
 <script>
-function hideAndShowDetailsRow(rowId){
-	var validation_required = "true";
-	var entityId = parseInt(rowId-1);
-	var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
-	if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
-		for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
-		   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
-		   {
-			   $("#"+i+"document"+entityId).removeAttr('style');
-			   validation_required = "false";
-			   
-		   }
+function hideAndShowDetailsRow(rowId,type){
+	if ($('#add_expenses_form').validate(false, validationSettings)){
+		var validation_required = "true";
+		var entityId = parseInt(rowId-1);
+		 var maxRecCount = $("#maxRecCount").val();
+		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
+			 for(var i = 2; i < maxRecCount; i=i+2){
+				 if(rowId != i){
+					 if($("#divEntityTsRow"+i).is(':visible'))
+					   {
+							$("#divEntityTsRow"+i).removeAttr('style');
+							$("#divEntityTsRow"+i).attr('style','display:none');
+					   }
+				 }
+			  } 
+		 }
+		
+		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+		if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
+			   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
+			   {
+				   $("#"+i+"document"+entityId).removeAttr('style');
+				   validation_required = "false";
+				   
+			   }
+			}
+		}
+		if(validation_required == "true"){
+			 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+			 $("#0docFile"+entityId).attr('data-validation','required');
+		}
+		else{
+			$("#0docFile"+entityId).removeAttr('data-validation');
+			 $("#0docFile"+entityId).attr('data-validation-optional','true');
+		}
+		
+		if($("#divEntityTsRow"+rowId).is(':visible'))
+	   {
+			$("#divEntityTsRow"+rowId).removeAttr('style');
+			$("#divEntityTsRow"+rowId).attr('style','display:none;');
+	   }
+		else{
+			$("#divEntityTsRow"+rowId).removeAttr('style');
 		}
 	}
-	if(validation_required == "true"){
-		 $("#0docFile"+entityId).removeAttr('data-validation-optional');
-		 $("#0docFile"+entityId).attr('data-validation','required');
-	}
-	else{
-		$("#0docFile"+entityId).removeAttr('data-validation');
-		 $("#0docFile"+entityId).attr('data-validation-optional','true');
-	}
-	
-	if($("#divEntityTsRow"+rowId).is(':visible'))
-   {
-		$("#divEntityTsRow"+rowId).removeAttr('style');
-		$("#divEntityTsRow"+rowId).attr('style','display:none;');
-   }
-	else{
-		$("#divEntityTsRow"+rowId).removeAttr('style');
-	}
-	
 }
 </script>	
 <script type="text/javascript">
@@ -191,7 +205,7 @@ function addAttachment(entityRowId,from){
 </div>
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
-			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID);"></i></span>
+			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
 			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
@@ -274,7 +288,15 @@ function addAttachment(entityRowId,from){
 <script>
 function addExpenseRow(){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
-		    var maxRecCount = $("#maxRecCount").val();
+		   var maxRecCount = $("#maxRecCount").val();
+		   for(var i = 2; i < maxRecCount; i=i+2){
+			   if($("#divEntityTsRow"+i).is(':visible'))
+			   {
+					$("#divEntityTsRow"+i).removeAttr('style');
+					$("#divEntityTsRow"+i).attr('style','display:none');
+			   }
+		   }
+		 
 			var tbl = document.getElementById("categoryTable");
 			var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
 			$("#maxRecCount").val(parseInt(maxRowNum + 2));
@@ -287,8 +309,6 @@ function addExpenseRow(){
 			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
 			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell0.innerHTML = divRowTd1Str;
-			
-			
 			
 			
 			var cell1 = row.insertCell(1);
@@ -418,7 +438,7 @@ function addExpenseRow(){
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
 			
 			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
-			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+')');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+'),"Edit"');
 			
 			
 			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');

@@ -107,10 +107,10 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 				
 				if(rato.getRequirementId().getClientId() != null){
 					if(rato.getRequirementId().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getResponderLocationId().getOrg().getOrgName());
+						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(rato.getRequirementId().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getLocationId().getOrg().getOrgName());
+						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 				StringBuilder assignUserName = new StringBuilder();

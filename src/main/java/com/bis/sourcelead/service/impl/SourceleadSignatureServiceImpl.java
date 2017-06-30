@@ -291,7 +291,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 		    			 }
 		    		 }
 	    		 }
-	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrg().getOrgName()+"</span></span>"+endem+"</p>");	    	 }
+	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrgLocationName()+"</span></span>"+endem+"</p>");	    	 }
 	    	 
 	    	 if(signature.getLabelName().equalsIgnoreCase("Address") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getOrgAddress())){
 	    		 

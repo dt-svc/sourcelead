@@ -792,7 +792,7 @@ public class UserServiceImpl implements UserService {
 	
 	
 	@Override
-	public void sendEmailToClientOrVendor(String spocUUID,User user,User ownerUser, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
+	public void sendEmailToClientOrVendor(String spocUUID,User user,User ownerUser, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation,OrgLocations orgLocation) throws Exception {
 		 
 		if(null == ownerUser){
 			ownerUser = loginUser;
@@ -812,7 +812,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder emailMsgBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailMsgBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
-		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocationByOrgId(loginOrg.getId());
+		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocations(orgLocation.getId());
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();

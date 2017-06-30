@@ -84,7 +84,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();	
-		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
+		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate candidate left join fetch candidate.consultantUser left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).setCacheable(true).list();
 		logger.info("RequirementSubmission loaded successfully !!!");
 		return submission.get(0);
@@ -1482,7 +1482,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}else if("requestSent".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
-				 
+				else if("REJECTED".equalsIgnoreCase(status)){
+					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				
@@ -1493,6 +1495,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
+				else if("REJECTED".equalsIgnoreCase(status)){
+					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  reqSub.requirement.managerUserId.id  =:userId and "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);

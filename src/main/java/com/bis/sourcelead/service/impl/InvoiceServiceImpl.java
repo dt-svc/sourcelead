@@ -771,7 +771,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
-		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
+		 globalVarsMap.put("orgName",orglocations.getOrgLocationName());
 		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
 		/* StringBuilder acceptBuilder = new StringBuilder();
@@ -834,7 +834,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
 
 
@@ -1420,7 +1420,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 */
 	private void updateSubmissionApproverHierachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency, String invoiceType) throws Exception
 	{
-		if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
+		
+		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
+			for(String id :submissionApproverHierarchyIds){
+				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
+				}
+			}
+		}
+		/*if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
 			for (String id : submissionApproverHierarchyIds) {
 				SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
 				if (Constants.PAYABLES.equalsIgnoreCase(invoiceType)) {
@@ -1431,7 +1439,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				}
 				submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -1448,10 +1456,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			for (OrgRelations orgRelations : vendorAllList) {
 				String orgName = "";
 				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}
 				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName);
 				vendorsList.add(orgRelations);
@@ -1836,10 +1844,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       				Integer overDueInvoiceCount = 0;
       				Integer openInvoiceCount = 0;
       				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-      					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+      					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
       				}
       				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-      					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+      					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
       				}
       				StringBuilder contactName = new StringBuilder();
       				if (null != invoice.getContactUser()) {

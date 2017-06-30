@@ -64,19 +64,19 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 				}
 				if(offers.getSubmissionId().getRequirement().getClientId() != null){
 					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}else{
 					RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(offers.getSubmissionId().getId(),orgLocationsId);
 				    if(requirementSubmission != null){
-				    	requirementOfferHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	requirementOfferHistory.setClientName(requirementSubmission.getOrgLocations().getOrgLocationName());
 				    }else if(offers.getSubmissionId().getSourceSubmission() != null && offers.getSubmissionId().getSourceSubmission().getId() != null){
 				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(offers.getSubmissionId().getSourceSubmission().getId(),orgLocationsId);
 				    	 if(parentRequirementSubmission != null){
-						     requirementOfferHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+						     requirementOfferHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrgLocationName());
 				    	 }
 				    }
 				}
@@ -118,19 +118,19 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 				}
 				if(offers.getSubmissionId().getRequirement().getClientId() != null){
 					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(offers.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						requirementOfferHistory.setClientName(offers.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}else{
 					RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(offers.getSubmissionId().getId());
 				    if(requirementSubmission != null){
-				    	requirementOfferHistory.setClientName(requirementSubmission.getOrgLocations().getOrg().getOrgName());
+				    	requirementOfferHistory.setClientName(requirementSubmission.getOrgLocations().getOrgLocationName());
 				    }else if(offers.getSubmissionId().getSourceSubmission() != null && offers.getSubmissionId().getSourceSubmission().getId() != null){
 				    	RequirementSubmission parentRequirementSubmission = requirementSubmissionService.getRequirementSubmissionById(offers.getSubmissionId().getSourceSubmission().getId());
 				    	 if(parentRequirementSubmission != null){
-						     requirementOfferHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrg().getOrgName());
+						     requirementOfferHistory.setClientName(parentRequirementSubmission.getOrgLocations().getOrgLocationName());
 				    	 }
 				    }
 				}

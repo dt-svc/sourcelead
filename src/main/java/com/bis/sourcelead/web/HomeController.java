@@ -223,13 +223,13 @@ public class HomeController {
 						  OrgLocations vendorLocation = orgLocationService.getOrgLocations(orgSpoc.getVendorLocationId().getId());
 						  OrgLocations clientLocation = orgLocationService.getOrgLocations(orgSpoc.getClientLocationId().getId());
 						  StringBuilder stringBuilder = new StringBuilder();
-						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(clientLocation.getOrg().getOrgName()).append(") ").append("invitation successfully").append(" in ").append(vendorLocation.getOrg().getOrgName());
+						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(clientLocation.getOrgLocationName()).append(") ").append("invitation successfully").append(" in ").append(vendorLocation.getOrgLocationName());
 						  model.addObject("msg", stringBuilder);
 					 }else if(null != orgSpoc.getOwnerUser() && null != orgSpoc.getVendorUser() &&  orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getVendorUser().getId().longValue()){
 						  OrgLocations clinetLocation = orgLocationService.getOrgLocations(orgSpoc.getClientLocationId().getId());
 						  OrgLocations vendorLocation = orgLocationService.getOrgLocations(orgSpoc.getVendorLocationId().getId());
 						  StringBuilder stringBuilder = new StringBuilder();
-						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(vendorLocation.getOrg().getOrgName()).append(") ").append("invitation successfully").append(" in ").append(clinetLocation.getOrg().getOrgName());
+						  stringBuilder.append("You accepted ").append(orgSpoc.getOwnerUser().getFirstName()).append(" (").append(vendorLocation.getOrgLocationName()).append(") ").append("invitation successfully").append(" in ").append(clinetLocation.getOrgLocationName());
 						  model.addObject("msg", stringBuilder);
 					 }
 					 

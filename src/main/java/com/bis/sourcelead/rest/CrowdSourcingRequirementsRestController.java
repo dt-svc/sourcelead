@@ -1043,8 +1043,8 @@ public class CrowdSourcingRequirementsRestController {
 				 }
 				if(null != interviewHistory.getOrgLocationId()){
 					if(null != interviewHistory.getOrgLocationId().getOrg()){
-						if(null != interviewHistory.getOrgLocationId().getOrg().getOrgName()){
-							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrg().getOrgName());
+						if(null != interviewHistory.getOrgLocationId().getOrgLocationName()){
+							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrgLocationName());
 						}
 					}
 				}
@@ -1086,8 +1086,8 @@ public class CrowdSourcingRequirementsRestController {
 	  				 }
 	  				if(null != interviewHistory.getOrgLocationId()){
 	  					if(null != interviewHistory.getOrgLocationId().getOrg()){
-	  						if(null != interviewHistory.getOrgLocationId().getOrg().getOrgName()){
-	  							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrg().getOrgName());
+	  						if(null != interviewHistory.getOrgLocationId().getOrgLocationName()){
+	  							interviewHistory.setCompanyName(interviewHistory.getOrgLocationId().getOrgLocationName());
 	  						}
 	  					}
 	  				}
@@ -1827,7 +1827,7 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementName(rr.getRequirementId().getJobTitle());
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
-						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrg().getOrgName());
+						rr.setRequirementOrgName(rr.getRequirementId().getOrgLocationId().getOrgLocationName());
 						rr.setRequirementJobType(rr.getRequirementId().getJobType());
 						rr.setRequirementCountry(rr.getRequirementId().getCountry());
 						rr.setRequirementState(rr.getRequirementId().getState());
@@ -1857,7 +1857,7 @@ public class CrowdSourcingRequirementsRestController {
 						rs.setRequirementName(rs.getRequirement().getJobTitle());
 						rs.setRequirementJobId(rs.getRequirement().getJobId());
 						rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
-						rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrg().getOrgName());
+						rs.setOrgName(rs.getRequirement().getOrgLocationId().getOrgLocationName());
 						rs.setEmployeeType(rs.getRequirement().getJobType());
 						rs.setCountry(rs.getRequirement().getCountry());
 						rs.setState(rs.getRequirement().getState());

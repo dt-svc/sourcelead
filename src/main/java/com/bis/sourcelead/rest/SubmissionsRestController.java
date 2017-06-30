@@ -375,7 +375,7 @@ public class SubmissionsRestController {
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 			
 			if(requirementSubmission.getVendorLocationId() != null){
-				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 			}
 			
 			if (requirementSubmission.getCreatedDate() != null) {
@@ -447,7 +447,7 @@ public class SubmissionsRestController {
 			}
 			
 			if(requirementSubmission.getVendorLocationId() != null){
-				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+				requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 			}
 	
 			if (requirementSubmission.getCreatedDate() != null) {
