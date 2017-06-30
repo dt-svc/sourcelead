@@ -1753,9 +1753,9 @@ function getVendorDashboardName(vendorDashboardName){
 		 '</sec:authorize>';
 		 
 		 // vendors notes list
-		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
+		
 		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes List</a></li>';
-		 '</sec:authorize>';
+		
 
 
 		result = result + '<div class="clearfix"></div>'

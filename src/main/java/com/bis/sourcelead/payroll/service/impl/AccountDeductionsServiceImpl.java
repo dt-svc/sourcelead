@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AccountDeductionsDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
@@ -48,6 +49,10 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	PayrollHelper payrollHelper;
+	
 	@Override
 	public Integer saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
 		
@@ -69,6 +74,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				int isValid = 0;
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForAccountDeductions(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					
@@ -224,6 +234,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 //							accountDeductionsList.add(accountDeductions);
 						}
 					}
+				}else{
+					return count;
+				}
 				}
 			
 			fis.close();
@@ -235,6 +248,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		
 		
 	}
+
 
 	private AccountDeductions saveAccountDetails(AccountDeductions accountDeductions) throws Exception {
 		return accountDeductionsDao.saveAccountDeductions(accountDeductions);

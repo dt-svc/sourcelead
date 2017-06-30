@@ -29,6 +29,11 @@ font-size: 13px; width: 75px;
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
 <section class="content-wraper">
     <section class="content-header clearfix">
+     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Payables</h2>
       </div>
@@ -194,7 +199,7 @@ font-size: 13px; width: 75px;
                        <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
 			               <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
 			          </sec:authorize>
-                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
+                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Bill</a>&nbsp;&nbsp;&nbsp;|</li>
                       </li>  
                       <div class="clearfix"></div>
                     </ul>
@@ -406,7 +411,7 @@ function validMask(){
  <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
 <div class="modal modal_invoice datatable_filter" style="display: none;">
-   <div id="linkPayblePopup" ></div>
+   <div id="linkPayblePopup" class="datatable_filter"></div>
 </div>
 <!-- modal pop -->
 
@@ -529,7 +534,7 @@ function getPayableInvoiceList(){
 			result = result +'         <th>Bill Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due date</th>              ';
+			result = result +'         <th>Due Date</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';
@@ -747,7 +752,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
@@ -763,7 +768,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 	     '</sec:authorize>'
-	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1182,7 +1187,7 @@ function exportToPayableExcel(){
 
 <script type="text/javascript">
 function linkPayableInvoice(invoiceId,totalAmount){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1192,9 +1197,10 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
 			result = result +'    <div class="modal-content">                                                                                               ';
 			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
-			result = result +'      <div class="modal-header" id="payableLinkId">                                                                                              ';
+			result = result +'      <div class="modal-header">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
-			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
+			result = result +'        <h4 class="modal-title">Link Bill</h4>                                                                             ';
+			result = result +'	<span class="jquery_form_error_message" style="display:none; padding-left:0px !important; font-size:12px;">Select at least 1 Bill</span>';
 			result = result +'      </div>                                                                                                                  ';
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
@@ -1207,8 +1213,8 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'              </th>                                                                                                           ';
 			result = result +'            <th>ID</th>                                                                                                       ';
 			result = result +'            <th>Contact Person</th>                                                                                           ';
-			result = result +'            <th>Due date</th>                                                                                                 ';
-			result = result +'            <th>Bill date</th>                                                                                                ';
+			result = result +'            <th>Due Date</th>                                                                                                 ';
+			result = result +'            <th>Bill Date</th>                                                                                                ';
 			result = result +'            <th>Total</th>                                                                                                    ';
 			result = result +'            <th>Due Amount</th>                                                                                               ';
 			result = result +'            <th>Status</th>                                                                                                   ';
@@ -1236,16 +1242,16 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>';
 			if(opt.dueDateStr !=null && opt.dueDateStr != '' && opt.dueDateStr !='undefined'){
-				result = result +'<div class="tblminwidth-50">'+opt.dueDateStr+'</div> ';	
+				result = result +'<div class="tblminwidth-75">'+opt.dueDateStr+'</div> ';	
 			}else{
-				result = result +'<div class="tblminwidth-50">--</div> ';
+				result = result +'<div class="tblminwidth-75">--</div> ';
 			}
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>';
 			if(opt.invoiceDateStr !=null && opt.invoiceDateStr !='' && opt.invoiceDateStr !='undefined'){
-				result = result +'<div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>';	
+				result = result +'<div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';	
 			}else{
-				result = result +'<div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>';
+				result = result +'<div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';
 			}
 			
 			result = result +'            </td>                                                                                                             ';
@@ -1261,7 +1267,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			}
 			}else{
-	 			result = result +'          <tr>';
+				result = result +'          <tr>';
 				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
 				result = result +'          </tr>';
 			}
@@ -1270,7 +1276,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'    </div>                                                                                                                    ';
 			result = result +'     <div class="clearfix mt10">                                                                                              ';
 			result = result +'         <div class="pull-right">                                                                                             ';
-			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice('+totalAmount+');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
+			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice(\''+totalAmount+'\');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
 			result = result +'         </div>                                                                                                               ';
 			result = result +'     </div>                                                                                                                   ';
 			result = result +'    </div>                                                                                                                    ';
@@ -1295,10 +1301,13 @@ function linkInvoicePayablePagination(){
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#linkInvoicePayable').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": true,
-    	//
     	"aaSorting": [[3,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1348,8 +1357,8 @@ function mergeInvoice(parentTotalAmount){
        },
    });  
 }else{
-	$("#payableLinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Bill</span>");
-	}
+	$('span.jquery_form_error_message').show();
+	} 
 }
 </script>
 
@@ -1365,6 +1374,8 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#payable_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
 }
 
 </script>
@@ -1400,5 +1411,10 @@ function generateAutomaticInvoice(){
     });  
 }
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	
+	 
+</script> 
  <jsp:include page="../masterFooter.jsp" />	

@@ -277,6 +277,7 @@ public class CandidateDocumentsRestController {
 			       		 if(null != multiFile.getContentType()){
 			       			candidateDocuments.setFileContentType(multiFile.getContentType());
 	                     }
+			       		 candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
 			       		 candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
 				}
 			}
@@ -285,6 +286,34 @@ public class CandidateDocumentsRestController {
 		}
 	   return "success";
 	 }
+	 
+	 
+	 
+
+		@RequestMapping(value = "/rejectRequestedDocuments", method = RequestMethod.POST)
+		public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "documentsIds", required = false) String documentsIds,HttpServletRequest request) throws Exception {
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation,documentsIds);
+			
+			return "success";
+		}
+		
+		@RequestMapping(value = "/acceptRequestedDocuments", method = RequestMethod.POST)
+		public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds,HttpServletRequest request) throws Exception {
+
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			requestedDocumentsService.acceptRequestedDocuments(user,documentsIds);
+			return "success";
+		}
+		
 	 
 }
 

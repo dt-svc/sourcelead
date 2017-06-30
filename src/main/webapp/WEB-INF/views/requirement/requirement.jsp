@@ -283,7 +283,8 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-      <h2>Add Job</h2>
+     <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
+      <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
@@ -1220,7 +1221,11 @@ $(document).ready(function () {
             <div class="col-md-9">
            
               <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
+                       
+                       <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null}">
                        <option selected="selected" value="${SourceLeadWeb_user.id}">${SourceLeadWeb_user.firstName}&nbsp;${SourceLeadWeb_user.lastName}</option>
+                       </c:if>
+                       
                        <c:forEach var="report" items="${approverList}">
                        	<c:if test="${SourceLeadWeb_user.id != report.id}">
                        		<option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
@@ -2639,6 +2644,7 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"bPaginate":false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0

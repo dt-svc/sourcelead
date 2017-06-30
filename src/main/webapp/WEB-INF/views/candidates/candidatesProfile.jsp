@@ -279,8 +279,16 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10">';
 							
-							
-							
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<option value="">--Select Notice Period--</option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
+							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + ' </select>';
+							result = result + ' </div>';
 							
 							result = result + '</div>';
 
@@ -764,35 +772,16 @@ function candidateProfile(candidateId,candidateType){
 								});
 							
 							
-							/* <c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
-						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-					                }
-			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
-							result = result +'<div class="clearfix"></div>';
 							
 							result = result +'</div>';
 							
-							
-							//Visa Type
-							result = result +'		          <span id="saveVisaBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
+														
 							result = result + '<div class="clearfix"></div> ';
 							
-							result = result +'		  <div class="tab-content">                                                                                                                   ';
+							//visa type start
 							result = result +'		    <div id="visa" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="visa-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view visaresult">                                                                                                             ';
@@ -836,31 +825,15 @@ function candidateProfile(candidateId,candidateType){
 					                }
 								  
 								});
-							 //Visa Type End
 							
-							/* <c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
-						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-					                }
-			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
-							//Visa Type End
+							//visa Type End
 							
 							result = result +'</div>';
 							result = result +'</div>';
 							result = result +'</div> ';
+							
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
@@ -931,6 +904,33 @@ function candidateProfile(candidateId,candidateType){
 									
 									});
 								
+								//visa type
+								$(".btn-addvisa").click(function(){
+									$(".add-visa").css({"display":"block","opacity":"1"});
+									$("#visaName").val('');
+									 
+									 $("#visaName").val('').trigger("chosen:updated");
+									 
+									/* visa auto complete */
+									var config = {
+											  '.chosen-select'           : {},
+											  '.chosen-select-deselect'  : {allow_single_deselect:true},
+											  '.chosen-select-no-single' : {disable_search_threshold:10},
+											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+											  '.chosen-select-width'     : {width:"95%"}
+								    }
+									
+									for (var selector in config) {
+									  $(selector).chosen(config[selector]);
+									}
+									$('.chosen-select').each(function() {
+										var $this = $(this);
+										$this.next().css({'width': '100%'});
+										})
+									});
+								
+								//end visa type
+								
 								var config = {
 										  '.chosen-select'           : {},
 										  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -955,7 +955,17 @@ function candidateProfile(candidateId,candidateType){
 									 e.stopPropagation();
 								});
 								
+								//visa type
+								$("#visaName").chosen();
+								$("#visaName").prop('disabled', true).trigger("chosen:updated");
+								$(".close-div").click(function(){
+									$(".add-visa").removeClass('add-visa-active');
+									});
+								$(".add-visa").click(function(e){
+									 e.stopPropagation();
+								});
 								
+								//end visa type
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
@@ -1790,7 +1800,7 @@ function  removeValiationVendorContact() {
  }
  </script>
  
- 
+ <!-- Visa Type Script View/edit script start here -->
  <script>
 	function editVisa(candidateId){
 		$("#visaName").prop('disabled', false).trigger("chosen:updated");
@@ -1883,26 +1893,5 @@ function  removeValiationVendorContact() {
          
     }); 
 	 
-	 
-	 
-/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({  
-	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
-	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //candidateProfile(candidateId);
-	               }
-	        },
-	          
-	     }); 
-	 }else{
-		 
-	 } */
-	 
  }  
 </script>
-
- 
- 

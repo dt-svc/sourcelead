@@ -51,7 +51,7 @@
 			</div>
 		</form:form>
 		<div id="YearQuartersDiv" style="display: none;" ></div>
-		<div class="timesheetRepTab  datatable_filter mt5">
+		<div class="timesheetRepTab expensestable datatable_filter mt5 overflow_inherint">
 			<div id="expensesReportsListDiv"></div>
 		</div>
 	</div>
@@ -590,9 +590,8 @@ $.ajax({
  <script>
  function exportExpensesReports(type){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var frequencyYear =document.getElementById("selectedYear").value;
 	var frequencyMonth =document.getElementById("selectedQuarter").value;
- window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
+ window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&exportType="+type;
  }
  </script>
  
@@ -607,13 +606,14 @@ function pagination(){
     	"bDestroy": true,
     	"ordering": true,
     	"autoWidth": false,
-		"scrollX": true,
+		//"scrollX": true,
     	"aaSorting": [[7,'desc']],
     	"oLanguage": {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $("#expensesReportsPagination").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
  

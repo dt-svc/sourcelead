@@ -379,7 +379,7 @@ function candidateSideBar(candidateId){
 			            
 			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
+         			 		experienceMonths = json.experienceMonths+''+'(Months)';            			 		
          			 	}else{
          			 		experienceMonths = ' ';  
          			 	 }
@@ -535,7 +535,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<ul class="list-unstyled">';
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
-			            	 result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
+			            	 result = result+'<li>Experience -'+json.experienceYears+' (Years) '+experienceMonths+'</li>';
               		       }else{
               		   		 result = result+'<li>Experience ----</li>';  
               		       }

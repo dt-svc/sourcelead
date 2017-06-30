@@ -52,6 +52,7 @@ function getRequirementList(){
 </script> -->
 <script>
 function prepareReportDataDiv(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -165,23 +166,23 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
-    requirementReportPagination();
+    requirementReportPagination(SourceLeadWeb_loginOrg);
     //getAllCounts();
 }
 
 </script>
 <script>
-function requirementReportPagination(){
+function requirementReportPagination(SourceLeadWeb_loginOrg){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Applicants',
+	                title: SourceLeadWeb_loginOrg+' - Applicants Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Applicants',
+	                title: SourceLeadWeb_loginOrg+' - Applicants Reports',
 	            }
 	        ],
 		

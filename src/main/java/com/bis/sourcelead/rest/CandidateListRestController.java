@@ -186,7 +186,8 @@ public class CandidateListRestController {
 					
 				}
 //			}
-			
+				
+		    boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 			
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
@@ -637,6 +638,7 @@ public class CandidateListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("summary", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("skillsName", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("visaType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("employer", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("certifications", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("candidateType", keywd));
@@ -762,10 +764,10 @@ public class CandidateListRestController {
 			if(null != can.getOrgRelationId()){
 				can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
 				if(can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()){
-					can.setVendorName(can.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+					can.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
 				if(can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()){
-					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
 			}
@@ -1225,9 +1227,9 @@ public class CandidateListRestController {
 		    
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
-			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName(),isAssociate);
+			file = candidateService.getCandidateExcelFile(candidatesList,loginOrgLocation.getOrgLocationName(),isAssociate);
 			}else{
-			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName(),isAssociate);
+			file = candidateService.getCandidatePdf(candidatesList,loginOrgLocation.getOrgLocationName(),isAssociate);
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -1281,18 +1283,16 @@ public class CandidateListRestController {
 			 }
 		   
 		   
-		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+		    @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
 			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 				
 				if(null != can && StringUtils.isNotEmpty(visaName)){
-					can.setVisaType("");
 					can.setVisaType(visaName);
 					candidateService.saveOrUpdateCandidate(can);
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "success";
 				}else{
-					can.setVisaType("");
 					candidateService.saveOrUpdateCandidate(can);
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";

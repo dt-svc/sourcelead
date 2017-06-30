@@ -33,7 +33,7 @@
           <div class="clearfix"></div>
       </div>
       <div class="candidate_wrap_table">
-        <div id="candidateList"></div>
+        <div id="candidateList" class="datatable_filter"></div>
       </div>
     </div>
    
@@ -149,9 +149,14 @@ function cpagination(){
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

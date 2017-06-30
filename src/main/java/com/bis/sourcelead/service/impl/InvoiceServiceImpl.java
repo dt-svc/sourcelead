@@ -771,7 +771,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
-		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
+		 globalVarsMap.put("orgName",orglocations.getOrgLocationName());
 		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
 		/* StringBuilder acceptBuilder = new StringBuilder();
@@ -834,7 +834,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
 
 
@@ -1182,14 +1182,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(0).setCellValue(invoice.getInvoiceId());
 	}
 	
-	Org org = null;
+	OrgLocations orgLocations = null;
 	if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
-			org = invoice.getOrgRelationID().getLocationId().getOrg();
+		orgLocations = invoice.getOrgRelationID().getLocationId();
 	}else if(invoice.getOrgRelationID().getLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
-			 org = invoice.getOrgRelationID().getResponderLocationId().getOrg();
+		orgLocations = invoice.getOrgRelationID().getResponderLocationId();
 	}
-	if(null != org){
-		writeRow.createCell(1).setCellValue(org.getOrgName());
+	if(null != orgLocations){
+		writeRow.createCell(1).setCellValue(orgLocations.getOrgLocationName());
 	}
 	
 	if(null != invoice.getContactUser()){
@@ -1448,10 +1448,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			for (OrgRelations orgRelations : vendorAllList) {
 				String orgName = "";
 				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}
 				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName);
 				vendorsList.add(orgRelations);
@@ -1836,10 +1836,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       				Integer overDueInvoiceCount = 0;
       				Integer openInvoiceCount = 0;
       				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-      					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+      					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
       				}
       				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
-      					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+      					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
       				}
       				StringBuilder contactName = new StringBuilder();
       				if (null != invoice.getContactUser()) {

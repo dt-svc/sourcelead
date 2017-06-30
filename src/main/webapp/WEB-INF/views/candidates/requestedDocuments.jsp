@@ -35,6 +35,13 @@ border:1px solid #ddd; width: 100%;
 .reqDocuments .clients_wrap_table {
 border-bottom:0;
 }
+.clients_wrap_table .glyphicon {
+    color: red;
+    cursor: pointer;
+}
+.edit-status {
+top: 20%; right: auto; left: 40%;
+}
 </style>
 
 <body>
@@ -67,8 +74,22 @@ border-bottom:0;
 		   				<c:if test="${candidateDocumentsListSize > 0}">
 							   <c:forEach var="docs" items="${candidateDocumentsList}">
 							   <tr>
-							        <td><div class="tbldata-dotdot-sm">${docs.documentType}</div></td>
-					   				<td><div class="tbldata-dotdot-big">${docs.description}</div></td>
+							        <td>
+							        <div class="tbldata-dotdot-sm">${docs.documentType}
+							        <c:if test="${docs.requestedDocStatus == 'Rejected' && !empty docs.requestedDocRejectedReason}">
+							        	<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>${docs.requestedDocRejectedReason}</p></div></i>
+							        </c:if>
+							        </div>
+							        </td>
+					   				
+					   				<td>
+					   				<c:if test="${!empty docs.description}">
+					   				<div class="tbldata-dotdot-big">${docs.description}</div>
+					   				</c:if>
+					   				<c:if test="${empty docs.description}">
+					   				<div class="tbldata-dotdot-big">-------</div>
+					   				</c:if>
+					   				</td>
 								    <td class="text-center">
 								    <div class="width300px mt5">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">

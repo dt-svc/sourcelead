@@ -9,6 +9,12 @@
  
  <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
+ <style type="text/css">
+.ReadTextFli {
+	 text-align: -webkit-left;
+}
+</style>
+
  <script type="text/javascript">
 		window.onload = function () {
 			getClientBasedOnSelectedProject();
@@ -59,8 +65,8 @@
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
+					<div class="col-md-9" id="errProject">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<option value="">Select Project</option>
 							<c:forEach var="projMembers" items="${projectMembersList}">
 							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
@@ -71,7 +77,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -81,7 +87,7 @@
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
-						  <div class="col-lg-6">
+						  <div class="col-lg-6" id="errEnd">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
@@ -92,6 +98,12 @@
 	</div>
 </div>
 <div class="expensHead">
+<div class="form-group">
+<span class="col-md-3">Expenses Amount Total:</span>
+<div class="col-md-9">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+</div>
+</div>
 	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
@@ -120,7 +132,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
@@ -130,15 +142,17 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10">
-							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="form-control" field-name="Category Type" data-validation="required">
-								   <option value="">Select Category Type</option>				 							   
-								   <c:forEach var="expCat" items="${expensesCategoryList}">
-						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
-		                	       </c:forEach>
-								</select>
-							</div>
+							<div class="col-md-4 mb10 chosen-custom">
+							
+															
+						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
+						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required">
+							<option value="">Select Category Type</option>
+							<c:forEach var="expCat" items="${expensesCategoryList}">
+							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id}">${expCat.expensesName}</option>
+							</c:forEach>
+						</select>
+					</div>
 							<div class="col-md-4 mb10">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
@@ -171,7 +185,7 @@
 												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
 										 </div>
-								         <input type='text' class='form-control'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float'>
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float'>
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10">
@@ -209,7 +223,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -224,8 +238,8 @@
 		  <div class="col-lg-12">
 			<div class="pull-right">
 			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
-			  <input type="button" id ="submitForApprovalExpensesId"value="Sub for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
+			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
+			 <input type="button" value="Cancel"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 			</div>
 		  </div>
 		</div>
@@ -272,7 +286,7 @@
 	        	    dataType : 'json',
 					url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 					success : function(data) {
-						$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+						$( "#submitForApprovalExpensesId" ).addClass('button').val('Submit for Approval');
 						window.location.replace(sourceleadUrl+'/expenses');
 					},
 				});
@@ -368,6 +382,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
@@ -378,9 +393,21 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
 					}
 				});
 	}
+</script>
+<script>
+function removeErrStr(){
+	$('#dateDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrEnd(){
+	$('#errEnd').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProject(){
+	$('#errProject').find('p.jquery_form_error_message').remove(); 
+}
 </script>
 
 <script>
