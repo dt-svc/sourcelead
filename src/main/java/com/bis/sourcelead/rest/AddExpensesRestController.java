@@ -187,8 +187,16 @@ public class AddExpensesRestController {
 			if(null != project){
 				if(null != project.getOrgRelationId()){
 					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
-					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					 if("Vendor".equalsIgnoreCase(orgRelation.getInitiatorType())){
+						 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					 }else if("Client".equalsIgnoreCase(orgRelation.getInitiatorType())){
+						 project.setExpensesClientName(orgRelation.getLocationId().getOrgLocationName());
+					 }
 					}
+				/*if(null != project.getOrgRelationId()){
+					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
+					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					}*/
 					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
 					 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));

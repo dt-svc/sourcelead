@@ -1227,9 +1227,9 @@ public class CandidateListRestController {
 		    
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
-			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName(),isAssociate);
+			file = candidateService.getCandidateExcelFile(candidatesList,loginOrgLocation.getOrgLocationName(),isAssociate);
 			}else{
-			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName(),isAssociate);
+			file = candidateService.getCandidatePdf(candidatesList,loginOrgLocation.getOrgLocationName(),isAssociate);
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

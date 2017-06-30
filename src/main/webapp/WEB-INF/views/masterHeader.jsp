@@ -1344,7 +1344,7 @@ $("#searchType").selectpicker('refresh');
                 <label class="col-md-4 paddingRight">
                     <i class="fa fa-envelope paddingRight text-info"></i>Email<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
                 </div>
             </div>
                         <div class="form-group clearfix">
