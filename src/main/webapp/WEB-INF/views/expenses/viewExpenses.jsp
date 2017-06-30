@@ -7,7 +7,7 @@
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>View Expense</h2>
+        <h2>View Expense ---${submissionStatus}</h2>
       </div>
       
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; View Expense</div>
@@ -17,7 +17,7 @@
 				<div class="project_details project_detailsExp">
                 
 					<div class="Expdit pull-right">
-					     <c:if test="${submissionStatus == 'DRAFT'}">
+					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED'}">
 					        <a href="${sourceleadUrl}/addExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
@@ -103,7 +103,7 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryTypeDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>${entry.expensesCategoryId.expensesName}</div></td>
+			           <td><div class="ExpShow" id="categoryTypeDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>

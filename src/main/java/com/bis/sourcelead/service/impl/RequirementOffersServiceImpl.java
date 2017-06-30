@@ -304,8 +304,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
-            if (clientrequirement.getOrgLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(clientrequirement.getOrgLocationId().getOrg().getOrgName())) {
-                    globalVarsMap.put("OrgnanizationName",clientrequirement.getOrgLocationId().getOrg().getOrgName());
+            if (clientrequirement.getOrgLocationId().getOrgLocationName() != null && !"".equalsIgnoreCase(clientrequirement.getOrgLocationId().getOrgLocationName())) {
+                    globalVarsMap.put("OrgnanizationName",clientrequirement.getOrgLocationId().getOrgLocationName());
             } else {
                     globalVarsMap.put("OrgnanizationName", "--");
             }
@@ -326,8 +326,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
-            if (loginOrgLocations.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocations.getOrg().getOrgName())) {
-                globalVarsMap.put("clientOrgnanizationName", loginOrgLocations.getOrg().getOrgName());
+            if (loginOrgLocations.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocations.getOrgLocationName())) {
+                globalVarsMap.put("clientOrgnanizationName", loginOrgLocations.getOrgLocationName());
             } else {
                 globalVarsMap.put("clientOrgnanizationName", "--");
             }
@@ -391,8 +391,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
-            if (orgLocations.getOrg().getOrgName() != null && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())) {
-                    globalVarsMap.put("organizationName",orgLocations.getOrg().getOrgName());
+            if (orgLocations.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())) {
+                    globalVarsMap.put("organizationName",orgLocations.getOrgLocationName());
             } else {
                     globalVarsMap.put("organizationName", "--");
             }
@@ -850,7 +850,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 													if(requirementOffers.getNotifyToVendor() !=null && requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y")){
 														requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 														if(sourcesubmission.getVendorLocationId() !=null){
-															requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+															requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrgLocationName());
 														}
 														return requirementOffers;
 													}
@@ -878,7 +878,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 									if( (requirementOffers.getNotifyToVendor() != null) && (requirementOffers.getNotifyToVendor().equalsIgnoreCase("Y"))){											requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 								        	requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
 								        	if(sourcesubmission.getVendorLocationId() !=null){
-												requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrg().getOrgName());
+												requirementOffers.setClientName(sourcesubmission.getVendorLocationId().getOrgLocationName());
 											}
 								        	return requirementOffers;
 										}

@@ -114,10 +114,10 @@ public class BillingPayableRestController {
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
 		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 				}
 				if(invoice.getContactUser() != null){
 					invoice.setVendorContactId(invoice.getContactUser().getId());

@@ -14,6 +14,7 @@
             <ul class="nav nav-tabs">
               <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Request Sent</a></li>
               <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
+                 <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
             </ul>
             
             <div class="tab-content clearfix mt">
@@ -56,6 +57,10 @@ function ApplicantAuthorization(status){
 	            					resultToday = resultToday+'	    <th>Accepted By</th>';
 		            				resultToday = resultToday+'	    <th>Accepted On</th>';
 	            				}
+	            				if(status == 'REJECTED'){
+	            					resultToday = resultToday+'	    <th>Rejected By</th>';
+		            				resultToday = resultToday+'	    <th>Rejected On</th>';
+	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';
 	            					resultToday = resultToday+'	    <th>Action</th>';
@@ -85,6 +90,16 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(status == 'accepted'){
+                                    	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
+                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submissionRequestUser+'">'+report.submissionRequestUser+'</span></div></td>';
+                                    	  }else{
+                                        	  resultToday  = resultToday + '           <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
+
+                                    	  }
+                                    		  
+                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                      }
+                                      if(status == 'REJECTED'){
                                     	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
                                     	  resultToday  = resultToday + '           <td><div><span title="'+report.submissionRequestUser+'">'+report.submissionRequestUser+'</span></div></td>';
                                     	  }else{
