@@ -140,10 +140,10 @@
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 							<div class="col-md-4 mb10 chosen-custom">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required">
+								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 								   <option value="">Select Category Type</option>				 							   
 								   <c:forEach var="expCat" items="${expensesCategoryList}">
-						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
+						                 <option value="${expCat.id},${expCat.allowedAmount}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
 		                	       </c:forEach>
 								</select>
 							</div>
@@ -166,9 +166,9 @@
 		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
 								</select>
 							</div>	
-		                  <div class="col-md-4 mb10">
+		                  <div id="amountDiv${entryCount.count}" class="col-md-4 mb10 valid_ation">
 			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-								  <div class="input-group er ">
+								  <div class="input-group positionRelative ">
 										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="expenseRateType${entryCount.count}" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
@@ -179,7 +179,7 @@
 												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
 										 </div>
-								         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float">
+								         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float" onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10">
@@ -245,6 +245,15 @@
   </section>
 </c:if>
 </div>
+
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });	
+</script>
 
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
@@ -565,6 +574,39 @@ function removeErrProjectEmployee(){
 }
 </script>
 
+<script>
+function getAmountValue(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded then Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }
+}
 
+</script>
+
+
+<script>
+function getAmountValueCategory(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded then Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }	
+  }
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

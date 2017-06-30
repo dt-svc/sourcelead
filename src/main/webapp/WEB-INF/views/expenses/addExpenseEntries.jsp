@@ -214,10 +214,10 @@ function addAttachment(entityRowId,from){
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 						<div class="col-md-4 mb10 chosen-custom">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required">
+							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							   <c:forEach var="expCat" items="${expensesCategoryList}">
-					                 <option value="${expCat.id}">${expCat.expensesName}</option>
+					                 <option value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 	                	       </c:forEach>
 							</select>
 						</div>
@@ -229,7 +229,7 @@ function addAttachment(entityRowId,from){
 							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
 							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required validate_Space validate_length length1-100"> 
 						</div>
-						<div class="col-md-4 mb10">
+						<div class="col-md-4 mb10 chosen-custom">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
@@ -240,7 +240,7 @@ function addAttachment(entityRowId,from){
 	                                 <option  value="e-Wallet">e-Wallet</option>
 							</select>
 						</div>	
-	                  <div class="col-md-4 mb10 valid_ation">
+	                  <div id="amountDivREPLACEROWID" class="col-md-4 mb10 valid_ation">
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
@@ -253,7 +253,7 @@ function addAttachment(entityRowId,from){
 											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
 											  </select>
 									 </div>
-							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float">
+							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
@@ -551,4 +551,39 @@ function calculateTotalamount(rowId){
 }
 
 </script>
+<script>
+function getAmountValue(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded then Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }
+}
+
+</script>
+
+
+<script>
+function getAmountValueCategory(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded then Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }	
+  }
+}
+</script>
+
 
