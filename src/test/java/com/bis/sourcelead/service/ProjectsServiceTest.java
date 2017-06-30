@@ -329,16 +329,16 @@ public class ProjectsServiceTest {
 		logger.info("******************  Notification Job Scheduler WednesDay of every week of the month started..! **********");
 		try {
 			
-			List<Org> orgList = orgService.getOrgs();
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
 			HashSet<TimesheetSubmissions> timesheetSubmissions = null;
-			for (Org org : orgList) {
+			for (OrgLocations orgLoc : orgLocationsList) {
 				ProjectApproverHierarchy projectApproverHierarchy = null;
 				User user = null;
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
 				tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 				
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLoc.getId());
 				
 				List<Projects> projectsList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
 				if(count==0){	

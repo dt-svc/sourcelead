@@ -184,14 +184,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
-		
+		Org org = null;
 		//For Saving of Org Details
-		Org org = getOrgDetails(registration,subModules,modules);
-		try {
-			orgService.addOrganization(org);
-		} catch (Exception e) {
-			e.printStackTrace();
+		
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			org = getOrgDetails(registration,subModules,modules);
+			try {
+				orgService.addOrganization(org);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			org = orgService.findOrgByID(Long.valueOf(registration.getRegisteredOrgId()));
 		}
+		
 		
 		//For Saving of User Details
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -211,16 +217,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		org.setUser(user);
 		
-		try {
-			orgService.updateOrg(org);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			org.setUser(user);
+			try {
+				orgService.updateOrg(org);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		//For saving of orgLocation Details which location has choose in the registration
-		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user,subModules,modules);
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
@@ -249,11 +257,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		List<Integer> moduleIds = new ArrayList<Integer>();
-		 for (String s : org.getModulesId().split(",")){
-			 moduleIds.add(Integer.parseInt(s));
-		 }
-		 
 		 MasterCandidate masterCandidate = null; 
 		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 		 if(null == masterCandidate){
@@ -357,9 +360,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
-		String orgModules = "";
 		
-		
+		/*String orgModules = "";
 		if(!isNullOrEmpty(subModules)){
 			String[] registeredSubModules =  subModules.split(",");
 			for(int i=0; i<registeredSubModules.length; i++){
@@ -375,10 +377,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 				}
 			}
 		}
-		
-		
 		orgModules = orgModules.substring(0, orgModules.length()-1);
-		org.setModulesId(orgModules);
+		org.setModulesId(orgModules);*/
+		
 		org.setCreatedBy("sladmin");
 		
 		org.setCreatedDate(new Date());
@@ -443,10 +444,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	 
 	 
-	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ) throws Exception{
+	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setCountry(registration.getCountry());
+		orgLocations.setState(registration.getState());
+		orgLocations.setCity(registration.getCity());
+		orgLocations.setOrgLocationAddress(registration.getAddress());
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
 		orgLocations.setStatus(Status.ACTIVE);
@@ -454,6 +458,36 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setLocationCode(org.getOrgCode()+countries.getCode2());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
+		orgLocations.setOrgLocationName(registration.getCompanyName());
+		orgLocations.setWebsite(registration.getWebsite());
+		
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			orgLocations.setIsPrimary(Constants.YES);
+		}
+		
+		String orgModules = "";
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] registeredSubModules =  subModules.split(",");
+			for(int i=0; i<registeredSubModules.length; i++){
+					orgModules = orgModules+registeredSubModules[i]+",";
+			}
+		}
+		
+		if(!isNullOrEmpty(modules)){
+			String[] registeredModules =  modules.split(",");
+			for(int i=0; i<registeredModules.length; i++){
+				if(Long.parseLong(registeredModules[i]) != 1L){
+					orgModules = orgModules+registeredModules[i]+",";
+				}
+			}
+		}
+		
+		
+		orgModules = orgModules.substring(0, orgModules.length()-1);
+		orgLocations.setModulesId(orgModules);
+		
+		
 		return orgLocations;
 	}
 	
@@ -539,7 +573,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 					 }
 				}
 				
-				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
 				for(SourceleadActions actions : sourceLeadActionsList){
 					if(roleActonsList.contains(actions.getId())){
 						 strbul.append(actions.getId()).append(",");
@@ -570,8 +604,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(" Default Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(" Default Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" Default Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" Default Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -591,8 +625,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);

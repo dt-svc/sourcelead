@@ -382,9 +382,9 @@ public class ReportRestController {
 	    	
 	    	orgrel.setReqReleasedCount(reqList.size());
 	    	if(orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-	    		orgrel.setVendorName(orgrel.getLocationId().getOrg().getOrgName());
+	    		orgrel.setVendorName(orgrel.getLocationId().getOrgLocationName());
 			}if(orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				orgrel.setVendorName(orgrel.getResponderLocationId().getOrg().getOrgName());
+				orgrel.setVendorName(orgrel.getResponderLocationId().getOrgLocationName());
 			}
 	    	orgrel.setShortlistedCount(shortlistedSum);
 	    	orgrel.setInterviewedCount(interviewsSum);

@@ -59,12 +59,25 @@ $(document).ready(function(){
         $('.pop_mask').fadeIn(200);
         $('#addmorepop').slideUp(200);
     };
-       function closeCandidate(){
-    	var sourceleadUrl ='${sourceleadUrl}';
-        $('.addcandidate-popup').fadeOut(200);
-        $('.pop_mask').fadeOut(200);
-        location.replace(sourceleadUrl+"/professionalDashboard");
-       }
+    
+    function closeCandidate(){
+	  	  var sourceleadUrl ='${sourceleadUrl}';
+	      $('.addcandidate-popup').fadeOut(200);
+	      $('.pop_mask').fadeOut(200);
+	      
+	      var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	     
+	      if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+	      	location.replace(sourceleadUrl+"/professionalDashboard");
+	      }
+	      else if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+	      	location.replace(sourceleadUrl+"/recruiterDashboard");
+	      }
+	      else{
+	      	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	      	location.replace(sourceleadUrl+"/dashboardLinks?orgLocationId="+orgLocationId);
+	      }
+    }
 </script>
 
 <section class="content-wraper">

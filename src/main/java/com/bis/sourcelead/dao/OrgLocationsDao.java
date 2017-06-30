@@ -21,16 +21,18 @@ public interface OrgLocationsDao {
     
 	public  OrgLocations getOrgLocationsByLocationCode(String  locationCode) throws Exception;
     
-	public  OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception;
-    
     OrgLocations findByEmail(String email, Long orgLocationId) throws Exception;
     
     public List<OrgLocations> getOrgsListForClientAndVendorOrgSearch(String orgCode) throws Exception;
     
     public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception;
     
-    public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception;
-    
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception;
+	
+	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception;
     
 }
