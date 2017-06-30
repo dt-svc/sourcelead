@@ -160,6 +160,11 @@ function cancelOrgImg(){
         <!-- Tab Pills navbar -->
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
+        
+        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+        	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
+        </c:if>
+        
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
       </ul>
@@ -178,7 +183,8 @@ function cancelOrgImg(){
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
-				  <sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
+				  
+			    <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 				  <div class="btn-group uploadfile">
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
@@ -190,7 +196,7 @@ function cancelOrgImg(){
 					  <i class="fa fa-trash"></i></button>
 				  </c:if>
 				  </div>
-				  </sec:authorize>
+			   </c:if>
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
@@ -205,7 +211,7 @@ function cancelOrgImg(){
 							<div class="form-group">
 							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-							<input type="text" id="companyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							<div class="form-group">
@@ -292,7 +298,7 @@ function cancelOrgImg(){
 						<div class="form-group comp-textarea">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
-							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_org.orgDescription}</textarea>
+							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
 							</div>
 						</div>
 							
@@ -314,6 +320,41 @@ function cancelOrgImg(){
 			</div>
 			</div>
 		   </div>
+		</div>
+		</div>
+		
+		<div id="orgRegisteredlocations" class="tab-pane fade form-horizontal"> 
+			<div class="accountsettings-tab">
+	                        <div class="tab-content panel-body">
+	                            <div class="clearfix mb">
+	                                <div class="pull-left">
+	                                    <h4 id="locationOrgsName"></h4>
+	                                </div>
+                               <div class="pull-right">
+                                <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
+	                                         &nbsp;&nbsp;Locations List</button>
+                                &nbsp;&nbsp;<button class="btn btn-default btm-sm" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-building"></i>
+                                    &nbsp;&nbsp;Add Location</button>
+                               </div>
+	                            </div>
+	                			<div class="clearfix form-area form-horizontal mt">
+	                			
+	                			<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
+	                			<div id="registeredOrgs"></div>  
+	                			</form:form>
+	                			
+	                			<form:form class="login-form clearfix"  id="update_module_form"  name="update_module_form" method="post" >
+	                			<div id="registeredOrgLocationSummary"></div>  
+	                			</form:form>
+	                			
+	                			<form:form class="login-form clearfix"  id="editPrimaryUser_form"  name="editPrimaryUser_form" method="post" >
+	                			<div id="editPrimaryUserLoading"></div>
+	                			<div id="editPrimaryUserContactDiv"></div>
+	                			</form:form>
+	                			
+	                			</div>
+	
+			</div>
 		</div>
 		</div>
 		
@@ -378,8 +419,8 @@ $("#faxId").keyup(function () {
 
 <script type="text/javascript">
 function validateCompanyName(){
-	var con = document.getElementById("companyName").value;
-	var company = document.getElementById("companyName").value;
+	var con = document.getElementById("orgLocationCompanyName").value;
+	var company = document.getElementById("orgLocationCompanyName").value;
 	var companyName = encodeURIComponent(con);
 	var sourceleadUrl ='${sourceleadUrl}';
 	 if(companyName != null && companyName != ''){
@@ -621,33 +662,6 @@ function getCities(){
 }
 </script>
 
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
-
 <script>
 function configCoolingOff(){
 	$("#coolingOffPeriodDiv").empty(); 
@@ -720,13 +734,13 @@ function configCoolingOff(){
 <script>
 function loadSignature(){
 	
-	
 	$("#campaignSignatrue").empty(); 
 	$("#SignatureHeading").html("Create Default Signature");
 	document.getElementById("reset").style.display="";
 	document.getElementById("settings").style.display="none";
 
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 
 		 $.ajax({
@@ -798,7 +812,8 @@ function loadSignature(){
 									labelText = '${SourceLeadWeb_user.firstName}'
 								}
 								
-							}else if(opt.labelName == 'Designation'){
+							}
+							 else if(opt.labelName == 'Designation'){
 								if('${SourceLeadWeb_designation}' != null){
 									labelText = '${SourceLeadWeb_designation}';
 								}
@@ -852,7 +867,7 @@ function loadSignature(){
 									labelText = '${SourceLeadWeb_website}';
 								}
 								
-							}
+							} 
 							
 							readonly = "readonly";
 						}
@@ -1171,6 +1186,1089 @@ function restSignature(){
 }
 </script>
 
+
+<script>
+function loadRegisteredOrgs(){
+	 document.getElementById("enrollNewOrgLocation").style.display="";
+     document.getElementById("orgsList").style.display="none"; 
+     
+     $("#locationOrgsName").html("Locations List");
+     $("#registeredOrgs").empty();
+     $("#registeredOrgLocationSummary").empty();
+     $("#editPrimaryUserContactDiv").empty();
+     
+     
+     
+     var sourceleadUrl = '${sourceleadUrl}';
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+     
+     $.ajax({ 
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getRegisteredOrgsLocationsList?${_csrf.parameterName}=${_csrf.token}",
+	    			 
+         success: function(data) {
+	        var json = JSON.parse(data);
+	        var result = "";
+	        
+	    	 if(json.length > 0)
+	   		{
+	    		
+	 			for(var i=0; i<json.length; i++){
+		       	 
+	 				var orgLoc = json[i];
+	 				var mobilePhone = "";
+	 			    var email = "";
+	 				
+		    	    if(orgLoc.orglocationUserPhone != null && orgLoc.orglocationUserPhone != ''){
+	 			    	mobilePhone = orgLoc.orglocationUserPhone;
+	 			    }else{
+	 			    	mobilePhone = "---"
+	 			    }
+	 				
+	 				if(orgLoc.orglocationUserEmail != null && orgLoc.orglocationUserEmail != ''){
+	 			    	email = orgLoc.orglocationUserEmail;
+	 			    }else{
+	 			    	email = "---"
+	 			    }
+	 				
+	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+	       	    	result = result +"<div class='user-profile'>";
+	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
+	       	    	result = result +"<div class='text-center image-parent'>";
+	       	    	result = result +"<div class='imageParent'>";
+	       	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' src='"+sourceleadUrl+"/displayOrgImage/"+orgLoc.orgCode+"' alt='image'>";
+	       	    	result = result +"</div>";
+	       	    	
+	       	    	result = result +"</div>";
+	       	    	result = result +"</div>";
+	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
+	       	    	result = result +"<h4 style='margin:0px 0px 5px 0px'><a href='javascript:void(0)' title='"+orgLoc.orgLocationName+"' onClick='getOrgLocationDetails("+orgLoc.id+")'>"+orgLoc.orgLocationName+" </a> </h4>";
+	       	    	result = result +"<p><label><i class='fa fa-map-marker' aria-hidden='true'></i>&nbsp;&nbsp;&nbsp; "+orgLoc.country+" </lable></p>";
+	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
+	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
+	       	        
+	       	    	if(orgLoc.orglocationUserStatus != null && orgLoc.orglocationUserStatus != "" && orgLoc.orglocationUserStatus == 'NOT_LOGGEDIN'){
+	 			    	 result = result +"<p><label id='user"+orgLoc.orglocationUserId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+orgLoc.orglocationUserId+");'>&nbsp;&nbsp;Resend</a></label></p>";
+	 			    }else if(orgLoc.orglocationUserStatus != null && orgLoc.orglocationUserStatus != "" && orgLoc.orglocationUserStatus == 'ACTIVE'){
+	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
+	 			    }else if(orgLoc.orglocationUserStatus != null && orgLoc.orglocationUserStatus != "" && orgLoc.orglocationUserStatus == 'INACTIVE'){
+	 			    	result = result +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
+	 			    }
+	       	    	
+	       	    	result = result +"</div>";
+	       	    	result = result +"<div class='clearfix'></div>";
+	       	    	result = result +"</div>";
+	       	    	result = result +"</div>";
+	       	    	
+	       	    	$("#loading").removeAttr("style"); 
+	       	 	    $('#registeredOrgs').append(result);
+				   }
+	   		    }
+	    	else{
+	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-building'></i><h3>Orgs List is Empty</h3></div>";
+	    		$("#loading").removeAttr("style");
+	    		$('#registeredOrgs').append(result);
+	    	} 
+
+			 },
+	        error: function(e){
+	        }
+	    }); 
+}
+</script>
+
+<script>
+function getOrgLocationDetails(orgLocationId){
+	
+	$("#locationOrgsName").html("Location Details");
+    $("#registeredOrgs").empty();
+    $("#registeredOrgLocationSummary").empty();
+    $("#editPrimaryUserContactDiv").empty();
+    document.getElementById("orgsList").style.display=""; 
+    
+    var sourceleadUrl = '${sourceleadUrl}';
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    
+     $.ajax({ 
+    	type: "POST",
+    	url: sourceleadUrl+"/getOrgLocationDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+    	 success: function(data) {
+    		 
+    		    var json = JSON.parse(data);
+    	        var result = '';
+    	        var editPrimaryUser = '';
+    	        
+    	        if(json.orglocationUserStatus == 'NOT_LOGGEDIN'){
+    	        	editPrimaryUser = '<a id="edit-user" href="javascript:editPrimaryUser('+orgLocationId+');"><i class="fa fa-edit" title="Edit Contact Details"></i></a>';
+    	        }
+    	        
+    	        result = result +'<div class="col-xs-12 col-sm-3 col-md-3">';
+    	        result = result +'<div class="well well-sm text-center">';
+    	        result = result +'<div class="profile-img-container" style="position:relative;">';
+    	        result = result +'<img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/displayOrgImage/${orgloc.org.orgCode}"/>" alt="Org Image" class="comp-image img-responsive">';
+    	        result = result +'</div>';
+    	        result = result +'</div>';
+    	        result = result +'</div>';
+    	        result = result +'<div class="col-xs-12 col-sm-9 col-md-9">';
+    	        result = result +'<div class="row mrng0">';
+    	        result = result +'<div class="col-md-6">';
+    	        
+    	        result = result +'<div id="editUserContact"></div>';
+    								
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<div class="col-md-12 clearfix">';
+	    	        result = result +'<h5>Org Details</h5>';
+	    	        result = result +'</div>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Company :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationName']+'</p>';
+	    	        result = result +'</div>';
+	    								 
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Website :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['website']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Country :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['country']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">State :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['state']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">City :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['city']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        if(null != json['orgLocationAddress'] &&  json['orgLocationAddress'] != 'undefined' && json['orgLocationAddress'] != ''){
+	    	        	    result = result +'<div class="form-group">';
+	    	    	        result = result +'<label class="col-md-4">Address :</label>';
+	    	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationAddress']+'</p>';
+	    	    	        result = result +'</div>';	
+	    	        }
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Enrolled Date :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['createdDateStr']+'</p>';
+	    	        result = result +'</div>';
+	    								
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Time Zone :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['timeZoneName']+'</p>';
+	    	        result = result +'</div>';
+    	        
+    	        result = result +'</div>';
+    	        
+    	        
+    	        result = result +'<div class="col-md-6">';
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<div class="col-md-12 clearfix">';
+	    	        result = result +'<h5>Contact Details&nbsp;'+editPrimaryUser+'</h5>';
+	    	        result = result +'</div>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Contact User : </label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserName']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Email : </label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserEmail']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        if(null != json['orglocationUserPhone'] &&  json['orglocationUserPhone'] != 'undefined' && json['orglocationUserPhone'] != ''){
+	    	        	result = result +'<div class="form-group">';
+	 	    	        result = result +'<label class="col-md-4">Mobile : </label>';
+	 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserPhone']+'</p>';
+	 	    	        result = result +'</div>';
+	    	        }
+	    	        
+    	            result = result +'</div>';
+    	            
+    	             result = result +'<div class="col-md-6">';
+	    	            
+    	            	result = result +'<div class="form-group">';
+		    	        result = result +'<div class="col-md-12 clearfix">';
+		    	        result = result +'<h5>Registered Modules</h5>';
+		    	        result = result +'</div>';
+		    	        result = result +'</div>';
+		    	        
+		    	        result = result +'<div class="form-group">';
+		    	        result = result +'<div class="col-md-12 checkbox">';
+		    	        
+		    	        if(json.modulesList != null && json.modulesList != "" && json.modulesList != 'undefined' && json.modulesList.length > 0){
+		    	        	
+		    	        	 for(var i=0; i<json.modulesList.length; i++){
+				    	        	var module = json.modulesList[i];
+				    	        	
+				    	       	 result = result +'<ul class="list-unstyled pull-left">';
+			    	        	 result = result +'<li>';
+			    	        	 
+			    	        	 	if(module.id == '1'){
+			    	        	 		result = result +'<label class="mr pull-left NoPad">';
+			    	        	        result = result +'<p>'+module.moduleName+'</p>';
+			    	        	        result = result +'</label>';
+			    	        	        
+			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
+			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
+			    	        	        	for(var j=0; j<json.subModulesList.length; j++){
+			    	        	        		var subModules = json.subModulesList[j];
+			    	        	        		    result = result +'<label>';
+			    	        	        	        if(subModules.isModuleConfigured == 'Y'){
+				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" id="submodules"  checked="checked" disabled="disabled">';
+				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
+			    	        	        			} 
+			    	        	        	        if(subModules.isModuleConfigured != 'Y'){
+				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" value="'+subModules.id+'"  id="submodules"  name="submodulesList[]">';
+				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
+			    	        	        			} 
+			    	        	        	        result = result +'</label><br/>';
+			    	        	        	}
+			    	        	        }
+			    	        	        
+			    	        	        result = result +'</ul>';
+			    	        	 	}
+			    	        	 
+			    	        	 result = result +'</li>';
+			    	        	 
+			    	        	 
+			    	        	 
+			    	        	 
+			    	        	 result = result +'<li>';
+			    	             result = result +'<label class="mr pull-left">';
+				    	             if(module.id != "1" && module.isModuleConfigured  == "Y"){
+				    	            	 result = result +'<input type="checkbox" id="isRecruiting"  checked="checked" disabled="disabled" >';
+				    	            	 result = result +'<p>'+module.moduleName+'</p>';
+				    	             }
+				    	             
+				    	             if(module.id != "1" && module.isModuleConfigured  != "Y"){
+				    	            	 result = result +'<input type="checkbox" id="isRecruiting" value="'+module.id+'"  name="modulesList[]"  >';
+				    	            	 result = result +'<p>'+module.moduleName+'</p>';
+				    	             } 
+			    	             result = result +'</label>';
+			    	             result = result +'</li>';
+			    	        	 
+			    	        	 result = result +'</ul>';
+				    	        	
+				    	        	
+				    	        }
+		    	        }
+		    	        
+		    	        result = result +'</div>';
+		    	        result = result +'</div>';
+		    	        
+		    	        result = result +'<div class="clearfix">';
+		    	        result = result +'<div class="pull-right">';
+		    	        result = result +'<input type="button" value="Upgrade" onclick="updateModules('+orgLocationId+');" id="save_button" class="btn btn-primary mr">';
+		    	        result = result +'<input type="button" value="Cancel" class="btn btn-default" onClick="loadRegisteredOrgs();">';
+		    	        result = result +'</div>';
+		    	        result = result +'</div>';
+		    	        
+    	                result = result +'</div>'; 
+    	       	
+    	       	    	
+    	    	$("#loading").removeAttr("style"); 
+    	 	    $('#registeredOrgLocationSummary').append(result);
+    	 }
+    }); 
+}
+</script>
+
+
+<script type="text/javascript">
+	function updateModules(orgLocationId) {
+		
+			var sourceleadUrl ='${sourceleadUrl}'; 
+			
+			 var modulesList = [];
+			 $("input[name='modulesList[]']:checked").each( function (i) {
+				modulesList[i] = $(this).val();
+			});
+			 
+			
+			 var submodulesList = [];
+			 $("input[name='submodulesList[]']:checked").each( function (i) {
+				submodulesList[i] = $(this).val();
+			});
+			 
+	 	 
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({ 
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
+		        success: function(result) {
+		        	if((result == 'success')){
+		        		loadRegisteredOrgs();
+			        } 
+		        },
+		 });  
+		  
+	}
+
+</script>
+
+
+
+
+
+<script type="text/javascript">
+function resendInvitation(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(userId != null && userId != ""){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId,  
+			        success: function(result) {
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#loading").removeAttr("style"); 
+			        	$("#mailMsg").fadeIn(200);
+		   		        $('#mailMsg').delay(2000).fadeOut('slow');
+			        },
+			    });
+		 }
+	}
+  
+</script>
+
+
+<script>
+function createOrg(){
+	
+	$("#locationOrgsName").html("Add New Location");
+	$("#registeredOrgs").empty();
+	$("#registeredOrgLocationSummary").empty();
+	$("#editPrimaryUserContactDiv").empty();
+	 
+	var result = '';
+	
+	result = result +'<div class="row">';
+	result = result +'<div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">';
+           
+	result = result +'<div class="form-group" id="companyNameDiv">';
+	result = result +'<label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>';
+	result = result +'<div class="col-md-9">';
+	result = result +'<input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />';
+	result = result +'<span class="hidden">Company</span>';
+	result = result +'</div>';
+	result = result +'</div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name=" Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />';
+	            result = result +'<span class="hidden">Website</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            
+	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
+           
+	            result = result +' <div class="form-group">';
+	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9 dropdown-select">';
+	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
+	            result = result +'<option value="" >Select Location</option>';
+	            result = result +'<option value="Australia">Australia</option>';
+	            result = result +'<option value="France">France</option>';
+	            result = result +'<option value="India">India</option>';
+	            result = result +'<option value="Singapore">Singapore</option>';
+	            result = result +'<option value="United Kingdom">United Kingdom</option>';
+	            result = result +'<option value="United States">United States</option>';
+	            result = result +'</select>';
+	            result = result +'<span class="hidden">Country</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+							
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+			
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Address</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+     
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="locationTimeZone" name="timeZone">';
+	            result = result +'</select>';
+	            result = result +'<span class="hidden">Time Zone</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+        
+	            result = result +'</div>';
+                                 
+	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
+          
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />';
+	            result = result +'<span class="hidden">Email</span>';
+	            result = result +'</div>';
+	            result = result +' </div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" class="form-control" id="firstName" name="firstName" value="${firstName}" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100" />';
+	            result = result +'<span class="hidden">First Name</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+        
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Last Name </label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="lastName"  id="lastName"  value="${lastName}" class="form-control" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100"  />';
+	            result = result +'<span class="hidden">Last Name</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Phone Number </label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone"  />';
+	            result = result +'<span class="hidden">Phone Number</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>';
+	            result = result +'<div class="col-md-9 checkBox">';
+	            result = result +'<div class="clearfix reMar">';
+	            result = result +'<c:forEach var="module" items="${modulesList}">';
+	            result = result +'<ul class="list-unstyled pull-left">';
+	            result = result +'<li>';
+	            result = result +'<label class="mr pull-left">';
+	            result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}';
+	            result = result +'</label>';
+	            result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
+	            result = result +'<li>';
+	            result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
+	            result = result +'<label>';
+	            result = result +'<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
+	            result = result +'${submodules.moduleName}';
+	            result = result +'</label><br/>';
+	            result = result +'</c:forEach>';
+	            result = result +'</li>';
+	            result = result +'</ul>';
+	            result = result +'</li>';
+	            result = result +'</ul>';
+	            result = result +'</c:forEach>';
+	            result = result +'</div>';
+	            result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
+	            result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
+	            result = result +'</div>';
+	            result = result +'</div>'; 
+        
+        
+	            result = result +'</div>';
+	            result = result +'</div>';
+    
+	            result = result +'<div class="form-footer clearfix row">';
+	            result = result +'<div class="col-lg-12">';
+	            result = result +'<div class="pull-right">';
+	            result = result +'<input type="submit" value="Register" class="btn btn-primary" id="register_button">';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            
+	            $("#registeredOrgs").append(result);
+	            
+	            
+	            document.getElementById("enrollNewOrgLocation").style.display="none";
+	            document.getElementById("orgsList").style.display="";
+	            
+	            
+	            var config = {
+	      			  '.chosen-select'           : {},
+	      			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+	      			  '.chosen-select-no-single' : {disable_search_threshold:10},
+	      			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+	      			  '.chosen-select-width'     : {width:"95%"}
+	      			}
+	           
+	           $("#locationCountry").chosen();
+	 	       $("#locationState").chosen();
+	 	       $("#locationCity").chosen();
+	 	       $("#locationTimeZone").chosen();
+	 	       
+	 	       $("#locationCountry").on('change', function (e) {
+		    	   getLocationStates();
+		    	   getTimezonesList();
+		       });
+		       $("#locationState").on('change', function (e) {
+		    	   getLocationCities();
+		       });
+		      
+		       $('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+			  })
+	      	       
+	
+}
+</script>
+
+
+<script type="text/javascript">
+	function moduleCheckValidation(id){
+		
+		 var modulesList = [];
+ 		 $("input[name='modulesList[]']:checked").each( function (i) {
+ 			modulesList[i] = $(this).val();
+ 		});
+ 		 
+		if (modulesList.length > 0) { 
+		document.getElementById("moduleValue").value = id.value;
+		}else{
+			$('#moduleValue').val(''); 
+		}
+	} 
+</script>
+
+
+
+ <script type="text/javascript">
+function getRecruitmentTypes(id){
+		if (document.getElementById('isRecruiting').checked) {
+		 document.getElementById("recrutmentTypes").style.display="";
+		}else{
+			document.getElementById("recrutmentTypes").style.display="none";
+			 $('.allsubmodules').each(function() {
+	                this.checked = false;      
+	            }); 
+		}
+	} 
+</script>
+
+
+<script>
+function getLocationStates(){
+	var countryName = $("#locationCountry").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#locationState').empty();
+	        	$('#locationState').append('<option value="">---Select State---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#locationState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#locationState').trigger("chosen:updated");
+	            getCities();
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#locationState').empty();
+    	$('#locationState').append('<option value="">---Select State---</option>');
+    	$('#locationState').trigger("chosen:updated");
+    	$('#locationCity').empty();
+    	$('#locationCity').append('<option value="">---Select City---</option>');
+        $('#locationCity').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getLocationCities(){
+	var countryName = $("#locationCountry").val();
+	var stateName = $("#locationState").val();
+	
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#locationCity').empty();
+	        	$('#locationCity').append('<option value="">---Select City---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#locationCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#locationCity').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#locationCity').empty();
+    	$('#locationCity').append('<option value="">---Select City---</option>');
+    	$('#locationCity').trigger("chosen:updated");
+	}
+}
+</script>
+
+
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var country = $('#locationCountry').val();
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        output = output + "<option value=''>--Select--</option>";
+	        if(country == 'India'){
+    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+    		}else if(country == 'United States'){
+    			output = output + "<option value='132' selected> America/Chicago </option>";
+    		}else if(country == 'United Kingdom'){
+    			output = output + "<option value='333' selected> Europe/London </option>";
+    		}else if(country == 'Singapore'){
+    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+    		}else if(country == 'France'){
+    			output = output + "<option value='342' selected> Europe/Paris </option>";
+    		}else if(country == 'Australia'){
+    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+    		}
+	        	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+				}
+	        	$("#locationTimeZone").empty();
+	        	$("#locationTimeZone").append(output);
+	        	$("#locationTimeZone").trigger("chosen:updated");
+	        }
+	 });
+}
+</script>
+
+<script type="text/javascript">
+function validateCompanyName(){
+	var con = document.getElementById("companyName").value;
+	var company = document.getElementById("companyName").value;
+	var companyName = encodeURIComponent(con);
+	var sourceleadUrl ='${sourceleadUrl}';
+	 if(companyName != null && companyName != ''){
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+			        success: function(data) {
+			        	 var result = data;
+			        		if(result == "Company Duplicated") {
+		        			//Existed company
+		    	    		$('#companyNameDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#companyName').attr('class','error form-control');
+		    	    		$("input#companyName").closest('b').after("<p class='jquery_form_error_message'> "+company+" "+result+"</p>");
+		    				$('input#companyName').attr('record-exist','yes');
+		    				$('input#companyName').attr('record-exist-errorMsg',company+' '+result+''); 
+		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$("#register_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New company
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#companyName').removeAttr( "class record-exist record-exist-errormsg");
+							$('#companyNameDiv').find('p.jquery_form_error_message').remove();
+							$('input#companyName').attr('class','valid form-control');
+							$( "#register_button" ).removeAttr("style");
+							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+		 
+	 }
+}
+</script>
+
+
+
+<script type="text/javascript">
+function validateWebsite (){
+      var website = document.getElementById("companyWebsite").value; 
+     var sourceleadUrl ='${sourceleadUrl}';
+     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
+	 $('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");
+	 if(website != null && website != ''){
+		
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+			        success: function(data) {
+			        	 var result = data;
+			        		if (result == "Website Duplicated" || result == "Invalid Website") {
+		        			//existed website
+		    	    		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#companyWebsite').attr('class','error form-control');
+		    	    		$("input#companyWebsite").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
+		    				$('input#companyWebsite').attr('record-exist','yes');
+		    				$('input#companyWebsite').attr('record-exist-errorMsg',website+' '+result+''); 
+		    				$( "#register_button" ).addClass('sign_btn').val('Register');
+		    				$("#register_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New WebSite
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#companyWebsite').removeAttr( "class record-exist record-exist-errormsg");
+							$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+							$('input#companyWebsite').attr('class','valid form-control');
+							$( "#register_button" ).removeAttr("style");
+							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+	}
+}
+</script>
+
+<script type="text/javascript">
+function validateCompanyEmail(){
+    var websiteValue = document.getElementById("companyWebsite").value;
+    var emailValue = document.getElementById("email").value;
+    var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}'; 
+    var sourceleadUrl ='${sourceleadUrl}';
+		if((websiteValue != null && websiteValue != '') && (emailValue != null && emailValue != '')){
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/ws/emailAndWebsiteRegistrationValidation?website="+websiteValue+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites+"&email="+emailValue,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid Email'){
+					    	    //Invalid Email
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			    	    		$('input#email').attr('class','error form-control');
+			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Invalid</p>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Invalid'); 
+			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$("#register_button").removeAttr("disabled");
+					     } 
+					     else if(data == 'Existed Email'){
+					    	   //Existed Email
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			    	    		$('input#email').attr('class','error form-control');
+			    	    		$("input#email").closest('b').after("<p class='jquery_form_error_message'> "+emailValue+" is Already Existed</p>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg',emailValue+' is Already Existed'); 
+			    				$( "#register_button" ).addClass('sign_btn').val('Register');
+			    				$("#register_button").removeAttr("disabled");
+					    	 
+					     }
+				       	else{
+				       		//Valid Email
+				       		$("#register_button").removeAttr("disabled");
+				    		$('input#email').removeAttr( "class record-exist record-exist-errormsg");
+							$('#emailDiv').find('p.jquery_form_error_message').remove();
+							$('input#email').attr('class','valid form-control');
+							$( "#register_button" ).removeAttr("style");
+							$( "#register_button" ).addClass('sign_btn').val('Register');
+							$( "#register_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	   }
+}
+</script>
+
+<script type="text/javascript">
+function getUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("readonly", "readonly");
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").removeAttr("readonly", "readonly");
+	        			 $("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("readonly", "readonly");
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").removeAttr("readonly", "readonly");
+	        			    $("#lastName").val('');
+	        		 }
+	        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#mobilePhone").attr("readonly", "readonly");
+		        		    $("#mobilePhone").val(json[2]);
+	        		 }else{
+	        			    $("#mobilePhone").removeAttr("readonly", "readonly");
+	        			    $("#mobilePhone").val('');
+	        		 }
+	        	}
+			 },
+	        error: function(e){
+	            //alert('Ajax Error: ' + e.value);
+	        }
+	    });
+	}else{
+		$("#firstName").removeAttr("readonly");
+	    $("#firstName").val('');
+	    
+	    $("#lastName").removeAttr("readonly");
+	    $("#lastName").val('');
+	    
+	   
+	}
+}
+</script>
+
+
+
+<script>
+function editPrimaryUser(orgLocationId){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#registeredOrgLocationSummary").empty();
+	$("#editPrimaryUserContactDiv").empty();
+	$("#locationOrgsName").html("Edit Contact Details");
+	
+	$.ajax({
+    	type: "GET",
+    	url : sourceleadUrl+"/getPrimaryUserContactDetailsByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+        	if(data != null && data != ''){
+        		var json = JSON.parse(data);
+        		
+        		var result = '';
+        				
+        		result = result + '<div class="user_summary_edit_cta">';
+        		result = result + '<label>First Name<span class="text-danger">&nbsp; *</span></label>';
+        		result = result + '<input type="text" value="'+json['orgLocationUserFirstName']+'"  id="primaryUserFirstName" name="primaryUserFirstName" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100" class="form-control">';
+        		result = result + '</div>';
+        				
+        		result = result + '<div class="user_summary_edit_cta">';
+        		result = result + '<label>Last Name</label>';
+        		result = result + '<input type="text"value="'+json['orgLocationUserLastName']+'" id="primaryUserLastName"  name="primaryUserLastName" field-name="Last Name" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" class="form-control" data-validation-optional="true">';
+        		result = result + '</div>';
+        				
+        		result = result + '<div class="user_summary_edit_cta" id="primaryUserEmailDiv">';
+        		result = result + '<label>Email<span class="text-danger">&nbsp; *</span></label>';
+        		result = result + '<input type="text" value="'+json['orglocationUserEmail']+'" name="primaryUserEmail" id="primaryUserEmail" field-name="Email" onblur="validatePrimaryUserEmail()" data-validation="required validate_Space validate_email validate_length length2-100"  class="form-control">';
+        		result = result + '</div>';
+        				
+        		result = result + '<div class="user_summary_edit_cta" id="phoneNumberDiv">';
+        		result = result + '<label>Phone Number</span></label>';
+        		result = result + '<input type="text" value="'+json['orglocationUserPhone']+'" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control">';
+        		result = result + '</div>';
+        				
+        				 
+        		result = result + '<div class="clearfix"></div>';
+        		result = result + '<div class="user_summary_edit_cta pull-right">';
+        		result = result + '<input class="us-btn" value="Save" id="update_primaryuser" onclick="validatePrimaryUserEmail();savePrimaryUserDetails('+orgLocationId+','+json['orglocationUserId']+');" type="button" > <input class="us-btn us-btn_a" value="Cancel" onClick="getOrgLocationDetails('+orgLocationId+');" type="button">';
+        		result = result + '</div>';
+        		
+        		$("#editPrimaryUserContactDiv").append(result);
+        		
+        	}
+		 }
+    });
+	
+	
+}
+</script>
+
+<script>
+function validatePrimaryUserEmail(){
+	var email = document.getElementById("primaryUserEmail").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = '${registeredOrgLocationId}';
+	if(null != email  && '' != email){
+		$("#update_primaryuser").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		    url: sourceleadUrl+"/validateOrgPrimaryUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+		    			if(data == 'Existed Email'){
+			        		  $('#primaryUserEmailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#primaryUserEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("primaryUserEmail").setAttribute('record-exist','yes');
+							  document.getElementById("primaryUserEmail").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#primaryUserEmail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#primaryUserEmailDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#update_primaryuser").removeAttr("disabled");
+			        	}
+					     
+		    			
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+ function savePrimaryUserDetails(orgLocationId,userId) {
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
+		 
+		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
+         var con = JSON.stringify(frm);
+         con = con.replace(/[{}]/g, "");
+         var jsonData = encodeURIComponent(con);
+         var sourceleadUrl ='${sourceleadUrl}';
+         
+         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+          
+          $.ajax({
+             type: "POST",
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
+             success: function(data) {
+                 if(data == "success"){
+                	 $("#editPrimaryUserLoading").removeAttr("style");
+                	 getOrgLocationDetails(orgLocationId);
+                 }
+                 
+             }
+             });  
+         
+		 
+		 return true;
+	 }else{
+		 return false;
+	 }
+    }
+ 
+ $('body').on('blur', '#editPrimaryUser_form', function() {
+		$("#editPrimaryUser_form").showHelpOnFocus();;
+		$("#editPrimaryUser_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
+
+
+
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#createOrg_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+            	
+        		var frm = $('#createOrg_form').serializeFormJSON();
+            	var con = JSON.stringify(frm);
+			    con = con.replace(/[{}]/g, ""); 
+			    var jsonData = encodeURIComponent(con);
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		
+         		 var modulesList = [];
+         		 $("input[name='modulesList[]']:checked").each( function (i) {
+         			modulesList[i] = $(this).val();
+         		});
+         		 
+         		
+         		 var submodulesList = [];
+         		 $("input[name='submodulesList[]']:checked").each( function (i) {
+         			submodulesList[i] = $(this).val();
+         		});
+         		
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         		 	$.ajax({
+          	      type: "POST",
+          	      contentType : 'application/json; charset=utf-8',
+          	      dataType : 'json',
+                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+                			  
+                			  
+                  	success: function(result) {
+			        	if((result == 'orgList')){
+			        		loadRegisteredOrgs();
+			        	}
+			        	else if((result == 'Invalid Sub Modules')){
+			        		$("#loading").removeAttr("style");
+			        		document.getElementById("subModule").style.display="";
+			        	}
+			        	
+			        },  
+               });  
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+         //$('#createOrg_form').showHelpOnFocus();
+            
+         $('body').on('blur', '#createOrg_form', function() {
+     		$("#createOrg_form").showHelpOnFocus();
+     		$("#createOrg_form").validateOnBlur(false, validationSettings);
+     	});
+     
+	</script>
+
+
 <script>
 function cancelBtn(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -1179,6 +2277,7 @@ function cancelBtn(){
 }
 
 </script>
+
 
 <script type="text/javascript">
         var validationSettings = {
@@ -1190,6 +2289,34 @@ function cancelBtn(){
 
         
 </script> 
+
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $("#country").chosen();
+	       $("#state").chosen();
+	       $("#city").chosen();
+	       
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>
 
 <jsp:include page="masterFooter.jsp" />
 </html>

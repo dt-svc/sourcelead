@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.ModulesDao;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 
 @Repository
 public class ModulesDaoImpl implements ModulesDao{
@@ -49,27 +50,6 @@ public class ModulesDaoImpl implements ModulesDao{
 		
 		String query = "select modules.id from Modules modules where "+subQuery+" ";
 		List<Long> modulesIdList =  session.createQuery(query.toString())
-									.setCacheable(true).list();
-		
-		return modulesIdList;
-
-	
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getOrgRegisteredModules(Org org) throws Exception {
-		
-		logger.debug("In ModulesDaoImpl class getOrgRegisteredModules method");
-		Session session = this.sessionFactory.getCurrentSession();
-		
-		List<Long> modulesList = new ArrayList<Long>();
-		for (String s : org.getModulesId().split(",")){
-			modulesList.add(Long.parseLong(s));
-		 }	
-			 
-		String query = "select modules.id from Modules modules where modules.id IN (:modulesList) ";
-		List<Long> modulesIdList =  session.createQuery(query.toString()).setParameterList("modulesList", modulesList)
 									.setCacheable(true).list();
 		
 		return modulesIdList;
@@ -124,6 +104,26 @@ public class ModulesDaoImpl implements ModulesDao{
 	    List<Modules> modulesList = session.createQuery(query.toString()).setLong("moduleId", moduleId).setCacheable(true).list();
       
 	    return modulesList;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getOrgRegisteredModulesByOrgLocationId(OrgLocations orgLocations) throws Exception
+	{
+		logger.debug("In ModulesDaoImpl class getOrgRegisteredModulesByOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		List<Long> modulesList = new ArrayList<Long>();
+		for (String s : orgLocations.getModulesId().split(",")){
+			modulesList.add(Long.parseLong(s));
+		 }	
+			 
+		String query = "select modules.id from Modules modules where modules.id IN (:modulesList) ";
+		List<Long> modulesIdList =  session.createQuery(query.toString()).setParameterList("modulesList", modulesList)
+									.setCacheable(true).list();
+		
+		return modulesIdList;
+
 	}
 
 }

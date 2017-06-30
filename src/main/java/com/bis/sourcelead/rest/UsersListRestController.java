@@ -554,10 +554,10 @@ public class UsersListRestController {
 			if(null != employee.getOrgRelationId()){
 				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
 				if(employee.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
-					userRole.setVendorName(employee.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+					userRole.setVendorName(employee.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
 				if(employee.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
-					userRole.setVendorName(employee.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+					userRole.setVendorName(employee.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
 			}

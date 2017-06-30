@@ -369,7 +369,7 @@ function closePopup(){
 
 
 <div class="requestDocSideMask"></div>
-<div class="modal modalInvite requestDocuments">
+<div class="modal  requestDocuments">
   <div class="modal-dialog modal-lg"> 
     <div id="documentLoading"></div>
     <div id="documentsTypeDiv"></div>
@@ -761,11 +761,11 @@ function refreshDocList(candidateId){
 
 //Request Documents
     function requestDoc(){
-    $(".modalInvite").fadeIn();
+    $(".requestDocuments").fadeIn();
     $(".requestDocSideMask").fadeIn();
     }
     function closeRD(){
-    $(".modalInvite").fadeOut();
+    $(".requestDocuments").fadeOut();
     $(".requestDocSideMask").fadeOut();
     }
 </script>

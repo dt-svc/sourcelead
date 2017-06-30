@@ -144,22 +144,6 @@ public class OrgLocationsServiceTest {
 		logger.info("getOrgLocationsByLocationCode " + orgLocations.getCountry());
 	}}
 	
-	@Test
-	public void getOrgLocationsByOrgCode() throws Exception{
-		OrgLocations orgLocations = new OrgLocations();
-		Org org = new Org();
-
-		orgLocations.setId(1l);
-		orgLocations.setLocationCode("sleadIN");
-		org.setId(1L);
-
-		org.setOrgCode("slead");
-		orgLocations.setOrg(org);
-		orgLocations = orgLocationService.getOrgLocationsByOrgCode(org.getId().toString());
-		if(orgLocations != null)
-		{
-		logger.info("getOrgLocationsByOrgCode " + orgLocations.getCountry());
-	}}
 	
 	@Test
 	public void saveOrgLocations() throws Exception{

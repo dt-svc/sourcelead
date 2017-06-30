@@ -132,12 +132,12 @@ public class ClientController {
 			for (OrgRelations orgRelation : clientsList) {
 				if(null != orgRelation.getLocationId() && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getResponderLocationId() != null){
-						orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
 					}
 				}
 				if(null != orgRelation.getResponderLocationId() && null != orgRelation.getResponderLocationId().getId() && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getLocationId() != null){
-						orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setClientName(orgRelation.getLocationId().getOrgLocationName());
 					}
 				}
 				 //to fetch user details by usercode 

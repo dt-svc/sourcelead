@@ -77,7 +77,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -142,15 +142,17 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10">
-							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="form-control" field-name="Category Type" data-validation="required">
-								   <option value="">Select Category Type</option>				 							   
-								   <c:forEach var="expCat" items="${expensesCategoryList}">
-						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
-		                	       </c:forEach>
-								</select>
-							</div>
+							<div class="col-md-4 mb10 chosen-custom">
+							
+															
+						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
+						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required">
+							<option value="">Select Category Type</option>
+							<c:forEach var="expCat" items="${expensesCategoryList}">
+							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id}">${expCat.expensesName}</option>
+							</c:forEach>
+						</select>
+					</div>
 							<div class="col-md-4 mb10">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
