@@ -289,8 +289,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 ContractsTemplate contractsTemplate = new ContractsTemplate();
-		 contractsTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(template).toString());
-		 contractsTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(template).toString());
+		 contractsTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(template).toString());
+		 contractsTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(template).toString());
 		 contractsTemplate.setTemplateContent("");
 		 contractsTemplate.setOrgLocationId(orgLocations);
 		 contractsTemplate.setTemplateType(templateType);

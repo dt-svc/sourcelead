@@ -627,7 +627,7 @@ public class SubmissionsRestController {
 		globalVarsMap.put("loginUser", emailMessage.getFromName());
 		globalVarsMap.put("requirementName", requirement.getJobTitle());
 
-		globalVarsMap.put("loginOrgName", loginOrg.getOrgName());
+		globalVarsMap.put("loginOrgName", loginOrgLocations.getOrgLocationName());
 		globalVarsMap.put("shortListApplicantCount", shotListCount.toString());
 
 		if ((requirement.getMaxExp() == null || requirement.getMaxExp() == "" || requirement.getMaxExp() == "undefiend")
