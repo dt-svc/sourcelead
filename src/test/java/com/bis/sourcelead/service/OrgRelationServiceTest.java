@@ -88,7 +88,7 @@ public class OrgRelationServiceTest {
 		if(orgRelations != null)
 		{
 		logger.info("getClientByOrgLocationId "+ orgRelations.getStatus());
-		//logger.info("getClientByOrgLocationId "+orgRelations.getClientLocationId().getOrg().getOrgName());
+		//logger.info("getClientByOrgLocationId "+orgRelations.getClientLocationId().getOrgLocationName());
 	}
 	}
 	

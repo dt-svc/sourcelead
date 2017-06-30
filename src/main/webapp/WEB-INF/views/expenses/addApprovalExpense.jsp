@@ -21,7 +21,7 @@
       </div>
       <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; Add Expense</div> 
@@ -45,13 +45,13 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" id="expensePurpose" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+					<div class="col-md-9" id="errProject">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 							 <option value="">Select Project</option>
 							<c:forEach var="projects" items="${projectsList}">
 							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
@@ -62,7 +62,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -72,16 +72,16 @@
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
-						  <div class="col-lg-6">
-							  <input type="text" class="form-control calendar" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+						  <div class="col-lg-6" id="errEnd">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
 	            </div>
-	             <div class="form-group">
+	             <div class="form-group" id="errEmployeeRemove">
 				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required">
+					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="removeErrProjectEmployee();">
 					    <c:forEach var="projectMember" items="${projectMembers}">
 							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
 					   </c:forEach>
@@ -94,6 +94,12 @@
 	</div>
 </div>
 <div class="expensHead">
+<div class="form-group">
+<span class="col-md-3">Expenses Amount Total:</span>
+<div class="col-md-9">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+</div>
+</div>
 	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
@@ -122,7 +128,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
@@ -132,9 +138,9 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 mb10 chosen-custom">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="form-control" field-name="Category Type" data-validation="required">
+								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required">
 								   <option value="">Select Category Type</option>				 							   
 								   <c:forEach var="expCat" items="${expensesCategoryList}">
 						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
@@ -211,7 +217,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -224,11 +230,13 @@
 </div>
   <div class="form-footer clearfix mt">
 		<div class="col-lg-12">
+		
+		
 			<div class="pull-right">
 			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expensesApprovalList'/>'" class="btn btn-sm btn-default ml10">
+			<input type="button" value="Cancel"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 		</div>
    </div>
   </div>
@@ -485,7 +493,11 @@ function getClientBasedOnSelectedProject(){
 					  var projectStartDate = json.startDateStr;
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }		
+		    	  }	
+		    	  $('#expensePurpose').val('');
+		    	  $('#projectStartDateExpensesId').val('');
+		    	  $('#projectEndDateExpensesId').val('');
+		    	    
 	    	   }
 	       },
 	});
@@ -504,6 +516,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
@@ -514,6 +527,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
 					}
 				});
 	}
@@ -535,4 +549,22 @@ function expensesDateCheck(){
 	}
 }
 </script>
+
+<script>
+function removeErrStr(){
+	$('#dateDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrEnd(){
+	$('#errEnd').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProject(){
+	$('#errProject').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProjectEmployee(){
+	$('#errEmployeeRemove').find('p.jquery_form_error_message').remove(); 
+}
+</script>
+
+
+
 <jsp:include page="../masterFooter.jsp" />

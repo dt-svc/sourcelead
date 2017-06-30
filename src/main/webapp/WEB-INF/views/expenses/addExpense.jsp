@@ -77,7 +77,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -132,7 +132,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
@@ -142,15 +142,17 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10">
-							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="form-control" field-name="Category Type" data-validation="required">
-								   <option value="">Select Category Type</option>				 							   
-								   <c:forEach var="expCat" items="${expensesCategoryList}">
-						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
-		                	       </c:forEach>
-								</select>
-							</div>
+							<div class="col-md-4 mb10 chosen-custom">
+							
+															
+						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
+						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required">
+							<option value="">Select Category Type</option>
+							<c:forEach var="expCat" items="${expensesCategoryList}">
+							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id}">${expCat.expensesName}</option>
+							</c:forEach>
+						</select>
+					</div>
 							<div class="col-md-4 mb10">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
@@ -221,7 +223,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -237,7 +239,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
+			 <input type="button" value="Cancel"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 			</div>
 		  </div>
 		</div>

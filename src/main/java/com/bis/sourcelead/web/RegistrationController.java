@@ -71,9 +71,6 @@ public class RegistrationController {
 	 @Autowired
 	 private NotificationsService notificationsService;
 	 
-	 @Autowired
-	 private ModulesService moduleService;
-	 
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -138,7 +135,7 @@ public class RegistrationController {
 				 /*List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
 				 model.addObject("timezoneList", timezoneList);*/
 				 
-				 requirementSubModulesList = moduleService.getRequirementSubModules();
+				 requirementSubModulesList = modulesService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);
 				 
 			} catch (Exception e) {
@@ -179,14 +176,14 @@ public class RegistrationController {
 		    try {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
-		    	String modules = org.getModulesId();
+		    	String modules = orgLocations.getModulesId();
 		    	Long tabId = null;
 		    	Long moduleId = null;
 		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
 			    	List<Integer> moduleIds = new ArrayList<Integer>();
-					 for (String s : org.getModulesId().split(",")){
+					 for (String s : orgLocations.getModulesId().split(",")){
 						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
@@ -208,10 +205,19 @@ public class RegistrationController {
 			    		}
 			    	}
 			    	
-					
-			    	org.setModulesId(modules);
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
+					
+					orgLocations.setModulesId(modules);
+					if(!isNullOrEmpty(spocUUID)){
+						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+						if(null != orgSpoc){
+							orgLocations.setUser(orgSpoc.getVendorUser());
+						}
+					}
+					
+					orgLocationService.updateOrgLocations(orgLocations);
+					
 		    	}
 				 
 				
@@ -268,19 +274,19 @@ public class RegistrationController {
 				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(orgId);
 
 				List<Modules> modulesList = null;
 				List<Modules> requirementSubModulesList = null;
 				
-				if(null != orgLocations.getOrg().getModulesId()){
+				if(null != orgLocations.getModulesId()){
 					ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
 					ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
 					modulesList = modulesService.getSourceLeadModules();
-					requirementSubModulesList = moduleService.getRequirementSubModules();
+					requirementSubModulesList = modulesService.getRequirementSubModules();
 					
 					List<Long> orgModulesList = new ArrayList<Long>();
-					 for (String s : orgLocations.getOrg().getModulesId().split(",")){
+					 for (String s : orgLocations.getModulesId().split(",")){
 						 orgModulesList.add(Long.parseLong(s));
 					 }
 					 
@@ -325,11 +331,11 @@ public class RegistrationController {
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 		@RequestMapping(value = "/getOrgRegisteredUsers")
-		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "orgId", required = false) Long orgId,
+		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
 		    String resultJson;
-		    OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
 
 			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
 			List<User> orgUsersList = new ArrayList<User>(); 

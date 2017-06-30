@@ -670,7 +670,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    
@@ -683,10 +683,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbReqStyle = new StringBuilder();
-	        sbReqStyle.append(orgLocations.getOrg().getOrgName()).append(" ");
+	        sbReqStyle.append(orgLocations.getOrgLocationName()).append(" ");
 
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrg().getOrgName()).toString(),boldFont);
+            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).toString(),boldFont);
 
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
@@ -812,7 +812,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		timeSheetApprovalArray[2] = "--";
 	}
 	if(projMembers.getProjects().getOrgRelationId() != null){
-		timeSheetApprovalArray[3] = projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName();
+		timeSheetApprovalArray[3] = projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName();
 	}else{
 		timeSheetApprovalArray[3] = "--";
 	}
@@ -913,8 +913,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbPipeHearder = new StringBuilder();
-	        sbPipeHearder.append(loginOrgLocation.getOrg().getOrgName()).append(" ");
-            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).toString(),boldFont);
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ");
+            Paragraph para = new Paragraph(orderedListStringBuilder.append(loginOrgLocation.getOrgLocationName()).toString(),boldFont);
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
@@ -947,7 +947,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		StringBuilder excelStringBuilder=new StringBuilder();
-		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrg().getOrgName()).append("_").append(dateFormat.format(new Date())).toString());
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrgLocationName()).append("_").append(dateFormat.format(new Date())).toString());
 		Row writeRow = null;
 		// to get list of project members from data base.
 		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
@@ -979,7 +979,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}
 		// output the file using file output stream.
 		StringBuilder tempFileBuilder=new StringBuilder();
-		file = File.createTempFile(tempFileBuilder.append(orgLocations.getOrg().getOrgName()).append("_TimeSheet_").append(dateFormat.format(new Date())).toString(),".xls");
+		file = File.createTempFile(tempFileBuilder.append(orgLocations.getOrgLocationName()).append("_TimeSheet_").append(dateFormat.format(new Date())).toString(),".xls");
 		file.setReadable(true);
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
@@ -1006,7 +1006,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}
 		
 		if (projMembers.getProjects().getOrgRelationId() != null) {
-			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			writeRow.createCell(3).setCellValue(projMembers.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			createExcelsheet.setColumnWidth(3, 10000);
 		}
 		if (projMembers.getProjects().getProjectName() != null) {

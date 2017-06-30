@@ -419,10 +419,10 @@ public class InvoiceRestController {
 			boolean isInvoiceDueDate = false;
 			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 			}
 			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 			}
 				
 			StringBuilder contactName = new StringBuilder();
@@ -548,7 +548,7 @@ public class InvoiceRestController {
 	     		OrgLocations  LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	     		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	     		 if(invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
-					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 					StringBuilder contactName = new StringBuilder();
 					if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
@@ -560,7 +560,7 @@ public class InvoiceRestController {
 					}
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
-					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 					StringBuilder contactName = new StringBuilder();
 					if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
@@ -997,7 +997,7 @@ public class InvoiceRestController {
 			globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
 			globalVarsMap.put("date", createdDate);
 			globalVarsMap.put("dueDate", dueDate);
-			globalVarsMap.put("orgName", loginOrgLocation.getOrg().getOrgName());
+			globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
 			StringBuilder stringBuilderLoginname = new StringBuilder(); 
 			globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
@@ -1084,7 +1084,7 @@ public class InvoiceRestController {
 			globalVarsMap.put("invoiceID", invoice.getInvoiceId());
 			globalVarsMap.put("totalAmount", invoice.getTotal());
 			globalVarsMap.put("reason", invoice.getRejectReason());
-			globalVarsMap.put("orgName", loginOrgLocation.getOrg().getOrgName());
+			globalVarsMap.put("orgName", loginOrgLocation.getOrgLocationName());
 			StringBuilder stringBuilderLoginname = new StringBuilder(); 
 			globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 
@@ -1330,7 +1330,7 @@ public class InvoiceRestController {
 			File file= null;
 			String convertedExportStartDate = conversionUtil.getDateAsString(startDateUTC);
 			String convertedExportEndDate = conversionUtil.getDateAsString(endDateUTC);
-			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrg().getOrgName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType);
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -1530,10 +1530,10 @@ public class InvoiceRestController {
 		logger.info("Final Response time = " + elapsedTime + " Millis");
 		for(Invoice invoice : invoiceList){
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+				invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 			}
 			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+				invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 			}	
 			invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
 			invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));

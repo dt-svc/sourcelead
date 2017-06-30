@@ -751,7 +751,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("applicantName", emailMessage.getFirstName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
-			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
@@ -978,7 +978,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("applicantLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
-			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
@@ -1121,10 +1121,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    
 			    if(requirementInterview.getSubmissionId().getRequirement().getClientId() != null){
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrg().getOrgName());
+						requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(requirementInterview.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrg().getOrgName());
+						requirementInterview.setClientName(requirementInterview.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 			    
@@ -1214,7 +1214,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("vendorLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
-			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
@@ -1420,7 +1420,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			    RequirementSubmission requirementSubmission = requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementInterview.getSubmissionId().getId(),orgLocationsId);
 			    if(requirementSubmission != null){
 				   OrgLocations orgLocations = orgLocationService.getOrgLocations(requirementSubmission.getOrgLocations().getId());
-				   requirementInterview.setClientName(orgLocations.getOrg().getOrgName());
+				   requirementInterview.setClientName(orgLocations.getOrgLocationName());
 			    }
 			    
 		}
@@ -1566,7 +1566,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 
 		if (null != reqSubmission.getVendorLocationId()) {
-			globalVarsMap.put("LoginorgUserLocation", reqSubmission.getVendorLocationId().getOrg().getOrgName());
+			globalVarsMap.put("LoginorgUserLocation", reqSubmission.getVendorLocationId().getOrgLocationName());
 		} else {
 			globalVarsMap.put("Details", "--");
 		}
