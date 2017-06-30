@@ -69,7 +69,7 @@ padding-bottom: 55px;
 		<div class="row">
 		  		<div id="loading"></div>
 		  			<form id="candidate_form" name="candidate_form" method="post" >
-				          <div class="col-md-8  project_wrap_table" id="candidateDivId">
+				          <div class="col-md-8  project_wrap_table publicpageTop" id="candidateDivId">
 				          
 							  <div class="clearfix">
 							  <h4>Candidates / Consultants</h4>
@@ -87,7 +87,7 @@ padding-bottom: 55px;
 								    <div class="clearfix"></div>
 						          <div class="col-md-6 mt">
 						            <div class="input-group">
-						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
+						              <label class="input-group-btn"> <b class="btn btn-default"><i class="fa fa-paperclip"></i>
 						                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
 						                </b> </label>
 						              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="File Attachment">

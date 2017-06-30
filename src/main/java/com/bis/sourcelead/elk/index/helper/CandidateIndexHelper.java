@@ -42,8 +42,11 @@ public class CandidateIndexHelper {
 			candidateIndex.setNoticePriod(candidate.getNoticePeriod());
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
+			candidateIndex.setLocation(candidate.getLocation());
+			candidateIndex.setZipCode(candidate.getZipCode());
+			candidateIndex.setLatitude(candidate.getLatitude());
+			candidateIndex.setLongitude(candidate.getLongitude());			
 			
-						
 			if(null != candidate.getRecruiterUserId()){
 				candidateIndex.setRecruiterUserId(candidate.getRecruiterUserId().getId());
 			}else{

@@ -647,7 +647,7 @@ function candidateSideBar(candidateId){
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu">'; 
+			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 
@@ -2208,6 +2208,7 @@ function getCities(){
 		 };
 	</script> -->
 <!-- Add candidate Popup -->
+	
       <div class="addcandidate-popup">
 				  <div class="row">
                       <div class="col-md-offset-2 col-md-8">

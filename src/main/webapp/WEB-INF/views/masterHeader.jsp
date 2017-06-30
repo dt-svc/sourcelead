@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- 
+ <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -99,9 +99,13 @@ width: 11.5%;
 .newdate .fa-calendar {
 	position: absolute; font-size: 16px; color: #666; top: 8px; right: 18px; 
 }
-
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+	display:none;
+}
 </style>
-
 <!-- <script>
 $(window).load(function() {
 	var url = window.location.href;
@@ -150,7 +154,7 @@ document.onkeydown=function(e){
 	32 = space
 	188 = comma
 -->
-
+ 
 <script type="text/javascript">
 function tagItBykeyForEmails(e){
 	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
@@ -1386,4 +1390,128 @@ $('body').on('blur', '#inviteCompany_form', function() {
 	$("#inviteCompany_form").showHelpOnFocus();
 	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<!-- 
+<script>
+// This example displays an address form, using the autocomplete feature
+// of the Google Places API to help users fill in the information.
+function initLocationAuto(id) {
+// 	geolocate();
+    initialize(id);
+}
+/* $("#autocomplete").on('focus', function () {
+    
+});
+ */
+var placeSearch, autocomplete;
+var componentForm = {
+    locality: 'long_name',
+    administrative_area_level_1: 'long_name',
+    country: 'long_name',
+    postal_code: 'short_name'
+};
+
+function initialize(id) {
+	   autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
+			        types: ['geocode']
+			    });
+	   
+    /* autocomplete = new google.maps.places.Autocomplete((document.getElementById(id)), {
+    	types: ['(cities)']
+    }); */
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        fillInAddress();
+    });
+}
+function fillInAddress() {
+    var place = autocomplete.getPlace();
+	document.getElementById("latitude").value = place.geometry.location.lat();
+    document.getElementById("longitude").value = place.geometry.location.lng();
+	
+    for (var component in componentForm) {
+        document.getElementById(component).value = '';
+        document.getElementById(component).disabled = false;
+    }
+
+    for (var i = 0; i < place.address_components.length; i++) {
+        var addressType = place.address_components[i].types[0];
+        if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+        }
+    }
+}
+function geolocate() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+</script> -->
+
+<script>
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId);
+    geolocate(latitudeId,longtitudeId);
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId) {
+    autocomplete = new google.maps.places.Autocomplete(
+    /** @type {HTMLInputElement} */ (document.getElementById(locationId)), {
+        types: ['geocode']
+    });
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+  
+  $("#"+countryId).val(address.country).change();
+  $("#"+stateId).val(address.state).change();
+  $("#"+cityId).val(address.city).change();
+   $("#"+zipCodeId).val(address.zipcode).change();
+});
+}
+function geolocate(latitudeId,longtitudeId) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+</script>
+<script>
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId){
+	$("#"+locationId).val('');
+	$("#"+countryId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+}
 </script>

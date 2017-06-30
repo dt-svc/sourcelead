@@ -220,6 +220,21 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("city") && jsonObj.getString("city") !=null){
 		candidate.setCity(jsonObj.getString("city"));
 		}
+		if(jsonObj.has("location") && jsonObj.getString("location") !=null){
+			candidate.setLocation(jsonObj.getString("location"));
+		}
+		if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") !=null){
+			candidate.setZipCode(jsonObj.getString("zipcode"));
+		}
+		
+		if(jsonObj.has("latitude") && jsonObj.getString("latitude") !=null){
+			candidate.setLatitude(jsonObj.getString("latitude"));
+		}
+		
+		if(jsonObj.has("longitude") && jsonObj.getString("longitude") !=null){
+			candidate.setLongitude(jsonObj.getString("longitude"));
+		}
+		
 		if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
 		candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 		}
