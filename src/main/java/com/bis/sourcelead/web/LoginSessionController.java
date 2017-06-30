@@ -724,7 +724,7 @@ public class LoginSessionController {
 
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-			SourceLeadSessionManager.setSessionAttribute(request, "loginOrg", org.getOrgName());
+			SourceLeadSessionManager.setSessionAttribute(request, "loginOrg", orgLocations.getOrgLocationName());
 			
 			List<Long> tabIds = tabsService.getTabsIdsListByUserRoleIdAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 			if(null != tabIds){

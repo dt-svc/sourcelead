@@ -487,7 +487,7 @@ public class VendorRestController {
 						}
 					}
 				}
-			    File file = clientVendorExport.getVendorDetailsFile(vandorsList,org.getOrgName(),exportType);
+			    File file = clientVendorExport.getVendorDetailsFile(vandorsList,orgLocations.getOrgLocationName(),exportType);
 			    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
 					mimeType = "application/octet-stream";
@@ -523,7 +523,7 @@ public class VendorRestController {
 		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    List<OrgSpoc> vandorsContactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Client",status,vendorIds,invitationStatus);
 			
-			 File file = clientVendorExport.getVendorContactDetailsFile(vandorsContactList,org.getOrgName(),exportType);
+			 File file = clientVendorExport.getVendorContactDetailsFile(vandorsContactList,orgLocations.getOrgLocationName(),exportType);
 			    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
 					mimeType = "application/octet-stream";
