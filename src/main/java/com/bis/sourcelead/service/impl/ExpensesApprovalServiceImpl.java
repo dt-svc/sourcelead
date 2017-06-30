@@ -142,7 +142,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 								String empType = expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUserEmploymentType();
 								if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getOrgLocations().getId(), expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getOrgRelationId().getId());
-									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+									expensesApproverHierarchy.setUserTypeVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
 									expensesApproverHierarchy.setExpenseEmpUserType(empType);
 								 }else{
 									 expensesApproverHierarchy.setExpenseEmpUserType(empType);
@@ -209,7 +209,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("- Employee Expenses");
+	        userStyle.append(orgLoc.getOrgLocationName()).append(" ").append("- Employee Expenses");
 	       
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
@@ -294,7 +294,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 							&& ((expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C") ||
 									(expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")) ))){
 						 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseId.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseId.getProjectMembers().getEmployee().getOrgRelationId().getId());
-						expenseArray[4] = orgRelation.getResponderLocationId().getOrg().getOrgName();
+						expenseArray[4] = orgRelation.getResponderLocationId().getOrgLocationName();
 					}else{
 						expenseArray[4] = "--";
 					}
@@ -395,7 +395,7 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 	File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName()+ "_" + dateFormat.format(new Date()));
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName()+ "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
 		TimeSheetSubmissionCount requirementSubCount=null;
 		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
@@ -406,7 +406,7 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 			column++;
 		}
 		 try {
-			file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
+			file = File.createTempFile(orgLoc.getOrgLocationName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -459,7 +459,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							&& ((expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C") ||
 									(expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")) ))){
 						 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseId.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseId.getProjectMembers().getEmployee().getOrgRelationId().getId());
-						 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
 						 createExcelsheet.autoSizeColumn(4);
 					}
 				}

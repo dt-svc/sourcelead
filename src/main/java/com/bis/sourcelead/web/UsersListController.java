@@ -203,7 +203,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  				e.printStackTrace();
  			}	 	
  		}else{
- 			file = userRoleService.getPdfFile(activeList,inactiveList,notLoggedInList,userRolesList,userState,org.getOrgName());
+ 			file = userRoleService.getPdfFile(activeList,inactiveList,notLoggedInList,userRolesList,userState,orgLocations.getOrgLocationName());
  		
  		}
 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());

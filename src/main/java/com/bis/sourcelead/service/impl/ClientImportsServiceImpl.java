@@ -291,7 +291,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			if(orgLocationsList != null)
 			{
 				for(OrgLocations orgLocation: orgLocationsList){
-				if(clientName.equalsIgnoreCase(orgLocation.getOrg().getOrgName())){
+				if(clientName.equalsIgnoreCase(orgLocation.getOrgLocationName())){
 					orgLocations =  orgLocation;
 				}
 				}
@@ -394,9 +394,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			  jsonObj.put("roleTypeId", roleTypeId);
 	              OrgRelations  orgRelation = null;
 	              for(OrgRelations org : orgList){
-	                  if(orgName.equalsIgnoreCase(org.getResponderLocationId().getOrg().getOrgName())){
+	                  if(orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())){
 	                      orgRelation = org;
-	                  }else if(orgName.equalsIgnoreCase(org.getLocationId().getOrg().getOrgName())){
+	                  }else if(orgName.equalsIgnoreCase(org.getLocationId().getOrgLocationName())){
 	                      orgRelation = org;
 	                  }
 	              }
@@ -533,15 +533,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						client.setReason("Invalid Email");
 						return false;
 					}else if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
-						Org org = null;
+						OrgLocations orgLoc = null;
 						  for(OrgRelations orgRelation : orgList){
-			                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())){
-			                	  org = orgRelation.getResponderLocationId().getOrg();
-			                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())){
-			                	  org = orgRelation.getLocationId().getOrg();
+			                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrgLocationName())){
+			                	  orgLoc = orgRelation.getResponderLocationId();
+			                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrgLocationName())){
+			                	  orgLoc = orgRelation.getLocationId();
 			                  }
 			              }
-						 OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+						 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLoc.getId());
 						 UserRole userRole = null;
 						 userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgLocation.getId());
 						 if(userRole == null){
@@ -737,9 +737,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllClientsByOrgLocationId(orgLocationId);
 			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
 			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
-				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
+				list.add(orgRelations.getResponderLocationId().getOrgLocationName());
 			}else{
-				list.add(orgRelations.getLocationId().getOrg().getOrgName());
+				list.add(orgRelations.getLocationId().getOrgLocationName());
 			}
 			}
 			String [] roleList = list.toArray(new String[list.size()]);
@@ -1051,9 +1051,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
 			for(OrgRelations orgRelations :vandorsListByOrgLocationId){
 			if(orgLocationId.longValue() == orgRelations.getLocationId().getId().longValue() ){
-				list.add(orgRelations.getResponderLocationId().getOrg().getOrgName());
+				list.add(orgRelations.getResponderLocationId().getOrgLocationName());
 			}else{
-				list.add(orgRelations.getLocationId().getOrg().getOrgName());
+				list.add(orgRelations.getLocationId().getOrgLocationName());
 			}
 				
 			}
@@ -1319,7 +1319,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					if(isValidate){
 						UserRole userRole1 = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
 						if(userRole1 == null){
-							if(!org.getOrgName().equalsIgnoreCase(clientOrVendor.getOrgName())){
+							if(!orgLocations.getOrgLocationName().equalsIgnoreCase(clientOrVendor.getOrgName())){
 								List<OrgRelations> orgRelationsList;
 								if("Client".equalsIgnoreCase(responderType)){
 									orgRelationsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
@@ -1335,9 +1335,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 											//Org Duplicate 
 											String orgName = "";
 											if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-												orgName = orgRelations.getLocationId().getOrg().getOrgName();
+												orgName = orgRelations.getLocationId().getOrgLocationName();
 											}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-												orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+												orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 											}
 											
 											
@@ -1351,15 +1351,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 														}else{
 															orgList = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 														}
-														 Org org1 = null;
+														 OrgLocations orgLoc = null;
 														  for(OrgRelations orgRelation : orgList){
-											                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())){
-											                	  org1 = orgRelation.getResponderLocationId().getOrg();
-											                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())){
-											                	  org1 = orgRelation.getLocationId().getOrg();
+											                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrgLocationName())){
+											                	  orgLoc = orgRelation.getResponderLocationId();
+											                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrgLocationName())){
+											                	  orgLoc = orgRelation.getLocationId();
 											                  }
 											              }
-														 OrgLocations vendorLocations = orgLocationService.getOrgLocationByOrgId(org1.getId());
+														 OrgLocations vendorLocations = orgLocationService.getOrgLocations(orgLoc.getId());
 														 OrgSpoc existedOrgSpoc = orgSpocService.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId(),vendorLocations.getId(),responderType);
 															if(existedOrgSpoc != null){
 																clientOrVendor.setReason("Spoc existed");
@@ -1429,9 +1429,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												for (OrgRelations orgRelations2 : orgRelationsList2) {
 													String orgName1 = "";
 													if(orgRelations2.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-														orgName1 = orgRelations2.getLocationId().getOrg().getOrgName();
+														orgName1 = orgRelations2.getLocationId().getOrgLocationName();
 													}if(orgRelations2.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-														orgName1 = orgRelations2.getResponderLocationId().getOrg().getOrgName();
+														orgName1 = orgRelations2.getResponderLocationId().getOrgLocationName();
 													}
 													
 													list.add(orgName1.toLowerCase());
@@ -1513,9 +1513,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 				  jsonObj.put("roleTypeId", roleTypeId);
 		              OrgRelations  orgRelation = null;
 		              for(OrgRelations org : orgList){
-		                  if(orgName.equalsIgnoreCase(org.getResponderLocationId().getOrg().getOrgName())){
+		                  if(orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())){
 		                      orgRelation = org;
-		                  }else if(orgName.equalsIgnoreCase(org.getLocationId().getOrg().getOrgName())){
+		                  }else if(orgName.equalsIgnoreCase(org.getLocationId().getOrgLocationName())){
 		                      orgRelation = org;
 		                  }
 		              }
@@ -1620,9 +1620,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			for (OrgRelations orgRelations2 : orgRelationsList2) {
 				String orgName = "";
 				if(orgRelations2.getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
-					orgName = orgRelations2.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations2.getLocationId().getOrgLocationName();
 				}if(orgRelations2.getLocationId().getId().longValue() == orgLocationsId.longValue()){
-					orgName = orgRelations2.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations2.getResponderLocationId().getOrgLocationName();
 				}
 				String existedClient = orgName;
 				String newClient = client.getOrgName();
@@ -1745,9 +1745,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			for (OrgRelations orgRelations2 : orgRelationsList) {
 				String orgName = "";
 				if(orgRelations2.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations2.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations2.getLocationId().getOrgLocationName();
 				}if(orgRelations2.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations2.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations2.getResponderLocationId().getOrgLocationName();
 				}
 				if(orgName.equals(bulkClientDetails.getOrgName())){
 					orgRelationsListbyClientName.add(orgRelations2);
@@ -1766,9 +1766,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			for (OrgRelations orgRelations : orgRelationsListWithDomain) {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName+"(with Domain)");
 			}
@@ -1776,9 +1776,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			for (OrgRelations orgRelations : orgRelationsListbyClientName) {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				if("Client".equalsIgnoreCase(responderType)){
 					orgRelations.setOrgName(orgName+"(with Client Name)");
@@ -1803,9 +1803,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			
 			String orgName = "";
 			if(orgRel.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRel.getLocationId().getOrg().getOrgName();
+				orgName = orgRel.getLocationId().getOrgLocationName();
 			}if(orgRel.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRel.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRel.getResponderLocationId().getOrgLocationName();
 			}
 			List<OrgRelations>  vandorsListByOrgLocationId;
 			if("Client".equalsIgnoreCase(responderType)){

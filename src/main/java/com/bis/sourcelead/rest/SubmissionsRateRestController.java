@@ -366,11 +366,13 @@ public class SubmissionsRateRestController {
 				
 			}else if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CLIENT || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.VENDOR || requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
 				User proposedUser = userService.getUserDetailsByUserCode(requirementRateSubmissionNegotiation.getCreatedBy());
-				if(null != proposedUser && null != proposedUser.getLastName() && !"".equalsIgnoreCase(proposedUser.getLastName())){
-					StringBuilder proposedSB = new StringBuilder();
-					requirementRateSubmissionNegotiation.setProposeByName(proposedSB.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
-				}else{
-					requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
+				if(null != proposedUser){
+					if(null != proposedUser.getLastName() && !"".equalsIgnoreCase(proposedUser.getLastName())){
+						StringBuilder proposedSB = new StringBuilder();
+						requirementRateSubmissionNegotiation.setProposeByName(proposedSB.append(proposedUser.getFirstName()).append(" ").append(proposedUser.getLastName()).toString());
+					}else{
+						requirementRateSubmissionNegotiation.setProposeByName(proposedUser.getFirstName());
+					}
 				}
 			}
 			
