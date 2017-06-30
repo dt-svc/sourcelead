@@ -1805,6 +1805,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		if("Full time offer".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			if(null != vendorContracts){
+				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractType(jsonObj.getString("contractType"));	
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setContactUser(savedContracts.getOwnerUserId());
