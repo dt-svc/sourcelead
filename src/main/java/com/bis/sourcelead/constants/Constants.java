@@ -57,6 +57,7 @@ public class Constants {
 	public static final String INVOICE_PAYABLES = "Payables";
 	public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
+	public static final String FULL_TIME_OFFER = "Full time offer";
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
 	public static final String TASK_NON_BILLABLE = "Non-Billable";

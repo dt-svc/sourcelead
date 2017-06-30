@@ -554,7 +554,9 @@ public class ContractRestController {
 		RequirementOffers requirementOffers = null;
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
-			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+			if(requirementOffers != null){
+				requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+			}
 		}
 		return commonUtil.toJSON(requirementOffers);
 	}
