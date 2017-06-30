@@ -3937,7 +3937,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         
         //result = result +"        <p>Applicant reject message here</p>";
         result = result +"    <div class='clearfix'>";
-        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'></textarea>";
+        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'   onkeypress='reqRemoveSpacesForRejectReason();'></textarea>";
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
@@ -3950,7 +3950,15 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     }
 }
 </script>
-
+<script>
+   function reqRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("reasonForReject").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForReject").removeAttr("data-validation");
+	    }
+	}
+</script>
 
 <script>
 function getRejectedCategory(){

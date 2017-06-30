@@ -1404,7 +1404,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	        
 			result = result + '			<div class="row">';
 			result = result + '				<div class="col-md-12">';
-			result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
+			result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" onkeypress="submissionDetailsremoveSpaces();" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 			result = result + '				</div>';
 			result = result + '			</div>';
 			result = result + '			<div class="row">';
@@ -1429,7 +1429,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result + '<form id="request_form" name="request_form" action="upload" enctype="multipart/form-data" method="post">';
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
+		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" onkeypress="submissionDetailsremoveSpaces();" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
 		result = result + '				</div>';
 		result = result + '		    </div>';
 		/* result = result + '		    <div class="row">';
@@ -1488,7 +1488,15 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	
 </script>
 
-
+<script>
+   function submissionDetailsremoveSpaces() {
+	    var output = document.getElementById("comment").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#comment").removeAttr("data-validation");
+	    }
+	}
+</script>
 <%-- 
      @author : sarath kumar punnana 
      this script is for validate document
