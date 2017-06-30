@@ -451,7 +451,27 @@ function validateTemplateName(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Submission Templates</h2>
+      <!-- <h2>Submission Templates</h2> -->
+      <h2 class="pull-left">Submission Templates</h2>
+				<div class=" pull-left reportsH">
+			<a title="Templates"><i class="fa fa-newspaper-o"></i></a>
+			<div class="RePop openTemplates">
+				<ul>
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
+					<li><a href="/sourcelead/orgSubmissionTemplate"><span><i class="fa fa-newspaper-o"></i></span>Submission Templates</a></li>
+					</sec:authorize>
+					<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
+					<li><a href="/sourcelead/orgContractTemplate"><span><i class="fa fa-newspaper-o"></i></span>Contract Template</a></li>
+				    </sec:authorize>
+				    <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
+				    <li><a href="/sourcelead/onboardingTemplatesList"><span><i class="fa fa-file-text"></i></span>Onboarding Template</a></li>
+				    </sec:authorize>
+				    <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
+				    <li><a href="/sourcelead/offboardingTemplatesList"><span><i class="fa fa-file-text"></i></span>Offboarding Template</a></li>
+					</sec:authorize>
+				</ul>
+			</div>
+		</div>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgSubmissionTemplate'/>">Submission Template</a></div>
   </section>
