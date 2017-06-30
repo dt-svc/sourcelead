@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.FinalPayrollReport;
 
 @Service
 public interface EmployerPayrollCostService {
@@ -16,5 +18,7 @@ public interface EmployerPayrollCostService {
 	Integer saveEmployerPayrollCost(MultipartFile multipartFile,OrgLocations orgLocation,User user, JSONObject jsonObj)throws Exception;
 
 	List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation)throws Exception;
+
+	List<FinalPayrollReport> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 	
 }
