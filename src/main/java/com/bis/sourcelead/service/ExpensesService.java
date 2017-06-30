@@ -21,9 +21,9 @@ public interface ExpensesService {
 
 	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId) throws Exception;
 
-	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception;
+	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser, String approverType) throws Exception;
 
-	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception;
+	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser, String approverType) throws Exception;
 	
 	public File exportAllMyExpensesToPdf(List<Expenses> expensesList, OrgLocations orgLoc, User loginUser) throws Exception;
 
