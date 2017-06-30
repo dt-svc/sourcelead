@@ -293,6 +293,10 @@ public class RequirementHelper {
 				requirementIndex.setRewardGuaranteePeriod(requirement.getRewardGuaranteePeriod());
 			}
 			
+			if (null != requirement.getVisaType()) {
+				String[] visaTypes = requirement.getVisaType().split(",");
+				requirementIndex.setVisaTypes(visaTypes);
+			}
 
 		}
 		return requirementIndex;

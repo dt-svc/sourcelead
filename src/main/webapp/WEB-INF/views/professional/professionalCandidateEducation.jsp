@@ -41,7 +41,7 @@ function professionalCandidateEducation(candidateId){
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		
 		
-		result  = result + '   <div id="candidateEducationList" ></div>';
+		result  = result + '   <div id="candidateEducationList" class="datatable_filter"></div>';
 		
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -184,8 +184,8 @@ function candidateEducationList(candidateId){
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

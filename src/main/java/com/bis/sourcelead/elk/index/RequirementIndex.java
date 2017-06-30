@@ -159,6 +159,8 @@ public class RequirementIndex {
 	
 	private String referUUID;
 	
+	private String[] visaTypes;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -796,6 +798,16 @@ public class RequirementIndex {
 	public void setReferUUID(String referUUID)
 	{
 		this.referUUID = referUUID;
+	}
+
+	public String[] getVisaTypes()
+	{
+		return visaTypes;
+	}
+
+	public void setVisaTypes(String[] visaTypes)
+	{
+		this.visaTypes = visaTypes;
 	}
 
 	

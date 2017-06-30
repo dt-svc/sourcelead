@@ -115,7 +115,7 @@ $(document).ready(function() {
           </ul>
           <div class="clearfix"></div>
         </div>
-      <div id="refercontactListDiv"></div>
+      <div id="refercontactListDiv" class="datatable_filter"></div>
       </div>
 	</div>
   
@@ -191,8 +191,8 @@ function refercontactpagenation(){
 	
 	  $('#refercontactpagenationid').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[20, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

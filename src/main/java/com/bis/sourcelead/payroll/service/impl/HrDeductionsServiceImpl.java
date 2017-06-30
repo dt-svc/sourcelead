@@ -35,6 +35,7 @@ import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.util.ConversionUtil;
 
@@ -48,6 +49,9 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	PayrollHelper payrollHelper;
 
 	@Override
 	public Integer saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
@@ -66,9 +70,14 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int isValid = 0;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForHrDeductions(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					
@@ -179,6 +188,9 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 //							accountDeductionsList.add(accountDeductions);
 						}
 					}
+				}else{
+					return count;
+				}
 				}
 			
 			fis.close();
@@ -189,6 +201,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 		
 	}
 	
+
 	private HrDeductions saveHrDetails(HrDeductions hrDeductions) throws Exception {
 		return hrDeductionsDao.saveHRDeductions(hrDeductions);
 	}
@@ -259,5 +272,4 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	{
 		return hrDeductionsDao.getHrDeductionsDetailsbyId(hrDeductionId);
 	}
-
 }

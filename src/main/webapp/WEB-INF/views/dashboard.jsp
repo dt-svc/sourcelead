@@ -168,9 +168,7 @@ overflow-x: auto;
 	    
 	    <div class="clearfix"></div> 
 	    
-	    <sec:authorize access="hasRole('ROLE_VIEW_INTERVIEW')">
 	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	    
-	    </sec:authorize> 
 	  
 </section>
 

@@ -755,7 +755,6 @@ public class DashboardRestController {
 
 		}
 		
-		@PreAuthorize("hasRole('ROLE_VIEW_INTERVIEW')")
 		@RequestMapping(value = "/getInterviewsandTasks")
 		public String getInterviewsandTasks(String dateRange, HttpServletRequest request) throws Exception {
 			
