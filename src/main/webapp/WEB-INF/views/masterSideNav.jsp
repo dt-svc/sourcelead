@@ -35,7 +35,7 @@
 
         
       </div>
-      <div class="side-nav">
+      <div class="side-nav sidenav_inner">
         <ul class="list-unstyled">
         <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
