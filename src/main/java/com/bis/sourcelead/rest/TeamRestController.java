@@ -216,15 +216,21 @@ public class TeamRestController {
 			ids.add(Long.parseLong(id));
 		}
 		}
-		List<User> newUserList = new ArrayList<>();
+//		List<User> newUserList = new ArrayList<>();
 		List<User> userList = userService.getUserListExceptExistedTeamMembersList(ids, loginOrgLocation.getId());
-		for(User user :userList){
+		
+		/**
+		 * commented by Pavan Jampana
+		 * this piece of code is commented to allow employees as team members.
+		 */
+		/*for(User user :userList){
+			System.out.println(user.getId());
 			 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 			 if(!Constants.EMPLOYEE.equals(userRole.getUserType())){
 				 newUserList.add(user);
 			 }
-		}
-		resultJson = commonUtil.toJSON(newUserList);
+		}*/
+		resultJson = commonUtil.toJSON(userList);
 		return resultJson;
 	 } 
 	  
