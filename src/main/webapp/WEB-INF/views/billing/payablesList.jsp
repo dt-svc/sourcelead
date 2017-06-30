@@ -29,6 +29,11 @@ font-size: 13px; width: 75px;
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
 <section class="content-wraper">
     <section class="content-header clearfix">
+     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Payables</h2>
       </div>
@@ -342,7 +347,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
-	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
+	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
 	result = result +'          </div>                                                                                                ';
@@ -439,6 +444,8 @@ function saveReceivePayment(invoiceId){
 	        var form = $('#receivePayment-form')[0];
 	 	   var formData = new FormData(form); 
 	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#save_payment").attr("disabled", "disabled");
+     		$("#save_payment" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,
@@ -1404,5 +1411,10 @@ function generateAutomaticInvoice(){
     });  
 }
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	
+	 
+</script> 
  <jsp:include page="../masterFooter.jsp" />	

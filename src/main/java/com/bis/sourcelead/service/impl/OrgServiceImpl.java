@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
 
@@ -63,9 +64,6 @@ public class OrgServiceImpl implements OrgService {
 	public Org saveOrgSettings(OrgSettings orgSettings, MultipartFile multiFile, Org org) throws Exception {
 		
 		System.out.println(multiFile.getContentType());
-		org.setOrgName(orgSettings.getCompanyName());
-		org.setOrgDescription(orgSettings.getAboutCompany());
-		org.setOrgAddress(orgSettings.getAddress());
 		
         if(null != multiFile.getContentType() && !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")){
     	  try {
@@ -111,6 +109,12 @@ public class OrgServiceImpl implements OrgService {
 	public Org getOrgByOrgName(String orgName) {
 		return orgDao.getOrgByOrgName(orgName);
 		
+	}
+
+	@Override
+	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception
+	{
+		return orgDao.isLoginUserIsSuperAdmin(userId);
 	}
 	
 	

@@ -132,7 +132,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
@@ -221,7 +221,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -237,7 +237,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
+			 <input type="button" value="Cancel"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 			</div>
 		  </div>
 		</div>
