@@ -1104,7 +1104,7 @@ function cancel(candidateId){
 					  
 					  <div class="clearfix">
 						<div class="col-md-8">
-						<label>Visa</label>
+						<label>Immigration Status</label>
 							<div class="clearfix">
 								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
 								<c:forEach var="visa" items="${visaList}">
