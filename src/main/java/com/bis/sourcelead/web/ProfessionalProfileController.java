@@ -91,6 +91,9 @@ public class ProfessionalProfileController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
+				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+				model.addObject("documentsList", documentsList);
+				
 				Integer candidateResumeCount =  candidateResumesService.getCandidateResumeCountByResumeId(candidateId);
 				if(candidateResumeCount > 0 ){
 					model.setViewName("professional/profile");

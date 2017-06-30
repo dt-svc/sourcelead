@@ -138,9 +138,9 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 mb10 chosen-custom">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="form-control" field-name="Category Type" data-validation="required">
+								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required">
 								   <option value="">Select Category Type</option>				 							   
 								   <c:forEach var="expCat" items="${expensesCategoryList}">
 						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
