@@ -100,7 +100,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         			  orgLocations = userRole.getOrgLocations();
           			  org = orgLocations.getOrg();
     				try {
-    					modulesId = modulesService.getOrgRegisteredModules(org);
+    					modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
     				} catch (Exception e1) {
     					e1.printStackTrace();
     				} 

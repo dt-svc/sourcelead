@@ -102,11 +102,13 @@ public class AddExpensesRestController {
 				Projects project = projectMembers.getProjects();
 				if(null != project.getOrgRelationId()){
 					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
+
 					 if("Vendor".equalsIgnoreCase(orgRelation.getInitiatorType())){
-						 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrgLocationName());
 					 }else if("Client".equalsIgnoreCase(orgRelation.getInitiatorType())){
-						 project.setExpensesClientName(orgRelation.getLocationId().getOrg().getOrgName());
+						 project.setExpensesClientName(orgRelation.getLocationId().getOrgLocationName());
 					 }
+
 					}
 					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
@@ -185,7 +187,7 @@ public class AddExpensesRestController {
 			if(null != project){
 				if(null != project.getOrgRelationId()){
 					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
-					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrgLocationName());
 					}
 					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){

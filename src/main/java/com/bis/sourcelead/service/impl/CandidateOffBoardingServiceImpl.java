@@ -281,7 +281,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
         
          //getting the current EmailScenario by EmailScenario unique name and entity type
          EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_EMAIL);
-        // EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
         
          //covert subject,body and signature
@@ -290,8 +290,8 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
          String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
          String url = sourceleadUrl;
         
-         /*String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-         notificationScenario.setBody(notificationbody);*/
+         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+         notificationScenario.setBody(notificationbody);
 
         
         // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
@@ -305,7 +305,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
          //calling the sendEmail method of emailScenerioUtil
          emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
          String actionLink="";
-        //emailScenerioUtil.sendNotification(actionLink, loginUser, vendorUser, vendorOrgLoc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario);
 
 
     }

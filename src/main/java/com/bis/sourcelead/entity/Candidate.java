@@ -310,6 +310,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String vendorContactName;
 	 
+	 @Transient
+	 private Integer assignedProjectsCount;
+	 
 	@Transient
 	private String vendorOrgRelationId;
 	
@@ -1193,6 +1196,17 @@ public class Candidate implements Serializable{
 
 	public void setVendorContactName(String vendorContactName) {
 		this.vendorContactName = vendorContactName;
+	}
+
+	public Integer getAssignedProjectsCount()
+	{
+		return assignedProjectsCount;
+	}
+
+
+	public void setAssignedProjectsCount(Integer assignedProjectsCount)
+	{
+		this.assignedProjectsCount = assignedProjectsCount;
 	}
 
 

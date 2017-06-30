@@ -43,4 +43,6 @@ public interface OrgDao {
 
 	public Org getOrgByOrgName(String orgName);
 	
+	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception;
+	
 }

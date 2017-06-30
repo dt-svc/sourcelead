@@ -124,8 +124,16 @@ public class AddClientVendorELK {
 								   if(null != rs2.getString("CITY")){
 									   clientVendorIndex.setResponderCity(rs2.getString("CITY"));
 								   }
+								   if(null != rs2.getString("ORG_NAME")){
+									   clientVendorIndex.setResponderOrgName(rs2.getString("ORG_NAME"));
+								   } 
+								   if(null != rs2.getString("WEB_SITE")){
+									   clientVendorIndex.setResponderWebSite(rs2.getString("WEB_SITE"));
+								   }
 								   
-								   String sql3 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
+								   
+								   
+							/*	   String sql3 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
 									Statement stmt3 = conn.createStatement();
 									ResultSet rs3 = stmt3.executeQuery(sql3);
 									if(rs3 != null){
@@ -137,7 +145,7 @@ public class AddClientVendorELK {
 												   clientVendorIndex.setResponderWebSite(rs3.getString("WEBSITE"));
 											   }
 									    }
-				    	           }
+				    	           }*/
 						    }
 							
 	    	           }
@@ -156,8 +164,14 @@ public class AddClientVendorELK {
 								   if(null != rs4.getString("CITY")){
 									   clientVendorIndex.setInitiatorCity(rs4.getString("CITY"));
 								   }
+								   if(null != rs4.getString("ORG_NAME")){
+									   clientVendorIndex.setInitiatorOrgName(rs4.getString("ORG_NAME"));
+								   } 
+								   if(null != rs4.getString("WEB_SITE")){
+									   clientVendorIndex.setInitiatorWebSite(rs4.getString("WEB_SITE"));
+								   }
 								   
-								   String sql5 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
+							/*	   String sql5 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+orgId+"' ";
 									Statement stmt5 = conn.createStatement();
 									ResultSet rs5 = stmt5.executeQuery(sql5);
 									if(rs5 != null){
@@ -169,7 +183,7 @@ public class AddClientVendorELK {
 												   clientVendorIndex.setInitiatorWebSite(rs5.getString("WEBSITE"));
 											   }
 									    }
-				    	           }
+				    	           }*/
 						    }
 							
 	    	           }

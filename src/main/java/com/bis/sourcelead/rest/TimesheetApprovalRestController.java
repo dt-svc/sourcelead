@@ -375,12 +375,12 @@ public class TimesheetApprovalRestController {
                	        	
                	        	if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId() != null && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
         						if(projects.getOrgRelationId().getResponderLocationId() != null){
-        							timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).append("</option>");
+        							timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getResponderLocationId().getOrgLocationName()).append("</option>");
         						}
         					}
         					if(null != projects.getOrgRelationId().getResponderLocationId() && null != projects.getOrgRelationId().getResponderLocationId().getId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
         						if(projects.getOrgRelationId().getLocationId() != null){
-        							timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getLocationId().getOrg().getOrgName()).append("</option>");
+        							timesheetApprovalDiv.append("<option ").append(isSelected.toString()).append("  value='").append(projects.getOrgRelationId().getId()).append("'>").append(projects.getOrgRelationId().getLocationId().getOrgLocationName()).append("</option>");
         						}
         					}
                	        });
@@ -491,10 +491,10 @@ public class TimesheetApprovalRestController {
 		   timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>");	 
 		 }
 	     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'>").append(projectMember.getProjects().getProjectName()).append("<span title='").append(projectMember.getProjects().getProjectName()).append("'>").append("</span></div></td>");
-	     timesheetApprovalDiv.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName() : "--")).append("</div></td>");
+	     timesheetApprovalDiv.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName() : "--")).append("</div></td>");
 	     if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType()) && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 	    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-	    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("'>").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("</b></span></div></td>"); 
+	    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("</b></span></div></td>"); 
 	     }else{
 	     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>"); 
 	     }
@@ -682,7 +682,7 @@ public class TimesheetApprovalRestController {
 						 
 						 if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType()) && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 					    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()+","+orgRelation.getResponderLocationId().getOrg().getOrgName()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()+"<br/>"+orgRelation.getResponderLocationId().getOrg().getOrgName()).append("</b></span></div></td>"); 
+					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()+","+orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()+"<br/>"+orgRelation.getResponderLocationId().getOrgLocationName()).append("</b></span></div></td>"); 
 					     }else if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
 					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()).append("</b></span></div></td>"); 
 					     }else{
@@ -701,12 +701,12 @@ public class TimesheetApprovalRestController {
 					     if(null != projectMember.getProjects().getOrgRelationId()){
 					    	 if(null != projectMember.getProjects().getOrgRelationId().getLocationId() && projectMember.getProjects().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjects().getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 		     						if(projectMember.getProjects().getOrgRelationId().getResponderLocationId() != null){
-		     							timesheetApprovalDiv.append("<td><div>").append(projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).append("</div></td>");
+		     							timesheetApprovalDiv.append("<td><div>").append(projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName()).append("</div></td>");
 		     						}
 		     					}
 		     					if(null != projectMember.getProjects().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjects().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjects().getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 		     						if(projectMember.getProjects().getOrgRelationId().getLocationId() != null){
-		     							timesheetApprovalDiv.append("<td><div>").append(projectMember.getProjects().getOrgRelationId().getLocationId().getOrg().getOrgName()).append("</div></td>");
+		     							timesheetApprovalDiv.append("<td><div>").append(projectMember.getProjects().getOrgRelationId().getLocationId().getOrgLocationName()).append("</div></td>");
 		     						}
 		     					}
 					     }else{

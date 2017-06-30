@@ -314,7 +314,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     
 				     if(null != projectMember.getProjects().getOrgLocationsId() && null != projectMember.getProjects().getOrgRelationId()){
 				    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getProjects().getOrgLocationsId().getId(), projectMember.getProjects().getOrgRelationId().getId());
-			    	 timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append(" ").append(",").append(" ").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("'>").append(projectMember.getProjects().getProjectName()).append("<br>").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("</i></div></td>");
+			    	 timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append(" ").append(",").append(" ").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjects().getProjectName()).append("<br>").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("</i></div></td>");
 				     }else{
 				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
 				     }
@@ -587,7 +587,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    StringBuilder sbTsReports =  new StringBuilder();
 	    sbTsReports.append("timesheetSheet_").append(dateFormat.format(new Date()));
 	    StringBuilder fileSB = new StringBuilder();
-	    file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".pdf");
+	    file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".pdf");
 	    file.setReadable(true);
 
 	    try {
@@ -598,10 +598,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        StringBuilder userStyle = new StringBuilder();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 			BaseColor myColor = WebColors.getRGBColor("#000000");
-			userStyle.append(orgLocations.getOrg().getOrgName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports");
+			userStyle.append(orgLocations.getOrgLocationName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports");
 			
 			StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrg().getOrgName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
+            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 			
@@ -692,14 +692,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			
 			if(null != projectMember.getProjects().getOrgLocationsId() && null != projectMember.getProjects().getOrgRelationId()){
 				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getProjects().getOrgLocationsId().getId(), projectMember.getProjects().getOrgRelationId().getId());
-				 timeSheetReportsArray[6] = orgRelation.getResponderLocationId().getOrg().getOrgName(); 
+				 timeSheetReportsArray[6] = orgRelation.getResponderLocationId().getOrgLocationName(); 
 				 
 			 }else{
 				 timeSheetReportsArray[6] = "--";
 			 }
 			if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrg().getOrgName();
+				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName();
 				
 			 }else{
 				 timeSheetReportsArray[7] = "--";
@@ -867,11 +867,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		StringBuilder sheetName = new StringBuilder();
 		
 		Pattern special = Pattern.compile ("[a-zA-Z0-9]*");
-		Matcher hasSpecial = special.matcher(orgLocations.getOrg().getOrgName());
+		Matcher hasSpecial = special.matcher(orgLocations.getOrgLocationName());
 		if(!hasSpecial.matches()){
-		 replacedOrgName = orgLocations.getOrg().getOrgName().replaceAll("\\\\", " ").replaceAll("/", " ").replaceAll("[^a-zA-Z0-9][-]", "");
+		 replacedOrgName = orgLocations.getOrgLocationName().replaceAll("\\\\", " ").replaceAll("/", " ").replaceAll("[^a-zA-Z0-9][-]", "");
 		}else{
-		 replacedOrgName = orgLocations.getOrg().getOrgName();
+		 replacedOrgName = orgLocations.getOrgLocationName();
 		}
 		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(replacedOrgName).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
 		Row writeRow = null;
@@ -958,12 +958,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		}
 		if(null != projectMember.getProjects().getOrgLocationsId() && null != projectMember.getProjects().getOrgRelationId()){
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getProjects().getOrgLocationsId().getId(), projectMember.getProjects().getOrgRelationId().getId());
-			 writeRow.createCell(7).setCellValue(orgRelation.getResponderLocationId().getOrg().getOrgName()); 
+			 writeRow.createCell(7).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
 			 createExcelsheet.autoSizeColumn(7);
 		}
 		if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-			writeRow.createCell(8).setCellValue(orgRelation.getResponderLocationId().getOrg().getOrgName()); 
+			writeRow.createCell(8).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
 			 createExcelsheet.autoSizeColumn(8);
 		}
 		if(null != projectMember.getProjects().getInvoiceFrequency()){
