@@ -68,6 +68,11 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "payableInvoiceCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "payableInvoiceCreateMsg");
+		}
 		model.setViewName("billing/payablesList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Payables);
@@ -75,7 +80,11 @@ public class BillingPayableController {
 	return model;
 	}
 	
-	
+	private boolean isNullOrEmpty(String msg) {
+		// TODO Auto-generated method stub
+		
+		return false;
+	}
 	
 	@RequestMapping(value = "/createPayables")
 	public ModelAndView createPayables(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
@@ -143,11 +152,11 @@ public class BillingPayableController {
 			for (OrgRelations orgRelations : vendorList) {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}
 				
 				if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName);
 				vendorsList.add(orgRelations);

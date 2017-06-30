@@ -36,6 +36,8 @@ $(document).ready(function(){
   <!-- Profile Content Start-->
     <div id="professionalInfoDiv"></div>
      <!-- Profile Content End -->
+     
+     
 </section>
 
 <script>
@@ -43,6 +45,7 @@ function getProfessionalInfo(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
+	var candidateId = '${SourceLeadWeb_candidateId}';
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getProfessionalInfo?candidateStatus="+candidateType, 	   
@@ -251,7 +254,7 @@ function getProfessionalInfo(){
 				 result = result +'	        </p>';
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
-				
+				 
 				 result = result +'	</section>';
 				 result = result +'	</div>';
 				 
@@ -264,6 +267,9 @@ function getProfessionalInfo(){
 			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+json.id+');">Employers</a></li>';
 			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+json.id+');">Education</a></li>';
 			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+json.id+');">Certifications</a></li>';
+			     result = result+'<li><a href="#tab-6" onclick="professionalCandidateDocuments('+json.id+');">Documents</a></li>';
+			     result = result+'<li><a href="#tab-7" onclick="professionalCandidateReferences('+json.id+');">References</a></li>';
+			     
 			     result = result +'     <div class="clearfix"></div>';
 			     result = result +'   </ul>';
 			     
@@ -281,6 +287,18 @@ function getProfessionalInfo(){
 				 result = result + '</div>';
 				 
 				 result = result + '<div id="tab-5" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-6" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-7" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-8" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-9" class="project_tabs_inn addPop">';
 				 result = result + '</div>';
 				 
 			     result = result +'	</div>';
@@ -302,4 +320,7 @@ function getProfessionalInfo(){
 <jsp:include page="professionalCandidateEmployers.jsp"></jsp:include>
 <jsp:include page="professionalCandidateEducation.jsp"></jsp:include>
 <jsp:include page="professionalCandidateCertificates.jsp"></jsp:include>
+<jsp:include page="professionalCandidateDocuments.jsp"></jsp:include>
+<jsp:include page="professionalCandidateReferences.jsp"></jsp:include>
+
 <jsp:include page="../masterFooter.jsp" />

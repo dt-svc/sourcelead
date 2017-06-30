@@ -1377,8 +1377,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
 		 if(null != contracts.getContractOrgLocationId()){
-		 if(null != contracts.getContractOrgLocationId().getOrg().getOrgName() && !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getOrg().getOrgName())){
-			 globalVarsMap.put("ClientVendorName",contracts.getContractOrgLocationId().getOrg().getOrgName());
+		 if(null != contracts.getContractOrgLocationId().getOrgLocationName() && !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getOrgLocationName())){
+			 globalVarsMap.put("ClientVendorName",contracts.getContractOrgLocationId().getOrgLocationName());
 			 }
 		 }else{
 				 globalVarsMap.put("ClientVendorName","--");
@@ -1389,14 +1389,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName);
 
-			 if(orgRelations.getResponderLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName()) && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
-					 globalVarsMap.put("ClientVendorName",orgRelations.getResponderLocationId().getOrg().getOrgName());
+			 if(orgRelations.getResponderLocationId().getOrgLocationName() != null && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName()) && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
+					 globalVarsMap.put("ClientVendorName",orgRelations.getResponderLocationId().getOrgLocationName());
 					 }else{
 						 globalVarsMap.put("ClientVendorName","--");
 					}
@@ -1407,14 +1407,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				for (OrgRelations orgRelations : vendorList) {
 					String orgName = "";
 					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-						orgName = orgRelations.getLocationId().getOrg().getOrgName();
+						orgName = orgRelations.getLocationId().getOrgLocationName();
 					}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-						orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+						orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 					}
 					orgRelations.setOrgName(orgName);
 
-					if(orgRelations.getResponderLocationId().getOrg().getOrgName() != null && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName()) && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
-						 globalVarsMap.put("ClientVendorName",orgRelations.getResponderLocationId().getOrg().getOrgName());
+					if(orgRelations.getResponderLocationId().getOrgLocationName() != null && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName()) && !"".equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
+						 globalVarsMap.put("ClientVendorName",orgRelations.getResponderLocationId().getOrgLocationName());
 						 }else{
 							 globalVarsMap.put("ClientVendorName","--");
 						}

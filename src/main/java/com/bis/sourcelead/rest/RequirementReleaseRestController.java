@@ -257,11 +257,11 @@ public class RequirementReleaseRestController {
 					}
 					if(orgSpoc.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgSpoc.setSpocLocationId(orgSpoc.getInitiatorLocationId().getId());
-						orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrg().getOrgName());
+						orgSpoc.setOrgName(orgSpoc.getInitiatorLocationId().getOrgLocationName());
 					}
 					if(orgSpoc.getInitiatorLocationId().getId().longValue() == orgLocations.getId().longValue() ){
 						orgSpoc.setSpocLocationId(orgSpoc.getResponderLocationId().getId());
-						orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrg().getOrgName());
+						orgSpoc.setOrgName(orgSpoc.getResponderLocationId().getOrgLocationName());
 					}
 					
 					orgSpoc.setOwnerUserId(orgSpoc.getOwnerUser().getId().toString());
@@ -361,7 +361,7 @@ public class RequirementReleaseRestController {
 			    }else{
 					if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -416,7 +416,7 @@ public class RequirementReleaseRestController {
 					
 					if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
@@ -674,19 +674,20 @@ public class RequirementReleaseRestController {
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 
 	 	Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 	 	
 	 	if(jsonObj.has("isPublic") && !isNullOrEmpty(jsonObj.getString("isPublic")) && jsonObj.getString("isPublic").equalsIgnoreCase("Y")){
 	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
-	 		requirement.setPostedOrgName(org.getOrgName());
+	 		requirement.setPostedOrgName(orgLocations.getOrgLocationName());
 	 	}else{
 	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 	}
 	 	
 	 	if(jsonObj.has("isCrowdScourcing") && !isNullOrEmpty("isCrowdScourcing") && jsonObj.getString("isCrowdScourcing").equalsIgnoreCase("Y")){
 	 		requirement.setIsCrowdSourcing(jsonObj.getString("isCrowdScourcing"));
-	 		requirement.setPostedOrgName(org.getOrgName());
+	 		requirement.setPostedOrgName(orgLocations.getOrgLocationName());
 	 		
 	 		if(jsonObj.has("rewardType") && !isNullOrEmpty("rewardType") && jsonObj.getString("rewardType").equalsIgnoreCase("Percentage")){
 	 			if(jsonObj.has("percentageReward")){

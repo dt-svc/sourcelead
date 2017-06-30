@@ -3,6 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+
+<script src="resources/js/location.js"></script> 
+ <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB59YbHoFDIkjVrDVNKBu1DkgYUVdxhMCE&callback=initMap" type="text/javascript"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
+
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -389,10 +395,6 @@
                </div>
                 </div>
          </div>
-           
-           
-         
-        
          
           <div class="clearfix"></div>
           
@@ -400,12 +402,65 @@
           <label class="col-md-3"></label>
         </div> 
         
+        <!--   <div class="form-group">
+          <label class="col-md-3">Location</label>
+          <div class="col-md-9" id="locationField">
+          <input class="form-control" id="autocomplete" placeholder="Enter your address" type="text"></input>
+          </div>
+        </div>
+		
+		
+		<div class="form-group">
+          <label class="col-md-3">Country</label>
+          <div class="col-md-9">
+          <input class="form-control" id="country" placeholder="Enter your Country" type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="administrative_area_level_1" placeholder="Enter your State" type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">City</label>
+          <div class="col-md-9">
+          <input class="form-control" id="locality" placeholder="Enter your City" type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">ZipCode</label>
+          <div class="col-md-9">
+          <input class="form-control" id="postal_code" placeholder="Enter your Zip code" type="text"></input>
+          </div>
+        </div>
+        
+		
+		<div class="form-group">
+          <label class="col-md-3">Lat</label>
+          <div class="col-md-9">
+          <input class="form-control" id="latitude"  type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">Long</label>
+          <div class="col-md-9">
+          <input class="form-control" id="longitude"  type="text"></input>
+          </div>
+        </div> 
+         -->
+        
+        
+        
         
         <div class="clearfix"></div>
-      </div> 
+      </div>
+       
     </div>
-    
-    
     <div class="form-footer clearfix">
       <div class="col-lg-12">
         <div class="pull-right">
@@ -414,11 +469,11 @@
         </div>
       </div>
     </div>
-    
      </form:form>
      
     </div>
-    
+
+
     <!-- Content Area Ends--> 
   </section>
 	<!-- Footer Area -->
@@ -667,7 +722,7 @@ function getCities(){
 		    	
 		    });
 		    
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 				    {
 				    	   var skillsArray = this.value.split(",");
 					    	 if(skillsArray.length > 1){
@@ -680,8 +735,9 @@ function getCities(){
 				                 }
 					    	 }else{
 				    			var newSkill = this.value.replace(","," ");
-				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 				                {
+				    				 preventTabkey(e);
 				    				 var option = $("<option>").val(newSkill).text(newSkill);
 				                     select.append(option);
 				                     select.find(option).prop('selected', true);
@@ -700,11 +756,12 @@ function getCities(){
 	        selectone = $("#candidateEducation");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
@@ -980,3 +1037,109 @@ function  removeValiationVendorContact() {
 		 }); 
  }
  </script>
+
+ 
+ 
+ 
+
+<script>
+// This example displays an address form, using the autocomplete feature
+// of the Google Places API to help users fill in the information.
+
+$("#autocomplete").on('focus', function () {
+    geolocate();
+});
+
+var placeSearch, autocomplete;
+var componentForm = {
+    locality: 'long_name',
+    administrative_area_level_1: 'short_name',
+    country: 'long_name',
+    postal_code: 'short_name'
+};
+
+function initialize() {
+    // Create the autocomplete object, restricting the search
+    // to geographical location types.
+    autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
+        types: ['geocode']
+    });
+    // When the user selects an address from the dropdown,
+    // populate the address fields in the form.
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        fillInAddress();
+    });
+}
+
+// [START region_fillform]
+function fillInAddress() {
+    // Get the place details from the autocomplete object.
+    var place = autocomplete.getPlace();
+	document.getElementById("latitude").value = place.geometry.location.lat();
+    document.getElementById("longitude").value = place.geometry.location.lng();
+	
+    for (var component in componentForm) {
+        document.getElementById(component).value = '';
+        document.getElementById(component).disabled = false;
+    }
+
+    // Get each component of the address from the place details
+    // and fill the corresponding field on the form.
+    for (var i = 0; i < place.address_components.length; i++) {
+        var addressType = place.address_components[i].types[0];
+        if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+        }
+    }
+}
+// [END region_fillform]
+
+
+// [START region_geolocation]
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+
+}
+
+initialize();
+
+</script>
+<script type="text/javascript">
+
+function initialize() {
+
+
+ var myLatLng = {lat: 17.385044, lng: 78.486671}; 
+     var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: myLatLng,
+    scrollwheel: false,
+    draggable:true,
+
+
+
+  });
+     var image='logo.png';
+     var marker = new google.maps.Marker({
+    position: myLatLng,
+    map: map,
+    icon:image
+
+  });
+
+
+}
+
+</script>

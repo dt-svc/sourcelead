@@ -483,7 +483,6 @@ $(".add-skills").click(function(e){
 	 e.stopPropagation();
  });
 
-
 // Bar chat pop
 $(document).ready(function() {
     $(".graf_icon").click(function(){
@@ -959,9 +958,9 @@ function sideBar(requirementId){
 				           //#####################  actions div @prasad salina ################################################
 						    
 						    
-							result = result +'<div id="status-data"></div>';
+							result = result +'<div id="status-data" class="datatable_filter"></div>';
 						   
-						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data">';
+						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter">';
 						    
 						    result = result+'</div> ';
 						    result = result +'<div id="recommendationsLoading"></div>'; 
@@ -1878,7 +1877,7 @@ function documentpagination(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2160,7 +2159,7 @@ function documentpaginationDA(){
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2436,7 +2435,7 @@ function documentpaginationRS(){
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2724,7 +2723,7 @@ function documentpaginationSL(){
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2987,7 +2986,7 @@ function documentpaginationSC(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3166,7 +3165,7 @@ function documentpaginationIN(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	/* "aaSorting": [[8,'desc']], */
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3365,7 +3364,7 @@ function documentpaginationOffer(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3626,7 +3625,7 @@ function documentpaginationRejected(){
     	"scrollCollapse": false,
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3884,7 +3883,7 @@ function documentpaginationBackout(){
     	"scrollCollapse": false,
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -4422,7 +4421,32 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div>';
 		    
 		    result = result +' </div>';
+		    
+		    
+		    
+ 			result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Visa Type</label>';
+		    result = result +'<div class="progress">';
+		    var visaTypeGraph = (100 * report.visaTypePercentage)/report.totalVisaTypePercentage;
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+visaTypeGraph+'%"> '+report.visaTypePercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Education</label>';
+		    result = result +'<div class="progress">';
+		    var educationGraph = (100 * report.educationPercentage)/report.totalEducationPercentage;
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.totalEducationPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
 		  
+		    
 		   
 		    result = result +'</div>';		    
 		    result = result +'</div></td>';
@@ -4487,7 +4511,7 @@ function recommendationpagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -5585,6 +5609,96 @@ function customizeScore(requirementId){
 		        result = result +'		                  </div>  ';
 		        result = result +'		                </div>  ';
 		      
+		        
+		        
+		        
+// 		        =========================================================================================================================
+		        
+		        result = result +'		                  <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+		        result = result +'		                   <label>Visa Type</label>';
+		        result = result +'		                     <select class="chosen-select" data-placeholder="Visa Type" multiple id="visaType" name="visaType">';
+		        if(json.customizeVisatype != null  && json.customizeVisatype != '' && json.customizeVisatype != 'undefiend'){
+		    		var visaType = json.customizeVisatype;
+			    	var customizeVisaType = new Array();
+			    	customizeVisaType = visaType.split(",");
+			        for (var i = 0; i < customizeVisaType.length; i++) { 
+			        	 var customizeVisaTypes = customizeVisaType[i];
+			        	 result = result +'	<option selected value=\''+customizeVisaTypes+'\'>'+customizeVisaTypes+'</option> ';
+			        }
+		    	}
+		        
+		        var lookupVisaType = json.dbVisaType;
+		    	var dbVisaType = new Array();
+		    	dbVisaType = lookupVisaType.split(",");
+		    	
+		    	 for (var i = 0; i < dbVisaType.length; i++) { 
+		        	 var visatype = dbVisaType[i];
+		        	 result = result +'	<option  value=\''+visatype+'\'>'+visatype+'</option> ';
+		        } 
+		        result = result +'	</select> ';
+		  
+		        result = result +'		                    </div>  ';
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Visa Type Score" id="visaTypeScore" name="visaTypeScore" > ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>  ';
+		        result = result +'		                </div>  ';
+		      
+		        
+		        
+		        
+		        result = result +'		                  <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+		        result = result +'		                   <label>Education</label>';
+		        result = result +'		                     <select class="chosen-select" data-placeholder="Education" multiple id="education" name="education">';
+		        if(json.customizeEducation != null  && json.customizeEducation != '' && json.customizeEducation != 'undefiend'){
+		    		var education = json.customizeEducation;
+			    	var customizeEducation = new Array();
+			    	customizeEducation = education.split(",");
+			        for (var i = 0; i < customizeEducation.length; i++) { 
+			        	 var customizeEducations = customizeEducation[i];
+			        	 result = result +'	<option selected value=\''+customizeEducations+'\'>'+customizeEducations+'</option> ';
+			        }
+		    	}
+		        
+		        var lookupEducation = json.dbEducation;
+		    	var dbEducation = new Array();
+		    	dbEducation = lookupEducation.split(",");
+		    	
+		    	 for (var i = 0; i < dbEducation.length; i++) { 
+		        	 var education = dbEducation[i];
+		        	 result = result +'	<option  value=\''+education+'\'>'+education+'</option> ';
+		        } 
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Education" id="educationScore" name="educationScore" > ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>  ';
+		        result = result +'		                </div>  ';
 		      
 		        result = result +'		              </div>                          ';
 		        
@@ -5639,7 +5753,7 @@ function customizeScore(requirementId){
 		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    		    chosen = select.data('chosen');
 		    		   
-		    		    chosen.search_field.on('keyup', function(e)
+		    		    chosen.search_field.on('keydown keyup', function(e)
 		    				    {
 		    				    	   var skillsArray = this.value.split(",");
 		    					    	 if(skillsArray.length > 1){
@@ -5652,8 +5766,9 @@ function customizeScore(requirementId){
 		    				                 }
 		    					    	 }else{
 		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		    				                {
+		    				    				 preventTabkey(e);
 		    				    				 var option = $("<option>").val(newSkill).text(newSkill);
 		    				                     select.append(option);
 		    				                     select.find(option).prop('selected', true);
@@ -5674,11 +5789,12 @@ function customizeScore(requirementId){
 		    		     selectone = $("#anyKeyWord");
 		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keyup', function(e)
+		    		    chosenone.search_field.on('keydown keyup', function(e5)
 		    		    {
 		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		    		        {
+		    		        	 preventTabkey(e5);
 		    		        	var par = this.parent;
 		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
 		    		            selectone.append(option);
@@ -5690,6 +5806,33 @@ function customizeScore(requirementId){
 		    	        		
 		    		        }
 		    		    }); 
+		    		    
+		    		    
+		    		    //Adding Customized Educations to the list 
+		    		    var selectTwo, chosenTwo;
+		    		    selectTwo = $("#education");
+		    		    selectTwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
+		    		    chosenTwo = selectTwo.data('chosen');
+		    		    chosenTwo.search_field.on('keydown keyup', function(e1)
+		    		    {
+		    		    	var newEducation = this.value.replace("\'","");
+		    		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		    			        {
+		    		    		   preventTabkey(e1); 
+		    		    		   var par = this.parent;
+		    			            var option = $("<option>").val(newEducation).text(newEducation);
+		    			            selectTwo.append(option);
+		    			            selectTwo.find(option).prop('selected', true);
+		    			            
+		    			            $("#education option").each(function(){
+		    	                         $(this).siblings("[value='"+ this.value+"']").remove();
+		    	                   });
+		    			            
+		    			            $("#education").trigger("chosen:updated");
+		    			           
+		    			        }
+		    		    
+		    		    });
 		    }
 	 });
 	
@@ -5847,7 +5990,9 @@ function updateCutomize(requirementId){
     var noticePerc = parseInt($("#noticeperiodScore").val());
     var kewordsPerc = parseInt($("#keywordScore").val());
     var locationScore = parseInt($("#locationScore").val());
-    var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc);
+    var educationScore = parseInt($("#educationScore").val());
+    var visaTypwScore = parseInt($("#visaTypeScore").val());
+    var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc+educationScore+visaTypwScore);
     var sourceleadUrl = '${sourceleadUrl}';
     
     if(totalscore>100){

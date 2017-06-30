@@ -81,7 +81,7 @@ function candidateDocuments(candidateId){
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		
-		result  = result + '   <div id="candidateDocumentsList" ></div>';
+		result  = result + '   <div id="candidateDocumentsList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	    result = result+'	    </div>';
 	  
@@ -342,8 +342,8 @@ function candidateDocumentsList(candidateId){
 function documentsPagination(){  
     $('#candidateDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {
@@ -369,7 +369,7 @@ function closePopup(){
 
 
 <div class="requestDocSideMask"></div>
-<div class="modal modalInvite requestDocuments">
+<div class="modal  requestDocuments">
   <div class="modal-dialog modal-lg"> 
     <div id="documentLoading"></div>
     <div id="documentsTypeDiv"></div>
@@ -761,11 +761,11 @@ function refreshDocList(candidateId){
 
 //Request Documents
     function requestDoc(){
-    $(".modalInvite").fadeIn();
+    $(".requestDocuments").fadeIn();
     $(".requestDocSideMask").fadeIn();
     }
     function closeRD(){
-    $(".modalInvite").fadeOut();
+    $(".requestDocuments").fadeOut();
     $(".requestDocSideMask").fadeOut();
     }
 </script>

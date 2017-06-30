@@ -226,7 +226,7 @@ function getAddApplicant(requirementId){
 	    	
 	    });
 	    
-	    chosen.search_field.on('keyup', function(e)
+	    chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
@@ -239,8 +239,9 @@ function getAddApplicant(requirementId){
 			                 }
 				    	 }else{
 			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				 preventTabkey(e);
 			    				 var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);

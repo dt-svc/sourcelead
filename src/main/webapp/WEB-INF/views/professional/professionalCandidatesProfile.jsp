@@ -156,7 +156,7 @@ function editCandidate(candidateId){
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name" readonly data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
@@ -214,7 +214,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">-- select Notice Period --</option>';
+							result = result + '<option value="">-- Select Notice Period --</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately Available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
@@ -231,7 +231,7 @@ function editCandidate(candidateId){
                             result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
 							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
-							result = result + '<option value="">-- select Employement Type --</option>';
+							result = result + '<option value="">-- Select Employement Type --</option>';
 							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
 							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
 							result = result + '<option  '+ (json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
@@ -515,7 +515,7 @@ var countryName = $("html #professionalCandidateCountry").val();
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateState').empty();
-	        	$('html #candidateState').append('<option value="">---select State---</option>');
+	        	$('html #candidateState').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == stateName){
 	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -534,10 +534,10 @@ var countryName = $("html #professionalCandidateCountry").val();
 	    });
 	}else{
 		$('html #candidateState').empty();
-    	$('html #candidateState').append('<option value="">---select State---</option>');
+    	$('html #candidateState').append('<option value="">---Select State---</option>');
     	$('html #candidateState').trigger("chosen:updated");
     	$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select City---</option>');
+    	$('html #candidateCity').append('<option value="">---Select City---</option>');
         $('html #candidateCity').trigger("chosen:updated");
 	}
 }
@@ -563,7 +563,7 @@ function getCandidateCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('html #candidateCity').empty();
-	        	$('html #candidateCity').append('<option value="">---select City---</option>');
+	        	$('html #candidateCity').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(json[i] == cityName){
 	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -579,7 +579,7 @@ function getCandidateCities(){
 	    });
 	}else{
 		$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select City---</option>');
+    	$('html #candidateCity').append('<option value="">---Select City---</option>');
     	$('html #candidateCity').trigger("chosen:updated");
 	}
 }
