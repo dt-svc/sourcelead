@@ -276,7 +276,10 @@ public class AddElkRequirement {
 					requirementIndex.setRewardGuaranteePeriod(rs.getString("REWARD_GUARANTEE_PERIOD"));
 				}
 				
-				
+				String visaTypes = rs.getString("VISA_TYPE");
+				if(!("").equalsIgnoreCase(visaTypes) && visaTypes!=null){
+					requirementIndex.setVisaTypes(visaTypes.split(","));
+				} 
 				
 				ResultSet statusRs =getApproverHierarchyStatus(rs.getString("ID"),conn);
 				if(null != statusRs){

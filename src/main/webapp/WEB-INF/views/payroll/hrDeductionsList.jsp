@@ -91,9 +91,9 @@ function hrDeductionsList(){
 						$("#wagesAndTaxListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
-						$("#accountDeductionsListDiv").append(result);
+						$("#hrDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
-						accountDeductionsListTablePagination();
+						hrDeductionsListTablePagination();
 				        	
 				        },
 				        
@@ -103,11 +103,11 @@ function hrDeductionsList(){
 </script>
 
 <script>
-function accountDeductionsListTablePagination(){ 
+function hrDeductionsListTablePagination(){ 
     $('#hrDeductionsListTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

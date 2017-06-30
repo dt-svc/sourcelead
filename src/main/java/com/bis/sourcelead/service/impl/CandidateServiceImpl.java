@@ -62,6 +62,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -143,6 +144,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     MasterCandidateService masterCandidateService;
+    
+    @Autowired
+	private ProjectsService projectsService;
 	
 	/**
 	 * @author prasad k
@@ -421,7 +425,7 @@ public class CandidateServiceImpl implements CandidateService {
              globalVarsMap.put("candidate", candidate.getFirstName());
          }
         
-         globalVarsMap.put("loginOrg",orgLocations.getOrg().getOrgName());
+         globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
          StringBuilder loginBuilder = new StringBuilder();
          globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
@@ -677,8 +681,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	if(null != candidate.getOrgRelationId()){
 		if(null != candidate.getOrgRelationId().getResponderLocationId()){
-			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
-				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
+				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}
 		}
 	}else{
@@ -741,8 +745,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType) {
-		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(orgLocationId,candidateType);
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId,String candidateType) {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(userId,orgLocationId,candidateType);
 	}
 	
 	
@@ -1167,6 +1171,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+			if(candidate.getConsultantUser() != null){
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
+				candidate.setAssignedProjectsCount(assignedProjectsCount);
+			}
 		}
 		return candidateList;
 	}
@@ -1174,21 +1182,29 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
-		Candidate candidate = new Candidate();
-		candidate.setConsultantUser(user);
-		candidate.setMasterCandidateId(masterCandidate);
-		candidate.setOrgLocationId(orgLocations);
-		candidate.setCandidateType(Constants.CANDIDATE);
-		candidate.setFirstName(user.getFirstName());
-		candidate.setLastName(user.getLastName());
-		candidate.setCountry(orgLocations.getCountry());
-		candidate.setIsAssociate(Constants.NO);
-		candidate.setEmail(user.getEmail());
-		candidate.setStatus(Constants.RECORD_ACTIVE);
-		candidate.setCreatedBy(user.getUserCode());
-		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		candidate.setCreatedDate(commonUtil.currentDate());
+		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+		if(null == candidate){
+			candidate = new Candidate();
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setOrgLocationId(orgLocations);
+			candidate.setCandidateType(Constants.CANDIDATE);
+			candidate.setFirstName(user.getFirstName());
+			candidate.setLastName(user.getLastName());
+			candidate.setCountry(orgLocations.getCountry());
+			candidate.setIsAssociate(Constants.NO);
+			candidate.setEmail(user.getEmail());
+			candidate.setStatus(Constants.RECORD_ACTIVE);
+			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setCreatedDate(commonUtil.currentDate());
+		}else{
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+		}
+		
 		candidateDao.storeCandidate(candidate);
+		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
 	}
 
