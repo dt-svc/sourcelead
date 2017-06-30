@@ -11,7 +11,11 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<script src="//cdn.ckeditor.com/4.7.0/basic/ckeditor.js"></script>
+
+<script src="resources/js/summernote.js"/>
+<link href="resources/css/summernote.css" rel="stylesheet"/>
+
+
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -412,10 +416,7 @@ function validateTaskName(){
 					</div>
 				</div>
 
-				<script type="text/javascript">
-        		CKEDITOR.replace( 'ProjectDescription' );
-        		
-      		</script>
+				
 
 			</form:form>
 		</div>
@@ -611,6 +612,7 @@ function getStatus(){
 		$("#maxTsRowNum").val('6');
 		addSourceleadTasks();
 		document.getElementById("project_form").reset();
+		$('#ProjectDescription').summernote({height:300});
 	});
 </script>
 
@@ -735,8 +737,9 @@ function flushProjectTasks(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		
-		var projDesc= CKEDITOR.instances['ProjectDescription'].getData();
-		//alert(projDesc);
+		//var projDesc= CKEDITOR.instances['ProjectDescription'].getData();
+		var projDesc = $('#ProjectDescription').summernote('code');
+		alert(projDesc);
 		
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
