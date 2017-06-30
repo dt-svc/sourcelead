@@ -131,7 +131,7 @@ window.onload = function () {
                   <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                         <div class="col-md-12 mt10 dropdown-select">
-							<select class="form-control" id="payrollCycle" name="payrollCycle"  field-name="PayRoll Cycle"  data-validation="required">
+							<select class="chosen-select" id="payrollCycle" name="payrollCycle"  field-name="PayRoll Cycle"  data-validation="required">
 							<option value="">---Select Payroll Cycle---</option>
 							<option value="2">MAR 15th</option>
 							<option value="3_FIRST">April 1st</option>
@@ -180,7 +180,7 @@ window.onload = function () {
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
     	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
-    	<div id="finalPayrollReportDiv" class="datatable_filter"></div>
+    	<div id="finalPayrollReportDiv" class="repoPositiAs repoPositiRunPay"></div>
 	</div>
 	
  </div>
