@@ -1412,6 +1412,15 @@ function hideCommonSOWFields(){
 		            	  }
 		            	  else{
 		            		  $("#joinDate").val(json.dateOfJoiningStr); 
+		            		  
+		            		  $("#flatReward").val("");
+			            	  $("#flatReward").val(json.amount);
+			            	  
+			            	  $("#billingRateType").val("");
+			            	  $("#billingRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#billingRatePer").val("");
+			            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
 		            	  }
 		            	  
 	        	 		}
