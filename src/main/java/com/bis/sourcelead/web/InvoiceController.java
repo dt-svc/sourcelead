@@ -192,9 +192,9 @@ public class InvoiceController {
 			for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName);
 			}

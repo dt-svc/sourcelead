@@ -764,10 +764,10 @@ public class CandidateListRestController {
 			if(null != can.getOrgRelationId()){
 				can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
 				if(can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()){
-					can.setVendorName(can.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+					can.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
 				if(can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()){
-					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
 			}
@@ -1227,9 +1227,9 @@ public class CandidateListRestController {
 		    
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
-			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName(),isAssociate);
+			file = candidateService.getCandidateExcelFile(candidatesList,loginOrgLocation.getOrgLocationName(),isAssociate);
 			}else{
-			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName(),isAssociate);
+			file = candidateService.getCandidatePdf(candidatesList,loginOrgLocation.getOrgLocationName(),isAssociate);
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

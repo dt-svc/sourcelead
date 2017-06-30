@@ -268,7 +268,7 @@ function validateTaskName(){
 									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId">
 										<option value=''>-- Select Client --</option>
 										<c:forEach var="option" items="${add_clientList}">
-											<option value="${option.orgid}">${option.orgName}</option>
+											<option value="${option.orgLocationId}">${option.orgName}</option>
 										</c:forEach>
 									</select> 
 								<span class="hidden">Enter Project Id</span>
