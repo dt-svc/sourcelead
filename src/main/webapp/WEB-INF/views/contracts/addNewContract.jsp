@@ -1519,7 +1519,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Candidate</option>';
+	            	  result = result + '<option value="">Select Applicant</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
@@ -1531,7 +1531,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Candidate</option>';
+	            	  result = result + '<option value="">Select Applicant</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();

@@ -5660,6 +5660,9 @@ select.selectborder {
 .sidenav_inner {
     position: relative; max-height: 515px; overflow-y: auto; padding-bottom: 10px;
 }
+.side-bar-active .sidenav_inner {
+	 overflow-y:inherit;
+}
 /* For SideNav Inner Scroll */
 .requestdocmntTable {
 min-height: 100px; max-height: 300px; overflow-y: auto;
