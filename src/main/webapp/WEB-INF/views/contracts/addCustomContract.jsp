@@ -1479,7 +1479,7 @@ function hideCommonSOWFields(){
 	            		  $("#joinDate").val(json.dateOfJoiningStr); 
 	            		  
 	            		  $('#candiFlatReward').removeAttr("disabled");
-	            		  $('#candiRateType').removeAttr("disabled");
+	            		   $('#candiRateType').removeAttr("disabled");
 	            		  $('#candiRatePer').removeAttr("disabled");
 	            		  
 		            	//  $('#candiRateType').attr("disabled","false");

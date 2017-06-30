@@ -1595,8 +1595,6 @@ function hideCommonSOWFields(){
 		            		  $('#candiFlatReward').removeAttr("disabled");
 		            		   $('#candiRateType').removeAttr("disabled");
 		            		  $('#candiRatePer').removeAttr("disabled");
-		            		  $('#candiRateType').attr("disabled","false");
-			            	  $('#candiRatePer').attr("disabled","false");
 		            		  
 			            	//  $('#candiRateType').attr("disabled","false");
 			            	 // $('#candiRatePer').attr("disabled","false");
