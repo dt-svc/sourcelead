@@ -57,6 +57,7 @@ public class Constants {
 	public static final String INVOICE_PAYABLES = "Payables";
 	public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
+	public static final String FULL_TIME_OFFER = "Full time offer";
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
@@ -78,6 +79,8 @@ public class Constants {
 	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("ddMMM");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	
+	public static final Long SOURCELEAD_ORG_LOCATION_ID = 1L;
 	/*
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
 	 * "yyyy-MM-dd HH:mm:ss");
@@ -228,6 +231,7 @@ public class Constants {
 	public static final String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
 	public static final String PROFESSIONAL = "Professional";
 	public static final String INDIVIDUAL_RECRUITER = "Recruiter";
+	public static final String INDEPENDENT_RECRUITER = "Independent Recruiter";
 	public static final String INVITE_PROFESSIONAL = "Professional Invitation";
 	public static final String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
 	public static final String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
@@ -632,7 +636,7 @@ public class Constants {
 	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense","purpose","Project","Client","Start Date","End Date","No of Exp","Amount","Status"};
 
-
+    public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
 	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";

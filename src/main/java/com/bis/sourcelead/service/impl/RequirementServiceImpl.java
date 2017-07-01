@@ -797,7 +797,9 @@ public class RequirementServiceImpl implements RequirementService {
 					if(jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1"))){
 						  String approverNames = jsonObj.getString("sequentialApprover1");
 						  User approverUser = userService.getUserById(Long.parseLong(approverNames));
+						  if(!approverUser.getId().equals(user.getId())){
 						  approverEmailScenario(user, approverUser ,savedRequirement,location,orgLocations);
+						  }
 					}
 					
 					//send mail to parallel approver
@@ -817,7 +819,9 @@ public class RequirementServiceImpl implements RequirementService {
 						    String[] approvers = parallelApprovers.split(",");
 						    for(String approver : approvers){
 						    	User approverUser = userService.getUserById(Long.parseLong(approver));
-						    	approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
+						    	if(!approverUser.getId().equals(user.getId())){
+						    		approverEmailScenario(user,approverUser,savedRequirement,location,orgLocations);
+						    	}
 						    }
 					 }
 					
@@ -981,8 +985,8 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
 	 
-	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+	 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName() );
 		 } else {
 			 globalVarsMap.put("LoginOrgName", "--");
 		}
@@ -1005,7 +1009,7 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 	 notificationScenario.setBody(notificationbody);
 
 	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 	 emailMessage.setSubject(subject);
 	 emailMessage.setMessageBody(emailTemplate);
 	 
@@ -1107,9 +1111,9 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 		else {
 			globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
-		if (loginOrgLocation.getOrg().getOrgName() != null
-				&& !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName())) {
-			globalVarsMap.put("LoginOrgName", loginOrgLocation.getOrg().getOrgName());
+		if (loginOrgLocation.getOrgLocationName() != null
+				&& !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())) {
+			globalVarsMap.put("LoginOrgName", loginOrgLocation.getOrgLocationName());
 		}
 		else {
 			globalVarsMap.put("LoginOrgName", "--");
@@ -1127,7 +1131,7 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
@@ -1210,8 +1214,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
 	 
-	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+	 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName() );
 		 } else {
 			 globalVarsMap.put("LoginOrgName", "--");
 		}
@@ -1243,7 +1247,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 	 
 	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 	 emailMessage.setSubject(subject);
 	 emailMessage.setMessageBody(emailTemplate);
 	 
@@ -1405,7 +1409,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		if(requirement.getClientId()!=null){
 			OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(requirement.getClientId().getId());
 			if(orgRelations != null){
-				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrg().getOrgName());
+				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrgLocationName());
 			}
 		}else{
 			globalVarsMap.put("client","--");
@@ -1445,8 +1449,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
-		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrgLocationName() );
 			 } else {
 				 globalVarsMap.put("role", "--");
 			}
@@ -1484,7 +1488,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 StringBuilder actionLinkStringBuilder = new StringBuilder();
@@ -1531,7 +1535,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
                  globalVarsMap.put("requirementRate","--");
              }
 		 if(requirement.getClientId()!= null){
-		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrgLocationName());
 		 }else{
 		 globalVarsMap.put("client","--");
 		 }
@@ -1580,7 +1584,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1644,7 +1648,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	                 globalVarsMap.put("requirementRate","--");
 	             }
 				 if(requirement.getClientId()!= null){
-				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrgLocationName());
 				 }else{
 				 globalVarsMap.put("client","--");
 				 }
@@ -1684,7 +1688,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1927,8 +1931,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }
-		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
+		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+			 globalVarsMap.put("Role",loginOrgLocation.getOrgLocationName() );
 			 } else {
 				 globalVarsMap.put("Role", "--");
 			}
@@ -1964,7 +1968,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -2073,7 +2077,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -2178,7 +2182,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, loginOrgLocation.getOrg());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
@@ -2238,7 +2242,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
                  globalVarsMap.put("RequirementRate","--");
              }
 		 if (requirement.getClientId() != null) {
-			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
+			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrgLocationName());
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}
@@ -2268,8 +2272,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 			}
 		 
-		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-			 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+			 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName() );
 			 } else {
 				 globalVarsMap.put("LoginOrgName", "--");
 			}
@@ -2303,7 +2307,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

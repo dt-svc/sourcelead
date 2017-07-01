@@ -232,7 +232,7 @@ public class TimesheetSubmissionsRestController {
 				 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
 				 globalVarsMap.put("employeeFirstName",projectMembers.getEmployee().getUser().getFirstName());
 				 globalVarsMap.put("employeeLastName",projectMembers.getEmployee().getUser().getLastName());
-				 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+				 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 				 
 				 StringBuilder timeFrequencySB = new StringBuilder();
 				 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
@@ -264,7 +264,7 @@ public class TimesheetSubmissionsRestController {
 				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 				 String url = sourceleadUrl;
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 				 emailMessage.setSubject(subject);
 				 emailMessage.setMessageBody(emailTemplate);
 				 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());

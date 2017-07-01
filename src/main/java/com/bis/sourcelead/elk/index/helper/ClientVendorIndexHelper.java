@@ -54,11 +54,18 @@ public class ClientVendorIndexHelper {
 						clientVendorIndex.setInitiatorCity(initiatorLocation.getCity());
 					}
 					
-				   Org initiatorOrg = orgService.findOrgByID(initiatorLocation.getOrg().getId());
+					 clientVendorIndex.setInitiatorOrgName(initiatorLocation.getOrgLocationName());
+					 
+					 if(null != initiatorLocation.getWebsite()){
+						 clientVendorIndex.setInitiatorWebSite(initiatorLocation.getWebsite());
+					 }
+					
+					
+				  /* Org initiatorOrg = orgService.findOrgByID(initiatorLocation.getOrg().getId());
 				       if(null != initiatorOrg){
 						 clientVendorIndex.setInitiatorOrgName(initiatorOrg.getOrgName());
 						 clientVendorIndex.setInitiatorWebSite(initiatorOrg.getWebSite());
-					 }
+					 }*/
 					
 				// this is to setting values for ResponderLocationId
 				       
@@ -75,11 +82,17 @@ public class ClientVendorIndexHelper {
 						clientVendorIndex.setResponderCity(responderorgLocation.getCity());
 					}
 					
-					 Org responderOrg = orgService.findOrgByID(responderorgLocation.getOrg().getId());
+					 clientVendorIndex.setResponderOrgName(responderorgLocation.getOrgLocationName());
+					 if(null != responderorgLocation.getWebsite()){
+						 clientVendorIndex.setResponderWebSite(responderorgLocation.getWebsite());
+					 }
+					 
+					
+					 /*Org responderOrg = orgService.findOrgByID(responderorgLocation.getOrg().getId());
 				       if(null != responderOrg){
 						 clientVendorIndex.setResponderOrgName(responderOrg.getOrgName());
 						 clientVendorIndex.setResponderWebSite(responderOrg.getWebSite());
-					 }
+					 }*/
 					
 				}
 			

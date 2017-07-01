@@ -245,7 +245,7 @@ public class ExpensesApprovalRestController {
 			// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();
@@ -279,7 +279,7 @@ public class ExpensesApprovalRestController {
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 			 String url = sourceleadUrl;
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());

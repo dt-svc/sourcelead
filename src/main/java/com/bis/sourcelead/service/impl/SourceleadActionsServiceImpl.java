@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.SourceleadActionsDao;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.service.SourceleadActionsService;
 
@@ -27,14 +28,10 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getLoginUserRoleActionsByOrgLocationId(modulesId, roleId, orgLocationId);
 	}
 
-	@Override
-	public List<SourceleadActions> getAllSourceleadActions(Org org) throws Exception {
-		return sourceleadActionsDao.getAllSourceleadActions(org);
-	}
 
 	@Override
-	public List<Long> getAllSourceleadActionsIds(Org org) throws Exception {
-		return sourceleadActionsDao.getAllSourceleadActionsIds(org);
+	public List<Long> getAllSourceleadActionsIds(OrgLocations orgLocations) throws Exception {
+		return sourceleadActionsDao.getAllSourceleadActionsIds(orgLocations);
 	}
 
 	@Override
@@ -60,6 +57,12 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 	@Override
 	public List<SourceleadActions> getLoginCrowdSourcingUserRoleActionsByOrgLocationId(Long roleId) throws Exception {
 		return sourceleadActionsDao.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(roleId);
+	}
+
+	@Override
+	public List<SourceleadActions> getAllSourceleadActionsByOrgLocationId(OrgLocations orgLocations) throws Exception
+	{
+		return sourceleadActionsDao.getAllSourceleadActionsByOrgLocationId(orgLocations);
 	}
 
 }
