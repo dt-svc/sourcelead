@@ -47,7 +47,11 @@ window.onload = function () {
 	
 <div class="timesheet_head clearfix">
 
-     <ul>
+<div class="pull-left">
+<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Maping" onClick="userMaping();">User Maping </a>
+</div>
+
+     <ul class="pull-right">
      <li>
      <a href="javascript:void(0)" onclick="flushValues();" class="addcon-pop">
       	<i class="glyphicon glyphicon-plus paddingRight" ></i>Add Document</a>
@@ -74,6 +78,7 @@ window.onload = function () {
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
+                             <option value="BIS_USERS">BIS Users</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
@@ -597,6 +602,7 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />
