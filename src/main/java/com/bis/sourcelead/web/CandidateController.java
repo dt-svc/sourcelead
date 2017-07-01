@@ -205,6 +205,9 @@ public class CandidateController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		
+		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+		model.addObject("visaList", visaList);
+		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
@@ -302,7 +305,7 @@ public class CandidateController {
 		 model.addObject("skillsList", skillsList);
 		 
 		 List<String> visaList = lookUpDataService.getAllVisaByCategory();
-			model.addObject("visaList", visaList);
+		 model.addObject("visaList", visaList);
 		
 		return model;
 		

@@ -57,6 +57,7 @@ public class Constants {
 	public static final String INVOICE_PAYABLES = "Payables";
 	public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
+	public static final String FULL_TIME_OFFER = "Full time offer";
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
@@ -635,7 +636,7 @@ public class Constants {
 	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense","purpose","Project","Client","Start Date","End Date","No of Exp","Amount","Status"};
 
-
+    public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
 	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
