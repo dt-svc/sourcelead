@@ -456,7 +456,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setStatus(Status.ACTIVE);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
-		orgLocations.setLocationCode(org.getOrgCode()+countries.getCode2());
+		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName());
