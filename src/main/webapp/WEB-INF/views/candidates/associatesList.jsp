@@ -1083,7 +1083,7 @@ function cancel(candidateId){
 					  
 					  <div class="clearfix">
 						<div class="col-md-8">
-						<label>Visa</label>
+						<label>Immigration Status</label>
 							<div class="clearfix">
 								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="candidateVisa" name="candidateVisa">
 								<c:forEach var="visa" items="${visaList}">
@@ -2280,6 +2280,7 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#candidateVisa").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");

@@ -1319,7 +1319,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 					if(isValidate){
 						UserRole userRole1 = userRoleService.getUserDetailsByEmailAndLocationId(clientOrVendor.getEmail(), orgLocations.getId());
 						if(userRole1 == null){
-							if(!org.getOrgName().equalsIgnoreCase(clientOrVendor.getOrgName())){
+							if(!orgLocations.getOrgLocationName().equalsIgnoreCase(clientOrVendor.getOrgName())){
 								List<OrgRelations> orgRelationsList;
 								if("Client".equalsIgnoreCase(responderType)){
 									orgRelationsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
