@@ -1706,7 +1706,7 @@ function exportToExcel(){
 function showComment(candidateId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
-	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
+		result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_Space validate_length length2-500" field-name="Comment" onkeypress="candiateListCommentRemoveSpaces();"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
 	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
 	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
@@ -1721,7 +1721,15 @@ function closeComment(){
 }
 </script>
 
-
+ <script>
+   function candiateListCommentRemoveSpaces() {
+	    var output = document.getElementById("comment").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#comment").removeAttr("data-validation");
+	    }
+	}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for saving Comment
