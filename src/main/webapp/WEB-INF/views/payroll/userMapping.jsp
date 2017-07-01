@@ -33,8 +33,8 @@ $(document).ready(function(){
              <div class="col-md-5 dropdown-select">
                <label class="col-md-3">Imported Users</label>
                <div class="col-md-9">
-               <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId">
-                <option value=" " selected>-Select User-</option>
+               <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required">
+                <option value="" selected>-Select User-</option>
 	            <c:forEach var="masterUsers" items="${masterUsersList}">
 					<option value="${masterUsers.id}">${masterUsers.candidateName}</option>
 				</c:forEach>
@@ -49,8 +49,8 @@ $(document).ready(function(){
              <div class="col-md-5">
              <label class="col-md-3">SL Org Users</label>
                <div class="col-md-9">
-               <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId">
-                <option value=" " selected>-Select Org Users-</option>
+               <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId" field-name="Sl User" data-validation="required">
+                <option value="" selected>-Select Org Users-</option>
 	            <c:forEach var="users" items="${usersList}">
 					<option value="${users.id}">${users.firstName} ${users.lastName}</option>
 				</c:forEach>
@@ -87,6 +87,7 @@ $(document).ready(function(){
 <script type="text/javascript">
 	function mergeUser() {
 		if ($('#userMapping_form').validate(false, validationSettings)) {
+			alert("Hai");
 			var frm = $('#userMapping_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
