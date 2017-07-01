@@ -1699,7 +1699,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setBillingPer("Percentage");
 				vendorContracts.setBillingPer("Percentage");
 		}
-		if ("Full time offer".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		/*if ("Full time offer".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			if(jsonObj.has("candiFlatReward") && null != jsonObj.getString("candiFlatReward") && !"".equals(jsonObj.getString("candiFlatReward")) ){
 				contracts.setBillingAmount(jsonObj.getString("candiFlatReward"));
 				if(null != vendorContracts){
@@ -1728,7 +1728,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 			}
 		}
-		else{
+		else{*/
 			if(jsonObj.has("flatReward") && null != jsonObj.getString("flatReward") && !"".equals(jsonObj.getString("flatReward")) ){
 				contracts.setBillingAmount(jsonObj.getString("flatReward"));
 				if(null != vendorContracts){
@@ -1756,7 +1756,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorContracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
 				}
 			}
-		}
+//		}
 		
 		if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
 			contracts.setDocFile(multiFile.getBytes());
@@ -1794,6 +1794,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
 		}
 		contracts.setStatus("0");
+		contracts.setOrgLocationId(orgLocation);
 		vendorContracts.setTemplateSubmissionStatus("FINALIZED");
 		contracts.setTemplateSubmissionStatus("FINALIZED");
 		vendorContracts.setStatus("0");
@@ -1805,6 +1806,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		if("Full time offer".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			if(null != vendorContracts){
+				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractType(jsonObj.getString("contractType"));	
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setContactUser(savedContracts.getOwnerUserId());
