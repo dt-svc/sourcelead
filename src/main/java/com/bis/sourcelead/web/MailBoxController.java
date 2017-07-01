@@ -88,7 +88,7 @@ public class MailBoxController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/mailBox")
  	public ModelAndView mailBox(HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();

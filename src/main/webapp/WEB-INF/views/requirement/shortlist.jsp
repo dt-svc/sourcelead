@@ -95,7 +95,7 @@ function candidateShortList(requirementId){
 			    	     }
 			           
 			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
-			        	   result = result + '<td><div class="tbldata-dotdot_80"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a></span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a><a class="fa fa-eye ml10" onclick="viewResumeRequirementSummary(\''+report.candidateResumes.resumeUUID+'\',\''+report.candidateResumes.fileName+'\')"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
@@ -158,7 +158,14 @@ function candidateShortList(requirementId){
 }
 </script>
 
-
+<script>
+function viewResumeRequirementSummary(resumeUUID,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(resumeUUID != null && resumeUUID != ""){
+		window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+	}  
+}
+</script>
 
 
 <script>

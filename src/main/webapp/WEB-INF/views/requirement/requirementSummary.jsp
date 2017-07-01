@@ -1575,6 +1575,19 @@ function requirementPipeline(requirementId,submissionType){
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  requirementPipelineListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  requirementPipelineListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  requirementPipelineListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  requirementPipelineListDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1609,7 +1622,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Email</th>';
 				           result = result + '<th>Ph. No</th>';
 				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
+				           result = result + '<th>Applied on  <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 					       result = result + '<th>Rate</th>';
 					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 					           result = result + '<th>Sub. Rate</th>';
@@ -1797,10 +1810,15 @@ function requirementPipeline(requirementId,submissionType){
 						           
 							          if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != 'Other'){
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' &&  report.rejectedCategoryType != null && report.rejectedCategoryType != 'Other'){
 							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"<font color='red'>Category</font>: "+report.rejectedCategoryType+'<br>'+"Reason: "+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }
-							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == 'Other'){
+							        	   
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == null){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"<font color='red'>Category</font>: "+"Bad Fit"+'<br>'+"Reason: "+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }
+							        	   
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' &&  report.rejectedCategoryType != null && report.rejectedCategoryType == 'Other'){
 							        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"<font color='red'>Category</font>:"+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+"Reason: "+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
@@ -3585,11 +3603,16 @@ function requirementPipelineRejected(requirementId,submissionType){
 						           }
 					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != 'Other'){
-					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Category: "+report.rejectedCategoryType+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
+					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != null && report.rejectedCategoryType != 'Other'){
+					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"<font color='red'>Category</font>: "+report.rejectedCategoryType+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
 					        	   }
-					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == 'Other'){
-					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Category: "+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
+					        	   
+					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == null){
+					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"<font color='red'>Category</font>: "+"Bad Fit"+'<br>'+"Reason: "+report.rejectedReason+'</p></div></i></div></td>';
+					        	   }
+					        	   
+					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != null && report.rejectedCategoryType == 'Other'){
+					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"<font color='red'>Category</font>: "+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
 					        	   }		  
 						           result = result + '       </tr>';
 			   				}
@@ -3919,7 +3942,7 @@ function documentpaginationBackout(){
     $("#requirementsPaginationBackout").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
-<div class='project_inn_mask'></div>
+<div class='project_inn_mask projectMask-zindex'></div>
 <div id="popUp"></div>
 <div id="customizePopUp"></div>
 <script>
@@ -4270,6 +4293,19 @@ function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  requirementRecommendationsDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  requirementRecommendationsDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  requirementRecommendationsDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  requirementRecommendationsDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	$.ajax({
     type : "POST",
      //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
@@ -4333,7 +4369,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>Phone</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number Of Jobs</th>';
-		    result = result +'<th>Updated Date</th>';
+		    result = result +'<th>Updated Date <br>(<small class="custom-small">'+requirementRecommendationsDate+'</small>)</th>';
 		    result = result +'<th>Score</th>';
 		    result = result +'<th>Action</th>';
 		    result = result +'</tr>';
@@ -5017,7 +5053,7 @@ function getRateListDiv(submissionId, candidateId){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);
@@ -6126,7 +6162,6 @@ function cancelCustomize(){
 
 <script type="text/javascript">
 function loadFile(event,candidateId){
-	
 		var output = document.getElementById('userImage');
 	    var uploadedImage = document.getElementById('uploadedImage').value;
 	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
@@ -6224,7 +6259,7 @@ function refreshImageBlock(candidateId){
 <script type="text/javascript">
 function deleteImage(candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";

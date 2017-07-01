@@ -205,12 +205,12 @@ function candidateSideBar(candidateId){
          			 		mobilePhone = '';
          			 	 }
          			 	 
-         			 	 if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
+         			 	/*  if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
          			 		generatedId =json.generatedId;
           			 	 }else{
           			 		 
           			 		generatedId = '';
-          			 	 }
+          			 	 } */
          			 	 
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -281,7 +281,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>';
 			             result = result+'                     </div>'; */
 			             result = result+'<div class="media-body candidate-details">';
-			             result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>';
+			            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
 			             result = result+'<h3 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h3>';
 			            
 			             result = result+'<ul class="list-unstyled">';

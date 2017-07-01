@@ -534,12 +534,14 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/getSubmissionOfferForSOWByRequirementSubmissionId", method = RequestMethod.GET)
-	public @ResponseBody String getSubmissionOfferForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getSubmissionOfferForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, @RequestParam(value = "locationId", required = false) Long locationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		RequirementOffers requirementOffers = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
 			if(requirementOffers != null){
-				requirementOffers.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
+				requirementOffers.setDateOfJoiningStr(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
 			}
 		}
 		return commonUtil.toJSON(requirementOffers);

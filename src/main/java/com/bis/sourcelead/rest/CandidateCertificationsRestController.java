@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -46,7 +46,7 @@ public class CandidateCertificationsRestController {
 	UserService userService;
 	
 	@Autowired
-	OrgLocationService orgLocationService;
+	private OrgLocationService orgLocationService;
 	 
 	
 	/**
@@ -164,14 +164,16 @@ public class CandidateCertificationsRestController {
 		public String getCandidateCertificateBycandidateIdandCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
 
 			String resultJson;
-
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
+			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			CandidateCertifications  candidateCertificationsList = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
 			
 			if(candidateCertificationsList.getValidFrom() != null){
-				candidateCertificationsList.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertificationsList.getValidFrom())); 
+				candidateCertificationsList.setCandidatevalidFromDateToString(simpleDateFormat.format(candidateCertificationsList.getValidFrom())); 
 			 }
 			 if(candidateCertificationsList.getValidTo() != null){
-				 candidateCertificationsList.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertificationsList.getValidTo())); 
+				 candidateCertificationsList.setCandidatevalidToDateToString(simpleDateFormat.format(candidateCertificationsList.getValidTo())); 
 			 }
 			resultJson = commonUtil.toJSON(candidateCertificationsList);
 			 return resultJson;

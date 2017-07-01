@@ -6202,6 +6202,9 @@ background-position: center; background-size: 200px; position: relative;top:-8px
 .btn-sm.btn-sm2 {
 	padding:3px 6px;
 }
+.grid-fil.gridFil {
+	right:0;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

@@ -390,6 +390,8 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 			if(workExperience.contains(".")){
 				String[] exp = workExperience.split("\\.");
 				candidateWorkExperienceYears = Integer.parseInt(exp[0]);
+			}else{
+				candidateWorkExperienceYears = Integer.parseInt(workExperience);
 			}
 			
 		}

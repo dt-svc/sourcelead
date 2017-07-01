@@ -1896,11 +1896,11 @@ function interviewFeedback(interviewId,templateId,id){
 	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
 	//$(this).next('.content').slideDown();
-	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(data) {
 			var json = JSON.parse(data);
 			var result = "";
@@ -2656,9 +2656,10 @@ function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
 	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";

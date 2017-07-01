@@ -35,6 +35,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -84,6 +85,9 @@ public class SubmissionsRateRestController {
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService; 
 	
 	@Autowired
 	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
@@ -277,6 +281,7 @@ public class SubmissionsRateRestController {
 	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
 															 @RequestParam(value = "candidateId", required = false) Long candidateId,
+															 @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 															 HttpServletRequest request) throws Exception {
 		 
 		User logInUsers = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -285,6 +290,8 @@ public class SubmissionsRateRestController {
 		String expectedRateRN = "";
 		String expectedRateTypeRN = "";
 		String expectedRatePerRN = "";
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != requirementSubmissionTemplateFields){
 				if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
 					requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
@@ -313,8 +320,8 @@ public class SubmissionsRateRestController {
 				}else{
 					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
 				}
-				DateFormat date = LoginSessionController.DATEFORMAT;
-				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
+				//DateFormat date = LoginSessionController.DATEFORMAT;
+				String commonDate = simpleDateFormat.format(requirementSubmissionTemplateFields.getCreatedDate());
 				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
 				requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
 		}

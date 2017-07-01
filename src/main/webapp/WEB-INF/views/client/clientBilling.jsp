@@ -537,7 +537,8 @@ function customDate(orgRelationId,clientLocationId){
 		dateFormat : finalDateFormatbillingStartDate,
 		onSelect : function(selected) {
 			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
+			//var dt = toDate("#billingStartDate");
+			   var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
@@ -554,7 +555,8 @@ function customDate(orgRelationId,clientLocationId){
 	     },
 		onSelect : function(selected) {
 			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
+			//var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();

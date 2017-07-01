@@ -148,8 +148,8 @@ function candidateEducationList(candidateId){
 	                 	 result  = result + '           <th>Specialization</th>';
 	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
 	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';

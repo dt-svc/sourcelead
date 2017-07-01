@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
@@ -90,7 +91,7 @@ public class InvoicePdfHelper {
 			String invoiceType, String vendorCurrencyCode, String loginOrgCurrencyCode) throws IOException, Exception {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		String countryCurrency = countries.getCurrency();
-
+		SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + ".pdf");
 		if (Constants.PAYABLE.equalsIgnoreCase(invoiceType)) {
 			Document document = new Document();
@@ -120,8 +121,8 @@ public class InvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
-				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+				String createdDate = simpleDateFormat.format(invoice.getCreatedDate());
+				String dueDate = simpleDateFormat.format(invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -265,13 +266,13 @@ public class InvoicePdfHelper {
 
 					StringBuilder startAndEndDate = new StringBuilder();
 					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
-						String endDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getEndDate());
+						String StartDate = simpleDateFormat.format(invoiceLineItems.getStartDate());
+						String endDate = simpleDateFormat.format(invoiceLineItems.getEndDate());
 						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
 								.append(System.getProperty("line.separator")).append(endDate);
 						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
 					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
+						String StartDate = simpleDateFormat.format(invoiceLineItems.getStartDate());
 						table.addCell(
 								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					} else {
@@ -450,8 +451,8 @@ public class InvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
-				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+				String createdDate = simpleDateFormat.format(invoice.getCreatedDate());
+				String dueDate = simpleDateFormat.format(invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -593,13 +594,13 @@ public class InvoicePdfHelper {
 
 					StringBuilder startAndEndDate = new StringBuilder();
 					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
-						String endDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getEndDate());
+						String StartDate = simpleDateFormat.format(invoiceLineItems.getStartDate());
+						String endDate = simpleDateFormat.format(invoiceLineItems.getEndDate());
 						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
 								.append(System.getProperty("line.separator")).append(endDate);
 						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
 					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
+						String StartDate = simpleDateFormat.format(invoiceLineItems.getStartDate());
 						table.addCell(
 								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					} else {

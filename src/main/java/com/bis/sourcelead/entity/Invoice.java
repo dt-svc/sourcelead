@@ -22,6 +22,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
 @Table(name = "INVOICE", catalog = "sourcelead")
@@ -279,6 +281,23 @@ public class Invoice {
 	
 	@Transient
 	private String clientCurrency;
+	
+	@Transient
+	@JsonProperty
+	private String projectMemberName;
+	
+	@Transient
+	@JsonProperty
+	private String memberId;
+	
+	@Transient
+	@JsonProperty
+	private String expensesFrequency;
+	
+	@Transient
+	@JsonProperty
+	private String expId;
+	
 	
 	public Long getId()
 	{
@@ -988,6 +1007,39 @@ public class Invoice {
 	public void setProjectMemberId(ProjectMembers projectMemberId) {
 		this.projectMemberId = projectMemberId;
 	}
+
+	public String getProjectMemberName() {
+		return projectMemberName;
+	}
+
+	public void setProjectMemberName(String projectMemberName) {
+		this.projectMemberName = projectMemberName;
+	}
+
+	public String getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getExpensesFrequency() {
+		return expensesFrequency;
+	}
+
+	public void setExpensesFrequency(String expensesFrequency) {
+		this.expensesFrequency = expensesFrequency;
+	}
+
+	public String getExpId() {
+		return expId;
+	}
+
+	public void setExpId(String expId) {
+		this.expId = expId;
+	}
+
 	
 	
 }

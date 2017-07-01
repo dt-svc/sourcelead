@@ -1458,6 +1458,7 @@ function hideCommonSOWFields(){
 	
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
+		var locationId = '${SourceLeadWeb_orgLocationId}';
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		if(sowType!="Full time offer"){
@@ -1467,7 +1468,7 @@ function hideCommonSOWFields(){
 		}
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);

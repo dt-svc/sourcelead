@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -473,7 +474,8 @@ public class SubmissionsRestController {
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
 				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-		DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
@@ -508,7 +510,7 @@ public class SubmissionsRestController {
 	
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(simpleDateFormat.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}

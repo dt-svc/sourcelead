@@ -570,6 +570,7 @@ public class CandidateRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
 		List<RequirementSubmissionHistory> requirementSubmissionhistory = requirementSubmissionHistoryService.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId, loginOrgLocation.getId(), requirementId, submissionId);
+		SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory rsh : requirementSubmissionhistory) {
 			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			if (null != ros) {
@@ -651,7 +652,7 @@ public class CandidateRestController {
 				rh = (RequirementInterviewHistory) object;
 				if (null != rh.getInterviewId()) {
 					if (null != rh.getInterviewId().getDateOfInterview()) {
-						rh.setDateOfInterviewStr(LoginSessionController.DATEFORMAT.format(rh.getInterviewId().getDateOfInterview()));
+						rh.setDateOfInterviewStr(simpleDateFormat.format(rh.getInterviewId().getDateOfInterview()));
 					}
 					if (null != rh.getInterviewId().getStartTime()) {
 						StringBuilder startTime = new StringBuilder();
@@ -676,7 +677,7 @@ public class CandidateRestController {
 			List<RequirementInterview> RequirementInterview = requirementInterviewService.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
 			for (RequirementInterview requirementInterview : RequirementInterview) {
 				if (null != requirementInterview.getDateOfInterview()) {
-					rsh.setInterviewDateStr(LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview()));
+					rsh.setInterviewDateStr(simpleDateFormat.format(requirementInterview.getDateOfInterview()));
 				}
 				if (null != requirementInterview.getStartTime()) {
 					StringBuilder startTime = new StringBuilder();

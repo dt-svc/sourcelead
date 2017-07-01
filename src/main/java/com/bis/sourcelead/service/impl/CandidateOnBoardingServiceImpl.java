@@ -346,9 +346,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUser == null){
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
-		}else{
-			onboardingUser.setPassword(sourceleadPasswordEncoder.encode(password));
-			userDao.addUser(onboardingUser);
 		}
 		
 		onboardingUserRole = userRoleDao.getUserDetailsByUserIdAndLocationId(onboardingUser.getId(), orgLocations.getId());
@@ -689,20 +686,21 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(task.getSubject()!= null  && !"".equalsIgnoreCase(task.getSubject())){
+		 if(!isNullOrEmpty(task.getSubject())){
 		 globalVarsMap.put("subject", task.getSubject()); 
 		 }else{
 		 globalVarsMap.put("subject", "--");	 
 		 }
-		 if(task.getPriority()!= null  && !"".equalsIgnoreCase(task.getPriority())){
-		 globalVarsMap.put("priority", task.getPriority()); 
+		 if(!isNullOrEmpty(task.getPriority())){
+		   globalVarsMap.put("priority", task.getPriority()); 
 		 }else{
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(LoginSessionController.DATEFORMAT.format(task.getTaskDate()));
+		 task.setTaskDateStr(simpleDateFormat.format(task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

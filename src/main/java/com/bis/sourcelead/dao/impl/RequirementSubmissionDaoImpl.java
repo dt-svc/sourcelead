@@ -428,8 +428,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     		String from = "select count(*) from RequirementSubmissionHistory rsh  ";
     		
     		//login user as created by
-    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:loginUserCode)";
-    		params.put("loginUserCode",user.getUserCode());
+    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
+    		params.put("userId",user.getId());
     		
     		//login user as a approver for this requirement  or  assigned to.
     		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) ) ";
@@ -2514,8 +2514,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        	String from = "from RequirementSubmissionHistory rsh  ";
 	    		
 	    		//login user as created by
-	    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:loginUserCode)";
-	    		params.put("loginUserCode",user.getUserCode());
+	    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
+	    		params.put("userId",user.getId());
 	    		
 	    		//login user as a approver for this requirement  or  assigned to.
 	    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) ) ";

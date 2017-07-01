@@ -1432,16 +1432,17 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 @RequestMapping(value = "/getOffboardCandidateTasksByOffboardUUID" , method = RequestMethod.GET)
 		 public @ResponseBody  String getOffboardCandidateTasksByOffboardUUID(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
-				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+				 @RequestParam(value="locationCode", required=false) String locationCode) throws Exception {
 			 
 			 
 			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
-			 
+			 OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			 List<Tasks> tasksList = taskService.getTasksListOffboardingId(offboarding.getId());
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(simpleDateFormat.format(tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){
