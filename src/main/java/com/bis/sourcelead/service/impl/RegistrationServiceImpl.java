@@ -82,6 +82,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.DefaultContractTemplateUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -281,6 +282,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
 		
+		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template",Constants.CLIENT_MSA);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template",Constants.VENDOR_MSA);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
+		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+//		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
+		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
@@ -288,11 +296,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
-		 StringBuilder templateStringBuilder=new StringBuilder();
 		 ContractsTemplate contractsTemplate = new ContractsTemplate();
-		 contractsTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(template).toString());
-		 contractsTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(template).toString());
-		 contractsTemplate.setTemplateContent("");
+		 contractsTemplate.setTemplateName(templateType);
+		 contractsTemplate.setDescription(templateType);
+		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
 		 contractsTemplate.setOrgLocationId(orgLocations);
 		 contractsTemplate.setTemplateType(templateType);
 		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -324,7 +331,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setLastName(user.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setEmail(user.getEmail());
-			candidate.setIsAssociate(Constants.NO);
+			candidate.setIsAssociate(Constants.YES);
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -456,7 +463,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setUser(user);
 		orgLocations.setStatus(Status.ACTIVE);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
-		orgLocations.setLocationCode(org.getOrgCode()+countries.getCode2());
+		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName());
