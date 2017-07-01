@@ -56,7 +56,6 @@
 <script>
  window.onload = function() {
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
-	 alert("hhh");
 };
 </script>
 
