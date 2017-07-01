@@ -1009,7 +1009,7 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 	 notificationScenario.setBody(notificationbody);
 
 	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 	 emailMessage.setSubject(subject);
 	 emailMessage.setMessageBody(emailTemplate);
 	 
@@ -1131,7 +1131,7 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
@@ -1247,7 +1247,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 	 
 	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 	 emailMessage.setSubject(subject);
 	 emailMessage.setMessageBody(emailTemplate);
 	 
@@ -1488,7 +1488,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 StringBuilder actionLinkStringBuilder = new StringBuilder();
@@ -1584,7 +1584,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1688,7 +1688,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1968,7 +1968,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -2077,7 +2077,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -2182,7 +2182,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, loginOrgLocation.getOrg());
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
@@ -2307,7 +2307,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

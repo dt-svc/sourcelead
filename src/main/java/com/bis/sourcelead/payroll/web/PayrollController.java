@@ -1,5 +1,8 @@
 package com.bis.sourcelead.payroll.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,20 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.File;
 import com.bis.sourcelead.payroll.entity.PayrollFileValidator;
-import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
+import com.bis.sourcelead.payroll.service.BisUserMappingService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
@@ -35,10 +36,13 @@ public class PayrollController {
 
 	@Autowired
 	PayrollFileValidator validator;
-
-	@Autowired
-	private EmployerPayrollCostService employerPayrollCostService;
 	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private BisUserMappingService bisUserMappingService;
+
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(validator);
@@ -58,6 +62,30 @@ public class PayrollController {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("payroll/payrollList");
+	       return model;
+	}
+	
+	/**
+	 * returns user mapping jsp for payroll
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/userMapping")
+	public ModelAndView userMapping(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		   List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		   usersList.sort((User report1, User report2)-> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
+		   List<BisUserMapping> masterUserList = bisUserMappingService.getBisUserListByOrgLocationId(orgLocations.getId());
+		 //lambda here!
+		   masterUserList.sort((BisUserMapping report1, BisUserMapping report2)-> report1.getCandidateName().compareToIgnoreCase(report2.getCandidateName()));
+			
+		   model.addObject("usersList", usersList);
+		   model.addObject("masterUsersList", masterUserList);
+		   model.setViewName("payroll/userMapping");
 	       return model;
 	}
 }

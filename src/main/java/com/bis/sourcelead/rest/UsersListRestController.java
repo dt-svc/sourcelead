@@ -1067,7 +1067,7 @@ public class UsersListRestController {
 	 notificationScenario.setBody(notificationbody);
 
 	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 	 emailMessage.setSubject(subject);
 	 emailMessage.setMessageBody(emailTemplate);
 	 
@@ -1125,7 +1125,7 @@ public class UsersListRestController {
 		 notificationScenario.setBody(notificationbody);
 	
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1181,7 +1181,7 @@ public class UsersListRestController {
 		 notificationScenario.setBody(notificationbody);
 	
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1234,7 +1234,7 @@ public class UsersListRestController {
 		 notificationScenario.setBody(notificationbody);
 	
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1442,7 +1442,7 @@ public class UsersListRestController {
 	 notificationScenario.setBody(notificationbody);
 
 	 //construct HTML template using required data
-	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 	 emailMessage.setSubject(subject);
 	 emailMessage.setMessageBody(emailTemplate);
 	 
