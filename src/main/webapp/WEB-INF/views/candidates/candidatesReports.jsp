@@ -124,7 +124,7 @@ window.onload = function() {
 	              
 		              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined")
 		             	 {
-		                   result = result +"  <td><div>"+opt.primarySkill+"</div></td>";
+		                   result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
 		             	 }else{
 		             		 result = result +"  <td><div>----</div></td>"; 
 		             	 }
