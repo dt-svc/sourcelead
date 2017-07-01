@@ -27,6 +27,8 @@ function userAssignedProjects(userId){
 
 <script>
 function prepareAssignedProjectsData(data){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
 	var result = "";
 	result = result +"<table id='assignedProjectsListPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -60,7 +62,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='proj_show' ><span title='"+opt.projectName+"'>"+opt.projectName+"</span><i class='fa fa-binoculars'></i></div>";
+   		result = result +"<div class='proj_show'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a><i class='fa fa-binoculars'></i></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -157,7 +159,7 @@ function prepareAssignedProjectsData(data){
 		 var dt = new Date(from[2], from[1] - 1, from[0]);
          dt.setDate(dt.getDate());
         //Main project end date
-         var projectEndDate = opt.endDate;
+         var projectEndDate = opt.projectEndDateStr;
          var endDate = "";
          if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
         	 var fromEnd = projectEndDate.split("-");

@@ -1145,7 +1145,6 @@ function toDate(selector) {
 //  New project Tabs
 	$("#tab-a").show();
     $(".newPrTabsMenu a").click(function(event) {
-    	alert("Hi Srinivas");
         event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");

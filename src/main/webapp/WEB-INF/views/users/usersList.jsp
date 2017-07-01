@@ -31,6 +31,7 @@ margin-right: 15px;
 window.onload = function () {
 //getUsersList('manual');
 	usersListCheck("${searchValue}","${searchResult}");
+	var view = $("#listView").val('GRIDVIEW');
  };
 </script>
 
@@ -220,12 +221,12 @@ function getUsersSearchResult(searchValue){
        <div class="positionRelative clearfix">
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-         <li><div class="gridFil">
-					<i class="fa fa-th-large" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
-					<i class="fa fa-th-list" onclick="showGrid();" id="ShowList"></i>
+         <li><div class="gridFil grid-fil">
+					<i class="fa fa-th-list" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
+					<i class="fa fa-th-large" onclick="showGrid();" id="ShowList"></i>
 			</div></li>	
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getUsersView('manual');">
+               <select id="userState" onchange="getUsersView('manual','LISTVIEW');">
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
@@ -235,7 +236,7 @@ function getUsersSearchResult(searchValue){
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getUsersViewBuRole('manual');">
+				<select id="userRole" onchange="getUsersViewBuRole('manual','LISTVIEW');">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
@@ -422,18 +423,24 @@ function exportToPdf(){
 <script>
 	$(document).scroll(function(e){
 	    // grab the scroll amount and the window height
-	    var scrollAmount = $(window).scrollTop();
-	    var documentHeight = $(document).height();
-	    offset = $("#usersOffset").val();
-	    var UsersCount = $("#totalUsersCount").val(); 
-	    // calculate the percentage the user has scrolled down the page
-	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
-	    	var avilableCount = $("#usersOffset").val();
-	    	
-	    	avilableCount = parseInt(avilableCount) + parseInt(10); 
-	    	$("#usersOffset").val(avilableCount);
-	    	//searchUser("scroll");
-	    	 getUsersList("scroll");
+	    
+	    var view = $("#listView").val();
+	    if(view == "GRIDVIEW"){
+	    	var scrollAmount = $(window).scrollTop();
+		    var documentHeight = $(document).height();
+		    offset = $("#usersOffset").val();
+		    var UsersCount = $("#totalUsersCount").val(); 
+		    // calculate the percentage the user has scrolled down the page
+		    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+		    	var avilableCount = $("#usersOffset").val();
+		    	
+		    	avilableCount = parseInt(avilableCount) + parseInt(10); 
+		    	$("#usersOffset").val(avilableCount);
+		    	//searchUser("scroll");
+		    	 getUsersList("scroll");
+		    }
+	    }else{
+	    	$('#loadMoreDiv').empty(); 
 	    }
 	});
 </script>
@@ -993,24 +1000,24 @@ function getUserSummary(userId){
 </script>
 
   <script>
-  function getUsersView(type){
+  function getUsersView(type,viewFormat){
 	  var viewType = $("#listView").val();
 	  if(viewType != 'LISTVIEW'){
 		  getUsersList(type);
 	  }else{
-		  getUsersListView('manual');  
+		  getUsersListView('manual',viewFormat);  
 	  }
 	   
   } 
   </script>
   
   <script>
-function getUsersViewBuRole(type){
+function getUsersViewBuRole(type,viewForm){
 	var viewType = $("#listView").val();
 	  if(viewType != 'LISTVIEW'){
 		  getUsersList(type);
 	  }else{
-		  getUsersListView('manual');  
+		  getUsersListView('manual',viewForm);  
 	  }
 } 
 </script>
@@ -1029,6 +1036,7 @@ function showList(viewType){
 	$("#usersListBody").hide();
 	getUsersListView('manual',viewType);
 	$("#userListViewDiv").show();
+	$('#loadMoreDiv').empty();
 	
 }
 </script>
