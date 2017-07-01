@@ -201,7 +201,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	}
 
 
-	private String getCellValueAsString(Cell cell, String fileName) {
+/*	private String getCellValueAsString(Cell cell, String fileName) {
 		String cellValue = "";
 		if(fileName.toLowerCase().endsWith("xls")){
 				HSSFCell hssfCell = (HSSFCell) cell;
@@ -227,7 +227,41 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 				}
 			}
 			return cellValue;
+		}*/
+	
+	
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		double xssfCellValue = 0;
+		if (fileName.toLowerCase().endsWith("xls")) {
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = hssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_NUMERIC){
+				cellValue = String.valueOf(hssfCell.getNumericCellValue());
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_STRING){
+				cellValue = String.valueOf(hssfCell.getStringCellValue());	
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				cellValue = cell.getStringCellValue();
+			}
+		} else {
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = xssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				cellValue = String.valueOf(xssfCell.getNumericCellValue());
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_STRING) {
+				cellValue = String.valueOf(xssfCell.getStringCellValue());
+			} else if(xssfCell.getCellType() == XSSFCell.CELL_TYPE_STRING){
+				cellValue = cell.getStringCellValue();
+			}
 		}
+		return cellValue;
+	}
 
 	@Override
 	public List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation) throws Exception {
