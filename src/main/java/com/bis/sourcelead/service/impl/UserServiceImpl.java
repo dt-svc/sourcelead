@@ -615,7 +615,7 @@ public class UserServiceImpl implements UserService {
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -906,7 +906,7 @@ public class UserServiceImpl implements UserService {
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,respondingPartyOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
@@ -1143,9 +1143,10 @@ public class UserServiceImpl implements UserService {
 		 String url = sourceleadUrl;
 		 
 		 Org registredOrg = orgDao.findOrgByID(orgId);
+		 OrgLocations regLocation = orglocationsDao.getOrgLocations(locationId);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,registredOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,registredOrg,regLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1193,7 +1194,7 @@ public class UserServiceImpl implements UserService {
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

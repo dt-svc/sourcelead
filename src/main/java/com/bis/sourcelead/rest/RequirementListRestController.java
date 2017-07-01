@@ -1604,7 +1604,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		    		 notificationScenario.setBody(notificationbody);
 		    		 
 		    		 //construct HTML template using required data
-		    		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		    		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),loginOrgLocation);
 		    		 emailMessage.setSubject(subject);
 		    		 emailMessage.setMessageBody(emailTemplate);
 		    		 
