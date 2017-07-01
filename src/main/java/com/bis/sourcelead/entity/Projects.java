@@ -70,6 +70,29 @@ public class Projects implements Serializable{
     @Column(name="ESTIMATED_BUDGET")
     private Double estimatedBudget;
     
+    @Column(name="ALLOW_FL")
+    private Boolean allowFreeLance;
+    
+    @Column(name="ALLOW_REMOTE")
+    private Boolean allowRemote;
+    
+    @Column(name="AllOW_OT")
+    private Boolean allowOvertime;
+    
+    @Column(name="ALLOW_TIME_DEADLINE")
+    private Boolean allowTimeEntryAfterDeadLine;
+    
+    @Column(name="ALLOW_BID")
+    private Boolean allowBidding;
+    
+    @Column(name="ALLOW_OFFSHORE")
+    private Boolean allowOffShore;
+    
+    @Column(name="FLAT_PCT")
+    private Double flatPercent;
+    
+    @Column(name="OVERTIME_RATE_TYPE")
+    private String overtimeRateType;
 
     
     @ManyToOne(fetch = FetchType.EAGER)
@@ -629,6 +652,70 @@ public class Projects implements Serializable{
 
 	public Double getEstimatedBudget() {
 		return estimatedBudget;
+	}
+
+	public Boolean getAllowFreeLance() {
+		return allowFreeLance;
+	}
+
+	public void setAllowFreeLance(Boolean allowFreeLance) {
+		this.allowFreeLance = allowFreeLance;
+	}
+
+	public Boolean getAllowRemote() {
+		return allowRemote;
+	}
+
+	public void setAllowRemote(Boolean allowRemote) {
+		this.allowRemote = allowRemote;
+	}
+
+	public Boolean getAllowOvertime() {
+		return allowOvertime;
+	}
+
+	public void setAllowOvertime(Boolean allowOvertime) {
+		this.allowOvertime = allowOvertime;
+	}
+
+	public Boolean getAllowTimeEntryAfterDeadLine() {
+		return allowTimeEntryAfterDeadLine;
+	}
+
+	public void setAllowTimeEntryAfterDeadLine(Boolean allowTimeEntryAfterDeadLine) {
+		this.allowTimeEntryAfterDeadLine = allowTimeEntryAfterDeadLine;
+	}
+
+	public Boolean getAllowBidding() {
+		return allowBidding;
+	}
+
+	public void setAllowBidding(Boolean allowBidding) {
+		this.allowBidding = allowBidding;
+	}
+
+	public Boolean getAllowOffShore() {
+		return allowOffShore;
+	}
+
+	public void setAllowOffShore(Boolean allowOffShore) {
+		this.allowOffShore = allowOffShore;
+	}
+
+	public Double getFlatPercent() {
+		return flatPercent;
+	}
+
+	public void setFlatPercent(Double flatPercent) {
+		this.flatPercent = flatPercent;
+	}
+
+	public String getOvertimeRateType() {
+		return overtimeRateType;
+	}
+
+	public void setOvertimeRateType(String overtimeRateType) {
+		this.overtimeRateType = overtimeRateType;
 	}
 
 

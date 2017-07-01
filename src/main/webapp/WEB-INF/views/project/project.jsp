@@ -11,11 +11,8 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-
 <script src="resources/js/summernote.js"/>
 <link href="resources/css/summernote.css" rel="stylesheet"/>
-
-
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -173,6 +170,63 @@ function validateTaskName(){
 								</select>
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowFreelanceDevelopers"> Allow 
+										Freelance Developers
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowRemoteWork"> Allow
+										Remote Work
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowOverTime" id="isAllowOverTime" onchange="allowOverTime();"> Allow
+										Over Time
+									</label>
+								</div>
+							</div>
+						</div>	
+						
+
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="input-group">
+									<div class="input-group-btn selp-custom-min"
+										id="flatPercentageId" name="flatPercentageId">
+										<select class="form-control chosen-select">
+											<option value="c2c">FLAT</option>
+											<option value="%">%</option>
+										</select>
+									</div>
+									<input type="number" min="0" max="100" step="0.5" value="0" id="flatPercentage"
+										name="flatPercentage" maxlength="5" class="form-control"
+										data-validation-optional="true" onblur="">
+								</div>
+							</div>
+						</div>
+																						
+						
 					</div>
 					
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -308,6 +362,42 @@ function validateTaskName(){
 								</div>
 							</div>
 						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowOffshoreResource"> Allow 
+										Offshore Resource
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isTimeEntryAfterDeadline"> Time
+										Entry after Deadline
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowBidding"> Allow
+										Bidding
+									</label>
+								</div>
+							</div>
+						</div>																		
 					</div>
 
 
@@ -426,6 +516,18 @@ function validateTaskName(){
 <script>
 function removeFrequencyValidation(){
 	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
+}
+
+function allowOverTime(){
+	if ($('#isAllowOverTime').is(":checked"))
+	{
+		$('#flatPercentageId').attr('style','visibility:visible');
+		$('#flatPercentage').attr('style','visibility:visible');
+	}else{
+		$('#flatPercentageId').attr('style','visibility:hidden');
+		$('#flatPercentage').attr('style','visibility:hidden');
+	}
+	
 }
 </script>
 <script>
@@ -612,6 +714,8 @@ function getStatus(){
 		$("#maxTsRowNum").val('6');
 		addSourceleadTasks();
 		document.getElementById("project_form").reset();
+		$('#flatPercentageId').attr('style','visibility:hidden');
+		$('#flatPercentage').attr('style','visibility:hidden');
 		$('#ProjectDescription').summernote({height:300});
 	});
 </script>
@@ -737,9 +841,7 @@ function flushProjectTasks(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		
-		//var projDesc= CKEDITOR.instances['ProjectDescription'].getData();
 		var projDesc = $('#ProjectDescription').summernote('code');
-		alert(projDesc);
 		
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
