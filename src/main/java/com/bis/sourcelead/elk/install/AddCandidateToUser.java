@@ -94,7 +94,7 @@ public void addCandidteToUser() throws IOException, SQLException {
 					    		 pstmt4.setString(5, lastName);
 					    		 pstmt4.setString(6, email);
 					    		 pstmt4.setInt(7, 0);
-					    		 pstmt4.setString(8, "N");
+					    		 pstmt4.setString(8, "Y");
 					    		 pstmt4.setString(9, SourceLeadRandomCodeHelper.generateRandomUUID());
 					    		 pstmt4.setDate(10,(java.sql.Date) createdDate);
 					    		 pstmt4.setString(11,createdBy);
