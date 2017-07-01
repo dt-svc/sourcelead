@@ -1192,7 +1192,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setFirstName(user.getFirstName());
 			candidate.setLastName(user.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
-			candidate.setIsAssociate(Constants.NO);
+			candidate.setIsAssociate(Constants.YES);
 			candidate.setEmail(user.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());

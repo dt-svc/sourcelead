@@ -331,7 +331,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			candidate.setLastName(user.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setEmail(user.getEmail());
-			candidate.setIsAssociate(Constants.NO);
+			candidate.setIsAssociate(Constants.YES);
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
