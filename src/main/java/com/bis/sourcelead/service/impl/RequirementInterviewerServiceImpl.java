@@ -157,7 +157,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, requirementSubmission.getOrgLocations().getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, requirementSubmission.getOrgLocations().getOrg(),requirementSubmission.getOrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

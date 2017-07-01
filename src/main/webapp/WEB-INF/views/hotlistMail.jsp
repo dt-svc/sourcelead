@@ -953,7 +953,7 @@ function getCheckedCandidates(){
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var otherEmailArray = this.value.split(",");
+		    	 var otherEmailArray = this.value.split(/[ ,]+/);
 		    	 if(otherEmailArray.length > 1){
 		    		 for (var i=0; i < otherEmailArray.length; i++) {
 	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
@@ -986,7 +986,7 @@ function getCheckedCandidates(){
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var toEmailArray = this.value.split(",");
+		    	 var toEmailArray = this.value.split(/[ ,]+/);
 		    	 if(toEmailArray.length > 1){
 		    		 for (var i=0; i < toEmailArray.length; i++) {
 	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));

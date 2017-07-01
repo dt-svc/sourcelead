@@ -79,8 +79,6 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 		if(jsonObject.has("taxFlatReward") && null != jsonObject.getString("taxFlatReward") && !"".equals(jsonObject.getString("taxFlatReward")) ){
 			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxFlatReward")));
 			expensesCategory.setAmountType("Flat");
-		}else{
-			expensesCategory.setAmountType("Flat");
 		}
 		
 		

@@ -82,6 +82,8 @@ function wagesAndTaxList(){
 						$("#wagesAndTaxListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
+						$("#finalPayrollReportDiv").empty();
 						$("#wagesAndTaxListDiv").append(result);
 						$("#loading").removeAttr("style");
 						wagesAndTaxListTablePagination();
