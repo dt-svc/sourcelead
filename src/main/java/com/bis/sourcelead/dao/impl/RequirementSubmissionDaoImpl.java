@@ -2395,9 +2395,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType,OrgLocations loginOrgLocation) {
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
-			 if(sowType.equalsIgnoreCase("Client SOW")){
+			 if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
-		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
+		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType) || Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType) ){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
@@ -2450,9 +2450,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		{
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
-			 if(sowType.equalsIgnoreCase("Client SOW")){
+			 if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
-		 		}else if(sowType.equalsIgnoreCase("Vendor SOW") || sowType.equalsIgnoreCase("Full time offer")){
+		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType) || Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";

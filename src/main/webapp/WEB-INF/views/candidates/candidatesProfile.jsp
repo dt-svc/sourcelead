@@ -891,7 +891,7 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'		          <!-- Select Visa -->                                                                                                              ';
 							
 							result = result +'		<div class="clearfix">';
-							result = result +'		          <h2 class="education  pull-left">Visa:</h2>';
+							result = result +'		          <h2 class="education  pull-left">Immigration Status:</h2>';
 							if(candidateType == "Candidates"){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';

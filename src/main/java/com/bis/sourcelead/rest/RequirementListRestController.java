@@ -941,9 +941,9 @@ public class RequirementListRestController {
 					}
 					
 				}
-				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType,requirementSubCount);
+				 file = requirementService.getExportRequirementFile(requirementList1,loginOrgLocation.getOrgLocationName(),exportType,requirementSubCount);
 			}else{
-				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType,requirementSubCount);
+				 file = requirementService.getExportRequirementFile(requirementList,loginOrgLocation.getOrgLocationName(),exportType,requirementSubCount);
 			}
 			 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {

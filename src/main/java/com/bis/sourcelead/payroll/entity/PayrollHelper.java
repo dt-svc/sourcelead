@@ -137,7 +137,6 @@ public class PayrollHelper {
 	{
 		 int isValid = 0;
 			Row row = (Row) rowIterator.next();
-			
 			 if(row.getRowNum() == 0){
 				 if(Constants.HR_DEDUCTION_HEADERS[0].equalsIgnoreCase(row.getCell(0).getStringCellValue())){
 		    			   if(Constants.HR_DEDUCTION_HEADERS[1].equalsIgnoreCase(row.getCell(1).getStringCellValue())){
@@ -152,7 +151,12 @@ public class PayrollHelper {
 		    													   if(Constants.HR_DEDUCTION_HEADERS[10].equalsIgnoreCase(row.getCell(10).getStringCellValue())){
 		    														   if(Constants.HR_DEDUCTION_HEADERS[11].equalsIgnoreCase(row.getCell(11).getStringCellValue())){
 		    															   if(Constants.HR_DEDUCTION_HEADERS[12].equalsIgnoreCase(row.getCell(12).getStringCellValue())){
-																		isValid = 1;
+		    																   if(Constants.HR_DEDUCTION_HEADERS[13].equalsIgnoreCase(row.getCell(13).getStringCellValue())){
+		    																	   if(!"".equalsIgnoreCase(row.getCell(14).getStringCellValue())){
+		    																		   isValid = 0;
+		    																	   }else{
+		    																		   isValid = 1;
+		    																   }
 																}
 															}
 														}
@@ -167,6 +171,7 @@ public class PayrollHelper {
 				}
 		}
 	}
-		return isValid;
+}	
+return isValid;
 	}
 }
