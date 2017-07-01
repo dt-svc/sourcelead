@@ -26,14 +26,15 @@ $(document).ready(function(){
   <div class="pull-right brud-crum">Home &raquo; Expenses New</div>
 </section>
 	<div id="loading"></div>
+	<div id="popUp"></div>
 <form:form id="userMapping_form" name="userMapping_form" method="post">
 
 <div class="content-area content-new clearfix">
             <div class="clearfix mt col-md-12 mb">
              <div class="col-md-5 dropdown-select">
                <label class="col-md-3">Imported Users</label>
-               <div class="col-md-9">
-               <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required">
+               <div class="col-md-9" id="errImportedUserIdDiv">
+               <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required" onchange="removeImportValidation();">
                 <option value="" selected>-Select User-</option>
 	            <c:forEach var="masterUsers" items="${masterUsersList}">
 					<option value="${masterUsers.id}">${masterUsers.candidateName}</option>
@@ -48,8 +49,8 @@ $(document).ready(function(){
              </div>
              <div class="col-md-5">
              <label class="col-md-3">SL Org Users</label>
-               <div class="col-md-9">
-               <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId" field-name="Sl User" data-validation="required">
+               <div class="col-md-9" id="errOrgUserIdDiv">
+               <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId" field-name="Sl User" data-validation="required" onchange="removeOrgValidation();">
                 <option value="" selected>-Select Org Users-</option>
 	            <c:forEach var="users" items="${usersList}">
 					<option value="${users.id}">${users.firstName} ${users.lastName}</option>
@@ -87,24 +88,14 @@ $(document).ready(function(){
 <script type="text/javascript">
 	function mergeUser() {
 		if ($('#userMapping_form').validate(false, validationSettings)) {
-			alert("Hai");
-			var frm = $('#userMapping_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 		$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/mergeUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-						success : function(result) {
-							if (result == true) {
-								location.replace(sourceleadUrl+ "/userMapping");
-							}
-						},
-					}); 
-			return true;
+			var importedUser = $('#importedUserId :selected').text();
+			var orgUser = $('#slUserId :selected').text();
+			if(importedUser != orgUser){
+				showAlertMessage();
+			}else{
+				mergeDiffUsers();
+			}
+			
 		} else {
 			return false;
 		}
@@ -172,5 +163,64 @@ function userMappingTablePagination(){
 }
 </script>
 
+<script type="text/javascript">
+function showAlertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Two Users are Different.! Do you want to merge these two users?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input class='u_can_color' id='confirm-id' type='button' value='Ok' onclick='mergeDiffUsers();'><input class='width50percnt' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+
+<script type="text/javascript">
+function mergeDiffUsers(){ 
+	var frm = $('#userMapping_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	  //It will escape all the special characters
+    var jsonData = encodeURIComponent(con);
+	var sourceleadUrl = '${sourceleadUrl}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+				type : "POST",
+				url : sourceleadUrl+ "/mergeUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+				success : function(result) {
+					if (result == true) {
+						location.replace(sourceleadUrl+ "/userMapping");
+					}
+				},
+			}); 
+	return true;
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	$("#importedUserId").val('').trigger("chosen:updated");
+	$("#slUserId").val('').trigger("chosen:updated");
+}
+</script>
+
+<script>
+function removeImportValidation(){
+	$('#errImportedUserIdDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeOrgValidation(){
+	$('#errOrgUserIdDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
