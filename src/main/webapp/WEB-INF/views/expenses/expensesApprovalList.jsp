@@ -25,6 +25,7 @@
 				getExpensesApprovalDataList();
 			}
 		 };
+		 
 </script>
 <style type="text/css">
 
@@ -350,7 +351,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	    $("#reject"+expenseId+"message").val(''); 
 	    var result = "";
 	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
-		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" ></textarea>';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" onkeydown="return (event.keyCode!=13);"></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
 		result = result +'<a href="#" onClick="acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';
