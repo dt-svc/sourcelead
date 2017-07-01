@@ -56,6 +56,7 @@
 <script>
  window.onload = function() {
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
+	 alert("hhh");
 };
 </script>
 
@@ -1342,6 +1343,7 @@ function cancel(candidateId){
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
+				  </div>
 				  </div>
 			  </form:form>
       </div>
