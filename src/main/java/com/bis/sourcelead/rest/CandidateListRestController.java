@@ -1413,7 +1413,10 @@ public class CandidateListRestController {
 							StringBuilder sb =  new StringBuilder();
 							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 						}
-						candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
+						
+						if(null != candidate.getUpdatedDate()){
+							candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
+						}
 						 
 						freshList.add(candidate);
 					}
