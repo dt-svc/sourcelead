@@ -187,8 +187,16 @@ public class AddExpensesRestController {
 			if(null != project){
 				if(null != project.getOrgRelationId()){
 					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
-					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					 if("Vendor".equalsIgnoreCase(orgRelation.getInitiatorType())){
+						 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					 }else if("Client".equalsIgnoreCase(orgRelation.getInitiatorType())){
+						 project.setExpensesClientName(orgRelation.getLocationId().getOrgLocationName());
+					 }
 					}
+				/*if(null != project.getOrgRelationId()){
+					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
+					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					}*/
 					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
 					 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
@@ -382,7 +390,7 @@ public class AddExpensesRestController {
 				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 				 String url = sourceleadUrl;
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg());
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(),orgLoc);
 				 emailMessage.setSubject(subject);
 				 emailMessage.setMessageBody(emailTemplate);
 				 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());

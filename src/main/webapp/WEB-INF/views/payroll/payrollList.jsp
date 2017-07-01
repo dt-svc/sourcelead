@@ -47,7 +47,11 @@ window.onload = function () {
 	
 <div class="timesheet_head clearfix">
 
-     <ul>
+<div class="pull-left">
+<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Maping" onClick="userMaping();">User Maping </a>
+</div>
+
+     <ul class="pull-right">
      <li>
      <a href="javascript:void(0)" onclick="flushValues();" class="addcon-pop">
       	<i class="glyphicon glyphicon-plus paddingRight" ></i>Add Document</a>
@@ -74,6 +78,7 @@ window.onload = function () {
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
+                             <option value="BIS_USERS">BIS Users</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
@@ -125,7 +130,7 @@ window.onload = function () {
                     
                     <!--  Run Payroll Html -->
 <li>
-                  <a href="javascript:void(0)" class="runpayroll paddingRight"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
+                  <a href="javascript:void(0)" class="runpayroll paddingRight" onclick="flushPayrollCycle();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
                   <!-- Popup Div -->
                   	<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
                   <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div" onClick="flushPayrollCycle();"></i>
@@ -237,7 +242,7 @@ function runPayrollCycles(type){
 
 function flushPayrollCycle(){
 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
-	$('#payrollCycle :selected').text("---Select Payroll Cycle---");
+	$('#payrollCycle').val('').trigger("chosen:updated");
 }
 
 </script>
@@ -617,6 +622,7 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />

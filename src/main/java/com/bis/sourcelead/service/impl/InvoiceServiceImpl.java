@@ -801,7 +801,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orglocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orglocations.getOrg(),orglocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1182,14 +1182,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(0).setCellValue(invoice.getInvoiceId());
 	}
 	
-	Org org = null;
+	OrgLocations orgLocations = null;
 	if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
-			org = invoice.getOrgRelationID().getLocationId().getOrg();
+		orgLocations = invoice.getOrgRelationID().getLocationId();
 	}else if(invoice.getOrgRelationID().getLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
-			 org = invoice.getOrgRelationID().getResponderLocationId().getOrg();
+		orgLocations = invoice.getOrgRelationID().getResponderLocationId();
 	}
-	if(null != org){
-		writeRow.createCell(1).setCellValue(org.getOrgName());
+	if(null != orgLocations){
+		writeRow.createCell(1).setCellValue(orgLocations.getOrgLocationName());
 	}
 	
 	if(null != invoice.getContactUser()){

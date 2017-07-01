@@ -941,9 +941,9 @@ public class RequirementListRestController {
 					}
 					
 				}
-				 file = requirementService.getExportRequirementFile(requirementList1,org.getOrgName(),exportType,requirementSubCount);
+				 file = requirementService.getExportRequirementFile(requirementList1,loginOrgLocation.getOrgLocationName(),exportType,requirementSubCount);
 			}else{
-				 file = requirementService.getExportRequirementFile(requirementList,org.getOrgName(),exportType,requirementSubCount);
+				 file = requirementService.getExportRequirementFile(requirementList,loginOrgLocation.getOrgLocationName(),exportType,requirementSubCount);
 			}
 			 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
@@ -1604,7 +1604,7 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		    		 notificationScenario.setBody(notificationbody);
 		    		 
 		    		 //construct HTML template using required data
-		    		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		    		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),loginOrgLocation);
 		    		 emailMessage.setSubject(subject);
 		    		 emailMessage.setMessageBody(emailTemplate);
 		    		 

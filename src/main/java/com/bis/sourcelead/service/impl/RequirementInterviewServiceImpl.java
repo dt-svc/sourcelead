@@ -480,7 +480,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -751,7 +751,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("applicantName", emailMessage.getFirstName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
-			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
@@ -778,7 +778,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,loginOrgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -895,7 +895,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org,orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -978,7 +978,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("applicantLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
-			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
@@ -1008,7 +1008,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,loginOrgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1214,7 +1214,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("vendorLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
 			 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
-			 globalVarsMap.put("loginOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocations.getOrgLocationName());
 			 globalVarsMap.put("interviewDate", dateOfInterviewStr);
 			 globalVarsMap.put("interviewTime",time);
 			 globalVarsMap.put("interviewType",interviewTypeValue);
@@ -1244,7 +1244,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,loginOrgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1363,7 +1363,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org,orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1609,7 +1609,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, reqSubmission.getOrgLocations().getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, reqSubmission.getOrgLocations().getOrg(),reqSubmission.getOrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 String actionLink= "";
@@ -1759,7 +1759,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    			 String url = sourceleadUrl;
 	    			 
 	    			 //construct HTML template using required data
-	    			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+	    			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 	    			 emailMessage.setSubject(subject);
 	    			 emailMessage.setMessageBody(emailTemplate);
 	    			 

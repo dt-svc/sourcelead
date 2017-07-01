@@ -1044,7 +1044,7 @@ public class ClientRestController {
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    List<OrgRelations> clientsList = orgRelationsService.getAllClientsFilterByOrgLocationId(orgLocations.getId(),status,loginUser.getId());
-		    File file = clientVendorExport.getClientExportFile(clientsList,exportType,org.getOrgName());
+		    File file = clientVendorExport.getClientExportFile(clientsList,exportType,orgLocations.getOrgLocationName());
 		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
@@ -1081,7 +1081,7 @@ public class ClientRestController {
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		
 		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		    List<OrgSpoc> vandorsContactList = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(loginUser.getId(),orgLocations.getId(), "Vendor",status,clientIds,invitationStatus);
-		    File file = clientVendorExport.getClientContactsExportFile(vandorsContactList,exportType,org.getOrgName());
+		    File file = clientVendorExport.getClientContactsExportFile(vandorsContactList,exportType,orgLocations.getOrgLocationName());
 		    String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";

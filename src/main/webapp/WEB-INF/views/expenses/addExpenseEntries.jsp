@@ -212,7 +212,7 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-						<div class="col-md-4 mb10">
+						<div class="col-md-4 mb10 chosen-custom">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required">
 							   <option value="">Select Category Type</option>				 							   
@@ -375,6 +375,22 @@ function addExpenseRow(){
 				alert("Please Select StartDate & EndDate")
 			} 
 			
+		    var config = {
+		    	    '.chosen-select'           : {},
+		    	    '.chosen-select-deselect'  : {allow_single_deselect:true},
+		    	    '.chosen-select-no-single' : {disable_search_threshold:10},
+		    	    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		    	    '.chosen-select-width'     : {width:"95%"}
+		    	    }
+		    	    for (var selector in config) {
+		    	    $(selector).chosen(config[selector]);
+		    	    }
+		    	    $('.chosen-select').each(function() {
+		    	    var $this = $(this);
+		    	    $this.next().css({'width': '100%'});
+		    	    })
+		    	    $('#categoryType'+maxRowNum).chosen();
+		    	    $('#categoryType'+maxRowNum).trigger("chosen:updated");
 	   }
 	else{
 		var maxRecCount = $("#maxRecCount").val();

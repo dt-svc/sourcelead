@@ -627,7 +627,7 @@ public class SubmissionsRestController {
 		globalVarsMap.put("loginUser", emailMessage.getFromName());
 		globalVarsMap.put("requirementName", requirement.getJobTitle());
 
-		globalVarsMap.put("loginOrgName", loginOrg.getOrgName());
+		globalVarsMap.put("loginOrgName", loginOrgLocations.getOrgLocationName());
 		globalVarsMap.put("shortListApplicantCount", shotListCount.toString());
 
 		if ((requirement.getMaxExp() == null || requirement.getMaxExp() == "" || requirement.getMaxExp() == "undefiend")
@@ -684,8 +684,7 @@ public class SubmissionsRestController {
 		notificationScenario.setBody(notificationbody);
 		
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, loginOrg);
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, loginOrg,loginOrgLocations);
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 
