@@ -379,7 +379,7 @@ function candidateSideBar(candidateId){
 			            
 			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
+         			 		experienceMonths = json.experienceMonths+''+'(Months)';            			 		
          			 	}else{
          			 		experienceMonths = ' ';  
          			 	 }
@@ -535,7 +535,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<ul class="list-unstyled">';
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
-			            	 result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
+			            	 result = result+'<li>Experience -'+json.experienceYears+' (Years) '+experienceMonths+'</li>';
               		       }else{
               		   		 result = result+'<li>Experience ----</li>';  
               		       }
@@ -1101,6 +1101,19 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Immigration Status</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Skills</label>
@@ -1938,6 +1951,7 @@ function getCities(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -2429,6 +2443,7 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");

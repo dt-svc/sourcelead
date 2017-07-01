@@ -56,7 +56,7 @@ public class Candidate implements Serializable{
 	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
-    private User recruiterUserId;
+    private User recruiterUserId ;
     
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
@@ -151,7 +151,7 @@ public class Candidate implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="TEAM_ID")        
-    private Team teamId;
+    private Team teamId; 
 	
 	@Column(name="IS_FAVOURITE")
 	private Integer isFavourite;
@@ -185,11 +185,11 @@ public class Candidate implements Serializable{
 	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
-    private OrgRelations orgRelationId;
+    private OrgRelations orgRelationId; 
 	    
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
-    private OrgSpoc spocId;
+    private OrgSpoc spocId; 
 	
 	@Transient
 	private String skills;
