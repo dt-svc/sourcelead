@@ -67,7 +67,9 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<option value="">Select Project</option>
+							<c:if test="${fn:length(projectMembersList) gt 1}">
+								<option value="">Select Project</option>
+							</c:if>
 							<c:forEach var="projMembers" items="${projectMembersList}">
 							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
 							</c:forEach>
