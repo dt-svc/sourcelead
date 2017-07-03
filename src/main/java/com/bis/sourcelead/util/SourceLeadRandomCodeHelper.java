@@ -13,6 +13,11 @@ public class SourceLeadRandomCodeHelper {
 		return orgCode;
 	}
 	
+	public static String generateRandomOrgLocationCode() {
+		String orgLocationCode = RandomStringUtils.randomAlphanumeric(5);
+		return orgLocationCode;
+	}
+	
 	public static String generateRandomVerificationCode() {
 		String verificatinCode = RandomStringUtils.randomAlphabetic(5);
 		return verificatinCode;

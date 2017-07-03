@@ -226,9 +226,10 @@ function addAttachment(entityRowId,from){
 							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10">
-							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required validate_Space validate_length length1-100"> 
+							<label>Receipt Issued by</label>
+							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
+
 						<div class="col-md-4 mb10 chosen-custom">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
@@ -252,13 +253,13 @@ function addAttachment(entityRowId,from){
 											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</option>
 											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
 											  </select>
-									 </div>
-							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float" onkeyup="getAmountValue(REPLACEROWID);">
+								</div>
+							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
-						<label>Description</label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation-optional="true" data-validation="validate_Space validate_length length5-500"></textarea>
+						<label>Description<span class='text-danger'>&nbsp;*</span></label>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>

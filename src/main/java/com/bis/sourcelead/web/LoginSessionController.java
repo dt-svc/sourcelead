@@ -203,7 +203,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			
-			Candidate candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
@@ -494,12 +494,12 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 
 			if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
-				candidate = candidateService.findByCandidateEmail(orgLocations.getUser().getEmail(), orgLocations.getId());
+				candidate = candidateService.getCandidateByConsultantUserId(orgLocations.getUser().getId(), orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", orgLocations.getUser().getFirstName());
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", orgLocations.getUser().getLastName());
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", orgLocations.getUser().getEmail());
 			}else{
-				candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+				candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
@@ -717,7 +717,7 @@ public class LoginSessionController {
 			User orgPrimaryUser = org.getUser();
 			User orgLocationPrimaryUser = orgLocations.getUser();
 			
-			if(orgLocationPrimaryUser != null && (user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId()))){
+			if(orgLocationPrimaryUser != null &&  orgPrimaryUser != null && (user.getId().equals(orgPrimaryUser.getId()) || user.getId().equals(orgLocationPrimaryUser.getId()))){
 				SourceLeadSessionManager.setSessionAttribute(request, "orgSettingsVisible", "Y");
 			}
 			

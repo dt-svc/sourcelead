@@ -444,7 +444,7 @@ public class CandidateServiceImpl implements CandidateService {
          String url = sourceleadUrl;
         
          //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
          emailMessage.setSubject(subject);
          emailMessage.setMessageBody(emailTemplate);
         
@@ -1182,7 +1182,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
-		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		if(null == candidate){
 			candidate = new Candidate();
 			candidate.setConsultantUser(user);
@@ -1192,7 +1192,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setFirstName(user.getFirstName());
 			candidate.setLastName(user.getLastName());
 			candidate.setCountry(orgLocations.getCountry());
-			candidate.setIsAssociate(Constants.NO);
+			candidate.setIsAssociate(Constants.YES);
 			candidate.setEmail(user.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());

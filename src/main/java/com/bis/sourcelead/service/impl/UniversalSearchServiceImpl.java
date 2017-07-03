@@ -377,6 +377,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+				
+				 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 		
 				
 				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
@@ -662,6 +664,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					}
 					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+				
+				candidateBoolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 
 				
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));

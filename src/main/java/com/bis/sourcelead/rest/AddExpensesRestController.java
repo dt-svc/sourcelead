@@ -390,7 +390,7 @@ public class AddExpensesRestController {
 				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 				 String url = sourceleadUrl;
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg());
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(),orgLoc);
 				 emailMessage.setSubject(subject);
 				 emailMessage.setMessageBody(emailTemplate);
 				 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());

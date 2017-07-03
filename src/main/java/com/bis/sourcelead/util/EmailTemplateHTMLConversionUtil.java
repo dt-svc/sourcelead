@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 
 
 /**
@@ -17,7 +18,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 	
 	private static final long serialVersionUID = -3317550653234933840L;
 	
-	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org) {	
+	public static String convertBodyOfEmailTemplateToHTML(String body , String signature ,String callToActionText , String ButtonText , String url, EmailMessage emailMessage, Org org,OrgLocations orgLocations) {	
 		 
 		StringBuilder tempHTML = new StringBuilder();
 		/*
@@ -42,7 +43,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												    	  	if(StringUtils.isNotEmpty(org.getFileContentType())){
 												    	  	  tempHTML.append("<td style='text-align: center;'><img src='"+url+"/displayOrgImage/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:55px; background-color:#fff; margin: 5px auto; display:block;'></td>");
 												    	  	}else{
-												    	  		 tempHTML.append("<td class='text-logo'><span class='tbldata-dotdot'  style='font-size: 28px; color: #fff; width: 600px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px; text-align:center; margin:0 auto; font-weight: 600;'>"+org.getOrgName()+"</span></td>");
+												    	  		 tempHTML.append("<td class='text-logo'><span class='tbldata-dotdot'  style='font-size: 28px; color: #fff; width: 600px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px; text-align:center; margin:0 auto; font-weight: 600;'>"+orgLocations.getOrgLocationName()+"</span></td>");
 												    	  	}
 												      }else{
 												    	  tempHTML.append("<td style='text-align: center;'><img src='"+url+"/resources/images/SourceLead-logo-white.png' width='300px' height='66px'></td>");

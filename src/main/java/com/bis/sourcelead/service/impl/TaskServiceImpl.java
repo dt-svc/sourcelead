@@ -350,7 +350,7 @@ public class TaskServiceImpl implements TaskService{
 			 notificationScenario.setBody(notificationbody);
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, task.getOwnerOrglocationId().getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
