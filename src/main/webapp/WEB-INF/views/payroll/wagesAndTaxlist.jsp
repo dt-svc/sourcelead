@@ -67,7 +67,9 @@ function wagesAndTaxList(){
 								result = result + ' <td><div class="tblminwidth-75">'+opt.swt+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.sdiSui+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.local+'</div></td>';
-								result = result + '<td><div class="tblminwidth-75">'+opt.deds+'</div></td>';
+								result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit(this)"></small></div>';
+								result = result + '<div class="edit-input tblminwidth-125" style="display:none;"><input type="text" class="form-control input-sm tbldata-dotdot-100 pull-left" value="" id=""><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit(this)"></small></div></td>';
+								
 								result = result + '<td><div class="tblminwidth-75">'+opt.net+'</div></td>';
 								if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
 									result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
@@ -109,5 +111,17 @@ function wagesAndTaxListTablePagination(){
        }
     });
     $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>")
+}
+</script>
+<script>
+$(".edit-input").hide();
+//document.get
+function showEdit(el){
+	$(".edit-input").show();
+	$(".deeds").hide();
+}
+function saveEdit(){
+	$(".edit-input").hide();
+	$(".deeds").show();
 }
 </script>
