@@ -988,6 +988,7 @@ public class UserRestController {
 	        		    		 
 		        		    		List<SourceleadActions> actionsList = null;
 		        			        List<String> tabNamesList = null;
+		        			        List<String> tabIconsList = new ArrayList<String>();
 		        			        List<String> actionRolesList = new ArrayList<String>();
 		        			        List<Long> actionIdsList = new ArrayList<Long>();
 		        			        List<Long> modulesId = null;
@@ -1003,9 +1004,17 @@ public class UserRestController {
 	        		        	    }
 	        		        	    
 	        		        	    tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+	        		        	    for(String tabName : tabNamesList){
+	        		        	    	
+	        		        	    	tabName = tabName.substring(0, 1).toLowerCase() + tabName.substring(1);
+	        		        	    	StringBuilder name = new StringBuilder();
+	        		        	    	name.append("ic_").append(tabName).toString();
+	        		        	    	tabIconsList.add(name.toString().replaceAll(" ", "_").toLowerCase());
+	        		        	    }
 	        		        	    
 	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
 	        		        	    orgLocationDTO.setMenuList(tabNamesList);
+	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
 	        		        	    orgLocationDTO.setRoleActionsList(actionRolesList);
 	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
 	        		        	    orgLocationsList.put(orgLocations.getLocationCode(), orgLocationDTO);

@@ -34,6 +34,8 @@ public class OrgLocationDTO implements Serializable{
 	
 	List<String> roleActionsList;
 	
+	List<String> menuIconsList;
+	
 	
 
 	public String getOrgName()
@@ -166,6 +168,16 @@ public class OrgLocationDTO implements Serializable{
 	{
 		this.roleActionsList = roleActionsList;
 	}
+
+	public List<String> getMenuIconsList() {
+		return menuIconsList;
+	}
+
+	public void setMenuIconsList(List<String> menuIconsList) {
+		this.menuIconsList = menuIconsList;
+	}
+
+	
 
 	
 }
