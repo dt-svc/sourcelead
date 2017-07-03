@@ -668,14 +668,22 @@ function getCandidateCities(){
 <script>
 function deleteCandidate(candidateId,candidateType){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
-	  if(reason == null || reason == '' || reason == 'undefined'){
-		      
-		      $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-	    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	    	  
-	  }else{
+	  reason = reason.replace(/\s/g, "") 
+	 /*  if(reason == null || reason == '' || reason == 'undefined'){
+		  alert("test111");
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+    	  $(".rejectErrorMsgs").empty().append("<p class='jquery_form_error_message'>Must not Start With Space</p>");
+    	  
+  } */
+	  if(reason.length == 0){
+		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
+		}
+		  if(reason.match(/^[^\s-](.*)*$/) != null){
+			  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			  $(".rejectErrorMsgs").empty();
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
@@ -690,10 +698,20 @@ function deleteCandidate(candidateId,candidateType){
                 }
                  },
               }); 
-	  }
+	  
+			}
+	  
 }
 </script>
-
+<script>
+   function candiateRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("rejectReason").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#rejectReason").removeAttr("data-validation");
+	    }
+	}
+</script>
 
 <%-- 
      @author : Venkat Kesav
@@ -722,7 +740,7 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 	
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
 	result = result +"		<div class='rejectErrorMsgs'/>";
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
 	result = result +"	</div>";

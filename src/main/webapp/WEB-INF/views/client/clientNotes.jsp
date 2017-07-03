@@ -195,7 +195,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control" onkeypress="clientNotesCommentRemoveSpaces();"></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
@@ -270,7 +270,15 @@ function addClientNotes(orgRelationId,clientLocationId) {
 
 	}
 </script>
-
+<script>
+   function clientNotesCommentRemoveSpaces() {
+	    var output = document.getElementById("noteDescription").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#noteDescription").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script>
 function closeDocPopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
