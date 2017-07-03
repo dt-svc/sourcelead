@@ -1746,8 +1746,10 @@ function getTaxRewardType(rewardType){
 		document.getElementById("taxFlatReward").style.display="none";
 		document.getElementById("taxFlatRateType").style.display="none";
 		
-		$("#taxPercentageBtn").addClass('btn btn-sm btn-primary active');
-		$("#taxFlatBtn").addClass('btn btn-sm btn-primary ');
+		$("#taxPercentageBtn").removeClass('btn-default');
+		$("#taxPercentageBtn").addClass('btn-primary');
+		$("#taxflatBtn").addClass('btn-default');
+		$("#taxflatBtn").removeClass('btn-primary');		
 		
 		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
 	  //  document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
@@ -1765,8 +1767,10 @@ function getTaxRewardType(rewardType){
 		document.getElementById("taxFlatRateType").style.display="";
 		document.getElementById("taxPercentageReward").style.display="none";
 		
-		$("#taxPercentageBtn").addClass('btn btn-sm btn-primary');
-		$("#taxFlatBtn").addClass('btn btn-sm btn-primary active');
+		$("#taxPercentageBtn").addClass('btn-default');
+		$("#taxPercentageBtn").removeClass('btn-primary');
+		$("#taxflatBtn").removeClass('btn-default');
+		$("#taxflatBtn").addClass('btn-primary');
 		
 		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
 		//document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
