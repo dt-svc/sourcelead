@@ -1304,7 +1304,7 @@ else if (validationRules.indexOf('validate_Name') > -1 && !jQueryFormUtils.valid
  */
 jQueryFormUtils.LANG =  {
     errorTitle : 'Form submission failed!',
-    requiredFields : ' is Required',
+    requiredFields : ' is required',
     badTime : 'You have not given a correct time',
     badEmail : 'You have not given a correct e-mail address',
 	badzipcode: 'Zip code is invalid for the Selected Country',

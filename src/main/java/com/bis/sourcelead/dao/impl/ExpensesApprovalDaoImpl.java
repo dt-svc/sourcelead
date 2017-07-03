@@ -254,6 +254,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	            	 sah.setReopenedUser(null);
 	            	 sah.setReopenRejectedReason(null);
 	            	 sah.setActionPerformedBy(""+loginUser.getFullName());
+	            	 if(sah.getHierarchyId().getLevel()==(maxLevel)){
+	            		 sah.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
+	            	 }
 	             }
 	    		 try {
 	    			 updateSubmissionApproverHierarchy(sah);

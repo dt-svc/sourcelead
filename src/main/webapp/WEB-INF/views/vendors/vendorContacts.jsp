@@ -269,7 +269,7 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Vendor delete message here</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason'></textarea>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason' onclick='vendorRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationResonforSpoc();'></b>";
 	result = result +"	</div>";
@@ -278,11 +278,20 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
-
+<script>
+   function vendorRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("reasonForSpoc").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForSpoc").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script>
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
+	 reason = reason.replace(/\s/g, "") 
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
@@ -301,12 +310,9 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
 		    }
 	   });
 	}else{
-		if(reason){
+		if(reason.length == 0){
 			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ;
 		}
 	}
 	  
