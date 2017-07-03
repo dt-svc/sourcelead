@@ -140,7 +140,7 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10 chosen-custom">
+							<div class="col-md-4 mb10 chosen-custom minHe">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 								   <option value="">Select Category Type</option>				 							   
@@ -149,15 +149,15 @@
 		                	       </c:forEach>
 								</select>
 							</div>
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 mb10 minHe">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 mb10 minHe">
 								<label>Receipt Issued by</label>
 								<input type="text" id="receiptIssuedBy${entryCount.count}" name="receiptIssuedBy${entryCount.count}" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 mb10 minHe">
 								<label>Payment Mode</label>
 								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation-optional="true">
 								         <option value="">Select Mode</option>
@@ -184,11 +184,11 @@
 								         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
-						<div class="col-md-4 mb10">
+						<div class="col-md-4 mb10 minHe">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
 							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000">${entry.description}</textarea>
 						</div>		
-		                   <div id='attachmentSection' class='col-md-4 mb10'>
+		                   <div id='attachmentSection' class='col-md-4 mb10 minHe'>
 		                   <div class="uploadFile timesheet_week_comm">
 		                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
 			                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />

@@ -90,7 +90,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 							
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
-								hrDeductions.setEmployeeId(empId);
+								hrDeductions.setEmployeeId(empId.split("\\.")[0]);
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empName = getCellValueAsString(row.getCell(1), fileName);

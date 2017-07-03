@@ -106,7 +106,8 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 						if (!StringUtils.containsIgnoreCase(ssnNumber, "SSN:")
 								&& !StringUtils.containsIgnoreCase(ssnNumber, "Total")) {
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-								emppID = getCellValueAsString(row.getCell(0), fileName);
+								String empID = getCellValueAsString(row.getCell(0), fileName);
+								emppID = empID.split("\\.")[0];
 							}
 
 							float gross = 0f;
@@ -120,7 +121,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 							float net = 0f;
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
-								wageTaxSummary.setEmployeeId(empId);
+								wageTaxSummary.setEmployeeId(empId.split("\\.")[0]);
 
 							}
 
@@ -394,7 +395,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								float net = 0f;
 								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 									String empId = getCellValueAsString(row.getCell(0), fileName);
-									employeeId = empId;
+									employeeId = empId.split("\\.")[0];
 								} 
 								if(employeeId !=null){
 									wageTaxSummary.setEmployeeId(employeeId);
@@ -416,7 +417,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								} 
 								if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 									String checkNo = getCellValueAsString(row.getCell(3), fileName);
-									wageTaxSummary.setCheckNo(checkNo);
+									wageTaxSummary.setCheckNo(checkNo.split("\\.")[0]);
 									
 								} 
 								if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {

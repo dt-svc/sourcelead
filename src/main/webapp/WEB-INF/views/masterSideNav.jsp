@@ -287,7 +287,7 @@
 	                 </c:if>
 
           </c:forEach>
-         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
+         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
           <li class=""><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
           	</c:if>	
         </ul>

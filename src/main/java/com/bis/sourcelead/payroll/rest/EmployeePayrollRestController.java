@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -78,7 +79,6 @@ public class EmployeePayrollRestController {
 	@ResponseBody 
 	public String fileUploaded(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,HttpServletResponse response) throws Exception {
 		
-		long startTime = System.currentTimeMillis();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String json1 = "{" + json + "}";
@@ -105,9 +105,6 @@ public class EmployeePayrollRestController {
 		}else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
 		}
-		long endTime   = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		logger.info("final Time responser time is: "+totalTime);
 		return commonUtil.toJSON(isInserted);
 	}
 	/**
@@ -121,12 +118,22 @@ public class EmployeePayrollRestController {
 	public @ResponseBody String loadEmployerPayrollCostByOrgLocationId(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String resultJson = "";
+		DecimalFormat df = new DecimalFormat("#.00");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<EmployerPayrollCost>  employerPayrollCostList = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation);
 		if(employerPayrollCostList != null){
 			for(EmployerPayrollCost employerPayrollCost:employerPayrollCostList){
+				StringBuilder sb = new StringBuilder();
 				employerPayrollCost.setFromDateStr(conversionUtil.getDateAsString(employerPayrollCost.getFromDate()));
 				employerPayrollCost.setToDateStr(conversionUtil.getDateAsString(employerPayrollCost.getToDate()));
+				String ssn = employerPayrollCost.getSsn();
+				String[] arr = ssn.split("-");
+				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+				employerPayrollCost.setSsn(sb.toString());
+				double totHrs = Double.parseDouble(employerPayrollCost.getTotalHrs());
+				employerPayrollCost.setTotalHrs(String.valueOf(df.format(totHrs)));
+				float f = employerPayrollCost.getGrossWages();
+				System.out.println(df.format(f));
 			}
 			resultJson = commonUtil.toJSON(employerPayrollCostList);
 		}
@@ -209,7 +216,6 @@ public class EmployeePayrollRestController {
 	@RequestMapping(value = "/runPayrollCycle", method = RequestMethod.GET)
 	public @ResponseBody String generatePayroll(@RequestParam(value = "json", required = false) String json,HttpServletRequest request, HttpServletResponse response)throws Exception {
 		
-		long startTime = System.currentTimeMillis();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String json1 = "{" + json + "}";
@@ -226,9 +232,6 @@ public class EmployeePayrollRestController {
             }  
         });
 	
-		long endTime = System.currentTimeMillis();
-		long totalTime = endTime - startTime;
-		logger.info("final Time responser time is: "+totalTime);
 		return commonUtil.toJSON(payrollReportList);
 	}
 
