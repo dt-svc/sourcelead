@@ -147,6 +147,10 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
 	private ProjectsService projectsService;
+    
+    protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	/**
 	 * @author prasad k
@@ -1196,6 +1200,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setEmail(user.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(user.getUserCode());
+			
+			if(jsonObj.has("phoneNumber") && !isNullOrEmpty(jsonObj.getString("phoneNumber"))){
+				candidate.setMobilePhone(jsonObj.getString("phoneNumber"));
+			}
+			
+			if(jsonObj.has("designationType") && !isNullOrEmpty(jsonObj.getString("designationType"))){
+				candidate.setDesignationType(jsonObj.getString("designationType"));
+			}
+			
+			if(jsonObj.has("designationOtherType") && !isNullOrEmpty(jsonObj.getString("designationOtherType"))){
+				candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			}
+			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setCreatedDate(commonUtil.currentDate());
 		}else{
