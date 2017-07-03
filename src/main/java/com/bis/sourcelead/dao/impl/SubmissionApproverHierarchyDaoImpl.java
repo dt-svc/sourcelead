@@ -273,7 +273,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
 		
-		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  ((submission.startDate = :sqlStartDate) OR (submission.startDate BETWEEN :sqlStartDate and :sqlEndDate))");
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setCacheable(true).list();
 		if(null != submissionApproverHierarchyList  && !submissionApproverHierarchyList.isEmpty()){
@@ -793,8 +793,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				    */
 				+ "  ("
 				+ "    hierarchy.approverUserId.id = :userId and "
-				+ "      ( hierarchy.level = '2' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
-				+ "   OR (hierarchy.level = '1' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "      ("
+				+ "        ( hierarchy.level = '2' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
+				+ "        OR (hierarchy.level = '1' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "     ) "
 				+ "   ) "
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)

@@ -91,7 +91,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 							
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
-								accountDeductions.setEmployeeId(empId);
+								accountDeductions.setEmployeeId(empId.split("\\.")[0]);
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empName = getCellValueAsString(row.getCell(1), fileName);

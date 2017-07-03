@@ -19,14 +19,14 @@ window.onload = function () {
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
-    <h2>Expenses New</h2>
+    <h2>Pay Roll</h2>
   </div>
   
   <div class="success_pop" id="selector1" style="display: none;">
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
        
-  <div class="pull-right brud-crum">Home &raquo; Expenses New</div>
+  <div class="pull-right brud-crum">Home &raquo; Payroll</div>
 </section>
 
 
@@ -49,7 +49,9 @@ window.onload = function () {
 <div class="timesheet_head clearfix">
 
 <div class="pull-left">
+
 <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Maping" onClick="userMaping();">User Mapping </a>
+
 </div>
 
      <ul class="pull-right">

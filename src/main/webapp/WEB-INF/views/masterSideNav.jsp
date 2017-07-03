@@ -8,9 +8,8 @@
 
   <aside>
   <div class="side-bar theme_sideMenu">
-    <div class="side-bar-inner">
-      <div class="user-panel">
-                
+    <div class="side-bar-inner mt10">
+      <%-- <div class="user-panel">
 	<div class="media">
 		<div class="media-body">
 			 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
@@ -31,10 +30,9 @@
 				</div>
 			</c:if>
 		 </div>
-	 </div>
-
-        
-      </div>
+	 </div> 
+      </div>--%>
+      
       <div class="side-nav sidenav_inner">
         <ul class="list-unstyled">
         <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">

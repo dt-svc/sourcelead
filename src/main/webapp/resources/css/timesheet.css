@@ -2436,7 +2436,7 @@ margin-bottom:15px !important;
     background: #f1f1f1 !important;
 }
      
-   .project_details_cta.project_details_view span {
+.project_details_cta.project_details_view span {
    display:inline; float:left; width:60%; text-overflow: inherit; white-space: normal; overflow: visible;
    font-weight:500; word-wrap: break-word;
    }
@@ -2485,10 +2485,7 @@ padding-right:10px;
 .totalText input {
     background-color: transparent; border: none; font-size: 25px;width:35%;
 }
-     
-     
-     
-     
+         
 .openJobsWrap {}
 .openJobsWrap .select-fild select {
     width: 200px;
@@ -4890,7 +4887,7 @@ width: 100% !important; margin: 0px !important;
 	z-index: 100;
 }
 .rejectedHover {
-    cursor: pointer; position: relative; top:10px;
+    cursor: pointer; position: relative; top:10px; right:15px;
 }      
 .rejectedHover:hover .app_error_mes {
     display: block; opacity: 1;
@@ -4905,7 +4902,6 @@ width: 100% !important; margin: 0px !important;
 .Expreopen i {
     cursor: pointer; display: inline-block; font-size: 16px; padding: 2px 3px; margin: 0px 5px;
 }
-
 .project_wrap_table .table_footer tr td {
     border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; background: #cfd8dc !important;
 }
@@ -4921,7 +4917,6 @@ width: 100% !important; margin: 0px !important;
 .setTog {
 	position: absolute; right: 0px; top: 10px; color: #95ccff;
 }
-
 
 input[type="text"] {
     margin: 0px; margin-bottom: 0px !important;
@@ -4941,7 +4936,6 @@ width: 34px; height: 34px; text-align: center; display: inline-block; font-size:
 
 }
 
-
 .repoPositiRunPay .dt-buttons {
 position: absolute !important; width: 90px; left: inherit; right: 490px !important; top:-33px;
 }
@@ -4952,9 +4946,63 @@ top:-33px !important;
 float: none !important;
 }
 
-
-#accountdeDuctiondetails .dataTables_filter, #hrDeductiondetails .dataTables_filter {
-	top: -50px !important; right: 25px !important;
+.landTemp {
+	padding: 10px; background-color: #FFF; border-radius: 4px;
 }
+.landTempCta {
+	width: 32%; float: left; margin:0px 2% 0px 0px; border-radius: 4px; padding: 20px;
+}
+.landTempCta h2 {
+	padding: 0px 0px 8px 0px; margin: 0px 0px; font-size: 16px; color: #333;
+}
+.landTempCta p {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 13px; font-weight: 400; color: #666;
+}
+.landTempCta span {
+}
+.landTempCta a {
+	padding: 2px 2px; margin: 0px 10px 0px 0px; font-size: 14px; color: #2475c1;
+}
+.landTempCta a:hover {
+	text-decoration: none;
+}
+.minHe {
+    min-height: 74px;
+}
+
+
+
+
+
+
+
+/*   Onboard Carosel CSS   */
+
+.liquid {
+	padding:10px 0; margin: 0px auto; height:115px !important; position: relative;
+}
+.liquid .wrapper {
+	width:100% !important; margin: 0px 0px 0px 30px !important;
+}
+.liquid .previous {
+	display:block; position: absolute; left: -5px; padding: 2px; font-size: 20px;margin: 0px 5px; color: #368ee0;
+	cursor: pointer; top: 42px;
+}
+.liquid .next {
+	display:block; position: absolute; right: -5px; padding: 2px; font-size: 20px;margin: 0px 5px; color: #368ee0;
+	cursor: pointer; top: 42px;
+}
+.liquid ul li {
+	width:300px;
+	padding:0 2px;
+	margin:0 !important;
+}
+.liquid ul li a img {
+	-moz-box-shadow: 5px 5px 3px #222;
+   	-webkit-box-shadow: 5px 5px 3px #222;
+   	box-shadow: 5px 5px 3px #222;
+}
+
+/*   Onboard Carosel CSS   */
 
 

@@ -1040,20 +1040,33 @@ function getCandidateSelectionType(){
 			        	
 			        	if(json.length == 1){
 			        		var opt = json[0];
+			        		var updatedDate = "";
+			        		if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != '' && opt.candidateResumeUpdateDateToString != 'undefined'){
+			        			updatedDate = 	"("+opt.candidateResumeUpdateDateToString+")";
+			        		}else{
+			        			updatedDate  = "";
+			        		}
+			        		
 			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+" "+updatedDate+"</option>";
 			            	}else{
-			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+" "+updatedDate+"</option>";
 			            	}
 			        	}else{
 			        		output = output + "<option value=''>-- Select Resume --</option>"; 
 				        	for (var i=0; i<json.length; i++)
 							{
 					        		var opt = json[i];
+					        		var updatedDate = "";
+					        		if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != '' && opt.candidateResumeUpdateDateToString != 'undefined'){
+					        			updatedDate = 	"("+opt.candidateResumeUpdateDateToString+")";
+					        		}else{
+					        			updatedDate  = "";
+					        		}
 					        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"  "+updatedDate+"</option>";
 					            	}else{
-					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+" "+updatedDate+"</option>";
 					            	}
 							}
 			        	}
