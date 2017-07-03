@@ -113,7 +113,6 @@ width: auto;
 
 <script type="text/javascript">
 	function getExpensesList() {
-		alert("hello borra");
 			var sourceleadUrl = '${sourceleadUrl}';
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
@@ -122,7 +121,6 @@ width: auto;
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
-			alert("1");
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/acceptOrRejectReopenExpense?${_csrf.parameterName}=${_csrf.token}&type="+type+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&reason="+reason,
