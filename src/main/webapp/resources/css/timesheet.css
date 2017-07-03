@@ -4979,7 +4979,9 @@ float: none !important;
    padding:0px 0px 0px 0px; margin:0px 0px 0px 10px;  background-image:url(../images/eye-open.png);
    background-position:center; background-repeat:no-repeat; background-size:20px;
 }
-
+#accountdeDuctiondetails .dataTables_filter, #hrDeductiondetails .dataTables_filter {
+top: -50px !important; right: 25px !important;
+}
 
 
 
