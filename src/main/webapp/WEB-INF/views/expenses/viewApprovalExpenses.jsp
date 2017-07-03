@@ -17,7 +17,9 @@
             <div class="project_tabs_inn_table">
 				<div class="project_details project_detailsExp">
                 
+                
 					<div class="Expdit pull-right">
+					
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
@@ -40,7 +42,7 @@
 						      </i>
 						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
 					     </c:if>
-					      <c:if test="${isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					      <c:if test="${submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
 					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
@@ -70,10 +72,20 @@
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
-						  
-	        	
 						</div>
 					</div>                
+
+					   <ul class="UiPado">
+							<li title="Export"><i class="glyphicon glyphicon-export"
+								id="export-pop"></i>
+								<div class="export_pop" style="display: none;">
+									<ul>
+										<li onclick="exportMyExpenses('PDF',${expenses.id},'APPROVER');"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+										<li onclick="exportMyExpenses('EXCEL',${expenses.id},'APPROVER');"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+									</ul>
+								</div></li>
+							<div class="clearfix"></div>
+						</ul>
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
@@ -172,3 +184,10 @@
 </div>
 </div>
     </section>
+    
+<script>
+function exportMyExpenses(type,Expid,ApproverType){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
+}
+</script>
