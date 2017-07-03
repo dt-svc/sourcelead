@@ -111,7 +111,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empId = getCellValueAsString(row.getCell(1), fileName);
-								employerPayrollCost.setEmployeeId(empId);
+								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
 							} 
 							if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 								String ssn = getCellValueAsString(row.getCell(2), fileName);
