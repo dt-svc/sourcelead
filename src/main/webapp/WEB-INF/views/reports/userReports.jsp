@@ -200,7 +200,7 @@
               <div class="col-md-4">
                   
                   <div class="clearfix billing_count">
-                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome">USD</span>
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome"></span>
                       <span class="text-info">Net Income</span>
                   </div>
                   
@@ -209,7 +209,7 @@
                       <span class="text-info">Received</span>
                   </div>
                   <div class="clearfix billingCount borderBlue">
-                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount">USD</span>
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount"></span>
                       <span class="text-info">Paid</span>
                   </div>
                   
@@ -725,6 +725,9 @@ function getCustomReports(){
 
 <script>
 function getBillingReports(invoiceType){
+	 $("#netIncome").html(0);
+	 $("#receivedAmount").html(0);
+	 $("#payableAmount").html(0);
 	$('#billingErrorReportStartDate').empty();
 	$('#billingErrorReportEndDate').empty(); 
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -737,9 +740,7 @@ function getBillingReports(invoiceType){
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
-		        	 
 		        	 var result = "";
-		        	 
 		        	 result = result +'<div class="project_tabs_inn_head">';
 		        	 result = result +'</div>';
 		        	 result = result +'<div class="require_wrap_table dataFilterNew">';
@@ -755,21 +756,20 @@ function getBillingReports(invoiceType){
 		        	 result = result +'</tr>';
 		        	 result = result +'</thead>';	
 		        	 result = result +'<tbody>';
-		        	 for (var i = 0; i < json.length; i++) { 
-		        		 var opt = json[i]; 
-		        		 $("#netIncome").html(opt.netIncome);
-			        	 $("#receivedAmount").html(opt.recievableAmount);
-			        	 $("#payableAmount").html(opt.payableAmount); 
-		        		 result = result +'<tr>';
-			        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
-			        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
-			        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
-			        	 result = result +'<td><div>'+opt.total+'</div></td> ';
-			        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
-			        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
-			        	 result = result +'</tr>'; 
-		        	 }
-		        	 
+		        		 for (var i = 0; i < json.length; i++) { 
+			        		 var opt = json[i]; 
+			        		 $("#netIncome").html(opt.netIncome);
+				        	 $("#receivedAmount").html(opt.recievableAmount);
+				        	 $("#payableAmount").html(opt.payableAmount); 
+			        		 result = result +'<tr>';
+				        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+				        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+				        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+				        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+				        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+				        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+				        	 result = result +'</tr>'; 
+			        	 }
 		                result = result +'</tbody>';
 		                result = result +'</table>';
 		                result = result +'</div>';
