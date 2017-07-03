@@ -84,7 +84,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();	
-		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
+		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate candidate left join fetch candidate.consultantUser left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).setCacheable(true).list();
 		logger.info("RequirementSubmission loaded successfully !!!");
 		return submission.get(0);
@@ -1482,7 +1482,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}else if("requestSent".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
-				 
+				else if("REJECTED".equalsIgnoreCase(status)){
+					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
 				
@@ -1493,6 +1495,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					 statusQuery = "reqSub.submissionRateStatus = 'ACCEPTED' and reqSub.needApplicantPermit <>'N'  and reqSub.submissionRateStatus IS NOT NULL ";
 				}else if("requestSent".equalsIgnoreCase(status)){
 					statusQuery= "  reqSub.submissionRateStatus = 'REQUEST' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
+				}
+				else if("REJECTED".equalsIgnoreCase(status)){
+					statusQuery= "  reqSub.submissionRateStatus = 'REJECTED' and reqSub.needApplicantPermit <>'N' and reqSub.submissionRateStatus IS NOT NULL";
 				}
 				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and  reqSub.requirement.managerUserId.id  =:userId and "   +statusQuery;
 				params.put("loginOrgLocation",orgLocationsId);
@@ -2390,9 +2395,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType,OrgLocations loginOrgLocation) {
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
-			 if(sowType.equalsIgnoreCase("Client SOW")){
+			 if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
-		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
+		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType) || Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType) ){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
@@ -2445,9 +2450,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		{
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
-			 if(sowType.equalsIgnoreCase("Client SOW")){
+			 if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
-		 		}else if(sowType.equalsIgnoreCase("Vendor SOW") || sowType.equalsIgnoreCase("Full time offer")){
+		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType) || Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";

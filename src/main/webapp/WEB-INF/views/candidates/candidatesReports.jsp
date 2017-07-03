@@ -58,7 +58,8 @@ window.onload = function() {
 
  <script>
   function prepareCandidateReportsDataDiv(data){
-	 	     $("#candidateList").removeAttr("style");
+	  var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';	     
+	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -123,7 +124,7 @@ window.onload = function() {
 	              
 		              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined")
 		             	 {
-		                   result = result +"  <td><div>"+opt.primarySkill+"</div></td>";
+		                   result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
 		             	 }else{
 		             		 result = result +"  <td><div>----</div></td>"; 
 		             	 }
@@ -143,7 +144,7 @@ window.onload = function() {
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
-	          cpagination();  
+	          cpagination(SourceLeadWeb_loginOrg);  
 	 
   }
 </script>
@@ -155,17 +156,17 @@ window.onload = function() {
 
 
 <script>
-function cpagination(){ 
+function cpagination(SourceLeadWeb_loginOrg){ 
     $('#candidatePagination').DataTable( { 
     	 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Added Candidates',
+	                title: SourceLeadWeb_loginOrg+' - Added Candidates Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Added Candidates',
+	                title: SourceLeadWeb_loginOrg+' - Added Candidates Reports',
 	            }
 	        ],
     	"scrollCollapse": false,

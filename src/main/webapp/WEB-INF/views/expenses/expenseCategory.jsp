@@ -34,7 +34,7 @@
 
 	 <div class="clients_wrap_table datatable_scroll mt10">
 		 <div id="popUpDiv" class="edit-details col-md-4"> </div>
-		 <div id="expenseCategoryList" class="datatable_filter"></div>
+		 <div id="expenseCategoryList"></div>
 	 </div>	  
 		
     </div>  
@@ -193,7 +193,7 @@ function expenseCategoryList(){
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getExpensesCategoryList",    
-            success :function(data) {
+            success :function(json) {
 			    	     $("#expenseCategoryLoading").removeAttr("style");
 	                	 $("#expenseCategoryList").empty();
 	                	 var result = "";
@@ -210,7 +210,7 @@ function expenseCategoryList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     var json = JSON.parse(data);
+	                     /* var json = JSON.parse(data); */
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
@@ -277,8 +277,8 @@ function expenseCategoryList(){
 function expenseCategoryPagenation(){ 
 	 $('#expenseCategoryPagenation').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
+	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -493,12 +493,14 @@ function reActiveExpenseCategory(categoryId){
 							expensesName = json.expensesName;
 						}
 						
-						if(json.allowedAmount !=null && json.allowedAmount !='undefined' && json.allowedAmount !=''){
+						if(json.allowedAmount !=null && json.allowedAmount !='undefined' && json.allowedAmount !='' && json.allowedAmount !='0'){
 							allowedAmount = json.allowedAmount;
 						}
 						
 						if(json.amountType !=null && json.amountType !='undefined' && json.amountType !=''){
 							amountType = json.amountType;
+						}else{
+							amountType ="Flat";
 						}
 						
 						if(json.description !=null && json.description !='undefined' && json.description !=''){
@@ -548,13 +550,13 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'<div class="col-md-5" >';
 								result = result  +'<div class="btn-group btn_Block pull-left">';
 								
-								if(json.amountType == 'Flat'){
+								if(amountType == "Flat"){
 								result = result  +' <button type="button" class="btn btn-sm btn-primary active" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 								
 								result = result  +'<button type="button" class="btn btn-sm btn-primary " id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
 								result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Flat"/>';
 								}
-								if(json.amountType == 'Percentage'){
+								if(amountType == "Percentage"){
 									result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 									
 									result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
@@ -564,7 +566,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +' </div>';
 								result = result  +'</div>';
 								
-								if(json.amountType == 'Percentage' && json.allowedAmount != null){
+								if(amountType == "Percentage" && allowedAmount != null){
 								result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
 								result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
 								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
@@ -582,7 +584,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +' </div>';
 								}
 								
-								if(json.amountType == 'Flat' && json.allowedAmount != null){
+								if(amountType == "Flat" && allowedAmount != null){
 									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
 									result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
 									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';

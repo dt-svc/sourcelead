@@ -155,11 +155,11 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	
 	@Override
 	@Transactional
-	public Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception
+	public Expenses getExpenseByExpenseUniqueId(String expenseId,Long OrgLocationID) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Expenses  expense =  null;
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId").setString("expenseId", expenseId).setCacheable(true).list();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).setCacheable(true).list();
 		if(null != expensesList && expensesList.size() >0){
 			expense = expensesList.get(0);
 		}

@@ -82,6 +82,7 @@ function vendorRequirementListInclude(orgRelationID){
     $("#tab-2").empty(); 
     $("#tab-3").empty(); 
     $("#tab-5").empty(); 
+    $("#tab-8").empty();
     $("#tab-6").empty(); 
     $("#tab-6").append(result);  
 	

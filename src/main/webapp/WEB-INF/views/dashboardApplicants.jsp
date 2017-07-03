@@ -14,6 +14,7 @@
             <ul class="nav nav-tabs">
               <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Request Sent</a></li>
               <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
+                 <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
             </ul>
             
             <div class="tab-content clearfix mt">
@@ -56,6 +57,10 @@ function ApplicantAuthorization(status){
 	            					resultToday = resultToday+'	    <th>Accepted By</th>';
 		            				resultToday = resultToday+'	    <th>Accepted On</th>';
 	            				}
+	            				if(status == 'REJECTED'){
+	            					resultToday = resultToday+'	    <th>Rejected By</th>';
+		            				resultToday = resultToday+'	    <th>Rejected On</th>';
+	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';
 	            					resultToday = resultToday+'	    <th>Action</th>';
@@ -85,6 +90,16 @@ function ApplicantAuthorization(status){
                                           resultToday  = resultToday + '           <td><div>-----</div></td>';
                                       }
                                       if(status == 'accepted'){
+                                    	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
+                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submissionRequestUser+'">'+report.submissionRequestUser+'</span></div></td>';
+                                    	  }else{
+                                        	  resultToday  = resultToday + '           <td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
+
+                                    	  }
+                                    		  
+                                    	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
+                                      }
+                                      if(status == 'REJECTED'){
                                     	  if(report.submissionRequestUser != null && report.submissionRequestUser != 'undefined'){
                                     	  resultToday  = resultToday + '           <td><div><span title="'+report.submissionRequestUser+'">'+report.submissionRequestUser+'</span></div></td>';
                                     	  }else{
@@ -168,7 +183,7 @@ function rejectApplicantAlertMessage(submissionId, status){
      
      //result = result +"        <p>Applicant reject message here</p>";
      result = result +"    <div class='clearfix'>";
-     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
+     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' onkeypress='dashboardReasonForRejectRemoveSpaces();' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
      result = result +" </div>";
      result = result +" </div>";
      result = result + ' <div id="reasonForApplicantDiv"/>';
@@ -182,7 +197,15 @@ function rejectApplicantAlertMessage(submissionId, status){
 }
 </script>
 
-
+<script>
+   function dashboardReasonForRejectRemoveSpaces() {
+	    var output = document.getElementById("reasonForReject").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForReject").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script type="text/javascript">
     function acceptCandidateFromDashboard(submissionId, status){
 		var sourceleadUrl = '${sourceleadUrl}';

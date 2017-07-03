@@ -330,7 +330,7 @@
             </div>
             
              <div class="form-group">
-              <label class="col-md-3">Visa</label>
+              <label class="col-md-3">Immigration Status</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
                <c:forEach var="visaList" items="${visaList}">
@@ -656,7 +656,7 @@ function getCities(){
 		    });
 		    
 	    
-	    chosen.search_field.on('keyup', function(e)
+	    chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
@@ -669,8 +669,9 @@ function getCities(){
 			                 }
 				    	 }else{
 			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				 preventTabkey(e);
 			    				 var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);
@@ -691,11 +692,12 @@ function getCities(){
 	        selectone = $("#candidateEducation");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);

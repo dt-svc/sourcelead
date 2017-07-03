@@ -483,7 +483,6 @@ $(".add-skills").click(function(e){
 	 e.stopPropagation();
  });
 
-
 // Bar chat pop
 $(document).ready(function() {
     $(".graf_icon").click(function(){
@@ -1098,7 +1097,7 @@ function requirementDetails(requirementId){
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if((isLoginUserAsAdmin == "true" && json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementSubmissionStatus !='APPROVED' &&  json.requirementSubmissionStatus != 'REJECTED'  &&  json.requirementSubmissionStatus != 'OPEN' )  || (json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null )){
+				             if((isLoginUserAsAdmin == "true" && json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementSubmissionStatus !='APPROVED' &&  json.requirementSubmissionStatus != 'REJECTED'  &&  json.requirementSubmissionStatus != 'OPEN' && json.requirementSubmissionStatus  !='NEW' )  || (json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null )){
                					 
 				            	 result = result +'<button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
                		             result = result +'<button  class="btn btn-danger btn-sm" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
@@ -1182,8 +1181,12 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Created By:</b>'+json.createdByName+'';
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
-				            
+				            if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined'){
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Visa:</b><span>'+json.visaType+'</span>';
+				            }else{
+				            	result = result +'     <div class="require_wrap_details_cta"> <b>Visa:</b><span>--</span>';
+				            	}
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';				            
 				            
@@ -1442,7 +1445,6 @@ function updateReuqirementStatus(status){
 	var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
 	 
-	 alert( isLoginUserAsAdmin);
 	 var reason;
 	 if ($('#rejectReason').length)
 	 {
@@ -3939,7 +3941,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         
         //result = result +"        <p>Applicant reject message here</p>";
         result = result +"    <div class='clearfix'>";
-        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'></textarea>";
+        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'   onkeypress='reqRemoveSpacesForRejectReason();'></textarea>";
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
@@ -3952,7 +3954,15 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     }
 }
 </script>
-
+<script>
+   function reqRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("reasonForReject").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForReject").removeAttr("data-validation");
+	    }
+	}
+</script>
 
 <script>
 function getRejectedCategory(){
@@ -4423,7 +4433,32 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div>';
 		    
 		    result = result +' </div>';
+		    
+		    
+		    
+ 			result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Visa Type</label>';
+		    result = result +'<div class="progress">';
+		    var visaTypeGraph = (100 * report.visaTypePercentage)/report.totalVisaTypePercentage;
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+visaTypeGraph+'%"> '+report.visaTypePercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Education</label>';
+		    result = result +'<div class="progress">';
+		    var educationGraph = (100 * report.educationPercentage)/report.totalEducationPercentage;
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.totalEducationPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
 		  
+		    
 		   
 		    result = result +'</div>';		    
 		    result = result +'</div></td>';
@@ -4706,6 +4741,7 @@ function clientSideBar(candidateId){
 			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             
 			             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+						 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
 			             
 			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
 			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
@@ -4729,6 +4765,10 @@ function clientSideBar(candidateId){
 						 
 						 result = result + '<div id="tab-17" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-18" class="canreq-tabs-menu_inn">';
+						 result = result + '</div>';
+						 
 						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
 						 
@@ -5581,6 +5621,96 @@ function customizeScore(requirementId){
 		        result = result +'		                  </div>  ';
 		        result = result +'		                </div>  ';
 		      
+		        
+		        
+		        
+// 		        =========================================================================================================================
+		        
+		        result = result +'		                  <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+		        result = result +'		                   <label>Visa Type</label>';
+		        result = result +'		                     <select class="chosen-select" data-placeholder="Visa Type" multiple id="visaType" name="visaType">';
+		        if(json.customizeVisatype != null  && json.customizeVisatype != '' && json.customizeVisatype != 'undefiend'){
+		    		var visaType = json.customizeVisatype;
+			    	var customizeVisaType = new Array();
+			    	customizeVisaType = visaType.split(",");
+			        for (var i = 0; i < customizeVisaType.length; i++) { 
+			        	 var customizeVisaTypes = customizeVisaType[i];
+			        	 result = result +'	<option selected value=\''+customizeVisaTypes+'\'>'+customizeVisaTypes+'</option> ';
+			        }
+		    	}
+		        
+		        var lookupVisaType = json.dbVisaType;
+		    	var dbVisaType = new Array();
+		    	dbVisaType = lookupVisaType.split(",");
+		    	
+		    	 for (var i = 0; i < dbVisaType.length; i++) { 
+		        	 var visatype = dbVisaType[i];
+		        	 result = result +'	<option  value=\''+visatype+'\'>'+visatype+'</option> ';
+		        } 
+		        result = result +'	</select> ';
+		  
+		        result = result +'		                    </div>  ';
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Visa Type Score" id="visaTypeScore" name="visaTypeScore" > ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeVisatypecore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>  ';
+		        result = result +'		                </div>  ';
+		      
+		        
+		        
+		        
+		        result = result +'		                  <div class="clearfix mt"> ';
+		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+		        result = result +'		                   <label>Education</label>';
+		        result = result +'		                     <select class="chosen-select" data-placeholder="Education" multiple id="education" name="education">';
+		        if(json.customizeEducation != null  && json.customizeEducation != '' && json.customizeEducation != 'undefiend'){
+		    		var education = json.customizeEducation;
+			    	var customizeEducation = new Array();
+			    	customizeEducation = education.split(",");
+			        for (var i = 0; i < customizeEducation.length; i++) { 
+			        	 var customizeEducations = customizeEducation[i];
+			        	 result = result +'	<option selected value=\''+customizeEducations+'\'>'+customizeEducations+'</option> ';
+			        }
+		    	}
+		        
+		        var lookupEducation = json.dbEducation;
+		    	var dbEducation = new Array();
+		    	dbEducation = lookupEducation.split(",");
+		    	
+		    	 for (var i = 0; i < dbEducation.length; i++) { 
+		        	 var education = dbEducation[i];
+		        	 result = result +'	<option  value=\''+education+'\'>'+education+'</option> ';
+		        } 
+		        result = result +'		                    </select> ';
+		        result = result +'		                    </div>  ';
+		        result = result +'		                    <div class="col-md-2">  ';
+		        result = result +'		                    <select class="chosen-select" data-placeholder="Education" id="educationScore" name="educationScore" > ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+		        result = result +'		                      <option '+ (json.customizeEducationScore == "100" ? "selected" : '') +' value="100">100%</option>';
+		        result = result +'		                    </select> ';
+		        result = result +'		                  </div>  ';
+		        result = result +'		                </div>  ';
 		      
 		        result = result +'		              </div>                          ';
 		        
@@ -5635,7 +5765,7 @@ function customizeScore(requirementId){
 		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    		    chosen = select.data('chosen');
 		    		   
-		    		    chosen.search_field.on('keyup', function(e)
+		    		    chosen.search_field.on('keydown keyup', function(e)
 		    				    {
 		    				    	   var skillsArray = this.value.split(",");
 		    					    	 if(skillsArray.length > 1){
@@ -5648,8 +5778,9 @@ function customizeScore(requirementId){
 		    				                 }
 		    					    	 }else{
 		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		    				                {
+		    				    				 preventTabkey(e);
 		    				    				 var option = $("<option>").val(newSkill).text(newSkill);
 		    				                     select.append(option);
 		    				                     select.find(option).prop('selected', true);
@@ -5670,11 +5801,12 @@ function customizeScore(requirementId){
 		    		     selectone = $("#anyKeyWord");
 		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keyup', function(e)
+		    		    chosenone.search_field.on('keydown keyup', function(e5)
 		    		    {
 		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		    		        {
+		    		        	 preventTabkey(e5);
 		    		        	var par = this.parent;
 		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
 		    		            selectone.append(option);
@@ -5686,6 +5818,33 @@ function customizeScore(requirementId){
 		    	        		
 		    		        }
 		    		    }); 
+		    		    
+		    		    
+		    		    //Adding Customized Educations to the list 
+		    		    var selectTwo, chosenTwo;
+		    		    selectTwo = $("#education");
+		    		    selectTwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
+		    		    chosenTwo = selectTwo.data('chosen');
+		    		    chosenTwo.search_field.on('keydown keyup', function(e1)
+		    		    {
+		    		    	var newEducation = this.value.replace("\'","");
+		    		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		    			        {
+		    		    		   preventTabkey(e1); 
+		    		    		   var par = this.parent;
+		    			            var option = $("<option>").val(newEducation).text(newEducation);
+		    			            selectTwo.append(option);
+		    			            selectTwo.find(option).prop('selected', true);
+		    			            
+		    			            $("#education option").each(function(){
+		    	                         $(this).siblings("[value='"+ this.value+"']").remove();
+		    	                   });
+		    			            
+		    			            $("#education").trigger("chosen:updated");
+		    			           
+		    			        }
+		    		    
+		    		    });
 		    }
 	 });
 	
@@ -5843,7 +6002,9 @@ function updateCutomize(requirementId){
     var noticePerc = parseInt($("#noticeperiodScore").val());
     var kewordsPerc = parseInt($("#keywordScore").val());
     var locationScore = parseInt($("#locationScore").val());
-    var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc);
+    var educationScore = parseInt($("#educationScore").val());
+    var visaTypwScore = parseInt($("#visaTypeScore").val());
+    var totalscore = (skillPerc+expPerc+noticePerc+ratePerc+locationScore+kewordsPerc+educationScore+visaTypwScore);
     var sourceleadUrl = '${sourceleadUrl}';
     
     if(totalscore>100){
@@ -6139,6 +6300,7 @@ return result;
 <jsp:include page="recommendCandidatesEducation.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesCertificates.jsp"></jsp:include>
 <jsp:include page="recommendedCandidateDocuments.jsp"></jsp:include>
+<jsp:include page="candidateReferences.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>

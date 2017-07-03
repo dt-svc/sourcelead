@@ -24,7 +24,7 @@ $(document).ready(function(){
                 <div class="db-widget-sm row">
                 <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Applicants">
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Applicants" id="appDiv">
                         <p class="info-box-number"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
                         <p class="info-box-text"> Applicants </p>
                       </div>
@@ -32,7 +32,7 @@ $(document).ready(function(){
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Submission">
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Submission" id="subDiv">
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
                         <p class="info-box-text"> Submission </p>
                       </div>
@@ -40,7 +40,7 @@ $(document).ready(function(){
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Interviews">
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Interviews" id="intDiv">
                         <p class="info-box-number"><span id="interviewsCount" onclick="loadRequirementInterviews();"></span></p>
                         <p class="info-box-text">Interviews</p>
                       </div>
@@ -48,7 +48,7 @@ $(document).ready(function(){
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-orange" > <i class="fa fa-tags" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Offers">
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Offers" id="offDiv">
                         <p class="info-box-number"><span id="offersCount" onclick="loadRequirementOffers();"></span></p>
                         <p class="info-box-text">Offers</p>
                       </div>
@@ -104,25 +104,29 @@ function requirementSubmissionsCount(daterange){
 	                      $("#submissionsCount").text(submissionsCount);
 	                  }else{
 	                      $("#submissionsCount").html("0");
-	                      $("#submissionsCount").removeAttr("href");
+	                      $("#submissionsCount").removeAttr("onclick");
+	                      $("#subDiv").removeAttr("style");
 	                  } 
 		        	 if(applicantsCount>0){
 	                      $("#applicantsCount").text(applicantsCount);
 	                  }else{
 	                      $("#applicantsCount").html("0");
-	                      $("#applicantsCount").removeAttr("href");
+	                      $("#applicantsCount").removeAttr("onclick");
+	                      $("#appDiv").removeAttr("style");
 	                  }
 		        	if(interviewsCount>0){
 	                      $("#interviewsCount").text(interviewsCount);
 	                  }else{
 	                      $("#interviewsCount").html("0");
-	                      $("#interviewsCount").removeAttr("href");
+	                      $("#interviewsCount").removeAttr("onclick");
+	                      $("#intDiv").removeAttr("style");
 	                  }
 		        	if(offersCount>0){
 	                      $("#offersCount").text(offersCount);
 	                  }else{
 	                      $("#offersCount").html("0");
-	                      $("#offersCount").removeAttr("href");
+	                      $("#offersCount").removeAttr("onclick");
+	                      $("#offDiv").removeAttr("style");
 	                  } 
 		        	
 		 		}

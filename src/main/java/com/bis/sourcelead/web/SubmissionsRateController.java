@@ -109,6 +109,9 @@ public class SubmissionsRateController {
 		String permission = "YES";
 		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
 			permission = "NO";
+			/*if(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode().equals(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+				permission = "YES";
+			}*/
 		}
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
@@ -192,6 +195,9 @@ public class SubmissionsRateController {
 		String permission = "YES";
 		if(pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
 			permission = "NO";
+			if(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && !pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode().equals(pastRequirementRateSubmissionNegotiation.getCreatedBy()) && !SubmissionRateStatus.ORG.equals(pastRequirementRateSubmissionNegotiation.getRateInitiatorType())){
+				permission = "YES";
+			}
 		}
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);

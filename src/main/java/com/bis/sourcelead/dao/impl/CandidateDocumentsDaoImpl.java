@@ -66,7 +66,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (candidateDocuments != null) {
-				session.save(candidateDocuments);
+				session.saveOrUpdate(candidateDocuments);
 			}
 			logger.debug("CandidateDocuments Stored Successfully");
 		} catch (Exception exception) {
@@ -83,7 +83,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateDocuments> getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateDocuments cd where cd.candidateId.id =:candidateId and cd.orgLocationId.id =:orgLocationId and cd.status = 1 ORDER BY cd.id DESC";
+		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateId.id =:candidateId and cd.orgLocationId.id =:orgLocationId and cd.status = 1 ORDER BY cd.id DESC";
 		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return candidateDocumentsList;
 	}
@@ -145,6 +145,16 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 			candidateDocuments = candidateDocumentsList.iterator().next();
 		}
 		return candidateDocuments;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateDocuments> getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateDocuments cd left join fetch cd.candidateId where cd.requestedDocumentsId.id =:requestedDocumentsId and cd.status = 1 ";
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("requestedDocumentsId", requestedDocumentsId).setCacheable(true).list();
+		return candidateDocumentsList;
 	}
 
 }

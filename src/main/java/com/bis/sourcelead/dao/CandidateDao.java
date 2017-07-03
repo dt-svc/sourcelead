@@ -55,7 +55,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
     
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId,String candidateType);
 	
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	

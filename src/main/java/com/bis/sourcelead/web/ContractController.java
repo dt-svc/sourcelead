@@ -284,18 +284,18 @@ public class ContractController {
 		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
 		for (OrgRelations orgRelations : clientList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
@@ -333,18 +333,18 @@ public class ContractController {
 		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
 		for (OrgRelations orgRelations : clientList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
@@ -489,18 +489,18 @@ public class ContractController {
 		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
 		for (OrgRelations orgRelations : clientList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
@@ -527,6 +527,24 @@ public class ContractController {
 		model.addObject("orgRelationsList", orgRelationsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/addCustomContract");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/viewContract")
+	public ModelAndView viewContract(HttpServletRequest request) throws Exception
+	{
+		logger.debug("display contract view page");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Contract);
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("contracts/viewContract");
 		return model;
 	}
 		

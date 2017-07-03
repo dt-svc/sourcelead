@@ -127,10 +127,10 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			requirement.setPostedDateStr(postedDate);
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 				}
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 				}
 			}
 			if(requirement.getManagerUserId() != null){
@@ -195,10 +195,10 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			requirement.setPostedDateStr(postedDate);
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 				}
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 				}
 			}
 			if(requirement.getManagerUserId() != null){
@@ -513,7 +513,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 						ApplicantReport applicantReport = new ApplicantReport();
 						applicantReport.setRequirementTitle(rs.getRequirement().getJobTitle());
 						applicantReport.setReceivedOn(getDateStr(rs.getUpdatedDate(),timezone));
-						applicantReport.setSource(rs.getCreatedUser()+'('+rs.getVendorLocationId().getOrg().getOrgName()+')');
+						applicantReport.setSource(rs.getCreatedUser()+'('+rs.getVendorLocationId().getOrgLocationName()+')');
 						applicantReport.setApplicantName(rs.getCandidate().getFirstName());
 						applicantReport.setStage(rs.getSubmissionStatus().toString());
 						applicantReportList.add(applicantReport);
@@ -725,7 +725,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					applicantReport.setOfferedCount(offeredCount);
 					applicantReport.setRejectedCount(rejectedCount);
 					applicantReport.setRequestSentCount(requestSentCount);
-					applicantReport.setOrgName(rs.getVendorLocationId().getOrg().getOrgName());
+					applicantReport.setOrgName(rs.getVendorLocationId().getOrgLocationName());
 					applicantReportList.add(applicantReport);
 					}
 				}
@@ -844,10 +844,10 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				
 				if(rato.getRequirementId().getClientId() != null){
 					if(rato.getRequirementId().getClientId().getResponderType().equalsIgnoreCase("Client")){
-						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getResponderLocationId().getOrg().getOrgName());
+						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(rato.getRequirementId().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getLocationId().getOrg().getOrgName());
+						assignedRequirementReports.setClient(rato.getRequirementId().getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 				StringBuilder assignUserName = new StringBuilder();
@@ -1114,7 +1114,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				
 				if(null != req){
 					if(null !=  req.getVendorLocationId()){
-						requirementSubmission.setOrgName(req.getOrgLocations().getOrg().getOrgName());
+						requirementSubmission.setOrgName(req.getOrgLocations().getOrgLocationName());
 					}
 				}
 				

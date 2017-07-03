@@ -141,6 +141,9 @@ public class Org implements Serializable{
 	@Transient
 	private Long registeredUserId;
 	
+	@Transient
+	private Long primaryOrgLocationId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -373,6 +376,16 @@ public class Org implements Serializable{
 
 	public void setRegisteredUserId(Long registeredUserId) {
 		this.registeredUserId = registeredUserId;
+	}
+
+	public Long getPrimaryOrgLocationId()
+	{
+		return primaryOrgLocationId;
+	}
+
+	public void setPrimaryOrgLocationId(Long primaryOrgLocationId)
+	{
+		this.primaryOrgLocationId = primaryOrgLocationId;
 	}
 
 	

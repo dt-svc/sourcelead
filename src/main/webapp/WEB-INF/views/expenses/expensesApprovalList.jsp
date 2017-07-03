@@ -25,6 +25,7 @@
 				getExpensesApprovalDataList();
 			}
 		 };
+		 
 </script>
 <style type="text/css">
 
@@ -104,7 +105,7 @@ margin-top: 3px;
 								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
 								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
 								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
-								<li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li>
+								<!-- <li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li> -->
 	                        </ul>
 	                    </div>                	
 	                </li>
@@ -275,7 +276,7 @@ $.ajax({
 </script>
 
 <script>
-function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
+function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 var msg = $("#reject"+expenseId+"message").val(); 
 		 var encodeMsg = msg;
 		 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
@@ -350,7 +351,7 @@ function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
 	    $("#reject"+expenseId+"message").val(''); 
 	    var result = "";
 	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
-		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" ></textarea>';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" onkeydown="return (event.keyCode!=13);"></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
 		result = result +'<a href="#" onClick="acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';

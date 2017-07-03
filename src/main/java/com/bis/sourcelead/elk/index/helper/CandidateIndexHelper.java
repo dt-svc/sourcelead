@@ -43,6 +43,13 @@ public class CandidateIndexHelper {
 			candidateIndex.setSummary(candidate.getSummary());
 			candidateIndex.setCandidateType(candidate.getCandidateType());
 			
+			if(null != candidate.getConsultantUser()){
+				candidateIndex.setUserId(candidate.getConsultantUser().getId());
+			}
+			
+			if(null != candidate.getMasterCandidateId()){
+				candidateIndex.setMasterCandidateId(candidate.getMasterCandidateId().getId());
+			}
 						
 			if(null != candidate.getRecruiterUserId()){
 				candidateIndex.setRecruiterUserId(candidate.getRecruiterUserId().getId());
@@ -59,7 +66,7 @@ public class CandidateIndexHelper {
 			}
 			
 			if(null != candidate.getVisaType() && !candidate.getVisaType().isEmpty()){
-				candidateIndex.setVisaType(candidate.getVisaType());
+				candidateIndex.setVisaType(candidate.getVisaType().split(","));
 			}
 			/*if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
 				ArrayList<String> skillList = new ArrayList<>();

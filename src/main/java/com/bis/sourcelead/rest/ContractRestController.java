@@ -554,7 +554,9 @@ public class ContractRestController {
 		RequirementOffers requirementOffers = null;
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
-			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+			if(requirementOffers != null){
+				requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+			}
 		}
 		return commonUtil.toJSON(requirementOffers);
 	}
@@ -691,10 +693,10 @@ public class ContractRestController {
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
 		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					contract.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					contract.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 				}
 		 	}
 		 	

@@ -75,6 +75,7 @@ public class RecommendedCustomizeScoreRestController {
 		if(rcs == null){
 			 rcs = new RecommendedCustomizeScore();
 		}
+		//Skills
 		List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 		if(null != rcs && null != rcs.getCustomizeSkills()){
 	  		String[] skills = rcs.getCustomizeSkills().split(","); 
@@ -85,6 +86,30 @@ public class RecommendedCustomizeScoreRestController {
 		   }  
 	  	}
 		rcs.setDbSkills(skillsList.toString().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]",""));
+		
+		//Visa Type
+		List<String> visaList = lookUpDataService.getAllVisaByCategory();
+		if(null != rcs && null != rcs.getCustomizeVisatype()){
+	  		String[] arr = rcs.getCustomizeVisatype().split(","); 
+		    for(String visaName : arr){ 
+		    	if(visaList.contains(visaName)){
+		    		visaList.remove(visaName);
+		    	}
+		   }  
+	  	}
+		rcs.setDbVisaType(visaList.toString().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]",""));
+		
+		//Education 
+		List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+		if(null != rcs && null != rcs.getCustomizeEducation()){
+	  		String[] arr = rcs.getCustomizeEducation().split(","); 
+		    for(String editEducationName : arr){ 
+		    	if(educationsList.contains(editEducationName)){
+		    		educationsList.remove(editEducationName);
+		    	}
+		   }  
+	  	}
+		rcs.setDbEducation(educationsList.toString().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]",""));
 		resultJson = commonUtil.toJSON(rcs);
 		return resultJson;
 	}
@@ -134,6 +159,25 @@ public class RecommendedCustomizeScoreRestController {
 			}else{
 				rcs.setCustomizeNoticeperiod(null);
 			}
+		//Split the Visa type
+		if(jsonObj.has("visaType")){
+			String jsonArray = jsonObj.getString("visaType");
+			String visaType = jsonArray.replaceAll("\\[", "").replaceAll("\\]","").replaceAll("\"", "");
+			rcs.setCustomizeVisatype(visaType);
+		
+		}else{
+			rcs.setCustomizeVisatype(null);
+		}
+		
+		//Split the Education
+		if(jsonObj.has("education")){
+			String jsonArray = jsonObj.getString("education");
+			String education = jsonArray.replaceAll("\\[", "").replaceAll("\\]","").replaceAll("\"", "");
+			rcs.setCustomizeEducation(education);
+		
+		}else{
+			rcs.setCustomizeEducation(null);
+		}
 		
 		
 		//Split the Keywords
@@ -195,6 +239,14 @@ public class RecommendedCustomizeScoreRestController {
 		 }
 		if(jsonObj.has("keywordScore")){
 			rcs.setCustomizeKeywordsScore(jsonObj.getString("keywordScore"));
+		 }
+		
+		if(jsonObj.has("visaTypeScore")){
+			rcs.setCustomizeVisatypecore(jsonObj.getString("visaTypeScore"));
+		 }
+		
+		if(jsonObj.has("educationScore")){
+			rcs.setCustomizeEducationScore(jsonObj.getString("educationScore"));
 		 }
 		
 		 if(user.getUserCode() != null){

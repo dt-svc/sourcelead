@@ -17,8 +17,10 @@
             <div class="project_tabs_inn_table">
 				<div class="project_details project_detailsExp">
                 
+                
 					<div class="Expdit pull-right">
-					     <c:if test="${submissionStatus == 'SUBMITTED'}">
+					
+					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
@@ -40,7 +42,7 @@
 						      </i>
 						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
 					     </c:if>
-					      <c:if test="${isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					      <c:if test="${submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
 					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
@@ -70,10 +72,20 @@
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
-						  
-	        	
 						</div>
 					</div>                
+
+					   <ul class="UiPado">
+							<li title="Export"><i class="glyphicon glyphicon-export"
+								id="export-pop"></i>
+								<div class="export_pop" style="display: none;">
+									<ul>
+										<li onclick="exportMyExpenses('PDF',${expenses.id},'APPROVER');"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+										<li onclick="exportMyExpenses('EXCEL',${expenses.id},'APPROVER');"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+									</ul>
+								</div></li>
+							<div class="clearfix"></div>
+						</ul>
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
@@ -121,12 +133,12 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryTypeDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>${entry.expensesCategoryId.expensesName}</div></td>
+			           <td><div class="ExpShow" id="categoryTypeDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}"> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></div></td>
+			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="6">
@@ -134,11 +146,11 @@
 							<ul>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
 								<li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
-								<li><strong>Receipt Issued by :</strong><span>${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
+								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amount}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><p>${entry.description}</p>
+								<li><strong>Amount :</strong><span> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></span><div class="clearfix"></div></li>
+								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix"></div>
@@ -172,3 +184,10 @@
 </div>
 </div>
     </section>
+    
+<script>
+function exportMyExpenses(type,Expid,ApproverType){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
+}
+</script>

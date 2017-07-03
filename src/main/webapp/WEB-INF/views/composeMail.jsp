@@ -590,12 +590,12 @@ function getEmails(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    { 
 		    	 
-		    	 var enterEmailArray = this.value.split(",");
+		    	 var enterEmailArray = this.value.split(/[ ,]+/);
 		    	 if(enterEmailArray.length > 1){
 	        		 for (var i=0; i < enterEmailArray.length; i++) {
 	        			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));

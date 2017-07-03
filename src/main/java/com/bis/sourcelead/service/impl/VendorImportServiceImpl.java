@@ -502,10 +502,10 @@ public class VendorImportServiceImpl implements VendorImportService {
 			jsonObj.put("roleTypeId", roleTypeId);
 			OrgRelations orgRelation = null;
 			for (OrgRelations org : orgList) {
-				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrg().getOrgName())) {
+				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())) {
 					orgRelation = org;
 				}
-				else if (orgName.equalsIgnoreCase(org.getLocationId().getOrg().getOrgName())) {
+				else if (orgName.equalsIgnoreCase(org.getLocationId().getOrgLocationName())) {
 					orgRelation = org;
 				}
 			}
@@ -637,16 +637,16 @@ public class VendorImportServiceImpl implements VendorImportService {
 				return false;
 			}
 			else if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-				Org org = null;
+				OrgLocations orgLoc = null;
 				for (OrgRelations orgRelation : orgList) {
-					if (orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())) {
-						org = orgRelation.getResponderLocationId().getOrg();
+					if (orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrgLocationName())) {
+						orgLoc = orgRelation.getResponderLocationId();
 					}
-					else if (orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())) {
-						org = orgRelation.getLocationId().getOrg();
+					else if (orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrgLocationName())) {
+						orgLoc = orgRelation.getLocationId();
 					}
 				}
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLoc.getId());
 				UserRole userRole = null;
 				userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgLocation.getId());
 				if (userRole == null) {

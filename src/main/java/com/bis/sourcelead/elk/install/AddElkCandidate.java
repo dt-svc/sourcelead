@@ -83,6 +83,14 @@ public class AddElkCandidate{
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
 					candidateIndex.setCandidateUUID(rs.getString("CANDIDATE_UUID"));
 					
+					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
+						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));
+					}
+					
+					if(!isNullOrEmpty(rs.getLong("CONSULTANT_USER_ID"))){
+						candidateIndex.setUserId(rs.getLong("CONSULTANT_USER_ID"));
+					}
+					
 					if(!isNullOrEmpty(rs.getLong("RECRUITER_USER_ID"))){
 						candidateIndex.setRecruiterUserId(rs.getLong("RECRUITER_USER_ID"));
 					}else{
@@ -152,6 +160,9 @@ public class AddElkCandidate{
 					candidateIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
 					 	
 					candidateIndex.setSkillsName(rs.getString("SKILLS_NAME"));
+					if(rs.getString("VISA_TYPE") !=null){
+						candidateIndex.setVisaType(rs.getString("VISA_TYPE").split(","));
+					}
 
 					Timestamp createdDateTimestamp = rs.getTimestamp("CREATED_DATE");
 				    if (createdDateTimestamp != null){

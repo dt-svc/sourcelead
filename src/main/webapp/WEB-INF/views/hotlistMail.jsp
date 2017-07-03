@@ -949,11 +949,11 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var otherEmailArray = this.value.split(",");
+		    	 var otherEmailArray = this.value.split(/[ ,]+/);
 		    	 if(otherEmailArray.length > 1){
 		    		 for (var i=0; i < otherEmailArray.length; i++) {
 	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
@@ -982,11 +982,11 @@ function getCheckedCandidates(){
 
 		    var selectone, chosenone;
 		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var toEmailArray = this.value.split(",");
+		    	 var toEmailArray = this.value.split(/[ ,]+/);
 		    	 if(toEmailArray.length > 1){
 		    		 for (var i=0; i < toEmailArray.length; i++) {
 	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));

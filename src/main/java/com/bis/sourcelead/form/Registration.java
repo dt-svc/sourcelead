@@ -17,6 +17,12 @@ public class Registration {
 	
 	private String country;
 	
+	private String state;
+	
+	private String city;
+	
+	private String address;
+	
 	private String password;
 	
 	private String verificationCode;
@@ -24,6 +30,8 @@ public class Registration {
 	private String timeZone;
 	
 	private String mobilePhone;
+	
+	private String registeredOrgId;
 	
 	
 	
@@ -115,6 +123,46 @@ public class Registration {
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getState()
+	{
+		return state;
+	}
+
+	public void setState(String state)
+	{
+		this.state = state;
+	}
+
+	public String getCity()
+	{
+		return city;
+	}
+
+	public void setCity(String city)
+	{
+		this.city = city;
+	}
+
+	public String getAddress()
+	{
+		return address;
+	}
+
+	public void setAddress(String address)
+	{
+		this.address = address;
+	}
+
+	public String getRegisteredOrgId()
+	{
+		return registeredOrgId;
+	}
+
+	public void setRegisteredOrgId(String registeredOrgId)
+	{
+		this.registeredOrgId = registeredOrgId;
 	}
 	
 	

@@ -36,38 +36,52 @@
  }
  </style>
 <script>
-function hideAndShowDetailsRow(rowId){
-	var validation_required = "true";
-	var entityId = parseInt(rowId-1);
-	var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
-	if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
-		for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
-		   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
-		   {
-			   $("#"+i+"document"+entityId).removeAttr('style');
-			   validation_required = "false";
-			   
-		   }
+function hideAndShowDetailsRow(rowId,type){
+	if ($('#add_expenses_form').validate(false, validationSettings)){
+		var validation_required = "true";
+		var entityId = parseInt(rowId-1);
+		 var maxRecCount = $("#maxRecCount").val();
+		 if(type != null && type != 'undefined' && type != '' && type == 'Edit'){
+			 for(var i = 2; i < maxRecCount; i=i+2){
+				 if(rowId != i){
+					 if($("#divEntityTsRow"+i).is(':visible'))
+					   {
+							$("#divEntityTsRow"+i).removeAttr('style');
+							$("#divEntityTsRow"+i).attr('style','display:none');
+					   }
+				 }
+			  } 
+		 }
+		
+		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+		if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
+			   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
+			   {
+				   $("#"+i+"document"+entityId).removeAttr('style');
+				   validation_required = "false";
+				   
+			   }
+			}
+		}
+		if(validation_required == "true"){
+			 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+			 $("#0docFile"+entityId).attr('data-validation','required');
+		}
+		else{
+			$("#0docFile"+entityId).removeAttr('data-validation');
+			 $("#0docFile"+entityId).attr('data-validation-optional','true');
+		}
+		
+		if($("#divEntityTsRow"+rowId).is(':visible'))
+	   {
+			$("#divEntityTsRow"+rowId).removeAttr('style');
+			$("#divEntityTsRow"+rowId).attr('style','display:none;');
+	   }
+		else{
+			$("#divEntityTsRow"+rowId).removeAttr('style');
 		}
 	}
-	if(validation_required == "true"){
-		 $("#0docFile"+entityId).removeAttr('data-validation-optional');
-		 $("#0docFile"+entityId).attr('data-validation','required');
-	}
-	else{
-		$("#0docFile"+entityId).removeAttr('data-validation');
-		 $("#0docFile"+entityId).attr('data-validation-optional','true');
-	}
-	
-	if($("#divEntityTsRow"+rowId).is(':visible'))
-   {
-		$("#divEntityTsRow"+rowId).removeAttr('style');
-		$("#divEntityTsRow"+rowId).attr('style','display:none;');
-   }
-	else{
-		$("#divEntityTsRow"+rowId).removeAttr('style');
-	}
-	
 }
 </script>	
 <script type="text/javascript">
@@ -138,12 +152,19 @@ function addAttachment(entityRowId,from){
 		 document.getElementById("divEntityTsRow"+rowId).value= '';
 		 var  rId = "divEntityTsRow"+rowId;
 		 var r = document.getElementById("categoryTable").rows[rId];
-		    
 	    document.getElementById("divEntityTsRow"+detailsRowId).style.display = 'none';
 		document.getElementById("divEntityTsRow"+detailsRowId).value= '';
 		var  rId1 ="divEntityTsRow"+detailsRowId;
 		var r1 = document.getElementById("categoryTable").rows[rId1];
 	    
+		//subtract row amount
+		var totlaMount = $("#expenseAmountDivId").val();
+		var expenseAmount = $("#expenseAmount"+rowId).val();
+		var sub = totlaMount - expenseAmount; 
+		var toFixed = sub.toFixed(2);
+		$("#expenseAmountDivId").val(toFixed);
+		 
+		 
 	    var count = 2*(r.cells.length);
 	     for(i=0;i<=count;i++){
 	        if(i==0){
@@ -152,8 +173,11 @@ function addAttachment(entityRowId,from){
 	    	
 	        r.deleteCell(0);
 	     } 
+	     
+	     
 	}
 </script>
+
 <div id="divAttachmentTd1" style="display: none; float: left;">
 	   <div id='REPLACEROWIDdocFileuploadFileGroupENTITYROWID'>
  			<input type='file' name='REPLACEROWIDdocFileENTITYROWID' id='REPLACEROWIDdocFileENTITYROWID' VALIDATIONCONDITION  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID,ENTITYROWID)'> 
@@ -181,31 +205,32 @@ function addAttachment(entityRowId,from){
 </div>
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
-			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID);"></i></span>
-			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID)"></i>
+			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
+			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-						<div class="col-md-4 mb10">
+						<div class="col-md-4 mb10 chosen-custom">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required">
+							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
 							   <c:forEach var="expCat" items="${expensesCategoryList}">
-					                 <option value="${expCat.id}">${expCat.expensesName}</option>
+					                 <option value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 	                	       </c:forEach>
 							</select>
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Date<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly" onclick="displayCalendar('REPLACEROWID')" class="form-control calendar" value="" placeholder="Date" field-name="Date" data-validation="required"> 
+							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10">
-							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required validate_Space validate_length length1-100"> 
+							<label>Receipt Issued by</label>
+							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
-						<div class="col-md-4 mb10">
+
+						<div class="col-md-4 mb10 chosen-custom">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
@@ -216,7 +241,7 @@ function addAttachment(entityRowId,from){
 	                                 <option  value="e-Wallet">e-Wallet</option>
 							</select>
 						</div>	
-	                  <div class="col-md-4 mb10 valid_ation">
+	                  <div id="amountDivREPLACEROWID" class="col-md-4 mb10 valid_ation">
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
@@ -225,16 +250,16 @@ function addAttachment(entityRowId,from){
 											  	<option value="AUD" ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>
 											  	<option value="USD" ${currencyCode  == "USD" ? "selected" : ""}>USD</option>
 											  	<option value="GBP" ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>
-											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</opton>
+											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</option>
 											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
 											  </select>
-									 </div>
-							         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float">
+								</div>
+							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
-						<label>Description</label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation="validate_Space validate_length length5-500"></textarea>
+						<label>Description<span class='text-danger'>&nbsp;*</span></label>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -253,8 +278,8 @@ function addAttachment(entityRowId,from){
 					</div>
 					      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 						      <div class="pull-right  mr mt10">
-						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);">
-						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);">
+						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);calculateTotalamount(REPLACEROWID)">
+						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
 						      </div>
 					      </div>
 						 <div class="clearfix"></div>
@@ -264,7 +289,15 @@ function addAttachment(entityRowId,from){
 <script>
 function addExpenseRow(){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
-		    var maxRecCount = $("#maxRecCount").val();
+		   var maxRecCount = $("#maxRecCount").val();
+		   for(var i = 2; i < maxRecCount; i=i+2){
+			   if($("#divEntityTsRow"+i).is(':visible'))
+			   {
+					$("#divEntityTsRow"+i).removeAttr('style');
+					$("#divEntityTsRow"+i).attr('style','display:none');
+			   }
+		   }
+		 
 			var tbl = document.getElementById("categoryTable");
 			var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
 			$("#maxRecCount").val(parseInt(maxRowNum + 2));
@@ -326,6 +359,39 @@ function addExpenseRow(){
 			cell2_0.innerHTML = divRowTd2_0Str;
 			cell2_0.colSpan = 7;
 			
+			$("#categoryDate"+maxRowNum).datepicker("destroy");
+			var projectStartDate = $('#projectStartDateExpensesId').val();
+			var projectEndDate =   $('#projectEndDateExpensesId').val();
+			if((projectStartDate != null && projectStartDate != '' && projectStartDate != 'undefined') || 
+				(projectEndDate != null && projectEndDate != '' && projectEndDate != 'undefined')){
+					$('#categoryDate'+maxRowNum).datepicker({
+						dateFormat : 'dd-mm-yy',
+						changeMonth : true,
+						changeYear : true,
+						minDate : projectStartDate,
+						maxDate : projectEndDate,
+			       }); 
+			}
+			else {
+				alert("Please Select StartDate & EndDate")
+			} 
+			
+		    var config = {
+		    	    '.chosen-select'           : {},
+		    	    '.chosen-select-deselect'  : {allow_single_deselect:true},
+		    	    '.chosen-select-no-single' : {disable_search_threshold:10},
+		    	    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		    	    '.chosen-select-width'     : {width:"95%"}
+		    	    }
+		    	    for (var selector in config) {
+		    	    $(selector).chosen(config[selector]);
+		    	    }
+		    	    $('.chosen-select').each(function() {
+		    	    var $this = $(this);
+		    	    $this.next().css({'width': '100%'});
+		    	    })
+		    	    $('#categoryType'+maxRowNum).chosen();
+		    	    $('#categoryType'+maxRowNum).trigger("chosen:updated");
 	   }
 	else{
 		var maxRecCount = $("#maxRecCount").val();
@@ -338,7 +404,12 @@ function addExpenseRow(){
 			
 		}
 	}
-			
+	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+		    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+		        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+		            event.preventDefault();
+		        }
+		    });	
   }			
 </script>
 <script>
@@ -384,7 +455,7 @@ function addExpenseRow(){
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
 			
 			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
-			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+')');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+'),"Edit"');
 			
 			
 			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');
@@ -396,7 +467,7 @@ function addExpenseRow(){
 		}
 	}
 </script>
-<script>
+ <!-- <script>
 function displayCalendar(entityId){
 	$("#categoryDate"+entityId).datepicker("destroy");
 	var projectStartDate = $('#projectStartDateExpensesId').val();
@@ -416,7 +487,7 @@ function displayCalendar(entityId){
 	}
 	
 }
-</script>
+</script> -->
 <script type="text/javascript">
 function validate_fileupload(fileName)
 {
@@ -461,3 +532,59 @@ function validate_fileupload(fileName)
 		
 	 }
 </script>
+
+<script>
+function calculateTotalamount(rowId){
+	var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+    var sum = 0;
+ 	    for(var i=1; i< maxRowNum; i++){
+ 	    	 if(document.getElementById("expenseAmount"+i)){
+ 	    		 if(document.getElementById("expenseAmount"+i).value){
+ 	    			var rowAmount = $('#expenseAmount'+i).val();
+		 	    	sum = parseFloat(sum) + parseFloat(rowAmount);
+ 	    		 }
+ 	    		
+ 	    	 }
+ 	    }
+ 	    var toFixed = sum.toFixed(2);
+	$("#expenseAmountDivId").val(toFixed);
+	
+}
+
+</script>
+<script>
+function getAmountValue(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }
+}
+
+</script>
+
+
+<script>
+function getAmountValueCategory(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }	
+  }
+}
+</script>
+
+

@@ -64,7 +64,7 @@ public class ExpensesEntries implements Serializable {
 	private String currencyType;
 
 	@Column(name = "AMOUNT")
-	private float amount;
+	private Float amount;
 
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -149,11 +149,11 @@ public class ExpensesEntries implements Serializable {
 		this.currencyType = currencyType;
 	}
 
-	public float getAmount() {
+	public Float getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(Float amount) {
 		this.amount = amount;
 	}
 

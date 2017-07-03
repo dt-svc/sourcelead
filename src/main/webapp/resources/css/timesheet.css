@@ -2436,7 +2436,7 @@ margin-bottom:15px !important;
     background: #f1f1f1 !important;
 }
      
-   .project_details_cta.project_details_view span {
+.project_details_cta.project_details_view span {
    display:inline; float:left; width:60%; text-overflow: inherit; white-space: normal; overflow: visible;
    font-weight:500; word-wrap: break-word;
    }
@@ -2485,10 +2485,7 @@ padding-right:10px;
 .totalText input {
     background-color: transparent; border: none; font-size: 25px;width:35%;
 }
-     
-     
-     
-     
+         
 .openJobsWrap {}
 .openJobsWrap .select-fild select {
     width: 200px;
@@ -4228,7 +4225,10 @@ position: relative; padding: 0px 0px 5px 0px;
 .timesheetRepTab table tr td b.proj_closed { background-color:#d94747;}
 .timesheetRepTab table tr td b.proj_process { background-color:#ff9800;}
 .timesheetRepTab table tr td b.action { background-color:#368ee0;}
- 
+
+.timesheetRepTab.expensestable table div.week {
+width: auto; min-width: 70px;
+}
 .timPag {
     margin: 15px; float: right;
 }
@@ -4887,7 +4887,7 @@ width: 100% !important; margin: 0px !important;
 	z-index: 100;
 }
 .rejectedHover {
-    cursor: pointer; position: relative; top:10px;
+    cursor: pointer; position: relative; top:10px; right:15px;
 }      
 .rejectedHover:hover .app_error_mes {
     display: block; opacity: 1;
@@ -4902,7 +4902,6 @@ width: 100% !important; margin: 0px !important;
 .Expreopen i {
     cursor: pointer; display: inline-block; font-size: 16px; padding: 2px 3px; margin: 0px 5px;
 }
-
 .project_wrap_table .table_footer tr td {
     border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; background: #cfd8dc !important;
 }
@@ -4919,7 +4918,91 @@ width: 100% !important; margin: 0px !important;
 	position: absolute; right: 0px; top: 10px; color: #95ccff;
 }
 
-
 input[type="text"] {
     margin: 0px; margin-bottom: 0px !important;
 }
+
+
+.ifraMask {
+position:fixed; width:100%; height:100%; background-color:rgba(0,0,0,0.6); top:0px; left:0px; z-index:100000; display:none;
+}
+.framViePop {
+position:fixed; background-color: #fff; width: 900px; height: 88%; margin: 0px auto; left: 0px; right: 0px;
+display: none; z-index:100005; top:6%; padding: 10px; border-radius:5px; box-sizing:border-box;
+}
+.fraClose {
+position: absolute; color: #ff5959; right: -19px; padding: 8px 0px 0px 0px; background-color: #fff; border-radius: 50%;
+width: 34px; height: 34px; text-align: center; display: inline-block; font-size: 17px; top: -18px; cursor: pointer;
+
+}
+
+.repoPositiRunPay .dt-buttons {
+position: absolute !important; width: 90px; left: inherit; right: 490px !important; top:-33px;
+}
+.repoPositiRunPay .dataTables_filter {
+top:-33px !important;
+}
+.chosen-results li {
+float: none !important;
+}
+
+.landTemp {
+	padding: 10px; background-color: #FFF; border-radius: 4px;
+}
+.landTempCta {
+	width: 32%; float: left; margin:0px 2% 0px 0px; border-radius: 4px; padding: 20px;
+}
+.landTempCta h2 {
+	padding: 0px 0px 8px 0px; margin: 0px 0px; font-size: 16px; color: #333;
+}
+.landTempCta p {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 13px; font-weight: 400; color: #666;
+}
+.landTempCta span {
+}
+.landTempCta a {
+	padding: 2px 2px; margin: 0px 10px 0px 0px; font-size: 14px; color: #2475c1;
+}
+.landTempCta a:hover {
+	text-decoration: none;
+}
+.minHe {
+    min-height: 74px;
+}
+
+
+
+
+
+
+
+/*   Onboard Carosel CSS   */
+
+.liquid {
+	padding:10px 0; margin: 0px auto; height:115px !important; position: relative;
+}
+.liquid .wrapper {
+	width:100% !important; margin: 0px 0px 0px 30px !important;
+}
+.liquid .previous {
+	display:block; position: absolute; left: -5px; padding: 2px; font-size: 20px;margin: 0px 5px; color: #368ee0;
+	cursor: pointer; top: 42px;
+}
+.liquid .next {
+	display:block; position: absolute; right: -5px; padding: 2px; font-size: 20px;margin: 0px 5px; color: #368ee0;
+	cursor: pointer; top: 42px;
+}
+.liquid ul li {
+	width:300px;
+	padding:0 2px;
+	margin:0 !important;
+}
+.liquid ul li a img {
+	-moz-box-shadow: 5px 5px 3px #222;
+   	-webkit-box-shadow: 5px 5px 3px #222;
+   	box-shadow: 5px 5px 3px #222;
+}
+
+/*   Onboard Carosel CSS   */
+
+

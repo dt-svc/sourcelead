@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -30,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -39,6 +38,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -62,6 +62,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -81,6 +82,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.DefaultContractTemplateUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -172,23 +174,32 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	OrgDao orgDao;
 	
+	@Autowired
+	MasterCandidateService masterCandidateService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
 	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
-		
+		Org org = null;
 		//For Saving of Org Details
-		Org org = getOrgDetails(registration,subModules,modules);
-		try {
-			orgService.addOrganization(org);
-		} catch (Exception e) {
-			e.printStackTrace();
+		
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			org = getOrgDetails(registration,subModules,modules);
+			try {
+				orgService.addOrganization(org);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			org = orgService.findOrgByID(Long.valueOf(registration.getRegisteredOrgId()));
 		}
+		
 		
 		//For Saving of User Details
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -208,16 +219,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		org.setUser(user);
 		
-		try {
-			orgService.updateOrg(org);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			org.setUser(user);
+			try {
+				orgService.updateOrg(org);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 		//For saving of orgLocation Details which location has choose in the registration
-		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user);
+		OrgLocations orgLocations = getOrgLocationsDetails(registration, org, user,subModules,modules);
 		Timezone timeZone = timeZoneService.getTimezone(Long.parseLong(registration.getTimeZone()));
 		orgLocations.setTimezone(timeZone);
 		try {
@@ -246,21 +259,35 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		List<Integer> moduleIds = new ArrayList<Integer>();
-		 for (String s : org.getModulesId().split(",")){
-			 moduleIds.add(Integer.parseInt(s));
+		 MasterCandidate masterCandidate = null; 
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 if(null == masterCandidate){
+			 masterCandidate = getMasterCandidateDetails(registration,user);
 		 }
-		 
-	
 		
+		try {
+			masterCandidateService.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
+		Candidate candidate = getCandidateDetails(user,orgLocations,masterCandidate);
+		try {
+			Candidate savedCandidate = candidateService.addCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
-		/*saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
-		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");*/
+		
+		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template",Constants.CLIENT_MSA);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template",Constants.VENDOR_MSA);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
+		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
+		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+//		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		
@@ -269,11 +296,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
-		 StringBuilder templateStringBuilder=new StringBuilder();
 		 ContractsTemplate contractsTemplate = new ContractsTemplate();
-		 contractsTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(template).toString());
-		 contractsTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(template).toString());
-		 contractsTemplate.setTemplateContent("");
+		 contractsTemplate.setTemplateName(templateType);
+		 contractsTemplate.setDescription(templateType);
+		 contractsTemplate.setTemplateContent(DefaultContractTemplateUtil.getDefaultTemplates(templateType));
 		 contractsTemplate.setOrgLocationId(orgLocations);
 		 contractsTemplate.setTemplateType(templateType);
 		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -286,18 +312,50 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 
-	private Candidate getCandidateDetails(User user, OrgLocations orgLocations) {
-		Candidate candidate = new Candidate();
-		candidate.setOrgLocationId(orgLocations);
-		candidate.setCandidateType(Constants.CANDIDATE);
-		candidate.setFirstName(user.getFirstName());
-		candidate.setLastName(user.getLastName());
-		candidate.setCountry(orgLocations.getCountry());
-		candidate.setIsAssociate(Constants.YES);
-		candidate.setStatus(Constants.RECORD_ACTIVE);
-		candidate.setCreatedBy(user.getUserCode());
-		candidate.setCreatedDate(commonUtil.currentDate());
+	private Candidate getCandidateDetails(User user, OrgLocations orgLocations,MasterCandidate masterCandidate){
+		
+		Candidate candidate = null;
+		try {
+			candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(candidate == null){
+			candidate = new Candidate();
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setOrgLocationId(orgLocations);
+			candidate.setCandidateType(Constants.CANDIDATE);
+			candidate.setFirstName(user.getFirstName());
+			candidate.setLastName(user.getLastName());
+			candidate.setCountry(orgLocations.getCountry());
+			candidate.setEmail(user.getEmail());
+			candidate.setIsAssociate(Constants.YES);
+			candidate.setStatus(Constants.RECORD_ACTIVE);
+			candidate.setCreatedBy(user.getUserCode());
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setCreatedDate(commonUtil.currentDate());
+		}else{
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+		}
+		
 		return candidate;
+	}
+	
+	private MasterCandidate getMasterCandidateDetails(Registration registration,User user) {
+		MasterCandidate masterCandidate = new MasterCandidate();
+		masterCandidate.setFirstName(registration.getFirstName());
+		masterCandidate.setLastName(registration.getLastName());
+		masterCandidate.setEmail(registration.getEmail());
+		masterCandidate.setPhoneNumber(registration.getMobilePhone());
+		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+		masterCandidate.setCreatedBy(user.getUserCode());
+		masterCandidate.setCreatedDate(commonUtil.currentDate());
+		masterCandidate.setUpdatedBy(user.getUserCode());
+		masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		return masterCandidate;
 	}
 
 	
@@ -310,9 +368,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		org.setOrgType("Company");
 		org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		org.setStatus(Status.ACTIVE);
-		String orgModules = "";
 		
-		
+		/*String orgModules = "";
 		if(!isNullOrEmpty(subModules)){
 			String[] registeredSubModules =  subModules.split(",");
 			for(int i=0; i<registeredSubModules.length; i++){
@@ -328,10 +385,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 				}
 			}
 		}
-		
-		
 		orgModules = orgModules.substring(0, orgModules.length()-1);
-		org.setModulesId(orgModules);
+		org.setModulesId(orgModules);*/
+		
 		org.setCreatedBy("sladmin");
 		
 		org.setCreatedDate(new Date());
@@ -396,17 +452,50 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	 
 	 
-	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user ) throws Exception{
+	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setCountry(registration.getCountry());
+		orgLocations.setState(registration.getState());
+		orgLocations.setCity(registration.getCity());
+		orgLocations.setOrgLocationAddress(registration.getAddress());
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
 		orgLocations.setStatus(Status.ACTIVE);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
-		orgLocations.setLocationCode(org.getOrgCode()+countries.getCode2());
+		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
+		orgLocations.setOrgLocationName(registration.getCompanyName());
+		orgLocations.setWebsite(registration.getWebsite());
+		
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			orgLocations.setIsPrimary(Constants.YES);
+		}
+		
+		String orgModules = "";
+		
+		if(!isNullOrEmpty(subModules)){
+			String[] registeredSubModules =  subModules.split(",");
+			for(int i=0; i<registeredSubModules.length; i++){
+					orgModules = orgModules+registeredSubModules[i]+",";
+			}
+		}
+		
+		if(!isNullOrEmpty(modules)){
+			String[] registeredModules =  modules.split(",");
+			for(int i=0; i<registeredModules.length; i++){
+				if(Long.parseLong(registeredModules[i]) != 1L){
+					orgModules = orgModules+registeredModules[i]+",";
+				}
+			}
+		}
+		
+		
+		orgModules = orgModules.substring(0, orgModules.length()-1);
+		orgLocations.setModulesId(orgModules);
+		
+		
 		return orgLocations;
 	}
 	
@@ -492,7 +581,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 					 }
 				}
 				
-				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+				List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
 				for(SourceleadActions actions : sourceLeadActionsList){
 					if(roleActonsList.contains(actions.getId())){
 						 strbul.append(actions.getId()).append(",");
@@ -523,8 +612,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(" Default Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(" Default Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" Default Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append(" Default Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -544,8 +633,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder templateStringBuilder=new StringBuilder();
 		 SubmissionTemplate submissionTemplate = new SubmissionTemplate();
-		 submissionTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
-		 submissionTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setTemplateName(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
+		 submissionTemplate.setDescription(templateStringBuilder.append(orgLocations.getOrgLocationName()).append("Interview Feedback Template").toString());
 		 submissionTemplate.setOrgLocationId(orgLocations);
 		 submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 		 submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -606,7 +695,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -646,7 +735,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String url = sourceleadUrl;
 		
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -683,7 +772,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String url = sourceleadUrl;
 		 
 		//construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -867,9 +956,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String url = sourceleadUrl;
 		 
 		 Org registredOrg = orgDao.findOrgByID(Long.parseLong(orgId));
+		 OrgLocations regLocation = orgLocationService.getOrgLocations(locationId);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, registredOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, registredOrg,regLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1053,7 +1143,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1237,7 +1327,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

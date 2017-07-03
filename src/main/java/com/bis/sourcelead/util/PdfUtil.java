@@ -445,14 +445,14 @@ public class PdfUtil {
 			candidateArray[9] = "--";
 		}
 		if(null != candidate.getOrgRelationId()){
-				Org org = null;
+				OrgLocations orgLocations = null;
 				if(candidate.getOrgRelationId().getResponderLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
-					org = candidate.getOrgRelationId().getLocationId().getOrg();
+					orgLocations = candidate.getOrgRelationId().getLocationId();
 				 }else if(candidate.getOrgRelationId().getLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
-					 org = candidate.getOrgRelationId().getResponderLocationId().getOrg();
+					 orgLocations = candidate.getOrgRelationId().getResponderLocationId();
 				 }
-				if(null != org){
-					candidateArray[10] = org.getOrgName();
+				if(null != orgLocations){
+					candidateArray[10] = orgLocations.getOrgLocationName();
 				}
 		}else{
 					candidateArray[10] = "--";

@@ -35,6 +35,7 @@ import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.util.ConversionUtil;
 
@@ -48,6 +49,9 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	PayrollHelper payrollHelper;
 
 	@Override
 	public Integer saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
@@ -66,9 +70,14 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 			FileInputStream fis = new FileInputStream(file);
 			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int isValid = 0;
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForHrDeductions(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					
@@ -179,6 +188,9 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 //							accountDeductionsList.add(accountDeductions);
 						}
 					}
+				}else{
+					return count;
+				}
 				}
 			
 			fis.close();
@@ -189,11 +201,12 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 		
 	}
 	
+
 	private HrDeductions saveHrDetails(HrDeductions hrDeductions) throws Exception {
 		return hrDeductionsDao.saveHRDeductions(hrDeductions);
 	}
 
-	private String getCellValueAsString(Cell cell, String fileName) {
+	/*private String getCellValueAsString(Cell cell, String fileName) {
 		String cellValue = "";
 		if(fileName.toLowerCase().endsWith("xls")){
 				HSSFCell hssfCell = (HSSFCell) cell;
@@ -219,7 +232,40 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 				}
 			}
 			return cellValue;
+		}*/
+	
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		double xssfCellValue = 0;
+		if (fileName.toLowerCase().endsWith("xls")) {
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = hssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_NUMERIC){
+				cellValue = String.valueOf(hssfCell.getNumericCellValue());
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_STRING){
+				cellValue = String.valueOf(hssfCell.getStringCellValue());	
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				cellValue = cell.getStringCellValue();
+			}
+		} else {
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = xssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				cellValue = String.valueOf(xssfCell.getNumericCellValue());
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_STRING) {
+				cellValue = String.valueOf(xssfCell.getStringCellValue());
+			} else if(xssfCell.getCellType() == XSSFCell.CELL_TYPE_STRING){
+				cellValue = cell.getStringCellValue();
+			}
 		}
+		return cellValue;
+	}
 	
 	private HrDeductionsDetails getAccountDeductionDetails(float dedAmount, HrDeductions hrDeductions, OrgLocations orgLocation,User user, Cell cell,int cellNuber) {
 		HrDeductionsDetails hrDeductionsDetails = new HrDeductionsDetails();
@@ -259,5 +305,4 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	{
 		return hrDeductionsDao.getHrDeductionsDetailsbyId(hrDeductionId);
 	}
-
 }

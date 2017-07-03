@@ -33,9 +33,16 @@ margin: 0 !important;
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
-    <h2>Contract Template</h2>
-  </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contract Template List</div>
+      <!-- <h2>Submission Templates</h2> -->
+      <h2 class="pull-left">Contract Templates</h2>
+				<div class=" pull-left reportsH">
+			
+			<div class="RePop openTemplates">
+				
+			</div>
+		</div>
+    </div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
 </section>
 	
 	

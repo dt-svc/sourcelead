@@ -21,6 +21,11 @@ window.onload = function () {
   <div class="pull-left">
     <h2>Expenses New</h2>
   </div>
+  
+  <div class="success_pop" id="selector1" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+  </div>
+       
   <div class="pull-right brud-crum">Home &raquo; Expenses New</div>
 </section>
 
@@ -30,6 +35,8 @@ window.onload = function () {
 			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a onclick="hrDeductionsList();">HR Deductions</a></li>
+			<li title="Paylist"><a onclick="runPayrollCycles('main');">Run Payroll</a></li>
+			<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 		</ul>
 		<div class="clearfix"></div>
 	</section>
@@ -37,14 +44,19 @@ window.onload = function () {
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
 	<div class="clearfix">
-	<form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
+	
 <div class="timesheet_head clearfix">
 
-     <ul>
+<div class="pull-left">
+<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Maping" onClick="userMaping();">User Maping </a>
+</div>
+
+     <ul class="pull-right">
      <li>
-     <a href="javascript:void(0)" class="addcon-pop">
-      	<i class="glyphicon glyphicon-plus paddingRight"></i>Add Document</a>
+     <a href="javascript:void(0)" onclick="flushValues();" class="addcon-pop">
+      	<i class="glyphicon glyphicon-plus paddingRight" ></i>Add Document</a>
                   <!-- Popup Div -->
+                 <form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
                   <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                      
@@ -66,6 +78,7 @@ window.onload = function () {
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
+                             <option value="BIS_USERS">BIS Users</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
@@ -83,18 +96,20 @@ window.onload = function () {
                       </div>
                     </div>
                   </div>
-                    </form:form>
+                   </form:form>
                   </li>
+                   
+                  
                   
                   
                   <!-- Start -->
                   
                   <!-- <ul class="popdiv_two"> -->
                   <li>
-                  <a href="javascript:void(0)" class="bulk_addconpop"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
+                  <a href="javascript:void(0)" class="bulk_addconpop paddingRight" onclick="flush();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
                   <!-- Popup Div -->
-                  	<form:form id="upload_bulk_payroll_form" name="upload_payroll_form" method="post">
-                  <div class="collapse-bulk-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                  	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
+                  <div class="collapse-bulk-adduser col-md-4" id="addbulkDiv" style='width:400px; right: 20px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                         <div class="col-md-12 mt10">
                           <div class="input-group ratetype" id="uploadBulkFileGroup">
@@ -112,6 +127,48 @@ window.onload = function () {
                     </div>
                     </form:form>
                     </li>
+                    
+                    <!--  Run Payroll Html -->
+<li>
+                  <a href="javascript:void(0)" class="runpayroll paddingRight" onclick="flushPayrollCycle();"> <i class="glyphicon glyphicon-plus paddingRight"></i>Run Payroll</a>
+                  <!-- Popup Div -->
+                  	<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
+                  <div class="runpayroll_div col-md-4" id="addPayrollDiv" style='width:400px; right: 0px; top:25px; padding:10px 0'> <i class="fa fa-close close-div" onClick="flushPayrollCycle();"></i>
+                    <div class="form-horizontal clearfix">
+                        <div class="col-md-12 mt10 dropdown-select" id="payrollCycleDiv">
+							<select class="chosen-select" id="payrollCycle" name="payrollCycle"  field-name="Payroll Cycle"  data-validation="required">
+							<option value="">---Select Payroll Cycle---</option>
+							<option value="2">MAR 15th</option>
+							<option value="3_FIRST">April 1st</option>
+							<option value="3">April 15th</option>
+							<option value="4_FIRST">May 1st</option>
+							<option value="4">May 15th</option>
+							<option value="5_FIRST">June 1st</option>
+							<option value="5">June 15th</option>
+							<option value="6_FIRST">July 1st</option>
+							<option value="6">July 15th</option>
+							<option value="7_FIRST"> Aug 1st</option>
+							<option value="7">Aug 15th</option>
+							<option value="8_FIRST">Sep 1st</option>
+							<option value="8">Sep 15th</option>
+							<option value="9_FIRST">Oct 1st</option>
+							<option value="9">Oct 15th</option>
+							<option value="10_FIRST">Nov 1st</option>
+							<option value="10">Nov 15th</option>
+							<option value="11_FIRST">Dec 1st</option>
+							<option value="11">Dec 15th</option>
+							</select>
+                        </div>
+                      </div>
+                      <div class="clearfix mr mt">
+                        <button type="button" class="btn btn-sm btn-primary pull-right" id="runPayrollCycle" onclick="runPayrollCycles();">Run Payroll</button>
+                      </div>
+                    </div>
+                    </form:form>
+                    </li>
+
+                    <!--  Run Payroll Html Ends -->
+                    
                   </ul>
                   </div>
                   <!-- End -->
@@ -123,17 +180,89 @@ window.onload = function () {
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
     	<div id="loading"></div>
+    	<div id="mainloading"></div>
     	<div id="employerCostDiv" class="datatable_filter"></div>
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
-    	<div id="accountDeductionsListDiv" class="datatable_filter"></div>
+    	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
-       
+    	<div id="finalPayrollReportDiv" class="repoPositiAs repoPositiRunPay"></div>
 	</div>
 	
  </div>
+ <div id="popUp">
 </div>
 </section>
 
+
+<script>
+function runPayrollCycles(type){
+	var payrollValue = $('#payrollCycle').val();
+	if(type != "main" || (payrollValue != "" && payrollValue != 'undefined' && payrollValue != null)){
+		if ($('#run_payroll_cycle').validate(false, validationSettings)) { 
+			$('#addPayrollDiv').removeClass("show-div");
+			var payrollCycle = $('#payrollCycle :selected').text();
+		var frm = $('#run_payroll_cycle').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var form = $('#run_payroll_cycle')[0];
+		var formData = new FormData(form);
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "GET",
+					data : formData,
+					contentType : 'application/json; charset=utf-8',
+					enctype : 'multipart/form-data',
+					processData : false,
+					contentType : false,
+					dataType : 'json',
+					url : sourceleadUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+						generatrPayroll(result,payrollCycle);
+						$("#loading").removeAttr("style");
+					},
+				});
+		
+		} 
+	}else if(type == "main"){
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Please Select Payroll Cycle</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input class='width100percnt' id='confirm-id' type='button' value='Ok' onclick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	 
+}
+
+function flushPayrollCycle(){
+	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
+}
+
+</script>
+
+<script>
+function flushValues(){
+	$("#fromDate").val("");
+	$("#toDate").val("");
+	$("#payrollType").val('').trigger("chosen:updated");
+	$("#batchNumber").val("");
+	$("#uploadFile").val("");
+}
+
+</script>
+
+<script>
+function flush(){
+	$("#uploadBulkBtn").val("");	
+}
+</script>
 
 <script>
 function loadEmployeePayrollCost(){
@@ -200,6 +329,8 @@ function loadEmployeePayrollCost(){
 						$("#wagesAndTaxListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
+						$("#finalPayrollReportDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
 						employeePayrollCostPagination();
@@ -259,10 +390,19 @@ function employeePayrollCostPagination(){
 $(".bulk_addconpop").click(function() {
 	$(".collapse-bulk-adduser").toggleClass("show-div");
 	$(".collapse-div-adduser").removeClass("show-div");
+	$(".runpayroll_div").removeClass("show-div");
+	$(".collapse-div").removeClass("show-div");
+});
+//Run Payroll script
+$(".runpayroll").click(function() {
+	$(".runpayroll_div").toggleClass("show-div");
+	$(".collapse-bulk-adduser").removeClass("show-div");
+	$(".collapse-div-adduser").removeClass("show-div");
 	$(".collapse-div").removeClass("show-div");
 });
 $(".addcon-pop").click(function() {
 	$(".collapse-div-adduser").toggleClass("show-div");
+	$(".runpayroll_div").removeClass("show-div");
 	$(".collapse-bulk-adduser").removeClass("show-div");
 	$(".collapse-div").removeClass("show-div");
 });
@@ -292,16 +432,15 @@ $(".addcon-pop").click(function() {
 <!-- Added By Rajashekar  -->
 <script type="text/javascript">
 	function uploadBulkPayrollDocument() {
-		alert("Hi");
 		 if ($('#upload_bulk_payroll_form').validate(false, validationSettings)) { 
-			$('#adddocDiv').removeClass("show-div");
+			$('#addbulkDiv').removeClass("show-div");
 		var frm = $('#upload_bulk_payroll_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_bulk_payroll_form')[0];
 		var formData = new FormData(form);
-
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -316,7 +455,13 @@ $(".addcon-pop").click(function() {
 							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
 							+ jsonData,
 					success : function(result) {
-					    alert("Hi");
+					/* 	var json = JSON.parse(result); */
+						$("#loading").removeAttr('style');
+						$("#selector1").removeAttr("style");
+		    			$("#selector1").css("display", "block");
+		    			$("#msgDiv").html(result+" Records Imported Successfully.");
+						msgFadein();
+						wagesAndTaxList();
 					},
 				});
 		
@@ -336,7 +481,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
-
+		$("#mainloading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -347,11 +492,20 @@ $(".addcon-pop").click(function() {
 					processData : false,
 					contentType : false,
 					dataType : 'json',
-					url : sourceleadUrl
-							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
-							+ jsonData,
+					url : sourceleadUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
-						loadEmployeePayrollCost();
+						/* var json = JSON.parse(result); */
+						if(result == 0){
+							$("#mainloading").removeAttr('style');
+							showAlertMessage();
+						}else{
+							$("#mainloading").removeAttr('style');
+							$("#selector1").removeAttr("style");
+			    			$("#selector1").css("display", "block");
+			    			$("#msgDiv").html(result+" Records Imported Successfully.");
+							msgFadein();
+							loadEmployeePayrollCost();
+						}
 					},
 				});
 		
@@ -439,8 +593,39 @@ $("ul#parentUl").on("click","li", function(){
 });
 </script>
 
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
+
+<script type="text/javascript">
+function showAlertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Upload Correct file</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input class='width100percnt' id='confirm-id' type='button' value='Ok' onclick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />
 <jsp:include page="hrDeductionsList.jsp" />
-
+<jsp:include page="finalPayrollReport.jsp" />
 <jsp:include page="../masterFooter.jsp" />

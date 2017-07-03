@@ -245,7 +245,6 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							
-							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
 							result = result + '<option value="">--Select Notice Period--</option>';
@@ -669,14 +668,22 @@ function getCandidateCities(){
 <script>
 function deleteCandidate(candidateId,candidateType){
 	  var sourceleadUrl ='${sourceleadUrl}';
+	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
-	  if(reason == null || reason == '' || reason == 'undefined'){
-		      
-		      $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-	    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	    	  
-	  }else{
+	  reason = reason.replace(/\s/g, "") 
+	 /*  if(reason == null || reason == '' || reason == 'undefined'){
+		  alert("test111");
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+    	  $(".rejectErrorMsgs").empty().append("<p class='jquery_form_error_message'>Must not Start With Space</p>");
+    	  
+  } */
+	  if(reason.length == 0){
+		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
+		}
+		  if(reason.match(/^[^\s-](.*)*$/) != null){
+			  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			  $(".rejectErrorMsgs").empty();
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
@@ -691,10 +698,20 @@ function deleteCandidate(candidateId,candidateType){
                 }
                  },
               }); 
-	  }
+	  
+			}
+	  
 }
 </script>
-
+<script>
+   function candiateRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("rejectReason").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#rejectReason").removeAttr("data-validation");
+	    }
+	}
+</script>
 
 <%-- 
      @author : Venkat Kesav
@@ -723,7 +740,7 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 	
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
 	result = result +"		<div class='rejectErrorMsgs'/>";
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
 	result = result +"	</div>";
@@ -875,35 +892,16 @@ function candidateProfile(candidateId,candidateType){
 								});
 							
 							
-							/* <c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
-						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-					                }
-			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
-							result = result +'<div class="clearfix"></div>';
 							
 							result = result +'</div>';
 							
-							
-							//Visa Type
-							result = result +'		          <span id="saveVisaBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
+														
 							result = result + '<div class="clearfix"></div> ';
 							
-							result = result +'		  <div class="tab-content">                                                                                                                   ';
+							//visa type start
 							result = result +'		    <div id="visa" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="visa-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view visaresult">                                                                                                             ';
@@ -911,7 +909,7 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'		          <!-- Select Visa -->                                                                                                              ';
 							
 							result = result +'		<div class="clearfix">';
-							result = result +'		          <h2 class="education  pull-left">Visa:</h2>';
+							result = result +'		          <h2 class="education  pull-left">Immigration Status:</h2>';
 							if(candidateType == "Candidates"){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
@@ -947,31 +945,15 @@ function candidateProfile(candidateId,candidateType){
 					                }
 								  
 								});
-							 //Visa Type End
 							
-							/* <c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
-						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-					                }
-			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
-							//Visa Type End
+							//visa Type End
 							
 							result = result +'</div>';
 							result = result +'</div>';
 							result = result +'</div> ';
+							
 							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
@@ -1042,6 +1024,33 @@ function candidateProfile(candidateId,candidateType){
 									
 									});
 								
+								//visa type
+								$(".btn-addvisa").click(function(){
+									$(".add-visa").css({"display":"block","opacity":"1"});
+									$("#visaName").val('');
+									 
+									 $("#visaName").val('').trigger("chosen:updated");
+									 
+									/* visa auto complete */
+									var config = {
+											  '.chosen-select'           : {},
+											  '.chosen-select-deselect'  : {allow_single_deselect:true},
+											  '.chosen-select-no-single' : {disable_search_threshold:10},
+											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+											  '.chosen-select-width'     : {width:"95%"}
+								    }
+									
+									for (var selector in config) {
+									  $(selector).chosen(config[selector]);
+									}
+									$('.chosen-select').each(function() {
+										var $this = $(this);
+										$this.next().css({'width': '100%'});
+										})
+									});
+								
+								//end visa type
+								
 								var config = {
 										  '.chosen-select'           : {},
 										  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1066,7 +1075,17 @@ function candidateProfile(candidateId,candidateType){
 									 e.stopPropagation();
 								});
 								
+								//visa type
+								$("#visaName").chosen();
+								$("#visaName").prop('disabled', true).trigger("chosen:updated");
+								$(".close-div").click(function(){
+									$(".add-visa").removeClass('add-visa-active');
+									});
+								$(".add-visa").click(function(e){
+									 e.stopPropagation();
+								});
 								
+								//end visa type
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
@@ -1120,13 +1139,47 @@ function candidateProfile(candidateId,candidateType){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		//Adding Customized Skills to the list
-        var select, chosen;
+		  //Adding Customized Skills to the list
+		   var select, chosen;
+	        select = $("#skillName");
+	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.bind(('keydown keyup'), function(e)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 select.append(option);
+	        			 select.find(option).prop('selected', true);
+	 	        		 $("#skillName").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 select.append(option);
+			        		 select.find(option).prop('selected', true);
+				        		$("#skillName").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
+		    
+		    
+		
+       /*  var select, chosen;
 	    select = $("#skillName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
-	    
-	    
 	    chosen.search_field.on('keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
@@ -1152,7 +1205,7 @@ function candidateProfile(candidateId,candidateType){
 			                }
 					       
 		    	         }
-	    	});
+	    	}); */
 	    
 	    
 	    //Adding Customized Skills to the list
@@ -1867,7 +1920,7 @@ function  removeValiationVendorContact() {
  }
  </script>
  
- 
+ <!-- Visa Type Script View/edit script start here -->
  <script>
 	function editVisa(candidateId){
 		$("#visaName").prop('disabled', false).trigger("chosen:updated");
@@ -1960,24 +2013,7 @@ function  removeValiationVendorContact() {
          
     }); 
 	 
-	 
-	 
-/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({  
-	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
-	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //candidateProfile(candidateId);
-	               }
-	        },
-	          
-	     }); 
-	 }else{
-		 
-	 } */
-	 
  }  
 </script>
  
+ <!--  Type Script View/edit script end here -->

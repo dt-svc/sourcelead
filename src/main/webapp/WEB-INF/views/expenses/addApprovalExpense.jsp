@@ -21,7 +21,7 @@
       </div>
       <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; Add Expense</div> 
@@ -45,14 +45,16 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" id="expensePurpose" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
-							 <option value="">Select Project</option>
+					<div class="col-md-9" id="errProject">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+							 <c:if test="${fn:length(projectsList) gt 1}">
+								<option value="">Select Project</option>
+							</c:if>
 							<c:forEach var="projects" items="${projectsList}">
 							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
 							</c:forEach>
@@ -62,7 +64,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -72,16 +74,16 @@
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
-						  <div class="col-lg-6">
-							  <input type="text" class="form-control calendar" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+						  <div class="col-lg-6" id="errEnd">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
 	            </div>
-	             <div class="form-group">
+	             <div class="form-group" id="errEmployeeRemove">
 				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required">
+					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="removeErrProjectEmployee();">
 					    <c:forEach var="projectMember" items="${projectMembers}">
 							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
 					   </c:forEach>
@@ -94,6 +96,12 @@
 	</div>
 </div>
 <div class="expensHead">
+<div class="form-group">
+<span class="col-md-3">Expenses Amount Total:</span>
+<div class="col-md-9">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+</div>
+</div>
 	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
@@ -122,7 +130,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
@@ -132,12 +140,12 @@
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10">
+							<div class="col-md-4 mb10 chosen-custom">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="form-control" field-name="Category Type" data-validation="required">
+								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 								   <option value="">Select Category Type</option>				 							   
 								   <c:forEach var="expCat" items="${expensesCategoryList}">
-						                 <option value="${expCat.id}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
+						                 <option value="${expCat.id},${expCat.allowedAmount}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
 		                	       </c:forEach>
 								</select>
 							</div>
@@ -146,12 +154,12 @@
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10">
-								<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="receiptIssuedBy${entryCount.count}" name="receiptIssuedBy${entryCount.count}" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required"> 
+								<label>Receipt Issued by</label>
+								<input type="text" id="receiptIssuedBy${entryCount.count}" name="receiptIssuedBy${entryCount.count}" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
 							<div class="col-md-4 mb10">
-								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation="required">
+								<label>Payment Mode</label>
+								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation-optional="true">
 								         <option value="">Select Mode</option>
 		                                 <option  value="Credit Card" ${entry.paymentMode.value == 'Credit Card' ? 'selected' : ''}>Credit Card</option>
 		                                 <option  value="Debit Card" ${entry.paymentMode.value == 'Debit Card' ? 'selected' : ''}>Debit Card</option>
@@ -160,9 +168,9 @@
 		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
 								</select>
 							</div>	
-		                  <div class="col-md-4 mb10">
+		                  <div id="amountDiv${entryCount.count}" class="col-md-4 mb10 valid_ation">
 			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-								  <div class="input-group er ratetype">
+								  <div class="input-group positionRelative ">
 										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="expenseRateType${entryCount.count}" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
@@ -172,13 +180,13 @@
 												  	<option value="SGD" ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
 												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
-										 </div>
-								         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float">
+									</div>
+								         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10">
-							<label>Description</label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description">${entry.description}</textarea>
+							<label>Description<span class='text-danger'>&nbsp;*</span></label>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -211,7 +219,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -224,11 +232,13 @@
 </div>
   <div class="form-footer clearfix mt">
 		<div class="col-lg-12">
+		
+		
 			<div class="pull-right">
 			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" class="btn btn-sm btn-default ml10">
+			<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 		</div>
    </div>
   </div>
@@ -237,6 +247,15 @@
   </section>
 </c:if>
 </div>
+
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });	
+</script>
 
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
@@ -256,7 +275,7 @@ function rejectReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
 	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
 	result = result +"	</div>";
@@ -302,7 +321,7 @@ function reOpenMyExpense(expenseId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
@@ -390,6 +409,9 @@ function getMembersForSelectedProject(){
 				return false;
 			}
 			else{
+				$("#submitForApprovalExpensesId").prop('disabled', true);
+				$("#cancelForApprovalExpensesId").prop('disabled', true);
+				
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];
@@ -485,7 +507,11 @@ function getClientBasedOnSelectedProject(){
 					  var projectStartDate = json.startDateStr;
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }		
+		    	  }	
+		    	  $('#expensePurpose').val('');
+		    	  $('#projectStartDateExpensesId').val('');
+		    	  $('#projectEndDateExpensesId').val('');
+		    	    
 	    	   }
 	       },
 	});
@@ -504,6 +530,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
+						removeErrStr();
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
@@ -514,6 +541,7 @@ function getClientBasedOnSelectedProject(){
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
 						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
+						removeErrEnd();
 					}
 				});
 	}
@@ -535,4 +563,55 @@ function expensesDateCheck(){
 	}
 }
 </script>
+
+<script>
+function removeErrStr(){
+	$('#dateDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrEnd(){
+	$('#errEnd').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProject(){
+	$('#errProject').find('p.jquery_form_error_message').remove(); 
+}
+function removeErrProjectEmployee(){
+	$('#errEmployeeRemove').find('p.jquery_form_error_message').remove(); 
+}
+</script>
+
+<script>
+function getAmountValue(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }
+}
+
+</script>
+
+
+<script>
+function getAmountValueCategory(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }	
+  }
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

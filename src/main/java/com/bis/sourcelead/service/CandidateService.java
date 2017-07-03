@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -122,7 +123,7 @@ public interface CandidateService {
 	 */
 	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,User user) throws Exception;
 
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType);
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId,String candidateType);
 	
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 
@@ -163,5 +164,7 @@ public interface CandidateService {
 	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId,Long userId) throws Exception;
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
+	
+	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception;
 
 }

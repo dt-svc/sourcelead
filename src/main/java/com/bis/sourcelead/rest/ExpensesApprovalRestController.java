@@ -139,7 +139,32 @@ public class ExpensesApprovalRestController {
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason);
 	 	
-	 	sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode());
+	 	List<ExpensesApproverHierarchy> expensesApproverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expenseId);
+	 	if(expensesApproverHierarchyList != null &&!expensesApproverHierarchyList.isEmpty()){
+			 Integer maxLevel = 0;
+			 Integer userLevel = 0;
+			 Boolean isAdmin =  (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
+			 
+			 if(isAdmin){
+				 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode());
+			 }
+			 else{
+				 for(ExpensesApproverHierarchy eah :expensesApproverHierarchyList){
+					 if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() != null && maxLevel < eah.getHierarchyId().getLevel()){
+						 maxLevel = eah.getHierarchyId().getLevel();
+					 }
+					 if(eah.getHierarchyId() != null && eah.getHierarchyId().getApproverUserId() != null 
+					    && eah.getHierarchyId().getApproverUserId().getId() != null && (eah.getHierarchyId().getApproverUserId().getId().equals(user.getId()))){
+						 userLevel = eah.getHierarchyId().getLevel();
+					 }
+				 }
+				 if(maxLevel.equals(userLevel)){
+					 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode());
+				 }
+			 }
+			 
+		 }
+	 	
 	 	
         return "success";
     }
@@ -220,7 +245,7 @@ public class ExpensesApprovalRestController {
 			// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();
@@ -254,7 +279,7 @@ public class ExpensesApprovalRestController {
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
 			 String url = sourceleadUrl;
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
