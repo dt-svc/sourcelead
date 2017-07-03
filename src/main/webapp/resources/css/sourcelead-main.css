@@ -104,7 +104,7 @@ white-space: nowrap; vertical-align: middle; font-style: normal; color: #375d81;
  background: #fff;
 }
 .main-header span.logo a {
-text-align: center; display: inline-block; float:none;
+text-align: center;
 }
 .main-header span.logo a:hover {
  text-decoration: none;
