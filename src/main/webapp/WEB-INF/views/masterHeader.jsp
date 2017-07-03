@@ -1481,15 +1481,29 @@ function geolocate() {
 </script> -->
 
 <script>
-function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId) {
-    initialize(locationId,countryId,stateId,cityId,zipCodeId);
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type);
     geolocate(latitudeId,longtitudeId);
 }
-function initialize(locationId,countryId,stateId,cityId,zipCodeId) {
-    autocomplete = new google.maps.places.Autocomplete(
-    /** @type {HTMLInputElement} */ (document.getElementById(locationId)), {
-        types: ['geocode']
-    });
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
+    if(type == "invite"){
+    	 var input = (document.getElementById(locationId));
+    	    var options = {
+    	        types: ['geocode'],
+    	        componentRestrictions: {
+    	        	country: ["IN","US","AU","SG","GB","FR"]
+    	        }
+    	    };
+    	    autocomplete = new google.maps.places.Autocomplete(input, options);
+    }else{
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+            types: ['geocode'],
+      
+        });
+    }
+   
+    
+    
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
   place = autocomplete.getPlace();
   var address = {};
@@ -1514,7 +1528,10 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId) {
   $("#"+countryId).val(address.country).change();
   $("#"+stateId).val(address.state).change();
   $("#"+cityId).val(address.city).change();
-   $("#"+zipCodeId).val(address.zipcode).change();
+  $("#"+zipCodeId).val(address.zipcode).change();
+  if(type == "invite"){
+	  getTimezonesList();
+  }
 });
 }
 function geolocate(latitudeId,longtitudeId) {

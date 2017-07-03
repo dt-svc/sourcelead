@@ -878,6 +878,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(jsonObj.has("city") && jsonObj.getString("city") !=null){
 			candidate.setCity(jsonObj.getString("city"));
 			}
+			if(jsonObj.has("location") && jsonObj.getString("location") !=null){
+				candidate.setLocation(jsonObj.getString("location"));
+			}
+			if(jsonObj.has("zipCode") && jsonObj.getString("zipCode") !=null){
+				candidate.setZipCode(jsonObj.getString("zipCode"));
+			}
+			
 			if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
 			candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 			}

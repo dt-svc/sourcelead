@@ -16,7 +16,7 @@
 	<script type="text/javascript">
 		window.onload = function () {
 			/* getAllCountries(); */
-			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude');
+			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','');
 			disableMonths();
 		 };
 	</script>

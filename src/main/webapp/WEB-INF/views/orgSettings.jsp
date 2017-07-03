@@ -1541,7 +1541,6 @@ function resendInvitation(userId){
 
 <script>
 function createOrg(){
-	
 	$("#locationOrgsName").html("Add New Location");
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
@@ -1570,57 +1569,6 @@ function createOrg(){
 	            
 	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
            
-	            result = result +' <div class="form-group">';
-	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9 dropdown-select">';
-	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
-	            result = result +'<option value="" >Select Location</option>';
-	            result = result +'<option value="Australia">Australia</option>';
-	            result = result +'<option value="France">France</option>';
-	            result = result +'<option value="India">India</option>';
-	            result = result +'<option value="Singapore">Singapore</option>';
-	            result = result +'<option value="United Kingdom">United Kingdom</option>';
-	            result = result +'<option value="United States">United States</option>';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Country</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-          
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-							
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-			
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Address</label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-     
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="locationTimeZone" name="timeZone">';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Time Zone</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-        
-	            result = result +'</div>';
-                                 
-	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
-          
-          
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
@@ -1682,6 +1630,95 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>'; 
         
+        
+	            result = result +'</div>';
+                                 
+	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
+          
+				result = result +'           <div class="form-group">';
+				result = result +' 			<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>';
+				result = result +' 			 <div class="col-md-9" id="locationField">';
+				result = result +' 		          <div class="positionRelative">';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\');" data-validation="required"></input>';
+				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation("orgLocation","orgCountry","orgState","orgCity","orgZipCode");"></i>';
+				result = result +' 			        </div>';
+				result = result +' 	          </div>';
+				result = result +' 		 </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetCountry" name="country" placeholder="Enter your Country" value ="${country}" type="text" data-validation="required" readonly></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetState" name="state" placeholder="Enter your State" type="text" data-validation="required" readonly></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetCity" name="city" placeholder="Enter your City" type="text" data-validation="required"  readonly></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">ZipCode</label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetZipCode" name="zipCode" placeholder="Enter your Zip code" type="text"></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+						        
+				
+				/* 
+	            result = result +' <div class="form-group">';
+	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9 dropdown-select">';
+	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
+	            result = result +'<option value="" >Select Location</option>';
+	            result = result +'<option value="Australia">Australia</option>';
+	            result = result +'<option value="France">France</option>';
+	            result = result +'<option value="India">India</option>';
+	            result = result +'<option value="Singapore">Singapore</option>';
+	            result = result +'<option value="United Kingdom">United Kingdom</option>';
+	            result = result +'<option value="United States">United States</option>';
+	            result = result +'</select>';
+	            result = result +'<span class="hidden">Country</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+							
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
+	            result = result +'</div>';
+	            result = result +'</div>'; */
+			
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Address</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+     
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="locationTimeZone" name="timeZone">';
+	            result = result +'</select>';
+	            result = result +'<span class="hidden">Time Zone</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            
+          
+	            
         
 	            result = result +'</div>';
 	            result = result +'</div>';
@@ -1833,7 +1870,7 @@ function getLocationCities(){
 <script>
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var country = $('#locationCountry').val();
+	var country = $('#orgSetCountry').val();
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 

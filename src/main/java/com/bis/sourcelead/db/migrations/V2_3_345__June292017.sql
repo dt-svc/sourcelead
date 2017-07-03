@@ -6,3 +6,7 @@
  
  
 
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','LOCATION','VARCHAR(100) NULL AFTER `ZIP_CODE`');
+ 
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','LATITUDE','VARCHAR(50) NULL AFTER `LOCATION`');
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','ORG_LOCATIONS','LONGITUDE','VARCHAR(50) NULL AFTER `LATITUDE`');
