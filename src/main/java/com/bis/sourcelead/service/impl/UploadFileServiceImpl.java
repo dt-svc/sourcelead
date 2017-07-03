@@ -48,7 +48,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.MasterCandidateDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
@@ -56,11 +59,14 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -88,6 +94,19 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	MasterCandidateDao masterCandidateDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	@Override
 	public String uploadFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
@@ -462,22 +481,30 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		User userExisted = userService.findByEmail(userImport.getEmailId());
 		
 		if(null !=  userExisted){
-			User user1 = userService.findByEmail(userImport.getEmailId());
-			UserRole userRole1 = userRoleService.getUserByUserId(user1.getId());
+			//User user1 = userService.findByEmail(userImport.getEmailId());
+			UserRole userRole1 = userRoleService.getUserByUserId(userExisted.getId());
 			if(userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
 				userRole.setUserState(Status.NOT_LOGGEDIN);
-				user1.setPassword(sourceleadPasswordEncoder.encode(password));
-				userService.addUser(user1);
+				userExisted.setPassword(sourceleadPasswordEncoder.encode(password));
+				userService.addUser(userExisted);
 			}else{
 				userRole.setUserState(Status.NOT_LOGGEDIN);
 			}
-			userRole.setUser(user1);
+			userRole.setUser(userExisted);
 			userRoleService.addUserRole(userRole);
-			employee.setUser(user1);
+			employee.setUser(userExisted);
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
-				userService.sendEmail(user1, loginUser, password,orgLocations.getId());
+				userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
 			}
+			
+			MasterCandidate masterCandidate = null;
+			masterCandidate = getMasterCandidateByInteligence(userExisted);
+			if(null == masterCandidate){
+				masterCandidate = storeMasterCandidate(userExisted);
+			}
+			storeCandidate(userExisted, orgLocations, masterCandidate);
+			
 		}else{
 			User user  = new User();
 			user.setFirstName(userImport.getFirstName());
@@ -500,11 +527,99 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if(isMailChecked !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			}
+			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+			
+		    MasterCandidate masterCandidate = null;
+			masterCandidate = getMasterCandidateByInteligence(user);
+			if(null == masterCandidate){
+				masterCandidate = storeMasterCandidate(user);
+			}
+			storeCandidate(user, orgLocations, masterCandidate);
+				
 		}
-		
-		userService.saveOrUpdateUserElkDocument(userRole,employee,loginUser.getUserCode());
 
 	}
+	
+	
+	private MasterCandidate getMasterCandidateByInteligence(User user){
+		
+		String email = null;
+		String phoneNumber = null;
+		
+		if(!isNullOrEmpty(user.getEmail())){
+			email = user.getEmail();
+		}
+		
+		if(!isNullOrEmpty(user.getMobilePhone())){
+			phoneNumber = user.getMobilePhone();
+		}
+		
+		MasterCandidate masterCandidate = null;
+		try {
+			masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return masterCandidate;
+	}
+	
+	private MasterCandidate storeMasterCandidate(User user){
+		
+		MasterCandidate masterCandidate = new MasterCandidate();
+		masterCandidate.setFirstName(user.getFirstName());
+		
+		if(!isNullOrEmpty(user.getLastName())){
+			masterCandidate.setLastName(user.getLastName());
+		}
+		
+		masterCandidate.setEmail(user.getEmail());
+		
+		if(!isNullOrEmpty(user.getMobilePhone())){
+			masterCandidate.setPhoneNumber(user.getMobilePhone());
+		}
+		
+		
+		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+		masterCandidate.setCreatedBy(user.getUserCode());
+		masterCandidate.setCreatedDate(commonUtil.currentDate());
+		masterCandidate.setUpdatedBy(user.getUserCode());
+		masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		try {
+			masterCandidateDao.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return masterCandidate;
+	}
+	
+	private void storeCandidate(User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception{
+		    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		    if(null == candidate){
+		    	candidate = new Candidate();
+				candidate.setConsultantUser(user);
+				candidate.setMasterCandidateId(masterCandidate);
+				candidate.setOrgLocationId(orgLocations);
+				candidate.setCandidateType(Constants.CANDIDATE);
+				candidate.setFirstName(user.getFirstName());
+				candidate.setLastName(user.getLastName());
+				candidate.setCountry(orgLocations.getCountry());
+				candidate.setIsAssociate(Constants.YES);
+				candidate.setEmail(user.getEmail());
+				candidate.setStatus(Constants.RECORD_ACTIVE);
+				candidate.setCreatedBy(user.getUserCode());
+				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				candidate.setCreatedDate(commonUtil.currentDate());
+		    }else{
+		    	candidate.setConsultantUser(user);
+				candidate.setMasterCandidateId(masterCandidate);
+		    }
+		    
+		    candidateService.addCandidate(candidate);
+		    candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		    
+		}
+	
 /**
  * write excel sheet when validation fails
  * @param row
