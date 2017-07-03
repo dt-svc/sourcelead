@@ -206,7 +206,7 @@
                   
                   <div class="clearfix billingCount borderGreen">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="receivedAmount"></span>
-                      <span class="text-info">Received</span>
+                      <span class="text-info">Income</span>
                   </div>
                   <div class="clearfix billingCount borderBlue">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount"></span>
@@ -223,9 +223,9 @@
               <div class="col-md-8 RepoPad">
 <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu">
-            <li class="current"><a href="#tab-1">Tab 1</a></li>
+            <li class="current"><a href="#tab-1">Invoice</a></li>
            <!--  onclick="payableTab('payables');" -->
-            <li ><a href="#tab-2">Tab 2</a></li>
+            <li ><a href="#tab-2">Bill</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs">
@@ -750,7 +750,7 @@ function getBillingReports(invoiceType){
 		        	 result = result +'<th>Invoice Id</th>';
 		        	 result = result +'<th>Client</th>';
 		        	 result = result +'<th>Invoice Date</th>';
-		        	 result = result +'<th>Toatl</th>';
+		        	 result = result +'<th>Total</th>';
 		        	 result = result +'<th>Due Date</th>';                    
 		        	 result = result +'<th>Due Amount</th>';
 		        	 result = result +'</tr>';
@@ -804,10 +804,10 @@ function getPayableBillingReports(invoiceType){
 	        	 result = result +"<table id='billingPayableReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	        	 result = result +'<thead>';
 	        	 result = result +'<tr>';
-	        	 result = result +'<th>Invoice Id</th>';
+	        	 result = result +'<th>Bill Id</th>';
 	        	 result = result +'<th>Vendor</th>';
-	        	 result = result +'<th>Invoice Date</th>';
-	        	 result = result +'<th>Toatl</th>';
+	        	 result = result +'<th>Bill Date</th>';
+	        	 result = result +'<th>Total</th>';
 	        	 result = result +'<th>Due Date</th>';                    
 	        	 result = result +'<th>Due Amount</th>';
 	        	 result = result +'</tr>';
