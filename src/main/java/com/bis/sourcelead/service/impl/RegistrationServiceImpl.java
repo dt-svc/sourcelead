@@ -316,7 +316,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		Candidate candidate = null;
 		try {
-			candidate = candidateService.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+			candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

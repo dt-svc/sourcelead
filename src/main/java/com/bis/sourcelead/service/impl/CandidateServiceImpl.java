@@ -1182,7 +1182,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
 	{
-		Candidate candidate = candidateDao.findByCandidateEmail(user.getEmail(), orgLocations.getId());
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		if(null == candidate){
 			candidate = new Candidate();
 			candidate.setConsultantUser(user);

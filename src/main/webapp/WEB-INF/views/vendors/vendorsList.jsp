@@ -1430,7 +1430,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='vendorDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
@@ -1439,11 +1439,21 @@ function terminateSpoc1(spocId, orgRelationID){
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
-
+<script>
+   function clientDashboardRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("reasonForSpoc").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForSpoc").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script>
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
+	 reason = reason.replace(/\s/g, "")
+	 var reason1 = document.getElementById("reasonForSpoc").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
@@ -1463,8 +1473,8 @@ function saveReason1(spocId, orgRelationID){
 		    }
 	   });
 	}else{
-		if(reason){
-			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+		if(reason.length == 0 && reason1){
+			// $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
 			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 		}else{
 			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
