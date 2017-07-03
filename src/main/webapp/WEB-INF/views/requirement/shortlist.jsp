@@ -120,7 +120,7 @@ function candidateShortList(requirementId){
 		    		
 		    		   result = result + '       </tbody>';
 		    		   result = result + '       </table>';
-			           result = result + '</div><div id="popUp">';
+// 			           result = result + '</div><div id="popUp">';
 			           result = result + '</div><div id="loading">';
 		    			
 		    			$("#shortlistDiv").empty();

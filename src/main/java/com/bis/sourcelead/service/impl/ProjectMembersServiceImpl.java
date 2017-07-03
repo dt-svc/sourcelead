@@ -615,7 +615,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -669,6 +669,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception
 	{
 		return projectMembersDao.getTotalHours(projectMemberId, startDate, endDate);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
+		return projectMembersDao.getAllProjectsByOrgLocationId(orglocationId);
 	}
 	
 

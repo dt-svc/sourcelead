@@ -25,7 +25,7 @@
 <div class="content-dashboard clearfix"> 
       <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
         <h4 class="clearfix">
-        Onboard Candidates
+        Candidates for Onboarding
         &nbsp;&nbsp;
         </h4>
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 

@@ -106,7 +106,8 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 						if (!StringUtils.containsIgnoreCase(ssnNumber, "SSN:")
 								&& !StringUtils.containsIgnoreCase(ssnNumber, "Total")) {
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-								emppID = getCellValueAsString(row.getCell(0), fileName);
+								String empID = getCellValueAsString(row.getCell(0), fileName);
+								emppID = empID.split("\\.")[0];
 							}
 
 							float gross = 0f;
@@ -120,7 +121,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 							float net = 0f;
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
-								wageTaxSummary.setEmployeeId(empId);
+								wageTaxSummary.setEmployeeId(empId.split("\\.")[0]);
 
 							}
 
@@ -253,7 +254,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		return getCellValueAsString(cell, fileName);
 	
 }
-	private String getCellValueAsString(Cell cell, String fileName) {
+	/*private String getCellValueAsString(Cell cell, String fileName) {
 		String cellValue = "";
 		if(fileName.toLowerCase().endsWith("xls")){
 				HSSFCell hssfCell = (HSSFCell) cell;
@@ -279,7 +280,40 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 				}
 			}
 			return cellValue;
+		}*/
+	
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		double xssfCellValue = 0;
+		if (fileName.toLowerCase().endsWith("xls")) {
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = hssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_NUMERIC){
+				cellValue = String.valueOf(hssfCell.getNumericCellValue());
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_STRING){
+				cellValue = String.valueOf(hssfCell.getStringCellValue());	
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				cellValue = cell.getStringCellValue();
+			}
+		} else {
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = xssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				cellValue = String.valueOf(xssfCell.getNumericCellValue());
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_STRING) {
+				cellValue = String.valueOf(xssfCell.getStringCellValue());
+			} else if(xssfCell.getCellType() == XSSFCell.CELL_TYPE_STRING){
+				cellValue = cell.getStringCellValue();
+			}
 		}
+		return cellValue;
+	}
 
 	@Override
 	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
@@ -361,7 +395,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								float net = 0f;
 								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 									String empId = getCellValueAsString(row.getCell(0), fileName);
-									employeeId = empId;
+									employeeId = empId.split("\\.")[0];
 								} 
 								if(employeeId !=null){
 									wageTaxSummary.setEmployeeId(employeeId);
@@ -383,7 +417,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								} 
 								if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 									String checkNo = getCellValueAsString(row.getCell(3), fileName);
-									wageTaxSummary.setCheckNo(checkNo);
+									wageTaxSummary.setCheckNo(checkNo.split("\\.")[0]);
 									
 								} 
 								if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {

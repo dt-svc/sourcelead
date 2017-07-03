@@ -76,6 +76,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
@@ -157,8 +158,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Autowired
 	private EmployeesService employeesService;
 	
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
 	@Override
-
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
 		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 
@@ -801,7 +804,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orglocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orglocations.getOrg(),orglocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1337,8 +1340,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 }
 
 	@Override
-	public Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType) throws Exception
+	public Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType) throws Exception
 	{
+		int count =0;
 		List<OrgRelations> clientVendorList = null;
 		OrgLocations vendorOrgLocation = null;
 		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
@@ -1346,6 +1350,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}else{
 			clientVendorList = getVendorsList(orgLocation);
 		}
+		User contactUser = null;
 		for (OrgRelations client : clientVendorList) {
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(client.getId());
 			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
@@ -1401,13 +1406,17 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
+  	  		  		        if(savedInvoice !=null){
+  	  		  		         count++;
+  	  		  		        }
+  	  		  		       
   	  					}
   	  					
-  	  				}
+  	  				} 
   	  			}
   			}
 		}
-		return null;
+		return count;
 	}
 	
 	/**
@@ -1420,7 +1429,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 */
 	private void updateSubmissionApproverHierachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency, String invoiceType) throws Exception
 	{
-		if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
+		
+		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
+			for(String id :submissionApproverHierarchyIds){
+				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
+				}
+			}
+		}
+		/*if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
 			for (String id : submissionApproverHierarchyIds) {
 				SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
 				if (Constants.PAYABLES.equalsIgnoreCase(invoiceType)) {
@@ -1431,7 +1448,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				}
 				submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 			}
-		}
+		}*/
 	}
 	
 	/**

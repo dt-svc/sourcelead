@@ -451,9 +451,16 @@ function validateTemplateName(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Submission Templates</h2>
+      <!-- <h2>Submission Templates</h2> -->
+      <h2 class="pull-left">Submission Templates</h2>
+				<div class=" pull-left reportsH">
+			
+			<div class="RePop openTemplates">
+				
+			</div>
+		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgSubmissionTemplate'/>">Submission Template</a></div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo;Submission Templates List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

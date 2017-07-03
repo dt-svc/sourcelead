@@ -520,10 +520,16 @@ public class CandidateRestController {
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 String resultJson ="false";
 			 
-			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String [] coolingOffArr = null;
+			 String period = "0";
+			 if(reqCoolingOffPeriod != null){
+				 coolingOffArr = reqCoolingOffPeriod.split(" ");
+				 period = coolingOffArr[1];
+			 }
+			
 			 String reqCoolingOffPeriodDays;
 			 int Days;
-			 switch (coolingOffArr[1]) {
+			 switch (period) {
 				 case "Week" :
 					 reqCoolingOffPeriodDays = "7";
 				      break;
