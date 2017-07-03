@@ -29,6 +29,7 @@ window.onload = function () {
   <div class="pull-right brud-crum">Home &raquo; Payroll</div>
 </section>
 
+
 <section class="contrHead">
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
@@ -48,7 +49,9 @@ window.onload = function () {
 <div class="timesheet_head clearfix">
 
 <div class="pull-left">
-<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Maping </a>
+
+<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
+
 </div>
 
      <ul class="pull-right">
@@ -57,21 +60,21 @@ window.onload = function () {
       	<i class="glyphicon glyphicon-plus paddingRight" ></i>Add Document</a>
                   <!-- Popup Div -->
                  <form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
-                  <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div" onclick="flushValues();"></i>
                     <div class="form-horizontal clearfix">
                      
                       <div class="clearfix mb10">
-                        <div class="col-md-6"><input type="text" class="form-control calendar input-sm" id="fromDate" name="fromDate" value="" placeholder="From Date*" field-name="From Date" data-validation="required"></div>
-                        <div class="col-md-6"><input type="text" class="form-control calendar input-sm" id="toDate" name="toDate" value="" placeholder="To Date*" field-name="To Date" data-validation="required"></div>
+                        <div class="col-md-6" id="fromDateDiv"><input type="text" class="form-control calendar input-sm" id="fromDate" name="fromDate" value="" placeholder="From Date*" field-name="From Date" data-validation="required"></div>
+                        <div class="col-md-6" id="toDateDiv"><input type="text" class="form-control calendar input-sm" id="toDate" name="toDate" value="" placeholder="To Date*" field-name="To Date" data-validation="required"></div>
                       </div>                     
                      
                       <div class="clearfix mb10">
-                        <div class="col-md-12">
+                        <div class="col-md-12" id="batchNumberDiv">
                           <input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         </div>
                       </div>
                       <div class="clearfix mb10">
-                        <div class="col-md-12 chosenSelect_li">
+                        <div class="col-md-12 chosenSelect_li" id="payrollTypeDiv">
                           <select id="payrollType" name="payrollType" class="chosen-select" field-name="PayRoll Type" data-validation="required">
                             <option value="">Select Type</option>
                             <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
@@ -180,7 +183,6 @@ window.onload = function () {
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
     	<div id="loading"></div>
-    	<div id="mainloading"></div>
     	<div id="employerCostDiv" class="datatable_filter"></div>
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
     	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
@@ -254,6 +256,14 @@ function flushValues(){
 	$("#payrollType").val('').trigger("chosen:updated");
 	$("#batchNumber").val("");
 	$("#uploadFile").val("");
+	
+	$("#fromDateDiv").find('p.jquery_form_error_message').remove();
+	$("#toDateDiv").find('p.jquery_form_error_message').remove();
+	$("#payrollTypeDiv").find('p.jquery_form_error_message').remove();
+	$("#batchNumberDiv").find('p.jquery_form_error_message').remove();
+	$("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	
+	
 }
 
 </script>
@@ -481,7 +491,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#mainloading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -496,10 +506,10 @@ $(".addcon-pop").click(function() {
 					success : function(result) {
 						/* var json = JSON.parse(result); */
 						if(result == 0){
-							$("#mainloading").removeAttr('style');
+							$("#loading").removeAttr('style');
 							showAlertMessage();
 						}else{
-							$("#mainloading").removeAttr('style');
+							$("#loading").removeAttr('style');
 							$("#selector1").removeAttr("style");
 			    			$("#selector1").css("display", "block");
 			    			$("#msgDiv").html(result+" Records Imported Successfully.");
