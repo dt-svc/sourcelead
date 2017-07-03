@@ -82,13 +82,13 @@ function teamList(){
 				            	 result = result +"<td>-----</td>";
 				             }
 		            	     result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
-		            	     result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><span class="pull-left">'+opt.candidateHotlistCount+'</span><i class="fa fa-binoculars"></i></div></td>';
+		            	     result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><a>'+opt.candidateHotlistCount+'</a></div></td>';
 				             result = result +"<td><div class='tblicons'>";
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TEAM\')">'; 
-				             	result = result +"<i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i>";
+				             	result = result +"<i class='glyphicon glyphicon-pencil paddingRight' onclick='sideBar("+opt.id+");'></i>";
 				             '</sec:authorize>';
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_TEAM\')">'; 
-				             	result = result +'<i class="glyphicon glyphicon-trash" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
+				             	result = result +'<i class="glyphicon glyphicon-trash paddingLeft" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
 				             '</sec:authorize>';
 				             result = result +"</div></td>";
 				             result = result +"</tr>";
