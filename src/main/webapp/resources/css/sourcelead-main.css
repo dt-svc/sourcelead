@@ -83,20 +83,28 @@ textarea {
 	content: " "; display: table;
 }
 .main-header {
-	max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a; position: fixed; width: 100%;
+/*max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a; position: fixed; width: 100%;*/
+background-size: 15%; background-image: url(../images/sl-tp.png); background-repeat: repeat-x;
+background-position: 30px; background-color: #368ee0; z-index: 1030; position: fixed; max-height: 100px; width: 100%; 
 }
 .main-header span.logo {
-	background: /*#3081cb*/ #eeeeee; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 52px; float: left;
-	/*transition: all 0.5s ease-in-out 0s;*/
+	/*background: #eeeeee; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 52px; float: left;
+	transition: all 0.5s ease-in-out 0s;*/
+    background: #fff; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 52px; float: left;
+    text-align: center;
 }
 .main-header span.logo img {
-	/*width:100%;*/ width: 200px;
+	/*width:100%; width: 200px;*/ width: auto; max-height: 52px; display: block; margin: 0 auto;
 }
-/* .main-header .logo a i img {
-    width: 200px; width: 100%;
-} */
+.main-header span.logo .text-logo {
+font-size: 18px; font-weight: bold; text-align: center; line-height: 52px; overflow: hidden; text-overflow: ellipsis; width: 200px; 
+white-space: nowrap; vertical-align: middle; font-style: normal; color: #375d81;
+}
 .main-header span.logo:hover {
- background: #eeeeee;
+ background: #fff;
+}
+.main-header span.logo a {
+text-align: center;
 }
 .main-header span.logo a:hover {
  text-decoration: none;
@@ -177,7 +185,7 @@ search-area .btn-default:hover {
     color: #fff; background-color: #286090; border-color: #204d74;
 }
 .search-area .form-control {
-background:rgba(55,93,129, 0.5); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
+background:rgba(55,93,129, 0.7); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
 height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3); border-left:none;
 }
 .search-area .form-control::-moz-placeholder {
@@ -5663,7 +5671,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; max-height: 445px; overflow-y: auto; padding-bottom: 10px;
+    position: relative; max-height: 570px; overflow-y: auto; padding-bottom: 10px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;
