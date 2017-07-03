@@ -4952,3 +4952,9 @@ top:-33px !important;
 float: none !important;
 }
 
+
+#accountdeDuctiondetails .dataTables_filter, #hrDeductiondetails .dataTables_filter {
+	top: -50px !important; right: 25px !important;
+}
+
+

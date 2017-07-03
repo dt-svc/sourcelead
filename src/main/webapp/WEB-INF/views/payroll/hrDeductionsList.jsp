@@ -121,9 +121,8 @@ function hrDeductionsListTablePagination(){
 }
 </script>
 
-<div class="sideMask"></div>
 
-<div class="modal modal_Expenses">
+<div class="modal modal_Expenses hrDedu">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -132,7 +131,7 @@ function hrDeductionsListTablePagination(){
         <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenses();">&times;</button>
         <h4 class="modal-title" id="hrEmpName"></h4>
       </div>
-      <div class="modal-body project_tabs_inn_table mt40">
+      <div class="modal-body project_tabs_inn_table">
         <div id="hrDeductiondetails"></div>
       </div>
     </div>
@@ -142,7 +141,7 @@ function hrDeductionsListTablePagination(){
 <script>
 function getHrDeductionDetails(hrDedId,empName){
 	$(".sideMask").fadeIn("slow");
-	$(".modal_Expenses").fadeIn("slow");
+	$(".hrDedu").fadeIn("slow");
 	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",

@@ -15,7 +15,7 @@ $(document).ready(function(){
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Today</a></li>
+              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Current</a></li>
               <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');" href="#prev-req">Previous</a></li>
                    <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
             </ul>
@@ -26,7 +26,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center" style='cursor:pointer' title="Applicants">
                         <p class="info-box-number"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
-                        <p class="info-box-text"> Applicants </p>
+                        <p class="info-box-text">Applicants</p>
                       </div>
                     </div>
                   </div>
@@ -34,7 +34,7 @@ $(document).ready(function(){
                     <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
                       <div class="info-box-content text-center" style='cursor:pointer' title="Submission">
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
-                        <p class="info-box-text"> Submission </p>
+                        <p class="info-box-text">Submissions</p>
                       </div>
                     </div>
                   </div>
