@@ -67,7 +67,9 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<option value="">Select Project</option>
+							<c:if test="${fn:length(projectMembersList) gt 1}">
+								<option value="">Select Project</option>
+							</c:if>
 							<c:forEach var="projMembers" items="${projectMembersList}">
 							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
 							</c:forEach>
@@ -146,10 +148,10 @@
 							
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required">
+						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 							<option value="">Select Category Type</option>
 							<c:forEach var="expCat" items="${expensesCategoryList}">
-							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id}">${expCat.expensesName}</option>
+							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -158,12 +160,12 @@
 								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10">
-								<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="receiptIssuedBy${entryCount.count}" name="receiptIssuedBy${entryCount.count}" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required"> 
+								<label>Receipt Issued by</label>
+								<input type="text" id="receiptIssuedBy${entryCount.count}" name="receiptIssuedBy${entryCount.count}" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
 							<div class="col-md-4 mb10">
-								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation="required">
+								<label>Payment Mode</label>
+								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation-optional="true">
 								         <option value="">Select Mode</option>
 		                                 <option  value="Credit Card" ${entry.paymentMode.value == 'Credit Card' ? 'selected' : ''}>Credit Card</option>
 		                                 <option  value="Debit Card" ${entry.paymentMode.value == 'Debit Card' ? 'selected' : ''}>Debit Card</option>
@@ -172,9 +174,9 @@
 		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
 								</select>
 							</div>	
-		                  <div class='col-md-4 mb10'>
+		                  <div id="amountDiv${entryCount.count}" class='col-md-4 mb10 valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
-								  <div class='input-group er'>
+								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
 												  <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
 												  	<option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
@@ -184,13 +186,13 @@
 												  	<option value='SGD' ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
 												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
-										 </div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float'>
+									</div>
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10">
-							<label>Description</label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" data-validation-optional="true">${entry.description}</textarea>
+							<label>Description<span class='text-danger'>&nbsp;*</span></label>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
@@ -237,9 +239,9 @@
 <div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
 			<div class="pull-right">
-			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			 <input type="button" value="Cancel"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
+			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 			</div>
 		  </div>
 		</div>
@@ -253,6 +255,9 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
+			$("#submitForApprovalExpensesId").prop('disabled', true);
+			$("#draftForApprovalExpensesId").prop('disabled', true);
+			$("#cancelForApprovalExpensesId").prop('disabled', true);
 			
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
@@ -439,6 +444,50 @@ function withdrawMyExpense(id){
 	      }
  }); 
 }
+</script>
+
+<script>
+function getAmountValue(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }
+}
+
+</script>
+
+
+<script>
+function getAmountValueCategory(rowId){
+	var categoryAmount = document.getElementById("categoryType"+rowId).value;
+	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
+	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
+	var amountArray = categoryAmount.split("\,");
+	if(amountArray[1] != parseFloat(0)){
+	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+	}else{
+		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	}
+   }	
+  }
+}
+</script>
+
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });	
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

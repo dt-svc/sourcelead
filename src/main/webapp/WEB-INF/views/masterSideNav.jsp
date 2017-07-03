@@ -8,9 +8,8 @@
 
   <aside>
   <div class="side-bar theme_sideMenu">
-    <div class="side-bar-inner">
-      <div class="user-panel">
-                
+    <div class="side-bar-inner mt10">
+      <%-- <div class="user-panel">
 	<div class="media">
 		<div class="media-body">
 			 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
@@ -31,10 +30,9 @@
 				</div>
 			</c:if>
 		 </div>
-	 </div>
-
-        
-      </div>
+	 </div> 
+      </div>--%>
+      
       <div class="side-nav sidenav_inner">
         <ul class="list-unstyled">
         <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
@@ -53,7 +51,7 @@
         <li class="${sessionData.nav == 'Dashboard' ? 'side-nav-active' : ''}"><a href="<c:url value='/recruiterDashboard'/>" title="Dashboard"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Dashboard</i></a></li>
         </c:if> 
         
-         <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalProfile'/>" title="Profile"><span><i class="fa fa-address-card-o"></i></span><i class="subMenu">Profile</i></a></li> 
+         <li class="${sessionData.nav == 'Profile' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalProfile'/>" title="Profile"><span><i class="fa fa-id-card-o"></i></span><i class="subMenu">Profile</i></a></li> 
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">

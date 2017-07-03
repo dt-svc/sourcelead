@@ -13,9 +13,9 @@ public class SourceLeadRandomCodeHelper {
 		return orgCode;
 	}
 	
-	public static String generateRandomOrgLocationCodeCode() {
-		String orgCode = RandomStringUtils.randomAlphanumeric(5);
-		return orgCode;
+	public static String generateRandomOrgLocationCode() {
+		String orgLocationCode = RandomStringUtils.randomAlphanumeric(5);
+		return orgLocationCode;
 	}
 	
 	public static String generateRandomVerificationCode() {

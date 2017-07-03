@@ -183,7 +183,7 @@ function rejectApplicantAlertMessage(submissionId, status){
      
      //result = result +"        <p>Applicant reject message here</p>";
      result = result +"    <div class='clearfix'>";
-     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
+     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' onkeypress='dashboardReasonForRejectRemoveSpaces();' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
      result = result +" </div>";
      result = result +" </div>";
      result = result + ' <div id="reasonForApplicantDiv"/>';
@@ -197,7 +197,15 @@ function rejectApplicantAlertMessage(submissionId, status){
 }
 </script>
 
-
+<script>
+   function dashboardReasonForRejectRemoveSpaces() {
+	    var output = document.getElementById("reasonForReject").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForReject").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script type="text/javascript">
     function acceptCandidateFromDashboard(submissionId, status){
 		var sourceleadUrl = '${sourceleadUrl}';

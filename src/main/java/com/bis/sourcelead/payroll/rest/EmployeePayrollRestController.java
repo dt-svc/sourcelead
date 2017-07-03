@@ -25,12 +25,14 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.FinalPayrollReport;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
+import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
@@ -60,6 +62,9 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	private HrDeductionsService hrDeductionsService;
+	
+	@Autowired
+	private BisUserMappingService  bisUserMappingService;
 	
 	/**
 	 * insert upload rcords 
@@ -94,6 +99,8 @@ public class EmployeePayrollRestController {
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.BIS_USERS.equalsIgnoreCase(payrollType)){
+				isInserted = bisUserMappingService.saveBisUserData(multipartFile,orgLocation,user,jsonObj);
 			}
 		}else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
@@ -218,9 +225,6 @@ public class EmployeePayrollRestController {
             	return report1.getName().compareToIgnoreCase(report2.getName());  
             }  
         });
-		/*for(FinalPayrollReport report : payrollReportList){
-			logger.info("======================"+report.getName()+" total hrs ="+report.getTotalMarchHrs()+" half hours ="+report.getHalfHrs()+" payRate ="+report.getPayRate() + " final Amount "+report.getAmount());
-		}*/
 	
 		long endTime = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
@@ -228,4 +232,48 @@ public class EmployeePayrollRestController {
 		return commonUtil.toJSON(payrollReportList);
 	}
 
+
+	/**
+	 * Merge Bis user with sl user
+	 * 
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return boolean
+	 */
+	@RequestMapping(value = "/mergeUser", method = RequestMethod.POST)
+	public @ResponseBody boolean mergeUser(@RequestParam(value = "json", required = false) String json,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		boolean isMerged = false;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		BisUserMapping bisUser = bisUserMappingService.mergeUser(jsonObj,orgLocation.getId());
+		if (bisUser != null) {
+			isMerged = true;
+		}
+		return isMerged;
+
+	}
+
+	/**
+	 * Gte the list of mapped users
+	 * @param request
+	 * @param response
+	 * @return json string
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getMappedUserList", method = RequestMethod.GET)
+	@ResponseBody
+	public String getMappedUserList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String resultJson = null;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<BisUserMapping> usersList = bisUserMappingService.getMappedUsersListByOrgLocationId(orgLocation.getId());
+		if (usersList != null) {
+			resultJson = commonUtil.toJSON(usersList);
+		}
+		return resultJson;
+	}
 }
