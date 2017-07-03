@@ -50,7 +50,7 @@ window.onload = function () {
 
 <div class="pull-left">
 
-<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Maping" onClick="userMaping();">User Mapping </a>
+<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
 
 </div>
 
