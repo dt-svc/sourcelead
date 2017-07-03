@@ -4887,7 +4887,7 @@ width: 100% !important; margin: 0px !important;
 	z-index: 100;
 }
 .rejectedHover {
-    cursor: pointer; position: relative; top:10px;
+    cursor: pointer; position: relative; top:10px; right:15px;
 }      
 .rejectedHover:hover .app_error_mes {
     display: block; opacity: 1;
@@ -4965,6 +4965,9 @@ float: none !important;
 }
 .landTempCta a:hover {
 	text-decoration: none;
+}
+.minHe {
+    min-height: 74px;
 }
 
 
