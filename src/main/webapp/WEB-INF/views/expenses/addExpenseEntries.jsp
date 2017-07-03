@@ -212,7 +212,7 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr2" style="display: none; float: left;">
          <div class="expDetails">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-						<div class="col-md-4 mb10 chosen-custom">
+						<div class="col-md-4 mb10 chosen-custom minHe">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
@@ -221,16 +221,16 @@ function addAttachment(entityRowId,from){
 	                	       </c:forEach>
 							</select>
 						</div>
-						<div class="col-md-4 mb10">
+						<div class="col-md-4 mb10 minHe">
 							<label>Date<span class="text-danger">&nbsp;*</span></label>
 							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly"  class="form-control calendar"  value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
-						<div class="col-md-4 mb10">
+						<div class="col-md-4 mb10 minHe">
 							<label>Receipt Issued by</label>
 							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 						</div>
 
-						<div class="col-md-4 mb10 chosen-custom">
+						<div class="col-md-4 mb10 chosen-custom minHe">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
