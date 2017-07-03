@@ -67,7 +67,7 @@ function wagesAndTaxList(){
 								result = result + ' <td><div class="tblminwidth-75">'+opt.swt+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.sdiSui+'</div></td>';
 								result = result + '<td><div class="tblminwidth-75">'+opt.local+'</div></td>';
-								result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit(this)"></small></div>';
+								result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds+'</div>';
 								result = result + '<div class="edit-input tblminwidth-125" style="display:none;"><input type="text" class="form-control input-sm tbldata-dotdot-100 pull-left" value="" id=""><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit(this)"></small></div></td>';
 								
 								result = result + '<td><div class="tblminwidth-75">'+opt.net+'</div></td>';
