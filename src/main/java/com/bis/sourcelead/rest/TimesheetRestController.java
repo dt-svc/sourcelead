@@ -303,6 +303,9 @@ public class TimesheetRestController {
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,"view");
+                    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
+                        continue;
 					if(count == 1){
 						isSelected.setLength(0);
 						isSelected.append("selected='selected'");
