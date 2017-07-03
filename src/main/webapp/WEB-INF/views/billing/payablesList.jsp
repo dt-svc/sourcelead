@@ -27,6 +27,9 @@ font-size: 13px; width: 75px;
 </style>
 
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
+ <div class="success_pop" id="selector1" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+  </div>
 <section class="content-wraper">
     <section class="content-header clearfix">
      <c:if test="${!empty msg}">
@@ -1406,11 +1409,22 @@ function generateAutomaticInvoice(){
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&contractType=vendorSow", 
              success: function(data) {
             	 $("#invoiceLoading").removeAttr("style");
+            	    $("#selector1").removeAttr("style");
+	    			$("#selector1").css("display", "block");
+	    			$("#msgDiv").html(data+" Records Imported Successfully.");
+					msgFadein();
             	 location.replace(sourceleadUrl+"/payablesList");	
         },
     });  
 }
 </script>
+
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');

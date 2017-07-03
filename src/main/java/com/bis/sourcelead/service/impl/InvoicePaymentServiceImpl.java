@@ -27,6 +27,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.ibm.icu.math.BigDecimal;
 
 @Service
 public class InvoicePaymentServiceImpl implements InvoicePaymentService{
@@ -89,16 +90,19 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
             if(jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")){
                 if(jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))){
                     invoicePayment.setPaymentAmount(jsonObj.getString("customeAmount"));
-                    Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
-                    Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
-                    Float receivedAmount  = totalAmount - customAmount;
-                    
-                    if(totalAmount.equals(customAmount) || (customAmount > totalAmount)){
+//                    float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
+                    BigDecimal totalAmount = BigDecimal.valueOf(Double.parseDouble(jsonObj.getString("totalAmount")));
+//                    float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
+                    BigDecimal customAmount = BigDecimal.valueOf(Double.parseDouble(jsonObj.getString("customeAmount")));
+                    BigDecimal receivedAmount  = totalAmount.subtract(customAmount);
+                    int res = customAmount.compareTo(receivedAmount);
+//                    if(totalAmount == customAmount || (customAmount > totalAmount)){
+                    if(totalAmount.equals(customAmount) || res==1){
                         invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
                     }else{
                         invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
                     }
-                    invoice.setDueAmount(receivedAmount.toString());
+                    invoice.setDueAmount(String.valueOf(receivedAmount));
                     
                 }
             }
