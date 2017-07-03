@@ -1421,11 +1421,11 @@ public class InvoiceRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Invoice invoice = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType);
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType);
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 		logger.info("Final Response time = " + elapsedTime+ " Millis");
-		resultJson = commonUtil.toJSON("");
+		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		return resultJson;
 	}
 
@@ -1528,18 +1528,20 @@ public class InvoiceRestController {
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 		logger.info("Final Response time = " + elapsedTime + " Millis");
-		for(Invoice invoice : invoiceList){
-			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+		if(invoiceList !=null && invoiceList.size()>0){
+			for(Invoice invoice : invoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+				}	
+				invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+				invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+				invoice.setNetIncome(netAmount);
+				invoice.setRecievableAmount(recievableAmount);
+				invoice.setPayableAmount(payableAmount);
 			}
-			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-			}	
-			invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
-			invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
-			invoice.setNetIncome(netAmount);
-			invoice.setRecievableAmount(recievableAmount);
-			invoice.setPayableAmount(payableAmount);
 		}
 		resultJson = commonUtil.toJSON(invoiceList);
 		return resultJson;
