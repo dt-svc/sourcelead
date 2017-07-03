@@ -1005,6 +1005,11 @@ function contractTypeLabels(){
 			$('#vendorContact').removeAttr('data-validation');
 			$('#vendorContact').attr('data-validation-optional',"true");
 			
+			$('#clientOrgRelationId').removeAttr('data-validation-optional');
+			$('#clientOrgRelationId').attr('data-validation',"required");
+			$('#clientContact').removeAttr('data-validation-optional');
+			$('#clientContact').attr('data-validation',"required");
+			
 			$('#flatReward').removeAttr('data-validation-optional');
 			$('#flatReward').attr('data-validation',"required");
 			
@@ -1038,6 +1043,11 @@ function contractTypeLabels(){
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
 			$('#clientContact').removeAttr('data-validation');
 			$('#clientContact').attr('data-validation-optional',"true");
+			
+			$('#orgRelationId').removeAttr('data-validation-optional');
+			$('#orgRelationId').attr('data-validation',"required");
+			$('#vendorContact').removeAttr('data-validation-optional');
+			$('#vendorContact').attr('data-validation',"required");
 			
 			$('#flatReward').removeAttr('data-validation-optional');
 			$('#flatReward').attr('data-validation',"required");
@@ -1103,6 +1113,10 @@ function contractTypeLabels(){
 			/* $('#vendorContact').removeAttr('data-validation');
 			$('#vendorContact').attr('data-validation-optional',"true"); */
 			
+			$('#orgRelationId').removeAttr('data-validation-optional');
+			$('#orgRelationId').attr('data-validation',"required");
+			$('#vendorContact').removeAttr('data-validation-optional');
+			$('#vendorContact').attr('data-validation',"required");
 			
 			//prasanna
 			/* $('#requirementsList').removeAttr('data-validation');
