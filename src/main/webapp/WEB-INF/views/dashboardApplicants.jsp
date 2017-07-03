@@ -4,7 +4,7 @@
  <!-- Applicant Authorization -->
       <div class="col-md-6">
         <div class="dashboard-widget">
-          <h4 class="clearfix">Applicant Authorization
+          <h4 class="clearfix">Applicant Permission
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data filter_position">
