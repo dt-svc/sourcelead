@@ -121,9 +121,9 @@ function accountDeductionsListTablePagination(){
 }
 </script>
 
-<div class="sideMask"></div>
 
-<div class="modal modal_Expenses">
+
+<div class="modal modal_Expenses AccountDedu">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -132,7 +132,7 @@ function accountDeductionsListTablePagination(){
         <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenses();">&times;</button>
         <h4 class="modal-title" id="empName"></h4>
       </div>
-      <div class="modal-body project_tabs_inn_table mt40">
+      <div class="modal-body project_tabs_inn_table">
         <div id="accountdeDuctiondetails"></div>
       </div>
     </div>
@@ -142,7 +142,7 @@ function accountDeductionsListTablePagination(){
 <script>
 function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
-	$(".modal_Expenses").fadeIn("slow");
+	$(".AccountDedu").fadeIn("slow");
 	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",

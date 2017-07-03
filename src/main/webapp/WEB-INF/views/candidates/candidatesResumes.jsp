@@ -332,6 +332,8 @@ function addResume(candidateId) {
 							result = result+'	            <th>Attachment</th>';
 							result = result+'	            <th>Description</th>';
 							result = result+'	            <th>Created By</th>';
+							result = result+'	            <th>Updated Date</th>';
+							
 							result = result+'	            <th>Action</th>';
 							result = result+'	          </tr>';
 							
@@ -357,11 +359,20 @@ function addResume(candidateId) {
 					            		createdBy = '----';
 					            	}
 					            	
+					            	
+					            	if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != 'undefined' && opt.candidateResumeUpdateDateToString != ""){
+					            		candidateResumeUpdateDateToString = opt.candidateResumeUpdateDateToString; 
+					            	}else{
+					            		candidateResumeUpdateDateToString = "---";
+					            	} 
+					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
 					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
+					           		
+					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"title="Download"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
