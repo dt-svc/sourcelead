@@ -68,7 +68,7 @@ $(document).ready(function(){
 	<input type="hidden" name="noteType" id="noteType" value = "Contract">
 		<div class="col-md-12 inputOther mt10 inputOther">
 		<div class="form-horizontal clearfix"><div class="clearfix">
-		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000" field-name="Note" class="form-control"></textarea></div>
+		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000" field-name="Note" class="form-control" onkeypress="viewContractCommentRemoveSpaces();"></textarea></div>
 		<div class="clearfix checkBox">
 		<input type="checkbox" value="Y" id="allowAll" name="allowAll" checked="checked">
 		<span>Allow All Users</span>
@@ -96,7 +96,15 @@ $(document).ready(function(){
      <!-- Content Area Ends--> 
 </section>
 
-
+<script>
+   function viewContractCommentRemoveSpaces() {
+	    var output = document.getElementById("noteDescription").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#noteDescription").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script>
 var validationSettings = {
 			        errorMessagePosition : 'element',
