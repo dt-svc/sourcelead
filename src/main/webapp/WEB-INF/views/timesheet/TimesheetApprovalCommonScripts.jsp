@@ -1395,7 +1395,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 <script>
 function pagination(){ 
     $('#example').DataTable( {
-    	"scrollX": true,    	
+    	//"scrollX": true,    	
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
@@ -1405,7 +1405,8 @@ function pagination(){
     		"sSearch": "",
     		"sZeroRecords": "", "sEmptyTable": ""
     	}
-    } );
+    });
+    $('#example').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 
