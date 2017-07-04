@@ -132,8 +132,6 @@ public class EmployeePayrollRestController {
 				employerPayrollCost.setSsn(sb.toString());
 				double totHrs = Double.parseDouble(employerPayrollCost.getTotalHrs());
 				employerPayrollCost.setTotalHrs(String.valueOf(df.format(totHrs)));
-				float f = employerPayrollCost.getGrossWages();
-				System.out.println(df.format(f));
 			}
 			resultJson = commonUtil.toJSON(employerPayrollCostList);
 		}
