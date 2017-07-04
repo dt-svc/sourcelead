@@ -132,8 +132,6 @@ public class EmployeePayrollRestController {
 				employerPayrollCost.setSsn(sb.toString());
 				double totHrs = Double.parseDouble(employerPayrollCost.getTotalHrs());
 				employerPayrollCost.setTotalHrs(String.valueOf(df.format(totHrs)));
-				float f = employerPayrollCost.getGrossWages();
-				System.out.println(df.format(f));
 			}
 			resultJson = commonUtil.toJSON(employerPayrollCostList);
 		}
@@ -278,5 +276,15 @@ public class EmployeePayrollRestController {
 			resultJson = commonUtil.toJSON(usersList);
 		}
 		return resultJson;
+	}
+	
+	@RequestMapping(value = "/updateAccountDeduction", method = RequestMethod.POST)
+	@ResponseBody 
+	public String updateAccountDeduction(@RequestParam(value = "accDeductionId", required = false) String accDeductionId,@RequestParam(value = "dedAmount", required = false) String dedAmount,HttpServletRequest request) throws Exception {
+		
+		AccountDeductions accountDeductions = accountDeductionsService.getDeductionsbyId(Long.parseLong(accDeductionId));
+		accountDeductions.setDedAmount(Float.parseFloat(dedAmount));
+		AccountDeductions updatedAccountDeductions = accountDeductionsService.saveAccountDeductions(accountDeductions);
+		return commonUtil.toJSON(updatedAccountDeductions.getId());
 	}
 }
