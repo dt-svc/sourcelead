@@ -316,8 +316,8 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
 							 finalAmount = amount;
 						}
-						finalPayrollReport.setAmount(amount);
-						finalPayrollReport.setFinalAmount(finalAmount);
+						finalPayrollReport.setAmount(Math.round(amount * 100D) / 100D);
+						finalPayrollReport.setFinalAmount(Math.round(finalAmount * 100D) / 100D);
 						finalReportList.add(finalPayrollReport);
 					}
 					
