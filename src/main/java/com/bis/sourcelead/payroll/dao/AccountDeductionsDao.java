@@ -18,4 +18,6 @@ public interface AccountDeductionsDao {
 
 	List<AccountDeductionsDetails> getDeductionsDetailsbyId(Long deductionId);
 
+	AccountDeductions getDeductionsbyId(Long deductionId);
+
 }

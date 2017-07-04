@@ -70,4 +70,19 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		return accountDeductionslist;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public AccountDeductions getDeductionsbyId(Long deductionId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AccountDeductions accountDeductions = null;
+		String query = "from AccountDeductions ad where ad.id =:deductionId";
+		List<AccountDeductions> accountDeductionslist = session.createQuery(query).setLong("deductionId", deductionId).setCacheable(true).list();
+		if(accountDeductionslist != null && accountDeductionslist.size() >0)
+		{
+			accountDeductions = accountDeductionslist.get(0);
+		}
+		return accountDeductions;
+	}
+
 }
