@@ -733,6 +733,8 @@ public class UserRestController {
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -760,7 +762,7 @@ public class UserRestController {
 			 }
 			 
 			 if(null != pmh.getProjectTerminationDate()){
-				 globalVarsMap.put("Project EndDate",pmh.getProjectTerminationDate().toString());
+				 globalVarsMap.put("Project EndDate",endDate);
 			 }else{
 				 globalVarsMap.put("Project EndDate", "--");
 			 }
@@ -787,6 +789,16 @@ public class UserRestController {
 				}
 			 }
 			 
+			 if(pmh.getProjectMemberId().getProjects().getOrgRelationId() !=null && !equals(pmh.getProjectMemberId().getProjects().getOrgRelationId())){
+				 StringBuilder clientName = new StringBuilder();
+				 globalVarsMap.put("clientName",clientName.append("with").append(" ").append(pmh.getProjectMemberId().getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).toString());
+			 }
+			 globalVarsMap.put("reason", pmh.getProjectMemberId().getTerminateReason());
+
+
+			 StringBuilder linkBuild = new StringBuilder();
+		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		   
 			
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			

@@ -89,7 +89,7 @@ function requirementList(){
 	                     result = result +"    <th>Applicants</th>"; 
 	                     result = result +"    <th>Shortlisted</th>"; 
 	                     result = result +"    <th>Submitted</th>"; 
-	                     result = result +"    <th>Interviewed</th>"; 
+	                     result = result +"    <th>Interview</th>"; 
 	                     result = result +"    <th>Offered</th>"; 
 	                     result = result +"<th>Actions</th>";
 // 	                     result = result +"    <th>Release</th>"; 
@@ -208,6 +208,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"bFilter": false,
     	"bPaginate":false,
     	"ordering": true,
     	"oLanguage": {

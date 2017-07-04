@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -62,6 +63,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 
 	@Autowired
 	PayrollHelper payrollHelper;
+	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 
 	@Override
 	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
@@ -111,11 +115,17 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empId = getCellValueAsString(row.getCell(1), fileName);
-								employerPayrollCost.setEmployeeId(empId);
+								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
 							} 
 							if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 								String ssn = getCellValueAsString(row.getCell(2), fileName);
-								employerPayrollCost.setSsn(ssn);
+								StringBuilder sb = new StringBuilder();
+								String[] arr = ssn.split(":");
+								String ssNbr = arr[1];
+								String last4DigitsSsn = ssNbr.substring(ssNbr.length() - 4);
+								String enCodedSsnNumber = sourceleadPasswordEncoder.encode(ssNbr);
+								sb.append(last4DigitsSsn).append("-").append(enCodedSsnNumber);
+								employerPayrollCost.setSsn(sb.toString());
 							} 
 							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 								String totalHrs = getCellValueAsString(row.getCell(3), fileName);
@@ -302,7 +312,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 					finalPayrollReport.setHalfHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)/2));
 					if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
 						finalPayrollReport.setPayRate(pm.getEmployee().getRate());
-						 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS)/2,pm);
+						 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
 						 finalAmount = amount;
 					}
 					finalPayrollReport.setAmount(amount);
