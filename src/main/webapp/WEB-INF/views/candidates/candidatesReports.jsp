@@ -29,7 +29,7 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getCandidateList();
+	getDayWiseReports();
 	}
 </script>
 
@@ -58,7 +58,8 @@ window.onload = function() {
 
  <script>
   function prepareCandidateReportsDataDiv(data){
-	 	     $("#candidateList").removeAttr("style");
+	  var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';	     
+	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -68,7 +69,7 @@ window.onload = function() {
 	          result = result +"    <th>Mobile</th>";
 	          result = result +"    <th>Primary Skill</th>";
 	          result = result +"    <th>Experience</th>"; 
-	          result = result +"    <th>No of Requirements</th>"; 
+	          result = result +"    <th>No of Jobss</th>"; 
 	          result = result +"    <th>Owner</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -123,7 +124,7 @@ window.onload = function() {
 	              
 		              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined")
 		             	 {
-		                   result = result +"  <td><div>"+opt.primarySkill+"</div></td>";
+		                   result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
 		             	 }else{
 		             		 result = result +"  <td><div>----</div></td>"; 
 		             	 }
@@ -143,7 +144,7 @@ window.onload = function() {
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
-	          cpagination();  
+	          cpagination(SourceLeadWeb_loginOrg);  
 	 
   }
 </script>
@@ -155,17 +156,17 @@ window.onload = function() {
 
 
 <script>
-function cpagination(){ 
+function cpagination(SourceLeadWeb_loginOrg){ 
     $('#candidatePagination').DataTable( { 
     	 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Added Candidates',
+	                title: SourceLeadWeb_loginOrg+' - Added Candidates Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Added Candidates',
+	                title: SourceLeadWeb_loginOrg+' - Added Candidates Reports',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -178,8 +179,8 @@ function cpagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-    $(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
+    $(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
 </script> 
 
@@ -233,12 +234,12 @@ function toDate(selector) {
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Added Candidates</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
@@ -252,7 +253,7 @@ function toDate(selector) {
 
       <div class="timesheet_head">
 
-<div class="pull-left reportBtns">
+<div class="pull-left reportBtns reportcutom_Btns">
 
 	  <div class="reportBtn dropdown-select">
 		<select class="form-control" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
@@ -266,16 +267,17 @@ function toDate(selector) {
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <span class="dashboard-datepkr cusShow">
+	 <div class="cusShow pull-left">
+	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 	 <p id="reportStartDate" class="ReError"></p>
 	 </span>
-	<span class="dashboard-datepkr cusShow">
+	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
 	<p id="reportEndDate" class="ReError"></p>
 	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
-	
+	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	</div>
 		<!-- <span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
 		<a href="javascript:void(0)" class="oneB"><i class="fa fa-pie-chart"></i></a>
@@ -310,10 +312,10 @@ function toDate(selector) {
 				<span><i class="fa fa-users"></i></span><b>${candidateCount}</b>
 			</li>
 			
-			
-			<li title="Associates" class="colorTwo">
+<!-- 			commented by pavan jampana -->
+			<%-- <li title="Associates" class="colorTwo">
 				<span><i class="fa fa-file-text"></i></span><b>${consultantCount}</b>
-			</li>
+			</li> --%>
 			
 			<div class="clearfix"></div>
 		</ul>

@@ -40,6 +40,7 @@ public class ApplicantReport {
 	private int interviewsSum;
 	private int offeredSum;
 	private int rejectedSum;
+	private int backoutSum;
 	
 	private String submissionDate;
 	private String shortlistDate;
@@ -48,6 +49,7 @@ public class ApplicantReport {
 	private String requestSentDate;
 	private String submitToClientDate;
 	private String rejectedDate;
+	private String backedOutDate;
 	// applicant received reports
 	
 	
@@ -276,6 +278,23 @@ public class ApplicantReport {
 		this.rejectedDate = rejectedDate;
 	}
 
+	public String getBackedOutDate()
+	{
+		return backedOutDate;
+	}
 
+	public void setBackedOutDate(String backedOutDate)
+	{
+		this.backedOutDate = backedOutDate;
+	}
 
+	public int getBackoutSum()
+	{
+		return backoutSum;
+	}
+
+	public void setBackoutSum(int backoutSum)
+	{
+		this.backoutSum = backoutSum;
+	}
 }

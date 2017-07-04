@@ -42,6 +42,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 </select>
               </div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+               <input type="hidden" name="clientCurrency" id="clientCurrency">
             </div>
               
             <div class="form-group">
@@ -201,14 +202,19 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
                  <div class="form-group">
                 <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
+                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" disabled></div>
               </div>              
             
              <div id="lineItemAddRows"></div>
                 <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
+                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli" disabled></span></div>
               </div>
+              
+             <!--  Added Rajashekar -->
+                <div id="conversionId"></div>
+                  <!--  End Rajashekar -->
+              
               </div>
           </div>
         </div>
@@ -216,6 +222,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
         <!-- Adding Content Starts herer -->
         <div id="lineItemPopUp"></div>
           <!-- Drap and Drop Table Row --> 
+          <div id="receivableAlertPopUp"></div>
       
           <footer class="form-footer">
               <div class="pull-right mr">
@@ -247,6 +254,7 @@ function getClientContacts(){
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
@@ -311,13 +319,14 @@ function getProjectFrequency(invoiceFrequency){
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
+		var convertOpt = opt.replace(/\//g, " to ");
 		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
 			selected = 'selected';
 			/* getProjectAssignedMem1();  */
 		}
-		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
+		output = output + "<option value='" +opt+ "' "+selected+">"+convertOpt+"</option>";
 		}
 		$("#frequency").empty();
 		$("#frequency").append(output);
@@ -364,9 +373,9 @@ function populateInlineItemsGrid(data){
             result = result +' <thead>';
             result = result +' <tr>';
             result = result +' <th>Date</th>';
-            result = result +' <th>Candiate</th>';
+            result = result +' <th>Associate</th>';
             result = result +' <th>SOW / PO</th>';
-            result = result +' <th>Rate</th>';
+            result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
             result = result +' <th>Amount</th>';
             result = result +' </tr>';
@@ -386,6 +395,7 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
              result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
+             result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -423,7 +433,7 @@ function populateInlineItemsGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
         result = result +'<td><strong>Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
         result = result +' </tfoot> ';
         result = result +' </tbody>';
@@ -431,23 +441,67 @@ function populateInlineItemsGrid(data){
         $("#tableBody").empty();
         $("#tableBody").append(result);
         maskme();
+        $("#currencyCode").html(currencyCode);
         document.getElementById("bottomGrid").style.display="block";
         document.getElementById("bottomGrid").style.display="block";
         document.getElementById("lineItemAddRows").style.display="block";
         document.getElementById("tableBody").style.display="block";
-        addTaxDivs();    
+        addTaxDivs();   
+        addConversionDiv();
         /* getSow(); */
     }else{
         document.getElementById("bottomGrid").style.display="none";
         document.getElementById("lineItemAddRows").style.display="none";
         document.getElementById("tableBody").style.display="none";
-        alert("No MembersFound");
+//         alert("No MembersFound");
         /* getProjectsList(); */
+        alertMessageInReceivable()
     }
     
 }
 </script>
 
+<script>
+function addConversionDiv(){
+	var clientCurrency = $("#clientCurrency").val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	if(clientCurrency != currencyCode){
+		var result = "";
+		result = result +' <div class="row">';
+		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +'  </div>';
+		result = result +'  </div>';
+		$("#conversionId").empty();
+		$("#conversionId").append(result);
+	}
+}
+</script>
+
+<script type="text/javascript">
+function alertMessageInReceivable(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>No Members Found</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelReceivableAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReceivableAlert();'></b>";
+	result = result +"	</div>";
+	$("#receivableAlertPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelReceivableAlert(){
+	$("#receivableAlertPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 <script>
@@ -458,7 +512,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <thead>';
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
-	    result = result +' <th>Candiate</th>';
+	    result = result +' <th>Associate</th>';
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate</th>';
 	    result = result +' <th>Total Hours</th>';
@@ -481,6 +535,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
     	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
+    	  result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -514,7 +569,12 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
+    	 }else{
+    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value="0.00" placeholder="Amount" type="text" readonly="readonly">';
+    	 }
+    	 
     	 result = result +'</td>';
     	 result = result +'</tr>';
     }
@@ -522,7 +582,7 @@ function populateInlineItemsGrid1(data){
     result = result +' <tr>';
     result = result +' <td colspan="4"></td>';
     result = result +'<td><strong>Total</strong></td>';
-    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
     result = result +' </tfoot> ';
     result = result +' </tbody>';
@@ -536,6 +596,7 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("tableBody").style.display="block";
 	
     addTaxDivs();
+    addConversionDiv();
     /* getSow(); */
 }
 </script>
@@ -547,7 +608,6 @@ function populateInlineItemsGrid1(data){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var maxRowNum = $("#maxTsRowNum").val();
 		  for(var id=0;id < maxRowNum;id++){
-			  alert("id "+id); 
 			    var result = "";
 	        	result = result + "<option value='' >select sow</option>"
 			  var candidateId = $("#"+id+'candidate').val();
@@ -768,7 +828,33 @@ function getSowRate(id){
 		 }else{
 			 calAddRowAmount("000","00",rowId);
 		 }
+     		conversion();
   }
+  
+  
+  function  conversion(){
+	   var orgRelationId = $("#clientOrgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var grandTotal = $("#grandTotal").val();
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(data) {
+					if(data !='' && data != 'undefined' && data != null){
+						var json = JSON.parse(data);
+						$("#exchangeRate").html(json.exchangeRate);
+						$("#exchangeCurrency").html(json.exchangeCurrency);
+						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+					}
+				},
+				});   
+	   }
+	  
+		
+ }
   
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
@@ -776,14 +862,41 @@ function getSowRate(id){
 	  var splitHours = split[0];
 	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
+		 setHours(finalmin,rowId);
+		 var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
 	     $('#'+rowId+'amount').empty();
 	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
 	     calculateSum();
   }
   </script>
-	<!-- calculating sub total with all row total amount -->
+
+<!-- Converting minutes to hours if minutes >60 -->
+<script>
+function setHours(finalmin,rowId){
+	 var actualHours = Math.floor(finalmin / 60); 
+     var actualMinutes = finalmin % 60;
+     var actualTotal = 0;
+     if (actualHours >= 10 && actualHours < 100) {
+			actualHours = '0' + actualHours;
+	  }
+     if (actualHours < 10) {
+			actualHours = '00' + actualHours;
+	  }
+	 if (actualMinutes < 10) {
+		actualMinutes = '0' + actualMinutes;
+	 }
+	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
+		 actualTotal = actualHours +":"+ actualMinutes;
+	 }else{
+		 actualTotal =  "000:00";
+	 }
+	 $('#'+rowId+'totalHours').empty();
+     $('#'+rowId+'totalHours').val(actualTotal);
+}
+</script>
+
+<!-- calculating sub total with all row total amount -->
 <script>
 function calculateSum(){
 	 var maxRowNum = $("#maxTsRowNum").val();
@@ -800,6 +913,7 @@ function calculateSum(){
 	  $("#inoviceTotal").val(sum.toFixed(2));
 	  $("#subTotal").val(sum.toFixed(2));
 	  $("#grandTotal").val(sum.toFixed(2));
+	  $("#conversionFrom").val(sum.toFixed(2));
 	  $("#afterDiscountTotal").val(sum.toFixed(2));
 	  calculateDisCount();
 	  calculateTaxDiscount();
@@ -853,6 +967,7 @@ function calculateDisCount(){
 					 		 var total = subTotal-discountValue;
 					 		 $("#discountTotal").val(discountValue); 
 					 		$("#grandTotal").val(total);
+					 		$("#conversionFrom").val(total);
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 		
 					 	  }
@@ -861,28 +976,12 @@ function calculateDisCount(){
 					 		 var total = subTotal - perCentValue;
 					 		 $("#discountTotal").val(perCentValue);
 					 		$("#grandTotal").val(total);
+					 		$("#conversionFrom").val(total);
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 	 }
 					 	 calculateTaxDiscount();
-					 	/*  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-						  var afterDiscountTotal = $("#afterDiscountTotal").val();
-						  
-						   for(var i=0; i< maxRowNum; i++){
-						        var taxType = $("#"+i+"taxdiscountType").val();
-						        var taxValue = $("#"+i+"taxdiscountvalue").val();
-						        var taxTotal = $("#"+i+"taxTotal").val();
-						           
-						             if(taxValue == '' && taxTotal==''){
-						             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-						             }else{
-						           	 var tot = $("#grandTotal").val();
-						 	           var first=parseFloat(tot);
-						 	            var second=parseFloat(taxTotal); 
-						 	            var total  = (first+second);
-						 	          $("#grandTotal").val(total.toFixed(2));
-						             }
-						           
-						   }  */
+					 	conversion();
+					 	
 }
 }
 </script>
@@ -972,8 +1071,9 @@ function calculateDisCount(){
         var second=parseFloat(taxTotal);
         total = (first-second);
         $("#grandTotal").val(total); 
+        $("#conversionFrom").val(total);
        //=======================================
-        
+        conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
@@ -994,6 +1094,7 @@ function singleRowTaxDiscount(){
         total = parseInt(afterDiscountTotal) + parseInt(taxValue);
         $("#0taxTotal").val(taxValue);
         $("#grandTotal").val(total);
+        $("#conversionFrom").val(total);
     }
     if(taxType == 'percentage'){
         var perCentValue = (afterDiscountTotal * taxValue)/100;
@@ -1002,6 +1103,7 @@ function singleRowTaxDiscount(){
         total = (first+second).toFixed(2);
         $("#0taxTotal").val(first);
         $("#grandTotal").val(total);
+        $("#conversionFrom").val(total);
     }   
 }
 </script>
@@ -1022,27 +1124,30 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
 	
 	var taxGrandTotal = 0;
 	for(var i=1; i<maxTaxRowNum; i++){
-		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
+			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));	
+		}
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
-  
+	$("#conversionFrom").val(grandTotal.toFixed(2));
+	conversion();
 }
 </script>
 
@@ -1201,8 +1306,11 @@ var validationSettings = {
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-					 errInvoiceDate(); 
-					 getDueDateByFrequency();
+				var dt = toDate("#invoiceDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#dueDate").datepicker("option", "minDate", dt);
+						errInvoiceDate();
+						getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1210,14 +1318,22 @@ var validationSettings = {
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				errDueDate(); 
+				var dt = toDate("#dueDate");
+				dt.setDate(dt.getDate() - 1);
+				$("#invoiceDate").datepicker("option", "maxDate", dt);
+					errDueDate();
 				
 			}
 		});
 		
 	});
 </script>
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
@@ -1235,7 +1351,7 @@ var validationSettings = {
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
-		           	 
+		           	$("#clientCurrency").val(json['clientCurrency']);
 		           	getClientContactsExisted(json['vendorContactId']);
 		           	getProjectsList(json['projectName']);
 		           	getProjectFrequency(json['invoiceFrequency'],json['id']);
@@ -1270,6 +1386,10 @@ var validationSettings = {
 		        	getSavedAttachments(json['invoiceDocumentsList']);
 		        	
 		        	$("#grandTotal").val(json['total']);
+		        	$("#conversionFrom").val(json['total']);
+		        	 $("#exchangeCurrency").html(json['convertAmount']);
+		        	 $("#exchangeRate").html(json['exchangeRate']);
+		        	  
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
@@ -1584,6 +1704,7 @@ function flushValues(){
 	$("#subTotal").val('0.0');
 	$("#afterDiscountTotal").val('0.0');
 	$("#grandTotal").val('0.0');
+	$("#conversionFrom").val('0.0');
 	
 }
 function errDueDate(){

@@ -9,7 +9,7 @@ import com.bis.sourcelead.form.Registration;
 
 public interface RegistrationService {
 	
-	public void addRegistration(Registration registration,User user,String modules,String subModules, Long orgLocationsId) throws Exception;
+	public void addRegistration(Registration registration,User user,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception;
 	
 	public void sendEmail(Registration registration,Long locationsId) throws Exception;
 	
@@ -25,9 +25,9 @@ public interface RegistrationService {
 	
 	public void addUserBySourcelead(User user,JSONObject jsonObj) throws Exception;
 	
-	public void saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception;
+	public String saveProfessional(JSONObject jsonObj,String contactUUID) throws Exception;
 	
-	public void saveIndividualRecruiter(JSONObject jsonObj) throws Exception;
+	public String saveIndividualRecruiter(JSONObject jsonObj) throws Exception;
 	
     public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception;
 	

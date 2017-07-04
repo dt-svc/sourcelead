@@ -89,10 +89,10 @@
         <div class="clearfix"></div>  
           
           
-          <div class="candidate_wrap_table">
+          <div class="candidate_wrap_table datatable_filter">
 	          <div id="onboardingLoading"></div>
-	          <div id="onboardingCandidatesList"></div>
-	          <div id="offboardingCandidatesList"></div>
+	          <div id="onboardingCandidatesList" class="datatable_filter"></div>
+	          <div id="offboardingCandidatesList" class="datatable_filter"></div>
 	          
 	          <div class="vendor_wrap_mask"></div>
 	          <div id="rejectedReasonDiv"></div>
@@ -125,7 +125,7 @@
 	                     result = result +"    <th>Type</th>";
 	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
-	                     result = result +"    <th>Status</th>"; 
+	                     result = result +"    <th>Onboard Status</th>"; 
 	                     result = result +"    <th>Actions</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -147,7 +147,7 @@
 	                    	 
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
-	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
+	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
 	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
 		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
@@ -171,12 +171,14 @@
                         			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                         		 }
                     		 }else{
-                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }
                     		 
                     		 
                     		 if(opt.candidateOnBoardStatus == 'Accepted'){
                     			 result = result +"<td><div><span class='text-success'>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    		 }else  if(opt.candidateOnBoardStatus == 'Rejected'){
+                    			 result = result +"<td><div><span class='text-danger'>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }else{
                     			 if(opt.onboardSubmitted == 'Y'){
                         			 result = result	+ '<td><div><span><a><i class="fa fa-check text-success" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></span></div></td>';
@@ -243,7 +245,7 @@
 	                    	 
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
-	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
+	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
 	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'
 		                    	 if(opt.offboardSubmitted == 'N'){
@@ -289,8 +291,8 @@
 function onboardingPagenation(){ 
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -305,8 +307,8 @@ function onboardingPagenation(){
 function offboardingPagenation(){ 
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -327,23 +329,23 @@ function offboardingPagenation(){
 		result = result + '	<div id="loading"></div>';
 		result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
 		result = result + '<input type="hidden" name="onboardCandidateUUID" value="'+onboardCandidateUUID+'">';
-		result = result + '	<h3>Onboard Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+		result = result + '	<h3>Onboard Reject Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
 		result = result + '	<div class="settPopInn"> ';
 		
 		result = result + '		<div class="clearfix">  ';
 		result = result + '		<div class="col-md-12">  ';
-		result = result + '		  <label class="col-md-2 paddingLeft" for="Candidate Name">Name :</label> ';
+		result = result + '		  <label class="col-md-2 noPad" for="Candidate Name">Name :</label> ';
 		result = result + '		  <label class="col-md-8 paddingRight">'+candidateName+'</label> ';
 		result = result + '		</div>  ';
 
 		result = result + '		<div class="col-md-12">  ';
-		result = result + '		  <label class="col-md-2 paddingLeft" for="Email">Email :</label> ';
+		result = result + '		  <label class="col-md-2 noPad" for="Email">Email :</label> ';
 		result = result + '		  <label class="col-md-8 paddingRight">'+candidateEmail+'</label> ';
 		result = result + '		</div>  ';
 		
 		
 		result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
-		result = result + '		  <div class="col-md-12 taskdesp mt10">   ';
+		result = result + '		  <div class="col-md-12 taskdesp">   ';
 		result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
 		result = result + '			<span class="hidden"></span> </div>  ';
 		result = result + '		</div>';

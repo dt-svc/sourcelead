@@ -200,11 +200,11 @@ function selectOfferApplicants(){
 </div> -->
             
 <div id="divOfferTd5" style="display: none; float: left;">
-	<div class="input-group">
+	<div class="input-group" id="OfferAttachmentuploadFileGroup">
         <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-          <input type="file" style="display: none;"  multiple id="uploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment"></span>
+          <input type="file" style="display: none;"  multiple id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
-		<input type="text" class="form-control file1" readonly id="uploadFile" placeholder="Upload File."  >
+		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
      </div>                 
 </div>
 
@@ -535,7 +535,7 @@ function cancelOfferPopup(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";
 					}
 		        	
 		        	var isFlushCandidateRequired = $("#isFlushCandidateRequired").val();
@@ -685,5 +685,26 @@ function otherJobType(id){
 }
 </script>
 
+<<script type="text/javascript">
+$(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
+	 $('#OfferAttachmentuploadFile').val(this.value.split( '\\' ).pop());
+	 $("#OfferAttachmentuploadFile").focus();
+	 if(validate_fileupload(this.value)){
+	 var docFileSize = $('#OfferAttachmentuploadFile');
+		 var docSize = this.files[0].size;
+	      $("#OfferAttachmentuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#OfferAttachmentuploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#OfferAttachmentuploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		     $('#OfferAttachmentuploadFileGroup').find('p.jquery_form_error_message').remove();
+	      }
+	 }
+});
+</script>
   
 <jsp:include page="../masterFooter.jsp" />

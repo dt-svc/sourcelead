@@ -43,19 +43,19 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_user.firstName}" field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
+            <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_loginUserFirstName}" field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" value="">
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${SourceLeadWeb_user.lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${SourceLeadWeb_loginUserLastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true" value="">
           </div>
         </div>
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" value="">
+            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_loginUserEmail}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -76,9 +76,9 @@
         
         
         <div class="form-group">
-				<label class="col-md-3">Country</label>
+				<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="country" id="country" data-validation="required" field-name="Country"  >
                  </select>
 				</div>
 			</div>
@@ -327,7 +327,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>

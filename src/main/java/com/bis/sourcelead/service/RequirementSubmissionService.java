@@ -246,12 +246,22 @@ public interface RequirementSubmissionService {
 //	Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
 
 	List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId);
+	
+	List<RequirementSubmission> getApplicantRequirmentCountSubmittedByVendor(Long orgLocationId,Long requirementId,Long vendorLocationID);
 
 	Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
 
 	List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId, Date startDateUTC, Date endDateUTC);
 	
-	List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType);
+	List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType, OrgLocations loginOrgLocation);
 	
 	List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId, Long orgRelationId, Date startUTCDate, Date endUTCDate);
+	
+	RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
+	
+	public void sendEmailtoAssignedMemberApplicantAuthorization(Org loginOrg, User users,RequirementSubmission requirementSubmission,OrgLocations loginOrgLocation) throws Exception;
+
+	List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation);
+
+	List<RequirementSubmission> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long id, String string, String tab, String userType, User user, Date startUTCDate, Date endUTCDate);
 }

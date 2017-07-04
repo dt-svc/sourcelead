@@ -18,7 +18,7 @@ function requirementHistory(candidateId){
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
-		result  = result + '   <div id="requirementHistoryDiv" ></div>';
+		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	$("#tab-1").empty();
@@ -110,8 +110,8 @@ function requirementHistoryList(candidateId){
 function requirementHistoryPagination(){  
     $('#requirementHistoryPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

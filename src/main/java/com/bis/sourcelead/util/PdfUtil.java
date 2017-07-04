@@ -72,7 +72,7 @@ public class PdfUtil {
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState, String orgName) throws IOException{
+			String userState, String orgName) throws Exception{
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -181,31 +181,32 @@ public class PdfUtil {
 	/**
 	 * Prepares Array to store data into the Pdf Table
 	 * @param headers 
+	 * @param orgLocations 
 	 * @param userRole
 	 * @return
+	 * @throws Exception 
 	 */
-	private String[] prepareUserStringArray(UserRole userRoles, String[] headers) {
+	private String[] prepareUserStringArray(UserRole userRoles, String[] headers) throws Exception {
 		String userArray[] = new String[headers.length];
-		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
-		 for(Employees emp : employeeSet){
-			 if(emp.getEmployeeId() !=null){
-				 userArray[0] = emp.getEmployeeId();
+		//Set<Employees> employeeSet = userRoles.getUser().getEmployee();
+		  Employees empl = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
+			 if(empl.getEmployeeId() !=null){
+				 userArray[0] = empl.getEmployeeId();
 			 }else{
 				 userArray[0] = "--";
 			 }
-			 if(emp.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
+			 if(empl.getHireDate() !=null){
+				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
 				 userArray[5] = dateOfJoin;
 			 }else{
 				 userArray[5] = "--";
 			 }
-			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
+			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){
 				 StringBuilder ratePerSB = new StringBuilder();
-				 userArray[6] = ratePerSB.append(emp.getRate()).append("/").append(emp.getRatePer()).toString();
+				 userArray[6] = ratePerSB.append(empl.getRate()).append("/").append(empl.getRatePer()).toString();
 			 }else{
 				 userArray[6] = "--";
 			 }
- 	    } 
 		   if(userRoles.getUser().getFirstName() !=null){
 			   userArray[1] = userRoles.getUser().getFirstName();
 		   }else{
@@ -314,10 +315,10 @@ public class PdfUtil {
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbCandStyle.toString(),font));
-	        cell1.setColspan(12);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{4, 3, 3,5, 4, 3,4,3,5,3,4,4});
+            table.setWidths(new int[]{4, 3, 3,5, 4, 3,4,3,5,3,4,4,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -331,7 +332,7 @@ public class PdfUtil {
 	        table.completeRow();
 	        java.util.List<String[]> candidateList = new ArrayList<>();
 	        for(Candidate candidate : candidatesList){
-	        	candidateList.add(prepareStringArray(candidate));
+	        	candidateList.add(prepareStringArray(candidate,isAssociate));
 	        }
 	        
 	        for (String[] canArray: candidateList) {
@@ -363,7 +364,7 @@ public class PdfUtil {
 		return file;
 	
 	}
-	private String[] prepareStringArray(Candidate candidate) {
+	private String[] prepareStringArray(Candidate candidate, String isAssociate) {
 		String candidateArray[] = new String[Constants.CANDIDATE_EXCEL_HEADERS.length];
 
 		if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
@@ -444,14 +445,14 @@ public class PdfUtil {
 			candidateArray[9] = "--";
 		}
 		if(null != candidate.getOrgRelationId()){
-				Org org = null;
+				OrgLocations orgLocations = null;
 				if(candidate.getOrgRelationId().getResponderLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
-					org = candidate.getOrgRelationId().getLocationId().getOrg();
+					orgLocations = candidate.getOrgRelationId().getLocationId();
 				 }else if(candidate.getOrgRelationId().getLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
-					 org = candidate.getOrgRelationId().getResponderLocationId().getOrg();
+					 orgLocations = candidate.getOrgRelationId().getResponderLocationId();
 				 }
-				if(null != org){
-					candidateArray[10] = org.getOrgName();
+				if(null != orgLocations){
+					candidateArray[10] = orgLocations.getOrgLocationName();
 				}
 		}else{
 					candidateArray[10] = "--";
@@ -467,6 +468,18 @@ public class PdfUtil {
 		}else{
 				candidateArray[11] = "--";
 		}
+		if(isAssociate.equalsIgnoreCase(Constants.YES)){
+			if(null != candidate.getIsFavouriteAssociate() && candidate.getIsFavouriteAssociate() == 1){
+				candidateArray[12] = "Y";
+			}else{
+				candidateArray[12] = "--";
+			}
+		}else if(null != candidate.getIsFavourite() && candidate.getIsFavourite() == 1){
+				candidateArray[12] = "Y";
+			}else{
+				candidateArray[12] = "--";
+			}
+		
 		return candidateArray;
 		
 	}

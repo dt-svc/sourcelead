@@ -35,7 +35,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left" id="invoiceIdHidden" style="display:none">
-          <h2>Inovice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
+          <h2>Invoice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
       </div>
       
       <div class="pull-left" id="BillIdHidden" style="display:none">
@@ -58,8 +58,19 @@ $(document).ready(function(){
               </a>
             </li>
             <li class="">
+            <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">
               <a href="#paymentHistory" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="paymentHistroy();">
+              </sec:authorize>
                 <h5>Payment History</h5>
+              </a>
+            </li>
+            
+            
+              <li class="">
+<%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
+              <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
+<%--               </sec:authorize> --%>
+                <h5>Note List</h5>
               </a>
             </li>
             
@@ -74,6 +85,13 @@ $(document).ready(function(){
             <div class="tab-pane fade positionRelative" id="paymentHistory">
                 <div class="invoiceview_area clearfix candidate_wrap_table filter_position">
                   <div id="paymentHistorytId"></div>
+                    
+              </div>
+            </div>
+            
+            <div class="tab-pane fade positionRelative" id="notesList">
+                <div class="invoiceview_area clearfix candidate_wrap_table filter_position">
+                  <div id="notesListId"></div>
                     
               </div>
             </div>
@@ -157,49 +175,49 @@ function getViewInvoice(){
 					result = result +'          <div class="form-horizontal row">                                        ';
 					result = result +'            <div class="col-md-6">                                                 ';
 					if(report.invoiceType == "Receivable"){
-						result = result +'              <label class="col-md-4 control-label">Client</label>                ';
+						result = result +'              <label class="col-md-4 control-label">Client :</label>                ';
 					}
 					if(report.invoiceType == "Payables"){
-						result = result +'              <label class="col-md-4 control-label">Vendor</label>                ';
+						result = result +'              <label class="col-md-4 control-label">Vendor :</label>                ';
 					}
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                  <label><strong>'+report.clientName+'</strong></label>  ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Contact Name</label>         ';
+					result = result +'              <label class="col-md-4 control-label">Contact Name :</label>         ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+report.clientContactName+'</label>';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Contact Email</label>           ';
+					result = result +'              <label class="col-md-4 control-label">Contact Email :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Bill Id</label>             ';
+						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Bill Date</label>           ';
+						result = result +'              <label class="col-md-4 control-label">Bill Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 					}else{
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Id</label>             ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Date</label>           ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
@@ -207,27 +225,27 @@ function getViewInvoice(){
 					}
 					
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Payment Term</label>           ';
+					result = result +'              <label class="col-md-4 control-label">Payment Term :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+paymentFrequency+'</label>                                             ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Due Date</label>               ';
+					result = result +'              <label class="col-md-4 control-label">Due Date :</label>               ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Billing Address</label>        ';
+						result = result +'              <label class="col-md-4 control-label">Billing Address :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Address</label>        ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Address :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
@@ -248,7 +266,7 @@ function getViewInvoice(){
 					result = result +'                     <th>Associates</th>                                        ';
 					result = result +'                     <th>SOW/PO</th>                                          ';
 					result = result +'                     <th>Date</th>                                             ';
-					result = result +'                     <th>Rate</th>                                             ';
+					result = result +'                     <th>Rate Hourly</th>                                             ';
 					result = result +'                     <th>Total Hours</th>                                      ';
 					result = result +'                     <th>Total Amount</th>                                     ';
 					result = result +'                 </tr>                                                         ';
@@ -374,7 +392,7 @@ function getViewInvoice(){
 				result = result +'	            <div class="form-horizontal billsubTotal">                                                    ';
 				result = result +'	              <div class="form-group">                                                                    ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Subtotal</strong></label>                   ';
-				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">INR</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
+				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
 				result = result +'	              </div>                                                                                      ';
 				result = result +'	              <!-- Discount UI -->                                                                        ';
 				result = result +'	              <div class="form-group">                                                                    ';
@@ -478,7 +496,7 @@ function getViewInvoice(){
 				
 				result = result +'	                <div class="form-group mt">                                                        ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
-				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">INR</span><span><strong>'+report.total+'</strong></span></div> ';
+				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><span><strong>'+report.total+'</strong></span></div> ';
 				result = result +'	              </div>                                                                               ';
 				if(convertCurrencyCode != null && convertCurrencyCode != '' && convertCurrencyCode != 'undefined'){
 					 result = result +'  <div class="row">';
@@ -508,7 +526,186 @@ function getViewInvoice(){
 
 </script>
 
+<script>
+function invoiceNotesList(){
+	var result = "";
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
+	result  = result + '<div class="success_pop" id="vendorDocSelector" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorDocMsgDiv"></span>';
+    result  = result + '</div>';
+	    result = result + '<ul class="padding_right">';
+	   result = result  +'    	<a href="javascript:void(0)" onClick="addNotes();" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		
+		result = result + '</ul>';
+		result = result  +'  <div class="clearfix"></div> ';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="vendorNotesListDiv" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+	
+	$("#notesListId").empty();  
+    $("#notesListId").append(result)
+    invoiceNotes();
+    
+}
+</script>
+<script>
+function invoiceNotes(){
+	var urlForm = "";
+	  var invoiceUUID ='${invoiceUUID}';
+    	urlForm = "/getNotesInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID;
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+urlForm,        
+         success :function(data) {
+	var output = "";
+    if(data != null && data != 'undefined' && data != "" && data != '[]'){
+    var json = JSON.parse(data);
+//     '${SourceLeadWeb_user.id}' 
 
+	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+     for(var i=0;i<json.length;i++){
+       	var report = json[i];
+       	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
+   	    output = output+'    <div class="commentsimg">';
+   	    output = output+'    <i class="fa fa-comments"></i>';
+   	    output = output+'        <div class="commentsimg-inner">';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    output = output+'        </div>';
+   	    output = output+'    </div>';
+   	 output = output+'     <div class="comments-content">';
+   	    output = output+'     <div class="commentsNotes_inner">';
+   	    output = output+'         <p class="comment-by">';
+   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	 
+   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
+   	    output = output+'     </div>';
+   	    output = output+'     </div>';
+   	    output = output+'</div>';
+    	}
+     }
+}else{
+     var output ="";
+    output = output+"   <div class='dataTables_empty'>"; 
+	 output = output+"  </div> ";
+}
+output  = output + '              </div>';
+output  = output + '        </div>';
+	$("#vendorNotesListDiv").empty(); 
+    $("#vendorNotesListDiv").append(output);
+ },
+         
+      });
+}
+</script>
+
+<script>
+function closeDocPopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
+
+<script>
+function addNotes() {	
+	 var invoiceUUID ='${invoiceUUID}';
+	var result = "";
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'          <form role="form"  id="invoiceNotes_form" name="invoiceNotes_form" method="post" > ';
+	result = result  +'          <input type="hidden" id="invoicdeId" name="invoiceUUID" value="'+invoiceUUID+'"> ';
+	result = result  +'          <input type="hidden" id="noteType" name="noteType" value="Billing"> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
+	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result+'	                  <div class="clearfix">';
+	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
+    
+	
+     result = result +"    <div class='mt10'>";
+     result = result +"    <div class='dropdown-select mb10' id='clientCategoryContactTypeListDivDiv'>";
+     result = result +"    </div>";
+ 	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result+'	                  <div class="clearfix">';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
+	result = result+'	                  </div>';
+	result = result  +'                  </div>';
+	result = result+' <div class="col-md-9 checkBox"> ';
+	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
+	result = result + '	                    <p>Allow All Users</p>';
+	result = result+'	                  </div>';
+	
+	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="pull-right"> ';
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeInvoiceNotes();" />'; 
+  /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
+	result = result  +'                  </div> ';
+	result = result  +'                  </div> ';
+	result = result  +'                </div>';
+	
+	result = result  +'                </form>';
+	
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	
+	  $(".edit-details").toggleClass("edit-details-active");
+		 $(".close-div").click(function(){ 
+			 $(this).parent("div.edit-details").removeClass("edit-details-active");
+			 });
+		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+			 e.stopPropagation();
+		 });
+		 
+				
+				
+	}
+</script>
+<script type="text/javascript">
+	function storeInvoiceNotes(){
+		if ($('#invoiceNotes_form').validate(false, validationSettings)){ 
+				var frm = $('#invoiceNotes_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#invoiceNotes_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#submit_comment").attr("disabled", "disabled");
+         		$("#submit_comment" ).addClass('button').val('Processing..');
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							closeDocPopup();
+							invoiceNotes();
+							
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+			 
+		}else {
+			return false;	
+		}
+		}
+		$('body').on('blur', '#invoiceNotes_form', function() {
+		$("#invoiceNotes_form").showHelpOnFocus();
+		$("#invoiceNotes_form").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
 <script>
 function paymentHistroy(){
 	 var sourceleadUrl ='${sourceleadUrl}';

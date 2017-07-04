@@ -14,6 +14,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,12 +30,16 @@ import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -59,6 +64,12 @@ public class BillingPayableRestController {
 	
 	@Autowired
 	InvoiceTaxService invoiceTaxService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
+	
+	@Autowired
+	private UserService userService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -98,32 +109,66 @@ public class BillingPayableRestController {
 		    String resultJson;
 		 
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		  
 		    if(null != invoice){
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
 		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 				}
-				
-		    	invoice.setVendorContactId(invoice.getContactUser().getId());
+				if(invoice.getContactUser() != null){
+					invoice.setVendorContactId(invoice.getContactUser().getId());
+				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
-		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));
-		    	invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));
+		    	if(invoice.getInvoiceDate() != null){
+		    		invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));	
+		    	}
+		    	if(invoice.getDueDate() != null){
+		    		invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));	
+		    	}
+		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	
 		    	for(InvoiceLineItems lineItems : invoiceLineItemsList){
 		    		StringBuilder sb = new StringBuilder();
-		    		Candidate candidate = candidateService.getCandidateByCandidateId(lineItems.getCandidate().getId());
+		    		if(lineItems.getCandidate() !=null){
+		    			Candidate candidate = candidateService.getCandidateByCandidateId(lineItems.getCandidate().getId());
+		    			if(null != candidate.getLastName()){
+			    			sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+		    			  }else{
+			    			sb.append(candidate.getFirstName());
+		    			 }
+		    			lineItems.setCandidateId(lineItems.getCandidate().getId());
+		    			
+		    			if(null != lineItems.getContract()){
+			    			lineItems.setContractId(lineItems.getContract().getId());
+			    			lineItems.setSowContractName(lineItems.getContract().getContractTitle());
+			    			String contractType = "";
+			    			if(Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())){
+			    				contractType = "clientSow";
+			    			}else{
+			    				contractType = "vendorSow";
+			    			}
+			    			List<Contracts> contractList = getSowContract(candidate.getId(),lineItems.getOrgLocation(),invoice.getOrgRelationID().getId(),"contractType");
+			    			lineItems.setContractList(contractList);
+			    			//if(null != contractList && contractList.size() >0){
+//								projectMember.setContractsList(contractList);
+//							}
+			    		}
+		    		}else{
+		    			User user = userService.getUserById(lineItems.getUser().getId());
+		    			if(null != user.getLastName()){
+			    			sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+		    			  }else{
+			    			sb.append(user.getFirstName());
+		    			 }
+		    			lineItems.setUserId(lineItems.getUser().getId());
+		    		}
 		    		
-		    		if(null != candidate.getLastName()){
-		    			sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
-	    			  }else{
-		    			sb.append(candidate.getFirstName());
-	    			 }
 		    		
 		    		if(null != lineItems.getStartDate()){
 		    			lineItems.setStartDateStr(Constants.DMY.format(lineItems.getStartDate()));
@@ -134,23 +179,9 @@ public class BillingPayableRestController {
 		    		}
 		    		
 		    		lineItems.setCandidateName(sb.toString());
-		    		lineItems.setCandidateId(lineItems.getCandidate().getId());
 		    		
-		    		if(null != lineItems.getContract()){
-		    			lineItems.setContractId(lineItems.getContract().getId());
-		    			lineItems.setSowContractName(lineItems.getContract().getContractTitle());
-		    			String contractType = "";
-		    			if("Receivable".equalsIgnoreCase(invoice.getInvoiceType())){
-		    				contractType = "clientSow";
-		    			}else{
-		    				contractType = "vendorSow";
-		    			}
-		    			List<Contracts> contractList = getSowContract(candidate.getId(),lineItems.getOrgLocation(),invoice.getOrgRelationID().getId(),"contractType");
-		    			lineItems.setContractList(contractList);
-		    			//if(null != contractList && contractList.size() >0){
-//							projectMember.setContractsList(contractList);
-//						}
-		    		}
+		    		
+		    	
 		    		lineItemsList.add(lineItems);
 		    	}
 		    	if(null != invoice.getProjectID()){
@@ -165,14 +196,22 @@ public class BillingPayableRestController {
 		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
 		    	invoice.setInvoiceTaxList(invoiceTaxList);
 		    	
-		    	
+		    	String currency = "";
+		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		    		currency = conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getResponderLocationId().getCountry());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					currency = conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getLocationId().getCountry());
+				}
+				
+		    	invoice.setClientCurrency(currency);
+		    	invoice.setVendorCurrency(currency);
 		    }
 		    
 		    resultJson = commonUtil.toJSON(invoice);
 			
 			return resultJson;
 	 }
-	 
 	 
 	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
@@ -248,7 +287,7 @@ public class BillingPayableRestController {
 		{
 			List<Contracts> contractsList = null;
 	     	if(null != orgRelationId){
-	     		if(contractType.equalsIgnoreCase("vendorSow")){
+	     		if(Constants.VENDOR_SOW.equalsIgnoreCase(contractType)){
 	     			 contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Vendor_SOW);
 	     		}else{
 	     			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Client_SOW);	

@@ -226,7 +226,7 @@ function getAddApplicant(requirementId){
 	    	
 	    });
 	    
-	    chosen.search_field.on('keyup', function(e)
+	    chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
@@ -239,8 +239,9 @@ function getAddApplicant(requirementId){
 			                 }
 				    	 }else{
 			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				 preventTabkey(e);
 			    				 var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);
@@ -1039,20 +1040,33 @@ function getCandidateSelectionType(){
 			        	
 			        	if(json.length == 1){
 			        		var opt = json[0];
+			        		var updatedDate = "";
+			        		if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != '' && opt.candidateResumeUpdateDateToString != 'undefined'){
+			        			updatedDate = 	"("+opt.candidateResumeUpdateDateToString+")";
+			        		}else{
+			        			updatedDate  = "";
+			        		}
+			        		
 			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+" "+updatedDate+"</option>";
 			            	}else{
-			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+" "+updatedDate+"</option>";
 			            	}
 			        	}else{
 			        		output = output + "<option value=''>-- Select Resume --</option>"; 
 				        	for (var i=0; i<json.length; i++)
 							{
 					        		var opt = json[i];
+					        		var updatedDate = "";
+					        		if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != '' && opt.candidateResumeUpdateDateToString != 'undefined'){
+					        			updatedDate = 	"("+opt.candidateResumeUpdateDateToString+")";
+					        		}else{
+					        			updatedDate  = "";
+					        		}
 					        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"  "+updatedDate+"</option>";
 					            	}else{
-					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+" "+updatedDate+"</option>";
 					            	}
 							}
 			        	}
@@ -1779,6 +1793,7 @@ function setRateTypesByLocation(){
   						
 			        	 
 						 validateSubmissionCandidateEmail();
+						 getUserByUserEmail();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -1841,6 +1856,77 @@ function validate_fileupload(fileName)
  }
  </script>   
  
+ 
+ 
+ <script type="text/javascript">
+ function getUserByUserEmail() {
+	 var emailId =   $("input[name=EmailId]").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(emailId != null && emailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUserByUserEmail?${_csrf.parameterName}=${_csrf.token}&EmailId="+emailId, 
+		        success: function(data) {
+		        	if(data != null && data != ''){
+		        		var json = JSON.parse(data);
+		        		
+		        		if(json.firstName != null && json.firstName != ''){
+		        			$("input[name=FirstName]").val(json.firstName);
+		        			$("input[name=FirstName]").attr("readonly", "readonly");
+		        			$("input[name=FirstName]").find('p.jquery_form_error_message').remove();
+		        		}else{
+		        			$("input[name=FirstName]").removeAttr("readonly", "readonly");
+		        			var firstName = $("input[name=FirstName]");
+		        			if(firstName == ''){
+		        				$("input[name=FirstName]").val('');
+		        			}
+		        			
+		        		}
+		        		
+		        		if(json.lastName != null && json.lastName != ''){
+		        			$("input[name=LastName]").attr("readonly", "readonly");
+		        			$("input[name=LastName]").val(json.lastName);
+		        		}else{
+		        			$("input[name=LastName]").removeAttr("readonly", "readonly");
+		        			
+		        			var lastName = $("input[name=LastName]");
+		        			if(lastName == ''){
+		        				$("input[name=LastName]").val('');
+		        			}
+		        			
+		        			
+		        		}
+		        		
+		        		if(json.mobilePhone != null && json.mobilePhone != ''){
+		        			$("input[name=PhoneNumber]").val(json.mobilePhone);
+		        			$("input[name=PhoneNumber]").attr("readonly", "readonly");
+		        		}else{
+		        			$("input[name=PhoneNumber]").removeAttr("readonly", "readonly");
+		        			
+		        			var phno = $("input[name=PhoneNumber]");
+		        			if(phno == ''){
+		        				$("input[name=PhoneNumber]").val('');
+		        			}
+		        			
+		        			
+		        		}
+		        		
+		        	}
+		        },
+		    });
+	 }else{
+		 $("input[name=FirstName]").attr("disabled", false);
+		 $("input[name=FirstName]").val('');
+		 
+		 $("input[name=LastName]").attr("disabled", false);
+		 $("input[name=LastName]").val('');
+		 
+		 $("input[name=PhoneNumber]").attr("disabled", false);
+		 $("input[name=PhoneNumber]").val('');
+		 
+	 }
+ }
+ </script>   
  
  <script>
  function validateCurrentCTC(){

@@ -51,6 +51,8 @@
 						result = result + '<strong>Website :</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 						result = result + '<span title='+json.webSite+'>'+json.webSite+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 					
@@ -137,6 +139,7 @@
 						
 						$("#tab-4-addTemplate").empty();
 			    		$("#tab-4").empty();
+			    		$("#tab-5").empty();
 			    		$("#tab-3").empty();
 						$("#tab-1").empty();
 						$("#tab-1").append(result);

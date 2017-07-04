@@ -11,44 +11,45 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix">Requirements &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
+          <h4 class="clearfix">Jobs &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Today</a></li>
+              <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');" href="#today-req">Current</a></li>
               <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');" href="#prev-req">Previous</a></li>
+                   <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
             </ul>
             <div class="tab-content clearfix">
               <div id="today-req" class="tab-pane fade in active">
                 <div class="db-widget-sm row">
                 <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-black-tie" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="applicantsCount"></span></p>
-                        <p class="info-box-text"> Applicants </p>
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Applicants" id="appDiv">
+                        <p class="info-box-number"><span id="applicantsCount" onclick="loadRequirementApplicants();"></span></p>
+                        <p class="info-box-text">Applicants</p>
                       </div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="submissionsCount">${submissionsCount}</span></p>
-                        <p class="info-box-text"> Submission </p>
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Submission" id="subDiv">
+                        <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
+                        <p class="info-box-text">Submissions</p>
                       </div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-graduation-cap" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="interviewsCount"></span></p>
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Interviews" id="intDiv">
+                        <p class="info-box-number"><span id="interviewsCount" onclick="loadRequirementInterviews();"></span></p>
                         <p class="info-box-text">Interviews</p>
                       </div>
                     </div>
                   </div>
                   <div class="col-xs-12 col-sm-3">
-                    <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-tags" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center">
-                        <p class="info-box-number"><span id="offersCount"></span></p>
+                    <div class="info-box"> <span class="info-box-icon bg-orange" > <i class="fa fa-tags" aria-hidden="true"></i> </span>
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Offers" id="offDiv">
+                        <p class="info-box-number"><span id="offersCount" onclick="loadRequirementOffers();"></span></p>
                         <p class="info-box-text">Offers</p>
                       </div>
                     </div>
@@ -62,12 +63,31 @@ $(document).ready(function(){
         <!-- Requirement ends --> 
       </div>
       
-      
-      
-      <script type="text/javascript">
-
-
+<script type="text/javascript">
+function loadRequirementApplicants(){
+	var tab = $("#dateActiveTab").val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab;
+}
+function loadRequirementSubmissions(){
+	var tab = $("#dateActiveTab").val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab;
+}
+function loadRequirementInterviews(){
+	var tab = $("#dateActiveTab").val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab;
+}
+function loadRequirementOffers(){
+	var tab = $("#dateActiveTab").val();
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab;
+}
+</script>     
+<script type="text/javascript">
 function requirementSubmissionsCount(daterange){
+	$("#dateActiveTab").val(daterange); 
     var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "GET",
@@ -84,25 +104,29 @@ function requirementSubmissionsCount(daterange){
 	                      $("#submissionsCount").text(submissionsCount);
 	                  }else{
 	                      $("#submissionsCount").html("0");
-	                      $("#submissionsCount").removeAttr("href");
+	                      $("#submissionsCount").removeAttr("onclick");
+	                      $("#subDiv").removeAttr("style");
 	                  } 
 		        	 if(applicantsCount>0){
 	                      $("#applicantsCount").text(applicantsCount);
 	                  }else{
 	                      $("#applicantsCount").html("0");
-	                      $("#applicantsCount").removeAttr("href");
+	                      $("#applicantsCount").removeAttr("onclick");
+	                      $("#appDiv").removeAttr("style");
 	                  }
 		        	if(interviewsCount>0){
 	                      $("#interviewsCount").text(interviewsCount);
 	                  }else{
 	                      $("#interviewsCount").html("0");
-	                      $("#interviewsCount").removeAttr("href");
+	                      $("#interviewsCount").removeAttr("onclick");
+	                      $("#intDiv").removeAttr("style");
 	                  }
 		        	if(offersCount>0){
 	                      $("#offersCount").text(offersCount);
 	                  }else{
 	                      $("#offersCount").html("0");
-	                      $("#offersCount").removeAttr("href");
+	                      $("#offersCount").removeAttr("onclick");
+	                      $("#offDiv").removeAttr("style");
 	                  } 
 		        	
 		 		}

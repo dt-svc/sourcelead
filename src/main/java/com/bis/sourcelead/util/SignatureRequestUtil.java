@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
@@ -46,7 +47,7 @@ public class SignatureRequestUtil {
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
 	
-	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws Exception{
+	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org, RequirementSubmission requirementSubmission) throws Exception{
 		
 		// Enter your DocuSign credentials:
 		String UserName = "sourcelead@rediffmail.com";
@@ -114,7 +115,6 @@ public class SignatureRequestUtil {
 		String base64Doc = Base64.getEncoder().encodeToString(fileBytes);
 		doc.setDocumentBase64(base64Doc);
 		
-		
 		doc.setName(contractsTemplate.getTemplateName()+".pdf");    // can be different from actual file name
 		/*doc.setDocumentId("1");*/
 		doc.setDocumentId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
@@ -125,15 +125,17 @@ public class SignatureRequestUtil {
 		
 	        PdfReader pdfReader = new PdfReader(fileBytes);
 	        Integer numberOfPages = pdfReader.getNumberOfPages();
-		
-	        
-	        
-	        
 
 		// add a recipient to sign the document, identified by name, email, and recipientId
 		Signer signer = new Signer();
-		signer.setEmail(vendorUser.getEmail());
-		signer.setName(vendorUser.getFirstName());
+		if("Full time offer".equalsIgnoreCase(contracts.getContractType())){
+			signer.setEmail(requirementSubmission.getCandidate().getEmail());
+			signer.setName(requirementSubmission.getCandidate().getFirstName());
+		}
+		else{
+			signer.setEmail(vendorUser.getEmail());
+			signer.setName(vendorUser.getFirstName());
+		}
 		signer.setRecipientId("1");
 
 		// create a signHere tab somewhere on the document for the signer to sign
@@ -142,7 +144,7 @@ public class SignatureRequestUtil {
 		signHere.setDocumentId(doc.getDocumentId());
 		signHere.setPageNumber(numberOfPages.toString());
 		signHere.setRecipientId("1");
-		signHere.setXPosition("500");
+		signHere.setXPosition("250");
 		signHere.setYPosition("750");
 
 		// can have multiple tabs, so need to add to envelope as a single element list
@@ -174,14 +176,13 @@ public class SignatureRequestUtil {
 			con.setTempdocId(doc.getDocumentId());
 			con.setTempEnvId(envelopeSummary.getEnvelopeId());
 			con.setContractStatus(envDef.getStatus());
-			//logger.info("EnvelopeSummary: " + envelopeSummary);
 		
 		
 		return con;
 	}
 
 	public Contracts sendDocumentForSignatureRequestForCustom(User vendorUser, Contracts contracts,
-			OrgLocations orgLocation, User user, Contracts savedContracts, Org org) throws Exception {
+			OrgLocations orgLocation, User user, Contracts savedContracts, Org org, RequirementSubmission requirementSubmission) throws Exception {
 		// Enter your DocuSign credentials:
 				String UserName = "sourcelead@rediffmail.com";
 				String Password = "Pwd!123";    
@@ -228,14 +229,7 @@ public class SignatureRequestUtil {
 				// create a byte array that will hold our document bytes
 				byte[] fileBytes = null;
 
-				//					String currentDir = System.getProperty("user.dir");
-//					// read file from a local directory
-//					Path path = Paths.get(currentDir + SignTest1File);
-//					fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate);
-			//	fileBytes = contracts.getDocFile();
 				fileBytes = contracts.getDocFile();
-				//fileBytes = html2PdfUtil.getPdfBytes("",contracts,orgLocation,org);
-				
 				
 				 PdfReader pdfReader = new PdfReader(fileBytes);
 			        Integer numberOfPages = pdfReader.getNumberOfPages();
@@ -247,7 +241,6 @@ public class SignatureRequestUtil {
 				String base64Doc = Base64.getEncoder().encodeToString(fileBytes);
 				doc.setDocumentBase64(base64Doc);
 				doc.setName(contracts.getFileName()+".pdf");    // can be different from actual file name
-				/*doc.setDocumentId("1");*/
 				doc.setDocumentId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
 				// create a list of docs and add it to the envelope
 				List<Document> docs = new ArrayList<Document>();
@@ -256,8 +249,14 @@ public class SignatureRequestUtil {
 
 				// add a recipient to sign the document, identified by name, email, and recipientId
 				Signer signer = new Signer();
-				signer.setEmail(vendorUser.getEmail());
-				signer.setName(vendorUser.getFirstName());
+				if("Full time offer".equalsIgnoreCase(contracts.getContractType())){
+					signer.setEmail(requirementSubmission.getCandidate().getEmail());
+					signer.setName(requirementSubmission.getCandidate().getFirstName());
+				}
+				else{
+					signer.setEmail(vendorUser.getEmail());
+					signer.setName(vendorUser.getFirstName());
+				}
 				signer.setRecipientId("1");
 
 				// create a signHere tab somewhere on the document for the signer to sign
@@ -266,7 +265,7 @@ public class SignatureRequestUtil {
 				signHere.setDocumentId(doc.getDocumentId());
 				signHere.setPageNumber(numberOfPages.toString());
 				signHere.setRecipientId("1");
-				signHere.setXPosition("500");
+				signHere.setXPosition("250");
 				signHere.setYPosition("750");
 
 				// can have multiple tabs, so need to add to envelope as a single element list
@@ -284,13 +283,10 @@ public class SignatureRequestUtil {
 				// send the envelope by setting |status| to "sent". To save as a draft set to "created"
 				envDef.setStatus("sent");
 
-				
 					// use the |accountId| we retrieved through the Login API to create the Envelope
 					String accountId = loginAccounts.get(0).getAccountId();
-					
 					// instantiate a new EnvelopesApi object
 					EnvelopesApi envelopesApi = new EnvelopesApi();
-					
 					// call the createEnvelope() API to send the signature request!
 					EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
 					
@@ -299,8 +295,6 @@ public class SignatureRequestUtil {
 					con.setTempEnvId(envelopeSummary.getEnvelopeId());
 					con.setContractStatus(envDef.getStatus());
 					//logger.info("EnvelopeSummary: " + envelopeSummary);
-				
-				
 				return con;
 	}
 	

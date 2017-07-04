@@ -27,20 +27,11 @@
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- ends files of export -->
-
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getAllApplicantReports();
-	}
-</script>
-
-<script type="text/javascript">
-function getAllApplicantReports(){
 	getDayWiseReports();
-}
-
-
+	}
 </script>
 
 
@@ -61,11 +52,12 @@ function getRequirementList(){
 </script> -->
 <script>
 function prepareReportDataDiv(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '    <th>Requirement Title</th>';
+	result = result + '    <th>Job Title</th>';
 	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Applicants</th>';
 // 	result = result + '    <th>Request Sent for Approval</th>';
@@ -74,6 +66,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Interviewed</th>';
 	result = result + '    <th>Offered</th>';
 	result = result + '    <th>Rejected</th>';
+	result = result + '    <th>Backout</th>';
 	result = result + '    <th>Status</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
@@ -150,6 +143,14 @@ function prepareReportDataDiv(data){
          }else{
        		 result = result + '<div><span>---</span></div>';
    	    }
+         
+         result = result + '<td>';
+         if(report.backedOutDate != null && report.backedOutDate != '' && report.backedOutDate !='undefined'){
+       	 result = result + "<div class='tbldata-dotdot-100'>"+report.backedOutDate+"</div>";
+         }else{
+       		 result = result + '<div><span>---</span></div>';
+   	    }
+         
          result = result + '</td>';
          
          result = result + '<td>';
@@ -165,23 +166,23 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
-    requirementReportPagination();
+    requirementReportPagination(SourceLeadWeb_loginOrg);
     //getAllCounts();
 }
 
 </script>
 <script>
-function requirementReportPagination(){
+function requirementReportPagination(SourceLeadWeb_loginOrg){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Applicants',
+	                title: SourceLeadWeb_loginOrg+' - Applicants Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Applicants',
+	                title: SourceLeadWeb_loginOrg+' - Applicants Reports',
 	            }
 	        ],
 		
@@ -195,8 +196,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
 
 </script>
@@ -235,6 +236,13 @@ function requirementReportPagination(){
 	});
 </script>	
 
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -243,12 +251,12 @@ function requirementReportPagination(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Applicants</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
@@ -262,7 +270,7 @@ function requirementReportPagination(){
      
       <div class="timesheet_head">
 
-<div class="pull-left reportBtns">
+<div class="pull-left reportBtns reportcutom_Btns">
 	  <div class="reportBtn dropdown-select">
 		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 <!-- 		 <option value="">-- Select --</option> -->
@@ -275,20 +283,22 @@ function requirementReportPagination(){
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <span class="dashboard-datepkr cusShow">
+	
+<div class="cusShow pull-left">
+	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ApplicantStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 	 <p id="ApplicantReportStartDate" class="ReError"></p>
 	 </span>
-	<span class="dashboard-datepkr cusShow">
+	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ApplicantEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
 	<p id="ApplicantReportEndDate" class="ReError"></p>
 	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
-	
-		<span class="repoBtns">
+	<span class="pull-left"><input type="button" value="Submit" class="btn btn-primary mt5" onclick="getCustomReports();" /></span>
+</div>
+    <div class="repoBtns pull-left">
 		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
 		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-	</span>	
+	</div>	
 	
 </div>
                      
@@ -305,12 +315,12 @@ function requirementReportPagination(){
 
           <div class="clearfix"></div>
         </ul> -->
-        <div class="clearfix mt5"></div>
+        <div class="clearfix"></div>
       </div>
  
   <div class="repTab1">  
       
-	<div class="reportsCount">
+	<div class="reportsCount reportsCount7">
 		<ul>
 			<li title="Applicants" id="applicantsli">
 				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
@@ -329,6 +339,9 @@ function requirementReportPagination(){
 			</li>
 			<li title="Rejected" id="rejectedli" class="colorTwo">
 				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
+			</li>
+			<li title="Backout" id="backoutli">
+				<span><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>
 			</li>
 					<div class="clearfix"></div>
 		</ul>
@@ -610,11 +623,12 @@ function allApplicantsCount(reportType,startDate,endDate){
        	 	$("#submitToClientCount").html(json.submitToClientSum);
        		 $("#interviewCount").html(json.interviewsSum);
        		 $("#offerCount").html(json.offeredSum); 
-          	$("#rejectedCount").html(json.rejectedSum);  
+          	$("#rejectedCount").html(json.rejectedSum); 
+          	$("#backoutCount").html(json.backoutSum); 
 		}
     	if($(".oneB" ).hasClass( "actRE" )){
 
-     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientSum,json.offeredSum,json.rejectedSum,json.requestSentSum);
+     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientSum,json.offeredSum,json.rejectedSum,json.requestSentSum,json.backoutSum);
 
        	 
     	}
@@ -702,7 +716,7 @@ function getCustomReports(){
 <script src="resources/reports/light.js"></script>
   
      <script>
-     function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount){
+     function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount,backoutCount){
      var chart = AmCharts.makeChart("chartdiv", {
 	     "type": "serial",
 	     "theme": "light",
@@ -735,6 +749,11 @@ function getCustomReports(){
 	     "Stage": "Rejected",
 	     "StageCount": rejectedCount,
 	     "color": "#B0DE09"
+	
+	     },{
+	     "Stage": "Backout",
+	     "StageCount": backoutCount,
+	     "color": "#ffa726"
 	
 	     }],
 	     "valueAxes": [{

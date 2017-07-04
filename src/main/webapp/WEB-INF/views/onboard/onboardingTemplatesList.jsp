@@ -13,8 +13,17 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Onboard Templates List</h2>
-          </div>
+      <!-- <h2>Submission Templates</h2> -->
+      <h2 class="pull-left">Onboard Templates</h2>
+				<div class=" pull-left reportsH">
+			
+			<div class="RePop openTemplates">
+				
+			</div>
+		</div>
+    </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Onboard Templates List</div>
+ <div class="clearfix"></div>
     </section>
     
     <div class="timesheet_out">
@@ -29,7 +38,7 @@
             </div>
 			
 			    <div class="clients_wrap_table datatable_scroll">
-				    <div id="onboardingTemplatesList"></div>
+				    <div id="onboardingTemplatesList" class="datatable_filter"></div>
 				</div>	   
 					
 			</div>
@@ -114,15 +123,15 @@ function onboardingPagenation(){
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""
 	       }
-	    } );
+	    });
 }
 </script>
 

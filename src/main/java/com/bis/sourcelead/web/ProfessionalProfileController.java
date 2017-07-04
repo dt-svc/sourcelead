@@ -55,7 +55,11 @@ public class ProfessionalProfileController {
 	@Autowired
 	CandidateResumesService candidateResumesService;
 	
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
+	/* @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")*/
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
 		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -87,6 +91,9 @@ public class ProfessionalProfileController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
+				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+				model.addObject("documentsList", documentsList);
+				
 				Integer candidateResumeCount =  candidateResumesService.getCandidateResumeCountByResumeId(candidateId);
 				if(candidateResumeCount > 0 ){
 					model.setViewName("professional/profile");
@@ -103,7 +110,8 @@ public class ProfessionalProfileController {
 		public String getProfessionalInfo(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
+		        Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		        //Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
 		        	if(null != candidate.getConsultantUser().getLastName()){
@@ -146,6 +154,15 @@ public class ProfessionalProfileController {
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Profile);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 			model.addObject("skillsList", skillsList);
 			model.addObject("candidateId", candidateId);
 			
@@ -159,7 +176,14 @@ public class ProfessionalProfileController {
 			ModelAndView model = new ModelAndView();
 			model.setViewName("professional/professionalAddProfile");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			Countries countries = null;
+			
+			if(isNullOrEmpty(loginUser.getProfessionalRegisterCountry())){
+				countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			}else{
+				countries = countriesService.getCountriesByCountryName(loginUser.getProfessionalRegisterCountry());
+			}
+			
 			if(null != countries){
 	         model.addObject("loginCountryName", countries.getName());
 	         model.addObject("currencyCode", countries.getCurrency());

@@ -114,6 +114,10 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
     private String rejectedReason;
 	
+	@Column(name = "REASON_TYPE")
+    private String rejectedCategoryType;
+	
+    
 	@Column(name = "FINALIZED_RATE")
 	private String finalizedRate;
 	
@@ -386,10 +390,28 @@ public class RequirementSubmission implements Serializable{
 	private String twitterUrl;
     
     @Transient
+  	private String ratePer;
+    
+    @Transient
 	private String vendorLocationCode;
     
-	
-	
+    @Column(name = "REASON_OTHER_TYPE")
+    private String rejectedCategoryOther;
+    
+    @Transient
+   	private String referUUID;
+    
+    
+	public String getRatePer()
+	{
+		return ratePer;
+	}
+
+	public void setRatePer(String ratePer)
+	{
+		this.ratePer = ratePer;
+	}
+
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
@@ -1295,5 +1317,31 @@ public class RequirementSubmission implements Serializable{
 
 	public void setVendorLocationCode(String vendorLocationCode) {
 		this.vendorLocationCode = vendorLocationCode;
+	}
+
+	public String getRejectedCategoryType() {
+		return rejectedCategoryType;
+	}
+
+	public void setRejectedCategoryType(String rejectedCategoryType) {
+		this.rejectedCategoryType = rejectedCategoryType;
+	}
+
+	public String getRejectedCategoryOther()
+	{
+		return rejectedCategoryOther;
+	}
+
+	public void setRejectedCategoryOther(String rejectedCategoryOther)
+	{
+		this.rejectedCategoryOther = rejectedCategoryOther;
+	}
+
+	public String getReferUUID() {
+		return referUUID;
+	}
+
+	public void setReferUUID(String referUUID) {
+		this.referUUID = referUUID;
 	}
 }

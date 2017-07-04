@@ -75,7 +75,7 @@ display: none;
                       </div>
                     </div>
                     <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
-                     <div id="clientsList"></div>
+                     <div id="clientsList" class="datatable_filter"></div>
                     </div>
                   </div> 
                   
@@ -136,7 +136,7 @@ display: none;
                             <option value="hotlistConsultants">Hostlist Associates</option>
                           </select>
                         </div>                    
-                     <div id="candidatesList" class="mailFil"></div>
+                     <div id="candidatesList" class="mailFil datatable_filter"></div>
                      <div id="candidatesLoading"></div>
                     </div>
                      
@@ -417,9 +417,7 @@ function getClientContacts(){
                		
 	                	   
                			    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
-	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -614,14 +612,20 @@ function pagination(){
     $("#example").DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"aaSorting": [[1,'desc']],
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#example").wrap("<div class='overflow_inherint'></div>");
 }
 </script>
 
@@ -644,7 +648,7 @@ function getCandidates(candidatesListType){
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	                	   
                			    var result = '';
-	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -731,7 +735,7 @@ function getCandidates(candidatesListType){
                  }else{
   	    	         
                  	var result ="";
- 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter">'; 
+ 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
  	           	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
  	           		result = result +'           <thead>';
  	           		result = result +'           <tr>';
@@ -767,10 +771,15 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"aaSorting": [[1,'desc']],
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -940,11 +949,11 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var otherEmailArray = this.value.split(",");
+		    	 var otherEmailArray = this.value.split(/[ ,]+/);
 		    	 if(otherEmailArray.length > 1){
 		    		 for (var i=0; i < otherEmailArray.length; i++) {
 	        			 var option = $("<option>").val(otherEmailArray[i].replace(",","")).text(otherEmailArray[i].replace(",",""));
@@ -954,13 +963,14 @@ function getCheckedCandidates(){
 	                 }
 		    	 }else{
 		    		 var newEmail = this.value.replace(","," ");
-				        if ((e.which == 13 || e.which == 32 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		    		   if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 				        {
-			        		var par = this.parent;
+		    			         preventTabkey(e); 
+			        		     var par = this.parent;
 				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
 				        		 select.append(option);
-						            select.find(option).prop('selected', true);
-					        		$("#otherEmails").trigger("chosen:updated");
+					             select.find(option).prop('selected', true);
+				        		 $("#otherEmails").trigger("chosen:updated");
 				        
 				           
 			        		
@@ -972,11 +982,11 @@ function getCheckedCandidates(){
 
 		    var selectone, chosenone;
 		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e)
+		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {
-		    	 var toEmailArray = this.value.split(",");
+		    	 var toEmailArray = this.value.split(/[ ,]+/);
 		    	 if(toEmailArray.length > 1){
 		    		 for (var i=0; i < toEmailArray.length; i++) {
 	        			 var option = $("<option>").val(toEmailArray[i].replace(",","")).text(toEmailArray[i].replace(",",""));
@@ -986,8 +996,9 @@ function getCheckedCandidates(){
 	                 }
 		    	 }else{
 		    			var newEmail = this.value.replace(","," ");
-				        if ((e.which == 13 || e.which == 32 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		    			if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 				        {
+		    				preventTabkey(e); 
 				        	var par = this.parent;
 				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
 				        		 selectone.append(option);

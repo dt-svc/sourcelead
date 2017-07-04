@@ -100,7 +100,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         			  orgLocations = userRole.getOrgLocations();
           			  org = orgLocations.getOrg();
     				try {
-    					modulesId = modulesService.getOrgRegisteredModules(org);
+    					modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
     				} catch (Exception e1) {
     					e1.printStackTrace();
     				} 
@@ -121,6 +121,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 				  try {
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 	        			  userRole.setUserState(Status.ACTIVE);
+	        			  userRole.setNewlyLoginUser(Constants.YES);
 	        			  userRoleService.addUserRole(userRole);
 
 	        			  /*

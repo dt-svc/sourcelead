@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+
 @Entity
 @Table(name = "INVOICE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
@@ -70,8 +71,14 @@ public class Invoice {
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
 	
+	@Column(name = "LINK_INVOICE_REF_INVOICE_ID")
+	private String linkInvoiceRefInvoiceId;
+	
 	@Column(name = "INVOICE_UUID")
 	private String invoiceUUID;
+	
+	@Column(name = "LINK_INVOICE_REFERENCE_ID")
+	private Long linkInvoiceReferenceId;
 	
 	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
@@ -235,6 +242,24 @@ public class Invoice {
 	
 	@Transient
 	private List<String> submissionApproverHierarchyIds;
+	
+//	  
+	
+	@Transient
+	private float netIncome;
+	
+	@Transient
+	private float recievableAmount;
+	
+	@Transient
+	private float payableAmount;
+	
+	@Transient
+	private String vendorCurrency;
+	
+	@Transient
+	private String clientCurrency;
+	
 	
 	public Long getId()
 	{
@@ -810,6 +835,74 @@ public class Invoice {
 	public void setRejectReason(String rejectReason)
 	{
 		this.rejectReason = rejectReason;
+	}
+
+	public String getLinkInvoiceRefInvoiceId()
+	{
+		return linkInvoiceRefInvoiceId;
+	}
+
+	public void setLinkInvoiceRefInvoiceId(String linkInvoiceRefInvoiceId)
+	{
+		this.linkInvoiceRefInvoiceId = linkInvoiceRefInvoiceId;
+	}
+
+	public Long getLinkInvoiceReferenceId()
+	{
+		return linkInvoiceReferenceId;
+	}
+
+	public void setLinkInvoiceReferenceId(Long linkInvoiceReferenceId)
+	{
+		this.linkInvoiceReferenceId = linkInvoiceReferenceId;
+	}
+
+	
+
+	public float getNetIncome()
+	{
+		return netIncome;
+	}
+
+	public void setNetIncome(float netIncome)
+	{
+		this.netIncome = netIncome;
+	}
+
+	public float getRecievableAmount()
+	{
+		return recievableAmount;
+	}
+
+	public void setRecievableAmount(float recievableAmount)
+	{
+		this.recievableAmount = recievableAmount;
+	}
+
+	public float getPayableAmount()
+	{
+		return payableAmount;
+	}
+
+	public void setPayableAmount(float payableAmount)
+	{
+		this.payableAmount = payableAmount;
+	}
+
+	public String getVendorCurrency() {
+		return vendorCurrency;
+	}
+
+	public void setVendorCurrency(String vendorCurrency) {
+		this.vendorCurrency = vendorCurrency;
+	}
+
+	public String getClientCurrency() {
+		return clientCurrency;
+	}
+
+	public void setClientCurrency(String clientCurrency) {
+		this.clientCurrency = clientCurrency;
 	}
 	
 	

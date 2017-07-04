@@ -41,7 +41,7 @@ function professionalCandidateEducation(candidateId){
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		
 		
-		result  = result + '   <div id="candidateEducationList" ></div>';
+		result  = result + '   <div id="candidateEducationList" class="datatable_filter"></div>';
 		
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -93,10 +93,10 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Start Date</th>';
+	                 	 result  = result + '           <th>End Date</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -133,7 +133,11 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
 	                    	 }
 	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+			                 if(opt.gradeType == 'Percentage'){
+			                	 result  = result + '<td><div><span>%</span></div></td>';
+			                 }else{
+			                	 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+			                 }
 			                 }else{
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
 			                 }
@@ -180,10 +184,10 @@ function candidateEducationList(candidateId){
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -501,18 +505,22 @@ function EditEducation(candidateId,candidateEducationId) {
 							}
 							
 							$('#startDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							      onSelect: function (selected) {
-							            var dt = new Date(selected);
+							    	    var dt = toDate("#startDateEdit");
 							            dt.setDate(dt.getDate() + 1);
 							            $("#endDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#endDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							        onSelect: function (selected) {
-							            var dt = new Date(selected);
+							        	var dt = toDate("#endDateEdit");
 							            dt.setDate(dt.getDate() - 1);
 							            $("#startDateEdit").datepicker("option", "maxDate", dt);
 							        }
@@ -657,10 +665,40 @@ $('body').on('blur', '#education_form', function() {
      @author : david.
      this script is for remove professionalCandidateEducation.
 --%>
+<script>
+function removeEducation(candidateEducationId, candidateId){
+	
+	alertMessageforEdu(candidateEducationId, candidateId);
+}
+</script>
+
+<script type="text/javascript">
+function cancelEdu(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEmp2PopUp"></div> 
+
+<script type="text/javascript">
+function alertMessageforEdu(candidateEducationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Education</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEdu("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelEdu();'></b>";
+	result = result +"	</div>";
+	$("#deleteEmp2PopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 
       
 <script>
-function removeEducation(candidateEducationId,candidateId){
+function deleteSelectedEdu(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -677,6 +715,7 @@ function removeEducation(candidateEducationId,candidateId){
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
              			 eduMsgFadein();
 			    	}

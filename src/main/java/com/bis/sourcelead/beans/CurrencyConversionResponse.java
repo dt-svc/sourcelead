@@ -13,6 +13,7 @@ public class CurrencyConversionResponse {
 	private Map<String, String> rates = new TreeMap<String, String>();
 	private float exchangeRate; 
 	private float exchangeCurrency;
+	private String vendorCurrencyCode;
 	
 	public Map<String, String> getRates()
 	{
@@ -43,6 +44,16 @@ public class CurrencyConversionResponse {
 	{
 		this.exchangeCurrency = exchangeCurrency;
 	}
+
+	public String getVendorCurrencyCode() {
+		return vendorCurrencyCode;
+	}
+
+	public void setVendorCurrencyCode(String vendorCurrencyCode) {
+		this.vendorCurrencyCode = vendorCurrencyCode;
+	}
+
+		
 	
 	
 }

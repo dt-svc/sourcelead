@@ -31,7 +31,13 @@
     <div class="pull-left">
       <h2>Import Candidate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+    	<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+     </c:if>
+      
+      <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+    	<div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+     </c:if>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -43,7 +49,7 @@
         <div class="col-md-12 clearfix">
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
+            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
@@ -323,6 +329,27 @@
               </div>
             </div>
             
+             <div class="form-group">
+              <label class="col-md-3">Immigration Status</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
             <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
           <div class="col-md-9">
@@ -343,6 +370,9 @@
                 </select>
               </div>
             </div>
+            
+            
+            
          
             
         
@@ -353,6 +383,17 @@
           </div>
         </div>
         </div>
+        <div class="clearfix"></div>
+        <div class="form-group">
+            <label class="col-md-3"></label>
+             <div class="col-md-9">
+               <div class="checkbox checkBox">
+                 <label>
+                   <input type="checkbox" value="Y" name="email">
+                   Invite to SourceLead</label>
+               </div>
+                </div>
+         </div>
         
         
         <div class="clearfix"></div>
@@ -489,7 +530,7 @@ function getAllCountries(){
         	$('#country').empty();
         	$('#country').append('<option value="">---select country---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+            	if(json[i] == '${SourceLeadWeb_loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
@@ -615,7 +656,7 @@ function getCities(){
 		    });
 		    
 	    
-	    chosen.search_field.on('keyup', function(e)
+	    chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
@@ -628,8 +669,9 @@ function getCities(){
 			                 }
 				    	 }else{
 			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				 preventTabkey(e);
 			    				 var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);
@@ -650,11 +692,12 @@ function getCities(){
 	        selectone = $("#candidateEducation");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);

@@ -278,9 +278,14 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  left join fetch cnadidate.consultantUser left join fetch cnadidate.orgLocationId where cnadidate.id =:candidateId";
+		String query = "from Candidate cnadidate  "
+				+ "left join fetch cnadidate.consultantUser "
+				+ "left join fetch cnadidate.teamId "
+				+ "left join fetch cnadidate.recruiterUserId "
+				+ "left join fetch cnadidate.masterCandidateId "
+				+ "left join fetch cnadidate.orgRelationId left "
+				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId where cnadidate.id =:candidateId";
 		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
-		
 		Candidate candidate = null;
 		if(candidateList != null && !candidateList.isEmpty())
 		{
@@ -617,7 +622,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId, String candidateType) {
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId, String candidateType) {
 		
 		logger.debug("..getCandidatesCount() Method Started..");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -630,8 +635,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 			
 		
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery+" ";
-		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "
+				+ " and (candidate.consultantUser IS NULL OR candidate.consultantUser.id <> :userId) "+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
@@ -705,11 +711,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "";
 		List<Candidate> candidateList = null;
+		
+		String subQuery = " and candidate.id NOT IN (select onboarding.candidateId.id from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationId)";
+		
 		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL";
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL "+subQuery+" ";
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).setCacheable(true).list();
 		}else{
-			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL"; 
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL "+subQuery+" "; 
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		}
 		  
@@ -1008,6 +1017,24 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
 		logger.debug("getCandidatesCountByCandidateTypeOrgLocationIDAndUserId() Method Ended..");
 		return results.get(0);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.recruiterUserId.id = :userId ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.orgRelationId.id = :orgRelationId and candidate.isAssociate = 'Y'";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 	}
 }
 

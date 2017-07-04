@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  * @author Ajith Matta
  *
@@ -41,9 +43,14 @@ public class CandidateResumes implements Serializable{
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
+	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
+	@JsonBackReference
 	private Candidate candidateId;
+	
+	@Transient
+	private Long candidateJsonId;
 		
 	
 	@Column(name = "TITLE")
@@ -85,6 +92,9 @@ public class CandidateResumes implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	private String candidateResumeUpdateDateToString;
 
 	public Long getId() {
 		return id;
@@ -110,6 +120,13 @@ public class CandidateResumes implements Serializable{
 		this.candidateId = candidateId;
 	}
 
+	public Long getCandidateJsonId() {
+		if(candidateId != null && candidateId.getId() != null){
+			candidateJsonId = candidateId.getId();
+		}
+		return candidateJsonId;
+	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -214,7 +231,12 @@ public class CandidateResumes implements Serializable{
 		this.resumeUUID = resumeUUID;
 	}
 
-	
+	public String getCandidateResumeUpdateDateToString() {
+		return candidateResumeUpdateDateToString;
+	}
 
+	public void setCandidateResumeUpdateDateToString(String candidateResumeUpdateDateToString) {
+		this.candidateResumeUpdateDateToString = candidateResumeUpdateDateToString;
+	}
 
 }

@@ -93,7 +93,7 @@ public class RequirementListController {
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		if(null != orgClientList && orgClientList.size() > 0){
 			for(OrgRelations ocl :orgClientList){
-				ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 			 }
 		    model.addObject("add_clientList", orgClientList);
@@ -123,7 +123,7 @@ public class RequirementListController {
 		
 		   /* List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
 	         for(OrgRelations orgRelations:orgClientList){
-	         	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+	         	orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
 	         }
 	        model.addObject("add_client", orgClientList);
 	        model.addObject(orgClientList);*/
@@ -166,7 +166,8 @@ public class RequirementListController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("requirement/releaseRequirement");
 			
-			 String experience = "";
+
+			    String experience = "";
 			    if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isEmpty(requirement.getMaxExp())){
 					experience = requirement.getMinExp()+" Years";
 				}else if(StringUtils.isEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
@@ -184,7 +185,7 @@ public class RequirementListController {
 				
 				StringBuilder  description = new StringBuilder("");
 				description = description.append("Job Title : ").append(requirement.getJobTitle()).append("; ")
-				            .append("Posted By : ").append(requirement.getOrgLocationId().getOrg().getOrgName()).append("; ")
+				            .append("Posted By : ").append(requirement.getOrgLocationId().getOrgLocationName()).append("; ")
 				            .append("Skills : ").append(requirement.getSkills()).append("; ").append("Job Type : ").append(requirement.getJobType()).append("; ");
 				if(StringUtils.isNotEmpty(experience)){
 					description =   description.append("Experience : ").append(experience).append("; ");
@@ -204,6 +205,7 @@ public class RequirementListController {
 				model.addObject("socialpost_picture", "");
 				model.addObject("socialpost_comment", "");
 				
+
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -216,10 +218,10 @@ public class RequirementListController {
 			
 			for(OrgRelations orgRelation :vendorsList){
 				if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
-					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
 				}
 				if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
-					orgRelation.setClientName(orgRelation.getLocationId().getOrg().getOrgName());
+					orgRelation.setClientName(orgRelation.getLocationId().getOrgLocationName());
 				}
 			}
 			model.addObject("vendor_list", vendorsList);

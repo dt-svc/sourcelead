@@ -322,6 +322,27 @@
                 </select>
               </div>
           </div>
+          
+          <div class="form-group">
+              <label class="col-md-3">Immigration Status</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
          <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
@@ -354,6 +375,17 @@
       
       </div>
         
+        <div class="clearfix"></div>
+        <div class="form-group">
+            <label class="col-md-3"></label>
+             <div class="col-md-9">
+               <div class="checkbox checkBox">
+                 <label>
+                   <input type="checkbox" value="Y" name="email">
+                   Invite to SourceLead</label>
+               </div>
+                </div>
+         </div>
 
         <div class="clearfix"></div>
       </div> 
@@ -614,6 +646,34 @@ function getCities(){
 		    	
 		    });
 		    
+		    chosen.search_field.on('keydown keyup', function(e)
+				    {
+				    	   var skillsArray = this.value.split(",");
+					    	 if(skillsArray.length > 1){
+				        		 for (var i=0; i < skillsArray.length; i++) {
+				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#candidateSkills").trigger("chosen:updated");
+				                 }
+					    	 }else{
+				    			var newSkill = this.value.replace(","," ");
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				                {
+				    				 preventTabkey(e);
+				    				 var option = $("<option>").val(newSkill).text(newSkill);
+				                     select.append(option);
+				                     select.find(option).prop('selected', true);
+				                     $("#candidateSkills option").each(function(){
+				                         $(this).siblings("[value='"+ this.value+"']").remove();
+				                   });
+				                   $("#candidateSkills").trigger("chosen:updated");
+				                }
+						       
+			    	         }
+		    	});
+		    /* 
 		    chosen.search_field.on('keyup', function(e)
 		    {
 		    	var newSkill = this.value.replace(",","");
@@ -631,7 +691,7 @@ function getCities(){
 	        		$("#candidateSkills").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list
@@ -639,11 +699,12 @@ function getCities(){
 	        selectone = $("#candidateEducation");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);

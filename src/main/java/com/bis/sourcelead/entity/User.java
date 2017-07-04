@@ -124,6 +124,12 @@ public class User implements Serializable{
 	@Column(name = "USER_UUID")
 	private String userUUID;
 	
+	@Column(name = "PROFESSIONAL_REGISTER_COUNTRY")
+	private String professionalRegisterCountry;
+	
+	@Column(name = "RECRUITER_REGISTER_COUNTRY")
+	private String recruiterRegisterCountry;
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
@@ -209,6 +215,12 @@ public class User implements Serializable{
 	
 	@Transient
 	private String noticePeriod;
+	
+	@Transient
+	private String employmentType;
+	
+	@Transient
+	private String registrationType;
 	
 	
 
@@ -652,6 +664,46 @@ public class User implements Serializable{
 
 	public void setUserApplicantsBackOutCount(long userApplicantsBackOutCount) {
 		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
+	}
+
+	public String getEmploymentType()
+	{
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType)
+	{
+		this.employmentType = employmentType;
+	}
+
+	public String getRegistrationType()
+	{
+		return registrationType;
+	}
+
+	public void setRegistrationType(String registrationType)
+	{
+		this.registrationType = registrationType;
+	}
+
+	public String getProfessionalRegisterCountry()
+	{
+		return professionalRegisterCountry;
+	}
+
+	public void setProfessionalRegisterCountry(String professionalRegisterCountry)
+	{
+		this.professionalRegisterCountry = professionalRegisterCountry;
+	}
+
+	public String getRecruiterRegisterCountry()
+	{
+		return recruiterRegisterCountry;
+	}
+
+	public void setRecruiterRegisterCountry(String recruiterRegisterCountry)
+	{
+		this.recruiterRegisterCountry = recruiterRegisterCountry;
 	}
 
 	

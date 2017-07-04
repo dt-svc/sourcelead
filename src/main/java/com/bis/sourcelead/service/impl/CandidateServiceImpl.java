@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -58,8 +59,10 @@ import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -69,6 +72,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -137,6 +141,16 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     EmailScenerioUtil emailScenerioUtil;
+    
+    @Autowired
+    MasterCandidateService masterCandidateService;
+    
+    @Autowired
+	private ProjectsService projectsService;
+    
+    protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	/**
 	 * @author prasad k
@@ -186,6 +200,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			if(null == masterCandidate){
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+			}
+			candidate.setMasterCandidateId(masterCandidate);
 		}
         
 		if(orgLocations != null){
@@ -215,7 +235,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
 		}
 		if(jsonObj.has("email") && jsonObj.getString("email") !=null){
-		candidate.setEmail(jsonObj.getString("email"));
+		candidate.setEmail(jsonObj.getString("email").trim());
 		}
 		if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
 		candidate.setCurrentRate(jsonObj.getString("currentRate"));
@@ -276,7 +296,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAddress(jsonObj.getString("address"));
 		}
 		
-		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(),orgLocations.getId(),"Recruiter");
 		if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 			candidate.setRecruiterUserId(userRole.getUser());	
 		}
@@ -293,6 +313,24 @@ public class CandidateServiceImpl implements CandidateService {
 			candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
 			
 			candidate.setSkillsName(candidateSkills);
+		}
+		
+		if(jsonObj.has("visa")){
+			
+			String visaList =null;
+			try{
+				JSONArray jsonArray = jsonObj.getJSONArray("visa");
+				visaList = jsonArray.toString();
+			}
+			catch(JSONException e){
+				visaList =jsonObj.getString("visa");
+			}
+			visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
+			visaList = visaList.replaceAll("\"", "");
+			candidate.setVisaType(visaList);
+	  	 
+		}else{
+			candidate.setVisaType(null);
 		}
 		
 		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
@@ -349,7 +387,9 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for inviting candidate to sourcelead
 		 */
-		inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		if(jsonObj.has("email") && null != jsonObj.getString("email") && Constants.YES.equalsIgnoreCase(jsonObj.getString("email"))){
+			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		}
 		
 		/*
 		 * Saving Candidate DB data as ElasticSearch Documents
@@ -389,7 +429,7 @@ public class CandidateServiceImpl implements CandidateService {
              globalVarsMap.put("candidate", candidate.getFirstName());
          }
         
-         globalVarsMap.put("loginOrg",orgLocations.getOrg().getOrgName());
+         globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
          StringBuilder loginBuilder = new StringBuilder();
          globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
@@ -408,7 +448,7 @@ public class CandidateServiceImpl implements CandidateService {
          String url = sourceleadUrl;
         
          //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
          emailMessage.setSubject(subject);
          emailMessage.setMessageBody(emailTemplate);
         
@@ -549,7 +589,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 int column=0;
 	        for(Candidate candidate : candidatesList){
 	       	 writeRow = createExcelsheet.createRow(column+1);
-	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate,isAssociate);
 	       	 column++;
 	        }
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -580,7 +620,7 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @param candidate
 	 * @return
 	 */
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate,String isAssociate) {
 	if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
 		 writeRow.createCell(0).setCellValue(candidate.getFirstName());
 	}
@@ -645,8 +685,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	if(null != candidate.getOrgRelationId()){
 		if(null != candidate.getOrgRelationId().getResponderLocationId()){
-			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
-				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
+				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}
 		}
 	}else{
@@ -663,6 +703,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}else{
 			writeRow.createCell(11).setCellValue("--");
 	}
+	
+	if(isAssociate.equalsIgnoreCase(Constants.YES)){
+		if(null != candidate.getIsFavouriteAssociate() && candidate.getIsFavouriteAssociate() == 1){
+			writeRow.createCell(12).setCellValue("Y");
+		}else{
+			writeRow.createCell(12).setCellValue("--");
+		}
+	}else if(null != candidate.getIsFavourite() && candidate.getIsFavourite() == 1){
+			writeRow.createCell(12).setCellValue("Y");
+		}else{
+			writeRow.createCell(12).setCellValue("--");
+	}
+	
 	return createExcelsheet;
 }
 
@@ -696,8 +749,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId,String candidateType) {
-		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(orgLocationId,candidateType);
+	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long userId,Long orgLocationId,String candidateType) {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationID(userId,orgLocationId,candidateType);
 	}
 	
 	
@@ -1103,6 +1156,73 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId, Long userId,
 			String candidateType) throws Exception {
 		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, userId, candidateType);
+	}
+
+	@Override
+	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception {
+		return candidateDao.getCandidatesListByOrgLocationIDAndUserId(orgLocationId, userId);
+	}
+
+	@Override
+	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		for (Candidate candidate : candidateList) {
+			StringBuilder sb = new StringBuilder();
+			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+			candidate.setEmail(candidate.getEmail());
+			candidate.setCandidateUpdateDateToString(Constants.DMY.format(candidate.getUpdatedDate()));
+			candidate.setPrimarySkill(candidate.getPrimarySkill());
+			StringBuilder stringBuilder = new StringBuilder();
+			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+			if(candidate.getConsultantUser() != null){
+				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
+				candidate.setAssignedProjectsCount(assignedProjectsCount);
+			}
+		}
+		return candidateList;
+	}
+	
+	@Override
+	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	{
+		Candidate candidate = candidateDao.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		if(null == candidate){
+			candidate = new Candidate();
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+			candidate.setOrgLocationId(orgLocations);
+			candidate.setCandidateType(Constants.CANDIDATE);
+			candidate.setFirstName(user.getFirstName());
+			candidate.setLastName(user.getLastName());
+			candidate.setCountry(orgLocations.getCountry());
+			candidate.setIsAssociate(Constants.YES);
+			candidate.setEmail(user.getEmail());
+			candidate.setStatus(Constants.RECORD_ACTIVE);
+			candidate.setCreatedBy(user.getUserCode());
+			
+			if(jsonObj.has("phoneNumber") && !isNullOrEmpty(jsonObj.getString("phoneNumber"))){
+				candidate.setMobilePhone(jsonObj.getString("phoneNumber"));
+			}
+			
+			if(jsonObj.has("designationType") && !isNullOrEmpty(jsonObj.getString("designationType"))){
+				candidate.setDesignationType(jsonObj.getString("designationType"));
+			}
+			
+			if(jsonObj.has("designationOtherType") && !isNullOrEmpty(jsonObj.getString("designationOtherType"))){
+				candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			}
+			
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setCreatedDate(commonUtil.currentDate());
+		}else{
+			candidate.setConsultantUser(user);
+			candidate.setMasterCandidateId(masterCandidate);
+		}
+		
+		candidateDao.storeCandidate(candidate);
+		saveOrUpdateCandidateElkDocument(candidate);
+		return candidate;
 	}
 
 }

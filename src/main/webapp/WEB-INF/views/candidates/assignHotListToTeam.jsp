@@ -19,7 +19,7 @@
     <div class="pull-left">
       <h2>Hot List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='/candidatesList'/>">Candidates List </a>&raquo; Hot List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='/associatesList'/>">Associates List </a>&raquo; Hot List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -33,7 +33,7 @@
           <div class="clearfix"></div>
       </div>
       <div class="candidate_wrap_table">
-        <div id="candidateList"></div>
+        <div id="candidateList" class="datatable_filter"></div>
       </div>
     </div>
    
@@ -149,9 +149,14 @@ function cpagination(){
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

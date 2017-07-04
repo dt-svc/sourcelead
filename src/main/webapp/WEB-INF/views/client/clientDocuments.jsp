@@ -65,7 +65,7 @@ function clientDocuments(orgRelationId,clientLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientDocumentsList" ></div>';
+		result  = result + '   <div id="clientDocumentsList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -74,6 +74,7 @@ function clientDocuments(orgRelationId,clientLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
+    $("#tab-5").empty(); 
     $("#tab-3").append(result);  
 	
     clientDocumentsList(clientLocationId,orgRelationId);
@@ -204,7 +205,7 @@ function documentpagination(){
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -221,7 +222,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="document_form" name="document_form" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	
@@ -382,7 +383,7 @@ function addDocument(clientLocationId,orgRelationId) {
 </script>
 
 <script>
-function closePopup(){
+function closeDocPopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>

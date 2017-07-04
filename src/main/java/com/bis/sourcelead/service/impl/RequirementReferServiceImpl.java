@@ -112,6 +112,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			requirementRefer.setPhoneNumber(jsonObj.getString("phone"));
 		}
 		
+		requirementRefer.setReferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		requirementRefer.setOrgLocationId(orgLocations);
 		requirementRefer.setCreatedDate(new Date());
 		requirementRefer.setUpdatedDate(new Date());
@@ -160,12 +161,12 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			contactUUID = referContacts.getContactUserUUID();
 		}
 		
-		sendEmailToReferedProfessional(user,jsonObj,requirement,contactUUID);
+		sendEmailToReferedProfessional(user,jsonObj,requirement,contactUUID,requirementRefer.getReferUUID());
 		
 	}
 	
 	
-	public void sendEmailToReferedProfessional(User user,JSONObject jsonObj,Requirement requirement,String contactUUID) throws Exception {
+	public void sendEmailToReferedProfessional(User user,JSONObject jsonObj,Requirement requirement,String contactUUID,String referUUID) throws Exception {
 		
 		 
 		 StringBuilder sb = new StringBuilder();
@@ -200,7 +201,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -215,7 +216,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -333,6 +334,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 				refer.setReferToEmail(referContacts.getContactUserEmail());
 				refer.setRequirementId(requirement);
 				refer.setOrgLocationId(orgLocations);
+				refer.setReferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				refer.setCreatedDate(new Date());
 				refer.setUpdatedDate(new Date());
 				refer.setCreatedBy(user.getUserCode());
@@ -340,7 +342,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 				refer.setUpdatedBy(user.getUserCode());
 				requirementReferDao.addRequirementRefer(refer);
 				
-				sendEmailToContactUsers(user, referContacts, requirement, referContacts.getContactUserUUID());
+				sendEmailToContactUsers(user, referContacts, requirement, referContacts.getContactUserUUID(),refer.getReferUUID());
 			}
 		}
 	
@@ -348,7 +350,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 	
 	
 	
-	public void sendEmailToContactUsers(User user,ReferContacts referContacts,Requirement requirement,String contactUUID) throws Exception {
+	public void sendEmailToContactUsers(User user,ReferContacts referContacts,Requirement requirement,String contactUUID,String referUUID) throws Exception {
 		
 		 
 		 StringBuilder sb = new StringBuilder();
@@ -383,7 +385,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -398,13 +400,19 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
 		
+	}
+
+	@Override
+	public RequirementRefer getRequirementReferByReferUUID(String referUUID) throws Exception
+	{
+		return requirementReferDao.getRequirementReferByReferUUID(referUUID);
 	}
 	
 

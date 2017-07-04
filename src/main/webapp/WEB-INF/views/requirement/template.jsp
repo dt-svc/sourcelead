@@ -10,21 +10,24 @@
 	 requirementTemplateList();
 };
 </script>
-
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector_template"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
-
-      <h2>Requirement Templates</h2>
+      <h2>Job Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Templates</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job Templates</div>
   </section>
   <div class="timesheet_out overflow_Auto">
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Requirement Template</a></li>
+          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Job Template</a></li>
          </sec:authorize>
          
           <div class="clearfix"></div>
@@ -35,7 +38,7 @@
       <!-- list requirement -->
       <div class="require_wrap_table overflow_inherint">
      
-          <div id="requirementTemplateList"></div>
+          <div id="requirementTemplateList" class="datatable_filter"></div>
       </div>
     </div>
    
@@ -44,7 +47,10 @@
   </div>
 </section>
 
-
+<script>
+  $("#selector_template").fadeIn(200);
+  $('#selector_template').delay(2000).fadeOut('slow');
+</script>   
 <script>
 function requirementTemplateList(){  
 	
@@ -164,8 +170,8 @@ function requirementTemplateList(){
 function temppagination(){ 
     $('#temppagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {

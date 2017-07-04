@@ -8,7 +8,7 @@
 		
 		result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
-		result = result + '   <div id="employeeSubmissionDetailsList" ></div>';
+		result = result + '   <div id="employeeSubmissionDetailsList" class="datatable_filter"></div>';
 		result = result + '   </div>';
 		result = result + '<div class="clearfix"></div>';
 		
@@ -60,17 +60,17 @@
 									result = result + '         <tr>';
 									if (opt.name != null && opt.name != ''
 											&& opt.name != 'undefined') {
-										result = result + '<td><div><span>'+ opt.name+ '</span></div></td>';
+										result = result + '<td><div><span title = "'+opt.name+'">'+ opt.name+ '</span></div></td>';
 									} else {
 										result = result+ '<td><div><span>--</span></div></td>';
 									}
 									if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
-										result = result + '<td><div><span>'+ opt.designation+ '</span></div></td>';
+										result = result + '<td><div><span title = "'+opt.designation+'">'+ opt.designation+ '</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 									if (opt.address != null && opt.address	&& opt.address != 'undefined') {
-										result = result + '<td><div><span>'+ opt.address+'</span></div></td>';
+										result = result + '<td><div><span title = "'+opt.address+'">'+ opt.address+'</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
@@ -121,8 +121,8 @@
 function employeeSubmittionPagination(){  
     $('#employersSubmittionPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

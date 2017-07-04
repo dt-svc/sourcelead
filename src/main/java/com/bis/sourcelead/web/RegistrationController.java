@@ -19,18 +19,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.EmailDomains;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.EmailDomainsService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -70,9 +71,6 @@ public class RegistrationController {
 	 @Autowired
 	 private NotificationsService notificationsService;
 	 
-	 @Autowired
-	 private ModulesService moduleService;
-	 
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -100,6 +98,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 private ClientService clientService;
+	 
+	 @Autowired
+	 EmailDomainsService emailDomainsService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -134,7 +135,7 @@ public class RegistrationController {
 				 /*List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
 				 model.addObject("timezoneList", timezoneList);*/
 				 
-				 requirementSubModulesList = moduleService.getRequirementSubModules();
+				 requirementSubModulesList = modulesService.getRequirementSubModules();
 				 model.addObject("requirementSubModulesList", requirementSubModulesList);
 				 
 			} catch (Exception e) {
@@ -175,14 +176,14 @@ public class RegistrationController {
 		    try {
 		    	orgLocations = orgLocationService.getOrgLocations(respondingPartyOrgLocationId);
 		    	org = orgLocations.getOrg();
-		    	String modules = org.getModulesId();
+		    	String modules = orgLocations.getModulesId();
 		    	Long tabId = null;
 		    	Long moduleId = null;
 		    	if(null != org){
 			    	org.setOrgType("Company");
 			    	
 			    	List<Integer> moduleIds = new ArrayList<Integer>();
-					 for (String s : org.getModulesId().split(",")){
+					 for (String s : orgLocations.getModulesId().split(",")){
 						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
@@ -204,10 +205,19 @@ public class RegistrationController {
 			    		}
 			    	}
 			    	
-					
-			    	org.setModulesId(modules);
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
+					
+					orgLocations.setModulesId(modules);
+					if(!isNullOrEmpty(spocUUID)){
+						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
+						if(null != orgSpoc){
+							orgLocations.setUser(orgSpoc.getVendorUser());
+						}
+					}
+					
+					orgLocationService.updateOrgLocations(orgLocations);
+					
 		    	}
 				 
 				
@@ -264,19 +274,19 @@ public class RegistrationController {
 				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(orgId);
 
 				List<Modules> modulesList = null;
 				List<Modules> requirementSubModulesList = null;
 				
-				if(null != orgLocations.getOrg().getModulesId()){
+				if(null != orgLocations.getModulesId()){
 					ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
 					ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
 					modulesList = modulesService.getSourceLeadModules();
-					requirementSubModulesList = moduleService.getRequirementSubModules();
+					requirementSubModulesList = modulesService.getRequirementSubModules();
 					
 					List<Long> orgModulesList = new ArrayList<Long>();
-					 for (String s : orgLocations.getOrg().getModulesId().split(",")){
+					 for (String s : orgLocations.getModulesId().split(",")){
 						 orgModulesList.add(Long.parseLong(s));
 					 }
 					 
@@ -321,11 +331,11 @@ public class RegistrationController {
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 		@RequestMapping(value = "/getOrgRegisteredUsers")
-		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "orgId", required = false) Long orgId,
+		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
 		    String resultJson;
-		    OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
 
 			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
 			List<User> orgUsersList = new ArrayList<User>(); 
@@ -439,12 +449,34 @@ public class RegistrationController {
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
-		  User user = userService.getUserByEmailAndUserType(email, type);
-		  if(null == user){
+		  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+		  if(null == userRole){
 			  return "Success";
 		  }else{
 			  return "Invalid";
+		  } 
+		  
+	   }
+	  
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingRegistrationEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="type", required=false) String type) throws Exception {
+		  
+		  String[] registeredEmail = email.split("[@]"); 
+		  EmailDomains emailDomains = emailDomainsService.getEmailDomainsByDomainName(registeredEmail[1]);
+		  
+		  if(null != emailDomains){
+			  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+			  if(null == userRole){
+				  return "Success";
+			  }else{
+				  return "Invalid";
+			  } 
+		  }else{
+			  return "Invalid Domain";
 		  }
+		  
 	   }
 	  
 	  

@@ -17,6 +17,12 @@
 .inline_field, .inline_field:focus {
 	width:100px !important; text-align:center;
 }
+.timesheet_week_comm .form-group {
+margin-bottom: 0;
+}
+.timesheet_week_comm.invoiceDocs_add span .fa-times {
+    margin: 6px;
+}
 </style>
 
 
@@ -65,10 +71,11 @@ function errRemoveVendorContact(){
 							<div class="col-md-9 select-field" id="errVendor">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Vendor">
+									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();" data-validation="required" field-name="Vendor">
 								</select>
 							</div>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+							<input type="hidden" name="vendorCurrency" id="vendorCurrency">
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Vendor Contact<span
@@ -184,7 +191,7 @@ function errRemoveVendorContact(){
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
 	</div>
 </div>
 
@@ -213,6 +220,7 @@ function errRemoveVendorContact(){
 
 <script>
 	function buildLineItemAndTaxAddRows(){
+	 	var vendorCurrency = $("#vendorCurrency").val(); 
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
 		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
@@ -223,7 +231,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>SOW</th>';
-		 result = result +'  <th>Rate</th>';
+		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
 		 result = result +'  <th>Amount</th>';
 		 result = result +'  <th><i class="fa fa-remove"></i></th>';
@@ -234,7 +242,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
+		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -342,6 +350,22 @@ function errRemoveVendorContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly="readonly"></div>';
                    result = result +'  </div>';
+                   
+                    if(vendorCurrency != currencyCode){ 
+                	 //New Div for currency conversion: srinivas l
+                       result = result +'  <div class="row">';
+                       result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                       
+                       result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                       
+                        result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+    	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+    	                  
+                       
+                       result = result +'  </div>';
+                       result = result +'  </div>'; 
+                     //New Div for currency conversion: srinivas l
+                  } 
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -371,7 +395,7 @@ function errRemoveVendorContact(){
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
-		           	 
+		           	$('#vendorCurrency').val(json['vendorCurrency']);
 		           	getVendorContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
@@ -402,6 +426,9 @@ function errRemoveVendorContact(){
 		        	getSavedAttachments(json['invoiceDocumentsList']);
 		        	
 		        	$("#grandTotal").val(json['total']);
+		        	$("#conversionFrom").val(json['total']);
+		        	 $("#exchangeCurrency").html(json['convertAmount']);
+		        	 $("#exchangeRate").html(json['exchangeRate']);
 		        	
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
@@ -501,6 +528,7 @@ function errRemoveVendorContact(){
 		 		total = subtractValueFromRow-discountValue;
 		 		$("#discountTotal").val(discountValue);
 		 		$("#grandTotal").val(total);
+		 		$("#conversionFrom").val(total);
 		 		$("#afterDiscountTotal").val(total);
 		 		
 		 	  }
@@ -509,6 +537,7 @@ function errRemoveVendorContact(){
 		 		total = subtractValueFromRow - perCentValue;
 		 		$("#discountTotal").val(perCentValue);
 		 		$("#grandTotal").val(total);
+		 		$("#conversionFrom").val(total);
 		 		$("#afterDiscountTotal").val(total);
 		 	 }	 	
 	    }
@@ -999,7 +1028,12 @@ function pagination(){
     	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -1187,8 +1221,34 @@ function pagination(){
 			 calAddRowAmount("000","00",rowId);
 		 }
 	    
-	  
+		 conversion();
   }
+  
+  
+  function  conversion(){
+	   var orgRelationId = $("#vendorOrgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var grandTotal = $("#grandTotal").val();
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(data) {
+					if(data !='' && data != 'undefined' && data != null){
+						var json = JSON.parse(data);
+						$("#exchangeRate").html(json.exchangeRate);
+						$("#exchangeCurrency").html(json.exchangeCurrency);
+						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+					}
+				},
+				});   
+	   }
+	  
+		
+ }
+  
   
   function calAddRowAmount(hours,minute,rowId){
 	  
@@ -1197,13 +1257,39 @@ function pagination(){
 	  var splitHours = split[0];
 	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
+		 setHours(finalmin,rowId);
+		 var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
 	     $('#'+rowId+'amount').empty();
 	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
 	     calTotalamount(rowId,totlalAmount);
   }
   </script>
+
+<!-- Converting minutes to hours if minutes >60 -->
+<script>
+function setHours(finalmin,rowId){
+	 var actualHours = Math.floor(finalmin / 60); 
+     var actualMinutes = finalmin % 60;
+     var actualTotal = 0;
+     if (actualHours >= 10 && actualHours < 100) {
+			actualHours = '0' + actualHours;
+	  }
+     if (actualHours < 10) {
+			actualHours = '00' + actualHours;
+	  }
+	 if (actualMinutes < 10) {
+		actualMinutes = '0' + actualMinutes;
+	 }
+	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
+		 actualTotal = actualHours +":"+ actualMinutes;
+	 }else{
+		 actualTotal =  "000:00";
+	 }
+	 $('#'+rowId+'totalHours').empty();
+     $('#'+rowId+'totalHours').val(actualTotal);
+}
+</script>
 
 <script>
   function  calTotalamount(rowId,totlalAmount){
@@ -1230,6 +1316,7 @@ function pagination(){
 	    $("#inoviceTotal").val(sum.toFixed(2));
 	    $("#hiddenTotal").val(sum.toFixed(2));
 	    $("#grandTotal").val(sum.toFixed(2));
+	    $("#conversionFrom").val(sum.toFixed(2));
 	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
@@ -1242,6 +1329,7 @@ function pagination(){
 			total = arroundGrand-discountValue;
 			$("#discountTotal").val(discountValue.toFixed(2));
 			$("#grandTotal").val(total.toFixed(2));
+			$("#conversionFrom").val(total.toFixed(2));
 			$("#afterDiscountTotal").val(total.toFixed(2));
 			
 		}
@@ -1250,6 +1338,7 @@ function pagination(){
 			total = arroundGrand - perCentValue;
 			$("#discountTotal").val(perCentValue.toFixed(2));
 			$("#grandTotal").val(total.toFixed(2));
+			$("#conversionFrom").val(total.toFixed(2));
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}
    }
@@ -1271,10 +1360,12 @@ function calculateDiscount(){
 			total = subTotal-discountValue;
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total);
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
@@ -1286,17 +1377,19 @@ function calculateDiscount(){
 			total = subTotal - perCentValue;
 			$("#discountTotal").val(perCentValue);
 			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
 	}
 	 
 	calculateTaxDiscount();
-	
+	conversion();
 }
 </script>
 
@@ -1450,7 +1543,7 @@ function calculateDiscount(){
         total = (first-second);
         $("#grandTotal").val(total);
        //=======================================
-        
+        conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
@@ -1475,15 +1568,15 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
@@ -1497,7 +1590,8 @@ function calculateTaxDiscount(){
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
-  
+	$("#conversionFrom").val(grandTotal.toFixed(2));
+	conversion();
 }
 </script>
 
@@ -1657,10 +1751,14 @@ function getVendorContacts(vendorContactId){
 			selected = 'selected';
 		}
 		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+		$("#vendorCurrency").val(opt.vendorCurrency);
 		}
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
+		if(vendorContactId == null || vendorContactId == '' || vendorContactId == 'undefined'){
+			buildLineItemAndTaxAddRows();
+		}
 	},
 	});
 
@@ -1847,6 +1945,7 @@ function getDueDateByFrequency(){
 				
 				$("#dueDate").val(dueDateStr);
 				$("#invoiceLoading").removeAttr("style");
+				errDueDate();
 			}
 		});
 		

@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
@@ -111,9 +112,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchy(String id) throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		return (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, Long.parseLong(id));
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission left join fetch submission.projectMembers  where sah.id = :id");
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("id", Long.parseLong(id)).setCacheable(true).list();
+		SubmissionApproverHierarchy sah = null;
+		if(null != submissionApproverHierarchyList && !submissionApproverHierarchyList.isEmpty()){
+			sah = submissionApproverHierarchyList.iterator().next();
+		}
+		return sah;
 	}
 
 	
@@ -121,7 +128,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteSubmissionApproverHierarchy(String id) throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isDeleted = false;
 		try{
@@ -148,7 +154,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SubmissionApproverHierarchy> getAllSubmissionApproverHierarchies() throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = null;
 		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy");
@@ -196,7 +201,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				}
 		
 	     }
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchy;
 	}
 	
@@ -255,7 +259,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    	 submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 	    }
 		
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchy;
 	}
 	
@@ -270,7 +273,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
 		
-		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  ((submission.startDate = :sqlStartDate) OR (submission.startDate BETWEEN :sqlStartDate and :sqlEndDate))");
+		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate");
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy>  submissionApproverHierarchyList=submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setCacheable(true).list();
 		if(null != submissionApproverHierarchyList  && !submissionApproverHierarchyList.isEmpty()){
@@ -292,7 +295,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if(submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()){
 			submissionApproverHierarchy = submissionApproverHierarchyList.iterator().next();
 	     }
-		// TODO Auto-generated method stub
 		return submissionApproverHierarchy;
 	}
 	
@@ -371,8 +373,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    		try {
 	    			 session.saveOrUpdate(sah);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 	    	}
 	    	
@@ -438,7 +438,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason) throws Exception {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
@@ -549,8 +548,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus) {
-		// TODO Auto-generated method stub
-		
 		Session session = this.sessionFactory.getCurrentSession();
 		Query submissionApproverHierarchyListQuery= session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId where sah.submissionId.id = :submissionId and sah.submissionApprovalStatus = :approvalStatus");
 		@SuppressWarnings("unchecked")
@@ -759,7 +756,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		String subQueryForUserIdCheckingInMaxLevel = "(subsah.submissionId.projectMembers.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId)) ";
 		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where "+subQueryForUserIdCheckingInMaxLevel+" and subsah.submissionId.projectMembers.employee.orgLocations.id = :orgLocationId ";
 		
-		String query = subQueryForList +" where emp.orgLocations.id = :orgLocationId  and emp.user.id = :userId  and ( hierarchy.level IN("+subQueryForMaxLevel+")) and  sah.submissionApprovalStatus = :submissionStatus GROUP BY sah.submissionId,hierarchy.level" ;
+		String query = subQueryForList +" where emp.orgLocations.id = :orgLocationId  and emp.user.id = :userId  and ( hierarchy.level IN("+subQueryForMaxLevel+")) and  sah.submissionApprovalStatus = :submissionStatus GROUP BY CONCAT(hierarchy.level,sah.frequencyStartDate,sah.frequencyEndDate)" ;
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		
 		return tslist;
@@ -775,7 +772,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQueryForUserIdChecking = "(emp.id IN(select emp.id from Employees emp where emp.user.id = :userId))  ";
-		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId and  sah.submissionStatus = :submissionStatus  GROUP BY sah.submissionId.id)" ;
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where "+subQueryForUserIdChecking+" and emp.orgLocations.id = :orgLocationId and  sah.submissionStatus = :submissionStatus GROUP BY CONCAT(sah.frequencyStartDate,sah.frequencyEndDate)" ;
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> tslist =session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId",orgLocationId).setString("submissionStatus", submissionStatus).setCacheable(true).list(); 
 		
@@ -796,8 +793,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				    */
 				+ "  ("
 				+ "    hierarchy.approverUserId.id = :userId and "
-				+ "      ( hierarchy.level = '2' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
-				+ "   OR (hierarchy.level = '1' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "      ("
+				+ "        ( hierarchy.level = '2' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
+				+ "        OR (hierarchy.level = '1' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.id = sah.submissionId.id) ) "
+				+ "     ) "
 				+ "   ) "
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
@@ -848,7 +847,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus) {
-		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
 		if(frequencyStartDate != null){
@@ -1513,10 +1511,17 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class }) 
-	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId, Date frequencyStartDate, Date frequencyEndDate)
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId, Date frequencyStartDate, Date frequencyEndDate,String invoiceType)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
+		String statusSubQuery ="";
+		if(Constants.CLIENT_SOW.equalsIgnoreCase(invoiceType)){
+			statusSubQuery = "sah.invoiceStatus IS NULL";
+		}else{
+			statusSubQuery = "sah.billingStatus IS NULL";
+		}
+				
 		if (frequencyStartDate != null) {
 			sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
 		}
@@ -1529,18 +1534,18 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		// Getting Max Hierarchy Level for which employee is Assigned
 		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where  subsah.submissionId.projectMembers.projects.id = :projectId ";
 		String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where project.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.invoiceStatus IS NULL and sah.submissionId.status = '1'"
+				+ " where project.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and "+statusSubQuery+" and sah.submissionId.status = '1'"
 				/*
 				 * For getting approved timesheet hours list
 				 */
 
 				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
-				+ ")) and sah.submissionApprovalStatus = :approvalStatus order by pm.id";
+				+ ")) order by pm.id";
 		
 		
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
-				.setLong("projectId", projectId).setParameter("approvalStatus", Submission_Status.APPROVED)
+				.setLong("projectId", projectId)
 				.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
 		LinkedList<SubmissionApproverHierarchy> finalSahList = new LinkedList<>();
 		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
@@ -1548,7 +1553,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			int count = 0;
 			SubmissionApproverHierarchy finalSah = null;
 			for (SubmissionApproverHierarchy sah : submissionApproverHierarchyList) {
-				 if(projectMemberId == 0 || projectMemberId != sah.getSubmissionId().getProjectMembers().getId()){
+				if(projectMemberId == 0 || projectMemberId != sah.getSubmissionId().getProjectMembers().getId()){
 					    if(projectMemberId != 0){
 					    	finalSahList.add(finalSah);
 					    	count = 0;
@@ -1558,31 +1563,36 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					    float weekTotalHours = 0f;
 						float weekBillableTotalHours = 0f;
 						float weekNonBillableTotalHours = 0f;
-
-						if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
-							weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+						if(Submission_ApprovalStatus.APPROVED.getValue().equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
+							if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
+								weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+							}
+							if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
+								weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
+							}
+							if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
+								weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
+							}
+							float totalHours = 0f;
+							float billableTotalHours = 0f;
+							float nonBillableTotalHours = 0f;
+	                        if(finalSah.getTotalHours() != null){
+	                        	totalHours = finalSah.getTotalHours();
+	                        }
+	                        if(finalSah.getBillableHours() != null){
+	                        	billableTotalHours = finalSah.getBillableHours();
+	                        }
+	                        if(finalSah.getNonBillableHours() != null){
+	                        	nonBillableTotalHours = finalSah.getNonBillableHours();
+	                        }
+							finalSah.setTotalHours(CommonUtil.getCombinedHours(totalHours, weekTotalHours));
+							finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
+							finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));	
+						}else{
+							finalSah.setTotalHours(0f);
+							finalSah.setBillableHours(0f);
+							finalSah.setNonBillableHours(0f);	
 						}
-						if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
-							weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
-						}
-						if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
-							weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-						}
-						float totalHours = 0f;
-						float billableTotalHours = 0f;
-						float nonBillableTotalHours = 0f;
-                        if(finalSah.getTotalHours() != null){
-                        	totalHours = finalSah.getTotalHours();
-                        }
-                        if(finalSah.getBillableHours() != null){
-                        	billableTotalHours = finalSah.getBillableHours();
-                        }
-                        if(finalSah.getNonBillableHours() != null){
-                        	nonBillableTotalHours = finalSah.getNonBillableHours();
-                        }
-						finalSah.setTotalHours(CommonUtil.getCombinedHours(totalHours, weekTotalHours));
-						finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
-						finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));
 						count++;	
 				 }
 				 else{
@@ -1592,33 +1602,40 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					    float weekTotalHours = 0f;
 						float weekBillableTotalHours = 0f;
 						float weekNonBillableTotalHours = 0f;
-
-						if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
-							weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+						if(Submission_ApprovalStatus.APPROVED.getValue().equalsIgnoreCase(sah.getSubmissionApprovalStatus().toString())){
+							if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
+								weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+							}
+							if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
+								weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
+							}
+							if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
+								weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
+							}
+							float totalHours = 0f;
+							float billableTotalHours = 0f;
+							float nonBillableTotalHours = 0f;
+		                    if(finalSah.getTotalHours() != null){
+		                     	totalHours = finalSah.getTotalHours();
+		                    }
+		                    if(finalSah.getBillableHours() != null){
+		                     	billableTotalHours = finalSah.getBillableHours();
+		                    }
+		                    if(finalSah.getNonBillableHours() != null){
+		                     	nonBillableTotalHours = finalSah.getNonBillableHours();
+		                    }
+							finalSah.setTotalHours(CommonUtil.getCombinedHours(totalHours, weekTotalHours));
+							finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
+							finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));
+						}else{
+							finalSah.setTotalHours(0f);
+							finalSah.setBillableHours(0f);
+							finalSah.setNonBillableHours(0f);
 						}
-						if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
-							weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
-						}
-						if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
-							weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
-						}
-						float totalHours = 0f;
-						float billableTotalHours = 0f;
-						float nonBillableTotalHours = 0f;
-	                    if(finalSah.getTotalHours() != null){
-	                     	totalHours = finalSah.getTotalHours();
-	                    }
-	                    if(finalSah.getBillableHours() != null){
-	                     	billableTotalHours = finalSah.getBillableHours();
-	                    }
-	                    if(finalSah.getNonBillableHours() != null){
-	                     	nonBillableTotalHours = finalSah.getNonBillableHours();
-	                    }
-						finalSah.setTotalHours(CommonUtil.getCombinedHours(totalHours, weekTotalHours));
-						finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
-						finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));
 						count++;
 				 }
+				
+				
 				
 			}
 			
@@ -1630,8 +1647,40 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		return finalSahList;
 	}
-	
-	
-	
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class }) 
+	public void updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long submissionHierarchyId,String invoiceType, String status) throws Exception {
+		SubmissionApproverHierarchy sah = getSubmissionApproverHierarchy(submissionHierarchyId.toString());
+		
+		java.sql.Date sqlStartDate = null;
+		if (sah.getFrequencyStartDate() != null) {
+			sqlStartDate = new java.sql.Date(sah.getFrequencyStartDate().getTime());
+		}
+
+		java.sql.Date sqlEndDate = null;
+		if (sah.getFrequencyEndDate() != null) {
+			sqlEndDate = new java.sql.Date(sah.getFrequencyEndDate().getTime());
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
+				+ " where  sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate and pm.id = :projectMemberId " ;
+				
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> sahList =session.createQuery(query.toString()).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate",sqlEndDate).setLong("projectMemberId", sah.getSubmissionId().getProjectMembers().getId()).setCacheable(true).list(); 
+		if(null != sahList && !sahList.isEmpty()){
+			for(SubmissionApproverHierarchy subSah : sahList){
+				if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
+					subSah.setBillingStatus(status);
+				}else{
+					subSah.setInvoiceStatus(status);
+				}
+			}
+			saveAllSubmissionApproverHierarchy(sahList);
+		}
+		
+	}
+
+	
 }

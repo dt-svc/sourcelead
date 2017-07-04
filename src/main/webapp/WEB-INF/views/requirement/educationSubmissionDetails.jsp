@@ -7,7 +7,7 @@ function educationSubmissionDetails(candidateId){
 	var result = "";
 	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
-	result = result + '   <div id="educationSubmissionDetailsList" ></div>';
+	result = result + '   <div id="educationSubmissionDetailsList" class="datatable_filter"></div>';
 	result = result + '   </div>';
 	
 	$("#tabb-1").empty();
@@ -59,12 +59,12 @@ function educationSubmissionDetailsList(candidateId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.name+'</span></div></td>';
+	                    	 result  = result + '<td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
 	                    	    }else{
 	                    	    	 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	    }
 	                    	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.specialization+'</span></div></td>';
+	                    	 result  = result + ' <td><div><span title="'+opt.specialization+'">'+opt.specialization+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -89,12 +89,12 @@ function educationSubmissionDetailsList(candidateId){
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
 			                 }
 	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.institute+'</span></div></td>';
+	                    	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + '<td><div><span>----</span></div></td>';
 	                    	 }
 	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.address+'</span></div></td>';
+	                    	 result  = result + ' <td><div><span title="'+opt.address+'">'+opt.address+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -131,8 +131,8 @@ function educationSubmissionDetailsList(candidateId){
 function educationSubmissionPagination(){  
     $('#educationSubmissionPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

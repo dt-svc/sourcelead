@@ -26,6 +26,7 @@ import com.bis.sourcelead.dao.RecommendationsDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
@@ -441,16 +442,27 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@Override
 	public String getCandidateScore(Candidate candidate, Requirement requirement,RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
 		float locationPercentage = 0; // location 10%
-		float ratePercentage = 0;    // rate 20 %
+		float ratePercentage = 0;    // rate 10 %
 		float skillPercentage = 0; // skill = 20%
 		float percentPerSkill = 0;
 		float percentPerkeyword = 0; //keyword 20%
 		float noticePeriod = 0; // notice 10%
-		float expPercentage = 0; //  experience = 20%
+		float expPercentage = 0; //  experience = 10%
+		float eduPer = 0; // 10 %
+		float visaPer = 0; // 10%
 		String reqSkills = "";
 		String candidateScore = null; 
 		if(null != recommendedCustomizeScore && null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		     String visaType = null;
+		     if(recommendedCustomizeScore.getCustomizeVisatype() !=null){
+		    	  visaType = recommendedCustomizeScore.getCustomizeVisatype();
+		     }
+		     String education = null;
+		    if(recommendedCustomizeScore.getCustomizeEducation() !=null){
+		    	education = recommendedCustomizeScore.getCustomizeEducation();	
+		    }
+		     
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
@@ -458,7 +470,26 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		     }
 		     
 		    	String [] reqMaxSkills = reqSkills.split(",");
+		    	String [] visatypeArr = null;
+		    	String [] educationsArr = null;
+		    	if(visatypeArr !=null){
+		    		visatypeArr = visaType.split(",");
+    			}
+		    	if(education !=null){
+		    		educationsArr = education.split(",");
+		    	}
+		    	
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
+				float visaTypePercentage = 0;
+				float educationPercentage = 0;
+				if(visatypeArr !=null){
+					 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
+				}
+				if(educationsArr !=null){
+					 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationsArr.length;
+				}
+				 
+				
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
@@ -474,14 +505,30 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				// rate logic end
 		    	    CandidateIndex candidateIndex = getCandidateIndex(candidate);
 					int matchedSkillCount = 0;
-					
-					
+					int matchedVisaTypeCount = 0;
+					int matchedEducationCount = 0;
 					if(null  != candidate.getSkillsName()){
 						String[] skills = candidate.getSkillsName().split(",");
 						Set<String> set = new HashSet<String>(Arrays.asList(skills));
 						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
+					if(candidate.getVisaType() !=null && !"".equalsIgnoreCase(candidate.getVisaType())){
+						String[] visa = candidate.getVisaType().split(",");
+						Set<String> set = new HashSet<String>(Arrays.asList(visa));
+						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType);
+					}
+					
+					
+					if(null  != candidate.getCandidateEducation()){
+						Set<String> set = new HashSet<String>();
+						Set<CandidateEducation> edu = candidate.getCandidateEducation();
+						for(CandidateEducation can :edu){
+							set.add(can.getName());
+						}
+						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education);
+						
+					}
 					
 					//get the ExperiencePercentage
 					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
@@ -508,7 +555,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						}
 					}
 					
-					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer;
+					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer+eduPer+visaPer;
 					
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					candidateScore = String.valueOf(roundOff);		
@@ -540,13 +587,16 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@Override
 	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId) throws Exception {
 		float locationPercentage = 0; // location 10%
-		float ratePercentage = 0;    // rate 20 %
+		float ratePercentage = 0;    // rate 10 %
 		float skillPercentage = 0; // skill = 20%
 		float percentPerSkill = 0;
 		float percentPerkeyword = 0; //keyword 20%
 		float noticePeriod = 0; // notice 10%
-		float expPercentage = 0; //  experience = 20%
-		
+		float expPercentage = 0; //  experience = 10%
+//		float visaTypePercentage = 0; //  visaType = 10%
+//		float educationPercentage = 0; //  education = 10%
+		float eduPer = 0;
+		float visaPer = 0;
 		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
 		String reqSkills = "";
 		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
@@ -555,6 +605,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		     String visaType = null;
+		     if(recommendedCustomizeScore.getCustomizeVisatype() != null){
+		    	 visaType = recommendedCustomizeScore.getCustomizeVisatype();
+		     }
+		    
+		     String education = null;
+		     if(recommendedCustomizeScore.getCustomizeEducation() != null){
+		    	 education  = recommendedCustomizeScore.getCustomizeEducation();
+		     }
+		     
+		     
+		     
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
@@ -567,6 +629,26 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
 				}
 			}
+			
+			String [] visatypeArr = null;
+			if(visaType != null){
+				visatypeArr = visaType.split(",");
+				if(visatypeArr != null && visatypeArr.length >0){
+					for(String visa : visatypeArr){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
+					}
+				}
+			}
+			
+			
+			String [] educationArr = null;
+			if(education != null){
+				educationArr = education.split(",");
+				for(String edu : educationArr){
+					boolQueryBuilder.should(QueryBuilders.matchQuery("education", edu));
+				}
+			}
+			
 			boolQueryBuilder.minimumShouldMatch("1");
 			
 			//Long  count = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,0,boolQueryBuilder).getTotalHits();
@@ -575,6 +657,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
+				float visaTypePercentage = 0;
+				float educationPercentage = 0;
+				if(visatypeArr !=null && visatypeArr.length >0){
+					 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
+				}
+				if(educationArr != null && educationArr.length >0){
+					 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationArr.length; 	
+				}
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;
@@ -603,7 +693,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolean isCandidateAdded = false;
 					
 					int matchedSkillCount = 0;
-					
+					int matchedVisaTypeCount = 0;
+					int matchedEducationCount = 0;
 					
 					
 					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
@@ -618,13 +709,25 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					
 					//get the skillPercentage method
 					 				 
-					 
 					if(null  != candidateIndex.getSkillsName()){
 						String[] skills = candidateIndex.getSkillsName().split(",");
 						Set<String> set = new HashSet<String>(Arrays.asList(skills));
 						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
 					}
 					
+					if(null  != candidateIndex.getVisaType()){
+						String[] visa = candidateIndex.getVisaType();
+						Set<String> set = new HashSet<String>(Arrays.asList(visa));
+						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType);
+					}
+					
+					
+					if(null  != candidateIndex.getEducation()){
+						ArrayList<String> edu = candidateIndex.getEducation();
+						Set<String> set = new HashSet<String>(edu);
+						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education);
+						
+					}
 					
 					//get the ExperiencePercentage
 					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
@@ -651,7 +754,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						}
 					}
 					
-					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer;
+					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer+visaPer+eduPer;
 					
 					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
 					candidateIndex.setFinalScore(roundOff);
@@ -660,6 +763,15 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					double skillRoundOff = Math.round(skillPercentage * 100.0) / 100.0;
 					candidateIndex.setSkillPercentage((float)(skillRoundOff));
 					candidateIndex.setTotalSkillPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore()));
+					
+					double visaTypeRoundOff = Math.round(visaTypePercentage * 100.0) / 100.0;
+					candidateIndex.setVisaTypePercentage((float)(visaTypeRoundOff));
+					candidateIndex.setTotalVisaTypePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore()));
+					
+					double educationRoundOff = Math.round(educationPercentage * 100.0) / 100.0;
+					candidateIndex.setEducationPercentage((float)(educationRoundOff));
+					candidateIndex.setTotalEducationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore()));
+					
 					
 					candidateIndex.setExpPercentage(expPercentage);
 					candidateIndex.setTotalExpPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore()));
@@ -724,6 +836,52 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		
 	}
 
+	/**
+	 * this method is used to calculate the visaType
+	 * @param set
+	 * @param visaTypePercentage
+	 * @param matchedSkillCount
+	 * @param visaType
+	 * @return float
+	 */
+	
+	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType) {
+       if(visaType !=null){
+    	   if(set != null && set.size() >0){
+   			for(String visa : set){
+   					if(visaType.contains(visa)){
+   						matchedSkillCount++;
+   					}
+   			}
+   		}
+   
+       }
+				return matchedSkillCount*visaTypePercentage;
+		
+	}
+	
+	/**
+	 * this method is used to calculate the education
+	 * @param set
+	 * @param educationPercentage
+	 * @param matchedSkillCount
+	 * @param education
+	 * @return float
+	 */
+	
+	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education) {
+		if(set != null && set.size() >0){
+			for(String edu : set){
+					if(education.contains(edu)){
+						matchedSkillCount++;
+					}
+			}
+		}
+		return matchedSkillCount*educationPercentage;
+		
+	}
+	
+	
 	/**
 	 * this method is used to calculate the Experience Percentage
 	 * @param candidateIndex

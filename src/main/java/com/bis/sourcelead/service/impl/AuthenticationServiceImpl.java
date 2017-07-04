@@ -38,20 +38,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private SourceleadUserDetailsService sourceleadUserDetailsService;
 	 
 	@PostConstruct
-	public void init() {
-		System.out.println(" *** AuthenticationServiceImpl.init with: " + applicationContext);
-	}
+	public void init() {}
+	
 
 	@Override
-	public TokenInfo authenticate(String login, String password) {
-		System.out.println(" *** AuthenticationServiceImpl.authenticate");
-		// Here principal=username, credentials=password
+	public TokenInfo authenticate(String login, String password) throws AuthenticationException {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(login, password);
-		try {
 			authentication = authenticationManager.authenticate(authentication);
-			// Here principal=UserDetails (UserContext in our case), credentials=null (security reasons)
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-
 			if (authentication.getPrincipal() != null) {
 				String userName =  (String) authentication.getPrincipal();
 				TokenInfo newToken = tokenManager.createNewToken(sourceleadUserDetailsService.loadUserByUsername(userName));
@@ -60,16 +54,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				}
 				return newToken;
 			}
-		} catch (AuthenticationException e) {
-			System.out.println(" *** AuthenticationServiceImpl.authenticate - FAILED: " + e.toString());
-		}
-		return null;
+			return null;	
 	}
 
 	@Override
 	public boolean checkToken(String token) {
-		System.out.println(" *** AuthenticationServiceImpl.checkToken");
-
 		UserDetails userDetails = tokenManager.getUserDetails(token);
 		if (userDetails == null) {
 			return false;
@@ -85,7 +74,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	@Override
 	public void logout(String token) {
 		UserDetails logoutUser = tokenManager.removeToken(token);
-		System.out.println(" *** AuthenticationServiceImpl.logout: " + logoutUser);
 		SecurityContextHolder.clearContext();
 	}
 

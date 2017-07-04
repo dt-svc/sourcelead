@@ -212,12 +212,12 @@ function requirementList(){
 					/* } else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
-                	 $("#requirementEmptyListMessage").val("noRequirement");
+                	 $("#requirementEmptyListMessage").val("noJobs");
   	    	         var result ="";
 		    	    
 					 result = result+"			<div class='blank-pages'>";
 					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Requirement Found</p>";
+					 result = result+"			        <p>No Jobs Found</p>";
 					 result = result+"			 </div>";
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
@@ -369,9 +369,12 @@ function prepareRequirementData(data){
 				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
+			}else if(opt.requirementSubmissionStatus == "CLOSED"){
+				result = result +"<option disabled selected >CLOSED</option>";
+
 			}
 			else if(opt.requirementSubmissionStatus == "CANCEL"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 
 			}else if(opt.requirementSubmissionStatus == "OPEN"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -404,11 +407,11 @@ function prepareRequirementData(data){
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
 			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			else if(opt.requirementSubmissionStatus == "REJECTED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			
@@ -471,7 +474,7 @@ function prepareRequirementData(data){
 				result = result +"<option value='OPEN'>OPEN</option>";
 				
 			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 
@@ -507,6 +510,7 @@ function prepareRequirementData(data){
     result = result +"</table>"; 
     $("#noReq").val('');
     $("#requirementList").append(result); 
+    $("#requirementEmptyListMessage").val(json.length);
     for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
@@ -525,8 +529,8 @@ function pagination(){
 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"aaSorting": [[7,'desc']],
@@ -1285,9 +1289,9 @@ function requirementPipeline(requirementId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Requirement List</h2>
+      <h2 class="pull-left paddingRight">Jobs List</h2> <span class="paddingLeft pull-left">|<a class="paddingLeft" href="<c:url value='/professionalRequirements'/>">Crowdsourcing Jobs</a></span>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List</div>
     	<%-- <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
@@ -1315,14 +1319,14 @@ function requirementPipeline(requirementId){
                 <div class="col-md-8">
                   <label>Title</label>
                   <div class="clearfix">
-                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Requirement Title" id="requirementTitle" name="requirementTitle">
+                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Job Title" id="requirementTitle" name="requirementTitle">
                     </select>
                   </div>
                 </div>
                   <div class="col-md-4">
                   <label>Id</label>
                   <div class="clearfix">
-                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Requirement Id" id="jobId" name="jobId">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Job Id" id="jobId" name="jobId">
                     </select>
                   </div>
                 </div>
@@ -1331,9 +1335,9 @@ function requirementPipeline(requirementId){
               <div class="clearfix">
             
                 <div class="col-md-4">
-                  <label>Requirement status </label>
+                  <label>Job status </label>
                   <div class="clearfix">
-                    <select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Requirement status " multiple>
+                    <select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Job status " multiple>
                       <option>NEW</option> 
                       <option>DRAFT</option>
                       <option>SUBMITTED</option>
@@ -1531,13 +1535,15 @@ function requirementPipeline(requirementId){
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="FILLEDCLOSED"  onclick="requirementList();"><label for="c11">Filled Closed<span id="filledClosedRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="UNFILLEDCLOSED"  onclick="requirementList();"><label for="c11">UnFilled Closed<span id="unFilledClosedRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="REJECTED"  onclick="requirementList();"><label for="c11">Rejected<span id="rejectedRequirementCount"></span></label></li>
+               				<li><input id="c12" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CLOSED"  onclick="requirementList();"><label for="c12">Closed<span id="closedRequirementCount"></span></label></li>
+               				
 		              </ul>
 		            </div>
           </li>
           </sec:authorize>
           
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-          	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Requirement</a></li>
+          	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Job</a></li>
           </sec:authorize>
           <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
@@ -1551,7 +1557,7 @@ function requirementPipeline(requirementId){
 	          <div class="action-pop">
 	          <span>
 	              <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-	                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Requirement</a>
+	                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Job</a>
 	               </sec:authorize> 
 	
 	              <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
@@ -1581,7 +1587,7 @@ function requirementPipeline(requirementId){
      <!--  <div id="loadingDiv"></div> -->
       
       <!-- list requirement -->
-      <div class="require_wrap_table">
+      <div class="require_wrap_table datatable_filter">
           <div id="requirementList"></div>
       </div>
     </div>
@@ -1853,13 +1859,13 @@ function exportToPdf(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<p>Jobs List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 				result = result +"	</div>";
@@ -1885,13 +1891,13 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
 		}else{
 			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<p>Jobs List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 				result = result +"	</div>";
@@ -1984,7 +1990,7 @@ function searchRequirement(){
 				    	    
 							 result = result+"			<div class='blank-pages'>";
 							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-							 result = result+"			        <p>No Requirement Found1111</p>";
+							 result = result+"			        <p>No Jobs Found1111</p>";
 							 result = result+"			 </div>";
 							$("#requirementList").empty();
 						    $("#requirementList").append(result); 
@@ -2057,13 +2063,14 @@ $('body').on('blur', '#requirement_form', function() {
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#requirementTitle");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Title:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Title:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	var reqTitle = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (reqTitle != null  && reqTitle != '' && reqTitle != 'undefined'))
+		        if (tagItBykeyForSkills(e) && (reqTitle != null  && reqTitle != '' && reqTitle != 'undefined'))
 		        {
+		        	preventTabkey(e); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(reqTitle).text(reqTitle);
 		            select.append(option);
@@ -2078,13 +2085,14 @@ $('body').on('blur', '#requirement_form', function() {
 		    
 		    var selectone, chosenone;
 		    selectone = $("#jobId");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Add Requirement ID:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var reqId = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (reqId != null  && reqId != '' && reqId != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (reqId != null  && reqId != '' && reqId != 'undefined'))
 		        {
+		        	preventTabkey(e1); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(reqId).text(reqId);
 		            selectone.append(option);

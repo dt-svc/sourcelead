@@ -28,7 +28,7 @@ function validateTaskName(){
 		for(i = 1; i<checkMaxTsRowNum;i++){
 			var oldTaskname = $("#" + i + "taskName").val()
 			var oldTaskdesc = $("#" + i + "taskDescription").val()
-			if(oldTaskname == Taskname && oldTaskdesc == Taskdesc){
+			if(oldTaskname == Taskname){
 // 				$("#save_task").hide();
 				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
 				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
@@ -178,8 +178,8 @@ function validateTaskName(){
 															<label class="col-md-3">Type</label>
 															<div class="col-md-9">
 																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
-																  <option value="" selected>Select Type</option>
-																  <option value="Billable">Billable</option>
+<!-- 																  <option value="" selected>Select Type</option> -->
+																  <option selected value="Billable">Billable</option>
 																  <option value="Non-Billable">Non-Billable</option>
 																</select>
 															</div>
@@ -268,7 +268,7 @@ function validateTaskName(){
 									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId">
 										<option value=''>-- Select Client --</option>
 										<c:forEach var="option" items="${add_clientList}">
-											<option value="${option.orgid}">${option.orgName}</option>
+											<option value="${option.orgLocationId}">${option.orgName}</option>
 										</c:forEach>
 									</select> 
 								<span class="hidden">Enter Project Id</span>
@@ -441,65 +441,86 @@ function getStatus(){
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
+
 <script type="text/javascript">
-	function addTasks() {
-		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
-		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
-			if ($('#taskName').val() == '') {
-				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
-			}
-			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
-				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
-			}
-			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
-				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-5000 characters</span>");
-			}
-			return true;
-		} 
+function validateTask()
+{
+	if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2 || ($("#taskDescription").val().length >= 1 && $("#taskDescription").val().length < 2) 
+			   || ($('#taskNameDIV').find('p.jquery_form_error_message').html() != '' &&  $('#taskNameDIV').find('p.jquery_form_error_message').html() != null && $('#taskNameDIV').find('p.jquery_form_error_message').html() != 'undefined')) {
 		
-		var tbl = document.getElementById("projectTaskTbl");
-		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-		$("#addTaskCount").html(maxRowNum);
-		var row = tbl.insertRow(maxRowNum);
-		row.setAttribute("id", "divTsRow" + maxRowNum);
-
-		var taskName = $('#taskName').val();
-		var taskDescription = $('#taskDescription').val();
-		var taskBillableType = $('#taskBillableType').val();
-
-		var cell0 = row.insertCell(0);
-		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
-		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
-		cell0.innerHTML = divTsTd1Str;
+		if($('#taskNameDIV').find('p.jquery_form_error_message').html() == '' ||  $('#taskNameDIV').find('p.jquery_form_error_message').html() == null || $('#taskNameDIV').find('p.jquery_form_error_message').html() == 'undefined'){
+		   $('#taskNameDIV').find('p.jquery_form_error_message').remove();
+	    }
 		
-		var cell1 = row.insertCell(1);
-		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
-		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
-				(taskBillableType));
-		cell1.innerHTML = divTsTd2Str;
-
-		var cell2 = row.insertCell(2);
-		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
-		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
-				(taskDescription));
-		cell2.innerHTML = divTsTd3Str;
-
-		var cell3 = row.insertCell(3);
-		var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
-		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell3.innerHTML = divTsTd4Str;
-
-		$("#taskName").val('');
-		$("#taskDescription").val('');
-		$("#taskBillableType").val('Billable');
-		$('#taskBillableType').selectpicker('refresh');
-		addtasksCountafterAddingTask();
+		if ($('#taskName').val() == '') {
+			$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
+		}
+		if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
+			$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
+		}
+		/* if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
+			$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-5000 characters</span>");
+		} */
+		return false;
 	}
+	else
+	{
+		return true;
+	}
+	}
+
+
+
+
+
+	function addTasks() {
+		           
+            if(validateTask())
+               {
+                    var tbl = document.getElementById("projectTaskTbl");
+   					var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+   					$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+   					$("#addTaskCount").html(maxRowNum);
+   					var row = tbl.insertRow(maxRowNum);
+   					row.setAttribute("id", "divTsRow" + maxRowNum);
+
+   					var taskName = $('#taskName').val();
+   					var taskDescription = $('#taskDescription').val();
+   					var taskBillableType = $('#taskBillableType').val();
+
+   					var cell0 = row.insertCell(0);
+   					var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
+   					divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+   					divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
+   					cell0.innerHTML = divTsTd1Str;
+   					
+   					var cell1 = row.insertCell(1);
+   					var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+   					divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+   					divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
+   							(taskBillableType));
+   					cell1.innerHTML = divTsTd2Str;
+
+   					var cell2 = row.insertCell(2);
+   					var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+   					divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+   					divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
+   							(taskDescription));
+   					cell2.innerHTML = divTsTd3Str;
+
+   					var cell3 = row.insertCell(3);
+   					var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+   					divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+   					cell3.innerHTML = divTsTd4Str;
+
+   					$("#taskName").val('');
+   					$("#taskDescription").val('');
+//   	 				$("#taskBillableType").val('Billable');
+//   	 				$('#taskBillableType').selectpicker('refresh');
+   					addtasksCountafterAddingTask();
+
+                	   }
+			}
 </script>
 <script type="text/javascript">
 	function removeRow(rowId) {
@@ -535,22 +556,27 @@ function getStatus(){
 
 <script type="text/javascript">
 	function updateTask(rowId) {
-		$("#" + rowId + "taskName").val($("#taskName").val());
-		$("#" + rowId + "taskDescription").val($("#taskDescription").val());
-		$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
+		if(validateTask())
+			{
+			$("#" + rowId + "taskName").val($("#taskName").val());
+			$("#" + rowId + "taskDescription").val($("#taskDescription").val());
+			$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
+			
+			$("#" + rowId + "taskNameValue").html($("#taskName").val());
+			$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
+			$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
+			
+			$("#taskName").val('');
+			$("#taskDescription").val('');
+			$("#taskBillableType").val('Billable');
+			$('#taskBillableType').selectpicker('refresh');
+			$("#addTaskText").html('Add Task');
+			$("#save_task").removeAttr('onclick');
+			$("#save_task").attr('onclick', 'addTasks();');
+			$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
+			$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+			}
 		
-		$("#" + rowId + "taskNameValue").html($("#taskName").val());
-		$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
-		$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
-		
-		$("#taskName").val('');
-		$("#taskDescription").val('');
-		$("#taskBillableType").val('Billable');
-		$('#taskBillableType').selectpicker('refresh');
-		$("#addTaskText").html('Add Task');
-		$("#save_task").removeAttr('onclick');
-		$("#save_task").attr('onclick', 'addTasks();');
-
 	}
 </script>
 <script>
@@ -768,7 +794,7 @@ function flushProjectTasks(){
 							var json = JSON.parse(data);
 							var output = "";
 							output = output+' <div class="wrap_employeeTable">';
-							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+							output = output + ' <table cols="0" id="assignEmployeePagination" class="clearfix table-bordered">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
 				            output = output+' <th><input type="checkbox" name="emp" id="projectChekId" onclick="totalCheck();"></th>';
@@ -934,7 +960,12 @@ function assignEmployeespagination(){
     	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

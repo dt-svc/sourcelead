@@ -7,7 +7,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -33,6 +35,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -102,7 +105,7 @@ public class RegistrationRestController {
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
 			for(Org regOrg : orgsList){
-				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
 					regOrg.setEmail(regOrg.getUser().getEmail());
 					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
@@ -117,6 +120,7 @@ public class RegistrationRestController {
 				
 				if(null != orglocations){
 					regOrg.setLocation(orglocations.getCountry());
+					regOrg.setPrimaryOrgLocationId(orglocations.getId());
 				}
 				regOrgsList.add(regOrg);
 			}
@@ -128,7 +132,7 @@ public class RegistrationRestController {
 
 	}
 	 
-	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
@@ -138,6 +142,7 @@ public class RegistrationRestController {
 		try {
 
 				String json1 = "{"+json+"}";
+				JSONObject jsonObj = new JSONObject(json1);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -152,7 +157,7 @@ public class RegistrationRestController {
 			    	}
 			    }
 			   
-				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId() );
+				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId(),jsonObj);
 				 StringBuilder orgCreateMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
 			} catch (Exception e) {
@@ -203,17 +208,18 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
 	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
-			 @RequestParam(value="userId", required=false) Long userId ,HttpServletRequest request) throws Exception {
+			 @RequestParam(value="userId", required=false) Long userId ,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId ,HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 OrgLocations orgLocations= (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 	 	 
 	 	 User primaryUser = userService.getUserById(userId);
 	 	 if(null != primaryUser){
@@ -259,13 +265,13 @@ public class RegistrationRestController {
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
-		 registrationService.saveProfessional(jsonObj,contactUUID);
+		 String result = registrationService.saveProfessional(jsonObj,contactUUID);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
 	 	
-		 return "success";
+		 return result;
 	   }
 	 
 	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
@@ -275,13 +281,13 @@ public class RegistrationRestController {
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
-		 registrationService.saveIndividualRecruiter(jsonObj);
+		 String result = registrationService.saveIndividualRecruiter(jsonObj);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
 	 	
-		 return "success";
+		 return result;
 	   }
 	 
 	 
@@ -321,7 +327,6 @@ public class RegistrationRestController {
 		 JSONObject jsonObj = new JSONObject(json);
 		 User user = userService.getUserByUserName(jsonObj.getString("userName"));
 		 if(null != user){
-			 user.setUserName(jsonObj.getString("resetUserName"));
 			 user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("password")));
 			 prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 			 userService.addUser(user);
@@ -355,16 +360,15 @@ public class RegistrationRestController {
 	 
 	 
 	
-	  @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	   @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
-	   public String updateOrgModules(@RequestParam(value="orgId", required=false) Long orgId,
+	   public String updateOrgModules(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 			    @RequestParam(value="actionIds", required=false) String actionIds,
 			    HttpServletRequest request) throws Exception {
 		
-		     OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
-		     Org org = orgLocations.getOrg();
+		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			 String orgModules = "";
 			 StringBuilder strbul = null; 
 			 StringBuilder strbul2 = null; 
@@ -544,10 +548,10 @@ public class RegistrationRestController {
 				if("" != orgModules){
 					orgModules = orgModules.substring(0, orgModules.length()-1);
 					StringBuilder orgModulesstr = new StringBuilder();
-					orgModules = orgModulesstr.append(org.getModulesId()).append(",").append(orgModules).toString();
-					org.setModulesId(orgModules);
+					orgModules = orgModulesstr.append(orgLocations.getModulesId()).append(",").append(orgModules).toString();
+					orgLocations.setModulesId(orgModules);
 				}
-			    orgService.addOrganization(org);
+			    orgLocationService.updateOrgLocations(orgLocations);
 		   
 		return "success";
 	   }
@@ -558,77 +562,86 @@ public class RegistrationRestController {
 	
 	
 	
-	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.GET)
-	public String resetPasswordWithUserName(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
-		String json1 = "{"+json+"}";
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration = gson.fromJson(json1, Registration.class);
-		User user = userService.findByUserName(registration.getEmail());
-		if (null != user) {
-			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-			if (null != userRole) {
-				try {
-					PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
-					if (null == passwordResets) {
-						String verificationCode = registrationService.addPasswordResets(user);
-						registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), verificationCode);
-					} else {
-						passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
-						passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
-						// email to user
-						registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), passwordResets.getVerificationCode());
+	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
+	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
+		String json1 = IOUtils.toString(request.getInputStream());
+		if(StringUtils.isNotEmpty(json1)){
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			Registration registration = gson.fromJson(json1, Registration.class);
+			User user = userService.findByUserName(registration.getEmail());
+			if (null != user) {
+				UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				if (null != userRole) {
+					try {
+						PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
+						if (null == passwordResets) {
+							String verificationCode = registrationService.addPasswordResets(user);
+							registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), verificationCode);
+						} else {
+							passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+							passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
+							// email to user
+							registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), passwordResets.getVerificationCode());
+						}
+		
+						SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
+								"Verification Code sent to your mail.");
+					} catch (Exception e) {
+						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
+				}
+				resResponsetUtil.setStatus("valid");
+				return resResponsetUtil;
+			} else {
+				resResponsetUtil.setStatus("Invalid");
+				return resResponsetUtil;
+			}
+		}
+		resResponsetUtil.setStatus("Invalid");
+		return resResponsetUtil;
+	}
 	
-					SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
-							"Verification Code sent to your mail.");
+
+	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
+	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
+		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
+		String json1 = IOUtils.toString(request.getInputStream());
+		if(StringUtils.isNotEmpty(json1)){
+			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			Registration registration =  gson.fromJson(json1,Registration.class);
+			
+			//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
+			PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());
+			
+			if(null != passwordResets){
+				try {
+					registrationService.resetPassword(passwordResets, registration.getPassword());
+					registrationService.deletePasswordResets(passwordResets);
+					
+					//email to user
+					User user = userService.findByUserName(passwordResets.getEmail());
+					if(null != user){
+						UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+						if (null != userRole) {
+							registrationService.sendUpdatePasswordEmail(user,userRole.getOrgLocations().getId());
+						}
+					}
+					 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
+					
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
+				resResponsetUtil.setResetResponse("login");
+				return resResponsetUtil;
+			}else{
+				resResponsetUtil.setResetResponse("Invalid");
+				return resResponsetUtil;
 			}
-			return "valid";
-		} else {
-			return "Invalid";
 		}
-
-	}
-	
-
-	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
-	   public String verifyResetPassword(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
-		
-		String json1 = "{"+json+"}";
-		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration =  gson.fromJson(json1,Registration.class);
-		
-		//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
-		PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());
-		
-		if(null != passwordResets){
-			try {
-				registrationService.resetPassword(passwordResets, registration.getPassword());
-				registrationService.deletePasswordResets(passwordResets);
-				
-				//email to user
-				User user = userService.findByUserName(passwordResets.getEmail());
-				if(null != user){
-					UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-					if (null != userRole) {
-						registrationService.sendUpdatePasswordEmail(user,userRole.getOrgLocations().getId());
-					}
-				}
-				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
-				
-			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-			return "login";
-		}else{
-			return "Invalid";
-		}
-		
-	}
-	
+		resResponsetUtil.setResetResponse("Invalid");
+		return resResponsetUtil;
+	 }
 	
 	   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
 	   public @ResponseBody String validateOrgWebsite(
@@ -656,19 +669,28 @@ public class RegistrationRestController {
 	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
 	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
-		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			String status = null;
-			if(!isNullOrEmpty(companyName) && !org.getOrgName().equalsIgnoreCase(companyName)){
-			    boolean flag;
+			boolean flag = false;
 				try {
-					flag = orgService.isOrgNameExisted(companyName);
-					if (flag == true) {
-						status = "Company Duplicated";
+					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+					if(null != orgLocationsList){
+						for(OrgLocations orgLocations : orgLocationsList){
+							if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
+								flag = true;
+							}
+						}
 					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+		   
+		   if(flag == true){
+			   status = "Company Duplicated";
+		   }else{
+			   status = "success";
+		   }
+		   
 	       return status;
 	   }
 	   
@@ -714,6 +736,53 @@ public class RegistrationRestController {
 	   		@RequestParam(value="email", required=false) String email) throws Exception {
 		   return userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
 	   }
+	   
+	   
+	    @RequestMapping(value = "/getRegisteredOrgsLocationsList")
+		public @ResponseBody String getRegisteredOrgsLocationsList(HttpServletRequest request) {
+
+		String resultJson;
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgLocations> orgLocationsList = new ArrayList<>();
+
+		ArrayList<OrgLocations> regOrgsLocationsList = new ArrayList<OrgLocations>();
+
+		try {
+			orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsByOrgId(org.getId(),loginOrgLocation.getId());
+			if(null != orgLocationsList && orgLocationsList.size() > 0){
+			for(OrgLocations orgLocations : orgLocationsList){
+				if(null != orgLocations.getUser()){
+					
+					StringBuilder userName = new StringBuilder();
+					if(!isNullOrEmpty(orgLocations.getUser().getLastName())){
+						userName = userName.append(orgLocations.getUser().getFirstName()).append(" ").append(orgLocations.getUser().getLastName());
+					}else{
+						userName = userName.append(orgLocations.getUser().getFirstName());
+					}
+					orgLocations.setOrglocationUserName(userName.toString());
+					orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
+					orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+					orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
+					orgLocations.setOrgCode(org.getOrgCode());
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(),orgLocations.getId());
+					if(null != userRole){
+						orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());
+					}
+				}
+				
+				regOrgsLocationsList.add(orgLocations);
+			}
+		  }
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		resultJson = commonUtil.toJSON(regOrgsLocationsList);
+		return resultJson;
+
+	}
+	   
+	   
 	
 	   protected boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());

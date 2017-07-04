@@ -10,11 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.RequestedDocuments;
+import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RequestedDocumentsService;
 
 @Controller
 public class CandidateDocumentsController {
@@ -24,6 +29,16 @@ public class CandidateDocumentsController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	RequestedDocumentsService requestedDocumentsService;
+	
+	@Autowired
+	CandidateDocumentsService candidateDocumentsService;
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 	
 	/**
 	 * Handles to display candidate documents jsp
@@ -42,6 +57,27 @@ public class CandidateDocumentsController {
 			 
 			return model;
 	    }
+	 
+	 @RequestMapping(value = "/requestedDocuments")
+		public ModelAndView requestedDocuments(@RequestParam(value = "requestDocUUID", required = false) String requestDocUUID) throws Exception {
+			ModelAndView model = new ModelAndView();
+			if(!isNullOrEmpty(requestDocUUID)){
+				RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(requestDocUUID);
+				if(null != requestedDocuments){
+					List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
+					model.setViewName("candidates/requestedDocuments");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					model.addObject("requestDocUUID", requestDocUUID);
+					model.addObject("candidateDocumentsList", candidateDocumentsList);
+					model.addObject("candidateDocumentsListSize", candidateDocumentsList.size());
+					model.addObject("orgName",requestedDocuments.getOrgLocationId().getOrg().getOrgName());
+					model.addObject("isDocsUploaded",requestedDocuments.getIsDocsUploaded());
+				}
+			}
+			return model;
+	    }
+	 
+	 
 	
 	
 }

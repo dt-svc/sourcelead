@@ -61,7 +61,7 @@ function candidateCertificate(candidateId){
 	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result  = result + '   <div id="candidateCertificateList" ></div>';
+	result  = result + '   <div id="candidateCertificateList" class="datatable_filter"></div>';
 	result  = result + '   </div>';
 	result = result+'	    </div>';
 
@@ -368,8 +368,8 @@ function candidateCertificateList(candidateId){
 function certificationPagination(){  
     $('#candidateCertificatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -775,8 +775,34 @@ function addCertification(candidateId) {
      3.ajax url implementation in CandidateCertificationRestController.
 --%>    
       
+      
+<script type="text/javascript">
+function deleteCerPopup(){
+	$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteCertificationPopUp"></div> 
+
+<script type="text/javascript">
+function removeCertification(candidateCertificationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_certificates' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Certification</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteCertificationPopUp").append(result);
+	$("#remove_user_pop_certificates").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+      
+      
 <script>
-function removeCertification(candidateCertificationId,candidateId){
+function  deleteSelectedCertification(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
@@ -797,6 +823,7 @@ function removeCertification(candidateCertificationId,candidateId){
             			 $("#selector5").removeAttr("style");
              			 $("#selector5").css({ display: "block" });
              			 $("#cerMsgDiv").html("Certification deleted");
+             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
              			cerMsgFadein();
 			    	}

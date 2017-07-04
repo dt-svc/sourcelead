@@ -101,8 +101,14 @@ overflow-x: auto;
 					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 				</c:if>
 		     </sec:authorize>
+		     
 	    </div>
-	    	
+	 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
+	    <div class="clearfix row mb">
+		     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
+	    </div>
+	 </sec:authorize>  	
+	 
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -162,9 +168,7 @@ overflow-x: auto;
 	    
 	    <div class="clearfix"></div> 
 	    
-	    <sec:authorize access="hasRole('ROLE_VIEW_INTERVIEW')">
 	     	<jsp:include page="dashboardEvents.jsp"></jsp:include>	    
-	    </sec:authorize> 
 	  
 </section>
 

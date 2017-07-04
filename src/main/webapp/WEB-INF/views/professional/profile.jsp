@@ -28,7 +28,7 @@ $(document).ready(function(){
         
      <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Update Profile</h2>
+        <h2>Profile</h2>
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Update Profile</div>
     </section>
@@ -36,6 +36,8 @@ $(document).ready(function(){
   <!-- Profile Content Start-->
     <div id="professionalInfoDiv"></div>
      <!-- Profile Content End -->
+     
+     
 </section>
 
 <script>
@@ -43,6 +45,7 @@ function getProfessionalInfo(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateType= "Professional";
 	var userId = '${SourceLeadWeb_userId}';
+	var candidateId = '${SourceLeadWeb_candidateId}';
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getProfessionalInfo?candidateStatus="+candidateType, 	   
@@ -173,13 +176,13 @@ function getProfessionalInfo(){
 		    	 }
 		    	 
 		    	 if(json.currentRateCurrency != null  && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefiend'){
-		    		 currentRateCurrency = ' / '+json.currentRateCurrency;
+		    		 currentRateCurrency = json.currentRateCurrency+' / ';
 		    	 }else{
 		    		 currentRateCurrency = "";
 		    	 }
 		    	 
 		    	 if(json.expectedRateCurrencey != null  && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefiend'){
-		    		 expectedRateCurrencey = ' / '+json.expectedRateCurrencey;
+		    		 expectedRateCurrencey = json.expectedRateCurrencey+' / ';
 		    	 }else{
 		    		 expectedRateCurrencey = "";
 		    	 }
@@ -212,16 +215,16 @@ function getProfessionalInfo(){
 				 result = result +'	            <li><i class="fa fa-briefcase" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
 				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
 				 result = result +'	            <li> <i class="fa fa-rupee" title="Current Rate"></i>';
-				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateType+' '+currentRateCurrency+'</span>';
+				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	            <li> <i class="fa fa-rupee" title="Expected Rate"></i>';
-				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+rateType+' '+expectedRateCurrencey+'</span>';
+				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
 				 result = result +'	        <h5>Can be Reached at</h5>';
-				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
+				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt10">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw"><i class="fa fa-twitter-square fa-2x"></i></a></li>';
@@ -236,7 +239,7 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Primary Skill</h5>';
-				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	        <div class="skills mt10 mb10">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+primarySkill+'</strong>';
 				 result = result +'	        </p>';
@@ -245,13 +248,13 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Skills</h5>';
-				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	        <div class="skills mt10">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+skillsName+'</strong>';
 				 result = result +'	        </p>';
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
-				
+				 
 				 result = result +'	</section>';
 				 result = result +'	</div>';
 				 
@@ -264,6 +267,9 @@ function getProfessionalInfo(){
 			     result = result +'     <li><a href="#tab-3" onclick="professionalCandidateEmployers('+json.id+');">Employers</a></li>';
 			     result = result +'     <li><a href="#tab-4" onclick="professionalCandidateEducation('+json.id+');">Education</a></li>';
 			     result = result +'     <li><a href="#tab-5" onclick="professionalCandidateCertificate('+json.id+');">Certifications</a></li>';
+			     result = result+'<li><a href="#tab-6" onclick="professionalCandidateDocuments('+json.id+');">Documents</a></li>';
+			     result = result+'<li><a href="#tab-7" onclick="professionalCandidateReferences('+json.id+');">References</a></li>';
+			     
 			     result = result +'     <div class="clearfix"></div>';
 			     result = result +'   </ul>';
 			     
@@ -281,6 +287,18 @@ function getProfessionalInfo(){
 				 result = result + '</div>';
 				 
 				 result = result + '<div id="tab-5" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-6" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-7" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-8" class="project_tabs_inn addPop">';
+				 result = result + '</div>';
+				 
+				 result = result + '<div id="tab-9" class="project_tabs_inn addPop">';
 				 result = result + '</div>';
 				 
 			     result = result +'	</div>';
@@ -302,4 +320,7 @@ function getProfessionalInfo(){
 <jsp:include page="professionalCandidateEmployers.jsp"></jsp:include>
 <jsp:include page="professionalCandidateEducation.jsp"></jsp:include>
 <jsp:include page="professionalCandidateCertificates.jsp"></jsp:include>
+<jsp:include page="professionalCandidateDocuments.jsp"></jsp:include>
+<jsp:include page="professionalCandidateReferences.jsp"></jsp:include>
+
 <jsp:include page="../masterFooter.jsp" />

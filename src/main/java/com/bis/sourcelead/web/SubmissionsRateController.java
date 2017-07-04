@@ -109,6 +109,9 @@ public class SubmissionsRateController {
 		String permission = "YES";
 		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
 			permission = "NO";
+			/*if(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode().equals(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+				permission = "YES";
+			}*/
 		}
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
@@ -192,6 +195,9 @@ public class SubmissionsRateController {
 		String permission = "YES";
 		if(pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.ORG){
 			permission = "NO";
+			if(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && !pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode().equals(pastRequirementRateSubmissionNegotiation.getCreatedBy()) && !SubmissionRateStatus.ORG.equals(pastRequirementRateSubmissionNegotiation.getRateInitiatorType())){
+				permission = "YES";
+			}
 		}
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
@@ -277,11 +283,18 @@ public class SubmissionsRateController {
 			
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 			}
 			
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
-			
+			if(null != requirementSubmissionTemplateFields.getLastName()){
+			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName() +" "+requirementSubmissionTemplateFields.getLastName());
+			requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName() +" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName() );
+				requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName());
+				
+			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();

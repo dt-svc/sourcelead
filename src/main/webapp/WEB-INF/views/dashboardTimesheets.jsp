@@ -25,13 +25,13 @@ $(document).ready(function(){
  <!-- Timesheets -->
       <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix">${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''} &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
+          <h4 class="clearfix">${bothTimesheets ? 'Time' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''} &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
            <div class="clearfix dashboard-data mt">
             
              <c:if test="${bothTimesheets}">
 	             <ul class="nav nav-tabs">
-	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-req">My Timesheets</a></li>
-	               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-req">Employees</a></li>
+	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-myTimesheets">Self</a></li>
+	               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-employees">Employees</a></li>
 	             </ul>
              </c:if>
              
@@ -104,15 +104,15 @@ function timeSheetSubmissionStatusCount(timesheetType){
 		        	 var  rejectedTimesheetsSubmissionsCount = json.rejectedTimesheetSubmissionCount; 
 		        	 if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		        		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-	                      $("#savedCountAnchor").html("Saved");
+	                      $("#savedCountAnchor").html("Draft");
 	                  }else{
 	                	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
 	                	 /*  $("#savedCountAnchor").html("Saved"); */
-	                      $("#savedCountAnchor").html("<a href='/sourcelead/totalTimesheetList/DRAFT'>Saved</a>"); 
+	                      $("#savedCountAnchor").html("<a href='/sourcelead/totalTimesheetList/DRAFT'>Draft</a>"); 
 	                  }
 		        	if(waitingTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		        		  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-	                      $("#waitingCountAnchor").html("Waiting");
+	                      $("#waitingCountAnchor").html("Submitted");
 	                  }else{
 	                	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
 	                	  /* $("#waitingCountAnchor").html("Waiting"); */

@@ -65,7 +65,7 @@ function candidateEducation(candidateId){
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		
 		
-		result  = result + '   <div id="candidateEducationList" ></div>';
+		result  = result + '   <div id="candidateEducationList" class="datatable_filter"></div>';
 		
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -90,7 +90,7 @@ function candidateEducation(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function eduMsgFadein() {
+	function eduMsgFadeinFunction() {
 		$("#selector4").fadeIn(200);
         $('#selector4').delay(2000).fadeOut('slow');
 	}
@@ -256,8 +256,8 @@ function candidateEducationList(candidateId){
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -296,7 +296,7 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="candEdu" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -411,11 +411,9 @@ function addEducation(candidateId) {
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-	 
-	 
 	//Adding Customized Educations to the list
      var selectone, chosenone;
-     selectone = $("#name");
+     selectone = $("#candEdu");
      selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
      chosenone = selectone.data('chosen');
      chosenone.search_field.on('keyup', function(e1)
@@ -428,11 +426,11 @@ function addEducation(candidateId) {
 	            selectone.append(option);
 	            selectone.find(option).prop('selected', true);
 	          //to doesn't allow duplicates
-             $("#name option").each(function(){
+             $("#candEdu option").each(function(){
                    $(this).siblings("[value='"+ this.value+"']").remove();
              });
              //end
-     		$("#name").trigger("chosen:updated");
+     		$("#candEdu").trigger("chosen:updated");
      		
 	        }
 	    }); 
@@ -736,7 +734,7 @@ function candidateEducationStore(candidateId){
 				            			$("#selector4").css({ display: "block" });
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
-				               			eduMsgFadein();
+				               			eduMsgFadeinFunction();
 				               			qveducationSubmission(candidateId);
 							    	}
 				                 }   
@@ -779,6 +777,31 @@ $('body').on('blur', '#education_form', function() {
 
 
 
+  
+  
+  <script type="text/javascript">
+function deleteEduPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEduPopUp"></div> 
+
+<script type="text/javascript">
+function removeEducation(candidateEducationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Education</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEduPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
    
 <%-- 
      @author : david.
@@ -787,7 +810,7 @@ $('body').on('blur', '#education_form', function() {
 
       
 <script>
-function removeEducation(candidateEducationId,candidateId){
+function deleteSelectedEducation(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -804,8 +827,9 @@ function removeEducation(candidateEducationId,candidateId){
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
-             			 eduMsgFadein();
+             			eduMsgFadeinFunction();
 			    	}
                } 
         },
@@ -911,7 +935,7 @@ function clearSearchKey() {
 		            			$("#selector4").css({ display: "block" });
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
-							eduMsgFadein();
+							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
 					});

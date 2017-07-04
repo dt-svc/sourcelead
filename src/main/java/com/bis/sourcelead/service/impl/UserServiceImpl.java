@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -144,6 +146,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private CandidateService  candidateService;
+	
+	@Autowired
+	MasterCandidateService masterCandidateService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -254,6 +259,13 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
+		}else{
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			if(null == masterCandidate){
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
+			}
+			candidateService.storeCandidateForUsers(jsonObj, user, orgLocations, masterCandidate);
 		}
 		
 		
@@ -586,7 +598,7 @@ public class UserServiceImpl implements UserService {
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		 
 		
@@ -603,7 +615,7 @@ public class UserServiceImpl implements UserService {
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -780,7 +792,7 @@ public class UserServiceImpl implements UserService {
 	
 	
 	@Override
-	public void sendEmailToClientOrVendor(String spocUUID,User user,User ownerUser, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation)	throws Exception {
+	public void sendEmailToClientOrVendor(String spocUUID,User user,User ownerUser, User loginUser, String password, String responderType,Org loginOrg,Org respondingPartyOrg,OrgLocations respondingPartyOrgLocation,OrgLocations orgLocation) throws Exception {
 		 
 		if(null == ownerUser){
 			ownerUser = loginUser;
@@ -800,7 +812,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 StringBuilder emailMsgBuilder = new StringBuilder();
 		 emailMessage.setFromName(emailMsgBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
-		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocationByOrgId(loginOrg.getId());
+		 OrgLocations loginOrgLocation = orglocationsDao.getOrgLocations(orgLocation.getId());
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
@@ -811,8 +823,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorLastName",ownerUser.getLastName());
 			 globalVarsMap.put("clientFirstName", user.getFirstName());
 			 globalVarsMap.put("clientlastName",user.getLastName());
-			 globalVarsMap.put("clientOrgName",respondingPartyOrg.getOrgName());
-			 globalVarsMap.put("vendorOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("clientOrgName",respondingPartyOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("vendorOrgName",orgLocation.getOrgLocationName());
 			 StringBuilder urlBuilder = new StringBuilder();
 			 globalVarsMap.put("acceptURL",urlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 StringBuilder rejecturlBuilder = new StringBuilder();
@@ -829,7 +841,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+				 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 			 } 
 		     StringBuilder actionUrlBuilder = new StringBuilder();
 			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append(" ").toString();
@@ -845,8 +857,8 @@ public class UserServiceImpl implements UserService {
 			 globalVarsMap.put("vendorLastName",user.getLastName());
 			 globalVarsMap.put("clientFirstName", ownerUser.getFirstName());
 			 globalVarsMap.put("clientLastName",ownerUser.getLastName());
-			 globalVarsMap.put("vendorOrgName",respondingPartyOrg.getOrgName());
-			 globalVarsMap.put("clientOrgName",loginOrg.getOrgName());
+			 globalVarsMap.put("vendorOrgName",respondingPartyOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("clientOrgName",orgLocation.getOrgLocationName());
 			 StringBuilder actionUrlBuilder = new StringBuilder();
 			 globalVarsMap.put("acceptURL",actionUrlBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?respondingOrgType=ATS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 			 StringBuilder rejectActionUrlBuilder = new StringBuilder();
@@ -863,7 +875,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+				 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 			 }
 			 
 			 StringBuilder actionLinkBuilder = new StringBuilder();
@@ -894,7 +906,7 @@ public class UserServiceImpl implements UserService {
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,respondingPartyOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(respondingPartyOrgLocation.getId());
@@ -1114,7 +1126,7 @@ public class UserServiceImpl implements UserService {
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		 
 		
@@ -1131,9 +1143,10 @@ public class UserServiceImpl implements UserService {
 		 String url = sourceleadUrl;
 		 
 		 Org registredOrg = orgDao.findOrgByID(orgId);
+		 OrgLocations regLocation = orglocationsDao.getOrgLocations(locationId);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,registredOrg);
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,registredOrg,regLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1181,7 +1194,7 @@ public class UserServiceImpl implements UserService {
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

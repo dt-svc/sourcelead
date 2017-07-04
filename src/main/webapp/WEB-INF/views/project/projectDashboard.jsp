@@ -288,7 +288,7 @@ overflow-x: auto;
         </div>
 			
 		    <div id="projectFilterList"></div>
-		    <div class="project_wrap_table" onclick="removeErroeMsg();">
+		    <div class="project_wrap_table datatable_filter" onclick="removeErroeMsg();">
 		    				<table id="example" class="display" cellspacing="0" width="100%">
 							</table>
 			</div>	   
@@ -444,7 +444,7 @@ $(document).ready(function() {
 		  	result = result + '<p> "hi" </p>';
 		  	result = result + '</div>';
 		  	
-		  	result = result + '<div id="tab-3" class="project_tabs_inn">';
+		  	result = result + '<div id="tab-3" class="project_tabs_inn datatable_filter">';
 		  	result = result + '</div>';
 		  	
 		  	result = result + '</div>'; 
@@ -518,7 +518,7 @@ function pagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
 		"aaSorting": [[4,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -621,11 +621,19 @@ function filter(){
    		    		
    		    		result = result +'</span></div>';
    		    		result = result +'</td>';
-   		    		
-   		    		result = result +'<td data-title="Date"><div><span title="'+report.startDateStr+' - '+report.endDateStr+'">'+report.startDateStr+'';
-   		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-   	   		    		result = result +' - '+report.endDateStr+'</span> </div></td>';
+   		    		var endDateStr = report.endDateStr;
+   		    		if(report.endDateStr == null || report.endDateStr == '' || report.endDateStr == 'undefined'){
+   		    			endDateStr = "";
+   		    		}else{
+   		    			endDateStr = ' - '+ endDateStr;
    		    		}
+   		    		result = result +'<td data-title="Date"><div><span title=" '+report.startDateStr+endDateStr+'">'+report.startDateStr+'';
+   		    		if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+   	   		    		result = result +' - '+report.endDateStr;
+   		    		}
+   		    		result = result +'</span></div>';
+   		    		result = result +'</td>';
+   		    		
    		    		if(report.client != null && report.client != '' && report.client != 'undefined'){
    		    			result = result +'<td data-title="Client"><div><span title="'+report.client+'">'+report.client+'</span></div></td>';  
    		    		}else{

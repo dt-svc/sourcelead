@@ -23,7 +23,6 @@ import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.AutoCompleteController;
 /**
  * Handles requests for the Organization service.
  * 
@@ -79,7 +78,7 @@ public class OrgRelationsRestController {
 		
 		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId()); 
 		for(OrgRelations ocl :orgClientList){
-			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 		 }
 		

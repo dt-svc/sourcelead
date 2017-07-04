@@ -47,7 +47,7 @@ function clientSubmissionTemplate(clientLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientSubmissionTemplateList" ></div>';
+		result  = result + '   <div id="clientSubmissionTemplateList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -56,6 +56,7 @@ function clientSubmissionTemplate(clientLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
+    $("#tab-5").empty();  
     $("#tab-4").append(result);  
 	
     submissionTemplateList(clientLocationId);
@@ -148,7 +149,7 @@ function templatepagination(){
     $('#templatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

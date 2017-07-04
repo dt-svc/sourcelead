@@ -46,14 +46,19 @@ function vendorContacts(orgRelationID,clientLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="vendorContactListDiv" ></div>';
+		result  = result + '   <div id="vendorContactListDiv" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
 
     $("#tab-1").empty();
+    $("#tab-3").empty(); 
+    $("#tab-4").empty(); 
+    $("#tab-6").empty(); 
+    $("#tab-7").empty();
+    $("#tab-8").empty();
+    $("#tab-5").empty(); 
     $("#tab-2").empty(); 
-    $("#tab-3").empty();  
     $("#tab-2").append(result);  
 	
     vendorContactList(orgRelationID,clientLocationId);
@@ -247,34 +252,50 @@ function changeSpocStatus(spocId,vendorLocationId){
    });
 }
 </script>
+
+<script>
+function cancelTerminationResonforSpoc(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForSpocDiv").empty(); 
+}
+</script>
+
+
 <script>
 function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Vendor delete message here</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason'></textarea>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason' onclick='vendorRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationResonforSpoc();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
-
+<script>
+   function vendorRemoveSpacesForRejectReason() {
+	    var output = document.getElementById("reasonForSpoc").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForSpoc").removeAttr("data-validation");
+	    }
+	}
+</script>
 <script>
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
+	 reason = reason.replace(/\s/g, "") 
+	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
-		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+		  $("#reasonForSpocDiv").empty();
 	  	  
-		}else{
-		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -288,6 +309,11 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
    			    vendorConactTerminateMsgFadein();
 		    }
 	   });
+	}else{
+		if(reason.length == 0){
+			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ;
+		}
 	}
 	  
 }
@@ -323,7 +349,7 @@ function contactPagination(){
     $('#vendorContactsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -424,7 +450,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	  <div class="clearfix mr">';
-	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
+	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="checkVendorContactAdd('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
 	result = result  +'	  </div>';
 	
 	result = result  +'	 </div>';
@@ -476,7 +502,7 @@ $('html').click(function(){
  <!-- This Script is For Popup Div Ends --> 
  <!-- to add new contact -->
 <script type="text/javascript">
-	function check(orgRelationId,vendorLocationId) {
+	function checkVendorContactAdd(orgRelationId,vendorLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
 			var frm = $('#clinetContact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);

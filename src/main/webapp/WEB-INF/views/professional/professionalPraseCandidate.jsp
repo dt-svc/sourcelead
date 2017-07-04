@@ -78,7 +78,7 @@
         <div class="col-md-12 clearfix">
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
+            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
@@ -92,25 +92,25 @@
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_user.firstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" >
+            <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_loginUserFirstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" >
           </div>
         </div>
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
-          <c:if test="${!empty SourceLeadWeb_user.lastName}">
-           <input type="text" class="form-control" readonly="readonly" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">
+          <c:if test="${!empty SourceLeadWeb_loginUserLastName}">
+           <input type="text" class="form-control" readonly="readonly" value="${SourceLeadWeb_loginUserLastName}" field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">
           </c:if>
           
-          <c:if test="${empty SourceLeadWeb_user.lastName}">
-           <input type="text" class="form-control" id="lastName" name="lastName" value="${SourceLeadWeb_user.lastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">
+          <c:if test="${empty SourceLeadWeb_loginUserLastName}">
+           <input type="text" class="form-control" id="lastName" name="lastName" value="${SourceLeadWeb_loginUserLastName}"  field-name="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">
           </c:if>
           </div>
         </div>
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email"   value="">
+            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_loginUserEmail}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email"   value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -368,7 +368,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>

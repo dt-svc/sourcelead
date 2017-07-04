@@ -174,7 +174,16 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 */
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
-		 return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
+		// return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
+	
+		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
+			for(CandidateResumes canResumes :candidateResumesList){
+				if(canResumes.getUpdatedDate() != null){
+					canResumes.setCandidateResumeUpdateDateToString(Constants.DF_DMY.format(canResumes.getUpdatedDate()));
+				}
+			}
+			return candidateResumesList;
+	
 	}
 	
 	@Override

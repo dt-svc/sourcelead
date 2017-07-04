@@ -126,15 +126,17 @@
                     <input type="text" class="form-control input-sm" id="role" name="role" readonly="readonly">
                   </div>
                 </div>
+                
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Employment Type</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="employmentType" name="employmentType" readonly="readonly">
+                  </div>
+                </div>
                   
                 <div class="clearfix"></div>
                 <p><strong>Offboard Details</strong></p>
-				<div class="form-group" id="endDateDiv">
-                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
-                  </div>
-                </div>
+				
                   <div class="form-group">
                       <label class="col-md-3 control-label">Reason<span class="paddingLeft text-danger">*</span></label>
                   <div class="col-md-6">
@@ -154,12 +156,19 @@
                  </div>
             </div>
 
+               <div class="form-group" id="effectiveDateDiv">
+                  <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
+                  </div>
+                </div>
                   
                   <div class="form-group">
                   <label class="col-md-3 control-label">Notice Period</label>
                   <div class="col-md-6 select-field">
-                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod" onchange="getNoticePeriod()">
+                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod" onchange="getNoticePeriod();getEndDate();">
                       <option  selected="selected" value=''>- Select Notice Period -</option>
+                      <option value='Relieve Immediately'>Relieve Immediately</option>
                       <option value='15 Days'>15 Days</option>
                       <option value='1 Month'>1 Month</option>
                       <option value='2 Months'>2 Months</option>
@@ -168,11 +177,10 @@
                   </div>
                 </div>
                   
-                  
-                  <div class="form-group" id="effectiveDateDiv">
-                  <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
+                <div class="form-group" id="endDateDiv">
+                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
                   </div>
                 </div>
                 <div class="form-group" id="workInNotice" style="display: none;">
@@ -472,14 +480,14 @@
   
   <div id="divResignationAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDResignationdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDresignationdocFile' id='REPLACEROWIDresignationdocFile' class="timesheetAttachmentValidation" onchange='validateResignationUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDresignationdocFile' id='REPLACEROWIDresignationdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Document" onchange='validateResignationUploadFile(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeResignationAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divOffboardPackAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDOffboardPackdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDoffboardPackdocFile' id='REPLACEROWIDoffboardPackdocFile' class="timesheetAttachmentValidation" onchange='validateOffboardPackUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDoffboardPackdocFile' id='REPLACEROWIDoffboardPackdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Document" onchange='validateOffboardPackUploadFile(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeOffboardPackAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
@@ -703,6 +711,10 @@ function validate_fileupload(fileName)
 			    	 $("#dateOfJoin").val(json['dateOfJoin']);
 			    	 $("#role").val(json['role']);
 			    	 
+			    	 if(json['employmentType'] != null && json['employmentType'] != '' && json['employmentType'] != 'undefined'){
+			    		 $("#employmentType").val(json['employmentType']);
+			    	 }
+			    	 
 			    	 if(json['noticePeriod'] != null && json['noticePeriod'] != '' && json['noticePeriod'] != 'undefined'){
 			    		 $("#noticePeriod").val(json['noticePeriod']);
 				    	 $('#noticePeriod').trigger("chosen:updated");
@@ -768,7 +780,7 @@ function getTemplateResignationDocumentsDetails(offboardId){
                 	 result = result +"<input type='hidden' name='resignationAttcahmentMaxRowNumber'  id='resignationAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='resignationAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' name='0resignationdocFile' id='0resignationdocFile' field-name='Attachment' onchange='validateResignationUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0ResignationdocFileuploadFileGroup'><input type='file' name='0resignationdocFile' id='0resignationdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateResignationUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addResignationAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedResignationAttachments").empty();
@@ -823,7 +835,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
                 	 result = result +"<input type='hidden' name='offboardPackAttcahmentMaxRowNumber'  id='offboardPackAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='offboardPackAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file' name='0offboardPackdocFile' id='0offboardPackdocFile' field-name='Attachment' onchange='validateOffboardPackUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
+                	 result = result +"<td><div id='0OffboardPackdocFileuploadFileGroup'><input type='file' name='0offboardPackdocFile' id='0offboardPackdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateOffboardPackUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addOffboardPackAttachment();'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedOffboardPackAttachments").empty();
@@ -859,6 +871,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	  	  minDate: 0  ,
 	  	  onSelect : function(selected) {
 			addValidClass();
+			getEndDate();
 			}
 	  });
 	  
@@ -995,7 +1008,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
  <script>
  function getNoticePeriod(){
 	 var noticePeriod = document.getElementById("noticePeriod").value;
-	 if(noticePeriod != '' && noticePeriod != null && noticePeriod != 'undefined'){
+	 if(noticePeriod != '' && noticePeriod != null && noticePeriod != 'undefined' && noticePeriod != "Relieve Immediately"){
 		 document.getElementById("workInNotice").style.display="";
 	 }else{
 		 document.getElementById("workInNotice").style.display="none";
@@ -1043,6 +1056,11 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		    	$("#email").val(json['email']);
 		    	$("#role").val(json['role']);
 		    	
+		    	if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] !="undefined"){
+		    		$("#employmentType").val(json['employmentType']);
+		    	}
+		    	
+		    	
 		    	
 		    	$("#dateOfJoin").val(json['dateOfJoinStr']);
 		    	
@@ -1059,7 +1077,12 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		    	if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] !="undefined"){
 		    		$("#noticePeriod").val(json['noticePeriod']);
 			    	$('#noticePeriod').trigger("chosen:updated");
-			    	document.getElementById("workInNotice").style.display="";
+			    	
+			    	if(json['noticePeriod']  != 'Relieve Immediately'){
+			    		document.getElementById("workInNotice").style.display="";
+			    	}else{
+			    		document.getElementById("workInNotice").style.display="none";
+			    	}
 			    	
 			    	if(json['haveToWorkInNoticePeriod'] == 'Y'){
 			    		$("#checkedY").val(json['haveToWorkInNoticePeriod']);
@@ -1148,51 +1171,63 @@ function createTemplateDocs(saveType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
-	  var frm = $('#templateDocuments_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
-      
-	   var form = $('#templateDocuments_form')[0];
-	   var formData = new FormData(form); 
-	   
-	   
-	   $("#save_docs_button").attr("disabled", "disabled");
-	   $("#save_continue_docs_button").attr("disabled", "disabled");
-	
-   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	$.ajax({
-        type : "POST",
-	      data: formData,
-	      contentType : 'application/json; charset=utf-8',
-	      enctype: 'multipart/form-data',
-        processData: false,
-        contentType:false,
-	      dataType : 'json',
-    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
-	      success :function(result) {
+	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
+		  var frm = $('#templateDocuments_form').serializeFormJSON();
+	      var con = JSON.stringify(frm);
+	      con = con.replace(/[{}]/g, "");
+	      
+	      //It will escape all the special characters
+	      var jsonData = encodeURIComponent(con);
+	      
+		   var form = $('#templateDocuments_form')[0];
+		   var formData = new FormData(form); 
+		   
+		   
+		   $("#save_docs_button").attr("disabled", "disabled");
+		   $("#save_continue_docs_button").attr("disabled", "disabled");
+		
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+	        type : "POST",
+		      data: formData,
+		      contentType : 'application/json; charset=utf-8',
+		      enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+		      dataType : 'json',
+	    	  url: sourceleadUrl+"/saveCandidatedOffboardingDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+		      success :function(result) {
+		    	  
+		    	  if(saveType == 'saveAndContinue'){
+		        		var $tabs = $('.tabbable li');
+		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+		     	        document.getElementById("checkList").disabled = false;
+		     	        getOffboardingCheckList();
+		        	}else{
+		        		getTemplateResignationDocumentsDetails();
+		     	        getTemplateOffboardPackDocumentsDetails();
+		        	}
+		    	  
+		   	      
+		   	     $("#save_docs_button").removeAttr("disabled");
+		   	     $("#save_continue_docs_button").removeAttr("disabled");
+		   	   
+		    	  $("#loading").removeAttr("style");
+		    	  
+		      }
 	    	  
-	    	  if(saveType == 'saveAndContinue'){
-	        		var $tabs = $('.tabbable li');
-	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-	     	        document.getElementById("checkList").disabled = false;
-	     	        getOffboardingCheckList();
-	        	}else{
-	        		getTemplateResignationDocumentsDetails();
-	     	        getTemplateOffboardPackDocumentsDetails();
-	        	}
-	    	  
-	   	      
-	   	     $("#save_docs_button").removeAttr("disabled");
-	   	     $("#save_continue_docs_button").removeAttr("disabled");
-	   	   
-	    	  $("#loading").removeAttr("style");
-	    	  
-	      }
-    	  
-  });
+	  });
+		return true;
+	  }else{
+		  return false;
+	  }
+	  
+	  $('body').on('blur', '#templateDocuments_form', function() {
+			$("#templateDocuments_form").showHelpOnFocus();
+			$("#templateDocuments_form").validateOnBlur(false, validationSettings);  
+	   });
+	  
+	  
 }
 </script>
 
@@ -1748,6 +1783,35 @@ $('body').on('blur', '#addoffboardTask_form', function() {
 	$("#addoffboardTask_form").showHelpOnFocus();
 	$("#addoffboardTask_form").validateOnBlur(false, validationSettings);  
 });
+</script>
+
+<script>
+function getEndDate(){
+	
+	var effectiveDate = document.getElementById("effectiveDate").value;
+	if(effectiveDate){
+		 var noticePeriod = document.getElementById("noticePeriod").value;
+		 if(noticePeriod && noticePeriod != 'Relieve Immediately'){
+			 var sourceleadUrl ='${sourceleadUrl}';
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 
+			    $.ajax({
+					type : "GET",
+					url: sourceleadUrl+"/getEndDateByEffectiveDateAndNoticePeriod?${_csrf.parameterName}=${_csrf.token}&noticePeriod="+noticePeriod+"&effectiveDate="+effectiveDate,
+					success :function(endDateStr) {
+						
+						$("#endDate").val(endDateStr);
+						$("#loading").removeAttr("style");
+						addValidClass();
+					}
+				});
+			    
+		 }else{
+			 $("#endDate").val(effectiveDate);
+			 addValidClass();
+		 }
+	}
+}
 </script>
 
 

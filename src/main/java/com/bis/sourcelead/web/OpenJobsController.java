@@ -16,6 +16,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Controller
 public class OpenJobsController {
@@ -32,6 +33,9 @@ public class OpenJobsController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@RequestMapping(value = "/openRequirements")
 		 public ModelAndView openJobs() throws Exception{
 		 ModelAndView model = new ModelAndView();
@@ -46,13 +50,21 @@ public class OpenJobsController {
 	
 	
 	@RequestMapping(value = "/openRequirementsRedirect")
-	 public ModelAndView openRequirementsRedirect() throws Exception{
+	 public ModelAndView openRequirementsRedirect(@RequestParam(value = "openJobsTitle", required = false) String openJobsTitle,
+			 @RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
+			 @RequestParam(value = "openJobsExperience", required = false) String openJobsExperience) throws Exception{
 	 ModelAndView model = new ModelAndView();
 	 List<Countries> countriesList = countriesService.getAllCountries();
 	 model.addObject("countryList",countriesList);
 	 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 	 model.addObject("skillsList",skillsList);
+	 
+	 List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
+	 model.addObject("industryList", industryListWithoutId);
+	 
 	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("openJobsTitle", openJobsTitle);
+	 model.addObject("openJobsLocation", openJobsLocation);
 	 model.setViewName("openJobs/openjobs");
 	 return model;
 }

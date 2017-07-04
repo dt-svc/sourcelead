@@ -46,6 +46,7 @@ function getApplicantSubmittedReports(){
 
 <script>
 function prepareReportDataDiv(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -54,7 +55,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Client</th>';
 	result = result + '    <th>Submitted By</th>';
 	result = result + '    <th>Submitted on</th>';
-	result = result + '    <th>Requirement Title</th>';
+	result = result + '    <th>Job Title</th>';
 	result = result + '    <th>Applicant Status</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
@@ -115,22 +116,22 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
-    requirementReportPagination();
+    requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
 </script>
 <script>
-function requirementReportPagination(){
+function requirementReportPagination(SourceLeadWeb_loginOrg){
 	$('#requirementReportPagination').DataTable({ 
 		 dom: 'Bfrtip',
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Applicants Submitted',
+	                title: SourceLeadWeb_loginOrg+' - Submitted Applicants Reports',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Applicants Submitted',
+	                title: SourceLeadWeb_loginOrg+' - Submitted Applicants Reports',
 	            }
 	        ],
 		
@@ -144,8 +145,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
 
 </script>
@@ -187,29 +188,29 @@ function requirementReportPagination(){
     <div class="pull-left">
       <h2 class="pull-left">Reports</h2>
 		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Applicants Submitted</a>
+			<a title="Reports"><i class="fa fa-pie-chart"></i>Submitted Applicants</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Submitted Applicants</a></li>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Applicants Submitted</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Submitted Applicants</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
      
       <div class="timesheet_head">
 
-<div class="pull-left reportBtns">
+<div class="pull-left reportBtns reportcutom_Btns">
 	  <div class="reportBtn dropdown-select">
 		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 <!-- 		 <option value="">-- select --</option> -->
@@ -224,15 +225,17 @@ function requirementReportPagination(){
 	 </div>	
 	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
 	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
-	 <span class="dashboard-datepkr cusShow">
+	 <div class="cusShow pull-left">
+	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 	 <p id="reportStartDate" class="ReError"></p>
 	 </span>
-	<span class="dashboard-datepkr cusShow">
+	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
 	<p id="reportEndDate" class="ReError"></p>
 	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	</div>
 </div>
                     
         <div class="clearfix"></div>

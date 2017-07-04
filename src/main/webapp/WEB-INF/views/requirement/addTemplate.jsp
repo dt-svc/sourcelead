@@ -42,17 +42,25 @@ width: 100% !important;
 		
 	});
 </script>
-
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+				// append text in edit mode in richtextarea
+				$('.Editor-editor').html($('#txtEditor').text());
+			});
+       </script> 
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Requirement Template</h2>
+			<h2>Job Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Requirement Template List </a>&raquo;
-			Add Requirement Template
+				href="<c:url value='/template'/>">Job Template List </a>&raquo;
+			Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -60,7 +68,7 @@ width: 100% !important;
 			<div class="form-horizontal req-dtls mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
-						<h3>Add Requirement Template Details</h3>
+						<h3>Add Job Template Details</h3>
 					</div>
 <div class="clearfix"></div>
 					<div class="mt pras req-title">
@@ -169,7 +177,7 @@ width: 100% !important;
 							</div>
 						</div>  --%>
 						
-						 <div class="form-group">
+						 <div class="form-group mt25">
 			              <label class="col-md-3">Skills</label>
 			              <div class="col-md-9">
 			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
@@ -205,7 +213,7 @@ width: 100% !important;
 						<div class="clearfix mb">
 				          <label class="col-md-3">Description</label>
 				          <div class="col-md-12 txtEditor_p">
-				          <textarea id="txtEditor" name="description" value="${requirement.description}" class="form-control newContrtextarea">${requirement.description}</textarea>
+				          <textarea id="txtEditor" name="description"  class="form-control newContrtextarea">${requirement.description}</textarea>
 				          </div>
 				        </div> 
 						
@@ -246,17 +254,10 @@ width: 100% !important;
         
 </script> 
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-<script>
-	$(document).ready(function() {
-		$("#txtEditor").Editor();
-		getEditRequirementDetails(requirementId);
-	});
-</script> 
        
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
+		
 		
 		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
@@ -364,18 +365,19 @@ width: 100% !important;
 	    	   getCities();
 	       });
 		       
-	     
+	       
            
             //Adding Customized Educations to the list
 	        var selectone, chosenone;
 	        selectone = $("#education");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
@@ -387,11 +389,45 @@ width: 100% !important;
 		    //Adding Customized Educations to the list
 		    
 		     //Adding Customized Skills to the list
-	       var select, chosen;
-		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		       var select, chosen;
+	        select = $("#skills");
+	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.bind(('keydown keyup'), function(e)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 select.append(option);
+	        			 select.find(option).prop('selected', true);
+	 	        		 $("#skills").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 select.append(option);
+			        		 select.find(option).prop('selected', true);
+				        		$("#skills").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
+		    
+	    /*    var select, chosen;
+		    select = $("#skills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skills:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -404,8 +440,9 @@ width: 100% !important;
 		                 }
 			    	 }else{
 		    			var newSkill = this.value.replace(","," ");
-		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
+		    				 preventTabkey(e);
 		    				 var option = $("<option>").val(newSkill).text(newSkill);
 		                     select.append(option);
 		                     select.find(option).prop('selected', true);
@@ -417,7 +454,7 @@ width: 100% !important;
 				       
 	    	         }
 		    });
-           
+            */
 	       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -468,13 +505,7 @@ function getJobType(jobType){
 }
 </script>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
-			$(document).ready(function() {
-				$("#txtEditor").Editor();
-			});
-       </script> 
+
 <script>
 function getEditRequirementDetails(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -485,6 +516,7 @@ function getEditRequirementDetails(requirementId){
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
+				
 			},
 		}); 
 	}
@@ -495,6 +527,7 @@ function getEditRequirementDetails(requirementId){
 <script type="text/javascript">
 $(document).ready(function(){
 	var requirementId  = "${requirementId}";
+	
 	getEditRequirementDetails(requirementId);
 	
 });

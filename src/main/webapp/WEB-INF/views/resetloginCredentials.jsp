@@ -33,7 +33,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion">
-        <div class="pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="pull-left mb"><img src="resources/images/SourceLead-logo.png" alt="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="javascript:void(0)"><i class="fa fa-retweet"></i>&nbsp;&nbsp;Reset Credentials</a></li>
@@ -49,35 +49,28 @@ window.onload = function () {
             
             <form:form class="login-form clearfix"  id="resetCredentials_form"  name="resetCredentials_form" method="post" > 
             <div class="row">
-            <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6" id="userNameDiv">
-                    <i class="fa fa-user-circle"></i>
-                    <label>User Name <span class="text-danger">*</span></label>
-                    <input type="text" id="userName" name="userName" onblur="validateUserName();" value='${userName}' data-validation="required" field-name="User Name">
-                    <b></b>
-                </div>
-                <div class="col-xs-12 col-md-6" id="resetUserNameDiv">
-                    <i class="fa fa-retweet"></i>
-                    <label>Reset User Name <span class="text-danger">*</span></label>
-                    <input type="text" id="resetUserName" name="resetUserName" onblur="validateResetUserName();"  data-validation="required validate_Alphanumeric validate_length length1-100" field-name="Reset User Name">
-                    <b></b>
+                <div class="form-group clearfix">
+	                <div class="col-xs-12 col-md-6" id="userNameDiv">
+	                    <i class="fa fa-user-circle"></i>
+	                    <label>User Name <span class="text-danger">*</span></label>
+	                    <input type="text" id="userName" name="userName" onblur="validateUserName();" value='${userName}' data-validation="required" field-name="User Name">
+	                    <b></b>
                 </div>
                 </div>
                 
                 <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-6">
-                    <i class="fa fa-unlock-alt"></i>
-                    <label>Password <span class="text-danger">*</span></label>
-                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
-                    <b></b>
-                </div>
-                <div class="col-xs-12 col-md-6" id="passwordDiv">
-                    <i class="fa fa-unlock-alt"></i>
-                    <label>Confirm Password <span class="text-danger">*</span></label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
-                    <b></b>
-                </div>
-                
+	                <div class="col-xs-12 col-md-6">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="password" name="password" filed-name="Password" field-name="Password" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div>
+	                <div class="col-xs-12 col-md-6" id="passwordDiv">
+	                    <i class="fa fa-unlock-alt"></i>
+	                    <label>Confirm Password <span class="text-danger">*</span></label>
+	                    <input type="password" id="confirmPassword" name="confirmPassword" field-name="Confirm Password" onblur="$(this).checkPass();" data-validation="required validate_length length6-100" >
+	                    <b></b>
+	                </div>
                 </div>
             </div>
             
@@ -158,6 +151,9 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#submit_button").attr("disabled", "disabled");
+         	 	
+         	 	var requirementUUID = '${requirementUUID}';
+         	 	var referUUID = '${referUUID}';
          		
             	 $.ajax({
           	      type: "POST",
@@ -167,7 +163,13 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/login");  
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' && 
+			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
+			        		}
+			        		
 			        	}
 			        	
 			        },  

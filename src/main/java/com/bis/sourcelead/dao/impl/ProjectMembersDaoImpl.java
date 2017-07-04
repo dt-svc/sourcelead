@@ -297,7 +297,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query = "from ProjectMembers pm left join fetch pm.projects pj where pj.orgLocationsId = :orgLocationsId and  pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ";
+		String query = "from ProjectMembers pm left join fetch pm.projects pj left join fetch pm.employee where pj.orgLocationsId = :orgLocationsId and  pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ";
 		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
 		return projectMemberList;
 	}
@@ -413,12 +413,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(startDate != null && endDate != null){
 			   dateQuery =  " and pm.id IN ( "
                 + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
-                + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
                 + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
                 + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
                 + "  )  ";
 	     }
-		
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
 				+ " where  projects.orgLocationsId.id = :locationsId  "
 				    + dateQuery
@@ -439,6 +438,55 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setCacheable(true).list();
 		return projectMemberList;
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate,Date endDate,Long locationsId, Long approverUserId){
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		String dateQuery = "";
+		if(startDate != null && endDate != null){
+			   dateQuery =  " and pm.id IN ( "
+                + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( :endDate >= pmh.projectAssignedDate) "
+                + "  )  ";
+	     }
+		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
+				+ " where  projects.orgLocationsId.id = :locationsId"
+				    + dateQuery
+					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') "
+					+ " and ( "
+					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id and subpah.level = '2')) OR (pah.level = '1' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
+					 + "       OR "+Constants.loginUserAsAdminForProjects+""
+					+ "     ) ";
+		
+		
+		Query query = session.createQuery(queryStr.toString());
+		
+		if(startDate != null && endDate != null){
+			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setCacheable(true).list();
+		return projectMemberList;
+	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -873,5 +921,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
            default: return 0f;
        }
    }
+
+
+	@Override
+	 @Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.employee emp left join fetch emp.user user   left join fetch pm.projects proj where proj.orgLocationsId = :orglocationId";
+		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
+		return allProjectMembersList;
+	}
 }
 

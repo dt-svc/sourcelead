@@ -82,13 +82,13 @@ function teamList(){
 				            	 result = result +"<td>-----</td>";
 				             }
 		            	     result = result +"<td><div><span>"+opt.teamMembersCount+"</span></div></td>";
-		            	     result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><span class="pull-left">'+opt.candidateHotlistCount+'</span><i class="fa fa-binoculars"></i></div></td>';
+		            	     result = result +' <td><div onclick="getCandidateListForTeam('+opt.id+',\''+opt.name+'\');" class="proj_show"><a>'+opt.candidateHotlistCount+'</a></div></td>';
 				             result = result +"<td><div class='tblicons'>";
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_TEAM\')">'; 
-				             	result = result +"<i class='glyphicon glyphicon-pencil' onclick='sideBar("+opt.id+");'></i>";
+				             	result = result +"<i class='glyphicon glyphicon-pencil paddingRight' onclick='sideBar("+opt.id+");'></i>";
 				             '</sec:authorize>';
 				             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_TEAM\')">'; 
-				             	result = result +'<i class="glyphicon glyphicon-trash" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
+				             	result = result +'<i class="glyphicon glyphicon-trash paddingLeft" onclick="deleteTeam('+opt.id+',\''+opt.name+'\');"></i>';
 				             '</sec:authorize>';
 				             result = result +"</div></td>";
 				             result = result +"</tr>";
@@ -126,8 +126,8 @@ function teamList(){
 function pagination(){
     $('#teamPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -509,8 +509,8 @@ function projectMemberList(teamId){
 		                     result = result+ '                <th>Name</th>';
 		                     result = result+ '                <th>Email ID</th>';
 		                     result = result+ '                <th>Role</th>';
-		                     result = result+ '                <th>Requirement</th>';
-		                     result = result+ '                <th>Active<br>Requirement</th>';
+		                     result = result+ '                <th>Jobs</th>';
+		                     result = result+ '                <th>Active<br>Jobs</th>';
 		                     result = result+ '                <th>Action</th>';
 		                     result = result+ '              </tr>';
 		                     result = result +"</thead>";
@@ -587,7 +587,7 @@ function removeProjectMemberAlertMessage(teamMemberId,teamId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' onkeypress='teamMemberRemoveSpaceComment();' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"	<div id='reasonDiv'/>";
 	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamMemberId+","+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
@@ -598,7 +598,15 @@ function removeProjectMemberAlertMessage(teamMemberId,teamId){
 	$(".project_inn_mask").fadeIn(200);
 }
 </script>
-
+<script>
+   function teamMemberRemoveSpaceComment() {
+	    var output = document.getElementById("rejectReason").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#rejectReason").removeAttr("data-validation");
+	    }
+	}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for Delete Candidate alert
@@ -623,6 +631,8 @@ function cancelAlert(){
 function deleteTeamMember(teamMemberId,teamId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
+	  reason = reason.replace(/\s/g, ""); 
+	  //var reason1 = document.getElementById("rejectReason").value;
 	  if(reason.match(/^[^\s-](.*)*$/) != null){
 		 $('#reasonDiv').empty();
 		 $.ajax({
@@ -637,10 +647,8 @@ function deleteTeamMember(teamMemberId,teamId){
                  }, 
               }); 
 	  }else{
-			if(reason){
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-			}else{
-				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			if(reason.length == 0 ){
+				$("#reasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ;
 			}
 		}
 }
@@ -681,7 +689,7 @@ function TeamMemberpagination(){
     <div class="pull-left">
       <h2>Team</h2>
     </div>
-    <div class="pull-right brud-crum"> <a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Team</div>
+    <div class="pull-right brud-crum"> <a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Team</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -708,7 +716,7 @@ function TeamMemberpagination(){
       </div>
       <div class="project_tabs_inn_table vendor_wrap_inn_table">
        			<div id="popUpDivTeamParent" class="edit-details col-md-4"></div>  
-      			<div id="teamList"></div>
+      			<div id="teamList" class="datatable_filter"></div>
       			<div id="deleteTeamPopUp"></div>
               </div>
         </div>      
@@ -720,7 +728,7 @@ function TeamMemberpagination(){
       <!-- <div class="clients_side_wrap_inn candidate_wrap_table"> -->
       <div class="clients_side_wrap_inn candidate_wrap_table candidatewrap_Table">
       
-      <div id="teamSideDiv">
+      <div id="teamSideDiv" class="datatable_filter">
 	  </div>
 
       
@@ -1260,8 +1268,8 @@ function getCandidateListForTeam(teamId,teamName){
 function cpagination(){ 
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

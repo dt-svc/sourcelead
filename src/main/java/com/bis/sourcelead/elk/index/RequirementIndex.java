@@ -23,6 +23,10 @@ public class RequirementIndex {
 	
 	private Float rate;
 	
+	private Float maxRate;
+	
+	private String isreceivingApplicants;
+	
 	private String rateType;
 	
 	private String minExperience;
@@ -66,6 +70,10 @@ public class RequirementIndex {
     private String createdDate;
 
 	private String reqCreatedBy;
+	
+	private String reqCreatedDate;
+	
+	private String reqUpdatedDate;
 
 	private String updatedDate;
 
@@ -95,6 +103,8 @@ public class RequirementIndex {
 	
 	private String calDays;
 	
+	private String travelAllownace;
+	
 	private String postedOrg;
 	
 	private List<String> skillsList;
@@ -111,6 +121,8 @@ public class RequirementIndex {
 	
 	private String referedUser;
 	
+	private String industryName;
+	
 	private Integer noOfSearchHits;
 	
 	private String isReferedRequiremetnApplied;
@@ -123,6 +135,10 @@ public class RequirementIndex {
 	
 	private String rewardGuaranteePeriod;
 	
+	private String projectDurationYears;
+	
+	private String projectDurationMonths;
+	
 	private String rewardType;
 	
 	private Integer recruiterSubmissionsCount;
@@ -130,6 +146,20 @@ public class RequirementIndex {
 	private Long submissionId;
 	
 	private String reqCoolingOffPeriod;
+	
+	private String closedDate;
+	
+	private String description;
+	
+	private String jobAlertTitle;
+	
+	private String isJobSaved;
+	
+	private String savedJobUUID;
+	
+	private String referUUID;
+	
+	private String[] visaTypes;
 	
 	
 	public String getManagerUserId() {
@@ -182,7 +212,21 @@ public class RequirementIndex {
 		this.teamOwnerUserId = teamOwnerUserId;
 	}
 
-	
+	public String getReqCreatedDate() {
+		return reqCreatedDate;
+	}
+
+	public void setReqCreatedDate(String reqCreatedDate) {
+		this.reqCreatedDate = reqCreatedDate;
+	}
+
+	public String getReqUpdatedDate() {
+		return reqUpdatedDate;
+	}
+
+	public void setReqUpdatedDate(String reqUpdatedDate) {
+		this.reqUpdatedDate = reqUpdatedDate;
+	}
 
 	public String getReqCreatedBy() {
 		return reqCreatedBy;
@@ -633,5 +677,139 @@ public class RequirementIndex {
 		this.noticePeriod = noticePeriod;
 
 	}
+
+	
+
+	public String getIndustryName()
+	{
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName)
+	{
+		this.industryName = industryName;
+	}
+
+	public Float getMaxRate()
+	{
+		return maxRate;
+	}
+
+	public void setMaxRate(Float maxRate)
+	{
+		this.maxRate = maxRate;
+	}
+
+	public String getTravelAllownace()
+	{
+		return travelAllownace;
+	}
+
+	public void setTravelAllownace(String travelAllownace)
+	{
+		this.travelAllownace = travelAllownace;
+	}
+
+	public String getProjectDurationYears()
+	{
+		return projectDurationYears;
+	}
+
+	public void setProjectDurationYears(String projectDurationYears)
+	{
+		this.projectDurationYears = projectDurationYears;
+	}
+
+	public String getProjectDurationMonths()
+	{
+		return projectDurationMonths;
+	}
+
+	public void setProjectDurationMonths(String projectDurationMonths)
+	{
+		this.projectDurationMonths = projectDurationMonths;
+	}
+
+	public String getClosedDate()
+	{
+		return closedDate;
+	}
+
+	public void setClosedDate(String closedDate)
+	{
+		this.closedDate = closedDate;
+	}
+
+	public String getIsreceivingApplicants()
+	{
+		return isreceivingApplicants;
+	}
+
+	public void setIsreceivingApplicants(String isreceivingApplicants)
+	{
+		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public String getJobAlertTitle()
+	{
+		return jobAlertTitle;
+	}
+
+	public void setJobAlertTitle(String jobAlertTitle)
+	{
+		this.jobAlertTitle = jobAlertTitle;
+	}
+
+	public String getIsJobSaved()
+	{
+		return isJobSaved;
+	}
+
+	public void setIsJobSaved(String isJobSaved)
+	{
+		this.isJobSaved = isJobSaved;
+	}
+
+	public String getSavedJobUUID()
+	{
+		return savedJobUUID;
+	}
+
+	public void setSavedJobUUID(String savedJobUUID)
+	{
+		this.savedJobUUID = savedJobUUID;
+	}
+
+	public String getReferUUID()
+	{
+		return referUUID;
+	}
+
+	public void setReferUUID(String referUUID)
+	{
+		this.referUUID = referUUID;
+	}
+
+	public String[] getVisaTypes()
+	{
+		return visaTypes;
+	}
+
+	public void setVisaTypes(String[] visaTypes)
+	{
+		this.visaTypes = visaTypes;
+	}
+
+	
 	
 }

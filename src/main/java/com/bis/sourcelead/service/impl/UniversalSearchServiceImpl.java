@@ -377,6 +377,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					}
 					 boolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+				
+				 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 		
 				
 				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
@@ -516,7 +518,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		for(Tabs tabs :tabList){
-			if("Requirement".equals(tabs.getTabName())){
+			if(Constants.JOBS.equals(tabs.getTabName())){
 				BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 				
@@ -662,6 +664,8 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					}
 					 candidateBoolQueryBuilder.must(anyBoolQueryBuilder);
 				}
+				
+				candidateBoolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 
 				
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));

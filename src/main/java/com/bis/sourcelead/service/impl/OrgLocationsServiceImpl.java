@@ -71,11 +71,6 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	}
 	
 
-	@Override
-	public OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception {
-		return orgLocationsDao.getOrgLocationsByOrgCode(orgCode);
-	}
-	
 	
 	@Override
 	public OrgLocations findByEmail(String email, Long orgLocationId) throws Exception {
@@ -92,7 +87,11 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		orgLocations.setPhone(orgSettings.getPhone());
 		orgLocations.setFax(orgSettings.getFax());
 		orgLocations.setTimezone(timezone);
+	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
+        orgLocations.setOrgLocationAddress(orgSettings.getAddress());
+        orgLocations.setOrgDescription(orgSettings.getAboutCompany());
 		orgLocationsDao.updateOrgLocations(orgLocations);
+		
 		
 		return orgLocations;
 	}
@@ -188,13 +187,26 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		return orgLocationsDao.getAllOrgLocationsByOrgId(orgId);
 	}
 
-	@Override
-	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception {
-		return orgLocationsDao.getOrgLocationByOrgId(orgId);
-	}
 
 	@Override
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet) {
 		return orgLocationsDao.getAllOrgsStartsWithAlphabet(alphabet);
+	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception
+	{
+		return orgLocationsDao.getAllRegisteredOrgLocations();
+	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception{
+		return orgLocationsDao.getAllRegisteredOrgLocationsByOrgId(orgId,orgLocationId);
+	}
+
+	@Override
+	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception
+	{
+		return orgLocationsDao.getPrimaryOrgLocationByOrgId(orgId);
 	}
 }

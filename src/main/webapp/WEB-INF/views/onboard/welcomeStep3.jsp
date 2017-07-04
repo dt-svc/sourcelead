@@ -73,10 +73,17 @@
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-text"></a></span>
 					<strong>
-						<p>${contractDocs.fileName}</p>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
-						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+						   <p>${contractDocs.fileName}</p>
+						</c:if>
+						
+						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
+						   <p>${contractDocs.uploadedDocFileName}</p>
+						</c:if>
+						
+						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
+						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
@@ -98,14 +105,30 @@
 			
 		
 			<div class="step3Wrap">
-			<h2 class="padTop">Employment Forms</h2>
+			<h2 class="padTop">Forms</h2>
 				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
 					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-text"></a></span>
 					<strong>
-						<p>${formsDocs.fileName}</p>
-						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
+						   <p>${formsDocs.fileName}</p>
+						</c:if>
+						
+						<c:if test="${formsDocs.documentStatus == 'ACCEPTED'}">
+						   <p>${formsDocs.uploadedDocFileName}</p>
+						</c:if>
+						
+						
+						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
+						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						</c:if>
+						
+						<c:if test="${formsDocs.documentStatus == 'ACCEPTED'}">
+						<p class="deleDocu" onclick="deleteDocument('${formsDocs.documentUUID}');"><i class="fa fa-trash"></i>Delete document</p>
+						</c:if>
+						
+						
 					</strong>
 					<div class="clearfix"></div>
 				</div>
@@ -113,7 +136,7 @@
 				</c:if>	
 				
 				<c:if test="${formsDocsListSize == 0}">
-				  <p>No Employment Forms Found</p>
+				  <p>No Forms Found</p>
 				</c:if>
 				
 				<div class="clearfix"></div>			

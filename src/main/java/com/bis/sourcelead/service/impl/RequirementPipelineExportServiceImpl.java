@@ -58,7 +58,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			Workbook createExcelworkbook = new XSSFWorkbook();
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			StringBuilder excelStringBuilder=new StringBuilder();
-			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_").append(dateFormat.format(new Date())).toString());
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
 				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
@@ -125,7 +125,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 			StringBuilder tempFileBuilder=new StringBuilder();
-			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrg().getOrgName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);

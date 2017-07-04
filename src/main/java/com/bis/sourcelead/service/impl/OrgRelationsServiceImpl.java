@@ -63,7 +63,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		OrgRelations orgRelation =  orgRelationsDao.getClientByOrgLocationId(orgLocationId);
-		orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+		orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 		orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 		orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 		orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -147,7 +147,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			//if login user org id is equals to vendor location id then we get vendor list of ResponderLocationId Org details 
 			 if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getResponderLocationId() !=  null){
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -169,7 +169,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			//if login user org id is equals to vendor ResponderLocationId id then we get vendor list of location Org details 
 			 if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getLocationId() != null){
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
@@ -222,7 +222,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						if(orgRelation.getResponderLocationId().getOrg().getWebSite() !=null){
 							orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 						}
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -240,7 +240,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== orgLocationId.longValue()){
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
@@ -293,7 +293,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
 					
 					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 				 }else{
 					 StringBuilder spocNameSB = new StringBuilder();
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
@@ -310,7 +310,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
 					
 					 orgSpoc.setSpocLocationId(orgSpoc.getVendorLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrg().getOrgName()); 
+					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrgLocationName()); 
 				 }
 			   
 				if(null != orgSpoc.getClientUser() && null != orgSpoc.getOwnerUser() && orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getClientUser().getId().longValue()){
@@ -362,7 +362,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
 					
 					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 				 }else{
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
 					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
@@ -373,7 +373,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
 					
 					 orgSpoc.setSpocLocationId(orgSpoc.getVendorLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrg().getOrgName()); 
+					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrgLocationName()); 
 				 }
 			   
 				if(null != orgSpoc.getClientUser() && null != orgSpoc.getOwnerUser() && orgSpoc.getOwnerUser().getId().longValue() == orgSpoc.getClientUser().getId().longValue()){
@@ -427,7 +427,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue() == orgLocationId.longValue()){
 					if(orgRelation.getResponderLocationId() != null){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -445,7 +445,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocationId.longValue()){
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());

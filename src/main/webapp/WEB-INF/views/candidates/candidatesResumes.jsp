@@ -94,7 +94,7 @@ function candidateResume(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function resMsgFadeinResumes() {
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
@@ -124,6 +124,8 @@ function refreshResumeList(candidateId){
 	candidateResumesList(candidateId);
 }
 </script>
+
+<div id="deleteResumePopUp"></div> 
 
 
 
@@ -274,7 +276,7 @@ function addResume(candidateId) {
 		             				$("#resMsgDiv").html("Success!! New Resume added");
 		             			}		             			
 						 		candidateResumesList(candidateId);
-						 		resMsgFadein();
+						 		resMsgFadeinResumes();
 		            		 }
 							 /* $("#conMsg").fadeIn(200);
 							 $('#conMsg').delay(2000).fadeOut('slow'); */
@@ -330,6 +332,8 @@ function addResume(candidateId) {
 							result = result+'	            <th>Attachment</th>';
 							result = result+'	            <th>Description</th>';
 							result = result+'	            <th>Created By</th>';
+							result = result+'	            <th>Updated Date</th>';
+							
 							result = result+'	            <th>Action</th>';
 							result = result+'	          </tr>';
 							
@@ -355,11 +359,20 @@ function addResume(candidateId) {
 					            		createdBy = '----';
 					            	}
 					            	
+					            	
+					            	if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != 'undefined' && opt.candidateResumeUpdateDateToString != ""){
+					            		candidateResumeUpdateDateToString = opt.candidateResumeUpdateDateToString; 
+					            	}else{
+					            		candidateResumeUpdateDateToString = "---";
+					            	} 
+					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
 					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
+					           		
+					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"title="Download"></a>';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -367,10 +380,10 @@ function addResume(candidateId) {
 					           		}else{
 					           			if(candidateType == "Candidates"){
 					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
-					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
+					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
 					           			}else{
 					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
-					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="deleteResume('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
+					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
 					           			}
 					           		}
 					           		result = result+'</div></td>';
@@ -391,10 +404,8 @@ function addResume(candidateId) {
 				result = result + "	<div class='col-lg-12'>";
 				result = result + "		<div class='content-area clearfix'>";
 				result = result + "			<div class='blank-pages'>";
-				result = result
-						+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				result = result
-						+ "			        <p>No resumes Found</p>";
+				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				result = result + "			        <p>No resumes Found</p>";
 				result = result + "			 </div>";
 				result = result + "		</div>";
 				result = result + "	</div>";
@@ -416,11 +427,33 @@ function addResume(candidateId) {
      2.parameter : candidateId, resumeId
      3.ajax url implementation in CandidateResumeRestController.
 --%>
+<script type="text/javascript">
+function deleteResumePopup(){
+	$("#remove_user_pop_resume, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEduPopUp"></div> 
+
+<script type="text/javascript">
+function removeresumePopUp(candidateId, resumeId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_resume' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Resume</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteResumePopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEduPopUp").append(result);
+	$("#remove_user_pop_resume").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 <script>
 function deleteResume(candidateId, resumeId){
+
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to delete the resume");
-	if (message == true) {
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
@@ -432,13 +465,17 @@ function deleteResume(candidateId, resumeId){
          			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
         		     candidateResumesList(candidateId);
-        		     resMsgFadein();
+        		     $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
+        		     resMsgFadeinResumes();
    		    	}
    		    },
 	     });
-}
+
+	
+	
 }
 </script>
+
 
 
 <%-- 

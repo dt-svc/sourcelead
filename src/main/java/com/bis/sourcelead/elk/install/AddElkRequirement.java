@@ -81,6 +81,20 @@ public class AddElkRequirement {
 				requirementIndex.setJobId(rs.getString("JOB_ID"));
 				requirementIndex.setCurrentRateCurrency(rs.getString("CURRENCY_CODE"));
 				requirementIndex.setNumberOfPositions(rs.getString("POSITIONS"));
+				requirementIndex.setIndustryName(rs.getString("INDUSTRY_NAME"));
+				requirementIndex.setIndustryName(rs.getString("TRAVEL_ALLOWANCE"));
+				requirementIndex.setProjectDurationMonths(rs.getString("PROJECT_DURATION_MONTHS"));
+				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
+				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
+				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
+				
+				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
+					requirementIndex.setDescription(rs.getString("DESCRIPTION"));
+				}
+				
+				if(null != rs.getString("MAX_RATE") && !"".equalsIgnoreCase(rs.getString("MAX_RATE"))){
+					requirementIndex.setMaxRate(Float.parseFloat(rs.getString("MAX_RATE")));
+				}
 				if(null != rs.getString("RATE") && !"".equalsIgnoreCase(rs.getString("RATE"))){
 					requirementIndex.setRate(Float.parseFloat(rs.getString("RATE")));
 				}
@@ -262,7 +276,10 @@ public class AddElkRequirement {
 					requirementIndex.setRewardGuaranteePeriod(rs.getString("REWARD_GUARANTEE_PERIOD"));
 				}
 				
-				
+				String visaTypes = rs.getString("VISA_TYPE");
+				if(!("").equalsIgnoreCase(visaTypes) && visaTypes!=null){
+					requirementIndex.setVisaTypes(visaTypes.split(","));
+				} 
 				
 				ResultSet statusRs =getApproverHierarchyStatus(rs.getString("ID"),conn);
 				if(null != statusRs){

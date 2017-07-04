@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -170,6 +171,11 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "invoiceCreateMsg");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "invoiceCreateMsg");
+		}
 		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
@@ -186,9 +192,9 @@ public class InvoiceController {
 			for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getLocationId().getOrgLocationName();
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 				}
 				orgRelations.setOrgName(orgName);
 			}
