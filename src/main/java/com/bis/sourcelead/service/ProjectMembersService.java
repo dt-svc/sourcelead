@@ -86,5 +86,7 @@ public interface ProjectMembersService {
 	List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId) throws Exception;
 
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception;
+
+	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
 	
 }

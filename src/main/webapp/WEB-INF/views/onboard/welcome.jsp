@@ -106,28 +106,29 @@
         </div>
         
 	<br><h4>Team</h4>
-	<div class="welTeam">
-      <div id="navbtns" class="welArrows clearfix">
-        <a href="#" class="previous"><i class="fa fa-chevron-left"></i></a>
-        <a href="#" class="next"><i class="fa fa-chevron-right"></i></a>
-      </div>
-										
-	<div class="crsl-items" data-navigation="navbtns">
-      <div class="crsl-wrap">
-      
-      <c:forEach var="teamMembers" items="${SourceLeadWeb_teamMembersList}">
-        <div class="crsl-item">
-			<img onerror='predefineProfileImage(this);' class='m-t-xs' src='<c:url value="${sourceleadUrl}/displayOnboardingUserImage/${teamMembers.memberUserId.id}"/>' ></img>
-			<span>
-				<b><u>Name</u>: ${teamMembers.memberName}</b>
-				<b><u>Role</u>: ${teamMembers.roleName}</b>
-			</span>
-			<div class="clearfix"></div>
-        </div>
-        </c:forEach>
-      </div>
-    </div>					
-</div>	
+	<div id="liquid1" class="liquid" style="overflow: auto;">
+		<span class="previous"><i class="fa fa-chevron-left"></i></span>
+		<div class="wrapper">
+			<ul>
+				 <c:forEach var="teamMembers" items="${SourceLeadWeb_teamMembersList}">
+					<li>
+				        <div class="crsl-item">
+							<img onerror='predefineProfileImage(this);' class='m-t-xs' src='<c:url value="${sourceleadUrl}/displayOnboardingUserImage/${teamMembers.memberUserId.id}"/>' ></img>
+							<span>
+								<b><u>Name</u>: ${teamMembers.memberName}</b>
+								<b><u>Role</u>: ${teamMembers.roleName}</b>
+							</span>
+							<div class="clearfix"></div>
+				        </div>			
+					</li>
+				 </c:forEach>
+				
+				
+																												
+			</ul>
+		</div>
+		<span class="next"><i class="fa fa-chevron-right"></i></span>
+	</div>	
 </c:if>
 		
 		<c:if test="${SourceLeadWeb_supportedDocumentsListSize > 0}">
@@ -153,6 +154,7 @@
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
  <script type="text/javascript" src="resources/js/responsiveCarousel.min.js"></script>
+ <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>
 
 
 <script type="text/javascript">
@@ -184,3 +186,14 @@ $(function(){
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+
+
+	
+	<script type="text/javascript">
+	
+		$(document).ready(function() {
+			$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});
+		});
+	
+	</script>
+

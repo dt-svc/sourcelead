@@ -30,57 +30,57 @@ function accountDeductionsList(){
 			        		    result = result + ' <tr>';
 			        		    
 			        		    if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
-			        		    	result = result + '<td><div>'+opt.employeeId+'</div></td>';
+			        		    	result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
 			        		    }else{
-			        		    	result = result + '<td><div>---</div></td>';
+			        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
 			        		    }
 			        		    
 			        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
-			        		    	result = result + '<td><div onclick="getEmpAccountDeductionDetails('+opt.id+',\''+opt.employeeName+'\');">'+opt.employeeName+'</div></td>';
+			        		    	result = result + '<td><div class="tblminwidth-75" onclick="getEmpAccountDeductionDetails('+opt.id+',\''+opt.employeeName+'\');">'+opt.employeeName+'</div></td>';
 			        		    }else{
-			        		    	result = result + '<td><div>---</div></td>';
+			        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
 			        		    }
 			        		    
 			        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
-									result = result + ' <td><div>'+opt.fromDateStr+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 			        		    
 			        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
-									result = result + ' <td><div>'+opt.toDateStr+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
-									result = result + ' <td><div>'+opt.dedAmount+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.dedAmount+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
-									result = result + ' <td><div>'+opt.batchNumber+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
-									result = result + '<td><div>'+opt.requestSubDate+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75">'+opt.requestSubDate+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
-									result = result + '<td><div>'+opt.requestApprovedDate+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75">'+opt.requestApprovedDate+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
-									result = result + '<td><div>'+opt.repaidStatus+'</div></td>';
+									result = result + '<td><div class="tblminwidth-75">'+opt.repaidStatus+'</div></td>';
 								}else{
-									result = result + ' <td><div>--</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
 								
 								result = result + ' </tr>';
@@ -89,8 +89,10 @@ function accountDeductionsList(){
 						result = result + ' </table>';
 						$("#employerCostDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
-						$("#hrDeductionsListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
+						$("#hrDeductionsListDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
+						$("#finalPayrollReportDiv").empty();
 						$("#accountDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
 						accountDeductionsListTablePagination();
@@ -119,9 +121,9 @@ function accountDeductionsListTablePagination(){
 }
 </script>
 
-<div class="sideMask"></div>
 
-<div class="modal modal_Expenses">
+
+<div class="modal modal_Expenses AccountDedu">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -130,7 +132,7 @@ function accountDeductionsListTablePagination(){
         <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenses();">&times;</button>
         <h4 class="modal-title" id="empName"></h4>
       </div>
-      <div class="modal-body project_tabs_inn_table mt40">
+      <div class="modal-body project_tabs_inn_table">
         <div id="accountdeDuctiondetails"></div>
       </div>
     </div>
@@ -140,7 +142,7 @@ function accountDeductionsListTablePagination(){
 <script>
 function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
-	$(".modal_Expenses").fadeIn("slow");
+	$(".AccountDedu").fadeIn("slow");
 	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",

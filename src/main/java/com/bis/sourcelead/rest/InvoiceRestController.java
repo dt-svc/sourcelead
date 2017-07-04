@@ -550,11 +550,14 @@ public class InvoiceRestController {
 	     		 if(invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 					StringBuilder contactName = new StringBuilder();
-					if(invoice.getContactUser().getLastName() != null){
+					if(invoice.getContactUser() != null){
+						if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
 					}else{
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 					}
+					}
+						
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
 					}
@@ -1027,7 +1030,7 @@ public class InvoiceRestController {
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1114,7 +1117,7 @@ public class InvoiceRestController {
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
@@ -1416,16 +1419,12 @@ public class InvoiceRestController {
 	@ResponseBody
 	public String generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		long startTime = System.currentTimeMillis();
 		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Invoice invoice = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType);
-		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
-		logger.info("Final Response time = " + elapsedTime+ " Millis");
-		resultJson = commonUtil.toJSON("");
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType);
+		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		return resultJson;
 	}
 
@@ -1528,18 +1527,20 @@ public class InvoiceRestController {
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 		logger.info("Final Response time = " + elapsedTime + " Millis");
-		for(Invoice invoice : invoiceList){
-			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+		if(invoiceList !=null && invoiceList.size()>0){
+			for(Invoice invoice : invoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+				}	
+				invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+				invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+				invoice.setNetIncome(netAmount);
+				invoice.setRecievableAmount(recievableAmount);
+				invoice.setPayableAmount(payableAmount);
 			}
-			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
-			}	
-			invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
-			invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
-			invoice.setNetIncome(netAmount);
-			invoice.setRecievableAmount(recievableAmount);
-			invoice.setPayableAmount(payableAmount);
 		}
 		resultJson = commonUtil.toJSON(invoiceList);
 		return resultJson;

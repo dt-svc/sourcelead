@@ -392,7 +392,7 @@
         </div>
         
          <div class="form-group">
-              <label class="col-md-3">Visa</label>
+              <label class="col-md-3">Immigration Status</label>
               <div class="col-md-9">
                 <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
                <c:forEach var="visaList" items="${visaList}">

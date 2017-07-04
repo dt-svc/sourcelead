@@ -1101,6 +1101,19 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Immigration Status</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Skills</label>
@@ -1329,6 +1342,7 @@ function cancel(candidateId){
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
+				  </div>
 				  </div>
 			  </form:form>
       </div>
@@ -1692,7 +1706,7 @@ function exportToExcel(){
 function showComment(candidateId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
-	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
+		result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_Space validate_length length2-500" field-name="Comment" onkeypress="candiateListCommentRemoveSpaces();"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
 	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
 	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
@@ -1707,7 +1721,15 @@ function closeComment(){
 }
 </script>
 
-
+ <script>
+   function candiateListCommentRemoveSpaces() {
+	    var output = document.getElementById("comment").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#comment").removeAttr("data-validation");
+	    }
+	}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for saving Comment
@@ -1938,6 +1960,7 @@ function getCities(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -2430,6 +2453,7 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");

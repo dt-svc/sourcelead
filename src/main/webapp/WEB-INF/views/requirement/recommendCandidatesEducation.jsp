@@ -225,7 +225,7 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10 col-md-12" id="chosen-educationMsg"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="candEdu" data-validation=" required" onchange="validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -334,7 +334,7 @@ function addEducation(candidateId) {
 	 
 	//Adding Customized Educations to the list
      var selectone, chosenone;
-     selectone = $("#name");
+     selectone = $("#candEdu");
      selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
      chosenone = selectone.data('chosen');
      chosenone.search_field.on('keyup', function(e1)
@@ -347,11 +347,11 @@ function addEducation(candidateId) {
 	            selectone.append(option);
 	            selectone.find(option).prop('selected', true);
 	          //to doesn't allow duplicates
-             $("#name option").each(function(){
+             $("#candEdu option").each(function(){
                    $(this).siblings("[value='"+ this.value+"']").remove();
              });
              //end
-     		$("#name").trigger("chosen:updated");
+     		$("#candEdu").trigger("chosen:updated");
      		
 	        }
 	    }); 

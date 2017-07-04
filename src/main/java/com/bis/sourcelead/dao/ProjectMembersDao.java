@@ -79,6 +79,8 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate,Date endDate,Long locationsId, Long approverUserId);
 
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate)throws Exception;
+
+	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
 	
 	
 	

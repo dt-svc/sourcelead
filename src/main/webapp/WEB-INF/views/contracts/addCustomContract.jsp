@@ -86,7 +86,7 @@
             </div>
                        
            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'? 'block' : 'none'};">
-              <label class="col-md-4">Select Job<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Job<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
               	<c:choose>
               		<c:when test="${fn:length(requirementList) gt 0}">
@@ -402,7 +402,7 @@
               <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errPayment">
                   <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${ contract.contractType == 'Full time offer' ||contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
-                    <option value="">Select Frequency</option>
+                    <option value="">Select Payment Frequency</option>
                     <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
                     <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
                     <option ${contract.paymentTerm == '30 days' ? 'selected' : ''} value="30 days">30 days</option>
@@ -1054,6 +1054,11 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
+		$('#clientOrgRelationId').removeAttr('data-validation-optional');
+		$('#clientOrgRelationId').attr('data-validation',"required");
+		$('#clientContact').removeAttr('data-validation-optional');
+		$('#clientContact').attr('data-validation',"required");
+		
 		$('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required");
 		
@@ -1087,6 +1092,11 @@ function contractTypeLabels(){
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#orgRelationId').removeAttr('data-validation-optional');
+		$('#orgRelationId').attr('data-validation',"required");
+		$('#vendorContact').removeAttr('data-validation-optional');
+		$('#vendorContact').attr('data-validation',"required");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required");
@@ -1151,6 +1161,11 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true"); */
 		/* $('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true"); */
+		
+		$('#orgRelationId').removeAttr('data-validation-optional');
+		$('#orgRelationId').attr('data-validation',"required");
+		$('#vendorContact').removeAttr('data-validation-optional');
+		$('#vendorContact').attr('data-validation',"required");
 		
 		$('#candiFlatReward').removeAttr('data-validation');
 		$('#candiFlatReward').attr('data-validation-optional',"true");
@@ -1405,7 +1420,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Candidate</option>';
+	            	  result = result + '<option value="">Select Applicant</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
@@ -1417,7 +1432,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">Select Candidate</option>';
+	            	  result = result + '<option value="">Select Applicant</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -1479,7 +1494,7 @@ function hideCommonSOWFields(){
 	            		  $("#joinDate").val(json.dateOfJoiningStr); 
 	            		  
 	            		  $('#candiFlatReward').removeAttr("disabled");
-	            		  $('#candiRateType').removeAttr("disabled");
+	            		   $('#candiRateType').removeAttr("disabled");
 	            		  $('#candiRatePer').removeAttr("disabled");
 	            		  
 		            	//  $('#candiRateType').attr("disabled","false");

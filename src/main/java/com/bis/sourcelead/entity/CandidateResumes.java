@@ -92,6 +92,9 @@ public class CandidateResumes implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	private String candidateResumeUpdateDateToString;
 
 	public Long getId() {
 		return id;
@@ -228,7 +231,12 @@ public class CandidateResumes implements Serializable{
 		this.resumeUUID = resumeUUID;
 	}
 
-	
+	public String getCandidateResumeUpdateDateToString() {
+		return candidateResumeUpdateDateToString;
+	}
 
+	public void setCandidateResumeUpdateDateToString(String candidateResumeUpdateDateToString) {
+		this.candidateResumeUpdateDateToString = candidateResumeUpdateDateToString;
+	}
 
 }
