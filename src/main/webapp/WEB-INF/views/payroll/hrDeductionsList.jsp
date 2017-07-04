@@ -36,7 +36,7 @@ function hrDeductionsList(){
 			        		    }
 			        		    
 			        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
-			        		    	result = result + '<td><div onclick="getHrDeductionDetails('+opt.id+',\''+opt.employeeName+'\');">'+opt.employeeName+'</div></td>';
+			        		    	result = result + '<td><div onclick="getHrDeductionDetails('+opt.id+',\''+opt.employeeName+'\');"><a>'+opt.employeeName+'</a></div></td>';
 			        		    }else{
 			        		    	result = result + '<td><div>---</div></td>';
 			        		    }
