@@ -55,7 +55,7 @@ window.onload = function () {
 </div>
 
 <div id="payScale" class="pull-left mt10" style="display:none;">
-<span class="label label-info runpayRoll-txt" id="payCycleName">March 15th to March 20th</span>
+<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
 </div>
 
      <ul class="pull-right">
@@ -354,6 +354,7 @@ function loadEmployeePayrollCost(){
 						$("#finalPayrollReportDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						employeePayrollCostPagination();
 				        	
 				        },

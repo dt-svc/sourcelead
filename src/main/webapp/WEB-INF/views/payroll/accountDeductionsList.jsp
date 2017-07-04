@@ -105,6 +105,7 @@ function accountDeductionsList(){
 						$("#finalPayrollReportDiv").empty();
 						$("#accountDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						accountDeductionsListTablePagination();
 				        	
 				        },
