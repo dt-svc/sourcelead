@@ -86,7 +86,7 @@
                 <div class="form-icon">
                 <span class="icon-inside">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template" onchange="previewTemplateEye()">
-					        <option value=''>Select Template</option></select>
+					        <option value=''>Select Template</option>
 						    <c:forEach var="element" items="${contractsTemplateList}" >
 						    	<c:if test = "${element.id == contract.contractsTemplate.id}">
 							         <option selected value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
@@ -1174,6 +1174,13 @@ function contractTypeLabels(){
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
+		
+
+		$('#clientOrgRelationId').removeAttr('data-validation-optional');
+		$('#clientOrgRelationId').attr('data-validation',"required");
+		$('#clientContact').removeAttr('data-validation-optional');
+		$('#clientContact').attr('data-validation',"required");
+		
 		$('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
@@ -1207,6 +1214,12 @@ function contractTypeLabels(){
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
+		
+
+		$('#orgRelationId').removeAttr('data-validation-optional');
+		$('#orgRelationId').attr('data-validation',"required");
+		$('#vendorContact').removeAttr('data-validation-optional');
+		$('#vendorContact').attr('data-validation',"required");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
@@ -1270,6 +1283,12 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true"); */
 		/* $('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true"); */
+		
+		
+		$('#orgRelationId').removeAttr('data-validation-optional');
+		$('#orgRelationId').attr('data-validation',"required");
+		$('#vendorContact').removeAttr('data-validation-optional');
+		$('#vendorContact').attr('data-validation',"required");
 		
 		$('#requirementsList').removeAttr('data-validation');
 		$('#requirementsList').attr('data-validation-optional',"true");
