@@ -27,16 +27,17 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -84,6 +85,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private CountriesService countriesService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
@@ -143,8 +147,15 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return expensesDao.getExpenseByExpenseUniqueId(expenseId,OrgLocationID);
 	}
 	@Override
-	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception {
-		String[] myExpensesHeaders = Constants.MY_EXPENSES_HEADERS;
+	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
+		
+		String[] myExpensesHeaders = null;
+		 if(approverType.equalsIgnoreCase("USER")){
+				myExpensesHeaders = Constants.MY_EXPENSES_HEADERS;
+		 }
+		 if(approverType.equalsIgnoreCase("APPROVER")){
+			 	myExpensesHeaders = Constants.MY_EXPENSES_HEADERS_APPROVER;
+		 }
 		Document document = new Document(PageSize.LETTER.rotate());
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    StringBuilder sbExpenses =  new StringBuilder();
@@ -176,7 +187,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        cell1.setColspan(11);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
+		        if(approverType.equalsIgnoreCase("APPROVER")){
+		        	table.setWidths(new int[]{5,3,5,3,3,3,7,5});
+		        }
+		        if(approverType.equalsIgnoreCase("USER")){
 	            table.setWidths(new int[]{5,3,5,3,3,3,7});
+		        }
 	            table.addCell(cell1);
 		        for (int i = 0; i < myExpensesHeaders.length; i++) {
 		            String header = myExpensesHeaders[i];
@@ -191,7 +207,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        List<String[]> expensespdfArrayList = new ArrayList<>();
 			        List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
 			        for(ExpensesEntries expEntries :expenseEntries){
-			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser));
+			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser,approverType));
 			        }
 			        	
 			        for (String[] expensesArray: expensespdfArrayList) {
@@ -207,6 +223,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        table.setSpacingBefore(15f);
 			        
 			        com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+			        if(approverType.equalsIgnoreCase("USER")){
 		            StringBuilder reqNameBuilder=new StringBuilder();
 		            StringBuilder locBuilder=new StringBuilder();
 		            StringBuilder Client=new StringBuilder();
@@ -217,17 +234,105 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(expenseDetails.getProjectMembers().getProjects().getProjectName()).toString()));
 			       if(null != expenseDetails.getClientName()){
 			    	   orderedList.add(new ListItem(Client.append("Client :").append(expenseDetails.getClientName()).toString()));
+			       }else{
+			    	   orderedList.add(new ListItem(Client.append("Client :").append("--").toString()));  
 			       }
 			        if(null != expenseDetails.getStartDate()){
 			        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
 			        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
+			        }else{
+			        	orderedList.add(new ListItem(StDate.append("Start Date :").append("--").toString()));	
 			        }
 			        if(null != expenseDetails.getEndDate()){
 			        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
 			        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
+			        }else{
+			        	orderedList.add(new ListItem(edDate.append("End Date :").append("--").toString()));
 			        }
-			        if(null != expenseDetails.getEndDate()){
+			        if(null != expenseDetails.getPurpose()){
 			        	orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append(expenseDetails.getPurpose()).toString()));
+			        	}else{
+			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
+			        	}
+			       }else if(approverType.equalsIgnoreCase("APPROVER")){
+			    	   	StringBuilder nameBuilder=new StringBuilder();
+			    	   	StringBuilder emailBuilder=new StringBuilder();
+			            StringBuilder mobileBuilder=new StringBuilder();
+			            StringBuilder empType=new StringBuilder();
+			            StringBuilder vendor=new StringBuilder();
+			            StringBuilder projectName=new StringBuilder();
+			            StringBuilder client=new StringBuilder();
+			            StringBuilder StDate=new StringBuilder();
+			            StringBuilder edDate=new StringBuilder();
+			            StringBuilder purposeStringBuilder =new StringBuilder();
+			            
+			            if(expenseDetails.getProjectMembers() != null){
+			            	if(expenseDetails.getProjectMembers().getEmployee()!= null){
+			            		if(expenseDetails.getProjectMembers().getEmployee().getUser()!= null){
+			            			if(expenseDetails.getProjectMembers().getEmployee().getUser().getLastName()!= null){
+			            				orderedList.add(new ListItem(nameBuilder.append("Employee Name :").
+			            						append(expenseDetails.getProjectMembers().getEmployee().getUser().getFirstName()).
+			            						append(expenseDetails.getProjectMembers().getEmployee().getUser().getLastName()).toString()));
+			            			}else{
+			            				orderedList.add(new ListItem(nameBuilder.append("Employee Name :").
+			            						append(expenseDetails.getProjectMembers().getEmployee().getUser().getFirstName()).toString()));
+			            			}
+			            			if(expenseDetails.getProjectMembers().getEmployee().getUser().getEmail()!= null){
+			            				 orderedList.add(new ListItem(emailBuilder.append("Email Id :").append(expenseDetails.getProjectMembers().getEmployee().getUser().getEmail()).toString()));	
+			            			}else{
+			            				orderedList.add(new ListItem(emailBuilder.append("Email Id :").append("--").toString()));
+			            			}
+			            			if(expenseDetails.getProjectMembers().getEmployee().getUser().getMobilePhone()!= null){
+			            				 orderedList.add(new ListItem(mobileBuilder.append("Phone Number :").append(expenseDetails.getProjectMembers().getEmployee().getUser().getMobilePhone()).toString()));	
+			            			}else{
+			            				orderedList.add(new ListItem(mobileBuilder.append("Phone Number :").append("--").toString()));
+			            			}
+			            		}
+			            		if(expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType()!= null){
+		            				 orderedList.add(new ListItem(empType.append("Employment Type :").append(expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType()).toString()));	
+		            			}else{
+		            				orderedList.add(new ListItem(empType.append("Employment Type :").append("--").toString()));
+		            			}
+			            		if(expenseDetails.getProjectMembers().getEmployee().getOrgLocations()!= null && expenseDetails.getProjectMembers().getEmployee().getOrgRelationId() != null){
+			            		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseDetails.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseDetails.getProjectMembers().getEmployee().getOrgRelationId().getId());
+				            	if(orgRelation.getResponderLocationId() !=null && (expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C")||expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099"))){
+				            		orderedList.add(new ListItem(vendor.append("Vendor :").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString()));
+				            	}else{
+				            		orderedList.add(new ListItem(vendor.append("Vendor :").append("--").toString()));
+				            	}
+			            	  }else{
+				            		orderedList.add(new ListItem(vendor.append("Vendor :").append("--").toString()));
+				            	}
+			            	}
+			            	
+			            	if(expenseDetails.getProjectMembers().getProjects().getProjectName()!=null){
+			            		orderedList.add(new ListItem(projectName.append("Project :").append(expenseDetails.getProjectMembers().getProjects().getProjectName()).toString()));
+			            	}else{
+			            		orderedList.add(new ListItem(projectName.append("Project :").append("--").toString()));
+			            	}
+			            }
+			            if(expenseDetails.getClientName()!=null){
+			            	orderedList.add(new ListItem(client.append("Client :").append(expenseDetails.getClientName()).toString()));	
+			            }else{
+			            	client.append("--").toString();
+			            }
+				        if(null != expenseDetails.getStartDate()){
+				        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+				        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
+				        }else{
+				        	orderedList.add(new ListItem(StDate.append("Start Date :").append("--").toString()));
+				        }
+				        if(null != expenseDetails.getEndDate()){
+				        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+				        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
+				        }else{
+				        	orderedList.add(new ListItem(edDate.append("End Date :").append("--").toString()));
+				        }
+				        if(null != expenseDetails.getPurpose()){
+				        	orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append(expenseDetails.getPurpose()).toString()));
+				        	}else{
+				        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));
+				        	}
 			        }
 			        document.add(orderedList);
 			        
@@ -246,7 +351,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			return file;
 	}
 
-	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser) throws Exception {
+	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
 		String userArray[] = new String[myExpensesHeaders.length];
 				if(null != expEntries.getExpensesCategoryId()){
 					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
@@ -295,24 +400,36 @@ public class ExpensesServiceImpl implements ExpensesService{
 			   }else{
 				   userArray[6] = "--";
 			 }
+			 
+			 if(approverType.equalsIgnoreCase("APPROVER")){
+				 if(expEntries.getExpensesId().getExpenseStatus() != null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().toString())){	
+					   userArray[7] = expEntries.getExpensesId().getExpenseStatus().getValue();
+				   }else{
+					   userArray[7] = "--";
+				 } 
+			 }
 	return userArray;
 	}
 
 	@Override
-	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception {
+	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails);
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType);
 		int column = 0;
 		
 		List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
 		
 		for (ExpensesEntries expensesEntries : expenseEntries) {
-			writeRow = createExcelsheet.createRow(column + 8);
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries);
+			if(approverType.equalsIgnoreCase("APPROVER")){
+				writeRow = createExcelsheet.createRow(column + 12);	
+			}else if(approverType.equalsIgnoreCase("USER")){
+				writeRow = createExcelsheet.createRow(column + 8);
+			}
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType);
 			column++;
 		}
 
@@ -330,7 +447,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType) {
 		if(null != expEntries.getExpensesCategoryId()){
 			if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
 				writeRow.createCell(0).setCellValue(expEntries.getExpensesCategoryId().getExpensesName());
@@ -364,17 +481,25 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 writeRow.createCell(6).setCellValue( expEntries.getDescription());
 		 createExcelsheet.autoSizeColumn(6);
 	   }
+	 if(approverType.equalsIgnoreCase("APPROVER")){
+	 if(expEntries.getExpensesId().getExpenseStatus()!= null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().getValue())){	
+		 writeRow.createCell(7).setCellValue( expEntries.getExpensesId().getExpenseStatus().getValue());
+		 createExcelsheet.autoSizeColumn(7);
+	   }
+	 }
 		return createExcelsheet;
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp) {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType) {
 		
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 		writeRow = createExcelsheet.createRow(0);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
-
+			if(approverType.equalsIgnoreCase("APPROVER")){
+			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style);
+			}else if(approverType.equalsIgnoreCase("USER")){
 		Cell cell1 = writeRow.createCell(0);
 		cell1.setCellValue("Expense id :");
 		cell1.setCellStyle(style);
@@ -403,7 +528,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue("client");
+		cell6.setCellValue(exp.getClientName());
 		cell6.setCellStyle(style);
 		
 		
@@ -450,11 +575,221 @@ public class ExpensesServiceImpl implements ExpensesService{
 		Cell cell12 = writeRow.createCell(1);
 		cell12.setCellValue(exp.getPurpose());
 		cell12.setCellStyle(style);
-		String headers [] = Constants.MY_EXPENSES_HEADERS;
-		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,7);
+		}
+		String[] headers = null;
+		
+		if(approverType.equalsIgnoreCase("USER")){
+			 headers  = Constants.MY_EXPENSES_HEADERS;
+			 createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,7);
+		}
+		if(approverType.equalsIgnoreCase("APPROVER")){
+			 headers  = Constants.MY_EXPENSES_HEADERS_APPROVER;
+			 createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,11);
+		}
+		
 
 		return createExcelsheet;
 	}
+	
+	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style) {
+		
+		StringBuilder nameBuilder=new StringBuilder();
+	   	StringBuilder emailBuilder=new StringBuilder();
+        StringBuilder mobileBuilder=new StringBuilder();
+        StringBuilder empType=new StringBuilder();
+        StringBuilder vendor=new StringBuilder();
+        StringBuilder projectName=new StringBuilder();
+        StringBuilder client=new StringBuilder();
+        StringBuilder StDate=new StringBuilder();
+        StringBuilder edDate=new StringBuilder();
+        StringBuilder purposeStringBuilder =new StringBuilder();
+        if(expenseDetails.getProjectMembers() != null){
+        	if(expenseDetails.getProjectMembers().getEmployee()!= null){
+        		if(expenseDetails.getProjectMembers().getEmployee().getUser()!= null){
+        			if(expenseDetails.getProjectMembers().getEmployee().getUser().getLastName()!= null){
+        				nameBuilder.append(expenseDetails.getProjectMembers().getEmployee().getUser().getFirstName()).
+        						append(expenseDetails.getProjectMembers().getEmployee().getUser().getLastName()).toString();
+        			}else{
+        				nameBuilder.append(expenseDetails.getProjectMembers().getEmployee().getUser().getFirstName()).toString();
+        			}
+        			if(expenseDetails.getProjectMembers().getEmployee().getUser().getEmail()!= null){
+        				 emailBuilder.append(expenseDetails.getProjectMembers().getEmployee().getUser().getEmail()).toString();	
+        			}else{
+        				emailBuilder.append("--").toString();
+        			}
+        			if(expenseDetails.getProjectMembers().getEmployee().getUser().getMobilePhone()!= null){
+        				 mobileBuilder.append(expenseDetails.getProjectMembers().getEmployee().getUser().getMobilePhone()).toString();	
+        			}else{
+        				mobileBuilder.append("--").toString();
+        			}
+        		}
+        		if(expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType()!= null){
+    				 empType.append(expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType()).toString();	
+    			}else{
+    				empType.append("--").toString();
+    			}
+        		if(expenseDetails.getProjectMembers().getEmployee().getOrgLocations()!= null && expenseDetails.getProjectMembers().getEmployee().getOrgRelationId() != null){
+        		OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseDetails.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseDetails.getProjectMembers().getEmployee().getOrgRelationId().getId());
+            	if(orgRelation.getResponderLocationId() !=null && (expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C")||expenseDetails.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099"))){
+            		vendor.append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+            	}else{
+            		vendor.append("--").toString();
+            	}
+        	  }else{
+            		vendor.append("--").toString();
+            	}
+        	}
+        	
+        	if(expenseDetails.getProjectMembers().getProjects().getProjectName()!=null){
+        		projectName.append(expenseDetails.getProjectMembers().getProjects().getProjectName()).toString();
+        	}else{
+        		projectName.append("--").toString();
+        	}
+        }
+        if(expenseDetails.getClientName()!=null){
+        	client.append(expenseDetails.getClientName()).toString();	
+        }else{
+        	client.append("--").toString();
+        }
+        if(null != expenseDetails.getStartDate()){
+        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+        	StDate.append(StartDate).toString();
+        }else{
+        	StDate.append("--").toString();
+        }
+        if(null != expenseDetails.getEndDate()){
+        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+        	edDate.append(EndDate).toString();
+        }else{
+        	edDate.append("--").toString();
+        }
+        if(null != expenseDetails.getPurpose()){
+        	purposeStringBuilder.append(expenseDetails.getPurpose()).toString();
+        	}else{
+        		purposeStringBuilder.append("--").toString();
+        	}
+		
+		
+		
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Employee Name :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+	    cell2.setCellValue(nameBuilder.toString());
+		cell2.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue("Email :");
+		cell3.setCellStyle(style);
+
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(emailBuilder.toString());
+		cell4.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell5 = writeRow.createCell(0);
+		cell5.setCellValue("Phone No : ");
+		cell5.setCellStyle(style);
+
+		Cell cell6 = writeRow.createCell(1);
+		cell6.setCellValue(mobileBuilder.toString());
+		cell6.setCellStyle(style);
+		
+		
+		writeRow = createExcelsheet.createRow(3);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell7 = writeRow.createCell(0);
+		cell7.setCellValue("Employment Type : ");
+		cell7.setCellStyle(style);
+
+		Cell cell8 = writeRow.createCell(1);
+		cell8.setCellValue(empType.toString());
+		cell8.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(4);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell9 = writeRow.createCell(0);
+		cell9.setCellValue("Vendor : ");
+		cell9.setCellStyle(style);
+
+		Cell cell10 = writeRow.createCell(1);
+		cell10.setCellValue(vendor.toString());
+		cell10.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(5);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell11 = writeRow.createCell(0);
+		cell11.setCellValue("ProjectName : ");
+		cell11.setCellStyle(style);
+
+		Cell cell12 = writeRow.createCell(1);
+		cell12.setCellValue(projectName.toString());
+		cell12.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(6);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell13 = writeRow.createCell(0);
+		cell13.setCellValue("Client : ");
+		cell13.setCellStyle(style);
+
+		Cell cell14 = writeRow.createCell(1);
+		cell14.setCellValue(client.toString());
+		cell14.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(7);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell15 = writeRow.createCell(0);
+		cell15.setCellValue("StartDate : ");
+		cell15.setCellStyle(style);
+
+		Cell cell16 = writeRow.createCell(1);
+		cell16.setCellValue(StDate.toString());
+		cell16.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(8);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell17 = writeRow.createCell(0);
+		cell17.setCellValue("EndDate : ");
+		cell17.setCellStyle(style);
+
+		Cell cell18 = writeRow.createCell(1);
+		cell18.setCellValue(edDate.toString());
+		cell18.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(9);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell19 = writeRow.createCell(0);
+		cell19.setCellValue("Purpose : ");
+		cell19.setCellStyle(style);
+
+		Cell cell20 = writeRow.createCell(1);
+		cell20.setCellValue(purposeStringBuilder.toString());
+		cell20.setCellStyle(style);
+		
+	}
+
+	
 	
 	private static void headerCellStyle(PdfPCell cell){
 	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);

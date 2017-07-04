@@ -53,8 +53,8 @@
 							id="export-pop"></i>
 							<div class="export_pop" style="display: none;">
 								<ul>
-									<li onclick="exportMyExpenses('PDF',${expenses.id});"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-									<li onclick="exportMyExpenses('EXCEL',${expenses.id});"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+									<li onclick="exportMyExpenses('PDF',${expenses.id},'USER');"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+									<li onclick="exportMyExpenses('EXCEL',${expenses.id},'USER');"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
 								</ul>
 							</div></li>
 						<div class="clearfix"></div>
@@ -157,8 +157,8 @@
     
     
 <script>
-function exportMyExpenses(type,Expid){
+function exportMyExpenses(type,Expid,ApproverType){
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid;
+	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
 </script>

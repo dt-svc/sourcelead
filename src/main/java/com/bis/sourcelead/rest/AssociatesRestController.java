@@ -220,10 +220,10 @@ public class AssociatesRestController {
 			if(null != candidate.getOrgRelationId()){
 				candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
 
-				if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 					candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
-				if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				if(candidate.getOrgRelationId().getLocationId().getId().equals(orgLocations.getId())){
 					candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				

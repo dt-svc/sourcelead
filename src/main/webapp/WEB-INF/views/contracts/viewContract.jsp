@@ -571,16 +571,17 @@ function editClo(contractId){
 	$('.editNewDat').hide();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#endDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-    type : "POST",
-     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
-     success :function(data) {
-    	 $("#endVal").empty();
-		  $("#endVal").append(": "+endDate);
-    },
-});  
-	
+	if(endDate != ""){
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	    type : "POST",
+	     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+	     success :function(data) {
+	    	 $("#endVal").empty();
+			  $("#endVal").append(": "+endDate);
+	    },
+	}); 
+	}
 }
 </script>
 
