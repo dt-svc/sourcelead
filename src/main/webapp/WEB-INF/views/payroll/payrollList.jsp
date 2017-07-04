@@ -33,8 +33,7 @@ window.onload = function () {
 <section class="contrHead">
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
-			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesA
-			ndTaxList();">Wages & Tax Summary</a></li>
+			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
 			<li title="Paylist"><a id="paylistLi" onclick="runPayrollCycles('main');">Run Payroll</a></li>
