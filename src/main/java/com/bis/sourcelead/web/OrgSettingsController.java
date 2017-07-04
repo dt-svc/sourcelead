@@ -98,6 +98,16 @@ public class OrgSettingsController {
  			return model;
  	}
 	
+		@RequestMapping(value = "/orgTemplates")
+	 	public ModelAndView orgTemplates(HttpServletRequest request) {
+			    ModelAndView model = new ModelAndView();
+	 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+	 			model.setViewName("orgTemplates");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+	 
+	 
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/orgRolesList")
  	public ModelAndView orgRolesList(HttpServletRequest request) {

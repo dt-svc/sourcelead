@@ -75,7 +75,8 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					}
 					if(jsonObj.has("categoryType"+c)){
 						ExpensesCategory ec = new ExpensesCategory();
-						ec.setId(Long.parseLong(jsonObj.getString("categoryType"+c)));
+						String categoryType[] = jsonObj.getString("categoryType"+c).split(",");
+						ec.setId(Long.parseLong(categoryType[0]));
 						entries.setExpensesCategoryId(ec);
 					
 					if(jsonObj.has("categoryDate"+c)){
