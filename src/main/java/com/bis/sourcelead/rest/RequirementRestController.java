@@ -268,13 +268,9 @@ public class RequirementRestController {
 	   
 		//rejected reason save in requirementApproverHierarchy table only who can reject the requirement
 
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 		
-		if(isLoginUserAsAdmin.equalsIgnoreCase("true") && status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
-			requirementApproverHierarchy.setRejectedReason(reason);
-	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
-		}
-		else if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+		 if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
 	    	requirementApproverHierarchy.setRejectedReason(reason);
 	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 	    }
