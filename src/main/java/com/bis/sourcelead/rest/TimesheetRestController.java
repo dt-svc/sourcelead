@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +43,7 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -149,9 +149,9 @@ public class TimesheetRestController {
 	@Autowired
 	ProjectMembersHistoryService projectMembersHistoryService;
 	
-	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
+	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,
@@ -308,6 +308,9 @@ public class TimesheetRestController {
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,"view");
+                    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
+                        continue;
 					if(count == 1){
 						isSelected.setLength(0);
 						isSelected.append("selected='selected'");
@@ -1213,11 +1216,11 @@ public class TimesheetRestController {
 						  }
 							  
 					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
-					    	tabDiv.append("<div class='commentTime pull-right'>");
+					    	tabDiv.append("<div class='commentTime'>");
 					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comment here'>").append(ts.getWeekcomments()).append("</textarea>");
 					    	tabDiv.append("</div>");
 						}else{
-							tabDiv.append("<div class='commentTime pull-right'>");
+							tabDiv.append("<div class='commentTime'>");
 							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comment here'></textarea>");
 							tabDiv.append("</div>");
 						}
@@ -1317,10 +1320,9 @@ public class TimesheetRestController {
 								    		&&!isNullOrEmpty(approvalStatus)
 								    		&&!(approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())&& from.equalsIgnoreCase("user"))
 								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
-								    	documentBuffer.append("<input class='deleAp' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
-										
+										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									}
-								    documentBuffer.append("<input class='deleApp' type='button' onClick='viewSubmissionDocument(\""+tsd.getId()+"\",\""+tsd.getFileName()+"\");' >");
+									documentBuffer.append("<input class='deleApp' type='button' onClick='viewSubmissionDocument(\""+tsd.getId()+"\",\""+tsd.getFileName()+"\");' >");
 									documentBuffer.append("</strong>");
 							} 
 						}
@@ -2018,6 +2020,7 @@ public class TimesheetRestController {
 			
 				TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);	
 			    //TimesheetSubmissions timesheetSubmissions =    timesheetSubmissionsService.getTimesheetSubmissions(submissionId.toString());
+			    
 			    response.setContentType("application/octet-stream");
 			    StringBuilder fileName = new StringBuilder();
 		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(timesheetSubmissionsDocuments.getFileName()).append("\"").toString());
@@ -2040,34 +2043,6 @@ public class TimesheetRestController {
 				} 
 
 		}  
-		
-		
-		
-		
-		@RequestMapping(value = "/viewDocument", method = RequestMethod.GET)
-	    public void viewDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId,
-	    		@RequestParam(value="title", required=false) Long title,HttpServletResponse response) throws Exception {
-		
-		TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
-			
-		byte[] pdfBytes = null;
-		if("application/pdf".equalsIgnoreCase(timesheetSubmissionsDocuments.getFileContentType())){
-			pdfBytes = timesheetSubmissionsDocuments.getDocFile();
-		}
-		else{
-			 pdfBytes = pdfConversionUtil.convertDocToPdf(timesheetSubmissionsDocuments.getDocFile());
-		}
-		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-	  	    response.setContentType("application/pdf");
-	  	    ServletOutputStream sos = response.getOutputStream();
-	  	    if(null != pdfBytes){
-	  	    	response.setContentLength(pdfBytes.length);
-	  	    	sos.write(pdfBytes);
-	  	    }
-	          sos.flush();
-	          sos.close();
-		}
-		
 		
 		@RequestMapping(value = "/notifyReopenTimeSheet", method = RequestMethod.POST)
 		public @ResponseBody void notifyReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
@@ -2137,6 +2112,33 @@ public class TimesheetRestController {
 				}
 			
 		}
+		
+		
+		@RequestMapping(value = "/viewDocument", method = RequestMethod.GET)
+	    public void viewDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId,
+	    		@RequestParam(value="title", required=false) Long title,HttpServletResponse response) throws Exception {
+		
+		TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+			
+		byte[] pdfBytes = null;
+		if("application/pdf".equalsIgnoreCase(timesheetSubmissionsDocuments.getFileContentType())){
+			pdfBytes = timesheetSubmissionsDocuments.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(timesheetSubmissionsDocuments.getDocFile());
+		}
+		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    ServletOutputStream sos = response.getOutputStream();
+	  	    if(null != pdfBytes){
+	  	    	response.setContentLength(pdfBytes.length);
+	  	    	sos.write(pdfBytes);
+	  	    }
+	          sos.flush();
+	          sos.close();
+		}
+		
+		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)

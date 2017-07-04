@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
@@ -22,13 +23,16 @@ import ooo.connector.BootstrapSocketConnector;
 @Component
 public class PdfConversionUtil {
 	
+	@Value("${oooExecutableFolder}")
+	private String oooExecutableFolder;
+	
 	public byte[] convertDocToPdf(byte[] docFile)
 	{
 	        // Create OOoOutputStream
 	        OOoOutputStream outputStream = new OOoOutputStream();
 	        try {
 	            // Connect to OOo server
-	            XComponentContext xComponentContext = BootstrapSocketConnector.bootstrap(Constants.OOOEXECUTABLE_FOLDER);
+	            XComponentContext xComponentContext = BootstrapSocketConnector.bootstrap(oooExecutableFolder);
 	            // Create OOoInputStream
 	            InputStream inputFile = new ByteArrayInputStream(docFile);
 	            ByteArrayOutputStream bytes = new ByteArrayOutputStream();

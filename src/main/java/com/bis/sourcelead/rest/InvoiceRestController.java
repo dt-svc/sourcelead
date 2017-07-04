@@ -550,11 +550,14 @@ public class InvoiceRestController {
 	     		 if(invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 					StringBuilder contactName = new StringBuilder();
-					if(invoice.getContactUser().getLastName() != null){
+					if(invoice.getContactUser() != null){
+						if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
 					}else{
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 					}
+					}
+						
 					if(null != invoice.getContactUser()){
 						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
 					}
@@ -1416,15 +1419,11 @@ public class InvoiceRestController {
 	@ResponseBody
 	public String generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		long startTime = System.currentTimeMillis();
 		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType);
-		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
-		logger.info("Final Response time = " + elapsedTime+ " Millis");
 		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		return resultJson;
 	}

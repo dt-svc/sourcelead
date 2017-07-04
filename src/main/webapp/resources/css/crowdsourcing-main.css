@@ -193,14 +193,15 @@ label.test{
 }
 .regis_bg {
 	width:100%; min-height:100%; top:0px; right:0px; position:absolute; padding-bottom:30px;
-	/* background: #40aef5; Old browsers */
-   /*  background:url(../images/background-repeat.png) repeat center  center, radial-gradient(ellipse at center,  #40aef5 10%,#156ea8 70%);
+	/* background: #40aef5;  Old browsers */
+/*     background:url(../images/background-repeat.png) repeat center  center, radial-gradient(ellipse at center,  #40aef5 10%,#156ea8 70%);
     background:url(../images/background-repeat.png) repeat center  center, -moz-radial-gradient(center, ellipse cover,  #40aef5 10%, #156ea8 70%);
     background:url(../images/background-repeat.png) repeat center  center, -webkit-radial-gradient(center, ellipse cover,  #40aef5 10%,#156ea8 70%);
     background:url(../images/background-repeat.png) repeat center  center, radial-gradient(ellipse at center,  #40aef5 10%,#156ea8 70%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40aef5', endColorstr='#156ea8',GradientType=1 );  */
-    background: #e5e5e5;
-}
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#40aef5', endColorstr='#156ea8',GradientType=1 ); 
+ */
+ 	background: #e5e5e5;
+ }
 .wraper {
     width: 900px;
     height: 600px;
@@ -340,5 +341,5 @@ background-color: #fff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,
 	color:#5b8200 !important; font-size: 18px !important;
 }
 #professional .btn-primary, #recruiter .btn-primary {
-	background-color:#a31e23; border-color: #a31e23;
+background-color:#a31e23; border-color: #a31e23;
 }

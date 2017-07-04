@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class addExpenseController {
@@ -64,16 +65,27 @@ public class addExpenseController {
 			@RequestParam(value="expenseId", required=false) String expenseId,
 			@RequestParam(value="reOpenedUserId", required=false) String reOpenedUserId,
 			@RequestParam(value="reason", required=false) String reason,HttpServletRequest request) throws Exception {
-
-		User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
+		
+		
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User reopenedUser = userService.getUserById(Long.parseLong(reOpenedUserId));
+		if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
+			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+		  	
+		}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+		}
+		
+		ModelAndView model = new ModelAndView();
+		/*User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
 		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
 
-		ModelAndView model = new ModelAndView();
+		
 		if(StringUtils.isNotEmpty(expenseId) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 			User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
-			//send mail & notification logic Long expenseId,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser
 			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(Long.parseLong(expenseId),reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser);
-		}
+		}*/
 
 		model.setViewName("expenses/reopenExpenseAcceptOrReject");
 		model.addObject("type",type);
