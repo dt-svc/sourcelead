@@ -73,6 +73,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
+		}else{
+			subQuery = subQuery + "and invoice.invoiceStatus <> 'Linked'";
 		}
 		
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {

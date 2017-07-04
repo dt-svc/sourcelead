@@ -87,6 +87,10 @@ function generatrPayroll(data,payrollCycle){
 				$("#wagesAndTaxListDiv").empty();
 				$("#finalPayrollReportDiv").empty();
 				$("#finalPayrollReportDiv").append(result);
+				/*  document.getElementById("applicantsContractsList").style.display="block"; 
+				$("#payScale"). */
+				$('#payScale').css('display','block');
+				$('#payCycleName').html(payrollCycle);
 				finalPayrollreportPagination();
 }
 </script>

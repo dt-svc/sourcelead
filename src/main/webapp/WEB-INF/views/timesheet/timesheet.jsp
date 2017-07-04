@@ -1211,6 +1211,18 @@ function deleteSubmissionDocument(submissionDocumentId){
 
 
 <script type="text/javascript">
+function viewSubmissionDocument(submissionDocumentId,title){
+	  var sourceleadUrl ='${sourceleadUrl}';
+		window.open(sourceleadUrl+'/viewDocument?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
+}
+
+
+</script>
+
+
+
+
+<script type="text/javascript">
          function prepareChosenScripts(){ 
         	      var config = {
         			  '.chosen-select'           : {},
