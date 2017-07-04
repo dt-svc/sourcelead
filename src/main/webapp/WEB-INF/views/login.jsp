@@ -19,7 +19,7 @@
 <body>
 <div class="regis_bg">
 	<div class="regis_logo">
-	  <img src="resources/images/SourceLead-logo-white.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
+	  <img src="resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
 	</div>
     <div class="regis_wrap">
     	<div class="signin_wrap" id="signin">
