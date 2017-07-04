@@ -2288,15 +2288,18 @@ function setRateTypesByLocation(){
 <script type="text/javascript">
 function init(){
 	getAllSubmissionCandidateCountries();
+	initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
+	var country = '${SourceLeadWeb_country}';
+	$("#submissionCountry").val(country)
 	      
-	       $("#submissionCountry").on('change', function (e) {
+	     /*   $("#submissionCountry").on('change', function (e) {
 	    	   getCandidateStates();
 	      	   getCandidateCities();
 	       });
 	       $("#submissionState").on('change', function (e) {
 	    	   getCandidateCities();
 	       });
-	      
+	       */
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});

@@ -274,9 +274,17 @@ public class RequirementServiceImpl implements RequirementService {
 				} else {
 					location.append("--").append(".");
 				}
-			}if(jsonObj.has("maxExp")){
+			}
+			if(jsonObj.has("location")){
+				requirement.setLocation(jsonObj.getString("location"));
+			}
+			if(jsonObj.has("zipCode")){
+				requirement.setZipCode(jsonObj.getString("zipCode"));
+			}
+			if(jsonObj.has("maxExp")){
 					requirement.setMaxExp(jsonObj.getString("maxExp"));
-			}if(jsonObj.has("minExp")){
+			}
+			if(jsonObj.has("minExp")){
 					requirement.setMinExp(jsonObj.getString("minExp"));
 			}if(jsonObj.has("rate")){
 					requirement.setRate(jsonObj.getString("rate"));

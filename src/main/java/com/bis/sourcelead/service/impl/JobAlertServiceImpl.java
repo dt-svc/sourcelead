@@ -83,6 +83,14 @@ public class JobAlertServiceImpl implements JobAlertService{
 	 		jobAlert.setCity(jsonObj.getString("city"));
 		}
 	 	
+	 	if(jsonObj.has("location") && !"".equalsIgnoreCase(jsonObj.getString("location"))){
+	 		jobAlert.setLocation(jsonObj.getString("location"));
+		}
+	 	
+		if(jsonObj.has("zipcode") && !"".equalsIgnoreCase(jsonObj.getString("zipcode"))){
+	 		jobAlert.setZipCode(jsonObj.getString("zipcode"));
+		}
+	 	
 	 	if(jsonObj.has("experience") && !"".equalsIgnoreCase(jsonObj.getString("experience"))){
 	 		jobAlert.setExperience(jsonObj.getString("experience"));
 		}

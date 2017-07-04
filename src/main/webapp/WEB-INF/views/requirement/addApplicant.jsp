@@ -1656,14 +1656,17 @@ function getSubmissionCandidateCities(city){
 <script type="text/javascript">
 function init(){
 	getAllSubmissionCandidateCountries();
+	initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
+	var country = '${SourceLeadWeb_orgLocations.country}';
+	$("#submissionCountry").val(country)
 	      
-	       $("#submissionCountry").on('change', function (e) {
+	       /* $("#submissionCountry").on('change', function (e) {
 	    	   getCandidateStates();
 	    	   getSubmissionCandidateCities();
 	       });
 	       $("#submissionState").on('change', function (e) {
 	    	   getSubmissionCandidateCities();
-	       });
+	       }); */
 	      
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
