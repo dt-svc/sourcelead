@@ -1834,9 +1834,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getClientBasedInvoiceLists(orgRelationId,orgLocationId,invoiceType);
 	}
 	@Override
-	public void linkInvoice(Invoice invoice) throws Exception
+	public  Invoice linkInvoice(Invoice invoice) throws Exception
 	{
-      invoiceDao.saveInvoce(invoice);		
+      return invoiceDao.saveInvoce(invoice);		
 	}
 	
 	@Override
