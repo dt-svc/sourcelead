@@ -95,6 +95,7 @@ function hrDeductionsList(){
 						$("#finalPayrollReportDiv").empty();
 						$("#hrDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						hrDeductionsListTablePagination();
 				        	
 				        },

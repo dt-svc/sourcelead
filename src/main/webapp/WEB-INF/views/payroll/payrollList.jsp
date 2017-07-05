@@ -48,10 +48,14 @@ window.onload = function () {
 	
 <div class="timesheet_head clearfix">
 
-<div class="pull-left">
+<div class="pull-left mr">
 
 <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
 
+</div>
+
+<div id="payScale" class="pull-left mt10" style="display:none;">
+<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
 </div>
 
      <ul class="pull-right">
@@ -350,6 +354,7 @@ function loadEmployeePayrollCost(){
 						$("#finalPayrollReportDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						employeePayrollCostPagination();
 				        	
 				        },

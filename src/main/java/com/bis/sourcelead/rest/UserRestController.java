@@ -975,8 +975,8 @@ public class UserRestController {
 		 public void authenticate() {
 		 }
 		 
-		 @RequestMapping(value = "/rest/userProfile", method = RequestMethod.GET)
-		 public UserProfileDTO getUserProfile() {
+		 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
+		 public UserProfileDTO getLoginUserProfile() {
 			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			 User  user = userService.findByUserName(auth.getName());
 			 List<UserRole> userRoleList = null;
