@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -71,6 +72,7 @@ import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
@@ -146,6 +148,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
 	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
@@ -1317,6 +1322,7 @@ public class TimesheetRestController {
 								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									}
+									documentBuffer.append("<input class='deleApp' type='button' onClick='viewSubmissionDocument(\""+tsd.getId()+"\",\""+tsd.getFileName()+"\");' >");
 									documentBuffer.append("</strong>");
 							} 
 						}
@@ -2106,6 +2112,33 @@ public class TimesheetRestController {
 				}
 			
 		}
+		
+		
+		@RequestMapping(value = "/viewDocument", method = RequestMethod.GET)
+	    public void viewDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId,
+	    		@RequestParam(value="title", required=false) Long title,HttpServletResponse response) throws Exception {
+		
+		TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+			
+		byte[] pdfBytes = null;
+		if("application/pdf".equalsIgnoreCase(timesheetSubmissionsDocuments.getFileContentType())){
+			pdfBytes = timesheetSubmissionsDocuments.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(timesheetSubmissionsDocuments.getDocFile());
+		}
+		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    ServletOutputStream sos = response.getOutputStream();
+	  	    if(null != pdfBytes){
+	  	    	response.setContentLength(pdfBytes.length);
+	  	    	sos.write(pdfBytes);
+	  	    }
+	          sos.flush();
+	          sos.close();
+		}
+		
+		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)
