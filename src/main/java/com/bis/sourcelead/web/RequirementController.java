@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -689,6 +690,10 @@ public class RequirementController {
 							requirementSubmissionHistory.setFromStage("OFFERMADE");
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
 							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+							
+							Candidate candidate = candidateService.getCandidateById(requirementSubmission.getCandidate().getId());
+							candidate.setIsAssociate(Constants.YES);
+							candidateService.addCandidate(candidate);
 					  }
 			    	
 					

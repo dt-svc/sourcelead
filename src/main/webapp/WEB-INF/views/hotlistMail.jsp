@@ -22,6 +22,18 @@ display: none;
 </style>
 
 
+<script>
+ $(document).ready(function(){
+	 var UUID = '${UUID}';
+	 if(null != UUID && UUID != '' && UUID != 'undefined'){
+		 
+		 var mailType = '${mailType}';
+		 if(null != mailType && mailType != '' && mailType != 'undefined'){
+			 loadHotMailBoxDetails(UUID);
+		 }
+	 }
+});
+</script> 
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -891,11 +903,37 @@ function getContactEmails(){
            },
            
       }); 
-	  
-	 
 	 
 }
 
+</script>
+
+
+<script>
+function loadHotMailBoxDetails(UUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/getHotListedCandidateDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,    
+         success :function(data) {
+        	 
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+        		 var json = JSON.parse(data);
+        		 var internalOutput = "";
+        		 for (var i = 0; i < json.length; i++) { 
+        			 var opt = json[i];
+        			 internalOutput = internalOutput+"<option value='" +opt.id+ "' selected>"+opt.email+"</option>";
+        		 }
+        		 
+       		     $("#selectedCandidates").append(internalOutput);
+       			 $("#selectedCandidates").trigger("chosen:updated");
+       			
+        	 }
+        	 
+         }
+	});
+}
 </script>
 
 
