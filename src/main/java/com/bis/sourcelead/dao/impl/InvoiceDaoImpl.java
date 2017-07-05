@@ -76,7 +76,6 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}else{
 			subQuery = subQuery + "and invoice.invoiceStatus <> 'Linked'";
 		}
-		
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
 			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
 		} 
@@ -90,10 +89,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(paymentTokens).contains("Paid")) {
 			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
 		}
-		if (Arrays.asList(paymentTokens).contains("OverDue")) {
-			subQuery1 = subQuery1 + "invoice.paymentStatus = 'OverDue' or ";
+		if (Arrays.asList(paymentTokens).contains("Overdue")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Overdue' or ";
 		}
-		
 		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
 			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
 		} 
@@ -366,6 +364,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			}
         }
 		return qry.setCacheable(true).list();
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getDueDateCompletedInvoicesList() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' and invoice.invoiceStatus <> 'DRAFT' and invoice.paymentStatus <> 'Paid'";
+		@SuppressWarnings("unchecked")
+		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setCacheable(true).list();
+		return clientInvoiceList;
 	}
 	 
 }
