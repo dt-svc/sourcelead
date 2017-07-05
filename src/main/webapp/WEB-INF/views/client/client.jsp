@@ -410,16 +410,14 @@ function getOrgDetails()
 				      		$("#webSite").val(json['website']);
 				      		$("#webSite").attr("disabled", true);
 				      	}
-   	        		
+	   	        		if(json['location'] != null && json['location'] != ''){
 			      		document.getElementById("locationDiv").style.display="none";
    	        			document.getElementById("orgLocationDiv").style.display="";
-   	        			if(json['location'] != null && json['location'] != ''){
    	        		    $("#orgLocation").val(json['location']);
 			      		}
-   	        		
+	   	        		if(json['country'] != null && json['country'] != ''){
    	        			document.getElementById("countryDiv").style.display="none";
    	        			document.getElementById("orgCountryDiv").style.display="";
-   	        			if(json['country'] != null && json['country'] != ''){
    	        		    $("#orgCountry").val(json['country'] );
    	        		 	}
    	        		

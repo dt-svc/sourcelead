@@ -405,17 +405,14 @@ function getOrgDetails()
    	        		    $("#orgCountry").val(json['country'] );
    	        		}
    	        		
-   	        		
+   	        		if(json['state'] != null && json['state'] != ''){
         			document.getElementById("stateDiv").style.display="none";
         			document.getElementById("orgStateDiv").style.display="";
-        			if(json['state'] != null && json['state'] != ''){
   	        		    $("#orgState").val(json['state']);
   	        		}
-   	        		
-   	        		
+   	        		if(json['city'] != null && json['city'] != ''){
 	       			document.getElementById("cityDiv").style.display="none";
 	       			document.getElementById("orgCityDiv").style.display="";
-	       			if(json['city'] != null && json['city'] != ''){
    	        		    $("#orgCity").val(json['city']);
    	        		}
 		   	        
@@ -424,10 +421,9 @@ function getOrgDetails()
 			      		$("#webSite").attr("disabled", true);
 			      	}
 			      	
-			      	
+			      	if(json['location'] != null && json['location'] != ''){
 			      	document.getElementById("locationDiv").style.display="none";
    	        		document.getElementById("orgLocationDiv").style.display="";
-   	        		if(json['location'] != null && json['location'] != ''){
    	        		    $("#orgLocation").val(json['location']);
 			      	}
 			      	

@@ -26,11 +26,15 @@
 .selectChosen .chosen-container {
 width: 100% !important;
 }
+.icon1 {
+right: 15px;
+}
 </style>
 
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
+	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode');
 	getAllCountries();
 	colourpicker();
  };
@@ -214,14 +218,38 @@ function cancelOrgImg(){
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
+							 
 							<div class="form-group">
-							<label class="col-md-3">Website</label>
-							<div class="col-md-9">
-							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
-							</div>
+								<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9">
+								 <input type="text" class=" form-control" name="country" value="${SourceLeadWeb_country}" id="orgEditCountry" field-name="Country" data-validation="required" readonly="readonly" >
+								</div>
 							</div>
 								
 							<div class="form-group">
+								<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9">
+								 <input type="text" class=" form-control" name="city" value="${SourceLeadWeb_orgLocations.city}" id="orgEditCity" field-name="City" data-validation="required">
+								 <i class="fa fa-refresh btn btn-primary refresh-icon icon1 " title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9">
+								 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_orgLocations.state}" id="orgEditState" field-name="State" data-validation="required" >
+								</div>
+							</div>
+								
+							<div class="form-group">
+								<label class="col-md-3">Zip</label>
+								<div class="col-md-9">
+								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								</div>
+							</div>
+								
+								
+								
+							<%-- <div class="form-group">
 								<label class="col-md-3">Country</label>
 								<div class="col-md-9">
 								 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" readonly="readonly" >
@@ -243,7 +271,8 @@ function cancelOrgImg(){
 								<div class="col-md-9">
 								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
 								</div>
-							</div>
+							</div> --%>
+							
 							
 							<div class="form-group">
 							<label class="col-md-3">Address</label>
@@ -277,11 +306,11 @@ function cancelOrgImg(){
 				
 					<div class="col-md-5">
 						<div class="form-group">
-							<label class="col-md-3">Zip</label>
+							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="zipcode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
 							</div>
-						</div>
+							</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
@@ -1640,7 +1669,7 @@ function createOrg(){
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
 				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\');" data-validation="required"></input>';
-				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation("orgLocation","orgCountry","orgState","orgCity","orgZipCode");"></i>';
+				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
 				result = result +' 		 </div>';
@@ -2354,7 +2383,106 @@ $(function(){
 		  })
 });
 </script>
-
+<script>
+function editOrgLocationAuto(orgStateId,orgCityId,orgZipCodeId) {
+	editOrgInitialize(orgStateId,orgCityId,orgZipCodeId);
+}
+function editOrgInitialize(orgStateId,orgCityId,orgZipCodeId) {
+	var country = '${SourceLeadWeb_country}';
+	if(country == "India"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'IN'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "United States"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'US'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "Australia"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'AU'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "France"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'FR'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "Singapore"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'SG'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "United kingdom"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'GB'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}
+    	 
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+  
+  $("#"+orgStateId).val(address.state).change();
+  $("#"+orgCityId).val(address.city).change();
+  $("#"+orgZipCodeId).val(address.zipcode).change();
+});
+}
+</script>
+<script>
+function refreshOrgEditGoogleApiLocation(eidtStateId,editCityId,editZipCodeId){
+	$("#"+eidtStateId).val('');
+	$("#"+editCityId).val('');
+	$("#"+editZipCodeId).val('');
+}
+function addOrgRefreshGoogleApiLocation(){
+	$("#orgSetLocation").val('');
+	$("#orgSetCountry").val('');
+	$("#orgSetState").val('');
+	$("#orgSetCity").val('');
+	$("#orgSetZipCode").val('');
+}
+</script>
 <jsp:include page="masterFooter.jsp" />
 </html>
 
