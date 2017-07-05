@@ -276,32 +276,7 @@ public class AddExpensesRestController {
 		} 
 	 
 	 
-	 @RequestMapping(value = "/viewExpensesEntryDocument", method = RequestMethod.GET)
-	    public void viewExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId,
-	    		@RequestParam(value="title", required=false) Long title
-	    		,HttpServletResponse response) throws Exception {
-
-		 ExpensesEntryDocuments	expensesEntryDocument =	expensesEntryDocumentsService.getExpensesEntryDocumentById(entryDocumentId);	
-			    
-		 byte[] pdfBytes = null;
-			if("application/pdf".equalsIgnoreCase(expensesEntryDocument.getFileContentType())){
-				pdfBytes = expensesEntryDocument.getDocFile();
-			}
-			else{
-				 pdfBytes = pdfConversionUtil.convertDocToPdf(expensesEntryDocument.getDocFile());
-			}
-			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-		  	    response.setContentType("application/pdf");
-		  	    ServletOutputStream sos = response.getOutputStream();
-		  	    if(null != pdfBytes){
-		  	    	response.setContentLength(pdfBytes.length);
-		  	    	sos.write(pdfBytes);
-		  	    }
-		          sos.flush();
-		          sos.close();
-
-		} 
-	 
+	
 	 
 	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long expenseId, User loginUser, OrgLocations orgLoc, String reason) throws Exception {
 			
