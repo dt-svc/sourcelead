@@ -10,8 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -278,6 +280,29 @@ public class MailBoxRestController {
 		
 		resultJson = commonUtil.toJSON(mailbox);
 		return resultJson;
+	}
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")
+	@RequestMapping(value = "/getHotListedCandidateDetailsByUUID")
+	public @ResponseBody String getHotListedCandidateDetailsByUUID(@RequestParam(value = "UUID", required = false) String UUID,
+			@RequestParam(value = "type", required = false) String type,
+			HttpServletRequest request) throws Exception {
+		
+		 String resultJson;
+		 List<Candidate> hotListCandidatesList = new ArrayList<>();
+		 UserMailBox userMailbox = userMailBoxService.getUserMailBoxByUUID(UUID);
+		 if(userMailbox != null && !isNullOrEmpty(userMailbox.getCandidateId())){
+			 String[] candidateId = userMailbox.getCandidateId().split(",");
+			 for(int i=0; i < candidateId.length; i++){
+				 Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId[i]));
+				 hotListCandidatesList.add(candidate);
+			 }
+		 }
+		 
+	   resultJson = commonUtil.toJSON(hotListCandidatesList);
+	   return resultJson;
+		
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")

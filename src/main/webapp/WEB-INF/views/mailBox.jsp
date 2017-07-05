@@ -459,8 +459,6 @@ function refreshList(){
 
 <script>
 function getEmailDetails(uuid,type){
-	
-	
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	 document.getElementById("details").style.display="";
@@ -483,7 +481,6 @@ function getEmailDetails(uuid,type){
             	     
                  var result =""; 
                  
-             	 
               	result = result +'<div class="box-tools pull-right">';
               	result = result +'<div class="btn-group">';
               	if(opt.previousMailUUID != null && opt.previousMailUUID != '' && opt.previousMailUUID != 'undefined'){
@@ -514,13 +511,14 @@ function getEmailDetails(uuid,type){
 	   			result = result +'<div class="btn-group">';
 	   			result = result +'<button class="btn btn-danger" type="button" title="Delete" onclick="deleteReadMail(\''+uuid+'\',\''+opt.nextMailUUID+'\',\''+type+'\');"><i class="fa fa-trash-o"></i></button>';
 	   		    result = result +'<button class="btn btn-warning" type="button" title="Reply" onclick="replayToMail(\''+uuid+'\');"><i class="fa fa-reply"></i></button>';
-	   		    result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmail(\''+uuid+'\');"><i class="fa fa-share"></i></button>'; 
+	   		    if(type == 'Sent' && opt.candidateId != null){
+	   		    	result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmailToHotMail(\''+uuid+'\');"><i class="fa fa-share"></i></button>';
+	   		    }else{
+	   		    	result = result +'<button class="btn btn-info" type="button" title="Forward" onclick="forwardEmail(\''+uuid+'\');"><i class="fa fa-share"></i></button>';
+	   		    }
+	   		     
 	   			result = result +'</div>';
 	   			result = result +'</div>';
-	   			/* result = result +'<div class="pull-right">';
-	   			result = result +'<button class="btn btn-default" type="button" title="Refresh"><i class="fa fa-refresh"></i></button>';
-	   			result = result +'<button class="btn btn-default" type="button" title="Print"><i class="fa fa-print"></i></button>';
-	   			result = result +'</div>'; */
 	   			result = result +'</div>'; 
 	   			  
 	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
@@ -532,6 +530,10 @@ function getEmailDetails(uuid,type){
 	   			
 	   			if(opt.body != null && opt.body != 'undefined' && opt.body != ""){
 	   				result = result +'<p>'+opt.body+'</p><br/>';
+	   			}
+	   			
+	   			if(opt.campaignTableData != null && opt.campaignTableData != 'undefined' && opt.campaignTableData != ""){
+	   				result = result +'<p>'+opt.campaignTableData+'</p><br/>';
 	   			}
 	   			
 	   			if(opt.fileName != null && opt.fileName != "" && opt.fileName != 'undefined'){
@@ -593,7 +595,14 @@ function replayToMail(uuid){
 <script>
 function forwardEmail(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid);  
+	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeMail");  
+}
+</script>
+
+<script>
+function forwardEmailToHotMail(uuid){
+	var sourceleadUrl = '${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/forwardEmail?UUID="+uuid+"&mailType=composeHotMail");  
 }
 </script>
 
