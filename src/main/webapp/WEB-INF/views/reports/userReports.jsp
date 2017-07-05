@@ -210,7 +210,7 @@
                   </div>
                   <div class="clearfix billingCount borderBlue">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount"></span>
-                      <span class="text-info">Paid</span>
+                      <span class="text-info">Expenses</span>
                   </div>
                   
               </div>
@@ -229,6 +229,7 @@
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs">
+          
             
             <div id="tab-1" class="project_tabs_inn datatable_filter">
             </div>
