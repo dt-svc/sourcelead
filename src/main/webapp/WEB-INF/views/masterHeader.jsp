@@ -142,6 +142,41 @@ document.onkeydown=function(e){
 }
 </script>  -->
 
+<!--
+	Key Codes events
+	0 = blur
+	13 = enter
+	9 = tab
+	32 = space
+	188 = comma
+-->
+
+<script type="text/javascript">
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+
+<script type="text/javascript">
+function tagItBykeyForSkills(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+
+<script type="text/javascript">
+function preventTabkey(e){
+	 if(e.which == 9){
+		 e.preventDefault();
+	 }
+}
+</script>
+
 <script>
 	function predefineOrgImage(imageId){
 		$(imageId).attr('src','resources/images/office-image.jpg');
@@ -182,9 +217,15 @@ document.onkeydown=function(e){
   <!-- Header Area -->
   <header class="main-header">
   <span class="logo"> 
-  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
   <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
   </c:if>
+  
+   <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+   <a href="productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead">
+   </c:if>
+  
+  
   
   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
   <a href="${sourceleadUrl}/professionalDashboard" title="Source Lead">
@@ -194,8 +235,23 @@ document.onkeydown=function(e){
   <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
   </c:if>
   <i>
- 	<!-- <img src="resources/images/SourceLead-logo-white.png" alt="Source Lead" class="img-responsive mt5"> -->
- 	<img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5">
+ 	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+ 	 	<img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	 </c:if>
+ 	 
+ 	 <c:if test="${empty SourceLeadWeb_org.fileContentType}">
+				<div class="text-logo">
+				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+					<c:if test="${!empty SourceLeadWeb_orgName}">
+					<span class="tbldata-dotdot" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					</c:if>
+				</c:if>
+				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName}">${SourceLeadWeb_displayName}</span>
+				</c:if>
+				</div>
+	</c:if>
+ 	
   </i>
     </a> </span>
     <nav class="header-nav navbar">
@@ -210,8 +266,8 @@ document.onkeydown=function(e){
 		       <c:if test="${userTabs.tabName == 'Users'}">
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
+	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
 	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
@@ -291,8 +347,12 @@ document.onkeydown=function(e){
             </c:if> --%>
             
             <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
-	            </li>
+					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
+	        </li>
+            
+            <li class="reportsH">
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
+	        </li>
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	            <li class="reportsH">
@@ -310,56 +370,74 @@ document.onkeydown=function(e){
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
 			              
-			              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
-				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
+			              
+				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
+					              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+						                <div class="clearfix">
+						                   <div class="pull-left image-parent positionRelative">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
+						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                     </div>
+						                   </div>
+						                   <div class="pull-left">
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
+						                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                   </div>
+						                </div>
+					                </a>
+				              </c:if>
+				              
+				              <c:if test="${links.roles.displayName == 'Professional'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+						                <div class="clearfix">
+						                   <div class="pull-left image-parent positionRelative">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Professional' ? 'active-comp' : ''}">
+						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+					                       </div>
+						                   </div>
+						                   <div class="pull-left">
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                   </div>
+						                </div>
+					                </a>
+				              </c:if>
+				              
+				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+						                <div class="clearfix">
+						                   <div class="pull-left image-parent positionRelative">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Recruiter' ? 'active-comp' : ''}">
+						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+					                       </div>
+						                   </div>
+						                   <div class="pull-left">
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                   </div>
+						                </div>
+					                </a>
+				              </c:if>
+				              
+			              </c:if>
+			              
+			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+		              			<a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${links.id}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
+					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.org.orgCode}">
 					                     </div>
 					                   </div>
 					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocationName}</p>
+					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
 					                   </div>
 					                </div>
 				                </a>
 			              </c:if>
-			              
-			              <c:if test="${links.roles.displayName == 'Professional'}">
-			              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Professional' ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                       </div>
-					                   </div>
-					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </c:if>
-			              
-			              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-			              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Recruiter' ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                       </div>
-					                   </div>
-					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </c:if>
-			              
-			              
 			              
 		              </li>
 	              </c:forEach>
@@ -413,7 +491,7 @@ document.onkeydown=function(e){
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>Enroll Org</a></li>
+	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
@@ -422,11 +500,15 @@ document.onkeydown=function(e){
 	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
 	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
-	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
+	               		 <%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
-	                     </sec:authorize>
+	                     </sec:authorize> --%>
+	                     
+	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
+	                     <li><a href="<c:url value="/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+						 </sec:authorize>
 
-						<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
+					<%-- 	<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
 	                     <li><a href="<c:url value="/orgContractTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contract Template</a></li>
 						</sec:authorize>
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
@@ -434,7 +516,7 @@ document.onkeydown=function(e){
 	                      </sec:authorize>
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
-						  </sec:authorize>	
+						  </sec:authorize> --%>	
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
 						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
@@ -548,7 +630,7 @@ function notificationStatusAsRead(){
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
-				               <div id="myTasksId"></div>
+				               <div id="myTasksId" class="datatable_filter"></div>
 				              
 				            </div>
 				          </div>
@@ -560,7 +642,7 @@ function notificationStatusAsRead(){
 								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
-					              <div id="assignedTasksId"></div>
+					              <div id="assignedTasksId" class="datatable_filter"></div>
 					            </div>
 				          </div>
 				          
@@ -571,7 +653,7 @@ function notificationStatusAsRead(){
 									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
-				               <div id="closedTasksId"></div>
+				               <div id="closedTasksId" class="datatable_filter"></div>
 				            </div>
 				          </div>
 				        </div>
@@ -1161,7 +1243,7 @@ function myTasksPagination(){
     $('#myTasksPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1177,7 +1259,7 @@ function assignedTasksPagination(){
     $('#assignedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1192,7 +1274,7 @@ function closedTasksPagination(){
     $('#closedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1246,4 +1328,105 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
+<!--  Company Invite pop -->
+<div class="sideMask"></div>
+<div class="modal modalInvite" class="invite" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Invite Company</h4>
+        </div>
+        <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Location</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="location">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-user-o paddingRight text-info"></i>Name<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Name" id="name" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight">
+                    <i class="fa fa-envelope paddingRight text-info"></i>Email<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+                </div>
+            </div>
+                        <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-phone paddingRight text-info"></i>Phone</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Phone" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10">
+              <i class="fa fa-close paddingRight"></i>Cancel
+            </button>
+                </div>
+        </div>
+        </form:form>
+        
+      </div>
+      
+    </div>
+  </div> 
+  <script>
+  $("#invitePop").click(function(){
+  $(".modalInvite").fadeIn();
+  $(".sideMask").fadeIn();
+  });
+  $(".close").click(function(){
+	  $(".modalInvite").fadeOut();
+	  $(".sideMask").fadeOut();
+	  });
+  $(".btnClose").click(function(){
+	  $(".modalInvite").fadeOut();
+	  $(".sideMask").fadeOut();
+	  });
+  </script>
+<!--  Company invite pop ends -->
 
+
+<script>
+function saveInviteCompany() {
+	if ($('#inviteCompany_form').validate(false, validationSettings)) {
+		var frm = $('#inviteCompany_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+					success : function(result) {
+						 $(".modalInvite").fadeOut();
+						  $(".sideMask").fadeOut();
+					},
+				});
+		return true;
+	} else {
+		return false;
+	}
+}
+$('body').on('blur', '#inviteCompany_form', function() {
+	$("#inviteCompany_form").showHelpOnFocus();
+	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
+});
+</script>

@@ -202,7 +202,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
                  <div class="form-group">
                 <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
+                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli"></div>
               </div>              
             
              <div id="lineItemAddRows"></div>
@@ -373,7 +373,7 @@ function populateInlineItemsGrid(data){
             result = result +' <thead>';
             result = result +' <tr>';
             result = result +' <th>Date</th>';
-            result = result +' <th>Candiate</th>';
+            result = result +' <th>Associate</th>';
             result = result +' <th>SOW / PO</th>';
             result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
@@ -512,7 +512,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <thead>';
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
-	    result = result +' <th>Candiate</th>';
+	    result = result +' <th>Associate</th>';
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate</th>';
 	    result = result +' <th>Total Hours</th>';

@@ -61,7 +61,7 @@ function candidateCertificate(candidateId){
 	result = result  +'     <div id="popUpDivEmp" class="edit-details col-md-4" > ';
 	result = result  +'     </div>  ';
 	result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result  = result + '   <div id="candidateCertificateList" ></div>';
+	result  = result + '   <div id="candidateCertificateList" class="datatable_filter"></div>';
 	result  = result + '   </div>';
 	result = result+'	    </div>';
 
@@ -368,8 +368,8 @@ function candidateCertificateList(candidateId){
 function certificationPagination(){  
     $('#candidateCertificatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

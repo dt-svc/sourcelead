@@ -38,6 +38,10 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    private MasterCandidate masterCandidateId;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
@@ -52,7 +56,7 @@ public class Candidate implements Serializable{
 	
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="RECRUITER_USER_ID")        
-    private User recruiterUserId;
+    private User recruiterUserId ;
     
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
@@ -126,6 +130,9 @@ public class Candidate implements Serializable{
 	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
 	private String summary;
 	
+	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
+	private String visaType;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
 	private  byte[] docFile;
@@ -144,7 +151,7 @@ public class Candidate implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="TEAM_ID")        
-    private Team teamId;
+    private Team teamId; 
 	
 	@Column(name="IS_FAVOURITE")
 	private Integer isFavourite;
@@ -178,11 +185,11 @@ public class Candidate implements Serializable{
 	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
-    private OrgRelations orgRelationId;
+    private OrgRelations orgRelationId; 
 	    
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
-    private OrgSpoc spocId;
+    private OrgSpoc spocId; 
 	
 	@Transient
 	private String skills;
@@ -303,6 +310,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String vendorContactName;
 	 
+	 @Transient
+	 private Integer assignedProjectsCount;
+	 
 	@Transient
 	private String vendorOrgRelationId;
 	
@@ -332,6 +342,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String sowContractName;
+	 
+	 @Transient
+	 private LinkedHashSet<String> allAndCandidateVisa;
 	 
 	 
 	 @Transient
@@ -1185,6 +1198,17 @@ public class Candidate implements Serializable{
 		this.vendorContactName = vendorContactName;
 	}
 
+	public Integer getAssignedProjectsCount()
+	{
+		return assignedProjectsCount;
+	}
+
+
+	public void setAssignedProjectsCount(Integer assignedProjectsCount)
+	{
+		this.assignedProjectsCount = assignedProjectsCount;
+	}
+
 
 	public OrgSpoc getSpocId() {
 		return spocId;
@@ -1283,6 +1307,37 @@ public class Candidate implements Serializable{
 	{
 		this.contractsList = contractsList;
 	}
+
+	public MasterCandidate getMasterCandidateId()
+	{
+		return masterCandidateId;
+	}
+
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId)
+	{
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
 	
 	
 }

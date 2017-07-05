@@ -27,8 +27,16 @@ $(document).ready(function(){
 </script>
 
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
+ <div class="success_pop" id="selector1" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+  </div>
 <section class="content-wraper">
     <section class="content-header clearfix">
+    <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
       <div class="pull-left">
         <h2>Receivables</h2>
       </div>
@@ -341,7 +349,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
 	'<sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">';
-	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
+	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
 	'</sec:authorize>';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
@@ -388,7 +396,7 @@ function removeErr(){
 
   <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
-<div class="modal modal_invoice" style="display: none;">
+<div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPopup" ></div>
 </div>
 <!-- modal pop -->
@@ -404,6 +412,8 @@ function saveReceivePayment(invoiceId){
 	        var form = $('#receivePayment-form')[0];
 	 	   var formData = new FormData(form); 
 	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#save_payment").attr("disabled", "disabled");
+     		$("#save_payment" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,
@@ -491,7 +501,7 @@ function getInvoiceList(){
 			result = result +'         <th>Invoice Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due date</th>              ';
+			result = result +'         <th>Due Date</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';
@@ -713,7 +723,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
@@ -1173,14 +1183,15 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
 			result = result +'    <div class="modal-content">                                                                                               ';
 			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
-			result = result +'      <div class="modal-header" id="receivableLinkId">                                                                                              ';
+			result = result +'      <div class="modal-header">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
+			result = result +'	<span class="jquery_form_error_message" style="display:none; padding-left:0px !important; font-size:12px;">Select at least 1 Invoice</span>';
 			result = result +'      </div>                                                                                                                  ';
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
-			result = result +'      <table>                                                                                                                 ';
+			result = result +'      <table id="linkInvoiceListPagination">                                                                                                                 ';
 			result = result +'        <thead>                                                                                                               ';
 			result = result +'          <tr>                                                                                                                ';
 			result = result +'            <th>&nbsp;                                                                                                        ';
@@ -1188,8 +1199,8 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'              </th>                                                                                                           ';
 			result = result +'            <th>ID</th>                                                                                                       ';
 			result = result +'            <th>Contact Person</th>                                                                                           ';
-			result = result +'            <th>Due date</th>                                                                                                 ';
-			result = result +'            <th>Bill date</th>                                                                                                ';
+			result = result +'            <th>Due Date</th>                                                                                                 ';
+			result = result +'            <th>Bill Date</th>                                                                                                ';
 			result = result +'            <th>Total</th>                                                                                                    ';
 			result = result +'            <th>Due Amount</th>                                                                                               ';
 			result = result +'            <th>Status</th>                                                                                                   ';
@@ -1208,13 +1219,25 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'              <div class="tbldata-dotdot-100">'+opt.invoiceId+'</div>                                                                   ';
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>                                                    ';
+			if(opt.clientContactName !=null && opt.clientContactName != '' && opt.clientContactName != 'undefined'){
+				result = result +'              <div class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>';
+			}else{
+				result = result +'              <div class="tbldata-dotdot-sm">--</div>';
+			}
 			result = result +'            </td>                                                                                                             ';
-			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tblminwidth-50">'+opt.dueDateStr+'</div>                                                                    ';
-			result = result +'            </td>                                                                                                             ';
-			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>                                                                     ';
+			result = result +'            <td>';
+			if(opt.dueDateStr !=null && opt.dueDateStr !='' && opt.dueDateStr !='undefined'){
+				result = result +'<div class="tblminwidth-75">'+opt.dueDateStr+'</div>';
+			}else{
+				result = result +'<div class="tblminwidth-75">--</div>';
+			}
+			result = result +'            </td>';
+			result = result +'            <td>';
+			if(opt.invoiceDateStr != null && opt.invoiceDateStr !='' && opt.invoiceDateStr !='undefined'){
+				result = result +'              <div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';		
+			}else{
+				result = result +'              <div class="tblminwidth-75">--</div>';
+			}
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>                                                                                                              ';
 			result = result +'              <div class="tbldata-dotdot_80"  id="linkedReceivableTotalId'+opt.id+'" >'+opt.total+'</div>                                                                 ';
@@ -1237,7 +1260,7 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'    </div>                                                                                                                    ';
 			result = result +'     <div class="clearfix mt10">                                                                                              ';
 			result = result +'         <div class="pull-right">                                                                                             ';
-			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice('+totalAmount+');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
+			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice(\''+totalAmount+'\');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
 			result = result +'         </div>                                                                                                               ';
 			result = result +'     </div>                                                                                                                   ';
 			result = result +'    </div>                                                                                                                    ';
@@ -1247,6 +1270,7 @@ function linkInvoice(invoiceId,totalAmount){
 		
 			$("#linkPopup").empty();
 			$("#linkPopup").append(result);
+			LinkInvoicePagination();
 			$('.modal.modal_invoice').fadeIn(200);
 	        $('.side_mask').fadeIn(200);
 		},
@@ -1254,6 +1278,28 @@ function linkInvoice(invoiceId,totalAmount){
 }
 </script>
 
+<script>
+function LinkInvoicePagination(){  
+	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#linkInvoiceListPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"aaSorting": [[3,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $("#linkInvoiceListPagination").wrap("<div class='overflow_Auto'></div>");
+}
+</script>
 
  <!-- Script for Linked Invoice pop -->
     <script>
@@ -1282,13 +1328,23 @@ function generateAutomaticInvoice(){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&contractType=clientSow", 
              success: function(data) {
-            	 $("#invoiceLoading").removeAttr("style");
+            	  $("#invoiceLoading").removeAttr("style");
+					$("#selector1").removeAttr("style");
+	    			$("#selector1").css("display", "block");
+	    			$("#msgDiv").html(data+" Records Imported Successfully.");
+					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
     });  
 }
 </script>
 
+<script>
+	function msgFadein() {
+		$("#selector1").fadeIn(200);
+        $('#selector1').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script>
 function mergeInvoice(parentTotalAmount){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1309,7 +1365,7 @@ function mergeInvoice(parentTotalAmount){
        },
    });  
 }else{
-	$("#receivableLinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Invoice</span>");
+	$('span.jquery_form_error_message').show();
 }
 }
 </script>
@@ -1325,6 +1381,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#invoice_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 }
 
 </script>
@@ -1344,5 +1401,10 @@ function cancelExport(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	
+	 
+</script> 
  <jsp:include page="../masterFooter.jsp" />	

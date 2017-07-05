@@ -630,6 +630,13 @@ function deleteSubmissionDocument(submissionDocumentId){
 </script>
 	
 	
+<script type="text/javascript">
+function viewSubmissionDocument(submissionDocumentId,title){
+	  var sourceleadUrl ='${sourceleadUrl}';
+		window.open(sourceleadUrl+'/viewDocument?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
+}
+</script>
+	
 	<!-- Content Area Ends--> 
 	<div class="time_pop" id="timeSheetErrorMsg"></div>
 	
@@ -1397,8 +1404,8 @@ function pagination(){
     $('#example').DataTable( {
     	"scrollX": true,    	
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

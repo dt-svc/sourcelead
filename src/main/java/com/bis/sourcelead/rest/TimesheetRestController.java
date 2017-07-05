@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -71,6 +72,7 @@ import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
@@ -146,6 +148,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
 	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
@@ -303,6 +308,9 @@ public class TimesheetRestController {
 			if(projectMembersList != null && !projectMembersList.isEmpty()){
 				long count = 1;
 				for(ProjectMembers pm :projectMembersList){
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(pm,"view");
+                    if(timesheetFrequencyMap == null || timesheetFrequencyMap.isEmpty())
+                        continue;
 					if(count == 1){
 						isSelected.setLength(0);
 						isSelected.append("selected='selected'");
@@ -1314,6 +1322,7 @@ public class TimesheetRestController {
 								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									}
+									documentBuffer.append("<input class='deleApp' type='button' onClick='viewSubmissionDocument(\""+tsd.getId()+"\",\""+tsd.getFileName()+"\");' >");
 									documentBuffer.append("</strong>");
 							} 
 						}
@@ -1399,6 +1408,8 @@ public class TimesheetRestController {
 					}
 					 
 		            Long total = 0l;
+		            Long totalBillableHours = 0l;
+		            Long totalNonBillableHours = 0l;
 		            TimesheetSubmissions timesheetSubmissions ;
 		            HashSet<SubmissionApproverHierarchy> freshSaHierarchyList = new HashSet<SubmissionApproverHierarchy>();
 		            if(!isNullOrEmpty(submissionId)){
@@ -1532,7 +1543,6 @@ public class TimesheetRestController {
 						   jsonObj.has(c+"timeSheetDay7Id")){
 							
 							TimesheetEntries timesheetEntries = new TimesheetEntries();
-							
 							if ((jsonObj.has(c+"timesheetEntriesId"))){
 								String timesheetEntriesId = jsonObj.getString(c+"timesheetEntriesId");
 								if(!isNullOrEmpty(timesheetEntriesId)){
@@ -1549,11 +1559,19 @@ public class TimesheetRestController {
 							timesheetEntries.setUpdatedBy(loginUser.getCreatedBy());
 							timesheetEntries.setUpdatedDate(CommonUtil.currentDate());
 							ProjectTasks projectTasks = new ProjectTasks();
+							Boolean isBillable = false;
 						   if (jsonObj.has(c+"task1Id")){
 							   if(!isNullOrEmpty(jsonObj.getString(c+"task1Id"))){
 								      String taskIdDetails[] = jsonObj.getString(c+"task1Id").split(",");
-									  projectTasks.setId(Long.parseLong(taskIdDetails[0]));
-									  timesheetEntries.setProjectTask(projectTasks);
+									 /* projectTasks.setId(Long.parseLong(taskIdDetails[0]));*/
+									  projectTasks = projectTasksService.getTasksId(taskIdDetails[0]);
+									  if(projectTasks != null){
+										  timesheetEntries.setProjectTask(projectTasks);
+										  if(projectTasks.getBillableType().equalsIgnoreCase("Billable")){
+											  isBillable = true;
+										  }
+									  }
+									  
 							   }
 							 }
 							//For Monday Hours
@@ -1562,6 +1580,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(monHours)){
 									timesheetEntries.setMonHours(monHours);
 									total = getTotalHoursFormDayHours(monHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(monHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(monHours,totalNonBillableHours);
+									}
 								}else{
 									timesheetEntries.setMonHours("00:00");
 								}
@@ -1577,6 +1601,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(tueHours)){
 									timesheetEntries.setTueHours(tueHours);
 									total = getTotalHoursFormDayHours(tueHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(tueHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(tueHours,totalNonBillableHours);
+									}
 								}else{
 									timesheetEntries.setTueHours("00:00");
 								}
@@ -1593,6 +1623,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(wedHours)){
 									timesheetEntries.setWedHours(wedHours);
 									total = getTotalHoursFormDayHours(wedHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(wedHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(wedHours,totalNonBillableHours);
+									}
 									
 								}else{
 									timesheetEntries.setWedHours("00:00");
@@ -1610,6 +1646,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(thuHours)){
 									timesheetEntries.setThuHours(thuHours);
 									total = getTotalHoursFormDayHours(thuHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(thuHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(thuHours,totalNonBillableHours);
+									}
 									
 								}else{
 									timesheetEntries.setThuHours("00:00");
@@ -1628,6 +1670,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(friHours)){
 									timesheetEntries.setFriHours(friHours);
 									total = getTotalHoursFormDayHours(friHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(friHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(friHours,totalNonBillableHours);
+									}
 								}else{
 									timesheetEntries.setFriHours("00:00");
 								}
@@ -1645,6 +1693,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(satHours)){
 									timesheetEntries.setSatHours(satHours);
 									total = getTotalHoursFormDayHours(satHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(satHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(satHours,totalNonBillableHours);
+									}
 								}else{
 									timesheetEntries.setSatHours("00:00");
 								}
@@ -1661,6 +1715,12 @@ public class TimesheetRestController {
 								if(!isNullOrEmpty(sunHours)){
 									timesheetEntries.setSunHours(sunHours);
 									total = getTotalHoursFormDayHours(sunHours, total);
+									if(isBillable){
+										totalBillableHours = getTotalHoursFormDayHours(sunHours,totalBillableHours);
+									}
+									else{
+										totalNonBillableHours = getTotalHoursFormDayHours(sunHours,totalNonBillableHours);
+									}
 									
 								}else{
 									timesheetEntries.setSunHours("00:00");
@@ -1682,26 +1742,51 @@ public class TimesheetRestController {
 						}
 					}
 					if(total != null){
+						/**
+						 * Total Hours Calculation
+						 */
 			            int actualHours = (int) (total / 60);
 			            int actualMinutes =   (int)(total % 60);
 			            String actualMinutesStr = ""+actualMinutes;
 			            String startWithZero = "";
 			            if(StringUtils.isNotEmpty(actualMinutesStr) && actualMinutesStr.length()==1)
 			            	startWithZero ="0";	
-			            	
 			            String actualTimeString =  actualHours+"."+startWithZero+actualMinutes;
-			            
 						timesheetSubmissions.setTotalHours(actualTimeString);
 						
-						if(jsonObj.getString("grandBillableTotal") != null && jsonObj.getString("grandBillableTotal") != "" && jsonObj.getString("grandBillableTotal") != "undefined"){
+						/**
+						 * Billable Hours Calculation
+						 */
+						int actualBillableHours = (int) (totalBillableHours / 60);
+			            int actualBillableMinutes =   (int)(totalBillableHours % 60);
+			            String actualBillableMinutesStr = ""+actualBillableMinutes;
+			            String billableStartWithZero = "";
+			            if(StringUtils.isNotEmpty(actualBillableMinutesStr) && actualBillableMinutesStr.length()==1)
+			            	billableStartWithZero ="0";	
+			            String actualBillableTimeString =  actualBillableHours+"."+billableStartWithZero+actualBillableMinutes;
+						timesheetSubmissions.setBillableHours(actualBillableTimeString);
+						
+						/**
+						 * Non-Billable Hours Calculation
+						 */
+						int actualNonBillableHours = (int) (totalNonBillableHours / 60);
+			            int actualNonBillableMinutes =   (int)(totalNonBillableHours % 60);
+			            String actualNonBillableMinutesStr = ""+actualNonBillableMinutes;
+			            String nonBillableStartWithZero = "";
+			            if(StringUtils.isNotEmpty(actualNonBillableMinutesStr) && actualNonBillableMinutesStr.length()==1)
+			            	nonBillableStartWithZero ="0";	
+			            String actualNonBillableTimeString =  actualNonBillableHours+"."+nonBillableStartWithZero+actualNonBillableMinutes;
+						timesheetSubmissions.setNonBillableHours(actualNonBillableTimeString);
+						
+						/*if(jsonObj.getString("grandBillableTotal") != null && jsonObj.getString("grandBillableTotal") != "" && jsonObj.getString("grandBillableTotal") != "undefined"){
 							String grandBillableTotal = jsonObj.getString("grandBillableTotal").replaceAll(":", ".");
 							timesheetSubmissions.setBillableHours(grandBillableTotal);
-						}
+						}*/
 						
-						if(jsonObj.has("grandNonBillableTotal") && jsonObj.getString("grandNonBillableTotal") != null && jsonObj.getString("grandNonBillableTotal") != "" && jsonObj.getString("grandNonBillableTotal") != "undefined"){
+						/*if(jsonObj.has("grandNonBillableTotal") && jsonObj.getString("grandNonBillableTotal") != null && jsonObj.getString("grandNonBillableTotal") != "" && jsonObj.getString("grandNonBillableTotal") != "undefined"){
 							String grandNonBillableTotal = jsonObj.getString("grandNonBillableTotal").replaceAll(":", ".");
 							timesheetSubmissions.setNonBillableHours(grandNonBillableTotal);
-						}
+						}*/
 						
 						timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 						
@@ -1812,7 +1897,7 @@ public class TimesheetRestController {
 			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
 			 globalVarsMap.put("managerLastName",projectManager.getLastName());
 			 //globalVarsMap.put("projectName", project.getProjectName());
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);
 			 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 			 
@@ -1829,7 +1914,7 @@ public class TimesheetRestController {
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -2027,6 +2112,33 @@ public class TimesheetRestController {
 				}
 			
 		}
+		
+		
+		@RequestMapping(value = "/viewDocument", method = RequestMethod.GET)
+	    public void viewDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId,
+	    		@RequestParam(value="title", required=false) Long title,HttpServletResponse response) throws Exception {
+		
+		TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+			
+		byte[] pdfBytes = null;
+		if("application/pdf".equalsIgnoreCase(timesheetSubmissionsDocuments.getFileContentType())){
+			pdfBytes = timesheetSubmissionsDocuments.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(timesheetSubmissionsDocuments.getDocFile());
+		}
+		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    ServletOutputStream sos = response.getOutputStream();
+	  	    if(null != pdfBytes){
+	  	    	response.setContentLength(pdfBytes.length);
+	  	    	sos.write(pdfBytes);
+	  	    }
+	          sos.flush();
+	          sos.close();
+		}
+		
+		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)

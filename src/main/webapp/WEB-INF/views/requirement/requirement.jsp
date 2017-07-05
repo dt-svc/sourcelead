@@ -283,9 +283,10 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-      <h2>Add Requirement</h2>
+     <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
+      <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -293,7 +294,7 @@ $(document).ready(function () {
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Requirement Details</h3>
+          <h3>Job Details</h3>
         </div>
 	       <div class="col-md-12 clearfix">
         	  <div class="col-md-12">
@@ -696,6 +697,27 @@ $(document).ready(function () {
 					</c:forEach>
 					<c:if test="${NUM == 0}">
 						<option  value="${skill}">${skill}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+              <div class="form-group">
+              <label class="col-md-3">Immigration Status</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
 					</c:if>
                 </c:forEach>
                 </select>
@@ -1199,7 +1221,11 @@ $(document).ready(function () {
             <div class="col-md-9">
            
               <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
+                       
+                       <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null}">
                        <option selected="selected" value="${SourceLeadWeb_user.id}">${SourceLeadWeb_user.firstName}&nbsp;${SourceLeadWeb_user.lastName}</option>
+                       </c:if>
+                       
                        <c:forEach var="report" items="${approverList}">
                        	<c:if test="${SourceLeadWeb_user.id != report.id}">
                        		<option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>
@@ -1812,9 +1838,9 @@ function getCities(){
 	     //Adding Customized Skills to the list
 	       var select, chosen;
 		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -1827,8 +1853,9 @@ function getCities(){
 		                 }
 			    	 }else{
 		    			var newSkill = this.value.replace(","," ");
-		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
+		    				 preventTabkey(e); 
 		    				 var option = $("<option>").val(newSkill).text(newSkill);
 		                     select.append(option);
 		                     select.find(option).prop('selected', true);
@@ -1846,13 +1873,14 @@ function getCities(){
 		    //Adding Customized Educations to the list 
 		    var selectone, chosenone;
 		    selectone = $("#education");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace("\'","");
-		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
+		    		   preventTabkey(e1); 
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);
@@ -2616,6 +2644,7 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"bPaginate":false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0

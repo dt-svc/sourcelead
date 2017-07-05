@@ -114,10 +114,10 @@ public class BillingPayableRestController {
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
 		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 				}
 				if(invoice.getContactUser() != null){
 					invoice.setVendorContactId(invoice.getContactUser().getId());
@@ -196,8 +196,16 @@ public class BillingPayableRestController {
 		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
 		    	invoice.setInvoiceTaxList(invoiceTaxList);
 		    	
-		    	invoice.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getLocationId().getCountry()));
-		    	invoice.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getLocationId().getCountry()));
+		    	String currency = "";
+		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		    		currency = conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getResponderLocationId().getCountry());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					currency = conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getLocationId().getCountry());
+				}
+				
+		    	invoice.setClientCurrency(currency);
+		    	invoice.setVendorCurrency(currency);
 		    }
 		    
 		    resultJson = commonUtil.toJSON(invoice);

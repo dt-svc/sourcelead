@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -46,21 +50,27 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -143,6 +153,15 @@ public class UserRestController {
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
+	@Autowired
+	ModulesService modulesService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	TabsService tabsService;
+	
 	
 	/**
 	 * To get All Approvers
@@ -205,10 +224,10 @@ public class UserRestController {
 		Candidate candidate   = candidateService.getCandidateById(candidateId);
 		if(null != candidate.getOrgRelationId()){
 			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
-			if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+			if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 				candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
 			}
-			if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+			if(candidate.getOrgRelationId().getLocationId().getId().equals(orgLocations.getId())){
 				candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
 			}
 			
@@ -685,7 +704,7 @@ public class UserRestController {
 			 notificationScenario.setBody(notificationbody);
 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -714,6 +733,8 @@ public class UserRestController {
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -741,7 +762,7 @@ public class UserRestController {
 			 }
 			 
 			 if(null != pmh.getProjectTerminationDate()){
-				 globalVarsMap.put("Project EndDate",pmh.getProjectTerminationDate().toString());
+				 globalVarsMap.put("Project EndDate",endDate);
 			 }else{
 				 globalVarsMap.put("Project EndDate", "--");
 			 }
@@ -768,6 +789,16 @@ public class UserRestController {
 				}
 			 }
 			 
+			 if(pmh.getProjectMemberId().getProjects().getOrgRelationId() !=null && !equals(pmh.getProjectMemberId().getProjects().getOrgRelationId())){
+				 StringBuilder clientName = new StringBuilder();
+				 globalVarsMap.put("clientName",clientName.append("with").append(" ").append(pmh.getProjectMemberId().getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).toString());
+			 }
+			 globalVarsMap.put("reason", pmh.getProjectMemberId().getTerminateReason());
+
+
+			 StringBuilder linkBuild = new StringBuilder();
+		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		   
 			
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
@@ -787,7 +818,7 @@ public class UserRestController {
 			 notificationScenario.setBody(notificationbody);
 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -921,7 +952,7 @@ public class UserRestController {
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -944,10 +975,106 @@ public class UserRestController {
 		 public void authenticate() {
 		 }
 		 
+		 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
+		 public UserProfileDTO getLoginUserProfile() {
+			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			 User  user = userService.findByUserName(auth.getName());
+			 List<UserRole> userRoleList = null;
+			 Map<String,OrgLocationDTO> orgLocationsList = new HashMap<>();
+			 
+	         UserProfileDTO userProfileDTO = new UserProfileDTO();
+	         userProfileDTO.setFirstName(user.getFirstName());
+     	     userProfileDTO.setLastName(user.getLastName());
+     	  
+     	     if(user.getDocFile() != null && user.getFileContentType() != null){
+        	    userProfileDTO.setProfileImageUrl(sourceleadUrl+"/displayUserImage/"+user.getId());
+   			 }else{
+   				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
+   			 }
+     	     
+	         try {
+	        	    if(user != null){
+	        		     userRoleList = userRoleService.getUserSpocsListByUserId(user.getId());
+	        		     if(null != userRoleList && userRoleList.size() > 0){
+	        		    	 for(UserRole userRole : userRoleList){
+	        		    		 
+		        		    		List<SourceleadActions> actionsList = null;
+		        			        List<String> tabNamesList = null;
+		        			        List<String> tabIconsList = new ArrayList<String>();
+		        			        List<String> actionRolesList = new ArrayList<String>();
+		        			        List<Long> actionIdsList = new ArrayList<Long>();
+		        			        List<Long> modulesId = null;
+		        			        
+		        			        
+	        		    		    OrgLocations orgLocations = userRole.getOrgLocations();
+	        		        	    modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+	        		        	    actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+	        		        	    
+	        		        	    for(SourceleadActions actions : actionsList){
+	        		        	    	actionIdsList.add(actions.getId());
+	        		        	    	actionRolesList.add(actions.getActionRole());
+	        		        	    }
+	        		        	    
+	        		        	    tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+	        		        	    for(String tabName : tabNamesList){
+	        		        	    	
+	        		        	    	tabName = tabName.substring(0, 1).toLowerCase() + tabName.substring(1);
+	        		        	    	StringBuilder name = new StringBuilder();
+	        		        	    	name.append("ic_").append(tabName).toString();
+	        		        	    	tabIconsList.add(name.toString().replaceAll(" ", "_").toLowerCase());
+	        		        	    }
+	        		        	    
+	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
+	        		        	    orgLocationDTO.setMenuList(tabNamesList);
+	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
+	        		        	    orgLocationDTO.setRoleActionsList(actionRolesList);
+	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
+	        		        	    orgLocationsList.put(orgLocations.getLocationCode(), orgLocationDTO);
+	        		    	 }
+	        		     }
+	        		     
+	        		    
+	        	     }
+	        	    
+	               } catch (Exception e) {
+					e.printStackTrace();
+				 }
+	         
+	         userProfileDTO.setOrgLocationsList(orgLocationsList);
+	         
+			return userProfileDTO;
+	         
+		 }
+		 
+		 
+		 private OrgLocationDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
+			 OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+			 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+			 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
+			 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
+			 if(orgLocations.getOrg().getDocFile() != null && orgLocations.getOrg().getFileContentType() != null){
+				 orgLocationDTO.setOrgImageUrl(sourceleadUrl+"/displayOrgImage/"+orgLocations.getOrg().getOrgCode());
+			 }else{
+				 orgLocationDTO.setOrgImageUrl(sourceleadUrl+"/resources/images/office-image.jpg");
+			 }
+			 orgLocationDTO.setCountry(orgLocations.getCountry());
+			 orgLocationDTO.setState(orgLocations.getState());
+			 orgLocationDTO.setCity(orgLocations.getCity());
+			 orgLocationDTO.setOrgLocationAddress(orgLocations.getOrgLocationAddress());
+			 orgLocationDTO.setWebsite(orgLocations.getWebsite());
+			 if(useRole.getIsPrimary().equals(1)){
+				 orgLocationDTO.setIsPrimaryOrg(Constants.YES);
+			 }else{
+				 orgLocationDTO.setIsPrimaryOrg(Constants.NO);
+			 }
+			 return orgLocationDTO;
+		 }
+		 
 		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
-		 public @ResponseBody String restAuthenticate(HttpServletRequest request) throws Exception {
+		 public @ResponseBody RestResponsetUtil restAuthenticate(HttpServletRequest request) throws Exception {
 		 
 			 String json = IOUtils.toString(request.getInputStream());
+			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 			 if(StringUtils.isNotEmpty(json)){
 				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
 				 JSONObject jsonObject = new JSONObject(json);
@@ -959,20 +1086,29 @@ public class UserRestController {
 					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
 					 int status = response.getStatus();
 					 if(status == HttpServletResponse.SC_OK){
-						 return "Valid User";
+						 String header = response.getHeaders().get("X-CustomToken").toString();
+						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");
+						 resResponsetUtil.setToken(token);
+						 resResponsetUtil.setLoginResponse("Valid User");
+						 return resResponsetUtil;
 					 }
+					
 					 else if(status == HttpServletResponse.SC_NOT_FOUND){
-						 return "User Not Registered";
+						 resResponsetUtil.setLoginResponse("User Not Registered");
+						 return resResponsetUtil;
 					 }
 					 else if(status == HttpServletResponse.SC_MOVED_TEMPORARILY){
-						 return "In-Active User";
+						 resResponsetUtil.setLoginResponse("In-Active User");
+						 return resResponsetUtil;
 					 }
 					 else if(status == HttpServletResponse.SC_UNAUTHORIZED){
-						 return  "Invalid UserName Or Password";
+						 resResponsetUtil.setLoginResponse("Invalid UserName Or Password");
+						 return  resResponsetUtil;
 					 }
 				 }
 			 }
-			 return "Invalid Json String";
+			 resResponsetUtil.setLoginResponse("Invalid Json String");
+			 return resResponsetUtil;
 		 }
 		 
 		 
@@ -1132,7 +1268,7 @@ public class UserRestController {
 			 notificationScenario.setBody(notificationbody);
 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 

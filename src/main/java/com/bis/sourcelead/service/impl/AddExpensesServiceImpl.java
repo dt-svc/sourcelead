@@ -234,25 +234,9 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
 	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		
-		 if(expenses != null && expenses.getApproverHierarchyList() != null && !expenses.getApproverHierarchyList().isEmpty()){
-			 Integer maxLevel = 0;
-			 Integer userLevel = 0;
-			 for(ExpensesApproverHierarchy eah : expenses.getApproverHierarchyList()){
-				 if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() != null && maxLevel < eah.getHierarchyId().getLevel()){
-					 maxLevel = eah.getHierarchyId().getLevel();
-				 }
-				 if(eah.getHierarchyId() != null && eah.getHierarchyId().getApproverUserId() != null 
-				    && eah.getHierarchyId().getApproverUserId().getId() != null && (eah.getHierarchyId().getApproverUserId().getId() == loginUser.getId())){
-					 userLevel = eah.getHierarchyId().getLevel();
-				 }
-				
-			 }
-		 }
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
 	 }
-	 
-  }
+}
 
 private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
 	
@@ -326,7 +310,7 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLoc.getOrg());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLoc.getOrg(),orgLoc);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

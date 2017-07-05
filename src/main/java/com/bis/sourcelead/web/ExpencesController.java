@@ -91,13 +91,11 @@ public class ExpencesController {
 		
 		Expenses expenses = null;
 		if(null != expenseId && !expenseId.isEmpty()){
-			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
-			
-
 			ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			 Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
@@ -106,7 +104,7 @@ public class ExpencesController {
 		 	String type = request.getParameter("type");
 		 	
 		 	Boolean isEditable = false;
-		 	if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+		 	if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
 		 		isEditable = true;
 		 	}
 		 	
@@ -179,7 +177,7 @@ public class ExpencesController {
 		
 		Expenses expenses = null;
 		if(null != expenseId && !expenseId.isEmpty()){
-			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
@@ -198,7 +196,7 @@ public class ExpencesController {
 			 String type = request.getParameter("type");
 		 	
 		 	 Boolean isEditable = false;
-		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) ||submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
 		 		isEditable = true;
 		 	 }
 		 	
@@ -242,5 +240,10 @@ public class ExpencesController {
 		model.setViewName("expenses/addApprovalExpense");
 		return model;
 	}
+	
+	
+	
+	
+	
 
 }

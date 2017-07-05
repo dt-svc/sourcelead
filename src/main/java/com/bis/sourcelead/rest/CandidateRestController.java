@@ -287,6 +287,8 @@ public class CandidateRestController {
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", "1"));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
 			}
 	        try {
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
@@ -518,10 +520,16 @@ public class CandidateRestController {
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 String resultJson ="false";
 			 
-			 String [] coolingOffArr = reqCoolingOffPeriod.split(" ");
+			 String [] coolingOffArr = null;
+			 String period = "0";
+			 if(reqCoolingOffPeriod != null && reqCoolingOffPeriod != ""){
+				 coolingOffArr = reqCoolingOffPeriod.split(" ");
+				 period = coolingOffArr[1];
+			 }
+			
 			 String reqCoolingOffPeriodDays;
 			 int Days;
-			 switch (coolingOffArr[1]) {
+			 switch (period) {
 				 case "Week" :
 					 reqCoolingOffPeriodDays = "7";
 				      break;

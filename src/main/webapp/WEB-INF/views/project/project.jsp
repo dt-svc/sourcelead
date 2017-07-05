@@ -242,10 +242,15 @@ function validateTaskName(){
 								class="text-danger">*</span>
 							</label>
 							<div class="col-md-9">
+
 								<input type="text" class="form-control" name="ProjectName"
 									data-validation="required validate_Space validate_length length2-100"
 									field-name="Project Name" value=""> <span
 									class="hidden">Project Name</span>
+
+									
+								<span class="hidden">Enter Project Id</span>
+
 							</div>
 						</div>
 
@@ -930,7 +935,7 @@ function flushProjectTasks(){
 							var json = JSON.parse(data);
 							var output = "";
 							output = output+' <div class="wrap_employeeTable">';
-							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
+							output = output + ' <table cols="0" id="assignEmployeePagination" class="clearfix table-bordered">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
 				            output = output+' <th><input type="checkbox" name="emp" id="projectChekId" onclick="totalCheck();"></th>';
@@ -1080,7 +1085,12 @@ function assignEmployeespagination(){
     	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

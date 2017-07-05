@@ -226,7 +226,7 @@ function getAddApplicant(requirementId){
 	    	
 	    });
 	    
-	    chosen.search_field.on('keyup', function(e)
+	    chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
@@ -239,8 +239,9 @@ function getAddApplicant(requirementId){
 			                 }
 				    	 }else{
 			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				 preventTabkey(e);
 			    				 var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);
@@ -1039,20 +1040,33 @@ function getCandidateSelectionType(){
 			        	
 			        	if(json.length == 1){
 			        		var opt = json[0];
+			        		var updatedDate = "";
+			        		if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != '' && opt.candidateResumeUpdateDateToString != 'undefined'){
+			        			updatedDate = 	"("+opt.candidateResumeUpdateDateToString+")";
+			        		}else{
+			        			updatedDate  = "";
+			        		}
+			        		
 			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+" "+updatedDate+"</option>";
 			            	}else{
-			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+			            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+" "+updatedDate+"</option>";
 			            	}
 			        	}else{
 			        		output = output + "<option value=''>-- Select Resume --</option>"; 
 				        	for (var i=0; i<json.length; i++)
 							{
 					        		var opt = json[i];
+					        		var updatedDate = "";
+					        		if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != '' && opt.candidateResumeUpdateDateToString != 'undefined'){
+					        			updatedDate = 	"("+opt.candidateResumeUpdateDateToString+")";
+					        		}else{
+					        			updatedDate  = "";
+					        		}
 					        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
+					        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"  "+updatedDate+"</option>";
 					            	}else{
-					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+"</option>";
+					            		output = output + "<option value='" +opt.id+ "'>"+opt.fileName+" "+updatedDate+"</option>";
 					            	}
 							}
 			        	}

@@ -83,7 +83,7 @@
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
-						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
@@ -121,7 +121,7 @@
 						
 						
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
-						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${formsDocs.documentStatus == 'ACCEPTED'}">

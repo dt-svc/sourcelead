@@ -344,7 +344,6 @@ function errRemoveClientContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
-                   
                    //New Div for currency conversion: srinivas l
                  if(clientCurrency != currencyCode){ 
                 	 result = result +'  <div class="row">';
@@ -1003,7 +1002,12 @@ function pagination(){
     	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

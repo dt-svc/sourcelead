@@ -270,12 +270,12 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb10"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="company_logo pull-left mb10"><img src="resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
+          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Job Seeker</a></li>
           <c:if test="${empty contactUUID}">
-          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
+          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;<span class="hidden-xs">Freelance</span> Recruiter</a></li>
           <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employee</a></li>
           </c:if>
           <input type="hidden" id="tabType" />

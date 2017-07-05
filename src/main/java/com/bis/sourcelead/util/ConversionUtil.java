@@ -66,10 +66,10 @@ public class ConversionUtil {
 				return Float.parseFloat(rate) / 80;
 			case Constants.RATE_TYPE_SEMI_MONTHLY:
 				return Float.parseFloat(rate) / 87;
-			case Constants.RATE_TYPE_MONTHLY:
+			case Constants.RATE_TYPE_MONTHLY: 
 				return Float.parseFloat(rate) / 184;
 			case Constants.RATE_TYPE_BI_MONTHLY:
-				return Float.parseFloat(rate) / 87;
+				return Float.parseFloat(rate) / 368;
 			default:
 				return Float.parseFloat(rate) / 2088;
 		}

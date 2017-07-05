@@ -1071,7 +1071,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	 			subQuery = " ";
 	 		}
 	 		
-	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where requirement.isTemplate=null and requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where (requirement.isTemplate = null or requirement.isTemplate = 'N') and requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
 	 		
 	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	 		return requirementList;
@@ -1430,4 +1430,13 @@ public class RequirementDaoImpl implements RequirementDao {
 		return releasedJobsList;
 	}
 		
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select req.visaType from Requirement req where req.id =:requirementId";
+	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+        return skillNames;
+	}
 }

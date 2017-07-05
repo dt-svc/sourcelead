@@ -18,7 +18,7 @@
 </style>
  <style type="text/css">
  table#assignEmployeePagination tr th {
- width:auto !important; height: 34px; line-height: 34px; vertical-align: middle; text-align:center;
+ width:auto !important; height: auto; line-height: auto; vertical-align: middle; text-align:center;
  }
  #assignEmployeePagination_wrapper .dataTables_filter {
  	top:75px !important;
@@ -200,7 +200,7 @@
 		result = result +'</ul>';
 		
 		getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
-		result = result +'<div id="employeeDetailsDiv"> </div>';
+		result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
 		result = result +'</div>';
 		
 		$("#tab-3").empty();  
@@ -652,7 +652,7 @@ function projectEmployeePagination(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -923,6 +923,11 @@ function assignEmployeespagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aaSorting": [[1,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

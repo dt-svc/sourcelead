@@ -41,7 +41,7 @@
             </div>
 			
 			    <div class="clients_wrap_table datatable_scroll">
-				    <div id="jobAlertList"></div>
+				    <div id="jobAlertList" class="datatable_filter"></div>
 				</div>	   
 					
 			</div>
@@ -552,7 +552,12 @@ function jobAlertList(){
 	                    	 result = result +"<tr id='jobAlert"+report.jobAlertUUID+"'>";
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm' title='"+report.alertTitle+"'><span >"+report.alertTitle+"</span></div></td>";
 	                    		 result = result +"<td><div><span>"+experience+"</span></div></td>";
-	                    		 result = result +"<td><div  title="+rate+"><span>"+rate+"</span></div></td>";
+	                    		 if(report.rate != null && report.rate != '' && report.rate != 'undefined'){
+	                    		 result = result +"<td><div  title="+rate+"><span>"+report.rateCurrency+" " +rate+"/"+report.rateType+"</span></div></td>";
+	                    		 }
+	                    		 else{
+	                    			 result = result +"<td><div class='tbldata-dotdot-sm' ><span >--</span></div></td>";
+		                    	 }
 	                    		 result = result +"<td><div  title='"+industryName+"'><span>"+industryName+"</span></div></td>";
 	                    		 result = result +"<td><div  title='"+skillsName+"'><span>"+skillsName+"</span></div></td>";
 			                     result = result +"<td><div class=''>";
@@ -987,10 +992,10 @@ function offboardingPagenation(){
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": false,
+	    	"ordering": true,
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""

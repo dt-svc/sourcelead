@@ -127,6 +127,7 @@ public class SecurityConfig  {
     			.antMatchers("/downloadInvoiceAttachment").permitAll()
     			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
     			.antMatchers("/acceptOrRejectReopenExpenseBySuperUser").permitAll()
+    			.antMatchers("/acceptOrRejectReopenExpense").permitAll()
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
@@ -157,7 +158,8 @@ public class SecurityConfig  {
     			.antMatchers("/savePublicInterviewFeddbackTemlate").permitAll()
     			.antMatchers("/getPublicInterviewFeedbackTemplate").permitAll()
     			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
-    			
+    			.antMatchers("/requestedDocuments").permitAll()
+    			.antMatchers("/uploadRequestedDocuments").permitAll()
     			
     			
     			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 

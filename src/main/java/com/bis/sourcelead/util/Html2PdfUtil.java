@@ -110,13 +110,13 @@ public class Html2PdfUtil {
 		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 String orgName = "";
 		 if (!"Full time offer".equalsIgnoreCase(contracts.getContractType())){
-			  orgName = contracts.getContractOrgLocationId().getOrg().getOrgName();
+			  orgName = contracts.getContractOrgLocationId().getOrgLocationName();
 		 }
 	        /*if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-	            orgName = contracts.getOrgRelations().getLocationId().getOrg().getOrgName();
+	            orgName = contracts.getOrgRelations().getLocationId().getOrgLocationName();
 	        }
 	        else if(contracts.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-	            orgName = contracts.getOrgRelations().getResponderLocationId().getOrg().getOrgName();
+	            orgName = contracts.getOrgRelations().getResponderLocationId().getOrgLocationName();
 	        }*/
 	        
 	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
@@ -148,7 +148,7 @@ public class Html2PdfUtil {
 	            		}
 	                    matchPattern.appendReplacement(sb, location.toString());    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
-	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgName());
+	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrgLocationName());
 		            }
 	                else if(matchPattern.group().equalsIgnoreCase("[Company Address]")){
 	                    if(null != contracts.getOrgLocationId().getOrg().getOrgAddress()){

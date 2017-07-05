@@ -503,8 +503,17 @@ public class ContractRestController {
 		
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
-		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+		
+		List<RequirementSubmission> requirementSubmissionsList = new ArrayList<>();
+		
+		if(!"".equalsIgnoreCase(requirementId)){
+			requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
+		}
+		else{
+			 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+		}
+		
+		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
 		if(requirementSubmissionsList.size() > 0){
 			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 				StringBuffer candidateName = new StringBuffer(); 
@@ -515,6 +524,9 @@ public class ContractRestController {
 				}
 				if(null != requirementSubmission.getVendorLocationId()){
 					requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+				}
+				if(null != requirementSubmission.getRequirement()){
+					requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
 				}
 			}
 		}
@@ -542,7 +554,9 @@ public class ContractRestController {
 		RequirementOffers requirementOffers = null;
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
-			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+			if(requirementOffers != null){
+				requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+			}
 		}
 		return commonUtil.toJSON(requirementOffers);
 	}
@@ -679,10 +693,10 @@ public class ContractRestController {
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
 		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					contract.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					contract.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 				}
 		 	}
 		 	
@@ -913,61 +927,64 @@ public class ContractRestController {
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
 		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			Date endTimeStr = commonUtil.getDateFormat(endDate);  
-			String endDateStr = Constants.TZ_DF.format(endTimeStr);  
-			String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
-			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-			Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
-			
-			String fromStage = "";
-			
-			ContractsHistory childContractsHistory = new ContractsHistory();
-			if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("EXPIRED"))
-			{
-				ContractsHistory contractsHistory = contractsTemplateService.getAllContractsHistoryByContractId(contracts.getId());
-				fromStage = contractsHistory.getFromStage();
-        		Date date = new Date();
-        		String currentTimeStr = TZ_DF_TS.format(date);
-				Date curDate = TZ_DF_TS.parse(currentTimeStr);
-        		if(convertedEndDate.after(curDate)|| convertedEndDate.equals(curDate)){
-        			childContractsHistory.setFromStage(contracts.getTemplateSubmissionStatus());
-        			childContractsHistory.setContractsId(contracts);
-        			contracts.setTemplateSubmissionStatus(fromStage);
-        			childContractsHistory.setToStage(fromStage);
-        			childContractsHistory.setCreatedDate(new Date());
-        			childContractsHistory.setUpdatedDate(new Date());
-        			contractsTemplateDao.saveContractsHistory(childContractsHistory);
-        		}
-			}
-			
-			
-		 	// updating parent contract end date if get the contract i is child contract
-			if(contracts.getParentContractId()!=null){
-			 	if(null != contracts.getParentContractId().getId()){
-			 		Contracts parentContracts = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
-			 		parentContracts.setEndDate(convertedEndDate);
-			 		parentContracts.setUpdatedDate(new Date());
-			 		parentContracts.setUpdatedBy(user.getUserCode());
-					contractsTemplateDao.saveNewContract(parentContracts);
+		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
+		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
+				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
+				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+				
+				String fromStage = "";
+				
+				ContractsHistory childContractsHistory = new ContractsHistory();
+				if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("EXPIRED"))
+				{
+					ContractsHistory contractsHistory = contractsTemplateService.getAllContractsHistoryByContractId(contracts.getId());
+					fromStage = contractsHistory.getFromStage();
+	        		Date date = new Date();
+	        		String currentTimeStr = TZ_DF_TS.format(date);
+					Date curDate = TZ_DF_TS.parse(currentTimeStr);
+	        		if(convertedEndDate.after(curDate)|| convertedEndDate.equals(curDate)){
+	        			childContractsHistory.setFromStage(contracts.getTemplateSubmissionStatus());
+	        			childContractsHistory.setContractsId(contracts);
+	        			contracts.setTemplateSubmissionStatus(fromStage);
+	        			childContractsHistory.setToStage(fromStage);
+	        			childContractsHistory.setCreatedDate(new Date());
+	        			childContractsHistory.setUpdatedDate(new Date());
+	        			contractsTemplateDao.saveContractsHistory(childContractsHistory);
+	        		}
+				}
+				
+				
+			 	// updating parent contract end date if get the contract i is child contract
+				if(contracts.getParentContractId()!=null){
+				 	if(null != contracts.getParentContractId().getId()){
+				 		Contracts parentContracts = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+				 		parentContracts.setEndDate(convertedEndDate);
+				 		parentContracts.setUpdatedDate(new Date());
+				 		parentContracts.setUpdatedBy(user.getUserCode());
+						contractsTemplateDao.saveNewContract(parentContracts);
+				 	}
+				}
+				
+			 // updating child contract end date if get the parent contract
+			 	if(null == contracts.getParentContractId()){
+			 		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			 		if(null != childContarct){
+				 		childContarct.setEndDate(convertedEndDate);
+				 		childContarct.setUpdatedDate(new Date());
+				 		childContarct.setUpdatedBy(user.getUserCode());
+						contractsTemplateDao.saveNewContract(childContarct);
+			 		}
 			 	}
-			}
-			
-		 // updating child contract end date if get the parent contract
-		 	if(null == contracts.getParentContractId()){
-		 		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-		 		if(null != childContarct){
-			 		childContarct.setEndDate(convertedEndDate);
-			 		childContarct.setUpdatedDate(new Date());
-			 		childContarct.setUpdatedBy(user.getUserCode());
-					contractsTemplateDao.saveNewContract(childContarct);
-		 		}
+			 	
+			 // updating contract end date 
+			 	contracts.setEndDate(convertedEndDate);
+			 	contracts.setUpdatedDate(new Date());
+			 	contracts.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveNewContract(contracts);
 		 	}
-		 	
-		 // updating contract end date 
-		 	contracts.setEndDate(convertedEndDate);
-		 	contracts.setUpdatedDate(new Date());
-		 	contracts.setUpdatedBy(user.getUserCode());
-			contractsTemplateDao.saveNewContract(contracts);
+			
 			return "success";
 		}
 }

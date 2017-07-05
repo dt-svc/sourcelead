@@ -83,6 +83,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					candidateDocuments.setDescription(jsonObj.getString("description"));
 				}
 				
+				candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_MANUALLY);
+				
 				Candidate candidate = new Candidate();
 				candidate.setId(candidateId);
 				candidateDocuments.setCandidateId(candidate);
@@ -130,6 +132,11 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	@Override
 	public CandidateDocuments updateCandidateDocuments(CandidateDocuments candidateDocuments) throws Exception {
 		return candidateDocumentsDao.updateCandidateDocuments(candidateDocuments);
+	}
+	@Override
+	public List<CandidateDocuments> getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception
+	{
+		return candidateDocumentsDao.getCandidateDocumentsListByRequestedDocumentsId(requestedDocumentsId);
 	}
 	
 	

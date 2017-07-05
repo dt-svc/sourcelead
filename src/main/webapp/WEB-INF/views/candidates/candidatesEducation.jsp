@@ -65,7 +65,7 @@ function candidateEducation(candidateId){
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		
 		
-		result  = result + '   <div id="candidateEducationList" ></div>';
+		result  = result + '   <div id="candidateEducationList" class="datatable_filter"></div>';
 		
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -256,8 +256,8 @@ function candidateEducationList(candidateId){
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -296,7 +296,7 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="candEdu" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -411,11 +411,9 @@ function addEducation(candidateId) {
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-	 
-	 
 	//Adding Customized Educations to the list
      var selectone, chosenone;
-     selectone = $("#name");
+     selectone = $("#candEdu");
      selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
      chosenone = selectone.data('chosen');
      chosenone.search_field.on('keyup', function(e1)
@@ -428,11 +426,11 @@ function addEducation(candidateId) {
 	            selectone.append(option);
 	            selectone.find(option).prop('selected', true);
 	          //to doesn't allow duplicates
-             $("#name option").each(function(){
+             $("#candEdu option").each(function(){
                    $(this).siblings("[value='"+ this.value+"']").remove();
              });
              //end
-     		$("#name").trigger("chosen:updated");
+     		$("#candEdu").trigger("chosen:updated");
      		
 	        }
 	    }); 

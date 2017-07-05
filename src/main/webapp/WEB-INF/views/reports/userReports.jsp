@@ -52,14 +52,15 @@
 			<a title="Reports"><i class="fa fa-pie-chart"></i></a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
+				    <li><a href="<c:url value='/expensesReportsList'/>"><span><i class="fa fa-briefcase"></i></span>Expenses Reports</a></li>
 				</ul>
 			</div>
 		</div> 
@@ -104,7 +105,7 @@
   </div>
       
       <div class="candidate_wrap_table recruiterReports_table">
-        <div id="usersList"></div>
+        <div id="usersList" class="datatable_filter"></div>
       </div> 
  </div>
  </c:if>
@@ -145,7 +146,7 @@
  <div class="clearfix">
 <section class="candidate_wrap_table recruiterReports_table">
 
-<div id="vendorReportsDiv" class=""></div>
+<div id="vendorReportsDiv" class="datatable_filter"></div>
 
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 
@@ -199,16 +200,16 @@
               <div class="col-md-4">
                   
                   <div class="clearfix billing_count">
-                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome">USD</span>
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome"></span>
                       <span class="text-info">Net Income</span>
                   </div>
                   
                   <div class="clearfix billingCount borderGreen">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="receivedAmount"></span>
-                      <span class="text-info">Received</span>
+                      <span class="text-info">Income</span>
                   </div>
                   <div class="clearfix billingCount borderBlue">
-                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount">USD</span>
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount"></span>
                       <span class="text-info">Paid</span>
                   </div>
                   
@@ -222,17 +223,17 @@
               <div class="col-md-8 RepoPad">
 <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu">
-            <li class="current"><a href="#tab-1">Tab 1</a></li>
+            <li class="current"><a href="#tab-1">Invoice</a></li>
            <!--  onclick="payableTab('payables');" -->
-            <li ><a href="#tab-2">Tab 2</a></li>
+            <li ><a href="#tab-2">Bill</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs">
             
-            <div id="tab-1" class="project_tabs_inn">
+            <div id="tab-1" class="project_tabs_inn datatable_filter">
             </div>
 
-			<div id="tab-2" class="project_tabs_inn">
+			<div id="tab-2" class="project_tabs_inn datatable_filter">
           </div>
         </div> 
               </div>
@@ -257,7 +258,7 @@
 
 <div class="pavPop">
 <span class="pavClose" onclick="pavClose();"><i class="fa fa-times"></i></span>
-		<div id="vendorspc" class="clients_wrap_table"></div>
+		<div id="vendorspc" class="clients_wrap_table datatable_filter"></div>
 </div> 
     
     
@@ -308,7 +309,7 @@ function usersList(){
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result = result +"<th><i class='fa fa-address-book-o fa-2x'></i> <div class='small'>Name</div></th>";
-	                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Requirements</div></th>";
+	                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Jobs</div></th>";
 	                     result = result +"<th><i class='fa fa-user-circle fa-2x'></i><div class='small'>Candidates</div></th>";
 	                     result = result +"<th><i class='fa fa-users fa-2x'></i><div class='small'>Applicants</div></th>"; 
 	                     result = result +"<th><i class='fa fa-list-ul fa-2x'></i><div class='small'>Shortlisted</div></th>"; 
@@ -428,8 +429,8 @@ function usersList(){
 function reportpagination(){ 
     $('#reportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -600,7 +601,7 @@ function getCustomReports(){
                      result = result +"<thead>"; 
                      result = result +"  <tr>"; 
                      result = result +"<th><i class='fa fa-address-book-o fa-2x'></i> <div class='small'>Name</div></th>";
-                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Requirements</div></th>";
+                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Jobs</div></th>";
                      result = result +"<th><i class='fa fa-user-circle fa-2x'></i><div class='small'>Candidates</div></th>";
                      result = result +"<th><i class='fa fa-users fa-2x'></i><div class='small'>Applicants</div></th>"; 
                      result = result +"<th><i class='fa fa-list-ul fa-2x'></i><div class='small'>Shortlisted</div></th>"; 
@@ -724,6 +725,9 @@ function getCustomReports(){
 
 <script>
 function getBillingReports(invoiceType){
+	 $("#netIncome").html(0);
+	 $("#receivedAmount").html(0);
+	 $("#payableAmount").html(0);
 	$('#billingErrorReportStartDate').empty();
 	$('#billingErrorReportEndDate').empty(); 
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -736,9 +740,7 @@ function getBillingReports(invoiceType){
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
-		        	 
 		        	 var result = "";
-		        	 
 		        	 result = result +'<div class="project_tabs_inn_head">';
 		        	 result = result +'</div>';
 		        	 result = result +'<div class="require_wrap_table dataFilterNew">';
@@ -748,27 +750,26 @@ function getBillingReports(invoiceType){
 		        	 result = result +'<th>Invoice Id</th>';
 		        	 result = result +'<th>Client</th>';
 		        	 result = result +'<th>Invoice Date</th>';
-		        	 result = result +'<th>Toatl</th>';
+		        	 result = result +'<th>Total</th>';
 		        	 result = result +'<th>Due Date</th>';                    
 		        	 result = result +'<th>Due Amount</th>';
 		        	 result = result +'</tr>';
 		        	 result = result +'</thead>';	
 		        	 result = result +'<tbody>';
-		        	 for (var i = 0; i < json.length; i++) { 
-		        		 var opt = json[i]; 
-		        		 $("#netIncome").html(opt.netIncome);
-			        	 $("#receivedAmount").html(opt.recievableAmount);
-			        	 $("#payableAmount").html(opt.payableAmount); 
-		        		 result = result +'<tr>';
-			        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
-			        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
-			        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
-			        	 result = result +'<td><div>'+opt.total+'</div></td> ';
-			        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
-			        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
-			        	 result = result +'</tr>'; 
-		        	 }
-		        	 
+		        		 for (var i = 0; i < json.length; i++) { 
+			        		 var opt = json[i]; 
+			        		 $("#netIncome").html(opt.netIncome);
+				        	 $("#receivedAmount").html(opt.recievableAmount);
+				        	 $("#payableAmount").html(opt.payableAmount); 
+			        		 result = result +'<tr>';
+				        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+				        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+				        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+				        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+				        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+				        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+				        	 result = result +'</tr>'; 
+			        	 }
 		                result = result +'</tbody>';
 		                result = result +'</table>';
 		                result = result +'</div>';
@@ -803,10 +804,10 @@ function getPayableBillingReports(invoiceType){
 	        	 result = result +"<table id='billingPayableReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	        	 result = result +'<thead>';
 	        	 result = result +'<tr>';
-	        	 result = result +'<th>Invoice Id</th>';
+	        	 result = result +'<th>Bill Id</th>';
 	        	 result = result +'<th>Vendor</th>';
-	        	 result = result +'<th>Invoice Date</th>';
-	        	 result = result +'<th>Toatl</th>';
+	        	 result = result +'<th>Bill Date</th>';
+	        	 result = result +'<th>Total</th>';
 	        	 result = result +'<th>Due Date</th>';                    
 	        	 result = result +'<th>Due Amount</th>';
 	        	 result = result +'</tr>';
@@ -844,8 +845,8 @@ function getPayableBillingReports(invoiceType){
 function billingReportPagination(){ 
     $('#billingReportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -860,8 +861,8 @@ function billingReportPagination(){
 function billingPayableReportPagination(){ 
     $('#billingPayableReportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

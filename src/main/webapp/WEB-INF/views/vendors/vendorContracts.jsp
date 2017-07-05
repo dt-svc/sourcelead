@@ -141,6 +141,7 @@ function vendorContracts(orgRelationId){
     $("#tab-3").empty();  
     $("#tab-4").empty();  
     $("#tab-6").empty();  
+    $("#tab-8").empty();
     $("#tab-7").empty();  
     $("#tab-5").empty();  
     $("#tab-5").append(result);  
@@ -159,7 +160,6 @@ function vendorContractsList(orgRelationId){
     {
 		contractStatus.push($(this).val());
     });
-	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -653,7 +653,7 @@ function PopUp(contractUUID){
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}

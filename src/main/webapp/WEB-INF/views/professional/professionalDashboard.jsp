@@ -112,7 +112,7 @@ $(document).ready(function(){
 				    
 				    <div class="row">
 				    <div class="col-md-3 paddingRight">
-				    	<h4>Requirements Referred To Me</h4>
+				    	<h4>Jobs Referred To Me</h4>
 				    </div>
 				    
 				    <div class="col-md-2 select-field monthSearch_Custom pull-right">
@@ -273,7 +273,7 @@ function flushDate(){
 		            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
 		            				resultToday = resultToday+'	<thead>';
 		            				resultToday = resultToday+'	  <tr>';
-		            				resultToday = resultToday+'	    <th>Requirement Title </th>';
+		            				resultToday = resultToday+'	    <th>Job Title </th>';
 		            				resultToday = resultToday+'	    <th>Company Name</th>';
 		            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
 		            				resultToday = resultToday+'	    <th>Type</th>';
@@ -360,7 +360,7 @@ function flushDate(){
 	   $( "#professionalInterviewdate" ).datepicker({
 	     changeMonth: true,
 	     changeYear: true,
-	     dateFormat: 'yy-mm-dd',
+	     dateFormat: 'dd-mm-yy',
 	     onSelect: function(){
 	    	    var dt = $(this).val();
 	    	    interviews(dt);
@@ -746,7 +746,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	        "dashLength": 5,
 	        "gridCount": 10,
 	        "position": "left",
-	        "title": "Requirements"
+	        "title": "Jobs"
 	    }],
 	    "startDuration": 0.5,
 	    "graphs": [{
@@ -795,7 +795,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  
 	  
 	  $('#dpfromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -807,7 +807,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#dptodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	   onSelect : function(selected) {
@@ -820,7 +820,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  
 
 	  $('#portletfromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -832,7 +832,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#portlettodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
@@ -844,7 +844,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#serialfromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
@@ -856,7 +856,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#serialtodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -869,7 +869,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  
 	  
 	  $('#portletreferByMefromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -881,7 +881,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	  });
 	  
 	  $('#portletreferByMetodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {

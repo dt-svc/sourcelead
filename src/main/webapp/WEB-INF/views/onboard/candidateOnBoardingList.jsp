@@ -91,8 +91,8 @@
           
           <div class="candidate_wrap_table datatable_filter">
 	          <div id="onboardingLoading"></div>
-	          <div id="onboardingCandidatesList"></div>
-	          <div id="offboardingCandidatesList"></div>
+	          <div id="onboardingCandidatesList" class="datatable_filter"></div>
+	          <div id="offboardingCandidatesList" class="datatable_filter"></div>
 	          
 	          <div class="vendor_wrap_mask"></div>
 	          <div id="rejectedReasonDiv"></div>
@@ -291,7 +291,7 @@
 function onboardingPagenation(){ 
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -307,7 +307,7 @@ function onboardingPagenation(){
 function offboardingPagenation(){ 
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -329,23 +329,23 @@ function offboardingPagenation(){
 		result = result + '	<div id="loading"></div>';
 		result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
 		result = result + '<input type="hidden" name="onboardCandidateUUID" value="'+onboardCandidateUUID+'">';
-		result = result + '	<h3>Onboard Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+		result = result + '	<h3>Onboard Reject Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
 		result = result + '	<div class="settPopInn"> ';
 		
 		result = result + '		<div class="clearfix">  ';
 		result = result + '		<div class="col-md-12">  ';
-		result = result + '		  <label class="col-md-2 paddingLeft" for="Candidate Name">Name :</label> ';
+		result = result + '		  <label class="col-md-2 noPad" for="Candidate Name">Name :</label> ';
 		result = result + '		  <label class="col-md-8 paddingRight">'+candidateName+'</label> ';
 		result = result + '		</div>  ';
 
 		result = result + '		<div class="col-md-12">  ';
-		result = result + '		  <label class="col-md-2 paddingLeft" for="Email">Email :</label> ';
+		result = result + '		  <label class="col-md-2 noPad" for="Email">Email :</label> ';
 		result = result + '		  <label class="col-md-8 paddingRight">'+candidateEmail+'</label> ';
 		result = result + '		</div>  ';
 		
 		
 		result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
-		result = result + '		  <div class="col-md-12 taskdesp mt10">   ';
+		result = result + '		  <div class="col-md-12 taskdesp">   ';
 		result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
 		result = result + '			<span class="hidden"></span> </div>  ';
 		result = result + '		</div>';

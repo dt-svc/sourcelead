@@ -211,6 +211,24 @@ public class ClientServiceImpl implements ClientService{
 				
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
+				
+				if(jsonObj.has("orgName")){
+					clientOrgLocations.setOrgLocationName(jsonObj.getString("orgName"));
+				}
+				if(responderType.equalsIgnoreCase("Client")){
+					clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
+				}
+				else if(responderType.equalsIgnoreCase("Vendor")){
+					clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_ATS));
+				}
+				if(jsonObj.has("companyWebsite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+				}
+				if(jsonObj.has("webSite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+				}
+				clientOrgLocations.setIsPrimary(Constants.YES);
+				clientOrgLocations.setCoolingOffPeriod("3 Months");
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
@@ -304,7 +322,7 @@ public class ClientServiceImpl implements ClientService{
 					if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
 							&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
 							&& ("Y".equals(jsonObj.getString("isMailSent")))){
-						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,clientOrgLocations.getOrg(),clientOrgLocations);
+						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,clientOrgLocations.getOrg(),clientOrgLocations,orgLocations);
 					}
 				}
 			}
@@ -428,12 +446,12 @@ public class ClientServiceImpl implements ClientService{
 			}
 			org.setOrgType("Guest");
 			
-			if(responderType.equalsIgnoreCase("Client")){
+			/*if(responderType.equalsIgnoreCase("Client")){
 				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
 			}
 			else if(responderType.equalsIgnoreCase("Vendor")){
 				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
-			}
+			}*/
 			
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());
@@ -485,7 +503,7 @@ public class ClientServiceImpl implements ClientService{
 						 }
 					}
 					
-					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
 					for(SourceleadActions actions : sourceLeadActionsList){
 						if(roleActonsList.contains(actions.getId())){
 							 strbul.append(actions.getId()).append(",");
@@ -944,7 +962,7 @@ public class ClientServiceImpl implements ClientService{
 			//setting the class filed values
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("orgContactName", orgSpocLocation.getClientUser().getFullName());
-				 globalVarsMap.put("clientOrgName",orgSpocLocation.getClientLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("clientOrgName",orgSpocLocation.getClientLocationId().getOrgLocationName());
 				 globalVarsMap.put("ownerName", loginUser.getFullName());
 				 globalVarsMap.put("changedOwnerName", changedUser.getFullName());
 				 globalVarsMap.put("loginUser", loginUser.getFirstName());
@@ -964,7 +982,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -997,7 +1015,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
 				 globalVarsMap.put("clientLastName",emailMessage.getLastName());
 				 globalVarsMap.put("loginUser", emailMessage.getFromName());
-				 globalVarsMap.put("loginOrgName",orgLocation.getOrg().getOrgName());
+				 globalVarsMap.put("loginOrgName",orgLocation.getOrgLocationName());
 				 globalVarsMap.put("ownerName", user.getFirstName());
 				 globalVarsMap.put("ownerEmail",user.getEmail());
 				 
@@ -1015,7 +1033,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -1079,7 +1097,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
 				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
 				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
-				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 				 globalVarsMap.put("signature","Sourcelead Team");
 				 StringBuilder loginBuilder = new StringBuilder();
 				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1089,7 +1107,7 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
 					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
-					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 					 globalVarsMap.put("signature","Sourcelead Team"); 
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1115,7 +1133,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailMessage.setOrgLocationId(orgLocations.getId());
@@ -1147,14 +1165,14 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
 				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
 				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
-				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 				 globalVarsMap.put("signature","Sourcelead Team");
 			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
 					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
-					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 					 globalVarsMap.put("signature","Sourcelead Team");
 				}
 
@@ -1177,7 +1195,7 @@ public class ClientServiceImpl implements ClientService{
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 emailMessage.setOrgLocationId(orgLocations.getId());

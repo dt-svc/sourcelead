@@ -76,6 +76,7 @@ public class OpenJobsRestController {
 			@RequestParam(value = "orgLocationIds", required = false) String orgLocationIds,
 			@RequestParam(value = "dates", required = false) String dates,
 			@RequestParam(value = "country", required = false) String country,
+			@RequestParam(value = "postedOrgName", required = false) String postedOrgName,
 			HttpServletRequest request) throws Exception{
 		
 		boolean isELKSearchEnable = true;
@@ -209,6 +210,13 @@ public class OpenJobsRestController {
 			        	orgOpenJobsBuilder.should(openJobscombinedOrgQueryBuilder);
 			        }
 			        boolQueryBuilder.must(orgOpenJobsBuilder);
+				}
+				
+				//for jobs filter when clicked on org name 
+				if(postedOrgName != null && !"".equalsIgnoreCase(postedOrgName)){
+					BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
+					postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
+					boolQueryBuilder.must(postedOrgJobsBuilder);
 				}
 				
 		}
@@ -587,7 +595,7 @@ public class OpenJobsRestController {
 	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception{
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
-		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrg().getOrgName());
+		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
 		 requirementDeatilsSummary.setRequirementCreatedDateToString(Constants.DMY.format(requirementDeatilsSummary.getCreatedDate()));
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
@@ -605,10 +613,10 @@ public class OpenJobsRestController {
 		 List<OrgLocations> countryfiltered = new ArrayList<>();
 		 for(OrgLocations loc : locationsList){
 			 if(null != country && country.equalsIgnoreCase(loc.getCountry())){
-				 loc.setOrgName(loc.getOrg().getOrgName());
+				 loc.setOrgName(loc.getOrgLocationName());
 				 countryfiltered.add(loc);
 			 }else{
-				 loc.setOrgName(loc.getOrg().getOrgName());
+				 loc.setOrgName(loc.getOrgLocationName());
 			 }
 		 }
 		

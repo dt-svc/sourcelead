@@ -118,7 +118,8 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/exportMyExpensesList")
 	 public void exportMyExpensesList(HttpServletRequest request,HttpServletResponse response,
 			 @RequestParam(value = "type", required = false) String type,
-			 @RequestParam(value = "Expid", required = false) String Expid) throws Exception {
+			 @RequestParam(value = "Expid", required = false) String Expid,
+			 @RequestParam(value = "ApproverType", required = false) String ApproverType) throws Exception {
 		
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -129,9 +130,9 @@ public class ExpensesRestController {
 
 		if(ExpenseDetails != null){
 			if(type.equalsIgnoreCase("PDF")){
-				file = expensesService.exportMyExpensesToPdf(ExpenseDetails,orgLoc,loginUser);
+				file = expensesService.exportMyExpensesToPdf(ExpenseDetails,orgLoc,loginUser,ApproverType);
 			}else{
-				file = expensesService.exportMyExpensesToExcel(ExpenseDetails,orgLoc,loginUser);	
+				file = expensesService.exportMyExpensesToExcel(ExpenseDetails,orgLoc,loginUser,ApproverType);	
 			}
 		}
 		

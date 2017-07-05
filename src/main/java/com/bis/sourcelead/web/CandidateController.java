@@ -1,39 +1,38 @@
 package com.bis.sourcelead.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -57,6 +56,9 @@ public class CandidateController {
 	CountriesService countriesService;
 	
 	@Autowired
+	CandidateResumesService candidateResumesService;
+	
+	@Autowired
 	StatesService statesService;
 	
 	@Autowired
@@ -71,6 +73,7 @@ public class CandidateController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	private CandidateResumes candidate;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -97,6 +100,11 @@ public class CandidateController {
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
+			
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);	
+			
+			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);
 			
@@ -120,6 +128,8 @@ public class CandidateController {
 	            model.addObject("currencyCode", countries.getCurrency());
 				}
 	           
+				List<String> visaList = lookUpDataService.getAllVisaByCategory();
+				model.addObject("visaList", visaList);
 	            
 	            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
@@ -169,7 +179,7 @@ public class CandidateController {
 		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
 		 }else{
-			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
 		 }
 	  
 	   model.addObject("candidateCount", candidateCount);
@@ -194,6 +204,9 @@ public class CandidateController {
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
+		
+		List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+		model.addObject("visaList", visaList);
 		
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
@@ -290,6 +303,9 @@ public class CandidateController {
 		 
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		 model.addObject("skillsList", skillsList);
+		 
+		 List<String> visaList = lookUpDataService.getAllVisaByCategory();
+		 model.addObject("visaList", visaList);
 		
 		return model;
 		
@@ -321,11 +337,12 @@ public class CandidateController {
 		public ModelAndView candidateListForReports(@RequestParam(value="serachValue", required=false)String serachValue,HttpServletRequest request) throws Exception {
 		 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("candidates/candidatesReports");
 		 
-		 Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+		 Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(user.getId(),orgLocations.getId(), "Candidate");
 //		 Long consultantCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Consultant");
          
 		 List<User> ownersList = candidateService.getAllCandidateOwnersByLocationIdAndCandidateType(orgLocations.getId(), "");

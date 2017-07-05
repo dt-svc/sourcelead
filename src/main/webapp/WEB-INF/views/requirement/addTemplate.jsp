@@ -55,12 +55,12 @@ width: 100% !important;
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Requirement Template</h2>
+			<h2>Job Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Requirement Template List </a>&raquo;
-			Add Requirement Template
+				href="<c:url value='/template'/>">Job Template List </a>&raquo;
+			Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -68,7 +68,7 @@ width: 100% !important;
 			<div class="form-horizontal req-dtls mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
-						<h3>Add Requirement Template Details</h3>
+						<h3>Add Job Template Details</h3>
 					</div>
 <div class="clearfix"></div>
 					<div class="mt pras req-title">
@@ -372,11 +372,12 @@ width: 100% !important;
 	        selectone = $("#education");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
@@ -388,11 +389,45 @@ width: 100% !important;
 		    //Adding Customized Educations to the list
 		    
 		     //Adding Customized Skills to the list
-	       var select, chosen;
-		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Email:' });
+		       var select, chosen;
+	        select = $("#skills");
+	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.bind(('keydown keyup'), function(e)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 select.append(option);
+	        			 select.find(option).prop('selected', true);
+	 	        		 $("#skills").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 select.append(option);
+			        		 select.find(option).prop('selected', true);
+				        		$("#skills").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
+		    
+	    /*    var select, chosen;
+		    select = $("#skills");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skills:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -405,8 +440,9 @@ width: 100% !important;
 		                 }
 			    	 }else{
 		    			var newSkill = this.value.replace(","," ");
-		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
+		    				 preventTabkey(e);
 		    				 var option = $("<option>").val(newSkill).text(newSkill);
 		                     select.append(option);
 		                     select.find(option).prop('selected', true);
@@ -418,7 +454,7 @@ width: 100% !important;
 				       
 	    	         }
 		    });
-           
+            */
 	       
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);

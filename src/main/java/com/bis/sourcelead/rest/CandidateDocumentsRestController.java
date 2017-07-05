@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,10 +28,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.RequestedDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -63,6 +66,9 @@ public class CandidateDocumentsRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	RequestedDocumentsService requestedDocumentsService;
 	
 	
 	/**
@@ -227,6 +233,88 @@ public class CandidateDocumentsRestController {
 		}
 		return "success";
 	}
+	
+	
+	
+	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)
+	public @ResponseBody String requestCandidateForDocuments(@RequestParam(value = "json", required = false) String json,
+			HttpServletRequest request) throws Exception {
 
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		
+		requestedDocumentsService.storeRequestedDocumentsDetails(jsonObj, user, loginOrgLocation);
+		
+		return "success";
+	}
+	
+	
+	 @RequestMapping(value = "/uploadRequestedDocuments" , method = RequestMethod.POST)
+	 public @ResponseBody  String uploadRequestedDocuments(@RequestParam(value="json", required=false) String json, MultipartHttpServletRequest request) throws Exception {
+		
+		 String json1 = "{" + json + "}";
+		 JSONObject jsonObj = new JSONObject(json1);
+			
+		 RequestedDocuments requestedDocuments = requestedDocumentsService.getRequestedDocumentsByRequestDocUUID(jsonObj.getString("requestDocUUID"));
+			if(null != requestedDocuments){
+				List<CandidateDocuments> candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByRequestedDocumentsId(requestedDocuments.getId());
+				if(null != candidateDocumentsList && candidateDocumentsList.size() > 0){
+					for(CandidateDocuments candidateDocuments : candidateDocumentsList){
+						
+						final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
+		       		    final Map files = multiRequest.getFileMap();
+		       		     
+		       		    MultipartFile  multiFile = (MultipartFile)files.get("docFile"+candidateDocuments.getId());
+		       		    if(multiFile != null && !multiFile.isEmpty()){
+		       		    	candidateDocuments.setDocFile(multiFile.getBytes());
+		       		    	candidateDocuments.setFileName(multiFile.getOriginalFilename());
+					    }
+		       		    
+			       		 if(null != multiFile.getContentType()){
+			       			candidateDocuments.setFileContentType(multiFile.getContentType());
+	                     }
+			       		 candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
+			       		 candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
+				}
+			}
+				requestedDocuments.setIsDocsUploaded(Constants.YES);
+				requestedDocumentsService.saveRequestedDocuments(requestedDocuments);
+		}
+	   return "success";
+	 }
+	 
+	 
+	 
+
+		@RequestMapping(value = "/rejectRequestedDocuments", method = RequestMethod.POST)
+		public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json,
+				@RequestParam(value = "documentsIds", required = false) String documentsIds,HttpServletRequest request) throws Exception {
+
+			
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			
+			requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation,documentsIds);
+			
+			return "success";
+		}
+		
+		@RequestMapping(value = "/acceptRequestedDocuments", method = RequestMethod.POST)
+		public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds,HttpServletRequest request) throws Exception {
+
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			requestedDocumentsService.acceptRequestedDocuments(user,documentsIds);
+			return "success";
+		}
+		
+	 
 }
+
 

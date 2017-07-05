@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AccountDeductionsDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
@@ -47,13 +49,16 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	PayrollHelper payrollHelper;
+	
 	@Override
-	public String saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
+	public Integer saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
 		
 		String fileName = multipartFile.getOriginalFilename();
 		int count = 0;
 		Workbook workbook = null;
-		List<AccountDeductions> accountDeductionsList = new ArrayList<>();
 		if (fileName.endsWith("xlsx")) {
 			workbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -69,6 +74,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
+				int isValid = 0;
+				if(i == 0){
+					isValid =  payrollHelper.isValidTemplateForAccountDeductions(rowIterator);
+				}
+				if(isValid == 1){
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					
@@ -81,7 +91,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 							
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empId = getCellValueAsString(row.getCell(0), fileName);
-								accountDeductions.setEmployeeId(empId);
+								accountDeductions.setEmployeeId(empId.split("\\.")[0]);
 							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								String empName = getCellValueAsString(row.getCell(1), fileName);
@@ -224,6 +234,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 //							accountDeductionsList.add(accountDeductions);
 						}
 					}
+				}else{
+					return count;
+				}
 				}
 			
 			fis.close();
@@ -231,10 +244,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		return "";
+		return count;
 		
 		
 	}
+
 
 	private AccountDeductions saveAccountDetails(AccountDeductions accountDeductions) throws Exception {
 		return accountDeductionsDao.saveAccountDeductions(accountDeductions);
@@ -246,16 +260,16 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		accountDeductionsDetails.setAccountDeductions(accountDeductions);
 		accountDeductionsDetails.setOrgLocationId(orgLocation);
 		accountDeductionsDetails.setPayCycleName(cell.getSheet().getRow(0).getCell(cellNuber).getRichStringCellValue().toString());
-		accountDeductions.setCreatedBy(user.getUserCode());
-		accountDeductions.setCreatedDate(new Date());
-		accountDeductions.setUpdatedBy(user.getUserCode());
-		accountDeductions.setUpdatedDate(new Date());
-		accountDeductions.setOrgLocationId(orgLocation);
-		accountDeductions.setStatus(Constants.MEMBER_ACTIVE);
+		accountDeductionsDetails.setCreatedBy(user.getUserCode());
+		accountDeductionsDetails.setCreatedDate(new Date());
+		accountDeductionsDetails.setUpdatedBy(user.getUserCode());
+		accountDeductionsDetails.setUpdatedDate(new Date());
+		accountDeductionsDetails.setOrgLocationId(orgLocation);
+		accountDeductionsDetails.setStatus(Constants.MEMBER_ACTIVE);
 		return accountDeductionsDetails;
 	}
 
-	private String getCellValueAsString(Cell cell, String fileName) {
+/*	private String getCellValueAsString(Cell cell, String fileName) {
 		String cellValue = "";
 		if(fileName.toLowerCase().endsWith("xls")){
 				HSSFCell hssfCell = (HSSFCell) cell;
@@ -282,4 +296,75 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			}
 			return cellValue;
 		}
+*/
+	
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		double xssfCellValue = 0;
+		if (fileName.toLowerCase().endsWith("xls")) {
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = hssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_NUMERIC){
+				cellValue = String.valueOf(hssfCell.getNumericCellValue());
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_STRING){
+				cellValue = String.valueOf(hssfCell.getStringCellValue());	
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				cellValue = cell.getStringCellValue();
+			}
+		} else {
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = xssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				cellValue = String.valueOf(xssfCell.getNumericCellValue());
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_STRING) {
+				cellValue = String.valueOf(xssfCell.getStringCellValue());
+			} else if(xssfCell.getCellType() == XSSFCell.CELL_TYPE_STRING){
+				cellValue = cell.getStringCellValue();
+			}
+		}
+		return cellValue;
+	}
+	@Override
+	public List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception
+	{
+		List<AccountDeductions> accountDeductionsList =  accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
+		
+		if(accountDeductionsList != null){
+			for(AccountDeductions ad : accountDeductionsList){
+				if(null !=  ad.getFromDate()){
+					ad.setFromDateStr(conversionUtil.getDateAsString(ad.getFromDate()));
+				}
+				if(null != ad.getToDate()){
+					ad.setToDateStr(conversionUtil.getDateAsString(ad.getToDate()));
+				}
+			}
+		}
+		return accountDeductionsList;
+	}
+
+	@Override
+	public List<AccountDeductionsDetails> getDeductionsDetailsbyId(Long deductionId)
+	{
+		return accountDeductionsDao.getDeductionsDetailsbyId(deductionId);
+	}
+
+
+	@Override
+	public AccountDeductions getDeductionsbyId(Long deductionId)
+	{
+		return accountDeductionsDao.getDeductionsbyId(deductionId);
+	}
+
+
+	@Override
+	public AccountDeductions saveAccountDeductions(AccountDeductions accountDeductions) throws Exception
+	{
+		return accountDeductionsDao.saveAccountDeductions(accountDeductions);
+	}
 }

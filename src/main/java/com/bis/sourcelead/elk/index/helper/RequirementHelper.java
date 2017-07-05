@@ -179,7 +179,7 @@ public class RequirementHelper {
 				if (Constants.CLIENT.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
 					if (requirement1.getClientId().getResponderLocationId() !=null) {
 						requirementIndex
-								.setClient(requirement1.getClientId().getResponderLocationId().getOrg().getOrgName());
+								.setClient(requirement1.getClientId().getResponderLocationId().getOrgLocationName());
 						/*if (requirement1.getSpocId().getSpocUser() !=null &&requirement1.getSpocId().getSpocUser() !=null) {
 							sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 									.append(requirement1.getSpocId().getSpocUser().getLastName());
@@ -191,7 +191,7 @@ public class RequirementHelper {
 					}
 				}
 				if (Constants.VENDOR.equalsIgnoreCase(requirement1.getClientId().getResponderType())) {
-					requirementIndex.setClient(requirement1.getClientId().getLocationId().getOrg().getOrgName());
+					requirementIndex.setClient(requirement1.getClientId().getLocationId().getOrgLocationName());
 					/*if (requirement1.getSpocId().getSpocUser() !=null && requirement1.getSpocId().getSpocUser()!=null) {
 						sb.append(requirement1.getSpocId().getSpocUser().getFirstName()).append(" ")
 								.append(requirement1.getSpocId().getSpocUser().getLastName());
@@ -293,6 +293,10 @@ public class RequirementHelper {
 				requirementIndex.setRewardGuaranteePeriod(requirement.getRewardGuaranteePeriod());
 			}
 			
+			if (null != requirement.getVisaType()) {
+				String[] visaTypes = requirement.getVisaType().split(",");
+				requirementIndex.setVisaTypes(visaTypes);
+			}
 
 		}
 		return requirementIndex;

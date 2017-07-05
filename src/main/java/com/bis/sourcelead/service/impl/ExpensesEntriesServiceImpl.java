@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -25,9 +27,11 @@ import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
@@ -35,12 +39,19 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	
+	@Autowired
+	CountriesService countriesService;
 
 	@Autowired
 	private ExpensesEntriesDao expensesEntriesDao;
 	
 	@Autowired
 	private ExpensesEntryDocumentsDao expensesEntryDocumentsDao;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 	@Override
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(JSONObject jsonObj,  MultipartHttpServletRequest request,
@@ -64,7 +75,8 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					}
 					if(jsonObj.has("categoryType"+c)){
 						ExpensesCategory ec = new ExpensesCategory();
-						ec.setId(Long.parseLong(jsonObj.getString("categoryType"+c)));
+						String categoryType[] = jsonObj.getString("categoryType"+c).split(",");
+						ec.setId(Long.parseLong(categoryType[0]));
 						entries.setExpensesCategoryId(ec);
 					
 					if(jsonObj.has("categoryDate"+c)){
@@ -81,14 +93,26 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						entries.setReceiptIssuedBy(jsonObj.getString("receiptIssuedBy"+c));
 					}
 					
-					if(jsonObj.has("expenseRateType"+c)){
+					/*if(jsonObj.has("expenseRateType"+c)){
 						entries.setCurrencyType(jsonObj.getString("expenseRateType"+c));
 					}
 					
 					if(jsonObj.has("expenseAmount"+c)){
 						entries.setAmount(Float.valueOf(jsonObj.getString("expenseAmount"+c)));
+					}*/
+					if(jsonObj.has("expenseRateType"+c) && jsonObj.has("expenseAmount"+c)){
+						if(StringUtils.isNotEmpty(jsonObj.getString("expenseRateType"+c)) && jsonObj.getString("expenseAmount"+c) != null){
+						Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+						if(!country.getCurrency().equalsIgnoreCase(jsonObj.getString("expenseRateType"+c))){
+						 Float amount = conversionUtil.convert(jsonObj.getString("expenseRateType"+c),country.getCurrency(),Float.valueOf(jsonObj.getString("expenseAmount"+c)));
+						 entries.setCurrencyType(country.getCurrency());
+						 entries.setAmount(amount);
+						}else{
+							entries.setCurrencyType(jsonObj.getString("expenseRateType"+c));
+							entries.setAmount(Float.valueOf(jsonObj.getString("expenseAmount"+c)));
+						}
 					}
-					
+				}
 					if(jsonObj.has("entryDes"+c)){
 						entries.setDescription(jsonObj.getString("entryDes"+c));
 					}

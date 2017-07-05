@@ -16,6 +16,7 @@ import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
+
 @Repository
 public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 
@@ -29,7 +30,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(wageTaxSummary);
+			session.saveOrUpdate(wageTaxSummary);
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
@@ -50,5 +51,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		}
 		return wagesAndTaxlist;
 	}
+
+	
 
 }
