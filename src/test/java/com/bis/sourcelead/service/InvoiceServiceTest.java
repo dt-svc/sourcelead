@@ -109,7 +109,11 @@ public class InvoiceServiceTest {
         invoice.setInvoiceLineItems(invoiceLineItemsSet);
         logger.info("invoice saved successfully");
 	}
-	
+	/**
+	 * @author Rajashekar 
+	 * changing invoice payment status when due date is over
+	 * @throws Exception
+	 */
 	@Test
 	public void checkDeuDate() throws Exception{
 		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();

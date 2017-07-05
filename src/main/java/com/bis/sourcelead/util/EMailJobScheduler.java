@@ -1284,7 +1284,7 @@ public class EMailJobScheduler {
 
 	/**
 	 * @author Rajashekar
-	 * changing invoice payment status when due date is crossed
+	 * changing invoice payment status when due date is over
 	 * @throws Exception
 	 */
 	private void getDueDateCompletedInvoicesLists() throws Exception {
