@@ -374,7 +374,7 @@ function selectClientCategory(){
 	var vendorLocationId = $('#vendorLocationId').val();
 	if(categoryType != ''){
 		if(categoryType == "Jobs"){
-			var status = "OPEN";
+			var status = "";
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getVendorJobs?${_csrf.parameterName}=${_csrf.token}&orgRelationID="+orgRelationId+"&status="+status,  
@@ -432,7 +432,6 @@ function selectClientCategory(){
 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	  if(json.length>0){
               		    for (var i = 0; i < json.length; i++) {
               		    	var opt= json[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
@@ -443,7 +442,6 @@ function selectClientCategory(){
  				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
  				    $('#vendorcontact').trigger("chosen:updated");
 				     $('#vendorcontact').chosen();
-		          }
 			 }
 		});
 	 }
@@ -457,7 +455,6 @@ function selectClientCategory(){
 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	  if(json.length>0){
               		    for (var i = 0; i < json.length; i++) {
               		    	var opt= json[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.contractTitle+"</option>";
@@ -466,16 +463,15 @@ function selectClientCategory(){
  		        	 $("#clientCategoryContactTypeListDivDiv").empty();
  				     $("#clientCategoryContactTypeListDivDiv").append(result);
  				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
- 				    $('#vendorcontact').trigger("chosen:updated");
+ 				     $('#vendorcontact').trigger("chosen:updated");
 				     $('#vendorcontact').chosen();
-		          }
 			 }
 		});
 	 }
 		
 		else{
 			$("#clientCategoryContactTypeListDivDiv").empty();
-			  $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+			$('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
 		}	
 		
 }}

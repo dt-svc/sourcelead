@@ -1071,7 +1071,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	 			subQuery = " ";
 	 		}
 	 		
-	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where requirement.isTemplate=null and requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where (requirement.isTemplate = null or requirement.isTemplate = 'N') and requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
 	 		
 	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	 		return requirementList;
