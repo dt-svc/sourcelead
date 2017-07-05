@@ -1936,6 +1936,28 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 } else {
 				 globalVarsMap.put("Role", "--");
 			}
+		 	if(requirement.getDescription() != null && !"".equalsIgnoreCase(requirement.getDescription())){
+		 	globalVarsMap.put("description",requirement.getDescription()); 	
+		 	}else{
+			globalVarsMap.put("description","--"); 
+		 	}
+		 	if(requirement.getPriority() != null && !"".equalsIgnoreCase(requirement.getPriority())){
+		 		globalVarsMap.put("priority",requirement.getPriority());
+		 	}else{
+				 globalVarsMap.put("priority","--"); 
+		 	}
+		 	if(requirement.getPositions() != null && !"".equalsIgnoreCase(requirement.getPositions())){
+		 		globalVarsMap.put("positions",requirement.getPositions());
+		 	}else{
+				 globalVarsMap.put("positions","--"); 
+		 	}
+		 	if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+		 		globalVarsMap.put("skills",requirement.getSkills());
+		 	}else{
+				 globalVarsMap.put("skills","--"); 
+		 	}
+		 
+		 
 		 StringBuilder linkBuild = new StringBuilder();
 		 StringBuilder attachBuild = new StringBuilder();
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1984,6 +2006,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement,StringBuilder location,OrgLocations orgLocations) throws Exception {
 			assUser= userService.getUserById(assUser.getId());
+			User manager = userService.getUserById(requirement.getManagerUserId().getId());
 			UserRole loginUserRole =  userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocations.getId());
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -2009,6 +2032,13 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 				 globalVarsMap.put("RequirementTitle","--"); 
 			 }
+		 if( requirement.getJobId()!= null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder jId = new StringBuilder();
+			 globalVarsMap.put("jobTitleId", jId.append(requirement.getJobTitle()).append(" ").append(requirement.getJobId()).toString());
+			 }else{
+				 globalVarsMap.put("jobTitleId",requirement.getJobTitle()); 
+			 }
+		 
 		 if(location!= null){
 			 globalVarsMap.put("RequirementLocation", location.toString());
 			 }else{
@@ -2044,6 +2074,33 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }
+		 if(requirement.getDescription() != null && !"".equalsIgnoreCase(requirement.getDescription())){
+			 	globalVarsMap.put("description",requirement.getDescription()); 	
+			 	}else{
+				globalVarsMap.put("description","--"); 
+			 	}
+		 if(requirement.getPriority() != null && !"".equalsIgnoreCase(requirement.getPriority())){
+		 		globalVarsMap.put("priority",requirement.getPriority());
+		 	}else{
+				 globalVarsMap.put("priority","--"); 
+		 	}
+		 	if(requirement.getPositions() != null && !"".equalsIgnoreCase(requirement.getPositions())){
+		 		globalVarsMap.put("positions",requirement.getPositions());
+		 	}else{
+				 globalVarsMap.put("positions","--"); 
+		 	}
+		 	if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
+		 		globalVarsMap.put("skills",requirement.getSkills());
+		 	}else{
+				 globalVarsMap.put("skills","--"); 
+		 	}
+		 	
+		 	if(manager.getLastName() != null && !"".equalsIgnoreCase(manager.getLastName())){
+		 	StringBuffer muId = new StringBuffer();
+		 	globalVarsMap.put("manager",muId.append(manager.getFirstName()).append(" ").append(manager.getLastName()).toString());
+		 	}else{
+			globalVarsMap.put("manager",manager.getFirstName());
+		 	}
 		 
 		 StringBuilder linkBuild = new StringBuilder();
 		 StringBuilder attachBuild = new StringBuilder();
