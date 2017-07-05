@@ -666,9 +666,9 @@ function getCandidates(candidatesListType){
 	                		result = result +'           <tr>';
 	                		result = result +'             <th><input type="checkbox" id="checkAllCandidates" onclick="toggleCandidates(this);"></th>';
 	                		result = result +'             <th>Name</th>';
+	                		result = result +'             <th>Designation</th>';
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Phone</th>';
-	                		result = result +'             <th>Designation</th>';
 	                		if(candidatesListType == 'openHotlist'){
 	                			result = result +'<th>Type</th>';
 	                		}
@@ -713,9 +713,9 @@ function getCandidates(candidatesListType){
 		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.candidateId+'" value="'+opt.candidateId+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
 		                    	 result = result +'</td>';
 		                    	 result = result +'<td>'+name+'</td>';
+		                    	 result = result +'<td>'+designation+'</td>';
 		                    	 result = result +'<td>'+opt.email+'</td>';
 		                    	 result = result +'<td>'+mobile+'</td>';
-		                    	 result = result +'<td>'+designation+'</td>';
 		                    	 if(candidatesListType == 'openHotlist'){
 		                    		 if(opt.isAssociate == 'Y'){
 		                    			 result = result +'<td>Associate</td>'; 
@@ -783,7 +783,7 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10, 10, 15, -1], [10, 10, 15, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
