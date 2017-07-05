@@ -675,8 +675,8 @@ function addNotes() {
 				var form = $('#invoiceNotes_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#submit_comment").attr("disabled", "disabled");
-         		$("#submit_comment" ).addClass('button').val('Processing..');
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",

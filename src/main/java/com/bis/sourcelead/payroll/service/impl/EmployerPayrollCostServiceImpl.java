@@ -296,28 +296,31 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectsByOrgLocationId(orgLocation.getId());
 			if(projectMembersList !=null && projectMembersList.size() >0){
 				for(ProjectMembers pm:projectMembersList){
-					FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
 					StringBuilder sb = new StringBuilder();
 					double amount = 0;
 					double finalAmount = 0;
 					Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
-					finalPayrollReport.setEmpId(pm.getEmployee().getEmployeeId());
-					if(pm.getEmployee().getUser().getLastName() !=null){
-						sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
-					}else{
-						sb.append(pm.getEmployee().getUser().getFirstName());
+					if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
+						FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
+						finalPayrollReport.setEmpId(pm.getEmployee().getEmployeeId());
+						if(pm.getEmployee().getUser().getLastName() !=null){
+							sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
+						}else{
+							sb.append(pm.getEmployee().getUser().getFirstName());
+						}
+						finalPayrollReport.setName(sb.toString());
+						finalPayrollReport.setTotalMarchHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)));
+						finalPayrollReport.setHalfHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)/2));
+						if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
+							finalPayrollReport.setPayRate(pm.getEmployee().getRate());
+							 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
+							 finalAmount = amount;
+						}
+						finalPayrollReport.setAmount(Math.round(amount * 100D) / 100D);
+						finalPayrollReport.setFinalAmount(Math.round(finalAmount * 100D) / 100D);
+						finalReportList.add(finalPayrollReport);
 					}
-					finalPayrollReport.setName(sb.toString());
-					finalPayrollReport.setTotalMarchHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)));
-					finalPayrollReport.setHalfHrs(String.valueOf(hoursMap.get(Constants.BILLABLE_HOURS)/2));
-					if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
-						finalPayrollReport.setPayRate(pm.getEmployee().getRate());
-						 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
-						 finalAmount = amount;
-					}
-					finalPayrollReport.setAmount(amount);
-					finalPayrollReport.setFinalAmount(finalAmount);
-					finalReportList.add(finalPayrollReport);
+					
 				}
 				
 			}
