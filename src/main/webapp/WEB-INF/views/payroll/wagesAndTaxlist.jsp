@@ -88,6 +88,7 @@ function wagesAndTaxList(){
 						$("#finalPayrollReportDiv").empty();
 						$("#wagesAndTaxListDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						wagesAndTaxListTablePagination();
 				        	
 				        },
