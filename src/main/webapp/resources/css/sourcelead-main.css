@@ -83,20 +83,28 @@ textarea {
 	content: " "; display: table;
 }
 .main-header {
-	max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a; position: fixed; width: 100%;
+/*max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a; position: fixed; width: 100%;*/
+background-size: 15%; background-image: url(../images/sl-tp.png); background-repeat: repeat-x; height: 55px;
+background-position: 30px; background-color: #368ee0; z-index: 1030; position: fixed; max-height: 100px; width: 100%; 
 }
 .main-header span.logo {
-	background: /*#3081cb*/ #eeeeee; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 52px; float: left;
-	/*transition: all 0.5s ease-in-out 0s;*/
+	/*background: #eeeeee; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 52px; float: left;
+	transition: all 0.5s ease-in-out 0s;*/
+    background: #fff; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 55px; float: left;
+    text-align: center;
 }
 .main-header span.logo img {
-	/*width:100%;*/ width: 200px;
+	/*width:100%; width: 200px;*/ width: auto; max-height: 52px; display: block; margin: 0 auto;
 }
-/* .main-header .logo a i img {
-    width: 200px; width: 100%;
-} */
+.main-header span.logo .text-logo {
+font-size: 18px; font-weight: bold; text-align: center; line-height: 52px; overflow: hidden; text-overflow: ellipsis; width: 200px; 
+white-space: nowrap; vertical-align: middle; font-style: normal; color: #375d81;
+}
 .main-header span.logo:hover {
- background: #eeeeee;
+ background: #fff;
+}
+.main-header span.logo a {
+text-align: center; display: inline-block; float:none;
 }
 .main-header span.logo a:hover {
  text-decoration: none;
@@ -177,7 +185,7 @@ search-area .btn-default:hover {
     color: #fff; background-color: #286090; border-color: #204d74;
 }
 .search-area .form-control {
-background:rgba(55,93,129, 0.5); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
+background:rgba(55,93,129, 0.7); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
 height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3); border-left:none;
 }
 .search-area .form-control::-moz-placeholder {
@@ -265,7 +273,7 @@ color: #333; display: block !important; text-shadow: none; padding: 0!important;
 #qlinks .qlinksArea {
 height: auto; background: #f5f5f5; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);  left: -340px;
 padding-top: 0; position: absolute; right: 0; top: 50px; border-top: 4px solid #3081cb;
-width: auto; min-width: 150px; width: 550px; border-radius: 0 0 3px 3px; padding: 15px 10px 15px 15px;
+min-width: 150px; width: 550px; border-radius: 0 0 3px 3px; padding: 15px 10px 15px 15px;
 visibility: hidden; opacity: 0; transition: visibility 0s, opacity 0.5s linear;
 transition: all 0.3s ease-in-out; -webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out;
 -o-transition: all 0.3s ease-in-out;
@@ -2190,15 +2198,13 @@ a.collpase-div .fa-angle-down:hover{
 	position:fixed; right: 0px; top: 90px; z-index: 1000;
 }
 .addTask .icon-addTask{
-	background:-webkit-linear-gradient(#2bddb8,#17aa8c);
-	background:-o-linear-gradient(#2bddb8,#17aa8c);
-	background:-moz-linear-gradient(#2bddb8,#17aa8c);
-	background:linear-gradient(#2bddb8,#17aa8c);
-	padding:7px 5px 6px 5px; color:#fff; cursor:pointer; border-radius:4px 0px 0px 4px;
- 	box-shadow:0 1px 1px rgba(0, 0, 0, 0.1);
+	background:-webkit-linear-gradient(#2bddb8,#17aa8c); background:-o-linear-gradient(#2bddb8,#17aa8c);
+	background:-moz-linear-gradient(#2bddb8,#17aa8c); background:linear-gradient(#2bddb8,#17aa8c);
+	padding:2px; color:#fff; cursor:pointer; border-radius:4px 0px 0px 4px; box-shadow:0 1px 1px rgba(0, 0, 0, 0.1);
+    min-height: 25px; min-width: 27px; display: block; line-height: 25px; text-align: center; font-size: 18px;
 }
 .addTask .icon-addTask .fa{
-	font-size:17px;
+	font-size:17px; z-index: 0; position: relative;
 }
 .addTasUl {
 	background-color:#ff6f00; border-radius:5px; position: absolute; right: -1000px;
@@ -2273,7 +2279,7 @@ addTask-widget table tr th {
 	position:absolute; top:10px; right:1%;
 }
 .newTask-widget {
- background-color: #fff; border-radius: 3px; box-sizing: border-box; display: flex; margin: 10px; padding: 10px;
+ background-color: #fff; border-radius: 3px; box-sizing: border-box; margin: 10px; padding: 10px;
  display:none;
 }
 .newTask-widget h4{
@@ -3436,7 +3442,7 @@ padding:10px 10px; display:none; box-shadow:0px 0px 3px rgba(0,0,0,0.3); z-index
 .email-switch input:checked + .slider {
     background-color: #8D6E63; -moz-border-radius: 3px; -ms-border-radius: 3px;
     -webkit-border-radius: 3px; border-radius: 3px;
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+   transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
 }
 .email-switch .slider {
     -moz-border-radius: 3px; -ms-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;
@@ -3668,7 +3674,7 @@ margin: 0; color: #616161; line-height: 16px; font-size: 13px; word-wrap: break-
 }
 .reqstatus-btn{
 position: absolute; right: 0px; top: 0px; padding: 5px 15px; min-width: 75px; color: #3081CB; text-align: center;
-border-radius: 3px; font-size: 12px; color: #3081CB; border: 1px solid #ccc;
+border-radius: 3px; font-size: 12px;  border: 1px solid #ccc;
 }
 /* search result styels ends */
 .customizescore-pop {
@@ -3844,7 +3850,7 @@ background: #f6f6f6; border-radius: 5px; padding: 0 10px 10px; clear: both; disp
     min-height: 100px; max-height: 350px; overflow-y: auto;
 }
 .events {
-    padding: 8px 0; clear: both; display: inline-block; width: 100%;
+    padding: 8px 0; clear: both;  width: 100%;
     min-height: 50px; display: flex; font-size: 13px; color: #616161;
 }
 .events:nth-child(even){
@@ -4223,7 +4229,7 @@ margin-left: 15px;
 	position: relative; top:5px;
 }
 .monthSearch_Custom .btn_currentmonth {
-	background-color: #f60; padding: 5px 10px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; color: #fff;
+	background-color: #f60; padding: 5px 10px; border-radius: 3px; color: #fff;
 }
 .monthSearch_Custom .fa-calendar {
 	color: #505050; font-size: 1.5em; padding: 0 5px; position: relative; top: 2px; cursor: pointer; transition:all 0.3s linear;
@@ -4393,8 +4399,8 @@ font-size: 14px; font-weight: normal;
 	margin-top: 1px; margin-right: 5px;
 }
 .candidatewrap_Table {
-	background: #fff; margin: 15px; padding-top: 25px !important; width: auto !important; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); border-radius:3px;
-	-webkit-border-radius:3px; -moz-border-radius:3px; -o-border-radius:3px;
+	background: #fff; margin: 15px; padding-top: 25px !important; width: auto !important; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+	border-radius:3px;
 }
 .ratepop.negotiate_rate {
 	width: 680px;
@@ -5663,7 +5669,7 @@ select.selectborder {
 }
 /* For SideNav Inner Scroll */
 .sidenav_inner {
-    position: relative; max-height: 445px; overflow-y: auto; padding-bottom: 10px;
+    position: relative; max-height: 570px; overflow-y: auto; padding-bottom: 10px;
 }
 .side-bar-active .sidenav_inner {
      overflow-y:inherit;

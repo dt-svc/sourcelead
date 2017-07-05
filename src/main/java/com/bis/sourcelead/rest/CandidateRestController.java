@@ -522,7 +522,7 @@ public class CandidateRestController {
 			 
 			 String [] coolingOffArr = null;
 			 String period = "0";
-			 if(reqCoolingOffPeriod != null){
+			 if(reqCoolingOffPeriod != null && reqCoolingOffPeriod != ""){
 				 coolingOffArr = reqCoolingOffPeriod.split(" ");
 				 period = coolingOffArr[1];
 			 }

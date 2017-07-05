@@ -199,8 +199,6 @@ output  = output + '        </div>';
 				var form = $('#notes_Contracts')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_note").attr("disabled", "disabled");
-         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -571,16 +569,17 @@ function editClo(contractId){
 	$('.editNewDat').hide();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#endDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-    type : "POST",
-     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
-     success :function(data) {
-    	 $("#endVal").empty();
-		  $("#endVal").append(": "+endDate);
-    },
-});  
-	
+	if(endDate != ""){
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	    type : "POST",
+	     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+	     success :function(data) {
+	    	 $("#endVal").empty();
+			  $("#endVal").append(": "+endDate);
+	    },
+	}); 
+	}
 }
 </script>
 
@@ -596,6 +595,7 @@ $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-detail
 });
 function closeDocPopup(){
 $("#popUpDiv").removeClass("edit-details-active");
+$("#notes_Contracts")[0].reset();
 }
 </script>
 
