@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -228,6 +230,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	JobAlertService jobAlertService;
+	
+	@Autowired
+	InvoiceService invoiceService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -1272,7 +1277,33 @@ public class EMailJobScheduler {
 		for(Contracts contracts : oneDayContractsList){
 			contractExpiryRemainderMail(contracts);
 		}
+		
+		getDueDateCompletedInvoicesLists();
+
 	}
+
+	/**
+	 * @author Rajashekar
+	 * changing invoice payment status when due date is over
+	 * @throws Exception
+	 */
+	private void getDueDateCompletedInvoicesLists() throws Exception {
+		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
+		invoiceList.forEach(invoice -> {
+			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
+				if (invoice.getDueDate().after(new Date())) {
+					invoice.setPaymentStatus(Constants.OVER_DUE);
+					try {
+						invoiceService.saveInvocePojo(invoice);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		});
+	}
+	
 
 	private void contractExpiryRemainderMail(Contracts contracts) throws Exception
 	{
