@@ -141,10 +141,17 @@ public class ProfessionalProfileController {
 		public ModelAndView addCandidate(HttpServletRequest request) throws Exception {
 		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
 			model.setViewName("professional/professionalPraseCandidate");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			Countries countries = null;
+			if(isNullOrEmpty(loginUser.getProfessionalRegisterCountry())){
+				countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			}else{
+				countries = countriesService.getCountriesByCountryName(loginUser.getProfessionalRegisterCountry());
+			}
+			
 			if(null != countries){
 	         model.addObject("loginCountryName", countries.getName());
 	         model.addObject("currencyCode", countries.getCurrency());
@@ -173,13 +180,14 @@ public class ProfessionalProfileController {
 		public ModelAndView professionalAddProfile(HttpServletRequest request) throws Exception {
 		 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
 			model.setViewName("professional/professionalAddProfile");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			Countries countries = null;
 			
 			if(isNullOrEmpty(loginUser.getProfessionalRegisterCountry())){
-				countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+				countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			}else{
 				countries = countriesService.getCountriesByCountryName(loginUser.getProfessionalRegisterCountry());
 			}

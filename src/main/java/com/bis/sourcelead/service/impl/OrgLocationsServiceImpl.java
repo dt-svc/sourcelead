@@ -143,6 +143,26 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				clientOrgLocations.setCity(jsonObj.getString("orgCity"));
 			}
 			
+			if(jsonObj.has("orgZipcode") && !isNullOrEmpty(jsonObj.getString("orgZipcode"))){
+				clientOrgLocations.setZipCode(jsonObj.getString("orgZipcode"));
+			}else if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+				clientOrgLocations.setZipCode(jsonObj.getString("zipcode"));
+			}
+			
+			if(jsonObj.has("orgLocation") && !isNullOrEmpty(jsonObj.getString("orgLocation"))){
+				clientOrgLocations.setLocation(jsonObj.getString("orgLocation"));
+			}else if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+				clientOrgLocations.setLocation(jsonObj.getString("location"));
+			}
+			
+			if(jsonObj.has("latitude") && !isNullOrEmpty(jsonObj.getString("latitude"))){
+				clientOrgLocations.setLatitude(jsonObj.getString("latitude"));
+			}
+			
+			if(jsonObj.has("longitude") && !isNullOrEmpty(jsonObj.getString("longitude"))){
+				clientOrgLocations.setLongitude(jsonObj.getString("longitude"));
+			}
+			
 			if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 				if("Australia".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(298l);
@@ -162,7 +182,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				}else if("United States".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(87l);
 					clientOrgLocations.setTimezone(timezone);
-				}
+				} 
 			}
 			
 			String clientCountry = locationCode.substring(Math.max(locationCode.length() - 2, 0));
