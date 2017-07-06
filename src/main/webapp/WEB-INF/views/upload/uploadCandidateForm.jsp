@@ -105,7 +105,7 @@ margin:10px 220px 0;
 	             <div class="col-md-9">
 	               <div class="checkbox checkBox ml">
 	                  <!--  <input type="checkbox" value="Y" name="email"> -->
-	                     <label><input type="checkbox" value="Y" name="email"></label><span>Invite to SourceLead</span>
+	                     <label><input type="checkbox" value="Y" name="inviteEmail"></label><span>Invite to SourceLead</span>
 	               </div>
 	                </div>
 	         </div>
