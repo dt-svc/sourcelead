@@ -346,6 +346,11 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private LinkedHashSet<String> allAndCandidateVisa;
 	 
+	 @Transient
+	 private String candidateResumeName;
+	 
+	 @Transient
+	 private String candidateResumeFileType;
 	 
 	 @Transient
 	 private List<Contracts> contractsList;
@@ -1336,6 +1341,26 @@ public class Candidate implements Serializable{
 
 	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
 		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
+
+	public String getCandidateResumeName() {
+		return candidateResumeName;
+	}
+
+
+	public void setCandidateResumeName(String candidateResumeName) {
+		this.candidateResumeName = candidateResumeName;
+	}
+
+
+	public String getCandidateResumeFileType() {
+		return candidateResumeFileType;
+	}
+
+
+	public void setCandidateResumeFileType(String candidateResumeFileType) {
+		this.candidateResumeFileType = candidateResumeFileType;
 	}
 
 	

@@ -1,5 +1,9 @@
 package com.bis.sourcelead.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -7,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +29,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
@@ -400,6 +406,61 @@ public class CandidateController {
 			}
 			else{
 				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateDocuments.getDocFile());
+			}
+			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+		  	    response.setContentType("application/pdf");
+		  	    ServletOutputStream sos = response.getOutputStream();
+		  	    if(null != pdfBytes){
+		  	    	response.setContentLength(pdfBytes.length);
+		  	    	sos.write(pdfBytes);
+		  	    }
+		          sos.flush();
+		          sos.close();
+
+		} 
+	 
+	 
+	 @RequestMapping(value = "/candidateResumeDownload", method = RequestMethod.GET)
+	    public void candidateResumeDownload(@RequestParam(value="candidateID", required=false) String candidateID ,HttpServletResponse response) throws Exception {
+			
+		 CandidateResumes candidateResumes = candidateResumesService.getCandidateResumesListByCandidateId(Long.parseLong(candidateID));
+			    
+			    response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResumes.getFileName()).append("\"").toString());
+			    
+				InputStream inputStream = new ByteArrayInputStream(candidateResumes.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+			}
+	 
+	 @RequestMapping(value = "/viewAssociateCandidateResumeDocView", method = RequestMethod.GET)
+	    public void viewAssociateCandidateResumeDocView(@RequestParam(value="candidateId", required=false) String candidateId,
+	    		@RequestParam(value="title", required=false) Long title
+	    		,HttpServletResponse response) throws Exception {
+		 
+		 CandidateResumes candidateResumes =  candidateResumesService.getCandidateResumesListByCandidateId(Long.parseLong(candidateId));	
+			    
+		 byte[] pdfBytes = null;
+			if("application/pdf".equalsIgnoreCase(candidateResumes.getFileContentType())){
+				pdfBytes = candidateResumes.getDocFile();
+			}
+			else{
+				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResumes.getDocFile());
 			}
 			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 		  	    response.setContentType("application/pdf");
