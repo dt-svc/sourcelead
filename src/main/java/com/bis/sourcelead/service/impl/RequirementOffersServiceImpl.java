@@ -54,6 +54,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -83,6 +84,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	private EmailScenarioService emailScenarioService;
 	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -403,10 +406,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	                globalVarsMap.put("positionType", "--");
 	        }
             
-            if (applicant.getRequirement().getJobTitle() != null && !"".equalsIgnoreCase(applicant.getRequirement().getJobTitle())) {
-                globalVarsMap.put("requirementTitle",applicant.getRequirement().getJobTitle());
+           if (applicant.getRequirement().getJobId() != null && !"".equalsIgnoreCase(applicant.getRequirement().getJobId())) {
+            	StringBuilder sbv = new StringBuilder();
+                globalVarsMap.put("requirementTitle",sbv.append(applicant.getRequirement().getJobId()).append("-").append(applicant.getRequirement().getJobTitle()).toString());
 	        } else {
-	                globalVarsMap.put("requirementTitle", "--");
+	                globalVarsMap.put("requirementTitle",applicant.getRequirement().getJobTitle());
 	        }
             
             if (requirementOffers.getAmount() != null && !"".equalsIgnoreCase(requirementOffers.getAmount())) {
@@ -439,7 +443,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
-            
             
                             
             if (requirementOffers.getDateOfJoining() != null) {
@@ -978,7 +981,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 }else{
 			 globalVarsMap.put("vendorContactName",vendorName.append(emailMessage.getFirstName()).toString());
 		 }
-		 globalVarsMap.put("offeredJoinDate",requirementOffers.getDateOfJoining().toString());
+		 
+		 globalVarsMap.put("offeredJoinDate",conversionUtil.getDateAsString(requirementOffers.getDateOfJoining()));
 		 
 		 StringBuilder applicant = new StringBuilder();
 		 if(null != requirementOffers.getSubmissionId().getCandidate().getLastName()){
@@ -986,7 +990,22 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 }else{
 			 globalVarsMap.put("offeredApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).toString());
 		 }
-		 globalVarsMap.put("offeredRequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
+		 
+		 if (requirementOffers.getSubmissionId().getRequirement().getJobId() != null && !"".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobId())) {
+				StringBuilder sbv = new StringBuilder();
+				globalVarsMap.put("offeredRequirementName", sbv.append(requirementOffers.getSubmissionId().getRequirement().getJobId()).append("-").append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
+			} else {
+				globalVarsMap.put("offeredRequirementName", requirementOffers.getSubmissionId().getRequirement().getJobTitle());
+			}
+		 
+		 
+		 if (requirementOffers.getSubmissionId().getRequirement().getDescription() != null && !"".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getDescription())) {
+             globalVarsMap.put("requirementDescription",requirementOffers.getSubmissionId().getRequirement().getDescription());
+	        } else {
+	                globalVarsMap.put("requirementDescription","--");
+	        }
+		 
+		 //globalVarsMap.put("offeredRequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
 		 globalVarsMap.put("offeredRate",requirementOffers.getAmount());
 	
 		 
