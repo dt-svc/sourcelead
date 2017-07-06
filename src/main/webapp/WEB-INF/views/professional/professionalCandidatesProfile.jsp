@@ -168,6 +168,11 @@ function editCandidate(candidateId){
             			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
             			 		city = json.city;            			 		
             			 	}
+            				var address = '';
+            			 	if(json.address != null && json.address != '' && json.address != 'undefined'){
+            			 		address = json.address;            			 		
+            			 	}
+            			 	
             			 	
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
@@ -211,11 +216,11 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10">';
 							 
+							
 							result = result + '<div class="col-md-6" id="locationField">';
 							result = result + '<input type="text" class="form-control input-sm" name="location"  id="pfLocation"  value="'+location+'" placeholder="Location" field-name="Locatin" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'pfLocation\',\'pfCountry\',\'pfState\',\'pfCity\',\'pfZipCode\');"></i>';
 							result = result + '</div>'; 
-							
 							
 							result = result + '<div class="col-md-6 custom-fields mb10">';
 							result = result + '<input class="form-control input-sm" id="pfCountry" name="country" value="'+json.country+'"  placeholder="Enter your Country" type="text" readonly></input>';
@@ -231,20 +236,14 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields mt10">';
-							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text"></input>';
+							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"></input>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field mt10">';
-							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">-- Select Notice Period --</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately Available</option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
-							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
-							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
-							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
-							result = result + ' </select>';
-							result = result + ' </div>';
 
+							result = result + '<div class="col-md-6 custom-fields mt10"">';
+							result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address">';
+							result = result + '</div>';
+							
 							result = result + '</div>';
 							result = result + '</div>';
 							
@@ -375,6 +374,17 @@ function editCandidate(candidateId){
 							result = result + '		          </div>';
 							
 							result = result + '<div class="clearfix mb10">';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow select-field mt10">';
+							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<option value="">-- Select Notice Period --</option>';
+							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately Available</option>';
+							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
+							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + ' </select>';
+							result = result + ' </div>';
 							
                             result = result + '<div class="col-md-6 custom-fields mt10">';
 							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';

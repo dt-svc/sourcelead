@@ -490,17 +490,17 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                     		 
                     		 '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control"  readonly '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" />'+
+                             '<input  type="text" class="form-control"  readonly '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" readonly />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State"  />'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State" readonly />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City" />'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City" readonly/>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +

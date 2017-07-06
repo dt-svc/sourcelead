@@ -874,7 +874,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){
 				candidate.setLastName(candidate.getLastName());	
 			}
-			candidate.setCountry(candidate.getCountry());
+//			candidate.setCountry(candidate.getCountry());
+			if(jsonObj.has("country") && jsonObj.getString("country") !=null){
+				candidate.setCountry(jsonObj.getString("country"));
+			}
 			
 			if(jsonObj.has("state") && jsonObj.getString("state") !=null){
 			candidate.setState(jsonObj.getString("state"));
@@ -885,8 +888,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(jsonObj.has("location") && jsonObj.getString("location") !=null){
 				candidate.setLocation(jsonObj.getString("location"));
 			}
-			if(jsonObj.has("zipCode") && jsonObj.getString("zipCode") !=null){
-				candidate.setZipCode(jsonObj.getString("zipCode"));
+			if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") !=null){
+				candidate.setZipCode(jsonObj.getString("zipcode"));
 			}
 			
 			if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){

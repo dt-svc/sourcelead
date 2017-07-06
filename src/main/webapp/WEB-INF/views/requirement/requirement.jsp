@@ -692,7 +692,7 @@ $(document).ready(function () {
 		 <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="zipcode" id="ReqZipCode" value="${requirement.city}" placeholder="Zip Code" field-name="zip Code" readonly >
+			     <input type="text"  class="form-control" name="zipcode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" >
 			</div>
 		</div>
 		

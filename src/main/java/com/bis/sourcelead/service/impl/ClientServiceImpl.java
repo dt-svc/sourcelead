@@ -733,6 +733,20 @@ public class ClientServiceImpl implements ClientService{
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
+				
+				if(jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null && !jsonObj.getString("clientLocation").isEmpty()){
+					orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			     }else{
+			    	 
+			    	 orgLocations.setLocation("");
+			     }
+				
+				if(jsonObj.has("clientZipCode") && jsonObj.getString("clientZipCode") != null && !jsonObj.getString("clientZipCode").isEmpty()){
+					orgLocations.setZipCode(jsonObj.getString("clientZipCode"));
+			     }else{
+			    	 
+			    	 orgLocations.setZipCode("");
+			     }
 				/*if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
 				}else{

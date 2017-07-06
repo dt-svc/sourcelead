@@ -411,6 +411,7 @@ function getOrgDetails()
 				      		$("#webSite").attr("disabled", true);
 				      	}
 	   	        		if(json['location'] != null && json['location'] != ''){
+	   	        		$('#clientLocation').attr("data-validation-optional", "true");  
 			      		document.getElementById("locationDiv").style.display="none";
    	        			document.getElementById("orgLocationDiv").style.display="";
    	        		    $("#orgLocation").val(json['location']);
@@ -432,10 +433,10 @@ function getOrgDetails()
    	        			if(json['city'] != null && json['city'] != ''){
    	        		    $("#orgCity").val(json['city']);
    	        	    	}
-			    	
+   	        			
+   	        			if(json['zipCode'] != null && json['zipCode'] != ''){
 			      		document.getElementById("zipCodeDiv").style.display="none";
    	        			document.getElementById("orgZipCodeDiv").style.display="";
-   	        			if(json['zipCode'] != null && json['zipCode'] != ''){
    	        		    $("#orgZipCode").val(json['zipCode']);
 			      	    }
 			    	

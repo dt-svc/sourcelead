@@ -632,7 +632,6 @@ function validate_fileupload(fileName)
 
 <script type="text/javascript">
  function validateCandidateEmail() {
-	 alert("hi");
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';

@@ -109,28 +109,28 @@
 		<div class="form-group">
           <label class="col-md-3">Country</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
+          <input class="form-control" id="candidateCountry" name="country" placeholder="Country" value ="${loginCountryName}" type="text" readonly></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">State</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateState" name="state" placeholder="Enter your State" type="text" readonly></input>
+          <input class="form-control" id="candidateState" name="state" placeholder="State" type="text" readonly></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          <input class="form-control" id="candidateCity" name="city" placeholder="City" type="text" readonly></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Zip code" type="text"></input>
           </div>
         </div>
         

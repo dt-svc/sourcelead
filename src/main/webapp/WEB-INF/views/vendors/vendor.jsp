@@ -69,7 +69,7 @@ window.onload = function () {
 	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9" id="locationField">
 	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation=""></input>
 	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
 	          </div>
 	          </div>
@@ -422,15 +422,15 @@ function getOrgDetails()
 			      	}
 			      	
 			      	if(json['location'] != null && json['location'] != ''){
+			      	$('#clientLocation').attr("data-validation-optional", "true");  
 			      	document.getElementById("locationDiv").style.display="none";
    	        		document.getElementById("orgLocationDiv").style.display="";
    	        		    $("#orgLocation").val(json['location']);
 			      	}
 			      	
-			    	
+			      	if(json['zipCode'] != null && json['zipCode'] != ''){
 			      	document.getElementById("zipCodeDiv").style.display="none";
    	        		document.getElementById("orgZipCodeDiv").style.display="";
-   	        		if(json['zipCode'] != null && json['zipCode'] != ''){
    	        		    $("#orgZipCode").val(json['zipCode']);
 			      	}
 			    	
