@@ -17,7 +17,7 @@
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
-					type : "POST",
+					type : "GET",
 					contentType : "application/json; charset=utf-8",
 					url : sourceleadUrl
 							+ "/projectDocuments/getProjectDocumentsById?${_csrf.parameterName}=${_csrf.token}&projectId="
