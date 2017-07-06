@@ -324,7 +324,7 @@ function alertMessage(message){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -334,9 +334,10 @@ function alertMessage(message){
 </script>
 
 <script type="text/javascript">
-function cancel(){
+function cancelSumitToClient(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+	$(".sideMask").fadeOut(200);
 }
 </script>
 
@@ -494,7 +495,7 @@ function addEmailtemplate(requirementId){
 	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel123();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
@@ -520,7 +521,7 @@ function addEmailtemplate(requirementId){
 		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#pipeline_user_pop").slideDown(200);
@@ -532,7 +533,7 @@ function addEmailtemplate(requirementId){
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Submission Rate is Required</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#pipeline_user_pop").slideDown(200);
