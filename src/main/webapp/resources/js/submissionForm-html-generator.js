@@ -331,9 +331,11 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             			 reqSymbol = '<span>&nbsp;*</span>'
             		 }
             		 
+            		 var locationUniqueID = Math.floor(Math.random()*999999)+1;
             		 var countryUniqueID = Math.floor(Math.random()*999999)+1;
             		 var stateUniqueID = Math.floor(Math.random()*999999)+1;
             		 var cityUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var zipCodeUniqueID = Math.floor(Math.random()*999999)+1;
             	 }
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
@@ -479,25 +481,31 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                      case 'autocomplete':
                     	 if(label == 'location'){
                     		 return '' +
-                             '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
+                             
+                    		 '<div id="sjfb-' + locationUniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label>Location'+reqSymbol+'</label>' +
+                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="location" id="submissionLocation" field-name="Location"  />'+
+                             '<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation(\'submissionLocation\',\'submissionCountry\',\'submissionState\',\'submissionCity\',\'submissionZipCode\');"></i>'+
+                             '</div>'+
+                    		 
+                    		 '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country"  >'+
-                             '<option>--Select Country--</option>'+
-                             '</select>'+
+                             '<input  type="text" class="form-control"  readonly '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" readonly />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State"  >'+
-                             '<option>--Select State--</option>'+
-                             '</select>'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State" readonly />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<select class="chosen-select form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="State"  >'+
-                             '<option>--Select City--</option>'+
-                             '</select>'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City" readonly/>'+
+                             '</div>'+
+                             
+                             '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<label>ZipCode'+reqSymbol+'</label>' +
+                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode"  />'+
                              '</div>';
                     		 
                     		 

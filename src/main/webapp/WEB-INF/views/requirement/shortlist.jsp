@@ -18,6 +18,7 @@ width:auto !important;
 function candidateShortList(requirementId){
 	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var result = "";
 	var status = "SUBMISSION";
 	result = result + '<div class="add_inter_head"> <span>Shortlist</span> <span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="checkedshortlistedCount">0</b></span><a href="javascript:void(0)" onclick="shortlist('+requirementId+');" class="sub-btn1">Shortlist</a>';
@@ -55,6 +56,18 @@ function candidateShortList(requirementId){
 		   		{
 		    		for(var i=0; i<json.length; i++){
 		    			var report = json[i];
+		    			var colorHint = "";
+	   	        		if(report.lastRateStage != "" && report.lastRateIniLocId != "" && report.lastRateIniType != "" && report.lastRateStage != "undefined" && report.lastRateIniLocId != "undefined" && report.lastRateIniType != "undefined" && report.lastRateStage != null && report.lastRateIniLocId != null && report.lastRateIniType != null){
+		   	        		if(report.lastRateStage == "rejected"){
+		   	        			colorHint = "textDanger";
+		   	        		}else if(report.lastRateStage == "accepted"){
+		   	        			colorHint = "textSuccess";
+		   	        		}else if(orgLocationId != report.lastRateIniLocId && report.lastRateIniUserCode != ""){
+		   	        			colorHint = "textWarning";
+		   	        		}else if(orgLocationId == report.lastRateIniLocId && report.lastRateIniUserCode == ""){
+		   	        			colorHint = "textWarning";
+		   	        		}
+	   	        		}
 		    			
 		    			if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
 	   	        			orgName = "("+report.orgName+")";
@@ -96,10 +109,10 @@ function candidateShortList(requirementId){
 			    	     }
 			           
 			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.expectedCTC+'</div></td>';
+			        	   result = result + '<td><div><span class="showRate '+colorHint+'" style="cursor:auto">'+report.expectedCTC+'</span></div></td>';
 				           }
 				       else{
-				    	   result = result + '<td><div class="tbldata-dotdot_80">--</div></td>';
+				    	   result = result + '<td><div><span class="showRate '+colorHint+'" style="cursor:auto"><i class="glyphicon fa fa-money" style="cursor:auto"></i></span></div></td>';
 			    	     }
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.createdUser+''+orgName+'</div></td>';

@@ -1319,30 +1319,10 @@ function setHours(finalmin,rowId){
 	    $("#conversionFrom").val(sum.toFixed(2));
 	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
-   /* =====================  After adding the rows calculate the discount start  ===================== */
-   var discountValue =  $("#discountValue").val();
-   var discountType =  $("#disCount").val();
-  
-   if(discountValue != null && discountValue != ''){
-		var total ='';
-		if(discountType == 'flat'){
-			total = arroundGrand-discountValue;
-			$("#discountTotal").val(discountValue.toFixed(2));
-			$("#grandTotal").val(total.toFixed(2));
-			$("#conversionFrom").val(total.toFixed(2));
-			$("#afterDiscountTotal").val(total.toFixed(2));
-			
-		}
-		if(discountType == 'percentage'){
-			var perCentValue = (arroundGrand * discountValue)/100;
-			total = arroundGrand - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
-			$("#grandTotal").val(total.toFixed(2));
-			$("#conversionFrom").val(total.toFixed(2));
-			$("#afterDiscountTotal").val(total.toFixed(2));
-		}
-   }
-   
+/*  After adding the rows calculate the discount start*/
+    calculateDiscount();
+    
+/* After adding the rows calculate the tax discount start */
    calculateTaxDiscount();
    
 	    
@@ -1380,7 +1360,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
-			$("#discountTotal").val(subTotal);
+			$("#discountTotal").val("00.00");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);

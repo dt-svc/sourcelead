@@ -773,9 +773,15 @@ function validateUploadFile(id)
 			    	 $("#lastName").val(json['lastName']);
 			    	 $("#mobileNumber").val(json['mobilePhone']);
 			    	 $("#personalEmail").val(json['email']);
-			    	 getOnBoardCandidateCountry(json['country'])
+			    	 $("#offBoardLocation").val(json['location']);
+			    	 $("#country").val(json['country']);
+			    	 $("#state").val(json['state']);
+			    	 $("#city").val(json['city']);
+			    	 $("#zipCode").val(json['zipCode']);
+			    	 
+			    	/*  getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
 			    	 
 			    	 validateOnboardCandidate(json['email']);
 			    }
@@ -1251,9 +1257,26 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    		$("#zipCode").val(json['zipCode']);
 		    	}
 		    	
-		    	getOnBoardCandidateCountry(json['country']);
+		    	if(json['country'] != null && json['country'] != "" && json['country'] !="undefined"){
+		    		$("#country").val(json['country']);
+		    	}
+		    	
+		    	if(json['state'] != null && json['state'] != "" && json['state'] !="undefined"){
+		    		$("#state").val(json['state']);
+		    	}
+		    	
+		    	if(json['city'] != null && json['city'] != "" && json['city'] !="undefined"){
+		    		$("#city").val(json['city']);
+		    	}
+		    	
+		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
+		    		$("#offBoardLocation").val(json['location']);
+		    	}
+		    	
+		    	
+		    	/* getOnBoardCandidateCountry(json['country']);
 		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
 		    	
 		    	loadCandidateRoles(json['onBoardRoleId']);
 		    	$("#startDate").val(json['joiningDateStr']);
@@ -2175,30 +2198,34 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
      
 	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Location <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Locatin" data-validation="required" >';
+	 result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'offBoardLocation\',\'country\',\'state\',\'city\',\'zipCode\');"></i>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 
+	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="--Select Country--" id="country" onchange="getStates();" name="country">';
-	 result = result +'<option disabled>Select Country</option>';
-	 result = result +'</select>';
+	 result = result +'<input type="text" class="form-control" data-placeholder="Country" id="country" field-name="Country" name="country" readonly data-validation="required">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">State</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="--Select State--" onchange="getCities();" id="state" name="state">';
-	 result = result +'<option disabled>Select State</option>';
-	 result = result +'</select>';
+	 result = result +'<input type="text" class="form-control" data-placeholder="State"  id="state" name="state" readonly>';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">City</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="--Select City--" id="city" name="city">';
-	 result = result +'<option disabled>Select City</option>';
-	 result = result +'</select>';
+	 result = result +'<input type="text" class="form-control" data-placeholder="City" id="city" name="city" readonly>';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Zipcode</label>';
 	 result = result +'<div class="col-md-6">';
@@ -2344,6 +2371,8 @@ function addCandidateDetailsForOnboarding(){
 	 $("#onboardingCandidateDetailsDiv").empty();
    	 $("#onboardingCandidateDetailsDiv").append(result); 
    	 
+     initLocationAuto('offBoardLocation','country','state','city','zipCode','','',''); 
+     
 	 loadCandidateRoles();
 	 loadTeams();
 	 loadOnBoardingTemplates();

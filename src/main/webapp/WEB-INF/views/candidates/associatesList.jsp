@@ -632,7 +632,7 @@ function candidateSideBar(candidateId){
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu">'; 
+			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
 			             if(json.isAssociate == "Y"){
 			            	 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';

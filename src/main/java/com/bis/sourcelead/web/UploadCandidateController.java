@@ -104,7 +104,7 @@ public class UploadCandidateController {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				
 				try {
-					String isFileCreated = candidateUploadFileService.uploadCandidateFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail(),org,roleHierarchyId);
+					String isFileCreated = candidateUploadFileService.uploadCandidateFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getInviteEmail(),org,roleHierarchyId);
 					
 					if ("CandidateError.xlsx".equalsIgnoreCase(isFileCreated)) {
 						model.addAttribute("errorMessage", "Please download Error file here");

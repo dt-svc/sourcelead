@@ -54,6 +54,27 @@ public class ClientVendorIndexHelper {
 						clientVendorIndex.setInitiatorCity(initiatorLocation.getCity());
 					}
 					
+					if(!"".equalsIgnoreCase(initiatorLocation.getCity())){
+						clientVendorIndex.setInitiatorCity(initiatorLocation.getCity());
+					}
+					
+					if(!"".equalsIgnoreCase(initiatorLocation.getLocation())){
+						clientVendorIndex.setLocation(initiatorLocation.getLocation());
+					}
+					
+					if(!"".equalsIgnoreCase(initiatorLocation.getZipCode())){
+						clientVendorIndex.setZipCode(initiatorLocation.getZipCode());
+					}
+					
+					
+					if(!"".equalsIgnoreCase(initiatorLocation.getLatitude())){
+						clientVendorIndex.setLatitude(initiatorLocation.getLatitude());
+					}
+					
+					if(!"".equalsIgnoreCase(initiatorLocation.getLongitude())){
+						clientVendorIndex.setLongitude(initiatorLocation.getLongitude());
+					}
+					
 					 clientVendorIndex.setInitiatorOrgName(initiatorLocation.getOrgLocationName());
 					 
 					 if(null != initiatorLocation.getWebsite()){
@@ -82,7 +103,23 @@ public class ClientVendorIndexHelper {
 						clientVendorIndex.setResponderCity(responderorgLocation.getCity());
 					}
 					
-					 clientVendorIndex.setResponderOrgName(responderorgLocation.getOrgLocationName());
+					if(!"".equalsIgnoreCase(responderorgLocation.getLocation())){
+						clientVendorIndex.setLocation(responderorgLocation.getLocation());
+					}
+					
+					if(!"".equalsIgnoreCase(responderorgLocation.getZipCode())){
+						clientVendorIndex.setZipCode(responderorgLocation.getZipCode());
+					}
+					
+					if(!"".equalsIgnoreCase(responderorgLocation.getLatitude())){
+						clientVendorIndex.setLatitude(responderorgLocation.getLatitude());
+					}
+					
+					if(!"".equalsIgnoreCase(responderorgLocation.getLongitude())){
+						clientVendorIndex.setLongitude(responderorgLocation.getLongitude());
+					}
+					
+					clientVendorIndex.setResponderOrgName(responderorgLocation.getOrgLocationName());
 					 if(null != responderorgLocation.getWebsite()){
 						 clientVendorIndex.setResponderWebSite(responderorgLocation.getWebsite());
 					 }
