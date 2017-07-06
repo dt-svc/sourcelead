@@ -444,6 +444,12 @@ public class RequirementListRestController {
 					requirement.setCreatedByName(createdby.append(intiatorUser.getFirstName()).toString());	
 
 					}
+					if(intiatorUser.getId() == user.getId()){
+						requirement.setIsLoginUserAsInitiator("true");
+					}else{
+						requirement.setIsLoginUserAsInitiator("false");
+					}
+					
 
 					if(requirement.getSubmissionTemplateId()!=null){
 						requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
@@ -475,13 +481,13 @@ public class RequirementListRestController {
 						requirement.setApproverNames(ar);
 					}
 					
-					
+					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 					// UnWanted Code 
 					
 					/*Boolean isLoginUserAsTeamMember =   requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 					
-					requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+					
 					
 					Boolean isLoginUserAsManager =   requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(Long.parseLong(requirementId), user.getId());
 					requirement.setIsLoginUserAsManager(isLoginUserAsManager.toString());*/
