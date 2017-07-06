@@ -242,13 +242,16 @@ public class ExpensesController {
 		
 		request.getSession().setAttribute("sessionData", sessionData);
 		
-		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
 		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
-	    model.addObject("expensesCategoryList", expensesCategoryList);
+	    model.addObject("expensesCategoryList", expensesCategoryList);*/
+		
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(loginUser.getId(), orgLoc.getLocationCode());
+		model.addObject("expEntry", expEntryDTO);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");
