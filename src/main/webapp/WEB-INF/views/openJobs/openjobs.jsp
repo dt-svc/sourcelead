@@ -1236,7 +1236,7 @@ function backtoList(){
 function viewJobSummaryDocument(jobId,title){
 	 var sourceleadUrl ='${sourceleadUrl}';
 		if(jobId != null && jobId != ""){
-			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView?jobId='+jobId,title,"height=600,width=600");
+			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
 		}  
 }
 

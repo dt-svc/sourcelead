@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -365,11 +366,10 @@ public class CandidateController {
 	 }	 
 	 
 	
-	 @RequestMapping(value = "/viewProfessionalCandidateResume", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewProfessionalCandidateResume/{title}", method = RequestMethod.GET)
 	    public void viewProfessionalCandidateResume(@RequestParam(value="resumeUUID", required=false) String resumeUUID,
-	    		@RequestParam(value="title", required=false) Long title,
-	    		@RequestParam(value="type", required=false) Long type
-	    		,HttpServletResponse response) throws Exception {
+	    		@PathVariable(value="title") String title,
+	    		HttpServletResponse response) throws Exception {
 		 
 		 CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);	
 			    
@@ -393,10 +393,10 @@ public class CandidateController {
 		} 
 	 
 	 
-	 @RequestMapping(value = "/viewProfessionalCandidateDocument", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewProfessionalCandidateDocument/{title}", method = RequestMethod.GET)
 	    public void viewProfessionalCandidateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
-	    		@RequestParam(value="title", required=false) Long title
-	    		,HttpServletResponse response) throws Exception {
+	    		@PathVariable(value="title") String title,
+	    		HttpServletResponse response) throws Exception {
 		 
 		 CandidateDocuments candidateDocuments =  candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);	
 			    
@@ -448,9 +448,9 @@ public class CandidateController {
 				} 
 			}
 	 
-	 @RequestMapping(value = "/viewAssociateCandidateResumeDocView", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewAssociateCandidateResumeDocView/{title}", method = RequestMethod.GET)
 	    public void viewAssociateCandidateResumeDocView(@RequestParam(value="candidateId", required=false) String candidateId,
-	    		@RequestParam(value="title", required=false) Long title
+	    		@PathVariable(value="title") String title
 	    		,HttpServletResponse response) throws Exception {
 		 
 		 CandidateResumes candidateResumes =  candidateResumesService.getCandidateResumesListByCandidateId(Long.parseLong(candidateId));	

@@ -159,7 +159,7 @@
 <script>
 function viewDocument(title,id){
 	var sourceleadUrl ='${sourceleadUrl}';
-		window.open(sourceleadUrl+'/viewExpensesEntryDocument?entryDocumentId='+id,title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
 }
 </script>    
     

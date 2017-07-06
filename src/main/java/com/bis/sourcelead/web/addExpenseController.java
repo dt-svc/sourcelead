@@ -102,9 +102,9 @@ public class addExpenseController {
 		return model;
 	}
 	
-	 @RequestMapping(value = "/viewExpensesEntryDocument", method = RequestMethod.GET)
+	 @RequestMapping(value = "/viewExpensesEntryDocument/{title}", method = RequestMethod.GET)
 	    public void viewExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId,
-	    		@RequestParam(value="title", required=false) Long title
+	    		@RequestParam(value="title", required=false) String title
 	    		,HttpServletResponse response) throws Exception {
 
 		 ExpensesEntryDocuments	expensesEntryDocument =	expensesEntryDocumentsService.getExpensesEntryDocumentById(entryDocumentId);	

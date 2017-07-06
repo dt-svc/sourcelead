@@ -146,7 +146,7 @@ function vendorAssociatesList(orgRelationId){
 <script>
 function viewAssociateCandidateResume(candidateId,title){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView?candidateId='+candidateId,title,"height=600,width=600");
+	window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
 }
 </script>
 

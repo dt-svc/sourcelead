@@ -373,7 +373,9 @@ function addResume(candidateId) {
 <script>
 function viewProfessionalCandidateResume(resumeUUID,title){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewProfessionalCandidateResume?resumeUUID='+resumeUUID,title,"height=600,width=600");
+	if(resumeUUID != null && resumeUUID !=""){
+	window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+	}
 }
 </script>
 

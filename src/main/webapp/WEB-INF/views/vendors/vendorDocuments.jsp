@@ -213,7 +213,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 <script>
 function viewVendorDocument(docId,title){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewClientDocViewerDocument?docId='+docId,title,"height=600,width=600");
+	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
 

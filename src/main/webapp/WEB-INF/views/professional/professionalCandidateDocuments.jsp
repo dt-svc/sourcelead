@@ -191,7 +191,7 @@ function candDocumentsList(candidateId){
 <script>
 function viewProfessionalCandidateDocument(documentUUID,title){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewProfessionalCandidateDocument?documentUUID='+documentUUID,title,"height=600,width=600");
+	window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
 }
 </script>
 

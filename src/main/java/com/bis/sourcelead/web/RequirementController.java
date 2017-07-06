@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -950,9 +951,9 @@ public class RequirementController {
 	}
 
 
-@RequestMapping(value = "/viewJobSummaryDocumentDocView", method = RequestMethod.GET)
+@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
 	public void viewJobSummaeyDocumentDocView(@RequestParam(value = "jobId", required = false) String jobId,
-			@RequestParam(value = "title", required = false) Long title, HttpServletResponse response)
+			@PathVariable("title") String title, HttpServletResponse response)
 			throws Exception {
 
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(jobId));
@@ -974,5 +975,31 @@ public class RequirementController {
 		sos.close();
 
 	}	
+
+
+@RequestMapping(value = "/viewOfferDocumentDocView/{title}", method = RequestMethod.GET)
+	public void viewOfferDocumentDocView(@RequestParam(value = "offerID", required = false) String offerID,
+			@PathVariable("title") String title, HttpServletResponse response)
+		throws Exception {
+
+	RequirementOffers offer = requirementOffersService.getRequirementOfferId(Long.parseLong(offerID));
+
+	byte[] pdfBytes = null;
+	if ("application/pdf".equalsIgnoreCase(offer.getFileContentType())) {
+		pdfBytes = offer.getDocFile();
+	} else {
+		pdfBytes = pdfConversionUtil.convertDocToPdf(offer.getDocFile());
+	}
+	response.setHeader("Content-disposition", "inline; filename=contractPdf.pdf");
+	response.setContentType("application/pdf");
+	ServletOutputStream sos = response.getOutputStream();
+	if (null != pdfBytes) {
+		response.setContentLength(pdfBytes.length);
+		sos.write(pdfBytes);
+	}
+	sos.flush();
+	sos.close();
+
+}	
 	
 }
