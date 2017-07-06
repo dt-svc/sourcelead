@@ -4886,7 +4886,7 @@ width: 100% !important; margin: 0px !important;
 	z-index: 100;
 }
 .rejectedHover {
-    cursor: pointer; position: relative; top:10px; right:15px;
+    cursor: pointer; position: relative; top:10px; right:0px; float: right;
 }      
 .rejectedHover:hover .app_error_mes {
     display: block; opacity: 1;
