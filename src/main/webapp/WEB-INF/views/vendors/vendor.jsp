@@ -202,7 +202,7 @@ window.onload = function () {
             
             <div class="form-group">
               <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
+              <div class="col-md-9 candAdvsrch">
                 <select data-placeholder="select owner" multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
 	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>

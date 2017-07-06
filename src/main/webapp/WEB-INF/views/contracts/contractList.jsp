@@ -661,10 +661,24 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
         buttons: [
         	{
                 extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.alignment = 'center';
+                    doc.content.forEach(function(item) {
+                        if (item.table) {
+                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+                        } 
+                      })
+                  },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
@@ -687,10 +701,24 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
         buttons: [
         	{
                 extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.alignment = 'center';
+                    doc.content.forEach(function(item) {
+                        if (item.table) {
+                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+                        } 
+                      })
+                  },               
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
@@ -709,7 +737,31 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
 }
 function appListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft2').DataTable( { 
-    	
+    	dom: 'Bfrtip',
+        buttons: [
+        	{
+                extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                title: SourceLeadWeb_loginOrg +' - Draft',
+            },
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.alignment = 'center';
+                    doc.content.forEach(function(item) {
+                        if (item.table) {
+                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+                        } 
+                      })
+                  },
+                title: SourceLeadWeb_loginOrg +' - Draft',
+            }
+        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -1069,10 +1121,24 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
@@ -1096,10 +1162,24 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
@@ -1124,10 +1204,24 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
@@ -1426,10 +1520,24 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
@@ -1452,10 +1560,24 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
@@ -1478,10 +1600,24 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
@@ -1810,10 +1946,24 @@ function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
@@ -1837,10 +1987,24 @@ function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
@@ -1865,10 +2029,24 @@ function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
@@ -2155,10 +2333,24 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
@@ -2181,10 +2373,24 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
@@ -2207,10 +2413,24 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
@@ -2469,10 +2689,24 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
@@ -2495,10 +2729,24 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
@@ -2521,10 +2769,24 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
@@ -2817,10 +3079,24 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
@@ -2843,10 +3119,24 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
     	buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
@@ -2869,10 +3159,24 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                    doc.content.forEach(function(item) {
+	                        if (item.table) {
+	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
+	                        } 
+	                      })
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
