@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -136,6 +137,9 @@ public class RequirementController {
 	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	RequirementInterviewerService requirementInterviewerService;
 	
 	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
@@ -523,6 +527,90 @@ public class RequirementController {
 		}
 		return model;
 	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
+	@RequestMapping(value = "/requirementSummaryView")
+	public ModelAndView requirementSummaryView(HttpServletRequest request, @RequestParam(value="requirementUUID", required=false)String requirementUUID, @RequestParam(value="interviewId", required=false)Long interviewId) throws Exception {
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ModelAndView model = new ModelAndView();
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+		
+		Boolean isInterviewer = requirementInterviewerService.isInterviwerForByRequirementIdInterviewIdAndUserId(requirementUUID, interviewId, loginUser.getId());
+		model.addObject("isInterviewer",isInterviewer);
+		
+		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+			Long requirementId = requirement.getId();
+			
+			model.setViewName("requirement/requirementSummary");
+			model.addObject("requirementId",requirementId);
+			
+			model.addObject("requirement",requirement);
+			
+			model.addObject("timezone",timezone.getTimeZoneId());
+			
+			Boolean isTeamMember = requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+			model.addObject("isTeamMember",isTeamMember);
+			
+			Boolean isManager = requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirementId, loginUser.getId());
+			model.addObject("isManager",isManager);
+			
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLocations.getId());
+			model.addObject("isAdmin",isAdmin);
+	
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+			model.addObject("documentsList", documentsList);
+			
+			if(null != requirement.getIsClientJob() && requirement.getIsClientJob().equalsIgnoreCase("Y")){
+				model.addObject("clientSubmissions","Y");
+			}else{
+				model.addObject("clientSubmissions","N");
+			}
+			
+			Requirement parentRequirement = requirementService.getRequirementByParentRequirementId(requirementId);
+	        if(null != parentRequirement){
+	            model.addObject("parentRequirement","Y");
+	        }else{
+	            model.addObject("parentRequirement","N");
+	        }
+	        
+	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
+				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
+					model.addObject("isSpocActive", Constants.NO);
+				}else{
+					model.addObject("isSpocActive", Constants.YES);
+				}
+			}
+			
+			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
+			if(!isNullOrEmpty(msg)){
+				model.addObject("msg", msg);
+				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
+			}
+			model.addObject("requirementUUID",requirementUUID);
+		}else{
+			model.setViewName("registration/persmissionDenied");
+		}
+		return model;
+	}
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/reqPipelineSubmitToClientMail")
 	public ModelAndView reqPipelineSubmitToClientMail(HttpServletRequest request,@RequestParam(value="requirementId", required=false)Long requirementId) throws Exception {

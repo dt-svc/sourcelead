@@ -365,6 +365,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String isLoginUserAsManager;
 	
 	@Transient
+	private String isLoginUserAsInitiator;
+	
+	@Transient
 	private String mailBody;
 	
 	@Transient
@@ -1024,6 +1027,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setIsLoginUserAsManager(String isLoginUserAsManager) {
 		this.isLoginUserAsManager = isLoginUserAsManager;
+	}
+
+	public String getIsLoginUserAsInitiator()
+	{
+		return isLoginUserAsInitiator;
+	}
+
+	public void setIsLoginUserAsInitiator(String isLoginUserAsInitiator)
+	{
+		this.isLoginUserAsInitiator = isLoginUserAsInitiator;
 	}
 
 	public REQUIREMENT_SUBMISSION_STATUS getRequirementSubmissionPreviousStatus() {

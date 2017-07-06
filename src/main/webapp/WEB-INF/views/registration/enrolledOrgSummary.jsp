@@ -689,7 +689,7 @@ function getUserList(){
 			                    	 result = result +'<div class="col-md-7 orgrole-switch">';
 			                    	 result = result +'<label class="switch">';
 			                    	 result = result +'<input type="checkbox" onclick="checkUser('+opt.id+',\''+name+'\')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'  >';
-			                    	 result = result +'<div class="slider round"></div>';
+			                    	 result = result +'<div class="slider round" title="set as primary contact"></div>';
 			                    	 result = result +'</label>';
 			                    	 result = result +'</div>';
 		                    	

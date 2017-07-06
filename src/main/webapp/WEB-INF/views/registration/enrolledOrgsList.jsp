@@ -51,8 +51,8 @@ window.onload = function () {
           </li>
 		   
 		 <li>
-			  <a href="javascript:void(0)">
-			  <i class="fa fa-building"></i></a>
+			  <a href="javascript:void(0)"></a>
+			  
 				<span class="action-search"><input type="text" id="searchByName"></span>
 				<span class="action-search" onclick="getOrgsList();"><i class="fa fa-search"></i></span>
 		  </li> 

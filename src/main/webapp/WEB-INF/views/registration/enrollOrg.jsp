@@ -20,7 +20,7 @@
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Enroll Org </div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
