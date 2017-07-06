@@ -1663,17 +1663,17 @@ function preparedContractListWTV(data){
 		         }
 	         opt = opt + '</td>';
 
-	         result = result + '<td>';
+	         opt = opt + '<td>';
 	         if(output.invoiceFrequency != null && output.invoiceFrequency != '' && output.invoiceFrequency != 'undefined'){
-		         result = result + '<div><span>'+output.invoiceFrequency+'</span></div>';
+	        	 opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
 	         }else{
-	        	 result = result + '<div><span>---</span></div>';
+	        	 opt = opt + '<div><span>---</span></div>';
 	         }
-	         result = result + '</td>';
+	         opt = opt + '</td>';
 	         
-	         result = result + '<td>';
-	         result = result + '<div><span>'+output.templateSubmissionStatus+'</span></div>';
-	         result = result + '</td>';
+	         opt = opt + '<td>';
+	         opt = opt + '<div><span>'+output.templateSubmissionStatus+'</span></div>';
+	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';

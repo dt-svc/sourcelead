@@ -101,6 +101,12 @@ public class OrgRelations implements Serializable{
 	private String city;
 	
 	@Transient
+	private String location;
+	
+	@Transient
+	private String zipCode;
+	
+	@Transient
 	private String phone;
 	
 	@Transient
@@ -277,6 +283,22 @@ public class OrgRelations implements Serializable{
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	public String getPhone() {

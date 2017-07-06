@@ -18,6 +18,14 @@
  <script type="text/javascript">
 		window.onload = function () {
 			getClientBasedOnSelectedProject();
+			
+			var entrySize = '${expenses.expensesEntries.size()}';
+			if(entrySize>0){
+				$('#maxRecCount').val('${2*expenses.expensesEntries.size()+1}');
+			}
+			else{
+				$('#maxRecCount').val('1');
+			}
 		 };
 </script>
 <!-- View Content Area Starts-->
@@ -60,12 +68,13 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
+
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 1}">
 								<option value="">Select Project</option>
@@ -79,7 +88,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" autocomplete="off" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -91,7 +100,7 @@
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						  </div>					  
+						  </div> 		  
 						</div>
 	              </div>
 	            </div>
@@ -107,10 +116,11 @@
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
-	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
+
  <input type="hidden"  name="maxRecCount" id="maxRecCount" value="${2*expenses.expensesEntries.size()+1}">
 	<table id="categoryTable">
 	    <thead>

@@ -22,6 +22,18 @@ display: none;
 </style>
 
 
+<script>
+ $(document).ready(function(){
+	 var UUID = '${UUID}';
+	 if(null != UUID && UUID != '' && UUID != 'undefined'){
+		 
+		 var mailType = '${mailType}';
+		 if(null != mailType && mailType != '' && mailType != 'undefined'){
+			 loadHotMailBoxDetails(UUID);
+		 }
+	 }
+});
+</script> 
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -654,9 +666,9 @@ function getCandidates(candidatesListType){
 	                		result = result +'           <tr>';
 	                		result = result +'             <th><input type="checkbox" id="checkAllCandidates" onclick="toggleCandidates(this);"></th>';
 	                		result = result +'             <th>Name</th>';
+	                		result = result +'             <th>Designation</th>';
 	                		result = result +'             <th>Email</th>';
 	                		result = result +'             <th>Phone</th>';
-	                		result = result +'             <th>Designation</th>';
 	                		if(candidatesListType == 'openHotlist'){
 	                			result = result +'<th>Type</th>';
 	                		}
@@ -701,9 +713,9 @@ function getCandidates(candidatesListType){
 		                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.candidateId+'" value="'+opt.candidateId+','+name+'"  type="checkbox" name="candidatesIds[]" class="myCheckbox" >';
 		                    	 result = result +'</td>';
 		                    	 result = result +'<td>'+name+'</td>';
+		                    	 result = result +'<td>'+designation+'</td>';
 		                    	 result = result +'<td>'+opt.email+'</td>';
 		                    	 result = result +'<td>'+mobile+'</td>';
-		                    	 result = result +'<td>'+designation+'</td>';
 		                    	 if(candidatesListType == 'openHotlist'){
 		                    		 if(opt.isAssociate == 'Y'){
 		                    			 result = result +'<td>Associate</td>'; 
@@ -771,7 +783,7 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10, 10, 15, -1], [10, 10, 15, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
@@ -891,11 +903,37 @@ function getContactEmails(){
            },
            
       }); 
-	  
-	 
 	 
 }
 
+</script>
+
+
+<script>
+function loadHotMailBoxDetails(UUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/getHotListedCandidateDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,    
+         success :function(data) {
+        	 
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
+        		 var json = JSON.parse(data);
+        		 var internalOutput = "";
+        		 for (var i = 0; i < json.length; i++) { 
+        			 var opt = json[i];
+        			 internalOutput = internalOutput+"<option value='" +opt.id+ "' selected>"+opt.email+"</option>";
+        		 }
+        		 
+       		     $("#selectedCandidates").append(internalOutput);
+       			 $("#selectedCandidates").trigger("chosen:updated");
+       			
+        	 }
+        	 
+         }
+	});
+}
 </script>
 
 

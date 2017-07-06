@@ -124,7 +124,7 @@
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix"></div>
-								<div id='attachmentSection' class='col-md-4 mb10'>
+								<div id='attachmentSection' class='col-md-4 noPad'>
 				                   <div class="uploadFile timesheet_week_comm">
 				                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
@@ -137,6 +137,7 @@
 					                                 <i class='glyphicon glyphicon-save'></i>
 										             <input type='button' value='${entryDoc.fileName}'/>
 										        </a>
+										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
 					                         </strong>
 					                       </c:forEach>
 					                 </div> 
@@ -154,7 +155,13 @@
 </div>
 </div>
     </section>
-    
+
+<script>
+function viewDocument(title,id){
+	var sourceleadUrl ='${sourceleadUrl}';
+		window.open(sourceleadUrl+'/viewExpensesEntryDocument?entryDocumentId='+id,title,"height=600,width=600");
+}
+</script>    
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){

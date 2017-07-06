@@ -102,6 +102,8 @@ function requirementSubmissionsCount(daterange){
 		        	 
 		        	 if(submissionsCount>0){
 	                      $("#submissionsCount").text(submissionsCount);
+	                      $('#submissionsCount').attr("onClick", "loadRequirementSubmissions(); return false;"); 
+	                      $('#subDiv').attr("style", "cursor:pointer"); 
 	                  }else{
 	                      $("#submissionsCount").html("0");
 	                      $("#submissionsCount").removeAttr("onclick");
@@ -109,6 +111,8 @@ function requirementSubmissionsCount(daterange){
 	                  } 
 		        	 if(applicantsCount>0){
 	                      $("#applicantsCount").text(applicantsCount);
+	                      $('#applicantsCount').attr("onClick", "loadRequirementApplicants(); return false;"); 
+	                      $('#appDiv').attr("style", "cursor:pointer"); 
 	                  }else{
 	                      $("#applicantsCount").html("0");
 	                      $("#applicantsCount").removeAttr("onclick");
@@ -116,6 +120,8 @@ function requirementSubmissionsCount(daterange){
 	                  }
 		        	if(interviewsCount>0){
 	                      $("#interviewsCount").text(interviewsCount);
+	                      $('#interviewsCount').attr("onClick", "loadRequirementInterviews(); return false;"); 
+	                      $('#intDiv').attr("style", "cursor:pointer"); 
 	                  }else{
 	                      $("#interviewsCount").html("0");
 	                      $("#interviewsCount").removeAttr("onclick");
@@ -123,6 +129,8 @@ function requirementSubmissionsCount(daterange){
 	                  }
 		        	if(offersCount>0){
 	                      $("#offersCount").text(offersCount);
+	                      $('#offersCount').attr("onClick", "loadRequirementOffers(); return false;"); 
+	                      $('#offDiv').attr("style", "cursor:pointer"); 
 	                  }else{
 	                      $("#offersCount").html("0");
 	                      $("#offersCount").removeAttr("onclick");

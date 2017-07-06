@@ -33,8 +33,13 @@ public class Registration {
 	
 	private String registeredOrgId;
 	
+	private String location;
 	
+	private String zipCode;
 	
+	private String latitude;
+	
+	private String longtude;
 	
 
 	public String getTimeZone() {
@@ -164,7 +169,36 @@ public class Registration {
 	{
 		this.registeredOrgId = registeredOrgId;
 	}
-	
-	
 
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongtude() {
+		return longtude;
+	}
+
+	public void setLongtude(String longtude) {
+		this.longtude = longtude;
+	}
 }
