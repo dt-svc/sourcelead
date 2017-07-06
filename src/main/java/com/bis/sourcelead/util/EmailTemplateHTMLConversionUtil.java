@@ -86,13 +86,14 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 					                 tempHTML.append("<td>");
 					                   tempHTML.append("<p style='color:#214b90; text-transform: uppercase; padding:5px 0px; margin:0px 0px; font-size:25px; font-weight:700;'>get started!</p>");
 					                   tempHTML.append("<p style='padding:0px 0px 15px 0px; margin:0px 0px; font-weight:600;'>For more information about SourceLead, go to <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#fff; display:inline-block;background-color:#e74c51; padding:6px 25px 8px; border-radius:15px; margin:0px 0px 0px 20px;'>sourcelead.com</a></p>");
+					                   tempHTML.append("<p style='padding:0px 0px 15px 0px; margin:0px 0px; font-weight:600;'>3535 Victory Group Way,Building 4 Frisco,TX 75034, USA,Phone : (214) 295-5535,FAX : (972) 559-3641 </p>");
 					                 tempHTML.append("</td>");
 					            tempHTML.append("</tr>");
 					         
 					            tempHTML.append("<tr>");    
 					                  tempHTML.append("<td>");
 					                       tempHTML.append("<p style='text-align:center; padding:10px 0px; margin:0px 0px; font-size:14px; font-weight:600; border-top:1px solid #333;'>");
-					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a></p>");
+					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a> | <a target='blank' href='http://www.sourcelead.com' style='text-decoration:none; color:#333;' title='Terms of Use'>Terms of Use</a></p>");
 					                  tempHTML.append("</td>");
 					            tempHTML.append("</tr>");
 					       tempHTML.append("</table>");
