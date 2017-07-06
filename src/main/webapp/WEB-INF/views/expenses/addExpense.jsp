@@ -167,25 +167,26 @@
 								<label>Payment Mode</label>
 								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation-optional="true">
 								         <option value="">Select Mode</option>
-		                                 <option  value="Credit Card" ${entry.paymentMode.value == 'Credit Card' ? 'selected' : ''}>Credit Card</option>
-		                                 <option  value="Debit Card" ${entry.paymentMode.value == 'Debit Card' ? 'selected' : ''}>Debit Card</option>
-		                                 <option  value="Cash" ${entry.paymentMode.value == 'Cash' ? 'selected' : ''}>Cash</option>
-		                                 <option  value="Cheque" ${entry.paymentMode.value == 'Cheque' ? 'selected' : ''}>Cheque</option>
-		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
+								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
+							                  <option  ${entry.paymentMode.value == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
+							             </c:forEach>
 								</select>
 							</div>	
 		                  <div id="amountDiv${entryCount.count}" class='col-md-4 mb10 valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
-												  <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
-												  	<option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
+											 <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
+									                  <option  ${entry.currencyType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
+									              </c:forEach>
+												  	<%-- <option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
 												  	<option value='AUD' ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
 												  	<option value='USD' ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
 												  	<option value='GBP' ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
 												  	<option value='SGD' ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
-												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
-												  </select>
+												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option> --%>
+										  </select>
 									</div>
 								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
 									</div>

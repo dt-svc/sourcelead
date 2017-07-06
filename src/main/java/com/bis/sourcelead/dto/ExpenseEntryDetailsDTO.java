@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.enums.PaymentModes;
+
 public class ExpenseEntryDetailsDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -14,6 +16,10 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 	List<ProjectMembersDTO> projectMembersList;
 	
 	List<ExpensesCategoryDTO> expenseCategoryList;
+	
+	List<String> paymentModes;
+	
+	List<String> currencyCodeList;
 
 
 	public String getExpenseId() {
@@ -32,8 +38,6 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 		this.projectMembersList = projectMembersList;
 	}
 
-	
-
 	public List<ExpensesCategoryDTO> getExpenseCategoryList() {
 		return expenseCategoryList;
 	}
@@ -48,6 +52,22 @@ public class ExpenseEntryDetailsDTO implements Serializable{
 
 	public void setCurrencyCode(String currencyCode) {
 		this.currencyCode = currencyCode;
+	}
+
+	public List<String> getPaymentModes() {
+		return paymentModes;
+	}
+
+	public void setPaymentModes(List<String> paymentModes) {
+		this.paymentModes = paymentModes;
+	}
+
+	public List<String> getCurrencyCodeList() {
+		return currencyCodeList;
+	}
+
+	public void setCurrencyCodeList(List<String> currencyCodeList) {
+		this.currencyCodeList = currencyCodeList;
 	}
 
 	

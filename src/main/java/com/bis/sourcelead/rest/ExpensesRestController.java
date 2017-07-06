@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.CurrencyCodes;
+import com.bis.sourcelead.enums.PaymentModes;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
@@ -138,8 +141,23 @@ public class ExpensesRestController {
 		  if(null != countries){
 			 expenseEntryDetailsDTO.setCurrencyCode(countries.getCurrency());
 		  }
-			
-		 /*expenseEntryDetailsDTO.setProjectMembersList(projectMembersList);*/
+		  
+		  List<String>  paymentModes = new LinkedList<>();
+		  paymentModes.add(PaymentModes.CREDITCARD.getValue());
+		  paymentModes.add(PaymentModes.DEBITCARD.getValue());
+		  paymentModes.add(PaymentModes.CASH.getValue());
+		  paymentModes.add(PaymentModes.CHEQUE.getValue());
+		  paymentModes.add(PaymentModes.EWALLET.getValue());
+		  expenseEntryDetailsDTO.setPaymentModes(paymentModes);
+		  
+		  List<String>  currencyCodeList = new LinkedList<>();
+		  currencyCodeList.add(CurrencyCodes.INR.getValue());
+		  currencyCodeList.add(CurrencyCodes.AUD.getValue());
+		  currencyCodeList.add(CurrencyCodes.USD.getValue());
+		  currencyCodeList.add(CurrencyCodes.GBP.getValue());
+		  currencyCodeList.add(CurrencyCodes.SGD.getValue());
+		  currencyCodeList.add(CurrencyCodes.EUR.getValue());
+		  expenseEntryDetailsDTO.setCurrencyCodeList(currencyCodeList);
 		 return expenseEntryDetailsDTO;
 	 }
 	 
