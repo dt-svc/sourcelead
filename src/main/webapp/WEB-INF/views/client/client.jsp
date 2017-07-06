@@ -463,7 +463,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(orgName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=VMS", 
@@ -524,7 +524,7 @@ function getRolesList(){
 			  //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 						type : "POST",
 						url : sourceleadUrl
@@ -667,7 +667,7 @@ function validateClientName(){
 	if(client.match(/^[^\s-](.*)*$/) != null){
 		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
 	if (client != null && client != '') {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+client+"&responderType=Client",

@@ -214,7 +214,7 @@ padding: 2px 300px 2px 0px;
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_Doc").attr("disabled", "disabled");
 			$("#contractDoc_form").attr("disabled", "disabled");
-			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 	 			 type: "POST",
 		    	 data: formData,
@@ -346,12 +346,12 @@ function getTemplateList(){
 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var selectedContractType = "";
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType+"&contractStatus="+contractStatus,       
        success :function(data) {
-    	   $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	   $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	   if(contractSubmissionType == 'DRAFT'){
     		   preparedContractListDraft(data);
     	   }else if(contractSubmissionType == 'WAITING_FOR_APPROVER'){
@@ -3238,7 +3238,7 @@ function finalizeContract(recordId,status){
 function approveContract(recordId,status){
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
@@ -3254,7 +3254,7 @@ function approveContract(recordId,status){
     	    	 $("#removeReject"+recordId).html("");
     	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
         	}
-        	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	getTemplateList();
        },
    });  
@@ -3405,7 +3405,7 @@ function getStageCounts(){
 
 <script>
 function Check(val){
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 if(val=="Vendors"){
 			 document.getElementById("clientContractsList").style.display="none";
 			 document.getElementById("applicantsContractsList").style.display="none"; 
@@ -3421,7 +3421,7 @@ function Check(val){
 			 document.getElementById("vendorContractsList").style.display="none";
 			 document.getElementById("applicantsContractsList").style.display="block"; 
 		 }
-	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 }
 
 </script>
@@ -3446,12 +3446,12 @@ function CountClick(contractUUID,parentId){
 	$(".mask_time").fadeIn(200);
 	$(".DocAccPopup").fadeIn(100);	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
-    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	    var json = JSON.parse(data);
     	    var result= "";
     	    

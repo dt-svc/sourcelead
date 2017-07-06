@@ -714,7 +714,7 @@ function proposeNewRate(submissionId, candidateId) {
 <script type="text/javascript">
 	function acceptRejectRate(submissionId, status, candidateId) {
 			var sourceleadUrl ='${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
@@ -916,7 +916,7 @@ $('body').on('submit', '#referToContacts', function(e){
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	
 	 	  $.ajax({
 		    	type: "POST",
@@ -955,7 +955,7 @@ $('body').on('submit', '#referToJob_form', function(e){
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
