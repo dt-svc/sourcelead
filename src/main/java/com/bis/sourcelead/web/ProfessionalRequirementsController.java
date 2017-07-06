@@ -167,7 +167,7 @@ public class ProfessionalRequirementsController {
 	 			return model;
 	 	}
 	 
-	    @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	    /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	    @RequestMapping(value = "/bankAccountDetails")
 	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
 	    	

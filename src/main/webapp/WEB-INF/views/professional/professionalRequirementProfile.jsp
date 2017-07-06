@@ -142,7 +142,12 @@ function requirementProfile(requirementUUID){
 	    			travelAllowance = "";
 	    		}
 		    	
-				 result = result +'	<div class="timesheet_out">';
+		    	var location = '';
+		    	if(json.location != null && json.location != '' && json.location != 'undefined'){
+		    		location = json.location
+		    	}
+
+		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
 				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
 				
@@ -193,7 +198,7 @@ function requirementProfile(requirementUUID){
 					 }
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 				 result = result +'                      </ul>';

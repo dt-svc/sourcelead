@@ -94,7 +94,7 @@ background-position: 30px; background-color: #368ee0; z-index: 1030; position: f
     text-align: center;
 }
 .main-header span.logo img {
-	/*width:100%; width: 200px;*/ width: auto; max-height: 52px; display: block; margin: 0 auto;
+	/*width:100%; width: 200px;*/ width: auto; max-height: 45px; display: block; margin: 3px auto;
 }
 .main-header span.logo .text-logo {
 font-size: 18px; font-weight: bold; text-align: center; line-height: 52px; overflow: hidden; text-overflow: ellipsis; width: 200px; 
@@ -4861,28 +4861,42 @@ width:1000px; margin: 10px auto; position: relative;
     padding: 0 15px;
 }
 .profilecompare-view {
-    overflow-y: auto; height: 375px;
+    overflow-y: auto; min-height: 375px;
 }
 .compare_resume {
-    border: 1px solid #bdbdbd; border-radius: 5px; background: #eeeeee; width: 95%; position: fixed; top: 10%; left: 2.5%;
-    height: 435px; z-index: 9999; padding:20px 15px 35px 20px; overflow: auto;
+    border: 1px solid #bdbdbd; border-radius: 5px; background: #eeeeee; width: 95%; position: fixed; top: 2%; left: 2.5%;
+    min-height: 435px; z-index: 9999; padding:10px 15px 5px 15px; overflow: auto;
 }
 .compare_resume h4{
 margin:0 0 15px 0;
 }
 .listHeadr {
-    background: #cfd8dc; height: 140px; border-radius: 5px 5px 0 0;
+    background: #cfd8dc; height: 155px; border-radius: 5px 5px 0 0;
+}
+.listHeadr label {
+    font-size: 18px;
 }
 .resumeFields, .profile_personalInfo
 {
-    border: 1px solid #e0e0e0;
+    /*border: 1px solid #e0e0e0;*/
 }
 .resumeFields ul, .profile_personalInfo ul {
     padding:0; margin-bottom: 0;
 }
 .resumeFields ul li, .profile_personalInfo ul li {
-    border-top: 1px solid #e0e0e0; line-height: 35px; height: 35px;
-    transition: all 0.3s linear; padding: 0 10px;
+    /*border-top: 1px solid #e0e0e0; line-height: 35px; min-height: 35px;
+    transition: all 0.3s linear; padding:5px 10px;*/
+    line-height: 20px; min-height: 35px; transition: all 0.3s linear; padding: 5px 10px; clear: both;
+    display: inline-block; margin: 0; float: left; width: 100%;
+}
+.valid-profile {
+  position: absolute; right: -20px; bottom: 15px; font-size: 1.2em;
+}
+.profile-progress .progress {
+    margin-bottom: 5px; height: 12px;
+}
+.profile-progress .progress-bar {
+    line-height: 12px; font-size: 10px;
 }
 .profile_personalInfo ul li {
 border-top: 1px solid #bdbdbd;
@@ -4905,11 +4919,17 @@ border-top: 1px solid #bdbdbd;
 .resumeFields ul li:first-child{
     border-top: none;
 }
+.resumeFields ul li .fa {
+    width:30px; font-size: 1.1em; float: left; margin-top: 3px;
+}
+.resumeFields ul li span.resumeValues {
+    float: left; width: 126px;
+}
 .profilecompare-widget {
     margin-bottom: 15px;
 }
 .profilecompare-widget_hdr{
-    height: 140px; background: #e0e0e0; border-radius: 5px 5px 0 0;
+    height: 155px; background: #e0e0e0; border-radius: 5px 5px 0 0;
 }
 .txtEditor_p p {
   position: relative; left: auto; top:0;
@@ -5607,7 +5627,7 @@ vertical-align: middle;
  position: absolute; z-index: 99999; top: -45px; width: 100%; display: block; background-color: #fff; padding: 10px; left: 5px;
 }
 a.color_white{
-  color:#fff;
+  color:#fff !important;
 }
 .require_wrap_details_cta.require_details b {
     width: 200px;
@@ -5710,7 +5730,7 @@ color:#fff;
 	position: absolute; right:0; top:0; height: 34px; line-height: 20px;
 }
 .profilerefresh-icon {
-	position: absolute; right:16; top:1px; height: 28px; line-height: 14px;
+	position: absolute; right:16px; top:1px; height: 28px; line-height: 14px;
 }
 .project-tabs-menu.custom_tab li a{
 	padding:7px 17px; font-size: 14px;
@@ -5768,6 +5788,9 @@ position: absolute !important;
 }
 .RePop.openTemplates ul:after {
     left: 50%;
+}
+.runpayRoll-txt {
+       font-size: 100%;
 }
 /* media 320px */
 @media (max-width: 320px) {

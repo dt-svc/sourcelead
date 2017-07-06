@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -149,6 +150,9 @@ public class UserMailBox implements Serializable{
 	
 	@Transient
 	private String previousMailUUID;
+	
+	@Transient
+	Map<Long,String> hotListCandidatesList;
 		
 	
 	
@@ -427,6 +431,14 @@ public class UserMailBox implements Serializable{
 
 	public void setPreviousMailUUID(String previousMailUUID) {
 		this.previousMailUUID = previousMailUUID;
+	}
+
+	public Map<Long, String> getHotListCandidatesList() {
+		return hotListCandidatesList;
+	}
+
+	public void setHotListCandidatesList(Map<Long, String> hotListCandidatesList) {
+		this.hotListCandidatesList = hotListCandidatesList;
 	}
 
 	
