@@ -70,7 +70,7 @@ $(document).ready(function(){
 <%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
               <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
 <%--               </sec:authorize> --%>
-                <h5>Note List</h5>
+                <h5>Notes</h5>
               </a>
             </li>
             

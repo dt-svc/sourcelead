@@ -1930,5 +1930,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	{
 		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
 	}
+	@Override
+	public List<Invoice> getDueDateCompletedInvoicesList() throws Exception {
+		return invoiceDao.getDueDateCompletedInvoicesList();
+	}
+	@Override
+	public void saveInvocePojo(Invoice invoice) throws Exception {
+		invoiceDao.saveInvoce(invoice);
+	}
 
 }

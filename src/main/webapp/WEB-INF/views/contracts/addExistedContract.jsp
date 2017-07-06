@@ -1353,7 +1353,7 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = "";
 		var sowType = $("#contractType").val();
-
+	if(sowType == 'Client SOW' || sowType == 'Vendor SOW' || sowType == 'Full time offer'){
 	$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
@@ -1393,7 +1393,7 @@ function hideCommonSOWFields(){
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
-
+	}
 	}
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
