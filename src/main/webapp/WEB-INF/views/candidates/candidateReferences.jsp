@@ -221,13 +221,13 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name">';
+	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
 	result = result  +'</div>';
 	result = result  +'</div>';    
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email">';
+	result = result  +'<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
 	result = result  +'</div>';
 	result = result  +'</div>'; 
 	
@@ -247,9 +247,9 @@ function addReference(candidateId) {
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="clearfix mb10">';
+	result = result  +'<div class="clearfix mb10" id="dvDesignation" style="display: none">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation">';
+	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
@@ -506,13 +506,13 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="name" field-name="Name" value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name">';
+								result = result  +'<input type="text" name="name" field-name="Name" value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
 								result = result  +'</div>';
 								result = result  +'</div>';    
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email">';
+								result = result  +'<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
 								result = result  +'</div>';
 								result = result  +'</div>'; 
 								
@@ -534,7 +534,7 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="designation" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation">';
+								result = result  +'<input type="text" name="designation"  field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
@@ -577,4 +577,20 @@ function deleteReference(candidateId,refId){
 				});
 
 	}
+</script>
+
+
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#relation").change(function () {
+            if ($(this).val() == 'Work Related') {
+            	alert("work");
+                $("#dvDesignation").show();
+            } else {
+                $("#dvDesignation").hide();
+            }
+        });
+    });
 </script>

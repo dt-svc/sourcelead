@@ -1738,6 +1738,7 @@ public class CandidateOnBoardRestController {
 			 
 			 Employees onboardingEmployee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), loginOrgLocation.getId());
 				if(null != onboardingEmployee){
+					
 					 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 						 onboardingEmployee.setCountry(jsonObj.getString("country"));
 					 }
@@ -1760,6 +1761,10 @@ public class CandidateOnBoardRestController {
 				
 					 if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 						 candidateOnBoarding.setCountry(jsonObj.getString("country"));
+					 }
+					 
+					 if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+						 candidateOnBoarding.setLocation(jsonObj.getString("location"));
 					 }
 					 
 					 if(jsonObj.has("state") && !isNullOrEmpty(jsonObj.getString("state"))){

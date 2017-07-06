@@ -787,7 +787,7 @@ function removePopup(){
 }
 </script>
 <script>
-$(".menupop, .pull-right, .positionRelative, .menuWidget, .fa, .fa-ellipsis-v, #unbilled").click(function(e) {
+$(".menupop, .pull-right, .positionRelative, .menuWidget, .fa-ellipsis-v, #unbilled").click(function(e) {
 	e.stopPropagation();
 });
 

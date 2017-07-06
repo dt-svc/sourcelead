@@ -88,6 +88,8 @@ public class RequirementHelper {
 			requirementIndex.setCountry(requirement.getCountry());
 			requirementIndex.setState(requirement.getState());
 			requirementIndex.setCity(requirement.getCity());
+			requirementIndex.setLocation(requirement.getLocation());
+			requirementIndex.setZipCode(requirement.getZipCode());
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy());
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
