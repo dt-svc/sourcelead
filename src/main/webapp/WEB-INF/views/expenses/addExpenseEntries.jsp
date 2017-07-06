@@ -216,7 +216,7 @@ function addAttachment(entityRowId,from){
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
-							   <c:forEach var="expCat" items="${expensesCategoryList}">
+							   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 					                 <option value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 	                	       </c:forEach>
 							</select>

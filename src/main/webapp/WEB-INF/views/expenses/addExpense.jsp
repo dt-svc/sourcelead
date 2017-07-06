@@ -53,7 +53,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : ExpensesId}" readonly="readonly">
+                    <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : expEntry.expenseId}" readonly="readonly">
                     <input type="hidden"  class="form-control" name="expenseId" value="${expenses.id}">
                   </div>
                 </div>  
@@ -67,11 +67,11 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<c:if test="${fn:length(projectMembersList) gt 1}">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 1}">
 								<option value="">Select Project</option>
 							</c:if>
-							<c:forEach var="projMembers" items="${projectMembersList}">
-							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
+							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
+							       <option  ${expenses.projectMemberId == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -87,10 +87,10 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
@@ -103,7 +103,7 @@
 <div class="form-group">
 <span class="col-md-3">Expenses Amount Total:</span>
 <div class="col-md-9">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
@@ -128,7 +128,7 @@
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.expensesCategoryId.expensesName}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
+			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
@@ -149,15 +149,15 @@
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
-							<option value="">Select Category Type</option>
-							<c:forEach var="expCat" items="${expensesCategoryList}">
+						<option value="">Select Category Type</option>
+							<c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 							</c:forEach>
 						</select>
 					</div>
 							<div class="col-md-4 mb10">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDate}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10">
 								<label>Receipt Issued by</label>
