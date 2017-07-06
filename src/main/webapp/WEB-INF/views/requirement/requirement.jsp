@@ -89,12 +89,16 @@ width: 100% !important;
     padding: 6px 12px 6px 30px !important;
 }
 .chosen-container-multi .chosen-choices li.search-field input[type="text"] { width: 100% !important;}
+.refresh-icon {
+right: 15px;
+}
 
 </style>
 
 
 <script>
 $(document).ready(function() {
+	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
 	var requirementAssignedIds ='${requirementAssignedIds}';
 	if (requirementAssignedIds != null && requirementAssignedIds !=  '' && requirementAssignedIds !='undefined')
 	{
@@ -656,33 +660,43 @@ $(document).ready(function () {
 		     </c:if>
           
           <div class="form-group">
-				<label class="col-md-3">Country</label>
+				<label class="col-md-3">Location</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" data-validation="required" name="countryReq" id="countryReq" field-name="Country" >
-                 </select>
-                   <input type="hidden" id="existingCountry" value="${requirement.country}" >
+				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Locatin" data-validation="required"></input>
+          			<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>
 				</div>
 		</div>
-			    
-          
-          <div class="form-group">
+		
+		<div class="form-group">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				 <input type="text" class="form-control"  name="countryReq" id="ReqCountry" placeholder="Country" value="${requirement.country}" field-name="Country" readonly>
+				</div>
+		</div>
+		
+		 <div class="form-group">
 				<label class="col-md-3">State</label>
 				<div class="col-md-9">
-				<select  class="chosen-select form-control select-bg" name="state" id="state" field-name="State"  >
-                 </select>
-                 <input type="hidden" id="existingState" value="${requirement.state}" >
+				<input type="text"  class="form-control" name="state" id="ReqState" value="${requirement.state}" placeholder="State" field-name="State" readonly>
 				</div>
 		 </div>
-		 
+		
 		 <div class="form-group">
 			<label class="col-md-3">City</label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control select-bg" name="city" id="city" field-name="City"  >
-                 </select>
-                 <input type="hidden" id="existingCity" value="${requirement.city}" >
+			     <input type="text"  class="form-control" name="city" id="ReqCity" value="${requirement.city}" placeholder="City" field-name="City"  readonly>
 			</div>
 		</div>
 		
+		
+		 <div class="form-group">
+			<label class="col-md-3">Zip Code</label>
+			<div class="col-md-9">
+			     <input type="text"  class="form-control" name="zipcode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" >
+			</div>
+		</div>
+		
+	 
          <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
@@ -1819,21 +1833,6 @@ function getCities(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			} */
-			
-			
-			
-		   $("#countryReq").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	      
-	      
-	       $("#countryReq").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
-	       
 	       
 	     //Adding Customized Skills to the list
 	       var select, chosen;

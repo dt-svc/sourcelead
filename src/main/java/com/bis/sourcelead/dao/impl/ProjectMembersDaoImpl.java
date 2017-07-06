@@ -296,8 +296,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId) {
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		
-		String query = "from ProjectMembers pm left join fetch pm.projects pj left join fetch pm.employee where pj.orgLocationsId = :orgLocationsId and  pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ";
+		 
+		String query = "from ProjectMembers pm left join fetch pm.projects pj left join fetch pj.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee where pj.orgLocationsId = :orgLocationsId and  pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId ) ";
 		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationsId).setLong("userId", empUserId).setCacheable(true).list();
 		return projectMemberList;
 	}

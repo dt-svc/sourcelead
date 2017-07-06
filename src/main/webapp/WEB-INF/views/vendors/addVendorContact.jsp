@@ -297,8 +297,8 @@ function getOrgDetails()
    	        success: function(data) {
    	        	if(data != null && data != ''){
    	        		var json = JSON.parse(data);
-			      	if(json[3] != null && json[3] != ''){
-			      		$("#webSite").val(json[3]);
+   	        		if(json['website'] != null && json['website'] != ''){
+			      		$("#webSite").val(json['website']);
 			      		$("#webSite").attr("disabled", true);
 			      	}
 			      	 

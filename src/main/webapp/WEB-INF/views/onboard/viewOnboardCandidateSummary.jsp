@@ -155,6 +155,12 @@ padding-left: 25px;
 					 result = result +'     </div>                                                                                                        ';
 				 }
 				 
+				 result = result +'  <div class="form-group">                                                                    ';
+				 result = result +'       <label class="col-md-3 control-label">Location </label>        ';
+				 result = result +'       <div class="col-md-6">                                   ';
+				 result = result +'           <label>'+json.location+'</label>                                 ';
+				 result = result +'       </div>                                                   ';
+				 result = result +'     </div>                                                     ';
 				 
 				 result = result +'  <div class="form-group">                                                                    ';
 				 result = result +'       <label class="col-md-3 control-label">Country </label>        ';
