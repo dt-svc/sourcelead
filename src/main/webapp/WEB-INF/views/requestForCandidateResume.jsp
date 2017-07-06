@@ -49,6 +49,9 @@ text-align: left;
 .container {
 padding-bottom: 55px;
 }
+#campaigncandidatesList .dataTables_info {
+padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
+}
 </style>
 <body>
 <div class="wraper"> 
@@ -74,7 +77,7 @@ padding-bottom: 55px;
 							  <div class="clearfix">
 							  <h4>Candidates / Consultants</h4>
 							  </div>
-							  <div id="campaigncandidatesList"></div>
+							  <div id="campaigncandidatesList" class="datatable_filter positionRelative"></div>
 							  
 							  <div class="clearfix" id="fromEmailDetails">
 								  <div class="col-md-10 mt col-md-offset-3">
@@ -164,14 +167,17 @@ function cancel(){
 		    var form = $('#candidate_form')[0];
 	  		var formData = new FormData(form)
 			
-			var candidatesIds = [];
-			 $("input[name='candidatesIds[]']:checked").each( function (i) {
-				 candidatesIds[i] = $(this).val();
+			 var candidatesIds = [];
+			 var oTable = $('#candidateTable').dataTable();
+			 var rowcollection =  oTable.$("input[name='candidatesIds[]']:checked", {"page": "all"});
+			 rowcollection.each(function(index,elem){
+				candidatesIds[index] = $(elem).val();
 			});
+				
 			 
 			if(candidatesIds.length > 0){
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-				  $.ajax({
+				   $.ajax({
 					    type : "POST",
 			    	    data: formData,
 			    	    contentType : 'application/json; charset=utf-8',
@@ -311,7 +317,7 @@ function pagination(){
     $('#candidateTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {

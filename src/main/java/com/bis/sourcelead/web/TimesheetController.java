@@ -3,7 +3,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,15 +24,17 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
+import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
  
 
@@ -61,6 +65,12 @@ public class TimesheetController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
+	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
 	
 	/**
 	 * @author naresh bolisetty and sarath kumar
@@ -153,7 +163,31 @@ public class TimesheetController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 	}
-
+	
+	
+	@RequestMapping(value = "/viewDocument", method = RequestMethod.GET)
+    public void viewDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId,
+    		@RequestParam(value="title", required=false) Long title,HttpServletResponse response) throws Exception {
+	
+	TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
+		
+	byte[] pdfBytes = null;
+	if("application/pdf".equalsIgnoreCase(timesheetSubmissionsDocuments.getFileContentType())){
+		pdfBytes = timesheetSubmissionsDocuments.getDocFile();
+	}
+	else{
+		 pdfBytes = pdfConversionUtil.convertDocToPdf(timesheetSubmissionsDocuments.getDocFile());
+	}
+	 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    ServletOutputStream sos = response.getOutputStream();
+  	    if(null != pdfBytes){
+  	    	response.setContentLength(pdfBytes.length);
+  	    	sos.write(pdfBytes);
+  	    }
+          sos.flush();
+          sos.close();
+	}
 		
 	/**
 	 * @author naresh bolisetty and sarath kumar

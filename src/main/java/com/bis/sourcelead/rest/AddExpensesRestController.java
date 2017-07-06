@@ -7,15 +7,14 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
@@ -53,6 +51,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -93,6 +92,9 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
 	
 	@RequestMapping(value = "/getClientByProjectMemberId", method = RequestMethod.GET)
 	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId) throws Exception {
@@ -272,6 +274,9 @@ public class AddExpensesRestController {
 				} 
 
 		} 
+	 
+	 
+	
 	 
 	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long expenseId, User loginUser, OrgLocations orgLoc, String reason) throws Exception {
 			
