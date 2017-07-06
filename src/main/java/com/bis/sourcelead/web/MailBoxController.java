@@ -96,6 +96,8 @@ public class MailBoxController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
+		    commonUtil.highLightMenu(Constants.OrgSettings, request);
+		    
 		    Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
 			Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
 			SourceLeadSessionManager.setSessionAttribute(request, "unReadMailsCount", inboxUnreadMailsCount+requestedUnreadMailsCount);
@@ -132,9 +134,14 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/forwardEmail")
- 	public ModelAndView forwardEmail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) {
+ 	public ModelAndView forwardEmail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID,
+ 			@RequestParam(value="mailType", required=false) String mailType) {
 		    ModelAndView model = new ModelAndView();
- 			model.setViewName("composeMail");
+ 			if(mailType.equalsIgnoreCase("composeMail")){
+ 				 model.setViewName("composeMail");
+ 			}else{
+ 				 model.setViewName("hotlistMail");
+ 			}
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			if(!isNullOrEmpty(UUID)){
  				model.addObject("UUID", UUID);

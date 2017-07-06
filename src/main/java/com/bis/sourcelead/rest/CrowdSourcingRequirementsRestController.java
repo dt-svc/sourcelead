@@ -664,7 +664,7 @@ public class CrowdSourcingRequirementsRestController {
 
 	}
 	
-	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	/*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	@RequestMapping(value = "/saveBankAccountDetails", method = RequestMethod.POST)
 	public String saveBankAccountDetails(@RequestParam(value = "jsonData", required = false) String json,HttpServletRequest request)
 			throws Exception {

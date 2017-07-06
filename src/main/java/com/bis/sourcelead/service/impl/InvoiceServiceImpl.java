@@ -1834,9 +1834,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getClientBasedInvoiceLists(orgRelationId,orgLocationId,invoiceType);
 	}
 	@Override
-	public void linkInvoice(Invoice invoice) throws Exception
+	public  Invoice linkInvoice(Invoice invoice) throws Exception
 	{
-      invoiceDao.saveInvoce(invoice);		
+      return invoiceDao.saveInvoce(invoice);		
 	}
 	
 	@Override
@@ -1929,6 +1929,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
 	{
 		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
+	}
+	@Override
+	public List<Invoice> getDueDateCompletedInvoicesList() throws Exception {
+		return invoiceDao.getDueDateCompletedInvoicesList();
+	}
+	@Override
+	public void saveInvocePojo(Invoice invoice) throws Exception {
+		invoiceDao.saveInvoce(invoice);
 	}
 
 }

@@ -99,6 +99,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   experience = 'Experience -'+json.requirementSubmissionTemplateFields.workExperience+ 'Years';
 	    	   }
 	    	   
+	    	   if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
+	    		   designationType = 'Employment Type -'+json.designationType;
+	    	   }
+	    	   
+	    	   
+	    	   
 	    	   /* if(json.candidate.rateType != null && json.candidate.rateType != '' && json.candidate.rateType !='undefined'){
 	    		   rateType = json.candidate.rateType; 
 	    	   }else{
@@ -169,6 +175,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }else{
 	    		   country = "";
 	    	   }
+	    	   
+	    	   
 	    	   var result = "";
 	    	   result = result + '<div id="loading"></div>';
           	   result = result + ' <div class="req_hide">';
@@ -181,7 +189,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
-               result = result + ' <li><strong>'+designation+'</strong></li>';
+               result = result + ' <li>'+designation+'</li>';
+               result = result + ' <li>'+designationType+'</li>';
                result = result + ' <li>'+experience+'</li>';
                result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';

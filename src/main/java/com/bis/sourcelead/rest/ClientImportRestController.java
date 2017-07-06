@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -81,7 +82,11 @@ public class ClientImportRestController {
 			isSuccess = "invalid";
 		}else{
 			List<BulkClientDetails> bulkClientDetailsList = clientImportsService.getbulkClientDetailsByOrgLocationId(orgLocation,user,org,"Y",responderType);
-			return commonUtil.toJSON(bulkClientDetailsList);
+			List<BulkClientDetails> filteredBulkClientDetailsList = bulkClientDetailsList.stream()
+					.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
+							&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
+					.collect(Collectors.toList());
+			return commonUtil.toJSON(filteredBulkClientDetailsList);
 		}
 		return isSuccess;
 	}

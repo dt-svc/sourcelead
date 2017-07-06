@@ -1240,7 +1240,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 										   bulkClientVendors.setType(Constants.VENDOR);
 									   }
 									   bulkClientVendors.setOrgLocationId(orgLocation.getId());
+									   bulkClientVendors.setCreatedBy(user.getUserCode());
 									   bulkClientVendors.setCreatedDate(new Date());
+									   bulkClientVendors.setUpdatedBy(user.getUserCode());
 									   bulkClientVendors.setUpdatedDate(new Date());
 									   bulkClientVendors.setRecordStatus("0");
 									   BulkClientDetails isBulkClientVendors = clientImportDao.isRecordExist(bulkClientVendors,orgLocation.getId(),responderType);
@@ -1310,7 +1312,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		@Override
 		public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocations,User user, Org org, String isMailSent, String responderType) throws Exception
 		{
-			List<BulkClientDetails> importClietDetails = clientImportDao.getbulkClientDetailsByOrgLocationId(orgLocations.getId(),responderType);
+			List<BulkClientDetails> importClietDetails = clientImportDao.getbulkClientDetailsByOrgLocationId(orgLocations.getId(),responderType,user);
 			List<BulkClientDetails> duplicateClietDetails = new ArrayList<>();
 			
 				for(BulkClientDetails clientOrVendor : importClietDetails){

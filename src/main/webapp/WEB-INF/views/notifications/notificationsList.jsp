@@ -259,6 +259,7 @@ function totalCheck1() {
 		
 	}
 }
+}
 </script>
 
 <script>

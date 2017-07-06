@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ClientImportDao;
 import com.bis.sourcelead.entity.BulkClientDetails;
+import com.bis.sourcelead.entity.User;
 
 @Repository
 public class ClientImportDaoImpl implements ClientImportDao{
@@ -40,13 +41,13 @@ public class ClientImportDaoImpl implements ClientImportDao{
 
 	@Override
 	@Transactional
-	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(Long orgLocationId, String responderType)
+	public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(Long orgLocationId, String responderType,User user)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BulkClientDetails> bulkClientDetailsList = null;
 		
-		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.recordStatus = '0' and bulkClientDetails.type =:responderType";
-		bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setCacheable(true).list();
+		String query = "from BulkClientDetails bulkClientDetails  where orgLocationId =:orgLocationId and bulkClientDetails.recordStatus = '0' and bulkClientDetails.type =:responderType and bulkClientDetails.createdBy = :userCode";
+		bulkClientDetailsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("responderType", responderType).setString("userCode", user.getUserCode()).setCacheable(true).list();
 		
 		return bulkClientDetailsList;
 	}
