@@ -226,7 +226,7 @@ function runPayrollCycles(type){
 					url : sourceleadUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
 						generatrPayroll(result,payrollCycle);
-						$("#loading").removeAttr("style");
+// 						$("#loading").removeAttr("style");
 					},
 				});
 		
