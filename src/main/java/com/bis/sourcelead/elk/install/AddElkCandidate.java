@@ -82,6 +82,10 @@ public class AddElkCandidate{
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
 					candidateIndex.setCandidateUUID(rs.getString("CANDIDATE_UUID"));
+					candidateIndex.setLocation(rs.getString("LOCATION"));
+					candidateIndex.setZipCode(rs.getString("ZIPCODE"));
+					candidateIndex.setLatitude(rs.getString("LATITUDE"));
+					candidateIndex.setLongitude(rs.getString("LONGITUDE"));
 					
 					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
 						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));

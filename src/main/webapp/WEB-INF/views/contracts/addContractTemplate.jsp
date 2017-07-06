@@ -94,7 +94,7 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			 <textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea> 
+			 <textarea id="txtEditor" name="templateContent"  data-validation="required" field-name="Template Content"  class="form-control newContrtextarea"></textarea> 
 			<!-- <textarea name="templateContent" class="form-control" id="txtEditor"></textarea> -->
 		</div>  
 		
@@ -470,7 +470,7 @@ function generatePDF(id) {
 	       // var jsonData = encodeURIComponent(con);
 	        $( "#save_template" ).addClass('button').val('Processing..');
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 						type : "POST",
 		  	    	    data: formData,

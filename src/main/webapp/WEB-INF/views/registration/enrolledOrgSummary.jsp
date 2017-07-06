@@ -94,7 +94,7 @@ z-index: 9999999999 !important;
 								</div>
 								
 								<div class="form-group">
-								<label class="col-md-4">Location :</label>
+								<label class="col-md-4">Country :</label>
 								<p class="tbldata-dotdot-me">${orgloc.country}</p>
 								</div>
 								
@@ -508,7 +508,7 @@ function removeAddUserPopUp(){
          
          var orgLocationId = '${registeredOrgLocationId}'
          
-        $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
@@ -555,7 +555,7 @@ var validationSettings = {
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		
 	          		 $("#add_user").attr("disabled", "disabled");
-	          		 $("#userLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	          		 $("#userLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	          	      $.ajax({
 	     		    	type: "POST",
@@ -621,7 +621,7 @@ function getUserList(){
       var orgId = '${orgId}';
       var registeredOrgLocationId = '${registeredOrgLocationId}';
 	  
-	  $("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		  type : "POST",
 		  url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&registeredOrgLocationId="+registeredOrgLocationId,      
@@ -689,7 +689,7 @@ function getUserList(){
 			                    	 result = result +'<div class="col-md-7 orgrole-switch">';
 			                    	 result = result +'<label class="switch">';
 			                    	 result = result +'<input type="checkbox" onclick="checkUser('+opt.id+',\''+name+'\')"  name="check'+opt.id+'"  id="check'+opt.id+'" '+checked+'  >';
-			                    	 result = result +'<div class="slider round"></div>';
+			                    	 result = result +'<div class="slider round" title="set as primary contact"></div>';
 			                    	 result = result +'</label>';
 			                    	 result = result +'</div>';
 		                    	
@@ -766,7 +766,7 @@ function makeAsPrimaryAdmin(userId){
 	var orgLocationId = '${registeredOrgLocationId}';
 	var orgId = '${orgId}';
 	
-	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != "" && orgLocationId != null && orgLocationId != ""){
 		 $.ajax({
@@ -872,7 +872,7 @@ function pagination(){
 			});
 			 
 		 
-			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,

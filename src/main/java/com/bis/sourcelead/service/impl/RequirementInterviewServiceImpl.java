@@ -1493,13 +1493,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		} else {
 			globalVarsMap.put("ApplicantName", "--");
 		}
-		Requirement requirement = requirementService
-				.getRequirementByRequirementId(reqSubmission.getRequirement().getId());
+		Requirement requirement = requirementService.getRequirementByRequirementId(reqSubmission.getRequirement().getId());
 
-		if (null != requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())) {
-			globalVarsMap.put("requirementName", requirement.getJobTitle());
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
+			StringBuilder sbv = new StringBuilder();
+			globalVarsMap.put("requirementName", sbv.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
 		} else {
-			globalVarsMap.put("requirementName", "--");
+			globalVarsMap.put("requirementName", requirement.getJobTitle());
 		}
 		if (null != reqnterview.getDateOfInterview()) {
 			String currentTimeStr = Constants.TZ_DF.format(reqnterview.getStartTime());

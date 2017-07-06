@@ -167,4 +167,11 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirementCreatorUser, OrgLoc, notificationScenario);
 		}
 
+	@Override
+	public Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId, Long userId)
+	{
+		return requirementInterviewerDao.isInterviwerForByRequirementIdInterviewIdAndUserId(reqUUID, requirementInterviewerId, userId);
+		
+	}
+
 }
