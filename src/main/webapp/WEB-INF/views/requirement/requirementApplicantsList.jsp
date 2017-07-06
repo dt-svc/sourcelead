@@ -119,19 +119,19 @@
          
               
                <td><div><span>
-	               <c:if test="${not empty reqSub.vendorLocationId.org.orgName}">
-	            	  ${reqSub.vendorLocationId.org.orgName}
+	               <c:if test="${not empty reqSub.createdUser}">
+	            	  ${reqSub.createdUser}
 	              </c:if>
-	              <c:if test="${empty reqSub.vendorLocationId.org.orgName}">
+	              <c:if test="${empty reqSub.createdUser}">
 	             	 --
 	              </c:if>
               </span></div></td>
               
                <td><div><span>
-	               <c:if test="${not empty reqSub.score}">
-	            	  ${reqSub.score}
+	               <c:if test="${not empty reqSub.candidateScore}">
+	            	  ${reqSub.candidateScore}
 	              </c:if>
-	              <c:if test="${empty reqSub.score}">
+	              <c:if test="${empty reqSub.candidateScore}">
 	             	 --
 	              </c:if>
               </span></div></td> 

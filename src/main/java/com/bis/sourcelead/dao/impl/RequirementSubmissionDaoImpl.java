@@ -2470,17 +2470,20 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		{
 			Session session = this.sessionFactory.getCurrentSession();
 	        
-	        String submissionStages = "";
-	        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-				 submissionStages = "and rs.submissionStatus = 'SUBMISSION' ";
-			}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-				 submissionStages = "and rs.submissionStatus = 'SUBMIT_TO_CLIENT' ";
-			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-				submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') ";
-			}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
-				submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED') ";
-			}
+			  String submissionStages = "";
+		        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
+					 submissionStages = "and (rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";
+				}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+					 submissionStages = "and( rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";
+				}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
+					submissionStages = "and ((rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";
+				}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
+					submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED') ";
+				}
 	        
 	        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 	        	Map<String, Object> params = new HashMap<String,Object>();
