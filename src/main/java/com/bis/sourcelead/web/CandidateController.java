@@ -1,29 +1,25 @@
 package com.bis.sourcelead.web;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -32,6 +28,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -40,6 +37,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -73,8 +71,13 @@ public class CandidateController {
 	
 	@Autowired
 	CommonUtil commonUtil;
-	private CandidateResumes candidate;
 	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
+	
+	
+	@Autowired
+	private CandidateDocumentsService candidateDocumentsService;
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -356,6 +359,60 @@ public class CandidateController {
 	 }	 
 	 
 	
+	 @RequestMapping(value = "/viewProfessionalCandidateResume", method = RequestMethod.GET)
+	    public void viewProfessionalCandidateResume(@RequestParam(value="resumeUUID", required=false) String resumeUUID,
+	    		@RequestParam(value="title", required=false) Long title,
+	    		@RequestParam(value="type", required=false) Long type
+	    		,HttpServletResponse response) throws Exception {
+		 
+		 CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);	
+			    
+		 byte[] pdfBytes = null;
+			if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
+				pdfBytes = candidateResume.getDocFile();
+			}
+			else{
+				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResume.getDocFile());
+			}
+			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+		  	    response.setContentType("application/pdf");
+		  	    ServletOutputStream sos = response.getOutputStream();
+		  	    if(null != pdfBytes){
+		  	    	response.setContentLength(pdfBytes.length);
+		  	    	sos.write(pdfBytes);
+		  	    }
+		          sos.flush();
+		          sos.close();
+
+		} 
+	 
+	 
+	 @RequestMapping(value = "/viewProfessionalCandidateDocument", method = RequestMethod.GET)
+	    public void viewProfessionalCandidateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+	    		@RequestParam(value="title", required=false) Long title
+	    		,HttpServletResponse response) throws Exception {
+		 
+		 CandidateDocuments candidateDocuments =  candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);	
+			    
+		 byte[] pdfBytes = null;
+			if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
+				pdfBytes = candidateDocuments.getDocFile();
+			}
+			else{
+				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateDocuments.getDocFile());
+			}
+			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+		  	    response.setContentType("application/pdf");
+		  	    ServletOutputStream sos = response.getOutputStream();
+		  	    if(null != pdfBytes){
+		  	    	response.setContentLength(pdfBytes.length);
+		  	    	sos.write(pdfBytes);
+		  	    }
+		          sos.flush();
+		          sos.close();
+
+		} 
+	 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;
