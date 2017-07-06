@@ -282,9 +282,11 @@ public class LoginSessionController {
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
 					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
 					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcome");
+					   model.setViewName("onboard/welcomeStep1");
 					}else{
 						model.setViewName("dashboard");
 					}
@@ -586,9 +588,11 @@ public class LoginSessionController {
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
 					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
 					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcome");
+					   model.setViewName("onboard/welcomeStep1");
 					}else{
 						model.setViewName("dashboard");
 					}
