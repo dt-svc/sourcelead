@@ -7,7 +7,7 @@
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>View Expense ---${submissionStatus}</h2>
+        <h2>View Expense</h2>
       </div>
       
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; View Expense</div>
@@ -68,16 +68,16 @@
 						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Project Name:</strong><span>${expenses.projectMembers.projects.projectName}</span><div class="clearfix"></div>
+						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Start date:</strong><span>${expenses.startDateStr}</span><div class="clearfix"></div>
+						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>End date:</strong><span>${expenses.endDateStr}</span><div class="clearfix"></div>
+						<strong>End date:</strong><span>${expenses.endDate}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
@@ -104,7 +104,7 @@
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div class="ExpShow" id="categoryTypeDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
+			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
@@ -115,7 +115,7 @@
 						<div class="expDetails">
 							<ul>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
-								<li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
+								<li><strong>Date :</strong><span>${entry.expenseDate}</span><div class="clearfix"></div></li>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>

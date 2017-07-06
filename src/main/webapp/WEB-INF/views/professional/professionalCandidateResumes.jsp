@@ -76,7 +76,7 @@ function candidateResume(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function resumesMsgFadein() {
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
@@ -249,7 +249,7 @@ function addResume(candidateId) {
 		             				$("#resMsgDiv").html("Success!! New Resume added");
 		             			}		             			
 						 		candidateResumesList(candidateId);
-						 		resMsgFadein();
+						 		resumesMsgFadein();
 						},
 					});
 					return true;
@@ -432,8 +432,8 @@ function deleteSelectedResume(candidateId, resumeId){
      			 $("#selector2").css({ display: "block" });
      			 $("#resMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
-    			 location.replace(sourceleadUrl+"/professionalProfile");
-    		     resMsgFadein();
+    			 candidateResumesList(candidateId);
+    			 resumesMsgFadein();
 		    	}
 		    },
      });
@@ -467,7 +467,7 @@ function getResume(candidateId, resumeId){
         				 document.getElementById("title").value = json.title;
         			 }
         			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 document.getElementById("description").value = json.description;
+        				 $("textarea#description").val(json.description);
         			 }
         			 
         			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
