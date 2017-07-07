@@ -70,7 +70,7 @@ $(document).ready(function(){
 <%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
               <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
 <%--               </sec:authorize> --%>
-                <h5>Note List</h5>
+                <h5>Notes</h5>
               </a>
             </li>
             
@@ -675,8 +675,8 @@ function addNotes() {
 				var form = $('#invoiceNotes_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#submit_comment").attr("disabled", "disabled");
-         		$("#submit_comment" ).addClass('button').val('Processing..');
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",

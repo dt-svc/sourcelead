@@ -18,4 +18,8 @@ public interface AccountDeductionsService {
 
 	List<AccountDeductionsDetails> getDeductionsDetailsbyId(Long deductionId);
 
+	AccountDeductions getDeductionsbyId(Long deductionId);
+
+	AccountDeductions saveAccountDeductions(AccountDeductions accountDeductions) throws Exception;
+
 }

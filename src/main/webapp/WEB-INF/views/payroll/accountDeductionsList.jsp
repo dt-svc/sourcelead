@@ -1,7 +1,7 @@
 
 <script>
 function accountDeductionsList(){
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -36,7 +36,7 @@ function accountDeductionsList(){
 			        		    }
 			        		    
 			        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
-			        		    	result = result + '<td><div class="tblminwidth-75" onclick="getEmpAccountDeductionDetails('+opt.id+',\''+opt.employeeName+'\');">'+opt.employeeName+'</div></td>';
+			        		    	result = result + '<td><div class="tblminwidth-75" onclick="getEmpAccountDeductionDetails('+opt.id+',\''+opt.employeeName+'\');"><a>'+opt.employeeName+'</a></div></td>';
 			        		    }else{
 			        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
 			        		    }
@@ -52,12 +52,22 @@ function accountDeductionsList(){
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 								}
-								
-								if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
+			        		    if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
+				        		    //result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'">'+opt.dedAmount+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+opt.id+','+opt.dedAmount+')"></small></div>';
+									result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>'+opt.dedAmount+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+opt.id+','+opt.dedAmount+')"></small></div>';
+				        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+									result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit('+opt.id+')"></small></div></td>';
+			        		    }
+			        		    else{
+			        		    	result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>0<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+opt.id+',0)"></small></div>';
+				        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+									result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit('+opt.id+')"></small></div></td>';
+								}
+								/* if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
 									result = result + ' <td><div class="tblminwidth-75">'+opt.dedAmount+'</div></td>';
 								}else{
 									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
-								}
+								} */
 								
 								if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
 									result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
@@ -95,6 +105,7 @@ function accountDeductionsList(){
 						$("#finalPayrollReportDiv").empty();
 						$("#accountDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						accountDeductionsListTablePagination();
 				        	
 				        },
@@ -199,6 +210,48 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 function closeModalExpenses(){
 	$(".sideMask").fadeOut("slow");
 	$(".modal_Expenses").fadeOut("slow");	
+}
+function showEdit(id,dedVal){
+	 document.getElementById("preDedDiv"+id).style.display="none";
+	 document.getElementById("editDedDiv"+id).style.display="block";
+	 document.getElementById("preDed"+id).value = dedVal;
+
+	
+
+}
+function saveEdit(id){
+	$("#preDedError"+id).empty();
+	var output = document.getElementById("preDed"+id).value;
+	var flag ="valid";
+	if(output==""){
+		flag="empty";
+	}
+	else if(/^[a-zA-Z0-9\.\_]*$/.test(output) == false || output.match(/[a-z]/i)) {
+		flag = "invalid";
+	}
+	if(flag == "valid"){
+		$("#preDedError").empty();
+		 var sourceleadUrl ='${sourceleadUrl}';
+		  $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/updateAccountDeduction?${_csrf.parameterName}=${_csrf.token}&accDeductionId="+id+"&dedAmount="+output,
+		        success: function(data) {
+		        	document.getElementById("preDedDiv"+id).style.display="block";
+		   		 	document.getElementById("editDedDiv"+id).style.display="none";
+		        	accountDeductionsList();
+		         //$("#preDedDiv"+id).empty();
+		   		// $("#preDedDiv"+id).append(output+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+id+','+output+')"></small>');
+		        },
+		    });
+	}
+	else{
+		if(flag == "empty"){
+			$("#preDedError"+id).empty().append("please Enter value") ; 
+		}
+		else{
+			$("#preDedError"+id).empty().append("Invalid Number.") ; 
+		}
+	}
 }
 </script>
 

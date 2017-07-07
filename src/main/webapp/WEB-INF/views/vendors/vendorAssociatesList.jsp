@@ -77,6 +77,7 @@ function vendorAssociatesList(orgRelationId){
 			            result = result + '	     <th>Email</th>';
 			            result = result + '	     <th>Location</th>';
 			            result = result + '	     <th>Primary Skill</th>';
+			            result = result + '	     <th>Resume</th>';
 			            result = result + '	     <th>Vendor Contact</th>';
 			            result = result + '	     <th>Project Count</th>';
 			            result = result + '	     <th>Updated On</th>';
@@ -110,6 +111,13 @@ function vendorAssociatesList(orgRelationId){
 				            	result = result +"<td><div> --- </div></td>";
 	
 			               	}
+			               	if(opt.candidateResumeName != null && opt.candidateResumeName != '' && opt.candidateResumeName !='undefined'){
+		               		result = result +"<td title="+opt.candidateResumeName+"><a class='glyphicon glyphicon-download-alt' href=\'"+sourceleadUrl+"/candidateResumeDownload?candidateID="+opt.id+"\'></a>&nbsp;&nbsp;<a class='fa fa-eye' onclick='viewAssociateCandidateResume(\""+opt.id+"\",\""+opt.candidateResumeName+"\");'></a></td>";
+			               	}
+			               	else{
+				            	result = result +"<td><div> --- </div></td>";
+	
+			               	}
 			            	result = result +"<td><div>"+opt.vendorContactName+"</div></td>";
 			            	if(opt.assignedProjectsCount != null && opt.assignedProjectsCount != '' && opt.assignedProjectsCount !='undefined'){
 			            		result = result +"<td><div>"+opt.assignedProjectsCount+"</div></td>";	
@@ -134,6 +142,14 @@ function vendorAssociatesList(orgRelationId){
 	    });
 	}
 </script>
+
+<script>
+function viewAssociateCandidateResume(candidateId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
+}
+</script>
+
 <!--  vendor details ends -->
 
 <script>

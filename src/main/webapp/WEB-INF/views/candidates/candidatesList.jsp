@@ -647,7 +647,7 @@ function candidateSideBar(candidateId){
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu">'; 
+			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 
@@ -2199,6 +2199,40 @@ function getCities(){
 		    	 }
 		    });
 		    
+		  //Adding Customized Visa to the list
+	        var selectnine, chosennine;
+	        selectnine = $("#canVisa");
+	        selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:' });
+		    chosennine = selectnine.data('chosen');
+		    chosennine.search_field.bind(('keydown keyup'), function(e10)
+		    { 
+		    	 
+		    	 var enterVisaArray = this.value.split(",");
+		    	 if(enterVisaArray.length > 1){
+	        		 for (var i=0; i < enterVisaArray.length; i++) {
+	        			 var option = $("<option>").val(enterVisaArray[i].replace(",","")).text(enterVisaArray[i].replace(",",""));
+	        			 selectnine.append(option);
+	        			 selectnine.find(option).prop('selected', true);
+	 	        		 $("#canVisa").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newVisa = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForVisa(e10) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
+			        {
+			        	preventTabkey(e10); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newVisa.replace(",","")).text(newVisa.replace(",",""));
+			        		 selectnine.append(option);
+			        		 selectnine.find(option).prop('selected', true);
+				        		$("#canVisa").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
 		    
 		    
 		      $("#country").on('change', function (e) {
@@ -2231,6 +2265,7 @@ function getCities(){
 		 };
 	</script> -->
 <!-- Add candidate Popup -->
+	
       <div class="addcandidate-popup">
 				  <div class="row">
                       <div class="col-md-offset-2 col-md-8">
@@ -2495,6 +2530,7 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
+	     $("#canVisa").val('');
 	     $("#primarySkill").val('');
 	    
 	}

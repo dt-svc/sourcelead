@@ -189,8 +189,8 @@ $(document).ready(function(){
                               <label for="onboard2">Partially Paid</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard4">OverDue</label>
+                              <input type="checkbox" id="" value="Overdue" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard4">Overdue</label>
                             </li>
                             <li>
                               <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
@@ -585,7 +585,11 @@ function getInvoiceList(){
 				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
-				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
+				if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
+					result = result +'<div class="tblminwidth-100">'+invoiceDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
@@ -787,10 +791,9 @@ function removePopup(){
 }
 </script>
 <script>
-$(".menupop, .pull-right, .positionRelative, .menuWidget, .fa, .fa-ellipsis-v, #unbilled").click(function(e) {
+$(".menupop, .pull-right, .positionRelative, .menuWidget, .fa-ellipsis-v, #unbilled").click(function(e) {
 	e.stopPropagation();
 });
-
 $('html').click(function(){
 	$(".menupop").hide();
 });
@@ -1322,7 +1325,7 @@ function LinkInvoicePagination(){
 <script type="text/javascript">
 function generateAutomaticInvoice(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',

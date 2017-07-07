@@ -314,6 +314,7 @@ public class Constants {
 	public static final String OnAndOffboard = "OnAndOffboard";
 	public static final String Receivable = "Receivable";
 	public static final String Payables = "Payables";
+	public static final String PAYROLL = "Payroll";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -665,5 +666,6 @@ public class Constants {
     public static final String[] ACCOUNT_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th","sep 1st","sep 15th","oct 1st","oct 15th","nov 1st","nov 15th","dec 1st","dec 15th"};
     public static final String[] HR_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th"};
     public static final String BIS_USERS = "BIS_USERS";
+    public static final String OVER_DUE = "Overdue";
 
 }

@@ -52,7 +52,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	
-	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -98,6 +98,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   if(json.requirementSubmissionTemplateFields.workExperience != null && json.requirementSubmissionTemplateFields.workExperience != '' && json.requirementSubmissionTemplateFields.workExperience !='undefined'){
 	    		   experience = 'Experience -'+json.requirementSubmissionTemplateFields.workExperience+ 'Years';
 	    	   }
+	    	   
+	    	   if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
+	    		   designationType = 'Employment Type -'+json.designationType;
+	    	   }
+	    	   
+	    	   
 	    	   
 	    	   /* if(json.candidate.rateType != null && json.candidate.rateType != '' && json.candidate.rateType !='undefined'){
 	    		   rateType = json.candidate.rateType; 
@@ -169,6 +175,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }else{
 	    		   country = "";
 	    	   }
+	    	   
+	    	   
 	    	   var result = "";
 	    	   result = result + '<div id="loading"></div>';
           	   result = result + ' <div class="req_hide">';
@@ -181,7 +189,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
                result = result + ' <ul class="list-unstyled">';
-               result = result + ' <li><strong>'+designation+'</strong></li>';
+               result = result + ' <li>'+designation+'</li>';
+               result = result + ' <li>'+designationType+'</li>';
                result = result + ' <li>'+experience+'</li>';
                result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';
@@ -1307,7 +1316,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({  
         type : "POST",
         url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
@@ -1320,7 +1329,7 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 		    	else{
 		    		 $("#"+(offerHistoryId)+"offerNotifiedDiv").html(existingVal+",Applicant");
 		    	}
-		    	$("#offerLoading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		    	$("#offerLoading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       },
         
    });  
@@ -2365,7 +2374,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId,type){
 	var sourceleadUrl ='${sourceleadUrl}';
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
 // 	if (message == true) {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,        
