@@ -4997,6 +4997,13 @@ color: #33c38e;
     position: absolute; left: 0px; top:5px; font-size: 85%;
 }
 
+.reSchPopInn {
+	color:#333;
+}
+
+.custom-textarea textarea {
+	min-height: auto; padding: 5px 10px; height: 50px !important;
+}
 
 
 /*   Onboard Carosel CSS   */
