@@ -424,7 +424,9 @@ public class InvoiceRestController {
 			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 			}
-				
+			if(null != invoice.getProjectID()){
+				invoice.setProjectName(invoice.getProjectID().getProjectName());	
+			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){
 				if(invoice.getContactUser().getLastName() != null){

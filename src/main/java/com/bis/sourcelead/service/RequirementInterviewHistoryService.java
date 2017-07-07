@@ -43,7 +43,7 @@ public interface RequirementInterviewHistoryService {
 	 */
 	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(OrgLocations loginOrgLocations, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate,Timezone timezone, User user)throws Exception;
 	
-	List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)throws Exception;
+	List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId,String currentTime,Date startUTCDate, Date endUTCDate,Timezone timezone)throws Exception;
 	
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	

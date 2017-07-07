@@ -393,9 +393,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 	}
 
 	@Override
-	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)
+	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone)
 			throws Exception {
-		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllProfessinalInterviews(dateRange, candidateId);
+		List<RequirementInterviewHistory> list = requirementInterviewHistoryDao.getAllProfessinalInterviews(dateRange,candidateId,currentTime,startUTCDate,endUTCDate,timezone);
 		return list;
 
 			}

@@ -69,6 +69,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SavedJobs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -81,6 +82,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SavedJobsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -141,6 +143,8 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	SavedJobsService savedJobsService;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1069,15 +1073,34 @@ public class CrowdSourcingRequirementsRestController {
 	    
 	    
 	    @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
-	  		@RequestMapping(value = "/getProfessionalInterviews")
-	  		public String getProfessionalInterviews(String dateRange, HttpServletRequest request) throws Exception {
+	  		@RequestMapping(value = "/getProfessionalInterviewsEvent")
+	  		public String getProfessionalInterviewsEvent(String dateRange, HttpServletRequest request) throws Exception {
 	  			String resultJson;
 	  			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	  			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+	  			 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  			 
+	  			String currentTime = null;
+				Timezone timezone = null;
+	  			if(loginOrgLocations.getTimezone() != null){
+					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+				}
 	  			
+	  			Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+				Date startTime =  commonUtil.getDateFormat(dateRange);
+				
+				String startTimeTS = Constants.TZ_DF.format(startTime); 
+				String endTimeTS = END_TZ_DF.format(startTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+					 startUTCDate = TZ_DF_TS.parse(startDateString);
+					 endUTCDate = TZ_DF_TS.parse(endDateString);
 	  			List<RequirementInterviewHistory> requirementInterviewList = null;
 	  			
-	  		    requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(dateRange,candidateId);
+	  		    requirementInterviewList = requirementInterviewHistoryService.getAllProfessinalInterviews(dateRange,candidateId,currentTime,startUTCDate,endUTCDate,timezone);
 	  			
 	  			for(RequirementInterviewHistory interviewHistory : requirementInterviewList){
 	  				if(null != interviewHistory.getInterviewId()){
@@ -1099,13 +1122,43 @@ public class CrowdSourcingRequirementsRestController {
 	  				}
 	  				interviewHistory.setRequirementId(interviewHistory.getSubmissionId().getRequirement().getId().toString());
 	  				
+	  			//changed as per the timezone
 	  				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-	  				String commonDateFormat = standardFormat.format(interviewHistory.getInterviewId().getStartTime());
-	  				interviewHistory.setInterviewStartDateTimeStr(commonDateFormat.toString());
+	  				DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+	  				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
+	  					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
+	  					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+	  					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+	  					currentDateInTimezone = standardFormat.format(converteDate);
+	  					String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+	  					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
+	  					interviewHistory.setStartTimeStr(eventstartTimrFroDashBoardStr);
+	  				}
+	  				
+	  				
+	  				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getEndTime()){
+	  					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getEndTime());  
+	  					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+	  					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+	  					String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+	  					interviewHistory.setEndTimeStr(eventstartTimrFroDashBoardStr);
+	  				}
+	  				else{
+	  					interviewHistory.setEndTimeStr("--");
+	  				}
 	  				
 	  			}
-	  			
-	  			resultJson = commonUtil.toJSON(requirementInterviewList);
+	  			DateFormat week_Day = new SimpleDateFormat ("EEEE");
+	  			String dayOfweek = week_Day.format(startTime);
+  				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
+  				String selectedDate  = formatter.format(startTime);
+  				RequirementInterviewHistory reqInterviewHistory =  new RequirementInterviewHistory();
+  				
+  				reqInterviewHistory.setInterviewerList(requirementInterviewList);
+  				
+  				reqInterviewHistory.setDayOfweek(dayOfweek);
+  				reqInterviewHistory.setSelectedDate(selectedDate);
+	  			resultJson = commonUtil.toJSON(reqInterviewHistory);
 	  			return resultJson;
 	  		}
 	 

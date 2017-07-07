@@ -38,7 +38,7 @@ public interface RequirementInterviewHistoryDao {
 	 */
 	List<RequirementInterviewHistory> getAllInterviewAssignedToLoginUser(Long orgLocationsId, String dateRange, String currentTime, String userType, Long userId, String userCode, Date startUTCDate, Date endUTCDate)throws Exception;
 	
-	List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)throws Exception;
+	List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone)throws Exception;
 	
 	Integer getRequirementInternalAndIsClientInterviewsCountBySubmissionIdAndOrgLocationsId(Long submissionId, Long orgLocationsId) throws Exception;
 	

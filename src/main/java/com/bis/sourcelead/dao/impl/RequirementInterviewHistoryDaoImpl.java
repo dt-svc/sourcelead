@@ -23,6 +23,7 @@ import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -180,7 +181,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)
+	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -190,8 +191,10 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		subQuery = "and (rih.submissionId.candidate.id =:candidateId)";
 		params.put("candidateId",candidateId);
 		
-		String query = "";
-        if(dateRange != null && "today".equals(dateRange)){
+		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId where rih.submissionId.status = 1  and ( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) "+subQuery;
+    	params.put("startDate",startUTCDate);
+    	params.put("endDate",endUTCDate);
+       /* if(dateRange != null && "today".equals(dateRange)){
             query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
         }else if(dateRange != null && "previous".equals(dateRange)){
             query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
@@ -203,7 +206,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
         	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
         	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
         	params.put("sqlStartDate",sqlStartDate);
-        }
+        }*/
         
         Query queryExe = session.createQuery(query);
         for (String str : queryExe.getNamedParameters())
