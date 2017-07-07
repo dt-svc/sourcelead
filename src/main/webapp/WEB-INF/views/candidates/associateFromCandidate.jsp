@@ -479,7 +479,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/associatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="cancelAssociate();" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -501,7 +501,12 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
- 
+ <script>
+ function cancelAssociate(){
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 location.replace(sourceleadUrl+"/associatesList");
+ }
+ </script>
 <script type="text/javascript">
 	function storeCandidate() {
 		
@@ -1240,6 +1245,28 @@ function getCandidateDetails(){
 		        	  $("#candidateSkills").trigger("chosen:updated");
 		        	 
 		        	  
+		        	  $('#visa').find('option').remove().end();
+		        	   $.each( json.allAndCandidateVisa, function( i, visa ){
+						  var existed = 0;
+			                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
+				                var res = [];
+				                res = json.visaType.split(",");
+				                res.forEach(function(item) {
+				                	if(visa == item){
+				                		existed = 1;
+				                		$('#visa').append('<option value=\''+visa+'\' selected>'+visa+'</option>');
+				                	}
+				                });
+			                }
+			                if(existed == 0){
+			                	$('#visa').append('<option value=\''+visa+'\'>'+visa+'</option>');
+			                }
+						  
+						});
+		        	  $("#visa").trigger("chosen:updated");
+		        	  
+		        	  
+		        	  
 		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
 		        		 $("#associateCountry").val(json['country']);
 		        	 }else{
@@ -1625,7 +1652,7 @@ function getCandidateDetails(){
    		var form = $('#candidate_form')[0];
      		var formData = new FormData(form); 
    		var sourceleadUrl = '${sourceleadUrl}';
-    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
    		   $.ajax({
    					type : "POST",
    	        	    data: formData,
