@@ -221,12 +221,17 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 						 taskDao.saveTasks(tasks);
 						 mailToUserTask(tasks,orgLocations);
 					 }
+					 
+					 offboardTasks.setIsTaskSumbitted(Constants.YES);
+					 offboardTasksDao.saveOffboardTasks(offboardTasks);
 				 }else{
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(offboardTasks, candidateOffBoarding.getUserId(), loginUser, orgLocations);
 					 tasks.setOffboardingId(candidateOffBoarding);
 					 taskDao.saveTasks(tasks);
 					 mailToUserTask(tasks,orgLocations);
+					 offboardTasks.setIsTaskSumbitted(Constants.YES);
+					 offboardTasksDao.saveOffboardTasks(offboardTasks);
 				 }
 			 }
 			 
