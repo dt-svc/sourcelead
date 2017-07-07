@@ -185,23 +185,22 @@ function addAttachment(entityRowId,from){
  		</div>
  </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
-    <div id="categoryTypeDivREPLACEROWID">--</div>
-</div>
-<div id="divAddRowTr1Td2" style="display: none; float: left;">
     <div id="categoryDateDivREPLACEROWID">--</div>
 </div>
+<div id="divAddRowTr1Td2" style="display: none; float: left;">
+    <div id="categoryTypeDivREPLACEROWID">--</div>
+</div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
-    <div id="paymentModeDivREPLACEROWID">--</div>
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
-    <div id="expenseRateTypeDivREPLACEROWID">--</div>
+    <div id="expenseAmountDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td5" style="display: none; float: left;">
-    <div id="expenseAmountDivREPLACEROWID">--</div>
-    
+    <div id="expenseRateTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
-   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
+    <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
