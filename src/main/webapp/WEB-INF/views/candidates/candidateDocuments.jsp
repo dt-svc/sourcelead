@@ -151,7 +151,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="fa fa-eye ml10" onclick="candidateDocumentView(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -207,6 +207,16 @@ function candDocumentsList(candidateId){
           }
           });     
 }
+</script>
+
+<script>
+function candidateDocumentView(documentUUID,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(documentUUID != null && documentUUID != ""){
+			window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
+		}
+}
+
 </script>
 
 <script>
