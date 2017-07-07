@@ -126,7 +126,7 @@ else{
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
 	var isAssociate = "N";
-	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 
 	  $.ajax({
            type : "POST",
@@ -2199,6 +2199,40 @@ function getCities(){
 		    	 }
 		    });
 		    
+		  //Adding Customized Visa to the list
+	        var selectnine, chosennine;
+	        selectnine = $("#canVisa");
+	        selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:' });
+		    chosennine = selectnine.data('chosen');
+		    chosennine.search_field.bind(('keydown keyup'), function(e10)
+		    { 
+		    	 
+		    	 var enterVisaArray = this.value.split(",");
+		    	 if(enterVisaArray.length > 1){
+	        		 for (var i=0; i < enterVisaArray.length; i++) {
+	        			 var option = $("<option>").val(enterVisaArray[i].replace(",","")).text(enterVisaArray[i].replace(",",""));
+	        			 selectnine.append(option);
+	        			 selectnine.find(option).prop('selected', true);
+	 	        		 $("#canVisa").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newVisa = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForVisa(e10) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
+			        {
+			        	preventTabkey(e10); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newVisa.replace(",","")).text(newVisa.replace(",",""));
+			        		 selectnine.append(option);
+			        		 selectnine.find(option).prop('selected', true);
+				        		$("#canVisa").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
 		    
 		    
 		      $("#country").on('change', function (e) {
@@ -2496,6 +2530,7 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
+	     $("#canVisa").val('');
 	     $("#primarySkill").val('');
 	    
 	}

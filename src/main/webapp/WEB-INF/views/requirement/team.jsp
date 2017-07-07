@@ -1291,8 +1291,9 @@ function removeFromTeam(id){
 		    	type: "POST",
 		    	url: sourceleadUrl+"/removeFromTeam?${_csrf.parameterName}=${_csrf.token}&id="+id,
 		    	  success: function(data) {
-		    		  document.getElementById("removeCandidate"+id).remove();
-		    		  teamList();
+		    		 var table = $('#candidatePagination').DataTable();
+		 			 table.row('#removeCandidate'+id).remove().draw( false );
+		 			 
 		    	  }
 			}); 
 	}
