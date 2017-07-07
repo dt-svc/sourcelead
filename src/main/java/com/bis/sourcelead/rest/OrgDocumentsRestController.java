@@ -151,7 +151,8 @@ public class OrgDocumentsRestController {
 		}
 		
 		//to fetch Owners list
-		List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		//List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		List<User> ownersList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
 		
 		if(orgDocument != null){
 			orgDocument.setOrgSpocsList(orgSpocsList);
