@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -36,6 +37,6 @@ public interface ExpensesApprovalService {
 
 	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchy> expApperoverHierarchy,OrgLocations orgLoc)throws IOException;
 	
-	public void sendReopenExpenseAcceptOrRejectMail(Long expenseId,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser) throws Exception;
+	public void sendReopenExpenseAcceptOrRejectMail(Expenses expense,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser, String projectName) throws Exception;
 
 }
