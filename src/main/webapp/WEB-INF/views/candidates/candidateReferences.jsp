@@ -397,6 +397,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
