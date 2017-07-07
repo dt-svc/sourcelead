@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -772,10 +773,12 @@ public class LoginSessionController {
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
 		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		
 		// get notification list by user id
 		Long notificationTo = loginUser.getId();
 		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
-		calculateDays(notificationList);
+		calculateDays(notificationList, timezone);
 		
 		/**
 		 * commented by Prasad salina
@@ -804,9 +807,9 @@ public class LoginSessionController {
 		
 	}
 	
-	private void calculateDays(List<Notifications> notificationList) throws ParseException {
+	private void calculateDays(List<Notifications> notificationList, Timezone timezone) throws ParseException {
 		for (Notifications notifications : notificationList) {
-					//differentiating date and time
+					/*//differentiating date and time
 						Date date = notifications.getCreatedDate();
 					    String[] parts = date.toString().split(" ");
 					    notifications.setDateValue(parts[0]);
@@ -822,7 +825,31 @@ public class LoginSessionController {
 						Date d2 = dateFormat.parse(strDate);
 						long diff = d2.getTime() - d1.getTime();
 						long diffDays = diff / (24 * 60 * 60 * 1000);
-						notifications.setCalDays(String.valueOf(diffDays));
+						notifications.setCalDays(String.valueOf(diffDays));*/
+			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
+		    long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder  time = new StringBuilder();
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				notifications.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
+			}else if(diffDays == 0 && diffHours == 0){
+				notifications.setCalDays(time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
+			}else if(diffDays == 0){
+				notifications.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
+			}else if(diffDays < 7){
+				notifications.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				String commonDateFormat = standardFormat.format(converteDate);
+				notifications.setCalDays(commonDateFormat.toString());
+					
+				}
 					
 				}
 		
