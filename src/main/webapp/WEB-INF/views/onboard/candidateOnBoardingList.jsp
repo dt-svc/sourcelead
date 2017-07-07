@@ -107,7 +107,7 @@
  function getOnboardCandidatesList(){
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
@@ -168,7 +168,14 @@
                     			 if(opt.candidateOnBoardStatus == 'Finished'){
                         			 result = result +"<td><div><span>Sent</span></div></td>";
                         		 }else{
-                        			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                        			 if(opt.candidateOnBoardStatus == 'Rejected'){
+                        				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
+                        			 }if(opt.candidateOnBoardStatus == 'Accepted'){
+                            			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
+                            		 }else{
+                        				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                        			 }
+                        			 
                         		 }
                     		 }else{
                     			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
@@ -210,7 +217,7 @@
  function getOffboardCandidatesList(){
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
@@ -407,7 +414,7 @@ $('body').on('submit', '#rejectedReason_form', function(e){
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 

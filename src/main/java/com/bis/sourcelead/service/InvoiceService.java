@@ -55,10 +55,14 @@ public interface InvoiceService {
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
 
-	void linkInvoice(Invoice invoice)throws Exception;
+	Invoice linkInvoice(Invoice invoice)throws Exception;
 
 	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId, Date startDateUTC, Date endDateUTC, String invoiceStatus, String paymentStatus, String invoiceType, OrgLocations orgLocations);
 
 	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
+
+	List<Invoice> getDueDateCompletedInvoicesList() throws Exception;
+
+	void saveInvocePojo(Invoice invoice)throws Exception;
 
 }

@@ -41,6 +41,10 @@ public class RequirementIndex {
 	
 	private String city;
 	
+	private String location;
+	
+	private String zipCode;
+	
 	private String[] education;
 	
 	private String client;
@@ -334,7 +338,21 @@ public class RequirementIndex {
 		this.city = city;
 	}
 
-	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
 
 	public String getClient() {
 		return client;

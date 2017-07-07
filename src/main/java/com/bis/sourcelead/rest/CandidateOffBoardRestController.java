@@ -1047,7 +1047,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 
 			 List<OffboardTasks> tasksList = new ArrayList<OffboardTasks>();;
 			 
-		     List<OffboardTasks> candidateTasksList = offboardTasksService.getOffBoardTasksListByCandidateOffBoardingId(offboardId);
+		     List<OffboardTasks> candidateTasksList = offboardTasksService.getOffBoardAddedTasksListByCandidateOffBoardingId(offboardId);
 		     tasksList.addAll(candidateTasksList);
 		 
 			 
@@ -1215,6 +1215,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 offboardTasks.setCreatedBy(user.getUserCode());
 			 offboardTasks.setUpdatedDate(CommonUtil.currentDate());
 			 offboardTasks.setUpdatedBy(user.getUserCode());
+			 offboardTasks.setIsTaskSumbitted(Constants.NO);
 			 
 			 
 			 offboardTasksService.saveOffboardTasks(offboardTasks);

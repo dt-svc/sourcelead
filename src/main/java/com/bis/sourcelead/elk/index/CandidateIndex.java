@@ -32,7 +32,15 @@ public class CandidateIndex implements Serializable {
 	private String state;
 
 	private String city;
+	
+	private String location;
 
+	private String zipCode;
+	
+	private String latitude;
+	
+	private String longitude;
+	
 	private String address;
 
 	private Integer experienceYears;
@@ -266,6 +274,39 @@ public class CandidateIndex implements Serializable {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 	public String getAddress() {

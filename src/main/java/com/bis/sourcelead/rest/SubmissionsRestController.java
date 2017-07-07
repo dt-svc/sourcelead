@@ -366,10 +366,16 @@ public class SubmissionsRestController {
 			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
 			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 			if(pastRequirementRateSubmissionNegotiation != null){
+				requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+				requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
+				requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+				requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
 				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 			}else{
 				requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
+			
+			
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());

@@ -1216,11 +1216,11 @@ public class TimesheetRestController {
 						  }
 							  
 					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
-					    	tabDiv.append("<div class='commentTime'>");
+					    	tabDiv.append("<div class='commentTime pull-right'>");
 					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comment here'>").append(ts.getWeekcomments()).append("</textarea>");
 					    	tabDiv.append("</div>");
 						}else{
-							tabDiv.append("<div class='commentTime'>");
+							tabDiv.append("<div class='commentTime pull-right'>");
 							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comment here'></textarea>");
 							tabDiv.append("</div>");
 						}
@@ -2112,32 +2112,6 @@ public class TimesheetRestController {
 				}
 			
 		}
-		
-		
-		@RequestMapping(value = "/viewDocument", method = RequestMethod.GET)
-	    public void viewDocument(@RequestParam(value="submissionDocumentId", required=false) Long submissionDocumentId,
-	    		@RequestParam(value="title", required=false) Long title,HttpServletResponse response) throws Exception {
-		
-		TimesheetSubmissionsDocuments	timesheetSubmissionsDocuments =	timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(submissionDocumentId);
-			
-		byte[] pdfBytes = null;
-		if("application/pdf".equalsIgnoreCase(timesheetSubmissionsDocuments.getFileContentType())){
-			pdfBytes = timesheetSubmissionsDocuments.getDocFile();
-		}
-		else{
-			 pdfBytes = pdfConversionUtil.convertDocToPdf(timesheetSubmissionsDocuments.getDocFile());
-		}
-		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-	  	    response.setContentType("application/pdf");
-	  	    ServletOutputStream sos = response.getOutputStream();
-	  	    if(null != pdfBytes){
-	  	    	response.setContentLength(pdfBytes.length);
-	  	    	sos.write(pdfBytes);
-	  	    }
-	          sos.flush();
-	          sos.close();
-		}
-		
 		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")

@@ -76,7 +76,7 @@ function candidateResume(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function resumesMsgFadein() {
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
@@ -249,7 +249,7 @@ function addResume(candidateId) {
 		             				$("#resMsgDiv").html("Success!! New Resume added");
 		             			}		             			
 						 		candidateResumesList(candidateId);
-						 		resMsgFadein();
+						 		resumesMsgFadein();
 						},
 					});
 					return true;
@@ -335,11 +335,11 @@ function addResume(candidateId) {
 					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
-					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
+					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewProfessionalCandidateResume(\''+opt.resumeUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
+					           		result = result+'<td><div class="tblicons">';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -370,6 +370,14 @@ function addResume(candidateId) {
   }
 </script>
 
+<script>
+function viewProfessionalCandidateResume(resumeUUID,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(resumeUUID != null && resumeUUID !=""){
+	window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+	}
+}
+</script>
 
 <%-- 
      @author : Venkat Kesav
@@ -424,8 +432,8 @@ function deleteSelectedResume(candidateId, resumeId){
      			 $("#selector2").css({ display: "block" });
      			 $("#resMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
-    			 location.replace(sourceleadUrl+"/professionalProfile");
-    		     resMsgFadein();
+    			 candidateResumesList(candidateId);
+    			 resumesMsgFadein();
 		    	}
 		    },
      });
@@ -459,7 +467,7 @@ function getResume(candidateId, resumeId){
         				 document.getElementById("title").value = json.title;
         			 }
         			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 document.getElementById("description").value = json.description;
+        				 $("textarea#description").val(json.description);
         			 }
         			 
         			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");

@@ -242,7 +242,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:relative; display:inline-block; float:left; width:27%;
     }
 .timesheet_week_comm strong input {
-    width:100%; opacity:1; position:relative; z-index:11; cursor:pointer; height:35px; text-indent:28px; overflow:hidden;
+    width:100%; opacity:1; position:relative; z-index:11; cursor:pointer; height:35px; text-indent:15px; overflow:hidden;
     background-color:#368ee0; border:none; border-radius:2px; padding:0px 5px 0px 0px; box-sizing:border-box !important; color:#FFF;
     font-weight:400; font-size:13px; white-space: nowrap; text-overflow: ellipsis;
     }
@@ -253,7 +253,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 }
 .timesheet_week_comm strong a { position:relative; display:block;} 
 .timesheet_week_comm strong i {
-    position:absolute; left:9px; z-index:1000; top:11px; color:#FFF;
+    position:absolute; left:9px; z-index:1000; top:9px; color:#FFF;
 }
 .commentFile {
     width:50%; float:left; position: relative; padding-top: 10px;
@@ -2473,7 +2473,7 @@ padding-right:10px;
      
 .loadTime {
     position:absolute; width: 100%; height: 100%; background-color: rgba(255,255,255,0.7); left: 0px; top: 0px;
-    text-align: center; background-image: url(../images/load1.svg); background-repeat: no-repeat; background-position: center;
+    text-align: center; background-image: url(../images/loading.gif); background-repeat: no-repeat; background-position: center;
 }
 .totalText {
     position: absolute; top: 15px;
@@ -4550,7 +4550,7 @@ float: none !important; padding: 2px 5px; color: #333;
 }
  
 .project_wrap_table table i {
-    font-size: 14px; display: inline-block; cursor: pointer; padding: 1px; margin: 1px; color: #375d81;
+    font-size: 14px; display: inline-block; cursor: pointer; padding: 1px; margin: 1px; color: #375d81 !important;
 }
 .project_wrap_table table i.glyphicon-trash {
     color: #fe4556;
@@ -4562,14 +4562,13 @@ float: none !important; padding: 2px 5px; color: #333;
     padding: 4px 9px; float: right;
 }
 .expensTable {
-
     max-height: 400px; overflow-y: auto;
 }
 .expensTableView {
     padding: 0px 10px; margin-bottom: 15px;
 }
 .expensTableView table tr:nth-child(even) {background: #fff;}
-.expensTableView table tr:nth-child(odd) {background: #fff;}   
+.expensTableView table tr:nth-child(odd) {background: #fff;}
 .expensTableView table tr {
     border-bottom: 1px solid #eae6e6; border-right: 1px solid #eae6e6;
 }
@@ -4887,7 +4886,7 @@ width: 100% !important; margin: 0px !important;
 	z-index: 100;
 }
 .rejectedHover {
-    cursor: pointer; position: relative; top:10px; right:15px;
+    cursor: pointer; position: relative; top:10px; right:0px; float: right;
 }      
 .rejectedHover:hover .app_error_mes {
     display: block; opacity: 1;
@@ -4933,7 +4932,6 @@ display: none; z-index:100005; top:6%; padding: 10px; border-radius:5px; box-siz
 .fraClose {
 position: absolute; color: #ff5959; right: -19px; padding: 8px 0px 0px 0px; background-color: #fff; border-radius: 50%;
 width: 34px; height: 34px; text-align: center; display: inline-block; font-size: 17px; top: -18px; cursor: pointer;
-
 }
 
 .repoPositiRunPay .dt-buttons {
@@ -4982,9 +4980,30 @@ float: none !important;
 #accountdeDuctiondetails .dataTables_filter, #hrDeductiondetails .dataTables_filter {
 top: -50px !important; right: 25px !important;
 }
+.expAttView {
+display: inline-block !important; padding: 6px; font-size: 20px; margin: 0px 0px 0px 8px; color: #333;
+}
+.expAttView:hover {
+color: #33c38e;
+}
+.chosen-container {
+    width: 100% !important;
+}
+.re_Error {
+    margin: 0px 0px; padding: 1px 6px; position: absolute; left: 1px; bottom: -35px; font-size: 10px;
+    color: #d82424; z-index: 9; display: block;
+}
+.expenses_symbol {
+    position: absolute; left: 0px; top:5px; font-size: 85%;
+}
 
+.reSchPopInn {
+	color:#333;
+}
 
-
+.custom-textarea textarea {
+	min-height: auto; padding: 5px 10px; height: 50px !important;
+}
 
 
 /*   Onboard Carosel CSS   */
@@ -5016,4 +5035,9 @@ top: -50px !important; right: 25px !important;
 
 /*   Onboard Carosel CSS   */
 
-
+.dataTables_filter input:focus {
+padding: 3px 25px 3px 5px !important; background-color: transparent !important; border: none !important; border-bottom: 1px solid #358ddf !important;
+}
+.pt5 {
+padding:5px 0px 0px 0px;
+}

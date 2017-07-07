@@ -973,7 +973,7 @@ function pagination(){
 		
 		//for client requirement tab
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
-		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Jobs List</a></li>';	
+		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Jobs</a></li>';	
 		'</sec:authorize>';
 		
 		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
@@ -984,7 +984,7 @@ function pagination(){
 	
 		// client notes
 		
-		result = result + '<li><a href="#tab-8" onclick="clientNotesList('+orgRelationId+','+clientLocationId+');">Notes List</a></li>';	
+		result = result + '<li><a href="#tab-8" onclick="clientNotesList('+orgRelationId+','+clientLocationId+');">Notes</a></li>';	
 	
 		
 		result = result + '<div class="clearfix"></div>'

@@ -167,6 +167,7 @@
 					                                 <i class='glyphicon glyphicon-save'></i>
 										             <input type='button' value='${entryDoc.fileName}'/>
 										        </a>
+										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
 					                         </strong>
 					                       </c:forEach>
 					                 </div> 
@@ -184,6 +185,13 @@
 </div>
 </div>
     </section>
+    
+<script>
+function viewDocument(title,id){
+	var sourceleadUrl ='${sourceleadUrl}';
+		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
+}
+</script>     
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){

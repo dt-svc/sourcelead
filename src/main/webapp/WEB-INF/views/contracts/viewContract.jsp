@@ -199,8 +199,6 @@ output  = output + '        </div>';
 				var form = $('#notes_Contracts')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_note").attr("disabled", "disabled");
-         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -650,6 +648,7 @@ $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-detail
 });
 function closeDocPopup(){
 $("#popUpDiv").removeClass("edit-details-active");
+$("#notes_Contracts")[0].reset();
 }
 </script>
 

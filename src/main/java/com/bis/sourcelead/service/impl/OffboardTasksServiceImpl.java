@@ -53,4 +53,10 @@ public class OffboardTasksServiceImpl implements OffboardTasksService {
 		return offboardTasksDao.getOffBoardTasksListAssignedToCandidateByCandidateOffBoardingId(candidateOffBoardingId);
 	}
 
+	@Override
+	public List<OffboardTasks> getOffBoardAddedTasksListByCandidateOffBoardingId(Long candidateOffBoardingId)
+			throws Exception {
+		return offboardTasksDao.getOffBoardAddedTasksListByCandidateOffBoardingId(candidateOffBoardingId);
+	}
+
 }
