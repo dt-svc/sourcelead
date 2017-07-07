@@ -170,6 +170,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
 	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	    result = result+'<a class="fa fa-eye" onclick="viewClientDocument(\''+opt.id+'\',\''+opt.fileName+'\');"></a>';
 	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CLIENT_DOCUMENT\')">'; 
@@ -197,6 +198,13 @@ function clientDocumentsList(clientLocationId,orgRelationId){
         },
           
      }); 
+}
+</script>
+
+<script>
+function viewClientDocument(docId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
 

@@ -1637,8 +1637,6 @@ function saveAndFinishOffboardTemplate(offboardId){
   <script>
 function deleteTask(taskId,taskType){
 	
-	alert(taskType);
-	
 	if(taskType != 'Candidate Task'){
 		document.getElementById("offboardTask"+taskId).remove();
 		document.getElementById("templateTask"+taskId).remove()
