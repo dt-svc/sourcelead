@@ -3,13 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
 .addUser-org {
@@ -67,7 +60,7 @@ function professionalCandidateDocuments(candidateId){
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 		
 		result  = result + '   <div id="candidateDocumentsList" ></div>';
 		result  = result + '   </div>';
@@ -103,12 +96,9 @@ function candDocumentsList(candidateId){
 	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     /* result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>'; */
 	                     result  = result + '<th>Document Type</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
-	                 	/*  result  = result + '<th>Upload Status</th>';
-	                     result  = result + '<th>Document Status</th>'; */
 	                 	 result  = result + '<th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -118,11 +108,6 @@ function candDocumentsList(candidateId){
 	                    	 var opt = json[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 
-	                    	/*  if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
-	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
-	                    	 }else{
-	                    		 result = result +"  <td><div>--</div></td>"; 
-	                    	 } */
 	                    	 
 	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
@@ -148,23 +133,6 @@ function candDocumentsList(candidateId){
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
 		                    	
-	                    	 
-							/* result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                    	 
-	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
-	                    		 result = result +"<td>";
-	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
-	                    		 if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined'){
-					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
-					        	   }
-	                    		 result = result +"</div>";
-	                    		 result = result +"</td>";
-	                    	 
-	                    	 }else{
-	                    		 result = result +"  <td><div>----</div></td>"; 
-	                    	 } */
-	                    	 
-		                   
 		                   result = result+'<td><div class="tblicons">';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -221,9 +189,13 @@ function documentsPagination(){
     $('#candidateDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 3
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -231,6 +203,8 @@ function documentsPagination(){
     } );
 }
 </script>
+
+
 <%-- 
      @author : Prasad K.
      this script is for remove popUp.

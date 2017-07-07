@@ -221,7 +221,7 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length1-200" class="form-control input-sm" value="" placeholder="Name *">';
 	result = result  +'</div>';
 	result = result  +'</div>';    
 	
@@ -233,7 +233,7 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
