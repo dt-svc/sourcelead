@@ -471,12 +471,14 @@ function preventTabkey(e){
                     <c:if test="${report.actionLink != ''  && report.actionLink !='undefined' && ! empty report.actionLink}">
                      <a href="${report.actionLink}"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> --%>
+                      <span>${report.calDays}</span></a> 
                       </c:if>
                     <c:if test="${empty report.actionLink}">
                      <a href="#"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a>  --%>
+                      <span>${report.calDays}</span></a> 
                   	</c:if>
                    </div>
                   </div>
