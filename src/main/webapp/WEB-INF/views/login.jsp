@@ -112,7 +112,7 @@ function applyInputSlide() {
     $(".signin_wrap span input").on('blur', function () {
         if ($(this).val().trim() === "")
             $(this).parent(".signin_wrap span").find('label').removeClass('test');
-    });	    
+    });
 }
 </script>
 

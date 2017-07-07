@@ -773,9 +773,15 @@ function validateUploadFile(id)
 			    	 $("#lastName").val(json['lastName']);
 			    	 $("#mobileNumber").val(json['mobilePhone']);
 			    	 $("#personalEmail").val(json['email']);
-			    	 getOnBoardCandidateCountry(json['country'])
+			    	 $("#offBoardLocation").val(json['location']);
+			    	 $("#country").val(json['country']);
+			    	 $("#state").val(json['state']);
+			    	 $("#city").val(json['city']);
+			    	 $("#zipCode").val(json['zipCode']);
+			    	 
+			    	/*  getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
 			    	 
 			    	 validateOnboardCandidate(json['email']);
 			    }
@@ -1154,7 +1160,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	        $("#save_onboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
 	        
-	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
@@ -1211,7 +1217,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
@@ -1251,9 +1257,26 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    		$("#zipCode").val(json['zipCode']);
 		    	}
 		    	
-		    	getOnBoardCandidateCountry(json['country']);
+		    	if(json['country'] != null && json['country'] != "" && json['country'] !="undefined"){
+		    		$("#country").val(json['country']);
+		    	}
+		    	
+		    	if(json['state'] != null && json['state'] != "" && json['state'] !="undefined"){
+		    		$("#state").val(json['state']);
+		    	}
+		    	
+		    	if(json['city'] != null && json['city'] != "" && json['city'] !="undefined"){
+		    		$("#city").val(json['city']);
+		    	}
+		    	
+		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
+		    		$("#offBoardLocation").val(json['location']);
+		    	}
+		    	
+		    	
+		    	/* getOnBoardCandidateCountry(json['country']);
 		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']);
+		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
 		    	
 		    	loadCandidateRoles(json['onBoardRoleId']);
 		    	$("#startDate").val(json['joiningDateStr']);
@@ -1678,7 +1701,7 @@ function createTemplateDocs(saveType){
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
 		
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	        type : "POST",
 		      data: formData,
@@ -1859,7 +1882,7 @@ function saveOnboardTask(){
 	    	tasks = tasks.substring(0, tasks.length - 1);
 	        
 	       
-	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks, 
@@ -1898,7 +1921,7 @@ function getOnboardingTasksList(){
 	
 	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
@@ -2019,7 +2042,7 @@ function saveAndFinishOnboardTemplate(onboardId){
 	tasks = tasks.substring(0, tasks.length - 1);
 	
 	var sourceleadUrl = '${sourceleadUrl}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
@@ -2145,7 +2168,7 @@ function cancel(){
 function addCandidateDetailsForOnboarding(){
 	
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 var result = "";
 	
@@ -2175,30 +2198,34 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
      
 	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Location <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Locatin" data-validation="required" >';
+	 result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'offBoardLocation\',\'country\',\'state\',\'city\',\'zipCode\');"></i>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 
+	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="--Select Country--" id="country" onchange="getStates();" name="country">';
-	 result = result +'<option disabled>Select Country</option>';
-	 result = result +'</select>';
+	 result = result +'<input type="text" class="form-control" data-placeholder="Country" id="country" field-name="Country" name="country" readonly data-validation="required">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">State</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="--Select State--" onchange="getCities();" id="state" name="state">';
-	 result = result +'<option disabled>Select State</option>';
-	 result = result +'</select>';
+	 result = result +'<input type="text" class="form-control" data-placeholder="State"  id="state" name="state" readonly>';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">City</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="--Select City--" id="city" name="city">';
-	 result = result +'<option disabled>Select City</option>';
-	 result = result +'</select>';
+	 result = result +'<input type="text" class="form-control" data-placeholder="City" id="city" name="city" readonly>';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Zipcode</label>';
 	 result = result +'<div class="col-md-6">';
@@ -2344,6 +2371,8 @@ function addCandidateDetailsForOnboarding(){
 	 $("#onboardingCandidateDetailsDiv").empty();
    	 $("#onboardingCandidateDetailsDiv").append(result); 
    	 
+     initLocationAuto('offBoardLocation','country','state','city','zipCode','','',''); 
+     
 	 loadCandidateRoles();
 	 loadTeams();
 	 loadOnBoardingTemplates();
