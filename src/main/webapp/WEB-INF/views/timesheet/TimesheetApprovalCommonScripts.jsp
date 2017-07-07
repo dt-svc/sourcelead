@@ -1413,7 +1413,7 @@ function pagination(){
     		"sZeroRecords": "", "sEmptyTable": ""
     	}
     });
-    $('#example').wrap("<div class='overflow_Auto'></div>");
+    $('#example').wrap("<div class='overflow_Auto width100percnt'></div>");
 }
 </script>
 
