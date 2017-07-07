@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,10 +28,12 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
@@ -68,6 +72,9 @@ public class TimesheetController {
 	UserService userService;
 	
 	@Autowired
+	TimeZoneService timeZoneService;
+	
+	@Autowired
 	private TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	@Autowired
@@ -83,13 +90,13 @@ public class TimesheetController {
 	 * @param request
 	 *  
 	 * @return TimesheetEntries 
-	 * 
+	 * @throws Exception 
 	 * @throws NullPointer
 	 */
 	
 	@RequestMapping(value = "/timesheet")
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
-	public ModelAndView newTimesheet(HttpServletRequest request) {
+	public ModelAndView newTimesheet(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
@@ -105,9 +112,10 @@ public class TimesheetController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
 			
-			
+			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
 			Long notificationTo = loginUser.getId();
 			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
+			calculateDays(notificationList, timezone);
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 			
@@ -204,6 +212,52 @@ public class TimesheetController {
 	
 	public static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
+	}
+	
+	private void calculateDays(List<Notifications> notificationList, Timezone timezone) throws ParseException {
+		for (Notifications notifications : notificationList) {
+					/*//differentiating date and time
+						Date date = notifications.getCreatedDate();
+					    String[] parts = date.toString().split(" ");
+					    notifications.setDateValue(parts[0]);
+					    final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+					    final Date dateObj = sdf.parse(parts[1]);
+					    notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
+					    
+					    // calculating days b/w dates 
+					    Date currentDate = new Date();
+						Date d1 = notifications.getCreatedDate();
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+						String strDate = dateFormat.format(currentDate);
+						Date d2 = dateFormat.parse(strDate);
+						long diff = d2.getTime() - d1.getTime();
+						long diffDays = diff / (24 * 60 * 60 * 1000);
+						notifications.setCalDays(String.valueOf(diffDays));*/
+			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
+		    long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder  time = new StringBuilder();
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				notifications.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
+			}else if(diffDays == 0 && diffHours == 0){
+				notifications.setCalDays(time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
+			}else if(diffDays == 0){
+				notifications.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
+			}else if(diffDays < 7){
+				notifications.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				String commonDateFormat = standardFormat.format(converteDate);
+				notifications.setCalDays(commonDateFormat.toString());
+					
+				}
+		}
 	}
  
 }

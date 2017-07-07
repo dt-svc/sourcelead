@@ -911,7 +911,7 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
       
         $("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
-		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/requestCandidateForDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
@@ -998,7 +998,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
 	 	});
 	 	 
        $("#submit_rejectedReason").attr("disabled", "disabled");
-       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
   	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/rejectRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&documentsIds="+documentsIds, 
