@@ -410,9 +410,9 @@
         <div class="form-group">
             <label class="col-md-3"></label>
              <div class="col-md-9">
-               <div class="checkbox checkBox">
+              <div class="checkbox checkBox">
                  <label>
-                   <input type="checkbox" value="Y" name="email">
+                   <input type="checkbox" value="Y" name="inviteEmail">
                    Invite to SourceLead</label>
                </div>
                 </div>

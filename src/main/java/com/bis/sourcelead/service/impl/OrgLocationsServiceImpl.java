@@ -122,6 +122,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				clientOrgLocations.setEmail(jsonObj.getString("emailId"));
 			}
 			
+			if(jsonObj.has("webSite") && !isNullOrEmpty(jsonObj.getString("webSite"))){
+				clientOrgLocations.setWebsite(jsonObj.getString("webSite"));
+			}
+			
 			if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 				clientOrgLocations.setCountry(jsonObj.getString("country"));
 			}else if(jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))){
