@@ -1004,6 +1004,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	         UserProfileDTO userProfileDTO = new UserProfileDTO();
 	         userProfileDTO.setFirstName(user.getFirstName());
      	     userProfileDTO.setLastName(user.getLastName());
+     	     userProfileDTO.setUserId(user.getId());
      	  
      	     if(user.getDocFile() != null && user.getFileContentType() != null){
         	    userProfileDTO.setProfileImageUrl(sourceleadUrl+"/displayUserImage/"+user.getId());

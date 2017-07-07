@@ -400,11 +400,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         
         String submissionStages = "";
         if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-			 submissionStages = "and rs.submissionStatus = 'SUBMISSION' ";
+			 submissionStages = "and (rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";
 		}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-			 submissionStages = "and rs.submissionStatus = 'SUBMIT_TO_CLIENT' ";
+			 submissionStages = "and( rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";
 		}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-			submissionStages = "and (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') ";
+			submissionStages = "and ((rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";
 		}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
 			submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
 					+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED') ";

@@ -4335,7 +4335,7 @@ var socialpost = (function () {
             catch (e) { }
         }
         else {
-        	//$("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	//$("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
             socialinviter.modalSI.hide();
             if (socialinviter.getConfig().callbacks.post) {
                 socialinviter.getConfig().callbacks.post(serv, data);
@@ -4560,7 +4560,7 @@ if (window.location.href.indexOf(getFromStore("oauthpage")) != -1 || toredirect_
 
 //Show loading icon..
 if ($(".socialinviterloading").length == 0) {
-    $("head").append("<style type='text/css'>.socialinviterloading{background-image: url(//socialinviter.com/assets/img/icons/loading.gif); background-repeat: no-repeat;display: table;background-position: center;min-height: 50px;width: 100%;}</style>");
+    $("head").append("<style type='text/css'>.socialinviterloading{background-image: url(//socialinviter.com/assets/img/icons/loading.gif); background-repeat: no-repeat;display: table;background-position: center;min-height: 75px;width: 100%;}</style>");
     $(".socialinviter:visible").addClass("socialinviterloading");
 }
 //$(".socialinviter").eq(3).parent().prop("tagName")

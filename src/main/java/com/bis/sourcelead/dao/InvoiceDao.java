@@ -35,4 +35,6 @@ public interface InvoiceDao{
 
 	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC)throws Exception;
 
+	List<Invoice> getDueDateCompletedInvoicesList() throws Exception;;
+
 }

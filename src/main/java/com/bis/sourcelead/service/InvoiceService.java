@@ -61,4 +61,8 @@ public interface InvoiceService {
 
 	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
 
+	List<Invoice> getDueDateCompletedInvoicesList() throws Exception;
+
+	void saveInvocePojo(Invoice invoice)throws Exception;
+
 }
