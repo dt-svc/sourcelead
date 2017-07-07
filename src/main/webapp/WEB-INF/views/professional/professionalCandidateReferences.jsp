@@ -35,7 +35,7 @@ function professionalCandidateReferences(candidateId){
 	}else{
 		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
 	}
-	result  = result + '<div class="success_pop" id="selector10" style="display: none;">';
+	result  = result + '<div class="success_pop" id="selector7" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="refMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
@@ -178,7 +178,7 @@ function candidateReferencesList(candidateId){
 function candidateReferencesPagination(){  
     $('#candidateReferencesPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -339,11 +339,11 @@ function addReference(candidateId) {
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector10").removeAttr("style");
-		            			$("#selector10").css({ display: "block" });
+		            			$("#selector7").removeAttr("style");
+		            			$("#selector7").css({ display: "block" });
 	            				$("#refMsgDiv").html("Success!! New Candidate References added");
 		             			candReferencesList(candidateId);
-						 		resMsgFadein();
+						 		refMsgFadein();
 		            		 
 						},
 					});
@@ -377,9 +377,9 @@ function deleteReferencesPopup(){
 
 
 <script>
-	function resMsgFadein() {
-		$("#selector10").fadeIn(200);
-        $('#selector10').delay(2000).fadeOut('slow');
+	function refMsgFadein() {
+		$("#selector7").fadeIn(200);
+        $('#selector7').delay(2000).fadeOut('slow');
 	}
 </script> 
 <!-- End -->
@@ -416,13 +416,13 @@ function deleteReference(candidateId,refId){
 		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
-        			 $("#selector10").removeAttr("style");
-         			 $("#selector10").css({ display: "block" });
+        			 $("#selector7").removeAttr("style");
+         			 $("#selector7").css({ display: "block" });
          			 $("#refMsgDiv").html("Reference deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
         			 candReferencesList(candidateId);
-        		     resMsgFadein();
+        		     refMsgFadein();
    		    	}
    		    },
 	     });
@@ -454,8 +454,8 @@ function deleteReference(candidateId,refId){
 						url : sourceleadUrl
 								+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&refId"+refId,
 						success : function(data) {
-	            			$("#selector10").removeAttr("style");
-	            			$("#selector10").css({ display: "block" });
+	            			$("#selector7").removeAttr("style");
+	            			$("#selector7").css({ display: "block" });
 	            			$("#refMsgDiv").html("Reference details updated");
 	            			closePopup();
 	            			candReferencesList(candidateId);

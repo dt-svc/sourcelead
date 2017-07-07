@@ -198,11 +198,30 @@ public class ClientServiceImpl implements ClientService{
 				}
 				if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
 					clientOrgLocations.setCity(jsonObj.getString("orgCity"));
-				}
-				
-				else if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+				}else if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 					clientOrgLocations.setCity(jsonObj.getString("city"));
 				}
+				
+				if(jsonObj.has("orgZipcode") && !isNullOrEmpty(jsonObj.getString("orgZipcode"))){
+					clientOrgLocations.setZipCode(jsonObj.getString("orgZipcode"));
+				}else if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+					clientOrgLocations.setZipCode(jsonObj.getString("zipcode"));
+				}
+				
+				if(jsonObj.has("orgLocation") && !isNullOrEmpty(jsonObj.getString("orgLocation"))){
+					clientOrgLocations.setLocation(jsonObj.getString("orgLocation"));
+				}else if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+					clientOrgLocations.setLocation(jsonObj.getString("location"));
+				}
+				
+				if(jsonObj.has("latitude") && !isNullOrEmpty(jsonObj.getString("latitude"))){
+					clientOrgLocations.setLatitude(jsonObj.getString("latitude"));
+				}
+				
+				if(jsonObj.has("longitude") && !isNullOrEmpty(jsonObj.getString("longitude"))){
+					clientOrgLocations.setLongitude(jsonObj.getString("longitude"));
+				}
+				
 			}
 			
 			if(clientOrgLocations == null){
@@ -713,6 +732,20 @@ public class ClientServiceImpl implements ClientService{
 			     }else{
 			    	 
 			    	 orgLocations.setCountry("");
+			     }
+				
+				if(jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null && !jsonObj.getString("clientLocation").isEmpty()){
+					orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			     }else{
+			    	 
+			    	 orgLocations.setLocation("");
+			     }
+				
+				if(jsonObj.has("clientZipCode") && jsonObj.getString("clientZipCode") != null && !jsonObj.getString("clientZipCode").isEmpty()){
+					orgLocations.setZipCode(jsonObj.getString("clientZipCode"));
+			     }else{
+			    	 
+			    	 orgLocations.setZipCode("");
 			     }
 				/*if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));

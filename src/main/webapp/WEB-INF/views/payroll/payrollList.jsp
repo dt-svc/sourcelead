@@ -213,7 +213,7 @@ function runPayrollCycles(type){
 		var jsonData = encodeURIComponent(con);
 		var form = $('#run_payroll_cycle')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "GET",
@@ -287,7 +287,7 @@ function flush(){
 
 <script>
 function loadEmployeePayrollCost(){
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -462,7 +462,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_bulk_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -504,7 +504,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({

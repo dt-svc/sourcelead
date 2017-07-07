@@ -158,6 +158,10 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setAddress2(null);
 		}
 		
+		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			candidateOnBoarding.setLocation(jsonObj.getString("location"));
+		}
+		
 		if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 			candidateOnBoarding.setCountry(jsonObj.getString("country"));
 		}

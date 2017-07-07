@@ -25,9 +25,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECTS")
@@ -143,9 +145,11 @@ public class Projects implements Serializable{
     private String updatedDateStr;
     
     @Transient
+    @JsonProperty
     private String startDateStr;
     
     @Transient
+    @JsonProperty
     private String endDateStr;
     
     @Transient
@@ -416,6 +420,9 @@ public class Projects implements Serializable{
 	}
 
 	public String getStartDateStr() {
+		if(startDate != null){
+			startDateStr = Constants.DMY.format(startDate);
+		}
 		return startDateStr;
 	}
 
@@ -424,6 +431,9 @@ public class Projects implements Serializable{
 	}
 
 	public String getEndDateStr() {
+		if(endDate != null){
+			endDateStr = Constants.DMY.format(endDate);
+		}
 		return endDateStr;
 	}
 

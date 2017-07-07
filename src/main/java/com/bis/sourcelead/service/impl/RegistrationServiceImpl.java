@@ -459,6 +459,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setState(registration.getState());
 		orgLocations.setCity(registration.getCity());
 		orgLocations.setOrgLocationAddress(registration.getAddress());
+		orgLocations.setLocation(registration.getLocation());
+		orgLocations.setZipCode(registration.getZipCode());
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
 		orgLocations.setStatus(Status.ACTIVE);
