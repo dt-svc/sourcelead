@@ -6,6 +6,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,9 +18,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
@@ -96,13 +99,13 @@ public class addExpenseController {
 				
 		}
 		
-		/*User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
+		User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
 		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
 		Expenses expense = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
 		if(StringUtils.isNotEmpty(expenseId) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 			//User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
 			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser, projectMembers.getProjects().getProjectName());
-		}*/
+		}
 		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("expenses/reopenExpenseAcceptOrReject");

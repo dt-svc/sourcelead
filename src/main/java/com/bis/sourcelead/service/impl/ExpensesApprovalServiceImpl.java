@@ -558,7 +558,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 emailMessage.setLastName(reopenedUser.getLastName());
 				 emailMessage.setToEmail(reopenedUser.getEmail());
 				 
-				 emailMessage.setFromEmail(loginUser.getEmail());
+				 emailMessage.setFromEmail(orgLoc.getUser().getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
 				 emailMessage.setFromName(loginUser.getFullName());
 				 
