@@ -19,6 +19,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="ORG_RELATIONS")
@@ -114,8 +115,6 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private Long projectsCont;
 	
-	@Transient
-	private String clientName;
 	
 	@Transient
 	private String vendorCreateduserName;
@@ -203,6 +202,10 @@ public class OrgRelations implements Serializable{
 	
 	@Transient
     private Long orgLocationId;
+	
+	@Transient
+	@JsonProperty
+	private String clientName;
 	
 	public String getStringDate()
 	{
@@ -406,6 +409,11 @@ public class OrgRelations implements Serializable{
 	}
 
 	public String getClientName() {
+		 if("Vendor".equalsIgnoreCase(initiatorType) && responderLocationId != null){
+			 clientName = responderLocationId.getOrgLocationName();
+		 }else if("Client".equalsIgnoreCase(initiatorType) && locationId != null){
+			 clientName = locationId.getOrgLocationName();
+		 }
 		return clientName;
 	}
 
