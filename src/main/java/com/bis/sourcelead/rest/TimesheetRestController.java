@@ -1216,11 +1216,11 @@ public class TimesheetRestController {
 						  }
 							  
 					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
-					    	tabDiv.append("<div class='commentTime'>");
+					    	tabDiv.append("<div class='commentTime pull-right'>");
 					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comment here'>").append(ts.getWeekcomments()).append("</textarea>");
 					    	tabDiv.append("</div>");
 						}else{
-							tabDiv.append("<div class='commentTime'>");
+							tabDiv.append("<div class='commentTime pull-right'>");
 							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comment here'></textarea>");
 							tabDiv.append("</div>");
 						}
