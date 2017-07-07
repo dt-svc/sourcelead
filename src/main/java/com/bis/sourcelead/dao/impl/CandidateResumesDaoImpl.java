@@ -235,4 +235,18 @@ public Integer getCandidateResumeCountByCandidateId(Long candidateId) throws Exc
 	return count;
 }
 
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.orgLocationId  left join fetch candidateResumes.candidateId  where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId)";  
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+	CandidateResumes candidateResumes = null;
+	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
+		candidateResumes = candidateResumesList.iterator().next();
+	}
+	return candidateResumes;
+}
+
 }
