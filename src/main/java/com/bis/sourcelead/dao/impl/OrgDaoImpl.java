@@ -261,8 +261,8 @@ public class OrgDaoImpl implements OrgDao {
 		
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
-			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole) "
-					+ " and org.id IN (select userRole.orgLocations.org.id from UserRole userRole where userRole.userState = '" + userState + "')";
+			userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
+					+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + userState + "' ))";
 		}
 		
 		// trim the spaces between words (escape spaces)
