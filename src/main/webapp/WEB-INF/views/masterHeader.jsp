@@ -403,7 +403,7 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;Job Seeker</p>
 						                   </div>
 						                </div>
 					                </a>
@@ -419,7 +419,7 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;Freelance Recruiter</p>
 						                   </div>
 						                </div>
 					                </a>
@@ -471,12 +471,14 @@ function preventTabkey(e){
                     <c:if test="${report.actionLink != ''  && report.actionLink !='undefined' && ! empty report.actionLink}">
                      <a href="${report.actionLink}"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> --%>
+                      <span>${report.calDays}</span></a> 
                       </c:if>
                     <c:if test="${empty report.actionLink}">
                      <a href="#"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a>  --%>
+                      <span>${report.calDays}</span></a> 
                   	</c:if>
                    </div>
                   </div>

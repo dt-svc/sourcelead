@@ -45,7 +45,7 @@
 	            <div class="clearfix"></div>
 	        </div> 
 			
-			<div class="timesheet_appr_table">
+			<div class="timesheet_appr_table datatable_filter pt5">
 					<div id="timesheetApprList">   </div>
 		    </div>
 		</div>
