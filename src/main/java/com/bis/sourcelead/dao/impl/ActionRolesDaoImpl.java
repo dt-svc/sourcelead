@@ -129,4 +129,18 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
    	
 	}
 
+
+	@Override
+	public String getActionNameUsingMethodName(String methodName) throws Exception {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String actionName = "";
+		logger.debug("getActionNameUsingMethodName start");
+		String query = "select action_name from testing test  where test.method_name =:methodName ";
+		actionName = session.createQuery(query).setString("methodName", methodName).setCacheable(true).getQueryString();
+		logger.debug("getActionNameUsingMethodName end");
+		
+		return actionName;
+	}
+
 }

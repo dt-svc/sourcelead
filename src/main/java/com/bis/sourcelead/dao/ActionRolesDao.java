@@ -14,4 +14,6 @@ public interface ActionRolesDao {
 	List<ActionRoles> getOrgActionRolesByRoleAndOrgLocationId(Long roleId,Long orgLocationId) throws Exception;
 	
 	ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId) throws Exception;
+	
+	public String getActionNameUsingMethodName(String methodName) throws Exception;
 }

@@ -50,4 +50,10 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 		return actionRolesDao.getActionRolesByActionIdAndRoleIdAndLocationId(actionId, roleId, orgId);
 	}
 
+	@Override
+	public String getActionNameUsingMethodName(String methodName) throws Exception {
+		// TODO Auto-generated method stub
+		return actionRolesDao.getActionNameUsingMethodName(methodName);
+	}
+
 }

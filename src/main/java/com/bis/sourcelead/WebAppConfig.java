@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -28,11 +29,11 @@ import org.springframework.web.servlet.view.JstlView;
  * This class is used for configuring the web and its related information, without web.xml
  */
 
+import com.bis.sourcelead.aspect.LoggingAspect;
 import com.bis.sourcelead.rest.UserRestController;
 import com.bis.sourcelead.web.HomeController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /**
  * This class is used to configure the spring framework context.
@@ -53,6 +54,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 @PropertySource({"${propertyLocation:app.properties}", "classpath:exception.properties", "classpath:config.properties"})
 @EnableTransactionManagement
 @EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class WebAppConfig extends WebMvcConfigurationSupport {
 
 	@Bean
@@ -60,6 +62,11 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
+	@Bean
+	public LoggingAspect loggingAspect(){
+		return  new LoggingAspect();
+	}
+	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/").setCachePeriod(31556926);

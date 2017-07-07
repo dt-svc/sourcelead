@@ -15,5 +15,7 @@ public interface ActionRolesService {
 	
 	ActionRoles getActionRolesByActionIdAndRoleIdAndLocationId(Long actionId,Long roleId,Long orgId) throws Exception;
 	
+	public String getActionNameUsingMethodName(String methodName) throws Exception;
+	
 
 }
