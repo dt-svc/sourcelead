@@ -67,6 +67,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -86,6 +87,9 @@ public class ContractRestController {
 	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	PdfConversionUtil pdfConversionUtil;
 	
 	@Autowired
 	ContractRequestDocumentsDao contractRequestDocumentsDao;
@@ -206,6 +210,8 @@ public class ContractRestController {
 		if(("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
 		//if("Custom".equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
+			  
+			  
 		}
 		
 		if("Existing".equalsIgnoreCase(contract.getTypeOfContract())){
@@ -222,7 +228,30 @@ public class ContractRestController {
           sos.flush();
           sos.close();
 	}
-	
+	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
+	public @ResponseBody  void viewReqContractDocPdf(@PathVariable("docId") String docId, @PathVariable("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docId));	
+		
+		byte[] pdfBytes = null ;
+		if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
+			pdfBytes = contractRequestDocuments.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(contractRequestDocuments.getDocFile());
+		}
+		
+  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    
+  	    ServletOutputStream sos = response.getOutputStream();
+  	    if(null != pdfBytes){
+  	    	response.setContentLength(pdfBytes.length);
+  	    	sos.write(pdfBytes);
+  	    }
+          sos.flush();
+          sos.close();
+	}
 	
 	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -807,7 +836,16 @@ public class ContractRestController {
 				}
 			}
 			
+			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+    		if(null != contract.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateDao.getContractById(contract.getParentContractId().getId());
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+    		}else{
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+    		} 
 		 	
+    		contract.setContractRequestDocumentsList(contractRequestDocumentsList);
+    		
 			return commonUtil.toJSON(contract);
 		}
 	 

@@ -12,14 +12,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/chosen.min.css">
-<link href="css/bootstrap-select.min.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="css/jquery-ui.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -173,42 +165,47 @@ window.onload = function () {
 	function loadRequirementApplicants(){
 		var tab = document.getElementById("tabList").value;
 		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab;
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
 	}
 	function loadRequirementSubmissions(){
 		var tab = document.getElementById("tabList").value;
 		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab;
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
 	}
 	function loadRequirementInterviews(){
 		var tab = document.getElementById("tabList").value;
 		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab;
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
 	}
 	function loadRequirementOffers(){
 		var tab = document.getElementById("tabList").value;
 		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab;
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
 	}
 
 	function tabsList(sel){
 		var tab = sel.value;
 		var reqList = document.getElementById("reqList").value;
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
 		if(reqList=="appList"){
 			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab;
+			window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
 		}
 		if(reqList=="subList"){
 			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab;
+			window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
 			 }
 		if(reqList=="interList"){
 			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab;
+			window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
 		}
 		if(reqList=="offerlist"){
 			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab;
+			window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
 		}
 	}
 	</script> 

@@ -114,6 +114,7 @@ public class DashboardController {
 	
 	@RequestMapping(value = "/requirementApplicantsList")
 	public ModelAndView requirementApplicantsList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
 			HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
@@ -138,6 +139,7 @@ public class DashboardController {
 	
 	@RequestMapping(value = "/requirementSubmissionsList")
 	public ModelAndView requirementSubmissionsList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
 			HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
@@ -175,6 +177,7 @@ public class DashboardController {
 	
 	@RequestMapping(value = "/requirementInterviewsList")
 	public ModelAndView requirementInterviewsList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
 			HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
@@ -207,6 +210,7 @@ public class DashboardController {
 	}
 	@RequestMapping(value = "/requirementOffersList")
 	public ModelAndView requirementOffersList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
 			HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
