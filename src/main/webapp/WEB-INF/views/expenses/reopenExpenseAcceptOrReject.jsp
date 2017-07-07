@@ -101,7 +101,7 @@ width: auto;
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
 									  <i class="fa fa-ban fa-3x"></i>
-									  <p class="reason-msg">Already Performed Action </p>
+									  <p class="reason-msg">Your decision is already submitted once </p>
 							  		  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 								  </div>
 							  </div>
