@@ -419,7 +419,7 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;Freelance  Recruiter</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;Freelance Recruiter</p>
 						                   </div>
 						                </div>
 					                </a>
