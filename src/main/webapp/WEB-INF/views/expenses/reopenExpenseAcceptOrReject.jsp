@@ -38,7 +38,7 @@
 
 <script type="text/javascript">
 		window.onload = function () {
-			getExpensesList();
+			//getExpensesList();
 		 };
 </script>
 
@@ -87,9 +87,9 @@ width: auto;
 									  <p class="reason-msg">Drop a reason for rejecting request of employee Expense editing</p>
 								  </div>
 								  <div class="col-md-6" id="rejectIdDiv">
-									  <div class="col-md-12">
+									  <div class="col-md-12" id="reasonErrorDiv">
 										  <label>Reason for Reject</label>
-										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId"></textarea>	
+										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId" data-validation="required" field-name="Reason"></textarea>	
 									  </div>
 									  <div class="col-md-12 mt10"><button type="button" class="btn btn-sm btn-danger pull-right" onclick="saveRejectedReason();">Submit</button></div>
 								  	
@@ -112,7 +112,8 @@ width: auto;
 
 
 <script type="text/javascript">
-	function getExpensesList() {
+	function saveRejectedReason() {
+		if ($('#reject_form').validate(false, validationSettings)){
 			var sourceleadUrl = '${sourceleadUrl}';
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
@@ -132,7 +133,9 @@ width: auto;
 							
 						},
 					});
-			       
+		}else{
+			$('#reasonErrorDiv').find('p.jquery_form_error_message').css("color", "yellow");
+		}
 	} 
 </script>
 <script type="text/javascript">
