@@ -40,7 +40,7 @@ public class LoggingAspect {
    private void intercepterMethod() {
    }
    
-   @Pointcut("execution(@javax.inject.Inject * com.bis.sourcelead.rest..*.*(..))")
+   @Pointcut("execution(@javax.inject.Inject * com.bis.sourcelead.web..*.*(..))")
    public void methodAnnotatedWithInjectAndInDemoPackage() {
 	   
    }
@@ -101,13 +101,13 @@ public class LoggingAspect {
        //result = joinPoint.proceed(); //continue on the intercepted method
        result = joinPoint.proceed(joinPoint.getArgs()); //continue on the intercepted method
        long elapsedTime = System.currentTimeMillis() - start;
-       logger.info("Method execution time: " + elapsedTime + " milliseconds.");
        logger.info("********** Dao Layer After Method Excution ************");
+       logger.info("Method execution time: " + elapsedTime + " milliseconds.");
 
        return result;
    }
 
-   @Before("execution(* com.bis.sourcelead.web..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage() ")
+   @Before("execution(* com.bis.sourcelead.rest..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage() ")
    public void logBeforeWebService(JoinPoint joinPoint) throws Throwable {
        logger.info("**********Web Service Layer Before Method Excution ************");
        logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -125,7 +125,7 @@ public class LoggingAspect {
    }
 
    
-   @AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..))", returning = "result")
+   @AfterReturning(pointcut = "execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
    public void logAfterReturningWebService(JoinPoint joinPoint, Object result) {
        logger.info("********** Web Service Layer After Method Exectution ************");
        logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -143,7 +143,7 @@ public class LoggingAspect {
        
    	}
 
-   @AfterThrowing(pointcut = "execution(* com.bis.sourcelead.web.*.*(..))", throwing = "error")
+   @AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
    public void logAfterThrowingWebService(JoinPoint joinPoint, Throwable error) {
        logger.info("********** Web Service Layer Method Throwing Error ************");
        logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());

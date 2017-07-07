@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesApprovalDao;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -61,7 +65,7 @@ public class addExpenseController {
 	
 	@Autowired
 	private ExpensesEntryDocumentsService expensesEntryDocumentsService;
-
+	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
@@ -83,6 +87,14 @@ public class addExpenseController {
 			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
 		}
 		
+		Long expenseID=Long.parseLong(expenseId);
+		List<ExpensesApproverHierarchy> ls = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expenseID);
+		String isSubmittedForApproval="";
+		for(ExpensesApproverHierarchy expensesApproverHierarchy:ls){
+			isSubmittedForApproval=expensesApproverHierarchy.getExpenseApprovalStatus().getValue();
+				
+		}
+		
 		ModelAndView model = new ModelAndView();
 		/*User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
 		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
@@ -98,6 +110,7 @@ public class addExpenseController {
 		model.addObject("expenseId",expenseId);
 		model.addObject("reOpenedUserId",reOpenedUserId);
 		model.addObject("reason",reason);
+		model.addObject("isSubmittedForApproval",isSubmittedForApproval);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
