@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -73,6 +74,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -178,6 +180,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
+	
+	@Autowired
+	OrgDocumentsService orgDocumentsService;
 	
 	/**
 	 * To get All the Users by filtering
@@ -736,6 +741,41 @@ public class UsersListRestController {
 			}
 		}
 		userRole.setProjectApproversList(approversOwnersList);
+		
+		
+		Integer clientDocumentsOwnerCount = orgDocumentsService.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(), "Client");
+		userRole.setClientDocumentsOwnerCount(clientDocumentsOwnerCount);
+		List<User> clientDocumentsOwnerList = new ArrayList<User>();
+		if (clientDocumentsOwnerCount > 0) {
+			List<User> documentsOwnersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+					orgLocations.getId(), userId, Long.valueOf(Constants.TAB_CLIENT));
+			for (User user : documentsOwnersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					clientDocumentsOwnerList.add(user);
+				}
+			}
+		}
+		userRole.setClientDocumentsOwnerList(clientDocumentsOwnerList);
+		
+		
+		
+		Integer vendorDocumentsOwnerCount = orgDocumentsService.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(), "Vendor");
+		userRole.setVendorDocumentsOwnerCount(vendorDocumentsOwnerCount);
+		List<User> vendorDocumentsOwnerList = new ArrayList<User>();
+		if (vendorDocumentsOwnerCount > 0) {
+			List<User> documentsOwnersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+					orgLocations.getId(), userId, Long.valueOf(Constants.TAB_VENDOR));
+			for (User user : documentsOwnersList) {
+				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				if (role != null) {
+					user.setUserType(role.getRoles().getDisplayName());
+					vendorDocumentsOwnerList.add(user);
+				}
+			}
+		}
+		userRole.setVendorDocumentsOwnerList(vendorDocumentsOwnerList);
 
 		resultJson = toJSON(userRole);
 		return resultJson;
@@ -990,6 +1030,42 @@ public class UsersListRestController {
 					}
 				}
 			}
+			
+			
+			
+			if (jsonObj.has("clientDocsOwnerUser") && !isNullOrEmpty("clientDocsOwnerUser")) {
+				User clientDocsOwnerUser = new User();
+				clientDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("clientDocsOwnerUser")));
+				List<OrgDocuments> clientDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Client");
+				Integer clientDocsCountAsOwner = orgDocumentsService.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Client");
+				if (null != clientDocsList) {
+					for (OrgDocuments orgDocuments : clientDocsList) {
+						orgDocuments.setOwnerUser(clientDocsOwnerUser);
+						orgDocuments.setUpdatedBy(user.getUserCode());
+						orgDocuments.setUpdatedDate(new Date());
+						orgDocumentsService.updateDocumnet(orgDocuments);
+					}
+				}
+			}
+			
+			
+			if (jsonObj.has("vendorDocsOwnerUser") && !isNullOrEmpty("vendorDocsOwnerUser")) {
+				User vendorDocsOwnerUser = new User();
+				vendorDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("vendorDocsOwnerUser")));
+				List<OrgDocuments> vendorDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Vendor");
+				Integer vendorDocsCountAsOwner = orgDocumentsService.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Vendor");
+				if (null != vendorDocsList) {
+					for (OrgDocuments orgDocuments : vendorDocsList) {
+						orgDocuments.setOwnerUser(vendorDocsOwnerUser);
+						orgDocuments.setUpdatedBy(user.getUserCode());
+						orgDocuments.setUpdatedDate(new Date());
+						orgDocumentsService.updateDocumnet(orgDocuments);
+					}
+				}
+			}
+			
+			
+			
 
 			userRole.setIsPrimary(0);
 			userRole.setPreviousUserState(userRole.getUserState());
@@ -1370,6 +1446,39 @@ public class UsersListRestController {
 
 				projectsService.tereminateAsProjectApprover(jsonObj, user, userId, orgLocations);
 			}
+			
+			
+			
+			if (jsonObj.has("clientDocsOwnerUser") && !isNullOrEmpty("clientDocsOwnerUser")) {
+				User clientDocsOwnerUser = new User();
+				clientDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("clientDocsOwnerUser")));
+				List<OrgDocuments> clientDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Client");
+				if (null != clientDocsList) {
+					for (OrgDocuments orgDocuments : clientDocsList) {
+						orgDocuments.setOwnerUser(clientDocsOwnerUser);
+						orgDocuments.setUpdatedBy(user.getUserCode());
+						orgDocuments.setUpdatedDate(new Date());
+						orgDocumentsService.updateDocumnet(orgDocuments);
+					}
+				}
+			}
+			
+			
+			if (jsonObj.has("vendorDocsOwnerUser") && !isNullOrEmpty("vendorDocsOwnerUser")) {
+				User vendorDocsOwnerUser = new User();
+				vendorDocsOwnerUser.setId(Long.valueOf(jsonObj.getString("vendorDocsOwnerUser")));
+				List<OrgDocuments> vendorDocsList = orgDocumentsService.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocations.getId(),"Vendor");
+				if (null != vendorDocsList) {
+					for (OrgDocuments orgDocuments : vendorDocsList) {
+						orgDocuments.setOwnerUser(vendorDocsOwnerUser);
+						orgDocuments.setUpdatedBy(user.getUserCode());
+						orgDocuments.setUpdatedDate(new Date());
+						orgDocumentsService.updateDocumnet(orgDocuments);
+					}
+				}
+			}
+			
+			
 
 			if (jsonObj.has("userChangeRole") && !isNullOrEmpty("userChangeRole")) {
 				Roles roles = rolesService.getRolesById(Long.valueOf(jsonObj.getString("userChangeRole")));

@@ -140,6 +140,37 @@ public class OrgDocumentsDaoImpl implements OrgDocumentsDao{
 		return orgDocuments;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId,
+			String sourceType) throws Exception {
+		
+		logger.debug("getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(orgDocuments.id) from OrgDocuments orgDocuments "
+					+ " where orgDocuments.ownerUser.id = :userId and orgDocuments.locationId.id = :orgLocationId "
+					+ " and orgDocuments.sourceType = :sourceType and orgDocuments.status = '1' ";
+			
+			List<Long> projectsCount = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
+			Integer count = 0;
+			if(projectsCount != null && !projectsCount.isEmpty()){
+					count = projectsCount.get(0).intValue();
+			}
+			return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgDocuments> getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId,
+			String sourceType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgDocuments orgDocuments "
+					+ " where orgDocuments.ownerUser.id = :userId and orgDocuments.locationId.id = :orgLocationId "
+					+ " and orgDocuments.sourceType = :sourceType and orgDocuments.status = '1' ";  
+		List<OrgDocuments> orgDocuments = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("sourceType", sourceType).setCacheable(true).list();
+		return orgDocuments;
+	}
+
 	
 
 }

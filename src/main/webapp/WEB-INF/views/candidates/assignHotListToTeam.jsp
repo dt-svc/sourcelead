@@ -53,7 +53,7 @@
 	  var candidateType = candTypeRadio.filter(':checked').val(); */
 	  
 	  
-	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  $.ajax({
            type : "POST",
@@ -273,7 +273,11 @@ function assignHotListToTeam(){
 				success : function(result) {
 					if(result == "success"){
 						
-						location.replace(sourceleadUrl+"/assignHotListToTeam");  
+						 var table = $('#candidatePagination').DataTable();
+						 rowcollection.each(function(index,elem){
+							 hotlist[index] = $(elem).val();
+							 table.row('#hotList'+hotlist[index]).remove().draw( false );
+						 });
 					} 
 				},
 			}); 

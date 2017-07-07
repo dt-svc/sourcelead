@@ -48,7 +48,7 @@ background:url("resources/images/arrow-w.png") no-repeat 95% center; background-
 <script>
 function teamList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		  type : "POST",
             url: sourceleadUrl+"/getTeamListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}",       
@@ -490,7 +490,7 @@ function addMember(teamId){
 <script>
 function projectMemberList(teamId){
 	    var sourceleadUrl ='${sourceleadUrl}';
-		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 	           type : "POST",
 	            url: sourceleadUrl+"/getTeamMembersListByTeamID?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,       
@@ -1155,7 +1155,7 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 <script>
 function getCandidateListForTeam(teamId,teamName){
 	var sourceleadUrl = '${sourceleadUrl}';
-	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?${_csrf.parameterName}=${_csrf.token}&teamId="+teamId,
@@ -1291,8 +1291,9 @@ function removeFromTeam(id){
 		    	type: "POST",
 		    	url: sourceleadUrl+"/removeFromTeam?${_csrf.parameterName}=${_csrf.token}&id="+id,
 		    	  success: function(data) {
-		    		  document.getElementById("removeCandidate"+id).remove();
-		    		  teamList();
+		    		 var table = $('#candidatePagination').DataTable();
+		 			 table.row('#removeCandidate'+id).remove().draw( false );
+		 			 
 		    	  }
 			}); 
 	}

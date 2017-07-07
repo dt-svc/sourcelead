@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgDocumentsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.RequirementDao;
@@ -71,6 +72,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	EmployeesService employeesService;
+	
+	@Autowired
+	OrgDocumentsDao orgDocumentsDao;
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -421,7 +425,24 @@ public class UserRoleServiceImpl implements UserRoleService{
 						 }
 					 }
 					 userRole.setVendorUsersList(vendorTabUsersList);
-				}
+					 
+					 
+					Integer clientDocumentsOwnerCount = orgDocumentsDao.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocationId, "Client");
+					userRole.setClientDocumentsOwnerCount(clientDocumentsOwnerCount);
+					List<User> clientDocumentsOwnerList = new ArrayList<User>();
+					if (clientDocumentsOwnerCount > 0) {
+						List<User> documentsOwnersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+								orgLocationId, userId, Long.valueOf(Constants.TAB_CLIENT));
+						for (User user : documentsOwnersList) {
+							UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+							if (role != null) {
+								user.setUserType(role.getRoles().getDisplayName());
+								clientDocumentsOwnerList.add(user);
+							}
+						}
+					}
+					userRole.setClientDocumentsOwnerList(clientDocumentsOwnerList);
+				   }
 				
 				
 				else if(tabs.getTabName().equalsIgnoreCase(Constants.Vendors)){
@@ -442,7 +463,23 @@ public class UserRoleServiceImpl implements UserRoleService{
 						 }
 					 }
 					 userRole.setClientUsersList(clientTabUsersList);
-					
+					 
+					 
+					 Integer vendorDocumentsOwnerCount = orgDocumentsDao.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocationId, "Vendor");
+						userRole.setVendorDocumentsOwnerCount(vendorDocumentsOwnerCount);
+						List<User> vendorDocumentsOwnerList = new ArrayList<User>();
+						if (vendorDocumentsOwnerCount > 0) {
+							List<User> documentsOwnersList = userDao.getTabAccessUsersByOrgLocationIdAndTabIdAndNotInUsersId(
+									orgLocationId, userId, Long.valueOf(Constants.TAB_VENDOR));
+							for (User user : documentsOwnersList) {
+								 UserRole role = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+								if (role != null) {
+									user.setUserType(role.getRoles().getDisplayName());
+									vendorDocumentsOwnerList.add(user);
+								}
+							}
+						}
+						userRole.setVendorDocumentsOwnerList(vendorDocumentsOwnerList);
 				}
 				
 				
