@@ -221,7 +221,7 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length1-200" class="form-control input-sm" value="" placeholder="Name *">';
 	result = result  +'</div>';
 	result = result  +'</div>';    
 	
@@ -233,7 +233,7 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
@@ -397,6 +397,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
