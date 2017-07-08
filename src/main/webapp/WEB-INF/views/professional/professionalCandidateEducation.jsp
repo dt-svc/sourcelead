@@ -223,8 +223,8 @@ function addEducation(candidateId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
+	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education " name="name" id="name" data-validation="required" data-placeholder="Select Education" onchange="validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -235,7 +235,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="specialization" field-name="specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
+	result = result  +'                      <input type="text" name="specialization" field-name="specialization" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -275,7 +275,7 @@ function addEducation(candidateId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
+	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length1-250" data-validation-optional="true" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -419,7 +419,7 @@ function EditEducation(candidateId,candidateEducationId) {
 							result = result  +'                                                                                                                                                       ';
 							result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 							result = result  +'                    <div class="col-md-12">                                                                                                            ';
-							result = result  +'                      <input type="text" name="specialization"  field-name="specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="'+specialization+'" placeholder="Specialization">                                          ';
+							result = result  +'                      <input type="text" name="specialization"  field-name="specialization" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true" class="form-control input-sm" value="'+specialization+'" placeholder="Specialization">                                          ';
 							result = result  +'                    </div>                                                                                                                             ';
 							result = result  +'                  </div>                                                                                                                               ';
 							result = result  +'                                                                                                                                                       ';
@@ -477,13 +477,13 @@ function EditEducation(candidateId,candidateEducationId) {
 							result = result  +'                                                                                                                                                       ';
 							result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 							result = result  +'                    <div class="col-md-12">                                                                                                            ';
-							result = result  +'                      <input type="text" name="institute" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="'+institute+'" placeholder="Institute">                                               ';
+							result = result  +'                      <input type="text" name="institute" field-name="institute" data-validation="required validate_Space validate_length length1-250" data-validation-optional="true" class="form-control input-sm" value="'+institute+'" placeholder="Institute">                                               ';
 							result = result  +'                    </div>                                                                                                                             ';
 							result = result  +'                  </div>                                                                                                                               ';
 							result = result  +'                                                                                                                                                       ';
 							result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 							result = result  +'                    <div class="col-md-12">                                                                                                            ';
-							result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" name="address" class="form-control input-sm" value="'+address+'" placeholder="Address">                                                 ';
+							result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length1-250" data-validation-optional="true" name="address" class="form-control input-sm" value="'+address+'" placeholder="Address">                                                 ';
 							result = result  +'                    </div>                                                                                                                             ';
 							result = result  +'                  </div>                                                                                                                               ';
 							result = result  +'     ';
