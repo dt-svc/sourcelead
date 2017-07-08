@@ -55,11 +55,12 @@ function validateTaskName(){
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
+						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber+"&orgLocId="+orgLocId,
 						success : function(data) {
 							if (data == true) {
 								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
@@ -926,11 +927,12 @@ function flushProjectTasks(){
 				level1Manager = "";
 			}
 			
+			var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 			
 			  $("#assignTeamModal").attr('data-target','#assignTeam');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager+"&searchByName="+searchByName,
+						url : sourceleadUrl + "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager+"&searchByName="+searchByName+"&orgLocId="+orgLocId,
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";

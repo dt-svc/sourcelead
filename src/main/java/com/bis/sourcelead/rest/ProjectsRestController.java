@@ -1,11 +1,11 @@
 package com.bis.sourcelead.rest;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
+
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +34,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.Requirement;
+
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.model.ProjectDocumentBO;
@@ -122,13 +123,13 @@ public class ProjectsRestController {
 		JSONObject jsonObj = new JSONObject(jsonPayload);
 		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().map(file -> {
 			try {
-				return new ProjectDocumentBO(file.getOriginalFilename(),file.getContentType(), file.getBytes());
+				return new ProjectDocumentBO(file.getOriginalFilename(), file.getContentType(), file.getBytes());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return null;
 		}).collect(Collectors.toList());
-		
+
 		String outPut = projectsService.storeProject(jsonObj, projectDocuments);
 		return outPut;
 
@@ -176,8 +177,7 @@ public class ProjectsRestController {
 	@RequestMapping(value = "/taskNameValidation", method = RequestMethod.GET)
 	public @ResponseBody Boolean taskNameValidation(@RequestParam(value = "TaskName", required = false) String TaskName,
 			@RequestParam(value = "ProjectId", required = false) Long projectId,
-			@RequestParam(value = "taskId", required = false) Long taskId, HttpServletRequest request)
-			throws Exception {
+			@RequestParam(value = "taskId", required = false) Long taskId) throws Exception {
 		ProjectTasks projectTasks = null;
 		if (null != projectId) {
 			projectTasks = projectTasksService.validateTaskNameByTaskId(taskId, TaskName, projectId);
@@ -216,20 +216,7 @@ public class ProjectsRestController {
 		return isDeleted;
 	}
 
-	/*
-	 * @RequestMapping(value = "/addNewEmployee", method = RequestMethod.POST)
-	 * public @ResponseBody String addNewEmployee(@RequestParam(value="json",
-	 * required=false) String json,HttpServletRequest request) throws Exception
-	 * {
-	 * 
-	 * String json1 = "{"+json+"}"; JSONObject jsonObj = new JSONObject(json1);
-	 * OrgLocations loginOrgLocation = (OrgLocations)
-	 * SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 * User users = (User) SourceLeadSessionManager.getSessionAttribute(request,
-	 * "user");
-	 * userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new
-	 * Org()); return "SUCCESS"; }
-	 */
+	
 	/**
 	 * This method for getEmployeesList by by excluding Level1 and Level2
 	 * Managers
@@ -239,18 +226,17 @@ public class ProjectsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getEmployeesListByExcludingManagers", method = RequestMethod.POST)
-	public @ResponseBody String getEmployeesListByExcludingManagers(HttpServletRequest request,
+	public @ResponseBody String getEmployeesListByExcludingManagers(
 			@RequestParam(value = "level1Manager", required = false) Long level1Manager,
 			@RequestParam(value = "level2Manager", required = false) Long level2Manager,
-			@RequestParam(value = "searchByName", required = false) String searchByName) throws Exception {
-		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		Collection<Employees> employeList = employeesService.getAllEmployeesByOrgLocationIdAndSearchByName(
-				loginOrgLocations.getId(), level1Manager, level2Manager, searchByName);
+			@RequestParam(value = "searchByName", required = false) String searchByName,
+			@RequestParam("orgLocId") Long orgLocId) throws Exception {
+
+		Collection<Employees> employeList = employeesService.getAllEmployeesByOrgLocationIdAndSearchByName(orgLocId,
+				level1Manager, level2Manager, searchByName);
 
 		for (Employees employees : employeList) {
-			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(employees.getUser().getId(),
-					loginOrgLocations.getId());
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(employees.getUser().getId(), orgLocId);
 			if (userRole != null) {
 				employees.setUserType(userRole.getUserType());
 			}
@@ -270,13 +256,7 @@ public class ProjectsRestController {
 	@PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
 	@RequestMapping(value = "/storeAssignEmployeeIntoELK", method = RequestMethod.POST)
 	public @ResponseBody String storeAssignEmployeeIntoELK(
-			@RequestParam(value = "ProjectId", required = false) Long projectId, HttpServletRequest request)
-			throws Exception {
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			@RequestParam(value = "ProjectId", required = false) Long projectId) throws Exception {
 
 		if (projectId != null) {
 			Projects projects = projectsService.getProjectById(projectId);
@@ -291,20 +271,7 @@ public class ProjectsRestController {
 		return "success";
 	}
 
-	/*
-	 * @RequestMapping(value = "/notification", method =
-	 * RequestMethod.GET,headers="Accept=application/json") public void
-	 * getNotification() throws Exception{ EmailScenario emailScenario =
-	 * emailScenarioService.getEmailScenarioByUniqueName(Constants.
-	 * TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION); Map<String,
-	 * String> globalVarsMap = new HashMap<>(); globalVarsMap.put("firstName",
-	 * "Vinesh"); globalVarsMap.put("lastName","Kammari"); String body =
-	 * emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
-	 * emailScenario.setBody(body); String actionLink = ""; User user = new
-	 * User(); OrgLocations loginOrgLocation = new OrgLocations();
-	 * emailScenerioUtil.sendNotification(actionLink, user, user,
-	 * loginOrgLocation, emailScenario); }
-	 */
+	
 
 	// to validate user email
 	@RequestMapping(value = "/getEmailVerification", method = RequestMethod.POST)
@@ -326,10 +293,9 @@ public class ProjectsRestController {
 	@RequestMapping(value = "/validateProjectSequeneNumberById", method = RequestMethod.POST)
 	public @ResponseBody Boolean validateProjectSequeneNumber(
 			@RequestParam(value = "ProjectSequeneNumber", required = false) String ProjectSequeneNumber,
-			HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber, orgLocations.getId());
+			@RequestParam("orgLocId") Long orgLocId) throws Exception {
+
+		return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber, orgLocId);
 	}
 
 	// Validate for Cilent Website
@@ -352,7 +318,7 @@ public class ProjectsRestController {
 	@RequestMapping(value = "/validateTasksNameById", method = RequestMethod.GET)
 	public @ResponseBody Boolean validateTasksNameById(
 			@RequestParam(value = "TaskName", required = false) String TaskName,
-			@RequestParam(value = "ProjectId", required = false) Long projectId, HttpServletRequest request)
+			@RequestParam(value = "ProjectId", required = false) Long projectId)
 			throws Exception {
 		return projectsService.validateTasksName(TaskName, projectId);
 	}
