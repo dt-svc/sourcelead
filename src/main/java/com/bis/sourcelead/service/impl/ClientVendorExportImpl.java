@@ -300,7 +300,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 
 
 	@Override
-	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList, String projectName, String exportType,Projects project)throws Exception {
+	public File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType,Projects project)throws Exception {
 		String headers[] = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 
 		File file =null;
@@ -316,9 +316,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			CellStyle style = commonUtil.getCellStyle(wb);
 			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			StringBuilder projName=new StringBuilder();
-			Sheet sheet = wb.createSheet(projName.append(projectName).append("_").append(dateFormat.format(new Date())).toString());
+			Sheet sheet = wb.createSheet(projName.append(project.getProjectName()).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
-			setExcelTitle(sheet,projectName,project,wb,writeRow,projectManager);
+			setExcelTitle(sheet,project.getProjectName(),project,wb,writeRow,projectManager);
 			int rowCount = 7;
 			sheet = commonUtil.setExcelHeaders(sheet, style, headers,rowCount);
 			int row = 7;
@@ -328,7 +328,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				row++;
 			}
 			 StringBuilder projNameSB=new StringBuilder();
-			 file = File.createTempFile(projNameSB.append(projectName).append("_").append(dateFormat.format(new Date())).toString(),".xls");
+			 file = File.createTempFile(projNameSB.append(project.getProjectName()).append("_").append(dateFormat.format(new Date())).toString(),".xls");
 			 file.setReadable(true);
 			 /*file = new File(projectName +"_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
@@ -339,7 +339,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 			}
 		}else{
-			file = pdfUtil.getProjectEmployeesExportPdf(employeeList,projectName,project,projectManager);
+			file = pdfUtil.getProjectEmployeesExportPdf(employeeList,project.getProjectName(),project,projectManager);
 		}
 		
 		return file;

@@ -18,6 +18,6 @@ public interface ClientVendorExport {
 
 	File getVendorContactDetailsFile(List<OrgSpoc> vandorsContactList, String orgName, String exportType)throws Exception;
 
-    File getexportProjectEmployeeFile(List<ProjectMembers> employeeList, String projectName,String exportType, Projects project)throws Exception;
+    File getexportProjectEmployeeFile(List<ProjectMembers> employeeList,String exportType, Projects project)throws Exception;
   
 }

@@ -367,12 +367,12 @@ public class ProjectsDashboardRestController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
 	 @RequestMapping(value = "/exportProjectEmployeeList")
-	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="projectName", required=false) String projectName,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
 		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
 		 List<ProjectMembers> list = employeeList.getProjectMembersList();
 		 Projects project = projectsService.getProjectById(projectId);
 		 
-		 File file = clientVendorExport.getexportProjectEmployeeFile(list,projectName,exportType,project); 
+		 File file = clientVendorExport.getexportProjectEmployeeFile(list,exportType,project); 
 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
