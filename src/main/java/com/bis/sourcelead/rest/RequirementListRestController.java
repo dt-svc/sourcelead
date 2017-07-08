@@ -683,7 +683,9 @@ public class RequirementListRestController {
 											requirementSubmission.setCandidateSource("Individual Recruiter");
 										}
 									}
-									
+									if(requirementSubmission.getCandidateResumes() != null && requirementSubmission.getCandidateResumes().getFileName() != null){
+									requirementSubmission.setFilename(requirementSubmission.getCandidateResumes().getFileName());
+									}
 									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 										/*if(requirementSubmission.getVendorLocationId() != null){
 											requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());

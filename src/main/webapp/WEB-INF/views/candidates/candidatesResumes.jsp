@@ -497,6 +497,7 @@ function removeresumePopUp(candidateId, resumeId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteResumePopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);
 	$("#remove_user_pop_resume").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -505,7 +506,6 @@ function removeresumePopUp(candidateId, resumeId){
 </script>
 <script>
 function deleteResume(candidateId, resumeId){
-
 	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
