@@ -226,5 +226,17 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         }
         return documents;
 	}
+
+	@Override
+	public Integer getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId,
+			String sourceType) throws Exception {
+		return orgDocumentsDao.getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(userId, orgLocationId, sourceType);
+	}
+
+	@Override
+	public List<OrgDocuments> getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId,
+			String sourceType) throws Exception {
+		return orgDocumentsDao.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocationId, sourceType);
+	}
 	
 }

@@ -261,8 +261,8 @@ public class OrgDaoImpl implements OrgDao {
 		
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
-			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole) "
-					+ " and org.id IN (select userRole.orgLocations.org.id from UserRole userRole where userRole.userState = '" + userState + "')";
+			userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
+					+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + userState + "' ))";
 		}
 		
 		// trim the spaces between words (escape spaces)
@@ -314,14 +314,14 @@ public class OrgDaoImpl implements OrgDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception
+	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isSuperAdmin = false;
 		List<Org> org = new ArrayList<Org>();
 		try{
-			String query = ("from Org org where org.user.id = :userId");
-			org = session.createQuery(query.toString()).setLong("userId", userId).list();
+			String query = ("from Org org where org.user.id = :userId and org.id = :orgId");
+			org = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgId", orgId).list();
 			if (null != org && !org.isEmpty() && org.size() > 0) {
 				isSuperAdmin = true;
 			} 
