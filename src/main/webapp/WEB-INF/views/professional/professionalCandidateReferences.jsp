@@ -206,6 +206,26 @@ function closePopup(){
 }
 </script>
 
+<script>
+
+ $(function () {
+	alert("s");
+    $("#relation").change(function () {
+    	 $('#row_dim').hide(); 
+        if (this.options[this.selectedIndex].value == "Work Related") {
+        	alert("s2");
+            $("#row_dim").show();
+        }
+    });
+}); 
+
+/* $(function() {
+    $('#relation').change(function(){
+    	alert("X");
+        $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
+    });
+}); */
+</script>
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -242,14 +262,14 @@ function addReference(candidateId) {
 	result = result  +'<div class="col-md-12">';
 	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
 	result = result + '<option value="">--Select Relation--</option>';
-	result = result + ' <option value="Work Related">Work Related</option>';
-	result = result + '<option  value="Family Related">Family Related</option>';
+	result = result + ' <option id="workRelated" valeu="Work Related">Work Related</option>';
+	result = result + '<option  id="familyRelated" value="Family Related">Family Related</option>';
 	result = result + ' </select>';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-12">';
+	result = result  +'<div class="clearfix mb10" id="row_dim" style="display: none;">';
+	result = result  +'<div class="col-md-12" >';
 	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 	result = result  +'</div>';
 	result = result  +'</div>';
@@ -398,6 +418,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
