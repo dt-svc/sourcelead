@@ -1526,7 +1526,7 @@ public class InvoiceRestController {
 		}
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-		logger.info("Final Response time = " + elapsedTime + " Millis");
+//		logger.info("Final Response time = " + elapsedTime + " Millis");
 		if(invoiceList !=null && invoiceList.size()>0){
 			for(Invoice invoice : invoiceList){
 				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
