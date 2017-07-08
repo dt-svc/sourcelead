@@ -1616,7 +1616,7 @@ public class EMailJobScheduler {
 		 globalVarsMap.put("alertTitle", jobAlert.getAlertTitle());
 		 globalVarsMap.put("alertUserName", alertUserName);
 		 
-		 String jobAlertsTable = getJobAlertsTable(requirementList);
+		 String jobAlertsTable = getJobAlertsTable(requirementList,jobAlert.getJobAlertUUID());
 		 
 		 globalVarsMap.put("alertJobs", jobAlertsTable);
 		 
@@ -1645,7 +1645,7 @@ public class EMailJobScheduler {
 	 
 	 
 	 
-	 private String getJobAlertsTable(List<RequirementIndex> requirementList) throws Exception{
+	 private String getJobAlertsTable(List<RequirementIndex> requirementList,String jobAlertUUID) throws Exception{
 		 String tempHTML = null;
 		 
 			 
@@ -1729,7 +1729,7 @@ public class EMailJobScheduler {
 			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
 			 
 			 if(requirementList.size() > 10){
-				 tempHTML = tempHTML+"<a style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
+				 tempHTML = tempHTML+"<a href='"+sourceleadUrl+"/"+"viewAllJobAlerts?jobAlertUUID="+jobAlertUUID+"' style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
 			 }
 			 
 			 tempHTML = tempHTML+"</tr>";
