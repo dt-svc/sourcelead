@@ -21,4 +21,5 @@ public interface OffboardTasksDao {
 	
 	List<OffboardTasks> getOffBoardTasksListAssignedToCandidateByCandidateOffBoardingId(Long candidateOffBoardingId) throws Exception;
 
+	List<OffboardTasks> getOffBoardAddedTasksListByCandidateOffBoardingId(Long candidateOffBoardingId) throws Exception;
 }
