@@ -194,20 +194,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId where rih.submissionId.status = 1  and ( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) "+subQuery;
     	params.put("startDate",startUTCDate);
     	params.put("endDate",endUTCDate);
-       /* if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
-        }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
-        }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
-        }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
-        }*/
-        
+     
         Query queryExe = session.createQuery(query);
         for (String str : queryExe.getNamedParameters())
         {
@@ -222,47 +209,6 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		return queryExe.setCacheable(true).list();
 	}
 
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId) throws Exception {
-		
-		Session session = this.sessionFactory.getCurrentSession();
-		String subQuery = "";
-		
-		Map<String, Object> params = new HashMap<String,Object>();
-		
-		subQuery = "and (rih.submissionId.recruiterUserId.id =:recruiterUserId)";
-		params.put("recruiterUserId",userId);
-		
-		String query = "";
-        if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
-        }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
-        }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
-        }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
-        }
-        
-        Query queryExe = session.createQuery(query);
-        for (String str : queryExe.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("recruiterUserId")){
-				queryExe.setLong(str, (long) params.get( str ));
-			}
-			else{
-				queryExe.setParameter( str, params.get( str ) );
-			}
-        }
-		
-		return queryExe.setCacheable(true).list();
-	}
-*/
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone) throws Exception {
