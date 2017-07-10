@@ -414,6 +414,52 @@ function displyContract(stage){
 			}
 			
 			result = result +	'<div class="clearfix"/>';
+			if(json.contractRequestDocumentsList.length>0){
+			
+				result = result +	'<h4>Requested Documents</h4>';
+				
+				result = result + '	<div class="clients_wrap_table">';
+				result = result +  '<table id="contractListTableREJ2" class="display" cellspacing="0" width="100%" >';
+				result = result + '	<thead>';
+				result = result + '   <tr>';
+				result = result + '    <th>Doc Name</th>';
+				result = result + '    <th>Doc Type</th>';
+				result = result + '    <th>Description</th>';
+				result = result + '    <th>Action</th>';
+				result = result + '   </tr>';
+				result = result + '	</thead>';
+				result = result + '	<tbody>';
+				
+				  for (var i = 0; i < json.contractRequestDocumentsList.length; i++) {
+		    	      var opt=json.contractRequestDocumentsList[i];
+						result = result + '   <tr>';
+						result = result + '    <td>'+opt.fileName+'</td>';
+						if(opt.docType != null && opt.docType != 'undefined' && opt.docType != ""){
+							result = result + '    <td>'+opt.docType+'</td>';
+						}
+						else{
+							result = result + '    <td>--</td>';
+						}
+						if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+							result = result + '    <td>'+opt.description+'</td>';
+						}
+						else{
+							result = result + '    <td>--</td>';
+						}
+						 if(opt.docFile != null && opt.docFile !=""){
+							result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
+		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
+						 }else{
+							 result = result + '    <td>--</td>';
+						 }
+		           			result = result + '   </tr>';
+				  }
+				result = result + '	</tbody>';
+				result = result + '</table>';
+				result = result + '	</div>';
+				result = result +	'<div class="clearfix"/>';
+			}
+					
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
 			result = result +	'<h4>Billing Details</h4>';
@@ -545,7 +591,14 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 </script>
-
+<script type="text/javascript">
+function previewContractDoc(docId,fileName){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	if(docId != null && docId != ""){
+		window.open(sourceleadUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
+	}  
+}
+</script>
 <script>
 function editOne(startDate,endDate){
 	$('.editNewDat').show();
