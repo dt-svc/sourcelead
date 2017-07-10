@@ -195,9 +195,10 @@ output  = output + '        </div>';
 				var json_obj = JSON.parse(conOne);
 				json_obj['contractUUID'] = contractUUID;
 				var con = JSON.stringify(json_obj);
-				con = con.replace(/[{}]/g, "");
+				//con = con.replace(/[{}]/g, "");
 				var form = $('#notes_Contracts')[0];
-	      		var formData = new FormData(form); 
+	      		var formData = new FormData(form);
+	      		formData.append("json",con);
 				var sourceleadUrl = '${sourceleadUrl}';
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
@@ -208,7 +209,7 @@ output  = output + '        </div>';
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							closeDocPopup();
 							addContractNotes();

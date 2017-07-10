@@ -73,10 +73,11 @@ public class SourceleadNotesRestController {
 	
 	
 	@RequestMapping(value = "/storeNotes", method = RequestMethod.POST)
-	public @ResponseBody String storeNotes(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public @ResponseBody String storeNotes(HttpServletRequest request) throws Exception
 	{
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		String json = request.getParameter("json");
+		//String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sourceleadNotesService.storeComments(jsonObj, user,orgLocation);

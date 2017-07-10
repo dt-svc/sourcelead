@@ -195,7 +195,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control" onkeypress="clientNotesCommentRemoveSpaces();"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" onkeypress="clientNotesCommentRemoveSpaces();"></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
@@ -299,12 +299,13 @@ var validationSettings = {
 		if ($('#clinetNotes_form').validate(false, validationSettings)){
 				var frm = $('#clinetNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+				//con = con.replace(/[{}]/g, "");
 				var form = $('#clinetNotes_form')[0];
-	      		var formData = new FormData(form); 
+	      		var formData = new FormData(form);
+	      		formData.append("json",con);
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#submit_comment").attr("disabled", "disabled");
-         		$("#submit_comment" ).addClass('button').val('Processing..');
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -314,7 +315,7 @@ var validationSettings = {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							closeDocPopup();
 							clientNotes(orgRelationId);
