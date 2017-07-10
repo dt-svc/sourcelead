@@ -590,7 +590,7 @@ function editRelation(e){
 }
 
 </script>
-<!-- Store Reference:If Selected value is Work Related then Designation text box will appear -->
+<!-- If Selected value is Work Related then Designation text box will appear -->
 <script type="text/javascript">
 function getRelation(){
 	var relation = $("#relation").val();
@@ -606,20 +606,13 @@ function getRelation(){
 }
 </script>
 
-
-<!--Edit Reference: If Selected value is Work Related then Designation text box will appear -->
-<script type="text/javascript">
-function getRelationEdit(){
-	var relationEdit = $("#relationEdit").val();
-	if(relationEdit == 'Work Related'){
-		 var editVal=document.getElementById('designationValEdit').value;
-		 //$("#designationValEdit").val(editVal);
-		 $('#designationValEdit').attr("data-validation","required validate_Space validate_length length2-100"); 
-			$("#designationValEdit").show();
-	}else if(relation == 'Family Related'){
-		$('#designationValEdit').val('');
-		$("#designationValEdit").attr("data-validation-optional", "true");
-		$("#dvDesignationEdit").hide();
+<script>
+function editRelation(e){
+	if(e.value == "Work Related"){
+		 document.getElementById("dvDesignationEdit").style.display="block";
+	}else{
+		document.getElementById("dvDesignationEdit").style.display="none";
 	}
 }
+
 </script>

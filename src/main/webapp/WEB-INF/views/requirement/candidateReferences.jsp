@@ -75,7 +75,6 @@ function candidateReferences(candidateId){
     candReferencesList(candidateId);
 }
 </script>
-
 <script>
 function candReferencesList(candidateId){
 	var candidateType = '${candidateType}';
@@ -85,7 +84,7 @@ function candReferencesList(candidateId){
           url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
           success :function(json) {
            
-             			 /* var json = JSON.parse(data);  */
+             			/*  var json = JSON.parse(data);  */
 	                	 $("#candidateReferencesList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='candidateReferencesPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -220,7 +219,7 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length1-200" class="form-control input-sm" value="" placeholder="Name *">';
 	result = result  +'</div>';
 	result = result  +'</div>';    
 	
@@ -232,13 +231,13 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="getRelation();">';
 	result = result + '<option value="">--Select Relation--</option>';
 	result = result + ' <option value="Work Related">Work Related</option>';
 	result = result + '<option  value="Family Related">Family Related</option>';
@@ -246,9 +245,9 @@ function addReference(candidateId) {
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="clearfix mb10">';
+	result = result  +'<div class="clearfix mb10" id="dvDesignation" style="display: none;">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+	result = result  +'<input class="form-control width100percnt" type="text" name="designation" id="designationVal" field-name="Designation"  placeholder="Designation *">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
@@ -345,7 +344,7 @@ function addReference(candidateId) {
 		            			$("#selector10").css({ display: "block" });
 	            				$("#refMsgDiv").html("Success!! New Candidate References added");
 		             			candReferencesList(candidateId);
-						 		resMsgFadein();
+						 		refMsgFadein();
 		            		 
 						},
 					});
@@ -379,7 +378,7 @@ function deleteReferencesPopup(){
 
 
 <script>
-	function resMsgFadein() {
+	function refMsgFadein() {
 		$("#selector10").fadeIn(200);
         $('#selector10').delay(2000).fadeOut('slow');
 	}
@@ -396,6 +395,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -424,7 +424,7 @@ function deleteReference(candidateId,refId){
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
         			 candReferencesList(candidateId);
-        		     resMsgFadein();
+        		     refMsgFadein();
    		    	}
    		    },
 	     });
@@ -523,7 +523,7 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+								result = result + '<select class="form-control width100percnt" id="relationEdit" name="relation" field-name="Relation" onChange="editRelation(this);">';
 								result = result + '<option value="">--Select Relation--</option>';
 								result = result + ' <option '+(json.relation == "Work Related" ? "selected" : '') +'>Work Related</option>';
 								result = result + '<option  '+(json.relation == "Family Related" ? "selected" : '') +'>Family Related</option>';
@@ -531,9 +531,9 @@ function deleteReference(candidateId,refId){
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
-								result = result  +'<div class="clearfix mb10">';
+								result = result  +'<div class="clearfix mb10" id="dvDesignationEdit">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="designation" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+								result = result  +'<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
@@ -572,8 +572,45 @@ function deleteReference(candidateId,refId){
 							
 						}
 					},
-
-				});
-
+				}).done(function(){
+					getRelationEdit();
+			      });
 	}
+</script>
+
+<script>
+function editRelation(e){
+	if(e.value == "Work Related"){
+		 document.getElementById("dvDesignationEdit").style.display="block";
+	}else{
+		document.getElementById("dvDesignationEdit").style.display="none";
+	}
+}
+
+</script>
+<!-- If Selected value is Work Related then Designation text box will appear -->
+<script type="text/javascript">
+function getRelation(){
+	var relation = $("#relation").val();
+	if(relation == 'Work Related'){
+		$('#designationVal').val('');
+		$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100"); 
+		$("#dvDesignation").show();
+	}else if(relation == 'Family Related'){
+		$('#designationVal').val('');
+		$("#designationVal").attr("data-validation-optional", "true");
+		$("#dvDesignation").hide();
+	}
+}
+</script>
+
+<script>
+function editRelation(e){
+	if(e.value == "Work Related"){
+		 document.getElementById("dvDesignationEdit").style.display="block";
+	}else{
+		document.getElementById("dvDesignationEdit").style.display="none";
+	}
+}
+
 </script>

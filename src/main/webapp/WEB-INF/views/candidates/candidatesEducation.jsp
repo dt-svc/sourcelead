@@ -957,9 +957,9 @@ function clearSearchKey() {
 
 <script type="text/javascript">
  function validateEduname(candidateId) {
-	  var name = document.getElementById("name").value; 
+	  var name = document.getElementById("candEdu").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
@@ -969,7 +969,7 @@ function clearSearchKey() {
 		        		  /* document.getElementById("name").setAttribute('record-exist','yes');
 						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
 						   */
-						   $("#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						   $("#candEdu").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#save_button").attr('disabled','disabled');
 						 // return false;
 		        	}
