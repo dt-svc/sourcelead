@@ -146,6 +146,12 @@ function requirementProfile(requirementUUID){
 		    	if(json.location != null && json.location != '' && json.location != 'undefined'){
 		    		location = json.location
 		    	}
+		    	var visaType ='';
+		    	if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined'){
+ 					visaType = json.visaType;
+ 				}else{
+ 					visaType = '--';
+ 				}
 
 		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
@@ -313,6 +319,10 @@ function requirementDetails(requirementUUID){
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 		            }
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+visaType+'">'+visaType+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="clearfix"></div>';

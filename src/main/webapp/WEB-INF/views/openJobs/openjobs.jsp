@@ -959,6 +959,12 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				}else{
 				result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
 				}
+				if(requirements.visaTypes != null && requirements.visaTypes != '' && requirements.visaTypes !='undefined'){
+				result = result +'	<b><i class="fa fa-plane"></i>'+requirements.visaTypes+'</b>';
+				description =  description+'Visa Type :'+requirements.visaTypes+";";
+				}else{
+				result = result +'	<b><i class="fa fa-plane"></i>--</b>';	
+				}
 				result = result +'	</span>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobShare">';
@@ -1189,11 +1195,18 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted:</label>--</b>';	
 				}
+				if(json.visaType != null && json.visaType != '' && json.visaType !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:'+json.visaType+'</label></b>';
+				}else{
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
+				}
+				
 				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
 				}
+				
 				result = result +'	</div>';
 				result = result +'	<div class="jobShare">';
 				if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString !='undefined'){
