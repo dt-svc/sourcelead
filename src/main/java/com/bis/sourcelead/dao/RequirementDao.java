@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -120,6 +121,8 @@ public interface RequirementDao {
 	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
 
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
+
+	public Set<RequirementAssignTo> getRequirementAssignedToTeamByRequirementId(Long id);
 
 	
 }

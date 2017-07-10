@@ -326,12 +326,19 @@ var validationSettings = {
 		if ($('#vendorNotes_form').validate(false, validationSettings)){ 
 				var frm = $('#vendorNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+// 				con = con.replace(/[{}]/g, "");
 				var form = $('#vendorNotes_form')[0];
 	      		var formData = new FormData(form); 
+	      		formData.append("json",con);
+	      		
+	      		var userId = '${SourceLeadWeb_user.id}';
+	      		formData.append("userId",userId);
+	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
+	      	    formData.append("locationCode",locationCode);
+	      	    
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#submit_comment").attr("disabled", "disabled");
-         		$("#submit_comment" ).addClass('button').val('Processing..');
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -341,7 +348,7 @@ var validationSettings = {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							closeDocPopup();
 							vendorNotes(orgRelationId);
@@ -474,5 +481,10 @@ function selectClientCategory(){
 			$('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
 		}	
 		
-}}
+}else{
+	$("#clientCategoryContactTypeListDivDiv").empty();
+	$('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+}
+	
+}
 </script>

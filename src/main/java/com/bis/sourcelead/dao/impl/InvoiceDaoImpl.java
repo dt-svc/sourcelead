@@ -58,25 +58,23 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String subQuery = "";
 		String subQuery1 = "";
 		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'DRAFT' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'DRAFT' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("SENT")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'SENT' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'SENT' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("RECEIVED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Received' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Received' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("ACCEPTED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Accepted' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Accepted' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Rejected' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Rejected' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
-		}else{
-			subQuery = subQuery + "and invoice.invoiceStatus <> 'Linked'";
-		}
+		} 
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
 			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
 		} 

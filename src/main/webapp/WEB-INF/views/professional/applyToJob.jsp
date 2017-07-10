@@ -1317,7 +1317,11 @@ function getResumesList(){
 	        	var json = JSON.parse(data);
 	        	if( json.length > 0){
 		        	var output = "";
-		        	output = output + "<option value=''>-- Select Resume --</option>"; 
+		        	if(json.length > 1){
+		        		output = output + "<option value=''>-- Select Resume --</option>";
+		        	}else{
+		        		getCandidateDetails();
+		        	}
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
