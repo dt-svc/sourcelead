@@ -280,6 +280,27 @@
                 </select>
               </div>
             </div>
+            
+        <div class="form-group">
+              <label class="col-md-3">Immigration Status</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
         
          <div class="form-group">
             <label class="col-md-3">Add Resume<span class="text-danger">&nbsp;*</span></label>
@@ -522,6 +543,8 @@ function validate_fileupload(fileName)
 			    	         }
 		    	});
 		    //Adding Customized Skills to the list
+		    
+		    
 		    
 		    //Adding Customized Educations to the list
 	        var selectone, chosenone;

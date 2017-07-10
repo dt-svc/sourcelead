@@ -1873,7 +1873,7 @@ function  removeValiationVendorContact() {
 		$("#visaName").prop('disabled', true).trigger("chosen:updated");
 		window.visaCountAfter = $("#visaName :selected").length;
 		if(visaCountBefore != visaCountAfter){
-			saveVisa(candidateId);
+			saveVisas(candidateId);
 		}
 		$("#saveVisaBtn").remove();
 		$("#saveVisaBtnSpan").hide();
@@ -1889,7 +1889,7 @@ function  removeValiationVendorContact() {
 
 
 <script>  
- function saveVisa(candidateId){
+ function saveVisas(candidateId){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var sourceleadUrl ='${sourceleadUrl}';

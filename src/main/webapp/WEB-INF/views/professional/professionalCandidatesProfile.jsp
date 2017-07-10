@@ -577,7 +577,54 @@ function professionalProfile(candidateId){
 						
 			                result = result + '</select>';
 							result = result +'</div>';
+							result = result +'</div>';
+							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
+							
+							
+							//visa type start
+							result = result +'		    <div id="visa" class="tab-pane fade in active">';
+							result = result +'		      <div class="visa-summary positionRelative">';
+							result = result +'		        <div class="design-view visaresult">';
+							
+							result = result +'		<div class="clearfix">';
+							result = result +'<h2 class="education  pull-left">Immigration Status:</h2>';
+							 if(json.candidateType == "Candidate"){ 
+								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
+							 }else{ 
+								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
+							 } 
+							
+							result = result +'		          <span id="saveVisaBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
+							result = result +'		</div>'; 
+							
+							
+	                     result = result +'<div class="clearfix">';
+							
+							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
+							// here get lookup data skills and manually enter skills 
+							$.each( json.allAndCandidateVisa, function( i, visa ){
+								  var existed = 0;
+					                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
+						                var res = [];
+						                res = json.visaType.split(",");
+						                res.forEach(function(item) {
+						                	if(visa == item){
+						                		existed = 1;
+						                		result = result + ' <option selected value="'+visa+'">'+visa+'</option>';
+						                	}
+						                });
+					                }
+					                if(existed == 0){
+					                	result = result + ' <option value="'+visa+'">'+visa+'</option>';
+					                }
+								  
+								});
+							
+			                result = result + '</select>';
+							result = result +'</div>';
+							//visa Type End
+							
 							result = result +'</div>';
 							result = result +'</div>';
 							result = result +'</div> ';
@@ -650,6 +697,34 @@ function professionalProfile(candidateId){
 									
 									});
 								
+								//visa type
+								$(".btn-addvisa").click(function(){
+									$(".add-visa").css({"display":"block","opacity":"1"});
+									$("#visaName").val('');
+									 
+									 $("#visaName").val('').trigger("chosen:updated");
+									 
+									/* visa auto complete */
+									var config = {
+											  '.chosen-select'           : {},
+											  '.chosen-select-deselect'  : {allow_single_deselect:true},
+											  '.chosen-select-no-single' : {disable_search_threshold:10},
+											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+											  '.chosen-select-width'     : {width:"95%"}
+								    }
+									
+									for (var selector in config) {
+									  $(selector).chosen(config[selector]);
+									}
+									$('.chosen-select').each(function() {
+										var $this = $(this);
+										$this.next().css({'width': '100%'});
+										})
+									});
+								
+								//end visa type
+								
+								
 								var config = {
 										  '.chosen-select'           : {},
 										  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -672,6 +747,18 @@ function professionalProfile(candidateId){
 								$(".add-skills").click(function(e){
 									 e.stopPropagation();
 								});
+								
+								//visa type
+								$("#visaName").chosen();
+								$("#visaName").prop('disabled', true).trigger("chosen:updated");
+								$(".close-div").click(function(){
+									$(".add-visa").removeClass('add-visa-active');
+									});
+								$(".add-visa").click(function(e){
+									 e.stopPropagation();
+								});
+								
+								//end visa type
 								
 								 $(".addUser-org").click(function(){
 									 $(".edit-details").toggleClass("edit-details-active");
@@ -1352,3 +1439,100 @@ function makeAsPublicVisibility(){
 	
 }
 </script>
+
+ <!-- Visa Type Script View/edit script start here -->
+ <script>
+	function editVisa(candidateId){
+		$("#visaName").prop('disabled', false).trigger("chosen:updated");
+		$("#editVisaBtn").remove();
+		$("#editVisaBtnSpan").hide();
+		window.visaCountBefore = $("#visaName :selected").length;
+		var result = '';
+		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+');">Save Visa</button>';
+		$("#saveVisaBtnSpan").empty();
+		$("#saveVisaBtnSpan").append(result);
+		$("#saveVisaBtnSpan").show();
+		
+		//Adding Customized Visa to the list
+        var select, chosen;
+	    select = $("#visaName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
+	    chosen = select.data('chosen');
+	    
+	    
+	    chosen.search_field.on('keyup', function(e)
+			    {
+			    	   var visaArray = this.value.split(",");
+				    	 if(visaArray.length > 1){
+			        		 for (var i=0; i < visaArray.length; i++) {
+			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
+			 	        		 $("#visaName").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newVisa = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newVisa).text(newVisa);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#visaName option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#visaName").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	});
+	    
+	    
+	    //Adding Customized Skills to the list
+	}
+
+	function saveVisa(candidateId){
+		$("#visaName").prop('disabled', true).trigger("chosen:updated");
+		window.visaCountAfter = $("#visaName :selected").length;
+		if(visaCountBefore != visaCountAfter){
+			saveVisas(candidateId);
+		}
+		$("#saveVisaBtn").remove();
+		$("#saveVisaBtnSpan").hide();
+		var result = '';
+		result = result + '<button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button>';
+		$("#editVisaBtnSpan").empty();
+		$("#editVisaBtnSpan").append(result);
+		$("#editVisaBtnSpan").show();
+		visaCountAfter = visaCountBefore = 0;
+	}
+</script>
+
+
+
+<script>  
+ function saveVisas(candidateId){
+	 var visaName = $("#visaName").val();
+	 var jsonData = encodeURIComponent(visaName);
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(visaName != null && visaName != '' && visaName !='undefined'){
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+jsonData
+	 }else{
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
+	 }
+	 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(data) {
+              if(data != null && data != 'undefined' && data != "" && data == "success"){
+           	  //candidateProfile(candidateId);
+            	  candidateQuickViewProfile(candidateId);
+              }
+       },
+         
+    }); 
+	 
+ }  
+</script>
+
