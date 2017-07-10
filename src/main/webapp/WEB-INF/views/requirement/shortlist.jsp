@@ -115,7 +115,7 @@ function candidateShortList(requirementId){
 				    	   result = result + '<td><div><span class="showRate '+colorHint+'" style="cursor:auto"><i class="glyphicon fa fa-money" style="cursor:auto"></i></span></div></td>';
 			    	     }
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.createdUser+''+orgName+'</div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80" title = "'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';

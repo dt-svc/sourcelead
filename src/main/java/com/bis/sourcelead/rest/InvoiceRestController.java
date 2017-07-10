@@ -1104,8 +1104,8 @@ public class InvoiceRestController {
 		  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 		  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }else{
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		 
 		 //covert subject,body and signature

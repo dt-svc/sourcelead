@@ -211,6 +211,7 @@ public class Constants {
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
 	public static final String INVOICE_REJECT_MAIL_VENDOR_EMAIL = "InvoiceRejectMailtoVendor";
 	public static final String INVOICE_ACCEPT_MAIL_CLIENT_EMAIL = "InvoiceAcceptMailtoClient";
+	public static final String INVOICE_REJECT_MAIL_CLIENT_EMAIL = "InvoiceRejectMailtoClient";
 	public static final String UPDATED_USER_ROLE_NOTIFICATION = "UserRoleChanged";
 	public static final String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER = "updatedRequirementEmailToManager";
 	public static final String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER = "updatedRequirementNotificationToManager";
