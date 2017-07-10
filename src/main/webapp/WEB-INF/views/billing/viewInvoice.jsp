@@ -671,9 +671,16 @@ function addNotes() {
 		if ($('#invoiceNotes_form').validate(false, validationSettings)){ 
 				var frm = $('#invoiceNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+				//con = con.replace(/[{}]/g, "");
 				var form = $('#invoiceNotes_form')[0];
-	      		var formData = new FormData(form); 
+	      		var formData = new FormData(form);
+	      		formData.append("json",con);
+	      		
+	      		var userId = '${SourceLeadWeb_user.id}';
+	      		formData.append("userId",userId);
+	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
+	      	    formData.append("locationCode",locationCode);
+	      			
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
@@ -686,7 +693,7 @@ function addNotes() {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							closeDocPopup();
 							invoiceNotes();

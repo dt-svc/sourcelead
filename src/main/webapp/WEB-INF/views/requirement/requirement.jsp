@@ -660,7 +660,7 @@ $(document).ready(function () {
 		     </c:if>
           
           <div class="form-group">
-				<label class="col-md-3">Location</label>
+				<label class="col-md-3">Location<span class="text-danger paddingLeft">*</span></label>
 				<div class="col-md-9">
 				 <input class="form-control positionRelative" id="ReqLocation" name="location" placeholder="Enter your address"  value="${requirement.location}" type="text" field-name="Locatin" data-validation="required"></input>
           			<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode');"></i>

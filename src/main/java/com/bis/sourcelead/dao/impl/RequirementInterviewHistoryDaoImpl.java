@@ -23,6 +23,7 @@ import com.bis.sourcelead.dao.RequirementInterviewHistoryDao;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -180,7 +181,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId)
+	public List<RequirementInterviewHistory> getAllProfessinalInterviews(String dateRange,Long candidateId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -190,21 +191,10 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		subQuery = "and (rih.submissionId.candidate.id =:candidateId)";
 		params.put("candidateId",candidateId);
 		
-		String query = "";
-        if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
-        }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
-        }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
-        }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
-        }
-        
+		String query = "from RequirementInterviewHistory rih left join fetch rih.interviewId where rih.submissionId.status = 1  and ( rih.interviewId.startTime >= :startDate and rih.interviewId.startTime <= :endDate) "+subQuery;
+    	params.put("startDate",startUTCDate);
+    	params.put("endDate",endUTCDate);
+     
         Query queryExe = session.createQuery(query);
         for (String str : queryExe.getNamedParameters())
         {
@@ -221,45 +211,15 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId) throws Exception {
+	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String subQuery = "";
+		String subQuery = "and (rih.submissionId.recruiterUserId.id =:recruiterUserId)";
+		String query = "from RequirementInterviewHistory rih where rih.submissionId.status = 1 and ( rih.interviewId.dateOfInterview >= :startDate and rih.interviewId.dateOfInterview <= :endDate) "+subQuery;
+    	List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("recruiterUserId", userId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 		
-		Map<String, Object> params = new HashMap<String,Object>();
-		
-		subQuery = "and (rih.submissionId.recruiterUserId.id =:recruiterUserId)";
-		params.put("recruiterUserId",userId);
-		
-		String query = "";
-        if(dateRange != null && "today".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime >= NOW()) "+ subQuery;
-        }else if(dateRange != null && "previous".equals(dateRange)){
-            query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) <= CURDATE()) and (rih.interviewId.endTime IS NULL OR rih.interviewId.endTime < NOW())"+ subQuery;
-        }else if(dateRange != null && "upcoming".equals(dateRange)){
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) > CURDATE())"+ subQuery;
-        }else{
-        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	java.util.Date date = dateFormat.parse(dateRange);
-        	java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
-        	query ="from RequirementInterviewHistory rih where rih.submissionId.status = 1 and (DATE(rih.interviewId.dateOfInterview) = :sqlStartDate)"+ subQuery;
-        	params.put("sqlStartDate",sqlStartDate);
-        }
-        
-        Query queryExe = session.createQuery(query);
-        for (String str : queryExe.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("recruiterUserId")){
-				queryExe.setLong(str, (long) params.get( str ));
-			}
-			else{
-				queryExe.setParameter( str, params.get( str ) );
-			}
-        }
-		
-		return queryExe.setCacheable(true).list();
+		return interviewsHistoryList;
 	}
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception {

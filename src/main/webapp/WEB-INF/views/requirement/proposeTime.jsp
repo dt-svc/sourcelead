@@ -150,7 +150,7 @@ width: 8%;
 								</tbody>
 								</table>
 								  <div class="propBtn">
-								  	<input value="Submit" class="btn btn-success" type="button" onclick="saveProposeTime();">
+								  	<input value="Submit" class="btn btn-success" id="save_proposeTime" type="button" onclick="saveProposeTime();">
 								  	<input value="Clear" class="btn btn-default" type="button" onclick="clearProposeTime();">
 								  </div>	
 								  </form>  	
@@ -321,6 +321,8 @@ function saveProposeTime(){
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
 		//It will escape all the special characters
+		$("#save_proposeTime").attr("disabled", "disabled");
+        $("#save_proposeTime" ).addClass('button').val('Processing..');
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
