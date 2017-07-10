@@ -892,6 +892,30 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				var picture="";
 				var description='';
 				var comment='';
+				var rate=''
+				var rateType= '';
+				var currencyType = '';
+				
+				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
+					rate = requirements.rate+" - "+requirements.maxRate;
+				}else if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
+					rate = requirements.rate;
+				}else{
+					rate="--";
+				}
+				
+				if(requirements.rateType != null && requirements.rateType != '' && requirements.rateType != 'undefined'){
+					currencyType = requirements.rateType;
+				}else{
+					currencyType ="--";
+				}
+				
+				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined' && requirements.rateType != null && requirements.rateType != '' && requirements.rateType != 'undefined' && requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
+					rateType = requirements.currentRateCurrency;
+				}else{
+					rateType ="--";
+				}
+				
 				if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined' && requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 				}else if(requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
@@ -953,6 +977,14 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				}else{
 				result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
 				}
+				
+				if(rate != null && rate != '' && rate !='undefined'){
+				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
+				description =  description+'Rate: '+rate+";";
+				}else{
+				result = result +'	<b><i class="fa fa-rupee"></i>--</b>';	
+				}
+				
 				if(requirements.noticePeriod != null && requirements.noticePeriod != '' && requirements.noticePeriod !='undefined'){
 				result = result +'	<b><i class="fa fa-bell"></i>'+requirements.noticePeriod+'</b>';
 				description =  description+'Notice Period :'+requirements.noticePeriod+";";
@@ -1104,7 +1136,31 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				var link="";
 				var picture="";
 				var description='';
-				var comment='';		      
+				var comment='';	
+				var rate=''
+			    var rateType= '';
+				var currencyType = '';
+					
+					if(json.rate != null && json.rate != '' && json.rate != 'undefined' && json.maxRate != null && json.maxRate != '' && json.maxRate != 'undefined'){
+						rate = json.rate+" - "+json.maxRate;
+					}else if(json.rate != null && json.rate != '' && json.rate != 'undefined'){
+						rate = json.rate;
+					}else{
+						rate="--";
+					}
+					
+					if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+						currencyType = json.rateType;
+					}else{
+						currencyType ="--";
+					}
+					
+					if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined' && json.rateType != null && json.rateType != '' && json.rateType != 'undefined' && json.rate != null && json.rate != '' && json.rate != 'undefined' && json.maxRate != null && json.maxRate != '' && json.maxRate != 'undefined'){
+						rateType = json.currencyCode;
+					}else{
+						rateType ="--";
+					}
+				
     
 		      result = result +' <div class="beard clearfix">';
 		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();"><i class="fa fa-arrow-left text-muted paddingRight"></i>Back to List</a>';
@@ -1157,6 +1213,14 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
 				}
+				
+				
+				if(rate != null && rate != '' && rate !='undefined'){
+				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
+				}else{
+				result = result +'	<b><i class="fa fa-rupee"></i>--</b>';	
+				}
+				
 				result = result +'	</span>';
 				result = result +'    </div>';			
 				result = result +'  <div class="jobApply">';
