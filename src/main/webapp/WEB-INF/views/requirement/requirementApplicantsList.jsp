@@ -80,50 +80,50 @@
             <tbody>
             <c:forEach var="reqSub" items="${toDayReqApplicantscount}">
                <tr>
-			 <td><div><span>${reqSub.candidate.firstName}</span></div></td>
+			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
 			  <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
-			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.requirement.requirementUUID}'/>'>${reqSub.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
+			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
             </sec:authorize>
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
-            	<td><div><span>${reqSub.requirement.jobTitle}</span></div></td>
+            	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
-             <%--  <td><div><span>${reqSub.requirement.jobTitle}</span></div></td> --%>
-              <td><div><span>${reqSub.requirement.orgLocationId.org.orgName}</span></div></td>
-              <td><div><span>${reqSub.candidate.email}</span></div></td>
+             <%--  <td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td> --%>
+              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>${reqSub.submissionId.candidate.email}</span></div></td>
               <td><div><span>
-	              <c:if test="${not empty reqSub.candidate.mobilePhone}">
-	             	 ${reqSub.candidate.mobilePhone}
+	              <c:if test="${not empty reqSub.submissionId.candidate.mobilePhone}">
+	             	 ${reqSub.submissionId.candidate.mobilePhone}
 	              </c:if>
-	              <c:if test="${empty reqSub.candidate.mobilePhone}">
+	              <c:if test="${empty reqSub.submissionId.candidate.mobilePhone}">
 	             	 --
 	              </c:if>
               </span></div>
               </td>
               
               <td><div><span>
-	               <c:if test="${not empty reqSub.candidate.primarySkill}">
-	            	  ${reqSub.candidate.primarySkill}
+	               <c:if test="${not empty reqSub.submissionId.candidate.primarySkill}">
+	            	  ${reqSub.submissionId.candidate.primarySkill}
 	              </c:if>
-	              <c:if test="${empty reqSub.candidate.primarySkill}">
+	              <c:if test="${empty reqSub.submissionId.candidate.primarySkill}">
 	             	 --
 	              </c:if>
               </span></div></td>
          
               
                <td><div><span>
-	               <c:if test="${not empty reqSub.createdUser}">
-	            	  ${reqSub.createdUser}
+	               <c:if test="${not empty reqSub.submissionId.createdUser}">
+	            	  ${reqSub.submissionId.createdUser}
 	              </c:if>
-	              <c:if test="${empty reqSub.createdUser}">
+	              <c:if test="${empty reqSub.submissionId.createdUser}">
 	             	 --
 	              </c:if>
               </span></div></td>
               
                <td><div><span>
-	               <c:if test="${not empty reqSub.candidateScore}">
-	            	  ${reqSub.candidateScore}
+	               <c:if test="${not empty reqSub.submissionId.candidateScore}">
+	            	  ${reqSub.submissionId.candidateScore}
 	              </c:if>
-	              <c:if test="${empty reqSub.candidateScore}">
+	              <c:if test="${empty reqSub.submissionId.candidateScore}">
 	             	 --
 	              </c:if>
               </span></div></td> 

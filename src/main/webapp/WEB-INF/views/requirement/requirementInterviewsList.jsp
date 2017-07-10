@@ -80,52 +80,52 @@
             <tbody>
             <c:forEach var="reqSub" items="${toDayReqInterviewscount}">
               <tr>
-			 <td><div><span>${reqSub.candidate.firstName}</span></div></td>
+			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
              <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
-			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.requirement.requirementUUID}'/>'>${reqSub.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
+			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
             </sec:authorize>
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
-            	<td><div><span>${reqSub.requirement.jobTitle}</span></div></td>
+            	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
-              <td><div><span>${reqSub.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
               
               <td><div><span>
-	              <c:if test="${not empty reqSub.candidateResumes.resumeUUID}">
-	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
-	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
+	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
+	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
+	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
 	              </c:if>
-	              <c:if test="${empty reqSub.candidateResumes.resumeUUID}">
+	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	             	 --
 	              </c:if>
               </span></div>
               </td>
-              <td><div><span>${reqSub.createdDateStr}</span></div></td>
+              <td><div><span>${reqSub.submissionId.createdDateStr}</span></div></td>
               
                <td><div><span>
-	              <c:if test="${not empty reqSub.numOfInterview}">
-	               ${reqSub.numOfInterview} 
+	              <c:if test="${not empty reqSub.submissionId.numOfInterview}">
+	               ${reqSub.submissionId.numOfInterview} 
 	              </c:if>
-	               <c:if test="${empty reqSub.numOfInterview}">
+	               <c:if test="${empty reqSub.submissionId.numOfInterview}">
 	               --
 	              </c:if>
               </span></div>
               </td>
                            
                <td><div><span>
-	               <c:if test="${not empty reqSub.createdUser}">
-	            	  ${reqSub.createdUser}
+	               <c:if test="${not empty reqSub.submissionId.createdUser}">
+	            	  ${reqSub.submissionId.createdUser}
 	              </c:if>
-	              <c:if test="${empty reqSub.createdUser}">
+	              <c:if test="${empty reqSub.submissionId.createdUser}">
 	             	 --
 	              </c:if>
               </span></div></td>
               
                           
                <td><div><span>
-	               <c:if test="${not empty reqSub.submissionStatus}">
-	            	  ${reqSub.submissionStatus}
+	               <c:if test="${not empty reqSub.submissionId.submissionStatus}">
+	            	  ${reqSub.submissionId.submissionStatus}
 	              </c:if>
-	              <c:if test="${empty reqSub.submissionStatus}">
+	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
 	             	 --
 	              </c:if>
               </span></div></td>

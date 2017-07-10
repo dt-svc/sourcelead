@@ -89,9 +89,6 @@ public class ContractRestController {
 	ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
-	PdfConversionUtil pdfConversionUtil;
-	
-	@Autowired
 	ContractRequestDocumentsDao contractRequestDocumentsDao;
 	
 	@Autowired
@@ -228,55 +225,7 @@ public class ContractRestController {
           sos.flush();
           sos.close();
 	}
-	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
-	public @ResponseBody  void viewReqContractDocPdf(@PathVariable("docId") String docId, @PathVariable("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docId));	
-		
-		byte[] pdfBytes = null ;
-		if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
-			pdfBytes = contractRequestDocuments.getDocFile();
-		}
-		else{
-			 pdfBytes = pdfConversionUtil.convertDocToPdf(contractRequestDocuments.getDocFile());
-		}
-		
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    
-  	    ServletOutputStream sos = response.getOutputStream();
-  	    if(null != pdfBytes){
-  	    	response.setContentLength(pdfBytes.length);
-  	    	sos.write(pdfBytes);
-  	    }
-          sos.flush();
-          sos.close();
-	}
 	
-	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
-	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);		
-		
-		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
-		String totalBody = header + contractsTemplate.getTemplateContent();
-    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-  	    Document document = new Document();
-  	    PdfWriter.getInstance(document, byteArray);
-  	    document.open();
-  	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(totalBody));
-  	    document.close();
-  	    byte[] pdfBytes = byteArray.toByteArray();
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    response.setContentLength(pdfBytes.length);
-          ServletOutputStream sos = response.getOutputStream();
-          sos.write(pdfBytes);
-          sos.flush();
-          sos.close();
-	}
-
 	
 	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
 	public @ResponseBody String getAllTemplates(@RequestParam(value = "templateType", required = false) String templateType , HttpServletRequest request,HttpServletResponse response) throws Exception {
