@@ -834,9 +834,9 @@ function validateEmail(orgRelationID){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#EmailId").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					$("input#EmailId").after( "<p class='jquery_form_error_message'>should not your org users email</span>");
 					document.getElementById("EmailId").setAttribute( 'record-exist', 'yes');
-					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg',"should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");

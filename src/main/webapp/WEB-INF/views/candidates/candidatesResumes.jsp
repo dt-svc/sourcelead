@@ -380,7 +380,7 @@ function addResume(candidateId) {
 
 									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
 					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="getCandiResume(\''+opt.resumeUUID+'\',\''+opt.title+'\');"title="preview"></a>';
+					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="getCandiResume(\''+opt.resumeUUID+'\',\''+opt.fileName+'\');"title="preview"></a>';
 		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';

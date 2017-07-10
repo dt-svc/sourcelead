@@ -1238,11 +1238,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getInvoiceDate()){
-		 writeRow.createCell(5).setCellValue(invoice.getInvoiceDate().toString());
+		String invoiceDate = Constants.DF_DMY.format(invoice.getInvoiceDate());
+		 writeRow.createCell(5).setCellValue(invoiceDate);
 	}
 	
 	if(null != invoice.getDueDate()){
-		writeRow.createCell(6).setCellValue(invoice.getDueDate().toString());  
+		String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+		writeRow.createCell(6).setCellValue(dueDate);  
 	}
 	
 	if(null != invoice.getTotal() && !"".equalsIgnoreCase(invoice.getTotal())){

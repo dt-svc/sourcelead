@@ -459,6 +459,9 @@ function selectCategory(){
 		$("#categoryContactTypeListDivDiv").empty();
 		$('#categoryContactTypeListDivDiv').trigger("chosen:updated");
 	}
+}else{
+	 $("#categoryContactTypeListDivDiv").empty();
+	 $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
 }
 	
 }

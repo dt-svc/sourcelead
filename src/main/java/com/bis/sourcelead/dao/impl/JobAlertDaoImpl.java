@@ -149,4 +149,14 @@ public class JobAlertDaoImpl implements JobAlertDao{
 			}
 			return count;
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<JobAlert> getJobAlertByEmailAndAlertDuration(String email, String duration) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.email = :email and jobAlert.duration = :duration and jobAlert.status = '1' "; 
+		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).setString("duration", duration).setCacheable(true).list();
+		return jobAlertList;
+	}
 }

@@ -474,5 +474,10 @@ function selectClientCategory(){
 			$('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
 		}	
 		
-}}
+}else{
+	$("#clientCategoryContactTypeListDivDiv").empty();
+	$('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+}
+	
+}
 </script>
