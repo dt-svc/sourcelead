@@ -206,6 +206,25 @@ function closePopup(){
 }
 </script>
 
+<script>
+
+ $(function () {
+    $("#relation").change(function () {
+    	 $('#row_dim').hide(); 
+        if (this.options[this.selectedIndex].value == "Work Related") {
+        	alert("s2");
+            $("#row_dim").show();
+        }
+    });
+}); 
+
+/* $(function() {
+    $('#relation').change(function(){
+    	alert("X");
+        $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
+    });
+}); */
+</script>
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -240,17 +259,17 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="getRelation();">';
 	result = result + '<option value="">--Select Relation--</option>';
-	result = result + ' <option value="Work Related">Work Related</option>';
-	result = result + '<option  value="Family Related">Family Related</option>';
+	result = result + ' <option id="workRelated" valeu="Work Related">Work Related</option>';
+	result = result + '<option  id="familyRelated" value="Family Related">Family Related</option>';
 	result = result + ' </select>';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+	result = result  +'<div class="clearfix mb10" id="dvDesignation" style="display: none;">';
+	result = result  +'<div class="col-md-12" >';
+	result = result  +'<input type="text" name="designation" id="designationVal" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
@@ -398,6 +417,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -434,7 +454,7 @@ function deleteReference(candidateId,refId){
 }
 </script>
 
-     <script type="text/javascript">
+<script type="text/javascript">
 	function updateCandidateReference(candidateId, refId) {
   
 		var validationSettings = {
@@ -525,7 +545,7 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);">';
 								result = result + '<option value="">--Select Relation--</option>';
 								result = result + ' <option '+(json.relation == "Work Related" ? "selected" : '') +'>Work Related</option>';
 								result = result + '<option  '+(json.relation == "Family Related" ? "selected" : '') +'>Family Related</option>';
@@ -533,9 +553,9 @@ function deleteReference(candidateId,refId){
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
-								result = result  +'<div class="clearfix mb10">';
+								result = result  +'<div class="clearfix mb10" id="dvDesignationEdit">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="designation" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+								result = result  +'<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
@@ -578,4 +598,31 @@ function deleteReference(candidateId,refId){
 				});
 
 	}
+</script>
+
+<!-- If Selected value is Work Related then Designation text box will appear -->
+<script type="text/javascript">
+function getRelation(){
+	var relation = $("#relation").val();
+	if(relation == 'Work Related'){
+		$('#designationVal').val('');
+		$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100"); 
+		$("#dvDesignation").show();
+	}else if(relation == 'Family Related'){
+		$('#designationVal').val('');
+		$("#designationVal").attr("data-validation-optional", "true");
+		$("#dvDesignation").hide();
+	}
+}
+</script>
+
+<script>
+function editRelation(e){
+	if(e.value == "Work Related"){
+		 document.getElementById("dvDesignationEdit").style.display="block";
+	}else{
+		document.getElementById("dvDesignationEdit").style.display="none";
+	}
+}
+
 </script>

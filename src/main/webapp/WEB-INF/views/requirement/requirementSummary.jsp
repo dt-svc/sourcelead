@@ -1090,7 +1090,7 @@ function requirementDetails(requirementId){
 				             */
 				             
 				            /* if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ('${isInterviewer}' == "false" || isLoginUserAsTeamMember == "false" || (isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || (isLoginUserAsTeamMember == "true" && isLoginUserAsManager  == "true") ) ){ */ 
-				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( json.isLoginUserAsApprover  == "true" || isLoginUserAsManager  == "true" || json.isLoginUserAsInitiator == "true") ){
+				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && (isLoginUserAsAdmin == "true" || json.isLoginUserAsApprover  == "true" || isLoginUserAsManager  == "true" || json.isLoginUserAsInitiator == "true") ){
 				            	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 				            		result = result +' <a href="<c:url value="/requirement?requirementUUID='+requirementUUID+'"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
@@ -1786,7 +1786,7 @@ function requirementPipeline(requirementId,submissionType){
 							           }
 							      }   
 						           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-						        	   result = result + '         <td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
+						        	   result = result + '         <td><div><span title="'+report.createdUser+''+orgName+''+candidateSource+'">'+report.createdUser+''+orgName+'<br/>'+candidateSource+'</span></div></td>';
 							           }
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
@@ -4358,7 +4358,7 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+'); clientSideBar('+report.candidateId+');" class="proj_show"><span>'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+'); clientSideBar('+report.candidateId+');" class="proj_show"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.email != null && report.email !='' && report.email !='undefined'){
 		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
@@ -4479,7 +4479,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<label>Education</label>';
 		    result = result +'<div class="progress">';
 		    var educationGraph = (100 * report.educationPercentage)/report.totalEducationPercentage;
-		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.totalEducationPercentage+'% ';
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.educationPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -6093,7 +6093,8 @@ $('body').on('blur', '#updateCustomize_form', function() {
 </script>
 <script>
 function cancelCustomize(){
-	$("#customizePopUp").hide();
+	$(".project_inn_mask").fadeOut();
+	$("#customizePopUp").toggle();
 }
 </script>
 

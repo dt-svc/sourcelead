@@ -79,10 +79,10 @@ function submitToClient(requirementId){
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
 	    			    
-			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
+			            result = result + '<td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
 			           
 			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.candidateEmail+'</span></div></td>';
+			        	   result = result + '<td><div><span title="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -135,7 +135,7 @@ function submitToClient(requirementId){
 							result = result + ' </select></td>';
 			           
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+			        	   result = result + '<td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
