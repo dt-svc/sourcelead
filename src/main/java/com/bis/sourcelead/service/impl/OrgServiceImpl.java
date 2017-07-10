@@ -112,9 +112,9 @@ public class OrgServiceImpl implements OrgService {
 	}
 
 	@Override
-	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception
+	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception
 	{
-		return orgDao.isLoginUserIsSuperAdmin(userId);
+		return orgDao.isLoginUserIsSuperAdmin(userId,orgId);
 	}
 	
 	

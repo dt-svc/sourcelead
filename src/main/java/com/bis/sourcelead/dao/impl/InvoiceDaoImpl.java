@@ -21,6 +21,7 @@ import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgRelations;
 
 @Repository
@@ -375,6 +376,17 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		@SuppressWarnings("unchecked")
 		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setCacheable(true).list();
 		return clientInvoiceList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId = :invoiceId";
+		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		return invoicePaymentList;
+		
 	}
 	 
 }
