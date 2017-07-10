@@ -222,7 +222,7 @@ function addNotes(orgRelationId,vendorLocationId) {
      result = result +"    </div>";
  	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control" onkeypress="vendorNotesCommentRemoveSpaces();"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
 	result = result+'	                  </div>';
 	result = result  +'                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
