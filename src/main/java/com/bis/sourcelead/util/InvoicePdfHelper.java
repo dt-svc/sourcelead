@@ -172,22 +172,18 @@ public class InvoicePdfHelper {
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 				if(invoiceLineItems.getCandidate() !=null){
 					Employees employee = null;
-					if(invoiceLineItems.getCandidate() !=null){
 						if(invoiceLineItems.getCandidate().getConsultantUser() != null){
-							employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+						 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
 						}
-					}else{
-						employee=employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
-					}
-					 	
 					if(employee != null){
 						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
 						}else{
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-						}	
+						}
+					}else{
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
-					
 				}else{
 					if(invoiceLineItems.getUser() !=null){
 						table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
@@ -380,19 +376,21 @@ public class InvoicePdfHelper {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
 					if(invoiceLineItems.getCandidate() !=null){
 						Employees employee = null;
-						if(invoiceLineItems.getCandidate() !=null){
+//						if(invoiceLineItems.getCandidate() !=null){
 							if(invoiceLineItems.getCandidate().getConsultantUser() != null){
 							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
 							}
-						}else{
-							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
-						}
+//						}else{
+//							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
+//						}
 						if(employee != null){
 							if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
 							}else{
 								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 							}
+						}else{
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
 					}else{
 						if(invoiceLineItems.getUser() !=null){
@@ -635,7 +633,12 @@ public class InvoicePdfHelper {
 		if(invoice.getDiscountType() != null && invoice.getDiscountValue() != null){
 		table.addCell(getCell("Discount", Element.ALIGN_CENTER, font12b));
 		table.addCell(getCell(" " + invoice.getDiscountType(), Element.ALIGN_CENTER, font10));
+		if(invoice.getDiscountAmount() != null){
 		table.addCell(getCell(" " + invoice.getDiscountAmount(), Element.ALIGN_CENTER, font10));
+		}else{
+		table.addCell(getCell(" " + "--", Element.ALIGN_CENTER, font10));
+	
+		}
 		table.addCell(getCell(" " + invoice.getDiscountValue(), Element.ALIGN_CENTER, font12b));
 		table.setSpacingAfter(20);
 		}
@@ -839,13 +842,15 @@ public class InvoicePdfHelper {
 	}
 	
 	if(null != invoice.getInvoiceDate()){
-		billingArray[5] = invoice.getInvoiceDate().toString();
+		String invoiceDate = Constants.DF_DMY.format(invoice.getInvoiceDate());
+		billingArray[5] = invoiceDate;
 	}else{
 		billingArray[5] = "--";
 	}
 	
 	if(null != invoice.getDueDate()){
-		billingArray[6] = invoice.getDueDate().toString();  
+		String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+		billingArray[6] = dueDate;  
 	}else{
 		billingArray[6] = "--";
 	}

@@ -168,6 +168,8 @@ $(document).ready(function(){
 			    var approversUsers = "";
 			    var teamOwnerUsers = "";
 			    var projectApproverUsers = "";
+			    var clientDocumentsOwnerUsers = "";
+			    var vendorDocumentsOwnerUsers = "";
 			    var roles = "";
 			    
 			    var socialLinks = "";
@@ -492,6 +494,8 @@ function getChangeRole(userId,userRoleId){
 			    var approversUsers = "";
 			    var teamOwnerUsers = "";
 			    var projectApproverUsers = "";
+			    var clientDocumentsOwnerUsers = "";
+			    var vendorDocumentsOwnerUsers = "";
 			    
 	        	
         	 result = result + '<div class="clearfix assignroles changeRole">';
@@ -662,6 +666,58 @@ function getChangeRole(userId,userRoleId){
 						result = result + '</div>';
 						result = result + '</div>';	
 					  }	
+				
+				
+				
+				if(json.clientDocumentsOwnerCount > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Client Documents Owner<strong class="label label-success">'+json.clientDocumentsOwnerCount+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="clientDocOwnerUserDiv">';
+						if(json.clientDocumentsOwnerList != null && json.clientDocumentsOwnerList != "" && json.clientDocumentsOwnerList != 'undefined' && json.clientDocumentsOwnerList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="clientDocsOwnerUser" name="clientDocsOwnerUser">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.clientDocumentsOwnerList.length; i++)
+		    					{
+							    	clientDocumentsOwnerUsers = json.clientDocumentsOwnerList[i];
+							    	result = result+"<option value='"+clientDocumentsOwnerUsers.id+"'>"+clientDocumentsOwnerUsers.firstName+" "+clientDocumentsOwnerUsers.lastName+"&nbsp;("+clientDocumentsOwnerUsers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }
+				
+				
+				
+				if(json.vendorDocumentsOwnerCount > 0){
+					result = result + '<div class="clearfix mb10">';
+					result = result + '<div class="col-md-6">';
+					    result = result + '<div class="user_badg">';
+						    result = result + '<p>Assigned as Vendor Documents Owner<strong class="label label-success">'+json.vendorDocumentsOwnerCount+'</strong></p>';
+								result = result + '</div>';
+				            result = result + '</div>';
+						result = result + '<div class="col-md-6" id="vendorDocOwnerUserDiv">';
+						if(json.vendorDocumentsOwnerList != null && json.vendorDocumentsOwnerList != "" && json.vendorDocumentsOwnerList != 'undefined' && json.vendorDocumentsOwnerList.length > 0){
+						       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="vendorDocOwnerUsers" name="vendorDocsOwnerUser">';
+							    result = result + '<option value="">Assign to</option>';
+							    for (var i=0; i<json.vendorDocumentsOwnerList.length; i++)
+		    					{
+							    	vendorDocumentsOwnerUsers = json.vendorDocumentsOwnerList[i];
+							    	result = result+"<option value='"+vendorDocumentsOwnerUsers.id+"'>"+vendorDocumentsOwnerUsers.firstName+" "+vendorDocumentsOwnerUsers.lastName+"&nbsp;("+vendorDocumentsOwnerUsers.userType+")</option>"; 
+									
+		    					}
+							    result = result + '</select>';
+						}
+						result = result + '</div>';
+						result = result + '</div>';	
+					  }
+				
+				
 				
 				    result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
 				    result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
@@ -1629,6 +1685,8 @@ function removeUser(userId){
 				    var approversUsers = "";
 				    var teamOwnerUsers = "";
 				    var projectApproverUsers = "";
+				    var clientDocumentsOwnerUsers = "";
+				    var vendorDocumentsOwnerUsers = "";
 			        var result = "";
 	        	
 				    if(json.assignedUsersCountToReportingManager > 0){
@@ -1797,6 +1855,56 @@ function removeUser(userId){
 								result = result + '</div>';
 								result = result + '</div>';	
 							  }	
+						
+						
+						
+						if(json.clientDocumentsOwnerCount > 0){
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							    result = result + '<div class="user_badg">';
+								    result = result + '<p>Assigned as Client Documents Owner<strong class="label label-success">'+json.clientDocumentsOwnerCount+'</strong></p>';
+										result = result + '</div>';
+						            result = result + '</div>';
+								result = result + '<div class="col-md-6" id="clientDocOwnerUserDiv">';
+								if(json.clientDocumentsOwnerList != null && json.clientDocumentsOwnerList != "" && json.clientDocumentsOwnerList != 'undefined' && json.clientDocumentsOwnerList.length > 0){
+								       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="clientDocsOwnerUser" name="clientDocsOwnerUser">';
+									    result = result + '<option value="">Assign to</option>';
+									    for (var i=0; i<json.clientDocumentsOwnerList.length; i++)
+				    					{
+									    	clientDocumentsOwnerUsers = json.clientDocumentsOwnerList[i];
+									    	result = result+"<option value='"+clientDocumentsOwnerUsers.id+"'>"+clientDocumentsOwnerUsers.firstName+" "+clientDocumentsOwnerUsers.lastName+"&nbsp;("+clientDocumentsOwnerUsers.userType+")</option>"; 
+											
+				    					}
+									    result = result + '</select>';
+								}
+								result = result + '</div>';
+								result = result + '</div>';	
+							  }
+						
+						
+						
+						if(json.vendorDocumentsOwnerCount > 0){
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6">';
+							    result = result + '<div class="user_badg">';
+								    result = result + '<p>Assigned as Vendor Documents Owner<strong class="label label-success">'+json.vendorDocumentsOwnerCount+'</strong></p>';
+										result = result + '</div>';
+						            result = result + '</div>';
+								result = result + '<div class="col-md-6" id="vendorDocOwnerUserDiv">';
+								if(json.vendorDocumentsOwnerList != null && json.vendorDocumentsOwnerList != "" && json.vendorDocumentsOwnerList != 'undefined' && json.vendorDocumentsOwnerList.length > 0){
+								       result = result + '<select class="chosen-select" data-validation="required" field-name="Assign To" id="vendorDocOwnerUsers" name="vendorDocsOwnerUser">';
+									    result = result + '<option value="">Assign to</option>';
+									    for (var i=0; i<json.vendorDocumentsOwnerList.length; i++)
+				    					{
+									    	vendorDocumentsOwnerUsers = json.vendorDocumentsOwnerList[i];
+									    	result = result+"<option value='"+vendorDocumentsOwnerUsers.id+"'>"+vendorDocumentsOwnerUsers.firstName+" "+vendorDocumentsOwnerUsers.lastName+"&nbsp;("+vendorDocumentsOwnerUsers.userType+")</option>"; 
+											
+				    					}
+									    result = result + '</select>';
+								}
+								result = result + '</div>';
+								result = result + '</div>';	
+							  }
 							
 							
 							

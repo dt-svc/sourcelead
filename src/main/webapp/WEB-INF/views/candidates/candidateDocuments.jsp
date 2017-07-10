@@ -698,6 +698,7 @@ function removeDocument(candidateId, documentId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
 	$("#remove_user_pop_documents").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -825,7 +826,7 @@ function createDocsType(candidateId){
 	result = result +'</td>';
 	result = result +'<td width="auto">';
 	result = result +'<div class="">';
-	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description"></textarea>';
+	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description" field-name="Description" data-validation-optional="true" data-validation="validate_Space validate_length length1-500"></textarea>';
 	result = result +'</div>';
 	result = result +'</td>';
 	result = result +'<td width="150px">';

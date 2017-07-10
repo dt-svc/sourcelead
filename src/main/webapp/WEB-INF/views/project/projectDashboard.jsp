@@ -319,7 +319,8 @@ overflow-x: auto;
                <jsp:include page="employee.jsp" />
                <jsp:include page="projectDetails.jsp" />
                <jsp:include page="projectTasks.jsp" />
-<jsp:include page="../masterFooter.jsp" />	
+               <jsp:include page="projectDocuments.jsp"/>
+			   <jsp:include page="../masterFooter.jsp" />	
 	
 	
 	
@@ -432,6 +433,9 @@ $(document).ready(function() {
 			  	     result = result + '<li class="current"><a href="#tab-3" onClick="projectTask('+projectId+',\''+status+'\');">Tasks</a></li>';
 			  	'</sec:authorize>';
 		  	'</sec:authorize>';
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+		  	   result = result + ' <li class="current"><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
+			'</sec:authorize>';
 			
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
@@ -445,6 +449,8 @@ $(document).ready(function() {
 		  	result = result + '</div>';
 		  	
 		  	result = result + '<div id="tab-3" class="project_tabs_inn datatable_filter">';
+		  	result = result + '</div>';
+		  	result = result + '<div id="tab-4" class="project_tabs_inn">';
 		  	result = result + '</div>';
 		  	
 		  	result = result + '</div>'; 
