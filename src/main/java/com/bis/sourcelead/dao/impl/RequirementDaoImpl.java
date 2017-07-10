@@ -7,8 +7,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -1438,5 +1440,16 @@ public class RequirementDaoImpl implements RequirementDao {
 		String query = "select req.visaType from Requirement req where req.id =:requirementId";
 	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
         return skillNames;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Set<RequirementAssignTo> getRequirementAssignedToTeamByRequirementId(Long id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementAssignTo reqAssignedTo left join fetch reqAssignedTo.requirementId  where reqAssignedTo.requirementId =:requirementId";
+		List<RequirementAssignTo> reqAssignedTo = session.createQuery(query).setLong( "requirementId", id).setCacheable(true).list();
+		Set<RequirementAssignTo> requirementAssignedTo = new HashSet<RequirementAssignTo>(reqAssignedTo);
+		return requirementAssignedTo;
 	}
 }
