@@ -37,11 +37,16 @@ window.onload = function() {
 	function getInterviewsandTasks() {
 		var sourceleadUrl ='${sourceleadUrl}';
 		var date = $("#eventCalendar").val();
+		var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
+		var timezoneId = "";
+		if(timezone != null && timezone != '' && timezone != 'undefined'){
+			timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
+		}
+		var candidateId = '${SourceLeadWeb_candidateId}';
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getProfessionalInterviewsEvent?${_csrf.parameterName}=${_csrf.token}&dateRange="+date,
-	        success: function(data) {
-	        	 var json = JSON.parse(data);
+	        url: sourceleadUrl+"/getProfessionalInterviewsEventDashBoard?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&candidateId="+candidateId+"&timezoneId="+timezoneId,
+	        success: function(json) {
 	        	 var result = "";
 				     result = result + '    <div class="eventHeader">                                                      ';
 				     result = result + '          <div class="media">                                                      ';
@@ -54,7 +59,6 @@ window.onload = function() {
 				     result = result + '            </div>                                                                 ';
 				     result = result + '          </div>                                                                   ';
 				     result = result + '    </div>																		   ';
-				     
 	        	 for(var i=0; i<json.interviewerList.length; i++)
 					{
 	        		 var report = json.interviewerList[i];

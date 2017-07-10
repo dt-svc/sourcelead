@@ -222,7 +222,7 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		return queryExe.setCacheable(true).list();
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId) throws Exception {
 		
@@ -262,7 +262,18 @@ public class RequirementInterviewHistoryDaoImpl implements RequirementInterviewH
 		
 		return queryExe.setCacheable(true).list();
 	}
-
+*/
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "and (rih.submissionId.recruiterUserId.id =:recruiterUserId)";
+		String query = "from RequirementInterviewHistory rih where rih.submissionId.status = 1 and ( rih.interviewId.dateOfInterview >= :startDate and rih.interviewId.dateOfInterview <= :endDate) "+subQuery;
+    	List<RequirementInterviewHistory> interviewsHistoryList =  session.createQuery(query).setLong("recruiterUserId", userId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
+		
+		return interviewsHistoryList;
+	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception {
