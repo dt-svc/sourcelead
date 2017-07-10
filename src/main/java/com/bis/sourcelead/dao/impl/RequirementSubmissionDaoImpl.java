@@ -2475,24 +2475,24 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		{
 			Session session = this.sessionFactory.getCurrentSession();
 	        
-			  String submissionStages = "";
-		        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-					 /*submissionStages = "and (rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
-		        	submissionStages = " and rsh.toStage = 'SUBMISSION'";
-				}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-					 /*submissionStages = "and( rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
-					submissionStages = " and rsh.toStage = 'SUBMIT_TO_CLIENT'";
-				}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-					/*submissionStages = "and ((rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
-					submissionStages = " and rsh.toStage = 'INTERVIEW'";
-				}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
-					/*submissionStages = "and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-							+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED') ";*/
-					submissionStages = " and rsh.toStage = 'OFFERMADE'";
-				}
+			String submissionStages = "";
+	        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
+				 /*submissionStages = "and (rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
+	        	submissionStages = " and rsh.toStage = 'SUBMISSION'";
+			}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+				 /*submissionStages = "and( rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
+				submissionStages = " and rsh.toStage = 'SUBMIT_TO_CLIENT'";
+			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
+				/*submissionStages = "and ((rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
+						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
+				submissionStages = " and (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
+			}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
+				submissionStages = "and (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
+						+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
+				//submissionStages = " and rsh.toStage = 'OFFERMADE'";
+			}
 	        
 	        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 	        	Map<String, Object> params = new HashMap<String,Object>();
@@ -2518,9 +2518,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		String subQuery = "";
 	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
 	    			if(dateRange != null && "today".equals(dateRange)){
-	    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.updatedDate >= :startDate and rsh.submissionId.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+	    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
 	    			}else if(dateRange != null && "previous".equals(dateRange)){
-	    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.submissionId.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+	    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
 	    			}
 	    			params.put("orgLocationsId",orgLocationsId);
 	    			params.put("startDate",startUTCDate);
@@ -2554,10 +2554,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}*/
 	        	if(dateRange != null && "today".equals(dateRange)){
-	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.submissionId.updatedDate >= :startDate and rsh.submissionId.updatedDate <= :endDate";
+	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
 	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.submissionId.updatedDate < :startDate";
+	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate";
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}
 	        	
