@@ -28,4 +28,5 @@ public interface JobAlertDao {
 	 
 	 Integer getJobAlertCountByEmail(String email) throws Exception;
 
+	 List<JobAlert>  getJobAlertByEmailAndAlertDuration(String email,String duration) throws Exception;
 }

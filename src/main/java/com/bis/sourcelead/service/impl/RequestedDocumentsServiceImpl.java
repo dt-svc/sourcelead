@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequestedDocumentsHistoryService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -53,6 +54,9 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	EmailScenerioUtil emailScenerioUtil;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	RequestedDocumentsHistoryService requestedDocumentsHistoryService;
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -62,9 +66,14 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	@Override
 	public RequestedDocuments saveRequestedDocuments(RequestedDocuments requestedDocuments) throws Exception
 	{
-		return requestedDocumentsDao.saveRequestedDocuments(requestedDocuments);
+		RequestedDocuments req = requestedDocumentsDao.saveRequestedDocuments(requestedDocuments);
+	
+		sendEmailToRequestedDocuments(requestedDocuments);
+		
+		return req;
+		
 	}
-
+	
 	@Override
 	public void storeRequestedDocumentsDetails(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception
 	{
@@ -216,6 +225,67 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		
+	}
+	
+	
+	public void sendEmailToRequestedDocuments(RequestedDocuments requestedDocuments) throws Exception{
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 
+		 
+		 emailMessage.setToEmail(requestedDocuments.getUserId().getEmail());
+		 emailMessage.setFromName(requestedDocuments.getCandidateId().getFirstName());
+		 emailMessage.setFromEmail(requestedDocuments.getCandidateId().getEmail());
+		 emailMessage.setCreatedBy(requestedDocuments.getUserId().getUserCode());
+		 
+		 
+		
+		/* String userName = null;
+		 String candidateName = null;*/
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(!isNullOrEmpty(requestedDocuments.getUserId().getLastName())){
+			 StringBuilder sb1 = new StringBuilder();
+			// userName = sb1.append(requestedDocuments.getUserId().getFirstName()).append(" ").append(requestedDocuments.getUserId().getLastName()).toString();
+			 globalVarsMap.put("userName", sb1.append(requestedDocuments.getUserId().getFirstName()).append(" ").append(requestedDocuments.getUserId().getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("userName", requestedDocuments.getUserId().getFirstName());
+		 }
+		 
+		 if(!isNullOrEmpty(requestedDocuments.getCandidateId().getLastName())){
+			 StringBuilder sb2 = new StringBuilder();
+			 globalVarsMap.put("candidateName", sb2.append(requestedDocuments.getCandidateId().getFirstName()).append(" ").append(requestedDocuments.getCandidateId().getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("candidateName", requestedDocuments.getCandidateId().getFirstName());
+		 }
+		
+		
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPLOADED_REQUESTED_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPLOADED_REQUESTED_DOCUMENTS,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, requestedDocuments.getOrgLocationId().getOrg(),requestedDocuments.getOrgLocationId());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 User fromUser = userService.getUserById(Constants.USERID);
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,requestedDocuments.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario);
 	}
 
 	@Override

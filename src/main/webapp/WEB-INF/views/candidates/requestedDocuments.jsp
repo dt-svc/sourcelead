@@ -66,7 +66,7 @@ top: 20%; right: auto; left: 40%;
 		   		<thead>
 		   			<tr>
 		   				<th>Document Name</th>
-		   				<th>Descripton</th>
+		   				<th>Description</th>
 		   				<th>Action</th>
 		   			</tr>
 		   		</thead>
@@ -84,7 +84,7 @@ top: 20%; right: auto; left: 40%;
 					   				
 					   				<td>
 					   				<c:if test="${!empty docs.description}">
-					   				<div class="tbldata-dotdot-big">${docs.description}</div>
+					   				<div class="tbldata-dotdot-big" title="${docs.description}">${docs.description}</div>
 					   				</c:if>
 					   				<c:if test="${empty docs.description}">
 					   				<div class="tbldata-dotdot-big">-------</div>

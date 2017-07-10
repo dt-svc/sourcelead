@@ -67,7 +67,7 @@ function professionalCandidateDocuments(candidateId){
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 		
 		result  = result + '   <div id="candidateDocumentsList" ></div>';
 		result  = result + '   </div>';
@@ -229,9 +229,13 @@ function documentsPagination(){
     $('#candidateDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 3
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -524,6 +528,7 @@ function removeDocument(candidateId, documentId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onclick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
 	$("#remove_user_pop_documents").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
