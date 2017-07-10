@@ -190,7 +190,7 @@ public class Contracts {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
-	@Column(name = "REJECT_REASON" , columnDefinition = "TEXT default NULL")
+	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
 	@Transient
