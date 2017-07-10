@@ -43,10 +43,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -56,6 +60,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -974,4 +979,17 @@ public class ContractRestController {
 			
 			return "success";
 		}
+	 
+	 
+	 @RequestMapping(value = "/rest/getContractRequestDocumentsById")
+	 public ContractRequestDocuments getContractRequestDocumentsById(@RequestParam(value = "docId", required = true) Long docId) throws Exception {
+		 ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(docId);
+		 return contractRequestDocuments;
+	 }
+	 
+	 @RequestMapping(value = "/rest/getContractTemplateByTemplateUUID")
+	 public ContractsTemplate getContractTemplateByTemplateUUID(@RequestParam(value = "uuid", required = true) String uuid) throws Exception {
+		 ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);
+		 return contractsTemplate;
+	 }
 }

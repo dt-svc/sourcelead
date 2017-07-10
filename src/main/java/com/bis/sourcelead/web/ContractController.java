@@ -41,6 +41,8 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.rest.ContractRestController;
+import com.bis.sourcelead.rest.ExpensesRestController;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -106,6 +108,9 @@ public class ContractController {
 	
 	@Autowired
 	PdfConversionUtil pdfConversionUtil;
+	
+	@Autowired
+	ContractRestController contractRestController;
 	
 	/**
 	 * display contract template list page
@@ -561,7 +566,7 @@ public class ContractController {
 	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewReqContractDocPdf(@PathVariable("docId") String docId, @PathVariable("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docId));	
+		ContractRequestDocuments contractRequestDocuments =  contractRestController.getContractRequestDocumentsById(Long.parseLong(docId));
 		
 		byte[] pdfBytes = null ;
 		if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
@@ -586,7 +591,7 @@ public class ContractController {
 	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);		
+		ContractsTemplate contractsTemplate =  contractRestController.getContractTemplateByTemplateUUID(uuid);
 		
 		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
 		String totalBody = header + contractsTemplate.getTemplateContent();
