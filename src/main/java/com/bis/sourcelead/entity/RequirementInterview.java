@@ -129,6 +129,9 @@ import org.hibernate.annotations.FetchMode;
 	@Transient
 	private String clientName;
 	
+	@Transient
+	private String scheduleType;
+	
 	@OneToMany(mappedBy = "requirementInterview",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementInterviewer> requirementInterviewers = new HashSet<RequirementInterviewer>(0);
@@ -399,4 +402,15 @@ import org.hibernate.annotations.FetchMode;
 	public void setRescheduleComment(String rescheduleComment) {
 		this.rescheduleComment = rescheduleComment;
 	}
+
+	public String getScheduleType()
+	{
+		return scheduleType;
+	}
+
+	public void setScheduleType(String scheduleType)
+	{
+		this.scheduleType = scheduleType;
+	}
+	
 }
