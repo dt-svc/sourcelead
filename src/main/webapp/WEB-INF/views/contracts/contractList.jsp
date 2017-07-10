@@ -673,11 +673,6 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
                 },
                 customize: function(doc) {
                     doc.defaultStyle.alignment = 'center';
-                    doc.content.forEach(function(item) {
-                        if (item.table) {
-                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-                        } 
-                      })
                   },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
@@ -713,11 +708,6 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
                 },
                 customize: function(doc) {
                     doc.defaultStyle.alignment = 'center';
-                    doc.content.forEach(function(item) {
-                        if (item.table) {
-                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-                        } 
-                      })
                   },               
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
@@ -753,11 +743,6 @@ function appListContractsPagination(SourceLeadWeb_loginOrg){
                 },
                 customize: function(doc) {
                     doc.defaultStyle.alignment = 'center';
-                    doc.content.forEach(function(item) {
-                        if (item.table) {
-                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-                        } 
-                      })
                   },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
@@ -1133,11 +1118,6 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
@@ -1174,11 +1154,6 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
@@ -1216,11 +1191,6 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
@@ -1532,11 +1502,6 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
@@ -1572,11 +1537,6 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
@@ -1612,11 +1572,6 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
@@ -1958,11 +1913,6 @@ function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
@@ -1999,11 +1949,6 @@ function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
@@ -2041,11 +1986,6 @@ function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
@@ -2345,11 +2285,6 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
@@ -2385,11 +2320,6 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
@@ -2425,11 +2355,6 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
@@ -2701,11 +2626,6 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
@@ -2741,11 +2661,6 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
@@ -2781,11 +2696,6 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
@@ -3091,11 +3001,6 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
@@ -3131,11 +3036,6 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
@@ -3171,11 +3071,6 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
