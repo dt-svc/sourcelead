@@ -764,11 +764,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setSkillPercentage((float)(skillRoundOff));
 					candidateIndex.setTotalSkillPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore()));
 					
-					double visaTypeRoundOff = Math.round(visaTypePercentage * 100.0) / 100.0;
+					double visaTypeRoundOff = Math.round(visaPer * 100.0) / 100.0;
 					candidateIndex.setVisaTypePercentage((float)(visaTypeRoundOff));
 					candidateIndex.setTotalVisaTypePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore()));
 					
-					double educationRoundOff = Math.round(educationPercentage * 100.0) / 100.0;
+					double educationRoundOff = Math.round(eduPer * 100.0) / 100.0;
 					candidateIndex.setEducationPercentage((float)(educationRoundOff));
 					candidateIndex.setTotalEducationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore()));
 					
@@ -850,13 +850,15 @@ public class RecommendationsServiceImpl implements RecommendationsService{
     	   if(set != null && set.size() >0){
    			for(String visa : set){
    					if(visaType.contains(visa)){
-   						matchedSkillCount++;
+   						return 10;
+//   						matchedSkillCount++;
    					}
    			}
    		}
    
        }
-				return matchedSkillCount*visaTypePercentage;
+//				return matchedSkillCount*visaTypePercentage;
+	return 0;
 		
 	}
 	
@@ -873,11 +875,13 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		if(set != null && set.size() >0){
 			for(String edu : set){
 					if(education.contains(edu)){
-						matchedSkillCount++;
+						return 10;
+//						matchedSkillCount++;
 					}
 			}
 		}
-		return matchedSkillCount*educationPercentage;
+//		return matchedSkillCount*educationPercentage;
+		return 0;
 		
 	}
 	
@@ -1020,7 +1024,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					canTotalDays = 0;
 				}
 			}
-			if(totalDays <= canTotalDays){
+			if(canTotalDays <= totalDays){
 				noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
 			}
 		}else{
