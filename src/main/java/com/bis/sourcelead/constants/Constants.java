@@ -211,6 +211,7 @@ public class Constants {
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
 	public static final String INVOICE_REJECT_MAIL_VENDOR_EMAIL = "InvoiceRejectMailtoVendor";
 	public static final String INVOICE_ACCEPT_MAIL_CLIENT_EMAIL = "InvoiceAcceptMailtoClient";
+	public static final String INVOICE_REJECT_MAIL_CLIENT_EMAIL = "InvoiceRejectMailtoClient";
 	public static final String UPDATED_USER_ROLE_NOTIFICATION = "UserRoleChanged";
 	public static final String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER = "updatedRequirementEmailToManager";
 	public static final String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER = "updatedRequirementNotificationToManager";
@@ -246,6 +247,7 @@ public class Constants {
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_NOTIFICATION ="UserNewActionAssignedNotification";
 	public static final String REQUESTED_DOCUMENTS = "RequestForDocumentsToCandidates";
+	public static final String UPLOADED_REQUESTED_DOCUMENTS = "UploadedRequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";

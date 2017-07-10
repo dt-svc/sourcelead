@@ -738,7 +738,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"aaSorting": [[3,'desc']],
+    	"aaSorting": [[3,'asc']],
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",

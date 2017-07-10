@@ -307,7 +307,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									for (String emailId : othersEmails) {
 										User otherUser = new User();
 										otherUser.setEmail(emailId);
-										//sendEmailToInterviewrs(candidate,otherUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
+										sendEmailToInterviewrs(candidate,otherUser,requirementSubmission, user, loginOrg,requirementInterview,orgLocations);
 									}
 									
 									
