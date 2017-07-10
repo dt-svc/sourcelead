@@ -114,6 +114,8 @@ padding: 2px 300px 2px 0px;
     </script> 
 
 
+<div id="popUp"></div>
+
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
@@ -848,7 +850,7 @@ function preparedContractListWFA(data){
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		  
 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
+	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
 	      	         }
 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	      	     		if(report.typeOfContract == "New"){
@@ -956,7 +958,7 @@ function preparedContractListWFA(data){
 	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
         		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
+     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
      	         }
      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
      	     		if(output.typeOfContract == "New"){
@@ -1050,7 +1052,7 @@ function preparedContractListWFA(data){
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 					if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.approverUserId){
-					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
+					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+appReport.id+',\'REJECTED\');"></i></div></div>';
 					}
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
@@ -3131,15 +3133,17 @@ function finalizeContract(recordId,status){
 
 <script>
 function approveContract(recordId,status){
-	 var rowHtmlContent =  $("#row"+recordId).html();
+	var rejectReason =  $("#rejectContractId").val();
+	var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status+"&rejectReason="+rejectReason,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();
+        		$("#popUp").remove();
     	    	$("#row"+recordId).html(rowHtmlContent);
     	    	 $("#removeStatus"+recordId).html("");
     	        $("#removeReject"+recordId).html("<span>Rejected</span>").addClass('text-success');
@@ -3153,6 +3157,40 @@ function approveContract(recordId,status){
         	getTemplateList();
        },
    });  
+}
+</script>
+
+<script>
+function rejectedContractReason(recordId,status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to reject this contract?</p>";
+	result = result +"		<textarea  id='rejectContractId' name='rejectContractId'  placeholder='Reason here'></textarea>";
+	result = result + ' <div id="rejectContractIdDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='validateReason("+recordId+",\""+status+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function validateReason(recordId,status){
+	
+	var rejectReason =  $("#rejectContractId").val();
+	if(rejectReason != null && rejectReason !='undefined' && rejectReason !=''){
+		$("#rejectContractIdDiv").find('p.jquery_form_error_message').remove();
+		approveContract(recordId,status);
+	}else{
+		$("#rejectContractIdDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	}
+}
+</script>
+
+<script>
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 

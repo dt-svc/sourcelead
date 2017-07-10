@@ -190,6 +190,9 @@ public class Contracts {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
+	@Column(name = "REJECT_REASON" , columnDefinition = "TEXT default NULL")
+	private String rejectedReason;
+	
 	@Transient
 	private String ownerName;
 	
@@ -1018,4 +1021,15 @@ public class Contracts {
 		this.candidate = candidate;
 	}
 
+	public String getRejectedReason()
+	{
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason)
+	{
+		this.rejectedReason = rejectedReason;
+	}
+
+	
 }
