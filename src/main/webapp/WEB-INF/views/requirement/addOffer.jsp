@@ -68,7 +68,7 @@ function addOffer(requirementId){
 				result = result + '<div class="ne-ch">';
 				
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" value=""  onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
 					result= result + ' <label>';

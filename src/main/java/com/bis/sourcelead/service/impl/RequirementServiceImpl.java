@@ -1429,11 +1429,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			globalVarsMap.put("client","--");
 		 }
 		
-		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
+		if(approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
             StringBuilder approverUsersb = new StringBuilder();
             globalVarsMap.put("approverName", approverUsersb.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
             }else{
-                globalVarsMap.put("approverName","--");
+                globalVarsMap.put("approverName",approverUser.getFirstName());
             }
 		
 		
@@ -1457,11 +1457,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	     StringBuilder linkBuild = new StringBuilder();
 		 globalVarsMap.put("link",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+		 if(loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
 			 globalVarsMap.put("loginUserName",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
+				 globalVarsMap.put("loginUserName",loginUser.getLastName());
 			}
 		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
 			 globalVarsMap.put("role",loginOrgLocation.getOrgLocationName() );

@@ -265,16 +265,20 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-	   
+		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		//rejected reason save in requirementApproverHierarchy table only who can reject the requirement
-
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
+		if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
+			requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+			requirementApproverHierarchy.setRejectedReason(reason);
+	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		}else{
+		requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 		
 		 if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
 	    	requirementApproverHierarchy.setRejectedReason(reason);
 	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 	    }
-		
+		}
 		//  This for the Requirement Location 
 		StringBuilder location = new StringBuilder();
 		if(null != requirement.getCity() && !requirement.getCity().equalsIgnoreCase("")){

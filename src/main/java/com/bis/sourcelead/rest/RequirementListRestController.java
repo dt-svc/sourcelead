@@ -444,7 +444,7 @@ public class RequirementListRestController {
 					requirement.setCreatedByName(createdby.append(intiatorUser.getFirstName()).toString());	
 
 					}
-					if(intiatorUser.getId() == user.getId()){
+					if(intiatorUser.getId().equals(user.getId())){
 						requirement.setIsLoginUserAsInitiator("true");
 					}else{
 						requirement.setIsLoginUserAsInitiator("false");
