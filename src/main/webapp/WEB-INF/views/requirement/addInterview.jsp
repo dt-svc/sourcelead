@@ -349,12 +349,11 @@ function validateTimeZone(){
 
 
 <div id="divTaskTd8" style="display: none; float: left;" >
-
-          
 		  <button type="button"class="btn-sm btn-primary btn_Avail" title="Available slots" id ="REPLACEROWIDAvail" onClick ="showCal(this.id);"><i class="fa fa-clock-o"></i></button>
 
 	<input type="hidden" id="button_id" name="button_id" value="1Avail" />
 	 <a href="#" title="Remove" onclick="removeInterviewRow(REPLACEROWID);"><i class="text-danger glyphicon glyphicon-remove deme"></i></a>
+
 </div>  
 
 
