@@ -534,12 +534,13 @@ function getPayableInvoiceList(){
 			result = result +'         <th>ID</th>                    ';
 			result = result +'         <th>Vendor Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
-			result = result +'         <th>Bill Date</th>               ';
+			result = result +'         <th>Project Name</th>          ';
+			result = result +'         <th>Bill Date</th>             ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
 			result = result +'         <th>Due Date</th>              ';
 			result = result +'         <th>Status</th>                ';
-			result = result +'         <th>Payment Status</th>                ';
+			result = result +'         <th>Payment Status</th>        ';
 			result = result +'         <th>Action</th>                ';
 			result = result +'       </tr>                            ';
 			result = result +'     </thead>                           ';
@@ -591,7 +592,12 @@ function getPayableInvoiceList(){
         		}else{
         			invoiceDateStr = "";
         		}
-  		    		
+        		var projectName = "";
+       			if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+       				projectName = report.projectName;
+        		}else{
+        			projectName = "--";
+        		}	
         		result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
@@ -621,6 +627,9 @@ function getPayableInvoiceList(){
 				}else{
 					result = result +'<div class="tbldata-dotdot-vsm" title="">--</div>  ';
 				}
+				result = result +'         </td>';
+				result = result +'         <td> ';
+					result = result +'<div class="tblminwidth-100">'+projectName+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';

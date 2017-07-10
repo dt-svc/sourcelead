@@ -4,9 +4,7 @@
 
 <script> 
 $(document).ready(function(){
-	
 	requirementSubmissionsCount("today");
-	
 });
 </script>
 <div class="col-md-6">
@@ -67,22 +65,26 @@ $(document).ready(function(){
 function loadRequirementApplicants(){
 	var tab = $("#dateActiveTab").val();
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab;
+	var orgLocId = '${SourceLeadWeb_orgLocationId}';
+	window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
 }
 function loadRequirementSubmissions(){
 	var tab = $("#dateActiveTab").val();
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab;
+	var orgLocId = '${SourceLeadWeb_orgLocationId}';
+	window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;;
 }
 function loadRequirementInterviews(){
 	var tab = $("#dateActiveTab").val();
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab;
+	var orgLocId = '${SourceLeadWeb_orgLocationId}';
+	window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;;
 }
 function loadRequirementOffers(){
 	var tab = $("#dateActiveTab").val();
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab;
+	var orgLocId = '${SourceLeadWeb_orgLocationId}';
+	window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;;
 }
 </script>     
 <script type="text/javascript">

@@ -867,7 +867,12 @@ public class RequirementServiceImpl implements RequirementService {
 					//condition : if login user as team member then mail not send
 					// this logic will execute when no approvers are selected for requirement.
 				  if(!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)){
-					Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
+					//Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
+					
+					 Set<RequirementAssignTo> teamMembers = getRequirementAssignedToTeamByRequirementId(savedRequirement.getId());
+					  
+						Set<RequirementAssignTo> updatedRequirementAssignToList = teamMembers;
+					
 					if(updatedRequirementAssignToList != null  ){
 						for(RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList ){
 							if(savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
@@ -906,7 +911,10 @@ public class RequirementServiceImpl implements RequirementService {
 			    
 		return savedRequirement;
 	}
-
+	private Set<RequirementAssignTo> getRequirementAssignedToTeamByRequirementId(Long id)
+	{
+	return requirementDao.getRequirementAssignedToTeamByRequirementId(id);
+	}
 		
 private boolean isNullOrEmpty(String string)
 	{
@@ -932,10 +940,11 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 	// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 	//setting the class filed values
 	 Map<String, String> globalVarsMap = new HashMap<String, String>();
-	 if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
-		 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+	 if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId()) ) {
+		 StringBuilder reqsb=new StringBuilder();
+		 globalVarsMap.put("RequirementTitle",  reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
 		 } else {
-			 globalVarsMap.put("RequirementTitle", "--");
+			 globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
 		}
 	 
 	 StringBuilder stringBuild = new StringBuilder();
@@ -1046,11 +1055,12 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
-			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
+		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
+			StringBuilder reqsb=new StringBuilder();
+			globalVarsMap.put("RequirementTitle",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
 		}
 		else {
-			globalVarsMap.put("RequirementTitle", "--");
+			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
 		}
 		StringBuilder stringBuild = new StringBuilder();
 		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {

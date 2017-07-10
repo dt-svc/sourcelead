@@ -221,6 +221,9 @@ public class Contracts {
 	List<Contracts> fullTimeoffercontractsList;
 
 	@Transient
+	List<ContractRequestDocuments>	contractRequestDocumentsList;
+	
+	@Transient
 	private String tempEnvId;
 
 	@Transient
@@ -301,6 +304,17 @@ public class Contracts {
 	@Transient
 	private Long ownerUser;
 	
+	
+	public List<ContractRequestDocuments> getContractRequestDocumentsList()
+	{
+		return contractRequestDocumentsList;
+	}
+
+	public void setContractRequestDocumentsList(List<ContractRequestDocuments> contractRequestDocumentsList)
+	{
+		this.contractRequestDocumentsList = contractRequestDocumentsList;
+	}
+
 	public String getTempUUID()
 	{
 		return tempUUID;

@@ -1339,13 +1339,13 @@ $("#searchType").selectpicker('refresh');
             <div class="form-group clearfix">
                 <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_length length2-100">
                 </div>
             </div>
             <div class="form-group clearfix">
                 <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Location</label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="location">
+                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="inviteLocation" onclick="initLocationAuto('inviteLocation');">
                 </div>
             </div>
             <div class="form-group clearfix">
@@ -1371,8 +1371,7 @@ $("#searchType").selectpicker('refresh');
         <div class="clearfix form-footer">
             <div class="pull-right mr">
           <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
-          <button type="button" class="btnClose btn btn-default btn-sm ml10">
-              <i class="fa fa-close paddingRight"></i>Cancel
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
             </button>
                 </div>
         </div>
@@ -1381,7 +1380,13 @@ $("#searchType").selectpicker('refresh');
       </div>
       
     </div>
-  </div> 
+  </div>
+  <script>
+  function flushInviteCompany(){
+	  document.getElementById("inviteCompany_form").reset();
+	  $("inviteCompany_form").validate().resetForm();
+  }
+  </script> 
   <script>
   $("#invitePop").click(function(){
   $(".modalInvite").fadeIn();
@@ -1390,10 +1395,12 @@ $("#searchType").selectpicker('refresh');
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
 	  $(".sideMask").fadeOut();
+	  flushInviteCompany();
 	  });
   $(".btnClose").click(function(){
 	  $(".modalInvite").fadeOut();
 	  $(".sideMask").fadeOut();
+	  flushInviteCompany();
 	  });
   </script>
 <!--  Company invite pop ends -->
@@ -1499,7 +1506,7 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
     if(type == "invite"){
     	 var input = (document.getElementById(locationId));
     	    var options = {
-    	        types: ['geocode'],
+    	    		types: ['(cities)'],
     	        componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
     	        }
@@ -1507,7 +1514,7 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
     	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
-            types: ['geocode'],
+    		types: ['(cities)'],
       
         });
     }
