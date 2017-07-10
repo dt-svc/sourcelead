@@ -675,6 +675,12 @@ function addNotes() {
 				var form = $('#invoiceNotes_form')[0];
 	      		var formData = new FormData(form);
 	      		formData.append("json",con);
+	      		
+	      		var userId = '${SourceLeadWeb_user.id}';
+	      		formData.append("userId",userId);
+	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
+	      	    formData.append("locationCode",locationCode);
+	      			
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
