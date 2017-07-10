@@ -11,7 +11,7 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/summernote.js"/>
+<script src="resources/js/summernote.js"></script>
 <link href="resources/css/summernote.css" rel="stylesheet"/>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
