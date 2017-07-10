@@ -2049,6 +2049,7 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result	+ ' <form id="rescheduleInterview_form"  name="rescheduleInterview_form" method="post">';
 	result = result + '			  <div class="reSchPopInn">';
 	result = result + '			   <input type="hidden" id="interviewId" name="interviewId" value='+interviewId+' >';
+	result = result + '			   <input type="hidden" id="scheduleType" name="scheduleType" value="reschedule" >';
 	result = result + '				  <h3>Reschedule</h3>';
 	result = result + '				  <div class="reSchPopCta">';									  	
 	result = result + '						<span id="rescheduleDateDiv">';
