@@ -537,6 +537,7 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmp("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelEmployeers();'></b>";
 	result = result +"	</div>";
+	$("#deleteEmp1PopUp").empty();
 	$("#deleteEmp1PopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -646,7 +647,6 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 <script>
 	function iscurrentPosition() {
 		var currentposition = document.getElementById("isCurrentPosition").checked;
-			 alert("currentposition"+currentposition);
 		if (currentposition) {
 			document.getElementById("endDateDiv").style.display = 'none';
 			$('#endYear').removeAttr('data-validation');
