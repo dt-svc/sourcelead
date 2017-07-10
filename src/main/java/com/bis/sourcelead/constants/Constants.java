@@ -125,6 +125,7 @@ public class Constants {
 	public static final String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
 	public static final String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static final String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
+	public static final String VENDOR_INTERVIEW_RESCHEDULE = "Vendors Interview Reschedule";
 	public static final String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static final String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
