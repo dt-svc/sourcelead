@@ -1077,13 +1077,13 @@ public class CrowdSourcingRequirementsRestController {
 				
 				//changed as per the timezone
   				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-  				DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+  				DateFormat eventstartTimeFroDashBoard = new SimpleDateFormat( "hh:mm aa");
   				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
   					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
   					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
   					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
   					currentDateInTimezone = standardFormat.format(converteDate);
-  					String eventstartTimeFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+  					String eventstartTimeFroDashBoardStr = eventstartTimeFroDashBoard.format(converteDate);
   					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
   					interviewHistory.setStartTimeStr(eventstartTimeFroDashBoardStr);
   				}
@@ -1093,7 +1093,7 @@ public class CrowdSourcingRequirementsRestController {
   					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getEndTime());  
   					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
   					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-  					String eventstartTimeFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+  					String eventstartTimeFroDashBoardStr = eventstartTimeFroDashBoard.format(converteDate);
   					interviewHistory.setEndTimeStr(eventstartTimeFroDashBoardStr);
   				}
   				else{
@@ -1163,13 +1163,13 @@ public class CrowdSourcingRequirementsRestController {
 	  				
 	  			//changed as per the timezone
 	  				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm aa");
-	  				DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+	  				DateFormat eventstartTimeFroDashBoard = new SimpleDateFormat( "hh:mm aa");
 	  				if(null != timezone.getTimeZoneId() && null != interviewHistory.getInterviewId() && null != interviewHistory.getInterviewId().getId() && null != interviewHistory.getInterviewId().getStartTime()){
 	  					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getStartTime());  
 	  					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 	  					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 	  					currentDateInTimezone = standardFormat.format(converteDate);
-	  					String eventstartTimeFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+	  					String eventstartTimeFroDashBoardStr = eventstartTimeFroDashBoard.format(converteDate);
 	  					interviewHistory.setInterviewStartDateTimeStr(currentDateInTimezone);
 	  					interviewHistory.setStartTimeStr(eventstartTimeFroDashBoardStr);
 	  				}
@@ -1179,7 +1179,7 @@ public class CrowdSourcingRequirementsRestController {
 	  					String currentTimeStr = Constants.TZ_DF.format(interviewHistory.getInterviewId().getEndTime());  
 	  					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 	  					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-	  					String eventstartTimeFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+	  					String eventstartTimeFroDashBoardStr = eventstartTimeFroDashBoard.format(converteDate);
 	  					interviewHistory.setEndTimeStr(eventstartTimeFroDashBoardStr);
 	  				}
 	  				else{
