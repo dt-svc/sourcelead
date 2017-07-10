@@ -1,4 +1,3 @@
-
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
@@ -8,7 +7,7 @@
 
   <aside>
   <div class="side-bar theme_sideMenu">
-    <div class="side-bar-inner mt10">
+    <div class="side-bar-inner">
       <%-- <div class="user-panel">
 	<div class="media">
 		<div class="media-body">
