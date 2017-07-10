@@ -194,7 +194,7 @@ public class ContractRestController {
 		
 		byte[] pdfBytes = null ;
 	
-		if(null != contract.getEnvelopId()&& contract.getTypeOfContract().equalsIgnoreCase("New")){
+		if(null != contract.getEnvelopId()&& contract.getTypeOfContract().equalsIgnoreCase(Constants.NEW_TYPE)){
 			if(null == contract.getContractsTemplate()){
 				Contracts con = contractsTemplateService.getContractById(contract.getParentContractId().getId());
 				pdfBytes = html2PdfUtil.getPdfBytes(con.getContractsTemplate(),contract,orgLocation,org);
@@ -204,19 +204,19 @@ public class ContractRestController {
 			}
 			
 		}
-		/*if(("New").equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
-		if(("New").equalsIgnoreCase(contract.getTypeOfContract())){
+		/*if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
+		if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 
-		if(("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
-		//if("Custom".equalsIgnoreCase(contract.getTypeOfContract())){
+		if((Constants.CUSTOM_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
+		//if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 			  
 			  
 		}
 		
-		if("Existing".equalsIgnoreCase(contract.getTypeOfContract())){
+		if(Constants.EXISTING_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
@@ -420,22 +420,22 @@ public class ContractRestController {
 		 contractsTemplateService.saveNewContract(contracts);
 		}*/
 		
-		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
+		if((Constants.WAITING_TO_BE_VERIFY).equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			String fromStage = childContarct.getTemplateSubmissionStatus();
 			String parentFromStage = contracts.getTemplateSubmissionStatus();
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus("FINALIZED");
+				childContarct.setTemplateSubmissionStatus(Constants.FINALIZED);
 				contracts.setId(contracts.getId());
-				contracts.setTemplateSubmissionStatus("FINALIZED");
+				contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
 			 
 			 ContractsHistory childContractsHistory = new ContractsHistory();
 			 childContractsHistory.setFromStage(fromStage);
 			 childContractsHistory.setContractsId(childContarct);
-			 childContractsHistory.setToStage("FINALIZED");
+			 childContractsHistory.setToStage(Constants.FINALIZED);
 			 childContractsHistory.setCreatedDate(new Date());
 			 childContractsHistory.setUpdatedDate(new Date());
 			 childContractsHistory.setCreatedBy(user.getUserCode());
@@ -446,7 +446,7 @@ public class ContractRestController {
 			 ContractsHistory parentContractsHistory = new ContractsHistory();
 			 parentContractsHistory.setFromStage(parentFromStage);
 			 parentContractsHistory.setContractsId(contracts);
-			 parentContractsHistory.setToStage("FINALIZED");
+			 parentContractsHistory.setToStage(Constants.FINALIZED);
 			 parentContractsHistory.setCreatedDate(new Date());
 			 parentContractsHistory.setUpdatedDate(new Date());
 			 parentContractsHistory.setCreatedBy(user.getUserCode());
@@ -549,13 +549,13 @@ public class ContractRestController {
 	public String approveContract(@RequestParam(value = "recordId", required = false) String recordId,
 			@RequestParam(value = "status", required = false) String status,
 			HttpServletRequest request)throws Exception{
-		String isAprroved = "APPROVED";
+		String isAprroved = Constants.APPROVED;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		Contracts updatedContract = contractsTemplateService.approveContracts(Long.parseLong(recordId),status,orgLocation,user,org);
-		if("REJECTED".equalsIgnoreCase(updatedContract.getTemplateSubmissionStatus())){
-			isAprroved = "REJECTED";
+		if(Constants.REJECTED.equalsIgnoreCase(updatedContract.getTemplateSubmissionStatus())){
+			isAprroved = Constants.REJECTED;
 		}
 		return isAprroved;
 }
@@ -922,14 +922,14 @@ public class ContractRestController {
 		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
 		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
-				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				
 				String fromStage = "";
 				
 				ContractsHistory childContractsHistory = new ContractsHistory();
-				if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("EXPIRED"))
+				if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase(Constants.EXPIRED))
 				{
 					ContractsHistory contractsHistory = contractsTemplateService.getAllContractsHistoryByContractId(contracts.getId());
 					fromStage = contractsHistory.getFromStage();
