@@ -3364,21 +3364,16 @@ function CountClick(contractUUID,parentId){
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
 
-			  if(opt.docFile != null && opt.docFile !=""){
-				 // result = result +'	       <label class="col-md-4 text-center"><a href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\">'+opt.fileName+'</a></label>                                                 ';
 				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</a></label>                                                 ';
-			  }else{
-				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
-			  }
 
-			/*   if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+				  /* if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
 				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 				  result = result +'	       <label class="text-center">--</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
 				  $("#saveAction").empty(); 
 			  }
-			  else{ */
-				  /* if(parentId != "--"){ */
+			  else{ 
+				   if(parentId != "--"){ */
 						  if(opt.docFile != null && opt.docFile !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
