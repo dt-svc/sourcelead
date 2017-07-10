@@ -890,7 +890,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="block";
+		//document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -903,7 +903,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="block";
+		//document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
