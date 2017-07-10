@@ -13,11 +13,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -46,6 +48,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -57,6 +60,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -287,7 +291,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String storeProject(JSONObject jsonObj) throws Exception {
+	public String storeProject(JSONObject jsonObj, List<ProjectDocumentBO> projectDocumentBOList) throws Exception {
 		    
 		  
 		String resultJson = null;
@@ -300,6 +304,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
+    	
     	
     	if((jsonObj.has("ProjectDescription"))){
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
@@ -319,8 +324,48 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }else{
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    }
-    	
-    	
+		if(jsonObj.has("timeSheetFrequency") && StringUtils.isNotEmpty(jsonObj.getString("timeSheetFrequency"))){
+			projects.setTimesheetFrequency(jsonObj.getString("timeSheetFrequency"));
+		}
+		
+		if(jsonObj.has("EstimatedHours") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedHours"))){
+			projects.setEstimatedHours(jsonObj.getDouble("EstimatedHours"));
+		}
+		if(jsonObj.has("EstimatedBudget") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedBudget"))){
+			projects.setEstimatedBudget(jsonObj.getDouble("EstimatedBudget"));
+		}
+		
+		if(jsonObj.has("isAllowFreelanceDevelopers") && StringUtils.isNotEmpty(jsonObj.getString("isAllowFreelanceDevelopers"))){
+			projects.setAllowFreeLance(BooleanUtils.toBoolean(jsonObj.getString("isAllowFreelanceDevelopers"),"Y",""));
+		}
+		if(jsonObj.has("isAllowRemoteWork") && StringUtils.isNotEmpty(jsonObj.getString("isAllowRemoteWork"))){
+			projects.setAllowRemote(BooleanUtils.toBoolean(jsonObj.getString("isAllowRemoteWork"),"Y",""));
+		}
+		if(jsonObj.has("isAllowOverTime") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOverTime"))){
+			projects.setAllowOvertime(BooleanUtils.toBoolean(jsonObj.getString("isAllowOverTime"),"Y",""));
+		}
+		if(jsonObj.has("isAllowOffshoreResource") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOffshoreResource"))){
+			projects.setAllowOffShore(BooleanUtils.toBoolean(jsonObj.getString("isAllowOffshoreResource"),"Y",""));
+		}
+		if(jsonObj.has("isTimeEntryAfterDeadline") && StringUtils.isNotEmpty(jsonObj.getString("isTimeEntryAfterDeadline"))){
+			projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(jsonObj.getString("isTimeEntryAfterDeadline"),"Y",""));
+		}
+		if(jsonObj.has("isAllowBidding") && StringUtils.isNotEmpty(jsonObj.getString("isAllowBidding"))){
+			projects.setAllowBidding(BooleanUtils.toBoolean(jsonObj.getString("isAllowBidding"),"Y",""));
+		}
+		
+		if(jsonObj.has("flatPercentage") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentage"))){
+			projects.setFlatPercent(jsonObj.getDouble("flatPercentage"));
+		}
+		
+		if(jsonObj.has("flatPercentageId") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentageId"))){
+			projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
+		}
+		
+		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects)).collect(Collectors.toList());
+		
+		projects.getProjectDocuments().addAll(projDocDBList);
+	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
     	}
@@ -1781,72 +1826,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		  }
 		}
 		
-		/*if (jsonObj.has("employeeMaxCount")){
-			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
-			if(!jsonObj.getString("employeeMaxCount").isEmpty()){
-					int empMaxCount = Integer.parseInt(employeeMaxCount);
-					for (int c = 1; c < empMaxCount; c++) {
-						
-						ProjectMembers pm = new ProjectMembers();
-						if(StringUtils.isNotEmpty(jsonObj.getString("employeeId"+c))){
-							Employees emp = employeesService.getEmployee(jsonObj.getString("employeeId"+c));
-						    if(emp != null){
-						    	pm.setEmployee(emp);
-						    	
-						        HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
-									
-								ProjectMembersHistory pmh = new ProjectMembersHistory();
-								pmh.setProjectMemberId(pm);
-								pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-					            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
-					            	Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
-					            	 pmh.setProjectAssignedDate(currentStartDate);
-					            }else{
-					            	  pmh.setProjectAssignedDate(projects.getStartDate());
-					            }
-					            
-					            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
-					            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
-					            	pmh.setProjectTerminationDate(currentEndDate);
-					            }
-					            else{
-					            	 pmh.setProjectTerminationDate(projects.getEndDate());
-						    	}
-
-					            pmh.setCreatedDate(new Date());
-								pmh.setCreatedBy(user.getUserCode());
-								pmh.setUpdatedDate(new Date());
-								pmh.setUpdatedBy(user.getUserCode());
-								pmhList.add(pmh);
-								
-								pm.setProjects(projects);
-								pm.setStatus(Constants.MEMBER_ACTIVE);
-								pm.setCreatedDate(new Date());
-								pm.setUpdatedDate(new Date());
-								pm.setCreatedBy(user.getUserCode());
-								pm.setUpdatedBy(user.getUserCode());
-								pm.setMemberHistoryList(pmhList);
-								projectMembersService.saveProjectMember(pm);
-								
-								//send mail to assigned team members
-								if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
-									sendEmailToTeamMembers(projects, emp, user, approverUserId1, loginOrgLocation, loginOrgCode);
-									
-								}
-								
-								commonUtil.storeTimesheetSubmissionRecords(emp.getUser());
-								
-								*//**
-							    * This teamMembersList string to store all team members for mail to project manager.
-							    *//*
-								String teamMember = "";
-								teamMember = emp.getUser().getFirstName()+" "+emp.getUser().getLastName();
-								teamMembersList = teamMembersList+teamMember+"<br/>";
-						    }
-						}
-				    }
-			 }
-	    }*/
+		
 		
 		//send mail to assigned Project Manager
 		if((jsonObj.has("isMailToProjectManager") && !isNullOrEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
