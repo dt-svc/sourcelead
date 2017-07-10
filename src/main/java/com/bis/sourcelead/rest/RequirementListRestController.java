@@ -803,6 +803,42 @@ public class RequirementListRestController {
 			return "true";
 		 }
 		 
+		 @RequestMapping(value = "/saveChangedStatusFromDraft" , method = RequestMethod.POST)
+		 @ResponseBody  String saveChangedStatusFromDraft(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				                                 @RequestParam(value="status", required=false) String  status,
+				                                 HttpServletRequest request) throws Exception {
+			
+			 
+			 
+			   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			   // authorizing if the login user as Team Member Or Not
+				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				if(isLoginUserAsTeamMember){
+					return "false";
+				}else{
+					
+					 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+					 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
+					 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
+					 requirement.setRequirementSubmissionStatus(changedStatus);
+					 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+					 
+					 requirement.setManagerUserId(loginUser);
+					 
+					 requirement.setUpdatedBy(loginUser.getUserCode());
+					 requirement.setUpdatedDate(commonUtil.currentDate());
+					 requirementService.addRequirement(requirement); 
+					 
+					 StringBuilder reqStatusChange = new StringBuilder();
+					 SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
+					 
+					 modifiedReqStatusMailtoVendorContact(requirement, loginUser, loginOrgLocation);
+				}
+			 
+			return "true";
+		 }
+		 
 		 
 		 @RequestMapping(value = "/changeStatusAuthorisation" , method = RequestMethod.POST)
 		 @ResponseBody  String changeStatusAuthorisation(@RequestParam(value="requirementId", required=false) Long  requirementId,
