@@ -246,6 +246,7 @@ public class Constants {
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_NOTIFICATION ="UserNewActionAssignedNotification";
 	public static final String REQUESTED_DOCUMENTS = "RequestForDocumentsToCandidates";
+	public static final String UPLOADED_REQUESTED_DOCUMENTS = "UploadedRequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
