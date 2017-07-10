@@ -198,7 +198,7 @@ function vendorContractsList(orgRelationId){
 	                		    	result = result + '<tr id="row'+report.id+'">';
 	                		        result = result + '<td>';
 // 	                		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'"><a>'+report.contractTitle+'</a></span><i class="fa fa-binoculars"></i></div>';
 	                		        /* }else{
 	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 	                		        } */

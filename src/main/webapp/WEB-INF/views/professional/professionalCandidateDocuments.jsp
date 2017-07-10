@@ -528,6 +528,7 @@ function removeDocument(candidateId, documentId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onclick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
 	$("#remove_user_pop_documents").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);

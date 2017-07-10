@@ -11,7 +11,10 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="resources/js/summernote.js"/>
+<link href="resources/css/summernote.css" rel="stylesheet"/>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 
 <style>
@@ -28,7 +31,7 @@ function validateTaskName(){
 		for(i = 1; i<checkMaxTsRowNum;i++){
 			var oldTaskname = $("#" + i + "taskName").val()
 			var oldTaskdesc = $("#" + i + "taskDescription").val()
-			if(oldTaskname == Taskname){
+			if(oldTaskname == Taskname && oldTaskdesc == Taskdesc){
 // 				$("#save_task").hide();
 				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
 				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
@@ -52,11 +55,12 @@ function validateTaskName(){
 		 //space value  consider this condition 
 		if(ProjectSequeneNumber.match(/^[^\s-](.*)*$/) !== null){
 		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 		$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 		if (ProjectSequeneNumber != null && ProjectSequeneNumber != "") {
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber,
+						url : sourceleadUrl+ "/validateProjectSequeneNumberById?${_csrf.parameterName}=${_csrf.token}&ProjectSequeneNumber="+ ProjectSequeneNumber+"&orgLocId="+orgLocId,
 						success : function(data) {
 							if (data == true) {
 								$("input#ProjectSequeneNumber").after("<p class='jquery_form_error_message'>"+ ProjectSequeneNumber+ " is Already Existed</span>");
@@ -80,292 +84,436 @@ function validateTaskName(){
 		<div class="pull-left">
 			<h2>Create Project</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a>
+			&raquo;Create Project
 	</section>
 	<div class="content-area clearfix">
-	  <div id="loading"></div>
-		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-			<form:form id="project_form" name="project_form" method="post">
+		<div id="loading"></div>
+		<div
+			class="clearfix form-area form-horizontal toggle-div remove-div mt">
+			<form:form id="project_form" name="project_form" method="post" enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
 						<div class="form-group" id="ProjectIdDiv">
 							<label class="col-lg-3">Project Id</label>
 							<div class="col-lg-9">
-								<input type="text" value="" id="ProjectSequeneNumber" name="ProjectSequeneNumber" data-validation="validate_Space validate_length length2-50"
-									data-validation-optional="true" class="form-control" onblur="validateProjectSequeneNumber();">
+								<input type="text" value="" id="ProjectSequeneNumber"
+									name="ProjectSequeneNumber"
+									data-validation="validate_Space validate_length length2-50"
+									data-validation-optional="true" class="form-control"
+									onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-3"> Project Name <span
-								class="text-danger">*</span>
-							</label>
+							<label class="col-md-3">Client</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" value=""> <span
-									class="hidden">Project Name</span>
+								<select class="form-control select-bg chosen-select"
+									name="selectClient" id="addClientId">
+									<option value=''>-- Select Client --</option>
+									<c:forEach var="option" items="${add_clientList}">
+										<option value="${option.orgid}">${option.orgName}</option>
+									</c:forEach>
+								</select> <span class="hidden">Enter Project Id</span>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3"> Project Description </label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length2-5000"
-									data-validation-optional="true"></textarea>
-								<span class="hidden">Project Description</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3"> Date <span
-								class="text-danger">*</span></label>
+							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" value=""
+											id="StartDate" name="StartDate" field-name="Start Date"
+											data-validation="required" readonly="readonly"> <span
+											class="input-group-addon input-groupAddon"><i
+											class="fa fa-calendar"></i></span>
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
-										<input type="text" class="form-control" value="" id="EndDate" name="EndDate" field-name="End Date" readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" value="" id="EndDate"
+											name="EndDate" field-name="End Date" readonly="readonly">
+										<span class="input-group-addon input-groupAddon"><i
+											class="fa fa-calendar"></i></span>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Tasks</label>
-							<div class="col-md-9">
-								<div class="input-group">
-									<div class="input-group-btn">
-										<button class="btn btn-default" type="button">
-											<span class="badge" id="addTaskCount">0</span>
-										</button>
-										<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT_TASKS')"> 
-											<button class="btn btn-primary" id="taskButton" type="button" onclick="addSourceleadTasks();flushProjectTasks();" data-toggle="modal" data-target="#addTask">
-												<i class="fa fa-plus" title="Add Tasks"></i> &nbsp;&nbsp;View / Add Tasks 
-											</button>
-										</sec:authorize>
-									</div>
-								</div>
-								<!-- Modal -->
-								<div class="modal fade" id="addTask" role="dialog">
-									<div class="modal-dialog modal-lg">
-
-										<!-- Modal content-->
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" onclick="flushProjectTasks();">&times;</button>
-												<h4 class="modal-title">Add Tasks</h4>
-											</div>
-											<div class="modal-body clearfix">
-											<div class="modal-body-custom custom-table tbl-cumstom-data">
-												<table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
-													<tr id="divTsRow0">
-														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
-														<th>Type</th>
-														<th>Description</th>
-														<th class="tblminwidth-75">Action</th>
-													</tr>
-												  </table>
-											   </div>
-											   
-											   <div class="form-horizontal row custom-form">
-													<div class="col-xs-12 col-lg-7">
-														<div class="form-group" id="taskNameDIV">
-															<label class="col-md-3">Task Name<span class="text-danger">*</span></label>
-															<div class="col-md-9">
-																<input type="text" value="" id="taskName" name="taskName" onkeyup="validateTaskName();" placeholder="Enter Task Name" class="form-control">
-															</div>
-														</div>
-														<div class="form-group">
-															<label class="col-md-3">Type</label>
-															<div class="col-md-9">
-																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
-<!-- 																  <option value="" selected>Select Type</option> -->
-																  <option selected value="Billable">Billable</option>
-																  <option value="Non-Billable">Non-Billable</option>
-																</select>
-															</div>
-														</div>
-														<div class="form-group" id="descriptionDiv">
-															<label class="col-md-3">Description</label>
-															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description"  onkeyup="validateTaskName();" id="taskDescription" name="taskDescription"  data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
-															</div>
-														</div>
-													</div>
-													<div class="col-xs-12 col-lg-5">
-														<a href="javascript:void(0)" class="btn btn-primary" id="save_task" onclick="addTasks();" data-target="addTask"> <i class="fa fa-plus"></i><span id="addTaskText"> Add Task</span></a>
-													</div>
-												</div>
-												
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal" onclick="flushProjectTasks();">Close</button>
-											</div>
-										</div>
-									</div>
-								</div>
-								<!-- Modal contente Ends-->
-
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3">Mail to </label>
-							<div class="col-md-5">
-								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
-									Project Manager
-									</label>
-								</div>
-								<span class="hidden">Select Check Box</span>
-							</div>
-							
-						<sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
-							<div class="col-md-4">
-								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"  checked="checked"
-										name="isMailToTeamMembers">Team Members
-									</label>
-								</div>
-							</div>
-					  </sec:authorize>
-					</div>
-					
-					
-					</div>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-					 <c:if test="${empty user_List}">
-					<p style="font-size: 11px; color: red;" class="text-muted small"><i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will have access to Edit/Approve/Reject TimeSheet</p>
-					</c:if>
-						
-					 <c:if test="${not empty user_List}">
-						<div class="form-group">
-							<label class="col-md-3" for="Project Manager">Manager <span
-								class="text-danger">*&nbsp;</span></label>
-							<div class="col-md-9">
-								<div class="form-icon-min" id="chosen-level1Manager">
-									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Manager" data-validation="required" onchange="getLevel2Approvers();">
-										<option value="">-- Select Manager --</option>
-										<c:forEach var="option" items="${user_List}">
-											<option value="${option.id},${option.userType}">${option.firstName}
-												${option.lastName}</option>
-										</c:forEach>
-									</select> <span class="btn btn-default formic1 addLevel" id="level2Toggle" onclick="getLevel2Approvers();">Add
-										Level-II</span>
-								</div>
-								<span class="hidden">Select Project Manager</span>
-							</div>
-						</div>
-						<div class="form-group level-second" id="level2Div">
-							<label class="col-md-3" for="Level-II">Level-II</label>
-							<div class="col-md-9">
-								<select class="form-control chosen-select" name="level2Manager" id="level2Manager">
-								</select>
-							</div>
-						</div>
-					</c:if>
-						<div class="form-group">
-							<label class="col-md-3">Client</label>
-							<div class="col-md-9">
-									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId">
-										<option value=''>-- Select Client --</option>
-										<c:forEach var="option" items="${add_clientList}">
-											<option value="${option.orgLocationId}">${option.orgName}</option>
-										</c:forEach>
-									</select> 
-								<span class="hidden">Enter Project Id</span>
-							</div>
-						</div>
-						
-				   <sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
-						<div class="form-group">
-							<label class="col-md-3">Assign Team &nbsp;<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date & Manager is Mandatory"></i></label>
-
-							<div id="assignTeamSavingDiv" style="display: none;"></div>
-							<input type="hidden" name="team" value="" />
-
-							<div class="col-md-9">
-									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="" placeholder="Select Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();" readonly="readonly">
-									</span> <span data-target="#addTeam" data-toggle="modal"> 
-									</span>
-								<span class="hidden">Select Team</span>
-								<!-- Modal content Assign Team-->
-								<div role="dialog" id="assignTeam" class="modal fade">
-									<div class="modal-dialog modal-lg">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button data-dismiss="modal" class="close" type="button">x</button>
-												<h4 class="modal-title">Assign Employees</h4>
-											</div>
-											<div class="modal-body clearfix">
-												<div class="form-horizontal row custom-form hidden">
-													<div class="col-xs-12 col-md-12 col-lg-12">
-														<div class="input-group">
-															<input type="search" class="form-control"  placeholder="Name / Email" id="searchByName">
-															<span class="input-group-addon bt-primary" onclick="getTeamMembers();"><i class="fa fa-search"></i></span>
-														</div>
-													</div>
-												</div>
-												<div class="modal-body-custom mt clearfix over"
-													id="employeesList"></div>
-											</div>
-											<div class="modal-footer">
-												<button data-dismiss="modal" class="btn btn-primary"
-													type="button" onclick="assignEmployee();">Assign</button>
-												<button data-dismiss="modal" class="btn btn-default"
-													type="button" onclick="assignEmployeeCancel();">Cancel</button>
-											</div>
-										</div>
-									</div>
-								</div>
-								<!-- Assign Team modal popup ends -->
-							</div>
-						</div>
-					</sec:authorize>	
-						
-						<div class="form-group">
-							<label class="col-md-3" for="Project Id">Status</label>
+							<label class="col-md-3" for="Project Id">Status<span class="text-danger">*</span></label>
 							<div class="col-md-9 select-field">
-								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();">
-									<option>Started</option>
+								<select class="form-control" name="Satatus" id="Satatus"
+									onchange="getStatus();">
+									<option>Select Status</option>
+									<option>Not Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
 									<option>On-Hold</option>
+									<option>Dropped</option>
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
 						<div class="form-group">
-		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
-		                  <div class="col-md-9" id="chosen-frequency">
-		                         <select class="form-control chosen-select" id="invoiceFrequency" name="invoiceFrequency" onchange="removeFrequencyValidation();" field-name="Invoice Frequency" data-validation="required" >
-				                        <option value="">-Invoice Frequency-</option>
-						                <option value="Weekly">Weekly</option>
-						        	    <option value="Bi-Weekly">Bi-Weekly</option>
-						         		<option value="Semi-Monthly">Semi-Monthly</option>
-						         		<option value="Monthly">Monthly</option>
-					              </select>
-		                  </div>
-		                </div>
+							<label class="col-md-3">Timesheet Frequency <span
+								class="text-danger">*</span></label>
+							<div class="col-md-9" id="chosen-frequency">
+								<select class="form-control chosen-select"
+									id="timeSheetFrequency" name="timeSheetFrequency"
+									onchange="removeFrequencyValidation();"
+									field-name="Timesheet Frequency" data-validation="required">
+									<option value="">--Timesheet Frequency-</option>
+									<option value="Weekly">Weekly</option>
+									<option value="Bi-Weekly">Bi-Weekly</option>
+									<option value="Semi-Monthly">Semi-Monthly</option>
+									<option value="Monthly">Monthly</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowFreelanceDevelopers"> Allow 
+										Freelance Developers
+									</label>
+								</div>
+							</div>
+						</div>
 						
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"  
-										name="isTimesheetAttachmentRequired"> Timesheet Attachment Required
+									<label> <input type="checkbox" value="Y"
+										name="isAllowRemoteWork"> Allow
+										Remote Work
 									</label>
 								</div>
 							</div>
 						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowOverTime" id="isAllowOverTime" onchange="allowOverTime();"> Allow
+										Over Time
+									</label>
+								</div>
+							</div>
+						</div>	
+						
+
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="input-group">
+									<div class="input-group-btn selp-custom-min"
+										id="flatPercentageId" name="flatPercentageId">
+										<select class="form-control chosen-select">
+											<option value="c2c">FLAT</option>
+											<option value="%">%</option>
+										</select>
+									</div>
+									<input type="number" min="0" max="100" step="0.5" value="0" id="flatPercentage"
+										name="flatPercentage" maxlength="5" class="form-control"
+										data-validation-optional="true" onblur="">
+								</div>
+							</div>
+						</div>
+																						
+						
 					</div>
+					
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<c:if test="${empty user_List}">
+							<p style="font-size: 11px; color: red;" class="text-muted small">
+								<i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will
+								have access to Edit/Approve/Reject TimeSheet
+							</p>
+						</c:if>
+
+						<div class="form-group">
+							<label class="col-md-3"> Project Name <span
+								class="text-danger">*</span>
+							</label>
+							<div class="col-md-9">
+
+								<input type="text" class="form-control" name="ProjectName"
+									data-validation="required validate_Space validate_length length2-100"
+									field-name="Project Name" value=""> <span
+									class="hidden">Project Name</span>
+
+									
+								<span class="hidden">Enter Project Id</span>
+
+							</div>
+						</div>
+
+						<c:if test="${not empty user_List}">
+							<div class="form-group">
+								<label class="col-md-3" for="Project Manager">Manager <span
+									class="text-danger">*&nbsp;</span></label>
+								<div class="col-md-9">
+									<div class="form-icon-min" id="chosen-level1Manager">
+										<select class="form-control chosen-select"
+											name="level1Manager" id="level1Manager" field-name="Manager"
+											data-validation="required" onchange="getLevel2Approvers();">
+											<option value="">-- Level Manager --</option>
+											<c:forEach var="option" items="${user_List}">
+												<option value="${option.id},${option.userType}">${option.firstName}
+													${option.lastName}</option>
+											</c:forEach>
+										</select> <span class="btn btn-default formic1 addLevel"
+											id="level2Toggle" onclick="getLevel2Approvers();">Add
+											Level-II</span>
+									</div>
+									<span class="hidden">Select Project Manager</span>
+								</div>
+							</div>
+							<div class="form-group level-second" id="level2Div">
+								<label class="col-md-3" for="Level-II">Level-II</label>
+								<div class="col-md-9">
+									<select class="form-control chosen-select" name="level2Manager"
+										id="level2Manager">
+									</select>
+								</div>
+							</div>
+						</c:if>
+
+						<sec:authorize
+							access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')">
+							<div class="form-group">
+								<label class="col-md-3">Assign Team &nbsp;<i
+									class=" text-info fa fa-info-circle"
+									title="Before Assinging Team Project Start Date & Manager is Mandatory"></i></label>
+
+								<div id="assignTeamSavingDiv" style="display: none;"></div>
+								<input type="hidden" name="team" value="" />
+
+								<div class="col-md-9">
+									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
+										<input type="text" value="" placeholder="Select Team"
+										id="assignTeamModal" class="form-control"
+										data-target="#assignTeam" data-toggle="modal"
+										onclick="getTeamMembers();" readonly="readonly">
+									</span> <span data-target="#addTeam" data-toggle="modal"> </span> <span
+										class="hidden">Select Team</span>
+									<!-- Modal content Assign Team-->
+									<div role="dialog" id="assignTeam" class="modal fade">
+										<div class="modal-dialog modal-lg">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button data-dismiss="modal" class="close" type="button">x</button>
+													<h4 class="modal-title">Assign Employees</h4>
+												</div>
+												<div class="modal-body clearfix">
+													<div class="form-horizontal row custom-form hidden">
+														<div class="col-xs-12 col-md-12 col-lg-12">
+															<div class="input-group">
+																<input type="search" class="form-control"
+																	placeholder="Name / Email" id="searchByName"> <span
+																	class="input-group-addon bt-primary"
+																	onclick="getTeamMembers();"><i
+																	class="fa fa-search"></i></span>
+															</div>
+														</div>
+													</div>
+													<div class="modal-body-custom mt clearfix over"
+														id="employeesList"></div>
+												</div>
+												<div class="modal-footer">
+													<button data-dismiss="modal" class="btn btn-primary"
+														type="button" onclick="assignEmployee();">Assign</button>
+													<button data-dismiss="modal" class="btn btn-default"
+														type="button" onclick="assignEmployeeCancel();">Cancel</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- Assign Team modal popup ends -->
+								</div>
+							</div>
+						</sec:authorize>
+
+						<div class="form-group">
+							<label class="col-md-3">Invoice Frequency <span
+								class="text-danger">*</span></label>
+							<div class="col-md-9" id="chosen-frequency">
+								<select class="form-control chosen-select" id="invoiceFrequency"
+									name="invoiceFrequency" onchange="removeFrequencyValidation();"
+									field-name="Invoice Frequency" data-validation="required">
+									<option value="">-Invoice Frequency-</option>
+									<option value="Weekly">Weekly</option>
+									<option value="Bi-Weekly">Bi-Weekly</option>
+									<option value="Semi-Monthly">Semi-Monthly</option>
+									<option value="Monthly">Monthly</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isTimesheetAttachmentRequired"> Timesheet
+										Attachment Required
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowOffshoreResource"> Allow 
+										Offshore Resource
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isTimeEntryAfterDeadline"> Time
+										Entry after Deadline
+									</label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9">
+								<div class="checkBox">
+									<label> <input type="checkbox" value="Y"
+										name="isAllowBidding"> Allow
+										Bidding
+									</label>
+								</div>
+							</div>
+						</div>																		
+					</div>
+
+
+
+
+
 				</div>
+				<!--  div row end -->
+
+				<!--  div row start -->
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<h5>Budget Details</h5>
+						<div class="form-group" id="">
+							<label class="col-md-3"> </label>
+							<div class="col-md-9">
+							</div>
+						</div>
+					</div>						
+				</div>
+				
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+												
+						<div class="form-group" id="EstimatedHoursDiv">
+							<label class="col-md-3">Estimated hours</label>
+							<div class="col-md-9">
+								<input type="number" value="" id="EstimatedHours" min="1"
+									max="99999" name="EstimatedHours" class="form-control"
+									data-validation-optional="true" class="form-control" onblur="">
+							</div>
+						</div>
+							
+						<div class="form-group">
+							<label class="col-md-3">Budget Approver</label>
+							<div class="col-md-9" id="chosen-budgetapprover">
+								<select class="form-control chosen-select" id="budgetApprover"
+									name="budgetApprover" onchange="" field-name="Budget Approver">
+
+									<option value="">-- Budget Approver --</option>
+									<c:forEach var="option" items="${user_List}">
+										<option value="${option.id},${option.userType}">${option.firstName}
+											${option.lastName}</option>
+									</c:forEach>
+
+								</select>
+							</div>
+						</div>
+						
+
+					</div>
+					
+				
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+
+						<div class="form-group" id="EstimatedBudgetDiv">
+							<label class="col-md-3">Estimated Budget</label>
+							<div class="col-md-9">
+								<div class="input-group">
+									<div class="input-group-btn selp-custom-min"
+										id="estimatedBudgetId">
+										<select class="form-control chosen-select">
+											<option value="c2c">INR</option>
+											<option value="w2">USD</option>
+										</select>
+									</div>
+									<input type="number" value="" id="EstimatedBudget"
+										name="EstimatedBudget" class="form-control"
+										data-validation="validate_Space validate_length length2-50"
+										data-validation-optional="true" class="form-control" onblur="">
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<h5>Description</h5>
+						
+						<textarea maxlength="5000" cols="80" rows="10"
+							id="ProjectDescription" name="ProjectDescription"></textarea>
+							
+					</div>
+					
+					<!--  Documents Section -->
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<h5>Documents</h5>
+						<input type="file" name="project_files" id="project_files" multiple="multiple"/>
+					</div>
+
+				</div>
+
+				<!--  div row end -->
+
+
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
-							 <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-default ml">
+							<input type="button" value="Save" id="save_project"
+								onclick="saveProject();flushSaveProject()"
+								class="btn btn-primary"> <input type="button"
+								value="Cancel"
+								onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"
+								class="btn btn-default ml">
 						</div>
 					</div>
 				</div>
+
+				
+
 			</form:form>
 		</div>
 	</div>
@@ -374,6 +522,18 @@ function validateTaskName(){
 <script>
 function removeFrequencyValidation(){
 	$('#chosen-frequency').find('p.jquery_form_error_message').remove();
+}
+
+function allowOverTime(){
+	if ($('#isAllowOverTime').is(":checked"))
+	{
+		$('#flatPercentageId').attr('style','visibility:visible');
+		$('#flatPercentage').attr('style','visibility:visible');
+	}else{
+		$('#flatPercentageId').attr('style','visibility:hidden');
+		$('#flatPercentage').attr('style','visibility:hidden');
+	}
+	
 }
 </script>
 <script>
@@ -436,91 +596,72 @@ function getStatus(){
 </div>
 
 <div id="divTaskTd4" style="display: none; float: left;">
-	    <span><a title="Edit" href="javascript:void(0)" onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	    <span><a title="Remove" href="javascript:void(0)" onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
+	<span><a title="Edit" href="javascript:void(0)"
+		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
+	<span><a title="Remove" href="javascript:void(0)"
+		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
 </div>
 <!-- =============================== AddTask Divs  ============================ -->
 <!-- Add Task Script start -->
-
 <script type="text/javascript">
-function validateTask()
-{
-	if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2 || ($("#taskDescription").val().length >= 1 && $("#taskDescription").val().length < 2) 
-			   || ($('#taskNameDIV').find('p.jquery_form_error_message').html() != '' &&  $('#taskNameDIV').find('p.jquery_form_error_message').html() != null && $('#taskNameDIV').find('p.jquery_form_error_message').html() != 'undefined')) {
-		
-		if($('#taskNameDIV').find('p.jquery_form_error_message').html() == '' ||  $('#taskNameDIV').find('p.jquery_form_error_message').html() == null || $('#taskNameDIV').find('p.jquery_form_error_message').html() == 'undefined'){
-		   $('#taskNameDIV').find('p.jquery_form_error_message').remove();
-	    }
-		
-		if ($('#taskName').val() == '') {
-			$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
-		}
-		if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
-			$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
-		}
-		/* if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
-			$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-5000 characters</span>");
-		} */
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-	}
-
-
-
-
-
 	function addTasks() {
-		           
-            if(validateTask())
-               {
-                    var tbl = document.getElementById("projectTaskTbl");
-   					var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-   					$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-   					$("#addTaskCount").html(maxRowNum);
-   					var row = tbl.insertRow(maxRowNum);
-   					row.setAttribute("id", "divTsRow" + maxRowNum);
-
-   					var taskName = $('#taskName').val();
-   					var taskDescription = $('#taskDescription').val();
-   					var taskBillableType = $('#taskBillableType').val();
-
-   					var cell0 = row.insertCell(0);
-   					var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
-   					divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-   					divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
-   					cell0.innerHTML = divTsTd1Str;
-   					
-   					var cell1 = row.insertCell(1);
-   					var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
-   					divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-   					divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
-   							(taskBillableType));
-   					cell1.innerHTML = divTsTd2Str;
-
-   					var cell2 = row.insertCell(2);
-   					var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
-   					divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-   					divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
-   							(taskDescription));
-   					cell2.innerHTML = divTsTd3Str;
-
-   					var cell3 = row.insertCell(3);
-   					var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
-   					divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-   					cell3.innerHTML = divTsTd4Str;
-
-   					$("#taskName").val('');
-   					$("#taskDescription").val('');
-//   	 				$("#taskBillableType").val('Billable');
-//   	 				$('#taskBillableType').selectpicker('refresh');
-   					addtasksCountafterAddingTask();
-
-                	   }
+		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
+		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
+			if ($('#taskName').val() == '') {
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
 			}
+			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
+				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
+			}
+			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
+				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-5000 characters</span>");
+			}
+			return true;
+		} 
+		
+		var tbl = document.getElementById("projectTaskTbl");
+		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+		$("#addTaskCount").html(maxRowNum);
+		var row = tbl.insertRow(maxRowNum);
+		row.setAttribute("id", "divTsRow" + maxRowNum);
+
+		var taskName = $('#taskName').val();
+		var taskDescription = $('#taskDescription').val();
+		var taskBillableType = $('#taskBillableType').val();
+
+		var cell0 = row.insertCell(0);
+		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
+		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
+		cell0.innerHTML = divTsTd1Str;
+		
+		var cell1 = row.insertCell(1);
+		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
+				(taskBillableType));
+		cell1.innerHTML = divTsTd2Str;
+
+		var cell2 = row.insertCell(2);
+		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
+				(taskDescription));
+		cell2.innerHTML = divTsTd3Str;
+
+		var cell3 = row.insertCell(3);
+		var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell3.innerHTML = divTsTd4Str;
+
+		$("#taskName").val('');
+		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
+		addtasksCountafterAddingTask();
+	}
 </script>
 <script type="text/javascript">
 	function removeRow(rowId) {
@@ -556,27 +697,22 @@ function validateTask()
 
 <script type="text/javascript">
 	function updateTask(rowId) {
-		if(validateTask())
-			{
-			$("#" + rowId + "taskName").val($("#taskName").val());
-			$("#" + rowId + "taskDescription").val($("#taskDescription").val());
-			$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
-			
-			$("#" + rowId + "taskNameValue").html($("#taskName").val());
-			$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
-			$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
-			
-			$("#taskName").val('');
-			$("#taskDescription").val('');
-			$("#taskBillableType").val('Billable');
-			$('#taskBillableType').selectpicker('refresh');
-			$("#addTaskText").html('Add Task');
-			$("#save_task").removeAttr('onclick');
-			$("#save_task").attr('onclick', 'addTasks();');
-			$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
-			$('input#taskName').removeAttr("record-exist record-exist-errormsg");
-			}
+		$("#" + rowId + "taskName").val($("#taskName").val());
+		$("#" + rowId + "taskDescription").val($("#taskDescription").val());
+		$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
 		
+		$("#" + rowId + "taskNameValue").html($("#taskName").val());
+		$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
+		$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
+		
+		$("#taskName").val('');
+		$("#taskDescription").val('');
+		$("#taskBillableType").val('Billable');
+		$('#taskBillableType').selectpicker('refresh');
+		$("#addTaskText").html('Add Task');
+		$("#save_task").removeAttr('onclick');
+		$("#save_task").attr('onclick', 'addTasks();');
+
 	}
 </script>
 <script>
@@ -584,6 +720,9 @@ function validateTask()
 		$("#maxTsRowNum").val('6');
 		addSourceleadTasks();
 		document.getElementById("project_form").reset();
+		$('#flatPercentageId').attr('style','visibility:hidden');
+		$('#flatPercentage').attr('style','visibility:hidden');
+		$('#ProjectDescription').summernote({height:300});
 	});
 </script>
 
@@ -707,12 +846,15 @@ function flushProjectTasks(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		
+		var projDesc = $('#ProjectDescription').summernote('code');
+		
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
 			/* var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); */
-			
+			frm.ProjectDescription = projDesc;
 			var jsonData = JSON.stringify(frm);
 			
 		    var form = $('#project_form')[0];
@@ -785,11 +927,12 @@ function flushProjectTasks(){
 				level1Manager = "";
 			}
 			
+			var orgLocId = '${SourceLeadWeb_orgLocations.id}';
 			
 			  $("#assignTeamModal").attr('data-target','#assignTeam');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager+"&searchByName="+searchByName,
+						url : sourceleadUrl + "/getEmployeesListByExcludingManagers?${_csrf.parameterName}=${_csrf.token}&level1Manager="+level1Manager+"&level2Manager="+level2Manager+"&searchByName="+searchByName+"&orgLocId="+orgLocId,
 						success : function(data) {
 							var json = JSON.parse(data);
 							var output = "";
@@ -877,20 +1020,12 @@ function flushProjectTasks(){
 										changeYear: true, 
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
-										showOn: 'focus',
-							            showButtonPanel: true,
-							            closeText: 'Clear',
-							            onClose : function(selected) {
+										onSelect : function(selected) {
 											var actualId = $(this).attr('id').split('startDate')[1];
 											var dt = toDate('#startDate'+actualId);
 											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() + 1);
 											$("#endDate"+actualId).datepicker("option", "minDate", dt);
-											 var event = arguments.callee.caller.caller.arguments[0];
-								                // If "Clear" gets clicked, then really clear it
-								             if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-								                 $(this).val('');
-								            }
 										}
 									});
 		
@@ -900,21 +1035,13 @@ function flushProjectTasks(){
 										changeYear: true, 
 										maxDate:projectEndDate,
 										minDate: datepickerStartDate,
-										showOn: 'focus',
-							            showButtonPanel: true,
-							            closeText: 'Clear',
-							            onClose : function(selected) {
+										onSelect : function(selected) {
 											var actualId = $(this).attr('id').split('endDate')[1];
 											var dt = toDate('#endDate'+actualId);
 											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() - 1);
 											$("#startDate"+actualId).datepicker("option", "maxDate", dt);
-											 var event = arguments.callee.caller.caller.arguments[0];
-								                // If "Clear" gets clicked, then really clear it
-								             if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-								                 $(this).val('');
-								            }
-							            }
+										}
 									});
 								}
 					      }
@@ -1038,21 +1165,13 @@ function assignEmployeeCancel(){
 		$('#StartDate').datepicker({
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
-			changeYear: true,
-			showOn: 'focus',
-            showButtonPanel: true,
-            closeText: 'Clear',
-            onClose : function(selected) {
+			changeYear: true, 
+			onSelect : function(selected) {
 				//var dt = new Date(selected);
 				var dt = toDate("#StartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
-				var event = arguments.callee.caller.caller.arguments[0];
-	            // If "Clear" gets clicked, then really clear it
-	            if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-	                $(this).val('');
-	            }
 			}
 		});
 
@@ -1060,9 +1179,7 @@ function assignEmployeeCancel(){
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
-			showButtonPanel: true,
-            closeText: 'Clear',
-            onClose : function(selected) {
+			onSelect : function(selected) {
 				//var dt = new Date(selected);
 				var dt = toDate("#EndDate");
 				dt.setDate(dt.getDate() - 1);
@@ -1098,11 +1215,6 @@ function assignEmployeeCancel(){
 					$('#Satatus').append('<option >Completed</option>');
 					$('#Satatus').append('<option >On-Hold</option>');
 				}
-				var event = arguments.callee.caller.caller.arguments[0];
-	            // If "Clear" gets clicked, then really clear it
-	            if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-	                $(this).val('');
-	            }
 			}
 		});
 
@@ -1210,7 +1322,7 @@ function getChildLevel1Approvers(currentApproverId){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-</script> 
+</script>
 <!-- <script src="resources/js/chosen.jquery.min.js"></script>  -->
 <script type="text/javascript">
 			var config = {
