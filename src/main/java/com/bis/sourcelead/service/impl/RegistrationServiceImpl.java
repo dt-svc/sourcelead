@@ -459,6 +459,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setState(registration.getState());
 		orgLocations.setCity(registration.getCity());
 		orgLocations.setOrgLocationAddress(registration.getAddress());
+		orgLocations.setLocation(registration.getLocation());
+		orgLocations.setZipCode(registration.getZipCode());
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
 		orgLocations.setStatus(Status.ACTIVE);
@@ -720,7 +722,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href='").append(sourceleadUrl).append("/resetPassword").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(sourceleadUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 			
 		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

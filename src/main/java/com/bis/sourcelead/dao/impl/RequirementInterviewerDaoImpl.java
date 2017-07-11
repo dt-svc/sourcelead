@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -99,6 +100,22 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		String query = " from RequirementInterviewer rir where rir.requirementInterview.submissionId.orgLocations.id = :loginOrgLocations and rir.interviewerUser.id IN(:userId) and( rir.requirementInterview.startTime >= :startDateUTC and rir.requirementInterview.endTime <= :endDateUTC)" ;
 		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("loginOrgLocations", loginOrgLocations.getId()).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("userId", interviewerIds).setCacheable(true).list(); 
 		return interviewerList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId, Long userId){
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(requirementInterviewerId != null && reqUUID != null && userId != null){
+				String query = "from RequirementInterviewer ri where ri.interviewerUser.id = :userId and ri.requirementInterview.submissionId.requirement.requirementUUID = :reqUUID and ri.requirementInterview.id = :requirementInterviewerId";
+				List<RequirementInterviewer> interviewList = session.createQuery(query).setLong("userId", userId).setLong("requirementInterviewerId", requirementInterviewerId).setString("reqUUID", reqUUID).setCacheable(true).list();
+				if (interviewList != null && interviewList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
 	}
 	
 	

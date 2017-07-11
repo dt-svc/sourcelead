@@ -51,5 +51,9 @@ public interface OrgDocumentsDao{
 			Long orgLocationId, Long spocUserId);
 
 	OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId);
+	
+	Integer getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(Long userId,Long orgLocationId,String sourceType)throws Exception;
+	
+	List<OrgDocuments> getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId, String sourceType) throws Exception;
 
 }

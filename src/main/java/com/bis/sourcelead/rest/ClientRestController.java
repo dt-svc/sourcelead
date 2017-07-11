@@ -208,26 +208,13 @@ public class ClientRestController {
 	    		@RequestParam(value="orgName", required=false) String orgName,
 	    		@RequestParam(value="json", required=false) String json) throws Exception {
 			
-			ArrayList<String> orgsList = new ArrayList<String>();
-			
 			Org org = orgService.getOrgByOrgName(orgName);
+			OrgLocations orgLocations = null;
 			if(org != null){
-				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-				
-				try {
-					orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
-				} catch (Exception e) {
-					logger.error(ExceptionUtils.getFullStackTrace(e));
-				}
-				if(orgLocations != null)
-				{
-					orgsList.add(orgLocations.getCountry());
-					orgsList.add(orgLocations.getState());
-					orgsList.add(orgLocations.getCity());
-					orgsList.add(orgLocations.getOrg().getWebSite());
-				}
+				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
 			}
-			return commonUtil.toJSON(orgsList);
+			return commonUtil.toJSON(orgLocations);
 			
 		}
 	

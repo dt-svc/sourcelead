@@ -114,6 +114,26 @@ function editCandidate(candidateId){
 	            			 	}else{
 	            			 		vendorName = "";
 	            			 	}
+	            			 	
+	            			 	var location = '';
+	            			 	if(json.location != null && json.location != '' && json.location != 'undefined'){
+	            			 		location = json.location;            			 		
+	            			 	}
+	            			 	
+	            			 	var zipCode = '';
+	            			 	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
+	            			 		zipCode = json.zipCode;            			 		
+	            			 	}
+	            			 	
+	            			 	var state = '';
+	            			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+	            			 		state = json.state;            			 		
+	            			 	}
+	            			 	
+	            			 	var city = '';
+	            			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+	            			 		city = json.city;            			 		
+	            			 	}
 								var result ='';
 								result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -168,29 +188,44 @@ function editCandidate(candidateId){
 								result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
 								result = result + '</div>';
 								
+								result = result + '<div class="col-md-6" id="locationField">';
+								result = result + '<input type="text" class="form-control input-sm" name="location"  id="cpLocation"  value="'+location+'" placeholder="Location" field-name="Locatin" data-validation="required">';
+								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\');"></i>';
+								result = result + '</div>'; 
+								
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix mb10">';
+								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<select class="form-control" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
-								result = result + '</select>';
+								result = result + '<input class="form-control" id="cpCountry" name="country" value="'+json.country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow">';
+								result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '</div>';
 								
 								result = result + '<div class="clearfix mb10">';
-								result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
-								result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
-								result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
-								
-								result = result + '<div class="col-md-6 custom-fields select-arrow">';
-								result = result + '<select  class="form-control" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
-								result = result + '</select>';
+								result = result + '<div class="col-md-6 custom-fields">';
+								result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<select  class="form-control" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
-								result = result + '</select>';
+								result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text"></input>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields hidden">';
+								result = result + '<input class="form-control" id="cpLatitude" name="latitude" value="'+json.latitude+'" type="text"></input>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields hidden">';
+								result = result + '<input class="form-control" id="cpLongitude" name="longitude" value="'+json.longitude+'" type="text"></input>';
 								result = result + '</div>';
 								
 								result = result + '</div>';
+								
 								
 								result = result + '<div class="clearfix mb10">';
 								
@@ -406,21 +441,12 @@ function editCandidate(candidateId){
 								$("#profileEditPopup").empty(); 
 								$("#profileEditPopup").append(result); 
 								/* updateDesignationType(json.designationType); */
-								getAllCandidateCountries();
+								initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
 								getVendorsByOrgLocation();
 								employementType();
-								getAllCandidateStates();
 								$(".edit-details").toggleClass("edit-details-active");
 								$(".collapse-div").removeClass("edit-details-active");
 								
-								  $("#candidateCountry").chosen();
-								  $("#candidateCountry").trigger("chosen:update");
-								  
-								  $("#candidateState").chosen();
-								  $("#candidateState").trigger("chosen:update");
-								  
-								  $("#candidateCity").chosen();
-								  $("#candidateCity").trigger("chosen:update");
 								  
 								  $("#vendorName").chosen();
 								  $("#vendorName").trigger("chosen:update");
@@ -440,14 +466,6 @@ function editCandidate(candidateId){
 										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 										  '.chosen-select-width'     : {width:"95%"}
 										}
-								    $("#candidateCountry").on('change', function (e) {
-								 	   getAllCandidateStates();
-								    });
-								   
-								    $("#candidateState").on('change', function (e) {
-								 	   getCandidateCities();
-								    });
-								   
 								    $('.chosen-select').each(function() {
 											var $this = $(this);
 											$this.next().css({'width': '100%'});
@@ -473,145 +491,9 @@ function editCandidate(candidateId){
 	                   
 	              }); 
 		 }
- getAllCandidateCountries();
 }
 </script> 
 
-
-<!-- Edit Recommended Candidate Script Ends Here -->
-
-
-<!-- Country,State,City Script Starts Here -->
-
- <script type="text/javascript">
-function getAllCandidateCountries(){
-	setTimeout(function(){ 
-	var countryName = $("#updateCountry").val();
-	var loginCountryName = '${loginCountryName}';
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('html #candidateCountry').empty();
-        	$('html #candidateCountry').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == countryName){
-            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
-            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{ 
-            		$('html #candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	} 
-            	
-            }
-            
-            getAllCandidateStates();
-            $('html #candidateCountry').trigger("chosen:updated");
-           
-        },
-        error: function(e){
-        }
-    });
-	}, 75);
-} 
-</script>
- 
-<script>
-function getAllCandidateStates(){
-	
-var countryName = $("html #candidateCountry").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("html #candidateState").val();
-	
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("updateState").value;
-	}
-	
-	//end state Auto populate
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('html #candidateState').empty();
-	        	$('html #candidateState').append('<option value="">---select state---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('html #candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            
-	            getCandidateCities();
-	            $('html #candidateState').trigger("chosen:updated");
-	            
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('html #candidateState').empty();
-    	$('html #candidateState').append('<option value="">---select---</option>');
-    	$('html #candidateState').trigger("chosen:updated");
-    	$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
-        $('html #candidateCity').trigger("chosen:updated");
-	}
-}
-</script>  
-
-
-<script>
-function getCandidateCities(){
-	
-	var countryName = $("html #candidateCountry").val();
-	var stateName = $("html #candidateState").val();
-	
-	var cityName = $("html #candidateCity").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("updateCity").value;
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('html #candidateCity').empty();
-	        	$('html #candidateCity').append('<option value="">---select city---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('html #candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('html #candidateCity').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
-    	$('html #candidateCity').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<!-- Country,State,City Script Ends Here -->
 
 <%-- 
      @author : Venkat Kesav

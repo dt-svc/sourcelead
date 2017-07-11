@@ -268,6 +268,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			        if(jsonObj.has("LastName") && !isNullOrEmpty(jsonObj.getString("LastName"))){
 					candidate.setLastName(jsonObj.getString("LastName") );
 					}
+			        
+			        if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			        	candidate.setLocation(jsonObj.getString("location"));
+					}
 					
 			        if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 			        	candidate.setCountry(jsonObj.getString("country"));
@@ -280,6 +284,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 						 candidate.setCity(jsonObj.getString("city"));
 					}
+					
+					 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+				        	candidate.setZipCode(jsonObj.getString("zipcode"));
+						}
 					
 					if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
 						 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
@@ -551,6 +559,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 			 templateFields.setCity(jsonObj.getString("city"));
+		 }
+		 
+		 if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			 templateFields.setLocation(jsonObj.getString("location"));
+		 }
+		 
+		 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+			 templateFields.setZipCode(jsonObj.getString("zipcode"));
 		 }
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
@@ -2626,10 +2642,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		 
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(requirementSubmission.getRequirement().getJobTitle() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
-			 globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
+		 if(requirementSubmission.getRequirement().getJobId() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())){
+			 StringBuilder builder=new StringBuilder();
+			 globalVarsMap.put("RequirementName", builder.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
 		 }else{
-			 globalVarsMap.put("RequirementName","--");
+			 globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
 		 }
 		 
 		 if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
@@ -2673,6 +2690,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 globalVarsMap.put("ManagerName",assignedUser.getFirstName());
 		 }
+		 
+		 globalVarsMap.put("loginOrg", loginOrgLocation.getOrgLocationName());
+		 StringBuilder linkBuild = new StringBuilder();
+		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -3312,6 +3333,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		        if(jsonObj.has("LastName") && !isNullOrEmpty(jsonObj.getString("LastName"))){
 				candidate.setLastName(jsonObj.getString("LastName") );
 				}
+		        
+		        if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+		        	candidate.setLocation(jsonObj.getString("location"));
+				}
 				
 		        if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 		        	candidate.setCountry(jsonObj.getString("country"));
@@ -3324,6 +3349,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 					 candidate.setCity(jsonObj.getString("city"));
 				}
+				
+				 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+			        	candidate.setZipCode(jsonObj.getString("zipcode"));
+					}
 				
 				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
 					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
@@ -3512,6 +3541,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 			 templateFields.setCity(jsonObj.getString("city"));
+		 }
+		 
+		 if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			 templateFields.setLocation(jsonObj.getString("location"));
+		 }
+		 
+		 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+			 templateFields.setZipCode(jsonObj.getString("zipcode"));
 		 }
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
@@ -3932,10 +3969,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 								 }else{
 								 globalVarsMap.put("countOfApplicants","--"); 
 								 }
-								 if(null != reqsub.getRequirement().getJobTitle()  && !"".equalsIgnoreCase(reqsub.getRequirement().getJobTitle())){
-								 globalVarsMap.put("requirementTitle", reqsub.getRequirement().getJobTitle()); 
+								 if(null != reqsub.getRequirement().getJobId()  && !"".equalsIgnoreCase(reqsub.getRequirement().getJobId())){
+									 
+									 StringBuilder reqsb=new StringBuilder();
+								 globalVarsMap.put("requirementTitle",reqsb.append(reqsub.getRequirement().getJobId()).append("-").append(reqsub.getRequirement().getJobTitle()).toString()); 
 								 }else{
-								 globalVarsMap.put("requirementTitle","--"); 
+								 globalVarsMap.put("requirementTitle",reqsub.getRequirement().getJobTitle()); 
+								 }
+								 if(Constants.JOB_OTHER.equalsIgnoreCase(reqsub.getRequirement().getJobType())) {
+									 globalVarsMap.put("EmploymentType", reqsub.getRequirement().getOtherJobType());
+								 }
+								 else if(reqsub.getRequirement().getJobType() != null && !"".equalsIgnoreCase(reqsub.getRequirement().getJobType())){
+									 globalVarsMap.put("EmploymentType", reqsub.getRequirement().getJobType());
+								 }else{
+									 globalVarsMap.put("EmploymentType","--");
+								 }
+								 
+								 StringBuilder location = new StringBuilder();
+								 /*if(reqsub.getRequirement().getState() != null && !"".equalsIgnoreCase(reqsub.getRequirement().getState())){
+									 globalVarsMap.put("RequirementLocation", location.append(reqsub.getRequirement().getCountry()).append(",").append(reqsub.getRequirement().getState()).toString());
+								 }*/
+								 if(orgLocations.getCity() != null && !"".equalsIgnoreCase(reqsub.getRequirement().getCity())){
+									 globalVarsMap.put("RequirementLocation",location.append(reqsub.getRequirement().getCountry()).append(",").append(reqsub.getRequirement().getState()).append(",").append(reqsub.getRequirement().getCity()).toString());
+								 }else{
+									 globalVarsMap.put("RequirementLocation", reqsub.getRequirement().getCountry());
 								 }
 								 
 								 if(null != reqsub.getOrgLocations().getOrgLocationName() && !"".equalsIgnoreCase(reqsub.getOrgLocations().getOrgLocationName())){
@@ -4356,7 +4413,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate)
+	public List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate)
 	{
 		return requirementSubmissionDao.getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(orgLocationsId,submissionStatus,dateRange,userType,user,startUTCDate,endUTCDate);
 	}

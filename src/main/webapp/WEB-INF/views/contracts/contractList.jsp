@@ -214,7 +214,7 @@ padding: 2px 300px 2px 0px;
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_Doc").attr("disabled", "disabled");
 			$("#contractDoc_form").attr("disabled", "disabled");
-			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 	 			 type: "POST",
 		    	 data: formData,
@@ -346,12 +346,12 @@ function getTemplateList(){
 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var selectedContractType = "";
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType+"&contractStatus="+contractStatus,       
        success :function(data) {
-    	   $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	   $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	   if(contractSubmissionType == 'DRAFT'){
     		   preparedContractListDraft(data);
     	   }else if(contractSubmissionType == 'WAITING_FOR_APPROVER'){
@@ -661,10 +661,19 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
         buttons: [
         	{
                 extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.alignment = 'center';
+                  },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
@@ -687,10 +696,19 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
         buttons: [
         	{
                 extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.alignment = 'center';
+                  },               
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
@@ -709,7 +727,26 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
 }
 function appListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft2').DataTable( { 
-    	
+    	dom: 'Bfrtip',
+        buttons: [
+        	{
+                extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                title: SourceLeadWeb_loginOrg +' - Draft',
+            },
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                },
+                customize: function(doc) {
+                    doc.defaultStyle.alignment = 'center';
+                  },
+                title: SourceLeadWeb_loginOrg +' - Draft',
+            }
+        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -1069,10 +1106,19 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
@@ -1096,10 +1142,19 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
@@ -1124,10 +1179,19 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
@@ -1426,10 +1490,19 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
@@ -1452,10 +1525,19 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
@@ -1478,10 +1560,19 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
@@ -1810,10 +1901,19 @@ function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
@@ -1837,10 +1937,19 @@ function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
@@ -1865,10 +1974,19 @@ function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
@@ -2155,10 +2273,19 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
@@ -2181,10 +2308,19 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
@@ -2207,10 +2343,19 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
@@ -2469,10 +2614,19 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
@@ -2495,10 +2649,19 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
@@ -2521,10 +2684,19 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
@@ -2817,10 +2989,19 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
@@ -2843,10 +3024,19 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
     	buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
@@ -2869,10 +3059,19 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 		buttons: [
 	        	{
 	                extend: 'excel',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
+	                exportOptions: {
+	                    columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+	                },
+	                customize: function(doc) {
+	                    doc.defaultStyle.alignment = 'center';
+	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
@@ -2934,7 +3133,7 @@ function finalizeContract(recordId,status){
 function approveContract(recordId,status){
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
         url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
@@ -2950,7 +3149,7 @@ function approveContract(recordId,status){
     	    	 $("#removeReject"+recordId).html("");
     	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
         	}
-        	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	getTemplateList();
        },
    });  
@@ -3101,7 +3300,7 @@ function getStageCounts(){
 
 <script>
 function Check(val){
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 if(val=="Vendors"){
 			 document.getElementById("clientContractsList").style.display="none";
 			 document.getElementById("applicantsContractsList").style.display="none"; 
@@ -3117,7 +3316,7 @@ function Check(val){
 			 document.getElementById("vendorContractsList").style.display="none";
 			 document.getElementById("applicantsContractsList").style.display="block"; 
 		 }
-	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 }
 
 </script>
@@ -3142,12 +3341,12 @@ function CountClick(contractUUID,parentId){
 	$(".mask_time").fadeIn(200);
 	$(".DocAccPopup").fadeIn(100);	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
-    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	    var json = JSON.parse(data);
     	    var result= "";
     	    
@@ -3165,23 +3364,21 @@ function CountClick(contractUUID,parentId){
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
 
-			  if(opt.docFile != null && opt.docFile !=""){
-				  result = result +'	       <label class="col-md-4 text-center"><a href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\">'+opt.fileName+'</a></label>                                                 ';
-			  }else{
-				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
-			  }
+				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</a></label>                                                 ';
 
-			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+				  /* if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
 				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 				  result = result +'	       <label class="text-center">--</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
 				  $("#saveAction").empty(); 
 			  }
-			  else{
-				  if(parentId != "--"){
+			  else{ 
+				   if(parentId != "--"){ */
 						  if(opt.docFile != null && opt.docFile !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+' <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
@@ -3202,15 +3399,15 @@ function CountClick(contractUUID,parentId){
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
 					  }
-				  }
+				/*   }
 				  else{
 					  $("#saveAction").empty(); 
 					  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 					  result = result +'	       <label class="text-center">--</label>                                                 ';
 					  result = result +'	       </div>			                                                                                                                  ';
 					  $("#saveAction").empty(); 
-				  }
-			  }
+				  } */
+			 /*  } */
 			  result = result +'			</div>                                                                                                                                ';
 			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
 			  result = result +'	 </div>                                                                                                                                   ';
@@ -3261,7 +3458,14 @@ document.getElementById("uploadBtn"+id).onchange = function () {
     });
 }
 </script>
-
+<script type="text/javascript">
+function previewContractDoc(docId,fileName){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	if(docId != null && docId != ""){
+		window.open(sourceleadUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
+	}  
+}
+</script>
 <script>
 function editOne(startDate,endDate){
 	$('.editNewDat').show();

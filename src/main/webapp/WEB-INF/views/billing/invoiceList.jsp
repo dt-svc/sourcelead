@@ -498,6 +498,7 @@ function getInvoiceList(){
 			result = result +'         <th>ID</th>                    ';
 			result = result +'         <th>Client Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
+			result = result +'         <th>Project Name</th>   ';
 			result = result +'         <th>Invoice Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
@@ -560,6 +561,13 @@ function getInvoiceList(){
        			}else{
        				invoiceStatus = report.invoiceStatus
        			}
+       			var projectName = "";
+       			if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+       				projectName = report.projectName;
+        		}else{
+        			projectName = "--";
+        		}
+       			
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 
@@ -584,6 +592,12 @@ function getInvoiceList(){
 					result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
 				}
 				result = result +'         </td>';
+				
+
+				result = result +'         <td> ';
+					result = result +'<div class="tblminwidth-100">'+projectName+'</div>';
+				result = result +'         </td>';
+				
 				result = result +'         <td> ';
 				if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
 					result = result +'<div class="tblminwidth-100">'+invoiceDateStr+'</div>';
@@ -709,7 +723,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	//
-    	"aaSorting": [[3,'desc']],
+    	"aaSorting": [[3,'asc']],
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1325,7 +1339,7 @@ function LinkInvoicePagination(){
 <script type="text/javascript">
 function generateAutomaticInvoice(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',

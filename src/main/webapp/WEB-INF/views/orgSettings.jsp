@@ -26,11 +26,15 @@
 .selectChosen .chosen-container {
 width: 100% !important;
 }
+.icon1 {
+right: 15px;
+}
 </style>
 
 <!-- end files for autocomplete with tagit -->
 <script type="text/javascript">
 window.onload = function () {
+	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode');
 	getAllCountries();
 	colourpicker();
  };
@@ -214,14 +218,38 @@ function cancelOrgImg(){
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
+							 
 							<div class="form-group">
-							<label class="col-md-3">Website</label>
-							<div class="col-md-9">
-							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
-							</div>
+								<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9">
+								 <input type="text" class=" form-control" name="country" value="${SourceLeadWeb_country}" id="orgEditCountry" field-name="Country" data-validation="required" readonly="readonly" >
+								</div>
 							</div>
 								
 							<div class="form-group">
+								<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9">
+								 <input type="text" class=" form-control" name="city" value="${SourceLeadWeb_orgLocations.city}" id="orgEditCity" field-name="City" data-validation="required">
+								 <i class="fa fa-refresh btn btn-primary refresh-icon icon1 " title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+								<div class="col-md-9">
+								 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_orgLocations.state}" id="orgEditState" field-name="State" data-validation="required" >
+								</div>
+							</div>
+								
+							<div class="form-group">
+								<label class="col-md-3">Zip</label>
+								<div class="col-md-9">
+								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								</div>
+							</div>
+								
+								
+								
+							<%-- <div class="form-group">
 								<label class="col-md-3">Country</label>
 								<div class="col-md-9">
 								 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" readonly="readonly" >
@@ -243,7 +271,8 @@ function cancelOrgImg(){
 								<div class="col-md-9">
 								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
 								</div>
-							</div>
+							</div> --%>
+							
 							
 							<div class="form-group">
 							<label class="col-md-3">Address</label>
@@ -277,11 +306,11 @@ function cancelOrgImg(){
 				
 					<div class="col-md-5">
 						<div class="form-group">
-							<label class="col-md-3">Zip</label>
+							<label class="col-md-3">Website</label>
 							<div class="col-md-9">
-							<input type="text"  class="form-control" name="zipcode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
 							</div>
-						</div>
+							</div>
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
 							<div class="col-md-9">
@@ -491,7 +520,7 @@ var validationSettings = {
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	          		
 	                  $.ajax({
 	              	      type: "POST",
@@ -741,7 +770,7 @@ function loadSignature(){
 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
-	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 
 		 $.ajax({
 		    	type: "POST",
@@ -1057,7 +1086,7 @@ var validationSettings = {
   			var con = JSON.stringify(frm);
   			con = con.replace(/[{}]/g, ""); 
   		    var jsonData = encodeURIComponent(con);
-  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+  		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		
   		     $.ajax({
   				type : "POST",
@@ -1094,7 +1123,7 @@ var validationSettings = {
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
         		    var jsonData = encodeURIComponent(con);
-        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        		    $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           		
         		     $.ajax({
         				type : "POST",
@@ -1168,7 +1197,7 @@ function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
 			type : "POST",
@@ -1200,7 +1229,7 @@ function loadRegisteredOrgs(){
      
      
      var sourceleadUrl = '${sourceleadUrl}';
-     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      
      $.ajax({ 
 	    	type: "POST",
@@ -1287,7 +1316,7 @@ function getOrgLocationDetails(orgLocationId){
     document.getElementById("orgsList").style.display=""; 
     
     var sourceleadUrl = '${sourceleadUrl}';
-    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
      $.ajax({ 
     	type: "POST",
@@ -1499,7 +1528,7 @@ function getOrgLocationDetails(orgLocationId){
 			});
 			 
 	 	 
-		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
@@ -1522,7 +1551,7 @@ function getOrgLocationDetails(orgLocationId){
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId,  
@@ -1541,7 +1570,6 @@ function resendInvitation(userId){
 
 <script>
 function createOrg(){
-	
 	$("#locationOrgsName").html("Add New Location");
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
@@ -1570,57 +1598,6 @@ function createOrg(){
 	            
 	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
            
-	            result = result +' <div class="form-group">';
-	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9 dropdown-select">';
-	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
-	            result = result +'<option value="" >Select Location</option>';
-	            result = result +'<option value="Australia">Australia</option>';
-	            result = result +'<option value="France">France</option>';
-	            result = result +'<option value="India">India</option>';
-	            result = result +'<option value="Singapore">Singapore</option>';
-	            result = result +'<option value="United Kingdom">United Kingdom</option>';
-	            result = result +'<option value="United States">United States</option>';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Country</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-          
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-							
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-			
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Address</label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-     
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
-	            result = result +'<div class="col-md-9">';
-	            result = result +'<select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="locationTimeZone" name="timeZone">';
-	            result = result +'</select>';
-	            result = result +'<span class="hidden">Time Zone</span>';
-	            result = result +'</div>';
-	            result = result +'</div>';
-        
-	            result = result +'</div>';
-                                 
-	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
-          
-          
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
@@ -1682,6 +1659,95 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>'; 
         
+        
+	            result = result +'</div>';
+                                 
+	            result = result +'<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">';
+          
+				result = result +'           <div class="form-group">';
+				result = result +' 			<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>';
+				result = result +' 			 <div class="col-md-9" id="locationField">';
+				result = result +' 		          <div class="positionRelative">';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\');" data-validation="required"></input>';
+				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
+				result = result +' 			        </div>';
+				result = result +' 	          </div>';
+				result = result +' 		 </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetCity" name="city" placeholder="City" type="text" field-name="City" data-validation="required"  readonly></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+				result = result +'       <div class="form-group">';
+				result = result +'         <label class="col-md-3">ZipCode</label>';
+				result = result +'         <div class="col-md-9">';
+				result = result +'         <input class="form-control" id="orgSetZipCode" name="zipCode" placeholder="Zip code" field-name="Zip code" type="text"></input>';
+				result = result +'         </div>';
+				result = result +'       </div>';
+						        
+				
+				/* 
+	            result = result +' <div class="form-group">';
+	            result = result +'<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9 dropdown-select">';
+	            result = result +'<select class="chosen-select form-control select-bg" name="country" id="locationCountry" field-name="Country" data-validation="required" value="${country}">';
+	            result = result +'<option value="" >Select Location</option>';
+	            result = result +'<option value="Australia">Australia</option>';
+	            result = result +'<option value="France">France</option>';
+	            result = result +'<option value="India">India</option>';
+	            result = result +'<option value="Singapore">Singapore</option>';
+	            result = result +'<option value="United Kingdom">United Kingdom</option>';
+	            result = result +'<option value="United States">United States</option>';
+	            result = result +'</select>';
+	            result = result +'<span class="hidden">Country</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+          
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select  class="chosen-select form-control" name="state" id="locationState" field-name="State" data-validation="required" > </select>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+							
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select  class="chosen-select form-control" name="city" id="locationCity" field-name="City" data-validation="required" ></select>';
+	            result = result +'</div>';
+	            result = result +'</div>'; */
+			
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Address</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+     
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="locationTimeZone" name="timeZone">';
+	            result = result +'</select>';
+	            result = result +'<span class="hidden">Time Zone</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            
+          
+	            
         
 	            result = result +'</div>';
 	            result = result +'</div>';
@@ -1833,7 +1899,7 @@ function getLocationCities(){
 <script>
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var country = $('#locationCountry').val();
+	var country = $('#orgSetCountry').val();
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
@@ -2176,7 +2242,7 @@ function validatePrimaryUserEmail(){
          var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
          
-         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
@@ -2233,7 +2299,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
@@ -2317,7 +2383,106 @@ $(function(){
 		  })
 });
 </script>
-
+<script>
+function editOrgLocationAuto(orgStateId,orgCityId,orgZipCodeId) {
+	editOrgInitialize(orgStateId,orgCityId,orgZipCodeId);
+}
+function editOrgInitialize(orgStateId,orgCityId,orgZipCodeId) {
+	var country = '${SourceLeadWeb_country}';
+	if(country == "India"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'IN'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "United States"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'US'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "Australia"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'AU'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "France"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'FR'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "Singapore"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'SG'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}else if(country == "United kingdom"){
+		var input = (document.getElementById(orgCityId));
+	    var options = {
+	        types: ['geocode'],
+	        componentRestrictions: {
+	        	country: 'GB'
+	        }
+	    };
+	    autocomplete = new google.maps.places.Autocomplete(input, options);
+	}
+    	 
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+  
+  $("#"+orgStateId).val(address.state).change();
+  $("#"+orgCityId).val(address.city).change();
+  $("#"+orgZipCodeId).val(address.zipcode).change();
+});
+}
+</script>
+<script>
+function refreshOrgEditGoogleApiLocation(eidtStateId,editCityId,editZipCodeId){
+	$("#"+eidtStateId).val('');
+	$("#"+editCityId).val('');
+	$("#"+editZipCodeId).val('');
+}
+function addOrgRefreshGoogleApiLocation(){
+	$("#orgSetLocation").val('');
+	$("#orgSetCountry").val('');
+	$("#orgSetState").val('');
+	$("#orgSetCity").val('');
+	$("#orgSetZipCode").val('');
+}
+</script>
 <jsp:include page="masterFooter.jsp" />
 </html>
 

@@ -135,7 +135,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					emailMessage.setUserName(orgLocations.getFromEmail());
 					emailMessage.setPassword(orgLocations.getFromEmailPassword());
 				} else {
-					emailMessage.setUserName(defaultFromEmailAddress);
+					emailMessage.setUserName(emailMessage.getFromEmail());
 					emailMessage.setPassword(defaultFromEmailAddressPwd);
 					logger.info("######## if production email/password not correct then email sent from default email address ###########");
 				}
@@ -143,7 +143,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				sendMessage(emailMessage, iAdressArray, attachmentList);
 			} else {
 				if (sendMailForNonProd.equalsIgnoreCase("true")) {
-					emailMessage.setUserName(defaultFromEmailAddress);
+					emailMessage.setUserName(emailMessage.getFromEmail());
 					emailMessage.setPassword(defaultFromEmailAddressPwd);
 					emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
 					sendMessage(emailMessage, iAdressArray, attachmentList);

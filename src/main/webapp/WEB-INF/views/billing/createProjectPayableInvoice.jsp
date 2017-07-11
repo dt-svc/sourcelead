@@ -23,7 +23,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       <div class="pull-left">
         <h2>Project Based Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Project Based Bill</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -1155,7 +1155,7 @@ function saveInvoice(saveType){
  	 	    var formData = new FormData(form); 
  	 	    var sourceleadUrl ='${sourceleadUrl}';
 		    	        
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	        $.ajax({
 		    		    	 type: "POST",
 		    		    	 data: formData,
@@ -1544,7 +1544,7 @@ function getDueDateByFrequency(){
 	
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",

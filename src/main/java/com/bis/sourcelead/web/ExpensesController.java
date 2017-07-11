@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -23,6 +25,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.rest.ExpensesRestController;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -34,7 +37,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-public class ExpencesController {
+public class ExpensesController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -59,6 +62,9 @@ public class ExpencesController {
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	ExpensesRestController expensesRestController;
 	
 	@RequestMapping(value = "/myExpensesList")
 	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
@@ -88,10 +94,28 @@ public class ExpencesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
-		
-		Expenses expenses = null;
+		request.getSession().setAttribute("sessionData", sessionData);
 		if(null != expenseId && !expenseId.isEmpty()){
-			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
+			
+			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(loginUser.getId(), orgLoc.getLocationCode(), expenseId);
+			model.addObject("expenses", expensesDTO);
+			if(expensesDTO != null){
+				 Submission_Status submissionStatus = expensesDTO.getCombinedSubmissionStatus();
+				 model.addObject("submissionStatus",submissionStatus);
+				 
+			     String type = request.getParameter("type");
+			 	 Boolean isEditable = false;
+			 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
+			 		isEditable = true;
+			 	 }
+			 	 if(StringUtils.isEmpty(type) || (StringUtils.isNotEmpty(type) && type.equalsIgnoreCase("edit") && !isEditable)){
+			 		type = "view";
+			 	 }
+			 	 model.addObject("type", type);
+			 	 model.addObject("isSahApproved", expensesDTO.getSahApproved());
+			}
+				
+		/*	Expenses expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
@@ -101,17 +125,7 @@ public class ExpencesController {
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("expenseApproverHierarchy", eah);
 		 	
-		 	String type = request.getParameter("type");
 		 	
-		 	Boolean isEditable = false;
-		 	if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue()) || submissionStatus.getValue().equalsIgnoreCase(Submission_Status.REJECTED.getValue())){
-		 		isEditable = true;
-		 	}
-		 	
-		 	if(StringUtils.isEmpty(type) || (StringUtils.isNotEmpty(type) && type.equalsIgnoreCase("edit") && !isEditable)){
-		 		type = "view";
-		 	}
-		 	model.addObject("type", type);
 		 	
 		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 		    boolean isSahApproved = false;
@@ -119,28 +133,28 @@ public class ExpencesController {
 		        	isSahApproved = true;
 		    }
 		    model.addObject("isSahApproved", isSahApproved);	
-			model.addObject("expenses", expenses);
-		}else if(expenses == null){
-			expenseId = addExpensesService.getExpenseId(orgLoc);
-			model.addObject("ExpensesId", expenseId);
+			model.addObject("expenses", expenses);*/
 		}
-		
-		List<ProjectMembers> projectMembersList = addExpensesService.getAllProjectsForExpenses(orgLoc,loginUser);
-		model.addObject("projectMembersList", projectMembersList);
-		request.getSession().setAttribute("sessionData", sessionData);
-		
-		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
-		if(null != countries){
-        model.addObject("currencyCode", countries.getCurrency());
-		}
-		
-		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
-	    model.addObject("expensesCategoryList", expensesCategoryList);
-		
-	    
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(loginUser.getId(), orgLoc.getLocationCode());
+		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
 		return model;
+		
+		
+		/*List<ProjectMembers> projectMembersList = addExpensesService.getAllProjectsForExpenses(orgLoc,loginUser);
+		model.addObject("projectMembersList", projectMembersList);*/
+		
+		
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}*/
+		
+	/*	List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
+	    model.addObject("expensesCategoryList", expensesCategoryList);*/
+		
+		
 	}
 	
 	@RequestMapping(value = "/expenses")
@@ -228,13 +242,16 @@ public class ExpencesController {
 		
 		request.getSession().setAttribute("sessionData", sessionData);
 		
-		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+		/*Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
 		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
-	    model.addObject("expensesCategoryList", expensesCategoryList);
+	    model.addObject("expensesCategoryList", expensesCategoryList);*/
+		
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(loginUser.getId(), orgLoc.getLocationCode());
+		model.addObject("expEntry", expEntryDTO);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");

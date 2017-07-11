@@ -185,23 +185,22 @@ function addAttachment(entityRowId,from){
  		</div>
  </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
-    <div id="categoryTypeDivREPLACEROWID">--</div>
-</div>
-<div id="divAddRowTr1Td2" style="display: none; float: left;">
     <div id="categoryDateDivREPLACEROWID">--</div>
 </div>
+<div id="divAddRowTr1Td2" style="display: none; float: left;">
+    <div id="categoryTypeDivREPLACEROWID">--</div>
+</div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
-    <div id="paymentModeDivREPLACEROWID">--</div>
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
-    <div id="expenseRateTypeDivREPLACEROWID">--</div>
+    <div id="expenseAmountDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td5" style="display: none; float: left;">
-    <div id="expenseAmountDivREPLACEROWID">--</div>
-    
+    <div id="expenseRateTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
-   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
+    <div id="paymentModeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
@@ -216,7 +215,7 @@ function addAttachment(entityRowId,from){
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(REPLACEROWID);">
 							   <option value="">Select Category Type</option>				 							   
-							   <c:forEach var="expCat" items="${expensesCategoryList}">
+							   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 					                 <option value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 	                	       </c:forEach>
 							</select>
@@ -234,11 +233,9 @@ function addAttachment(entityRowId,from){
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
 							         <option value="">Select Mode</option>
-	                                 <option  value="Credit Card">Credit Card</option>
-	                                 <option  value="Debit Card">Debit Card</option>
-	                                 <option  value="Cash">Cash</option>
-	                                 <option  value="Cheque">Cheque</option>
-	                                 <option  value="e-Wallet">e-Wallet</option>
+							          <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
+							                  <option value="${paymentMode}">${paymentMode}</option>
+							          </c:forEach>
 							</select>
 						</div>	
 	                  <div id="amountDivREPLACEROWID" class="col-md-4 mb10 valid_ation">
@@ -246,12 +243,9 @@ function addAttachment(entityRowId,from){
 							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseRateTypeREPLACEROWID" field-name="Rate Type" field-name="Rate Type" data-validation="required">
-											  	<option value="INR" ${currencyCode  == "INR" ? "selected" : ""}>INR</option>
-											  	<option value="AUD" ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>
-											  	<option value="USD" ${currencyCode  == "USD" ? "selected" : ""}>USD</option>
-											  	<option value="GBP" ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>
-											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</option>
-											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
+											  	   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
+									                  <option ${expEntry.currencyCode == currencyType ? 'selected' : ''}   value="${currencyType}">${currencyType}</option>
+									               </c:forEach>
 											  </select>
 								</div>
 							         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(REPLACEROWID);">

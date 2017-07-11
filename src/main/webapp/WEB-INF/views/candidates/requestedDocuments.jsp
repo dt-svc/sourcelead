@@ -66,7 +66,7 @@ top: 20%; right: auto; left: 40%;
 		   		<thead>
 		   			<tr>
 		   				<th>Document Name</th>
-		   				<th>Descripton</th>
+		   				<th>Description</th>
 		   				<th>Action</th>
 		   			</tr>
 		   		</thead>
@@ -84,7 +84,7 @@ top: 20%; right: auto; left: 40%;
 					   				
 					   				<td>
 					   				<c:if test="${!empty docs.description}">
-					   				<div class="tbldata-dotdot-big">${docs.description}</div>
+					   				<div class="tbldata-dotdot-big" title="${docs.description}">${docs.description}</div>
 					   				</c:if>
 					   				<c:if test="${empty docs.description}">
 					   				<div class="tbldata-dotdot-big">-------</div>
@@ -152,7 +152,7 @@ $('body').on('submit', '#requestForDocs_form', function(e){
       
         $("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 	    	   type : "POST",
 	 	       data: formData,

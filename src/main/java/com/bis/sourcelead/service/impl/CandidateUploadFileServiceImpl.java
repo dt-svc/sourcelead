@@ -467,11 +467,13 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	private void saveBulkCandidates(CandidatesImport candidatesImport, OrgLocations orgLocations, User user, String isMailChecked) throws Exception
 	{
 		
-		JSONObject jsonObj = populateJsonObject(candidatesImport, orgLocations);
+		JSONObject jsonObj = populateJsonObject(candidatesImport, orgLocations,isMailChecked);
 		candidateService.storeCandidate(jsonObj, orgLocations, user, null);
+		
+		
 	}
 	
-	private JSONObject populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations) throws JSONException, ParseException
+	private JSONObject populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations, String isMailChecked) throws JSONException, ParseException
 	{
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("firstName", candidate.getFirstName());
@@ -619,9 +621,23 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		if (null != candidate.getSkillsName()) {
 			jsonObj.put("candidateSkills", candidate.getSkillsName());
 		}
+		
+		if (null != candidate.getEducation()) {
+			jsonObj.put("candidateEducation", candidate.getEducation());
+		}
+		
+		if (null != candidate.getEmployers()) {
+			jsonObj.put("candidateEmployers", candidate.getEmployers());
+		}
+		
 		if (null != candidate.getPrimarySkill()) {
 			jsonObj.put("primarySkill", candidate.getPrimarySkill());
 		}
+		
+		if (null != isMailChecked) {
+			jsonObj.put("inviteEmail", isMailChecked);
+		}
+		
 		return jsonObj;
 	}
 	

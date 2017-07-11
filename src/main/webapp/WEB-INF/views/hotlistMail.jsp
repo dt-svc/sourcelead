@@ -283,7 +283,7 @@ $(function(){
 	  	    	var bodytext = nicEditors.findEditor('bodytext').getContent();
 	  			if(bodytext.length < 60000){
 	  	    	
-	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  	    	$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  			$.ajax({
 	  				type : "POST",
 	  	    	    data: formData,
@@ -650,7 +650,7 @@ function getCandidates(candidatesListType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
-	  $("#candidatesLoading").attr('style','position:absolute; width:98%; height:49%; background-color:rgba(255,255,255,0.8); top:140px; left:17px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#candidatesLoading").attr('style','position:absolute; width:98%; height:49%; background-color:rgba(255,255,255,0.8); top:140px; left:17px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
 	  $.ajax({
            type : "POST",

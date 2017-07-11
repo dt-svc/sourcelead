@@ -21,7 +21,7 @@ function myExpensesListByStage(expenseStatus){
 				result = result +"<th>Client</th>";
 				result = result +"<th>Start Date</th>";
 				result = result +"<th>End Date</th>";
-				result = result +"<th>No of Exp</th>";
+				result = result +"<th>No of Items</th>";
 				result = result +"<th>Amount</th>";
 				result = result +"<th>Status</th>";
 				result = result +"</tr>";
@@ -117,7 +117,7 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' <th>Project</th>';
 	    		result = result+' <th>Start Date</th>';
 	    		result = result+' <th>End Date</th>';
-	    		result = result+' <th>No of Exp</th>';
+	    		result = result+' <th>No of Items</th>';
 	    		result = result+' <th>Amount</th>';
 	    		result = result+' <th>Status</th>';
 	    		result = result+' <th>Action</th>';

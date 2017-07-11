@@ -45,7 +45,7 @@ public interface OrgService {
 
 	public Org getOrgByOrgName(String orgName);
 	
-	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception;
+	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
 
 
 }

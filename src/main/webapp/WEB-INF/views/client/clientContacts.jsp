@@ -402,7 +402,7 @@ function changeSpocStatus(spocId,clientLocationId){
 function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(spocUserId != null && spocUserId != ""){
-		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendSpocInvitationEmail?${_csrf.parameterName}=${_csrf.token}&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Client&orgRelationID="+orgRelationID, 
@@ -834,9 +834,9 @@ function validateEmail(orgRelationID){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#EmailId").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					$("input#EmailId").after( "<p class='jquery_form_error_message'>should not your org users email</span>");
 					document.getElementById("EmailId").setAttribute( 'record-exist', 'yes');
-					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					document.getElementById("EmailId").setAttribute( 'record-exist-errorMsg',"should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");

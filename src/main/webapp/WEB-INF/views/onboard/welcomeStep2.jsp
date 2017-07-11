@@ -21,25 +21,61 @@
 
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/formvalidator.js"></script>
-
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
 
 <script type="text/javascript">
 		window.onload = function () {
+			initLocationAuto('onBoardLocatin','onBoardCountry','onBoardState','onBoardCity','onBoardZipCode')
 			getOnBoardCandidateCountry('${SourceLeadWeb_candidateOnBoarding.country}');
 			getOnBoardCandidateStates('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}');
 			getOnBoardCandidateCities('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}','${SourceLeadWeb_candidateOnBoarding.city}');
 		 };
 </script>
 
+<style>
+.pac-container::after {
+	display:none;
+}
+</style>
+
+
+
 
 <div class="wraper"> 
-
-  
   <!--   Welcome Screens   -->
   
 	<section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
+				
+		<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+		<div class="offOrg">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent positionRelative">
+				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     </div>
+				                   </div>
+				                   <div class="pull-left mt5">
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
+	              </ul>
+	            </div>
+	            </div>
+          </c:if>
+				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
 					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
@@ -104,14 +140,24 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	
 	<div class="clearfix">
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+				  <div class="form-group">
+				  <label class="col-md-4 control-label">Location <span class="text-danger paddingLeft">*</span></label>
+				  <div class="col-md-8">
+					<input type="text" class="form-control" data-placeholder="Location" id="onBoardLocatin"  name="location" value="${SourceLeadWeb_candidateOnBoarding.location}">
+					<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('onBoardLocatin','onBoardCountry','onBoardState','onBoardCity','onBoardZipCode');"></i>
+				  </div>
+				</div>
+		</div>
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			  <div class="form-group">
 			  <label class="col-md-4 control-label">Country <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<select class="chosen-select" data-placeholder="Select Country" id="country" onchange="getStates();" name="country">
-                      <option disabled>Select Country</option>
-                </select>
+				<input type="text" class="form-control"  data-placeholder="Country" id="onBoardCountry"  name="country" value="${SourceLeadWeb_candidateOnBoarding.country}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -119,35 +165,30 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">State</label>
 			  <div class="col-md-8">
-				 <select class="chosen-select" data-placeholder="Select State" onchange="getCities();" id="state" name="state">
-                      <option disabled>Select State</option>
-                 </select>
+				 <input type="text" class="form-control" data-placeholder="State"  id="onBoardState" name="state" value="${SourceLeadWeb_candidateOnBoarding.state}" readonly>
+			  </div>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">City</label>
+			  <div class="col-md-8">
+				 <input type="text" class="form-control"  data-placeholder="City" id="onBoardCity" name="city" name="state" value="${SourceLeadWeb_candidateOnBoarding.city}" readonly>
 			  </div>
 			</div>
 		</div>
 	</div>
 	<div class="clearfix">
- 		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
-			<div class="form-group">
-			  <label class="col-md-4 control-label">City</label>
-			  <div class="col-md-8">
-				 <select class="chosen-select" data-placeholder="Select City" id="city" name="city">
-                      <option disabled>Select City</option>
-                 </select>
-			  </div>
-			</div>
-		</div>
+ 		
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">                               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Zipcode</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control input-sm" id="zipCode" name="zipCode" value="${SourceLeadWeb_candidateOnBoarding.zipCode}"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
+				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${SourceLeadWeb_candidateOnBoarding.zipCode}"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
 			  </div>
 			</div>
 		</div>	
-	</div>	
-	<div class="clearfix">
- 		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
@@ -155,6 +196,9 @@
 			  </div>
 			</div>
 		</div>
+	</div>	
+	<div class="clearfix">
+ 		
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">                               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Personal Email</label>
@@ -163,9 +207,7 @@
 			  </div>
 			</div>
 		</div>	
-	</div>
-	<div class="clearfix">
- 		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Company Email</label>
 			  <div class="col-md-8">
@@ -174,6 +216,7 @@
 			</div>
 		</div>
 	</div>
+	 
 </div>
  
  <h5>Position Details</h5>
@@ -456,7 +499,7 @@ function getOnBoardCandidateCities(country,state,city){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
 	       
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
@@ -516,6 +559,84 @@ function getOnBoardCandidateCities(country,state,city){
 		function logoutFormSubmit() {
 			document.getElementById("logoutForm").submit();
 		}
+</script>
+
+<script>
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId);
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId) {
+ 
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+            types: ['geocode'],
+      
+        });
+   
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+  
+  $("#"+countryId).val(address.country).change();
+  $("#"+stateId).val(address.state).change();
+  $("#"+cityId).val(address.city).change();
+  $("#"+zipCodeId).val(address.zipcode).change();
+  
+});
+}
+</script>
+<script>
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId){
+	$("#"+locationId).val('');
+	$("#"+countryId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+}
+</script>
+
+<script>
+  function navtoggle(elementRef){
+	  
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
+  
+  $(".offOrg").click(function( event ) {
+	  event.stopPropagation();
+	});
+  </script>
+  
+ <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
 </script>
 
 <c:url var="logoutUrl" value="/logout"/>

@@ -29,7 +29,14 @@ height: auto !important;
 --%>
 
 <div id="rejectedReasonDiv"></div>
-
+<!-- Show success message after form submission script -->
+<script>
+	function docMsgFadein() {
+		$("#selector6").fadeIn(200);
+        $('#selector6').delay(2000).fadeOut('slow');
+	}
+</script> 
+<!-- End -->
 <script>
 function professionalCandidateDocuments(candidateId){
 	var candidateType = '${candidateType}';
@@ -40,7 +47,7 @@ function professionalCandidateDocuments(candidateId){
 	}else{
 		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
 	}
-	result  = result + '<div class="success_pop" id="selector9" style="display: none;">';
+	result  = result + '<div class="success_pop" id="selector6" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
@@ -60,7 +67,7 @@ function professionalCandidateDocuments(candidateId){
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 		
 		result  = result + '   <div id="candidateDocumentsList" ></div>';
 		result  = result + '   </div>';
@@ -100,8 +107,8 @@ function candDocumentsList(candidateId){
 	                     result  = result + '<th>Document Type</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
-	                 	 result  = result + '<th>Upload Status</th>';
-	                     result  = result + '<th>Document Status</th>';
+	                 	/*  result  = result + '<th>Upload Status</th>';
+	                     result  = result + '<th>Document Status</th>'; */
 	                 	 result  = result + '<th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -130,7 +137,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="fa fa-eye" onclick="viewProfessionalCandidateDocument(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -142,7 +149,7 @@ function candDocumentsList(candidateId){
 		                    	 }
 		                    	
 	                    	 
-							result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
+							/* result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
 	                    	 
 	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
 	                    		 result = result +"<td>";
@@ -155,7 +162,7 @@ function candDocumentsList(candidateId){
 	                    	 
 	                    	 }else{
 	                    		 result = result +"  <td><div>----</div></td>"; 
-	                    	 }
+	                    	 } */
 	                    	 
 		                   
 		                   result = result+'<td><div class="tblicons">';
@@ -188,15 +195,13 @@ function candDocumentsList(candidateId){
 }
 </script>
 
-
-<!-- Show success message after form submission script -->
 <script>
-	function eduMsgFadein() {
-		$("#selector9").fadeIn(200);
-        $('#selector9').delay(2000).fadeOut('slow');
-	}
-</script> 
-<!-- End -->
+function viewProfessionalCandidateDocument(documentUUID,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
+}
+</script>
+
 
 
 <%-- 
@@ -223,10 +228,14 @@ function candidateDocumentsList(candidateId){
 function documentsPagination(){  
     $('#candidateDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 3
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -234,8 +243,6 @@ function documentsPagination(){
     } );
 }
 </script>
-
-
 <%-- 
      @author : Prasad K.
      this script is for remove popUp.
@@ -248,25 +255,6 @@ function closePopup(){
 }
 </script>
 
-
-<div class="requestDocSideMask"></div>
-<div class="modal modalInvite requestDocuments">
-  <div class="modal-dialog modal-lg"> 
-    <div id="documentLoading"></div>
-    <div id="documentsTypeDiv"></div>
-    </div>
-  </div>
-  
-  <div id="divDocsTd1" style="display: none; float: left;">
-  <div class="dropdown-select paddingRight">
-              <select class="width100percnt form-control selectborder" data-validation="required" onchange="getSelectedDocumentType(REPLACEROWID);" field-name="Document Type" id="REPLACEROWIDdocType" name="REPLACEROWIDdocType">
-                <option selected value="">--Document Type--</option>
-                <c:forEach var="doctype" items="${documentsList}">
-					<option value="${doctype.name}" >${doctype.name}</option>
-    			</c:forEach> 
-              </select>
-  </div>
-  
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -274,6 +262,7 @@ function closePopup(){
 --%>
 <script>
 function addDocument(candidateId, documentUUID) {
+	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'<form role="form"  id="documentType_form" name="documentType_form" method="post" > ';
@@ -282,14 +271,14 @@ function addDocument(candidateId, documentUUID) {
 	result = result  +'   ';
 	
 	result = result  +'<div class="clearfix mb10 col-md-12"> ';
-	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="name" data-validation="required" onchange="getDocumentType(this);">';
-					   
 	
+	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);">';
 	                   <c:forEach var="doctype" items="${documentsList}">
     result = result +'<option value="" disabled selected></option>';	
 	result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
 	                   </c:forEach>  
     result = result + '</select>';
+    
 	result = result  +' </div> ';
 	result = result  +'';
 	
@@ -310,7 +299,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'<div class="col-md-12 mt">';
-	result = result+'<label id="docName" name="docName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_doc" onclick="removeDocNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'<label id="docsName" name="docName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_doc" onclick="removeDocNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'</div>';
 	result = result+'</div>';
 	
@@ -320,8 +309,8 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'</div>';
 	result = result+'</div>';  
 	
-	result = result+'<div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
-	result = result+'<button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result+'<div class="clearfix mr mt" id="docsUpdateButton" style="display: none;">';
+	result = result+'<button type="button" id="updates_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
 	result = result+'</div>';
 	
 	result = result  +'<div class="clearfix mr" id="docAddButton">';
@@ -355,7 +344,7 @@ function addDocument(candidateId, documentUUID) {
 	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
 	      }
 	    });
-	 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
+	 <%-- Document Type Autocomplete Scripts Starts Here --%>
 	 var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -364,9 +353,6 @@ function addDocument(candidateId, documentUUID) {
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 	 
-	 
-	
-	 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -374,7 +360,7 @@ function addDocument(candidateId, documentUUID) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
+		<%-- Document Type Autocomplete Scripts Ends Here --%>
 	}
 </script>
 
@@ -401,11 +387,11 @@ function addDocument(candidateId, documentUUID) {
 
 <script>
 function getDocumentType(documentType){
-	 var existingDocumentType = $('#name').val(); 
+	 var existingDocumentType = $('#docsName').val(); 
 	if(documentType.value == 'Other'){
 		 document.getElementById("documentTypeDiv").style.display="block";
 		  $("#documentOtherType").attr("data-validation-optional", "false");
-		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length1-250");
 	}else{
 		document.getElementById("documentTypeDiv").style.display="none";
 		  $("#documentOtherType").attr("data-validation-optional", "true");
@@ -416,7 +402,6 @@ function getDocumentType(documentType){
 	}
 }
 </script>
-
     
  <%-- 
      @author : prasad K
@@ -456,11 +441,11 @@ function getDocumentType(documentType){
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector9").removeAttr("style");
-		            			$("#selector9").css({ display: "block" });
+		            			$("#selector6").removeAttr("style");
+		            			$("#selector6").css({ display: "block" });
 	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
 		             			candDocumentsList(candidateId);
-						 		resMsgFadein();
+						 		docMsgFadein();
 		            		 
 						},
 					});
@@ -476,16 +461,18 @@ function getDocumentType(documentType){
 		
 </script>
 
-
 <%-- 
      @author : Prasad K
      this script is for get document details in edit mode
      1.usage     : onclick
      2.parameter : candidateId, documentId
-     3.ajax url implementation in CandidateResumeRestController.
+     3.ajax url implementation in CandidateDocumentRestController.
 --%>
 <script>
 function getDocument(candidateId, documentId){
+	  $("#docsName").attr("data-validation-optional", "true");
+	  $("#documentOtherType").attr("data-validation-optional", "true");
+	  
 	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
@@ -496,14 +483,12 @@ function getDocument(candidateId, documentId){
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
         			 $("#docNameDiv").show();
-        			 $("#docName").append(json.fileName);
-        			 $("#docName").prop('title', json.fileName);
-        			 $("#docUpdateButton").show();
+        			 $("#docsName").append(json.fileName);
+        			 $("#docsName").prop('title', json.fileName);
+        			 $("#docsUpdateButton").show();
         			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
-        				
-	                     $("select#name").val(json.documentType);
-	                     $("#name").trigger("chosen:updated");
-	                     
+	                     $("select#docuName").val(json.documentType);
+	                     $("#docuName").trigger('chosen:updated');
 	                    //here documentType is Other then documentOtherType  also display in Edit.
 	                   
 	                     if(json.documentType == 'Other'){
@@ -515,7 +500,7 @@ function getDocument(candidateId, documentId){
 
         			 }
         			 
-        			 $("#update_doc").attr("onclick", "storeCandidateDocument("+json.candidateId.id+", \""+json.documentUUID+"\");");
+        			 $("#updates_doc").attr("onclick", "storeCandidateDocument("+json.candidateId.id+", \""+json.documentUUID+"\");");
         			 
         			 if(json.description != null && json.description != "undefined" && json.description != ""){
         				 $("textarea#description").val(json.description);
@@ -541,8 +526,9 @@ function removeDocument(candidateId, documentId){
 	result = result +"	   <div id='remove_user_pop_documents' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Documents</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onclick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
 	$("#remove_user_pop_documents").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -558,7 +544,6 @@ function removeDocument(candidateId, documentId){
 --%>
 <script>
 function deleteDocument(candidateId, documentId){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
@@ -566,13 +551,13 @@ function deleteDocument(candidateId, documentId){
 		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
-        			 $("#selector9").removeAttr("style");
-         			 $("#selector9").css({ display: "block" });
+        			 $("#selector6").removeAttr("style");
+         			 $("#selector6").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
         			 candDocumentsList(candidateId);
-        		     resMsgFadein();
+        		     docMsgFadein();
    		    	}
    		    },
 	     });
@@ -593,16 +578,6 @@ function removeDocNameDiv(){
 }
 </script>
 
-<!-- Show success message after form submission script -->
-<script>
-	function resMsgFadein() {
-		$("#selector9").fadeIn(200);
-        $('#selector9').delay(2000).fadeOut('slow');
-	}
-</script> 
-<!-- End -->
-
-
 <%-- 
      @author : Prasad K
      this script is for add document popup
@@ -613,6 +588,3 @@ function refreshDocList(candidateId){
 	candDocumentsList(candidateId);
 }
 </script>
-
-
-

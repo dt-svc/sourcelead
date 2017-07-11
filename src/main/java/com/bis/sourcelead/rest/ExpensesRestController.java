@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +23,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
+import com.bis.sourcelead.dto.ExpensesCategoryDTO;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ProjectMembersDTO;
+import com.bis.sourcelead.dto.helper.ExpenseCategoryDTOConverter;
+import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
+import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.CurrencyCodes;
+import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -45,10 +66,28 @@ public class ExpensesRestController {
 	private ExpensesService expensesService;
 	
 	@Autowired
+	private AddExpensesService addExpensesService;
+	
+	@Autowired
+	private CountriesService countriesService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	ExpensesCategoryService expensesCategoryService;
+	
+	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private OrgLocationService  orgLocationService;
+	
+	@Autowired
+	private ExpensesApprovalService expensesApprovalService;
 	
 	@RequestMapping(value = "/getExpensesList")
 	 public String getExpensesList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
@@ -72,6 +111,78 @@ public class ExpensesRestController {
 		}
 		resultJson = commonUtil.toJSON(expensesList);
 		return resultJson;
+	 }
+	
+	 @RequestMapping(value = "/rest/getExpenseEntryDetails")
+	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "locationCode", required = true) String locationCode) throws Exception {
+		 ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
+		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		 List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(),userId);
+		  if(projectMembersList != null && !projectMembersList.isEmpty()){
+			  ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
+			  for(ProjectMembers pm : projectMembersList){
+				  pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm)) ;
+			  }
+			  expenseEntryDetailsDTO.setProjectMembersList(pmDTOList);
+		  }
+		  List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocations.getId(), "1");
+		  if(expensesCategoryList != null && !expensesCategoryList.isEmpty()){
+			  ArrayList<ExpensesCategoryDTO> ecDTOList = new ArrayList<>();
+			  for(ExpensesCategory ec : expensesCategoryList){
+				  ecDTOList.add(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(ec)) ;
+			  }
+			  expenseEntryDetailsDTO.setExpenseCategoryList(ecDTOList);;
+		  }
+		  
+		  String expenseId = addExpensesService.getExpenseId(orgLocations);
+		  expenseEntryDetailsDTO.setExpenseId(expenseId);
+		  
+		  Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		  if(null != countries){
+			 expenseEntryDetailsDTO.setCurrencyCode(countries.getCurrency());
+		  }
+		  
+		  List<String>  paymentModes = new LinkedList<>();
+		  paymentModes.add(PaymentModes.CREDITCARD.getValue());
+		  paymentModes.add(PaymentModes.DEBITCARD.getValue());
+		  paymentModes.add(PaymentModes.CASH.getValue());
+		  paymentModes.add(PaymentModes.CHEQUE.getValue());
+		  paymentModes.add(PaymentModes.EWALLET.getValue());
+		  expenseEntryDetailsDTO.setPaymentModes(paymentModes);
+		  
+		  List<String>  currencyCodeList = new LinkedList<>();
+		  currencyCodeList.add(CurrencyCodes.INR.getValue());
+		  currencyCodeList.add(CurrencyCodes.AUD.getValue());
+		  currencyCodeList.add(CurrencyCodes.USD.getValue());
+		  currencyCodeList.add(CurrencyCodes.GBP.getValue());
+		  currencyCodeList.add(CurrencyCodes.SGD.getValue());
+		  currencyCodeList.add(CurrencyCodes.EUR.getValue());
+		  expenseEntryDetailsDTO.setCurrencyCodeList(currencyCodeList);
+		 return expenseEntryDetailsDTO;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/rest/getExpenseDetailsByExpenseId")
+	 public ExpensesDTO getExpenseDetailsByExpenseId(@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "locationCode", required = true) String locationCode,
+			      @RequestParam(value = "expenseId", required = true) String expenseId) throws Exception {
+		
+		   ExpensesDTO expensesDTO = null;
+		   OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		   Expenses expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLocations.getId());
+		   if(expenses != null){
+			   expensesDTO =  ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
+			   ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
+			   Submission_Status submissionStatus = eah.getExpenseStatus();
+			   expensesDTO.setCombinedSubmissionStatus(submissionStatus);
+			   
+			   ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
+			   boolean isSahApproved = false;
+			   if(isSah != null){
+			        	isSahApproved = true;
+			   }
+			   expensesDTO.setSahApproved(isSahApproved);
+		   }
+		 return expensesDTO;
 	 }
 	
 	@RequestMapping(value = "/getIndividualExpense")

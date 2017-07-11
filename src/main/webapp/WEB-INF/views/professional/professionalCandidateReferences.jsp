@@ -35,7 +35,7 @@ function professionalCandidateReferences(candidateId){
 	}else{
 		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
 	}
-	result  = result + '<div class="success_pop" id="selector10" style="display: none;">';
+	result  = result + '<div class="success_pop" id="selector7" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="refMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
@@ -56,7 +56,7 @@ function professionalCandidateReferences(candidateId){
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 		
 		result  = result + '   <div id="candidateReferencesList" ></div>';
 		result  = result + '   </div>';
@@ -178,10 +178,14 @@ function candidateReferencesList(candidateId){
 function candidateReferencesPagination(){  
     $('#candidateReferencesPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 5
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -202,6 +206,25 @@ function closePopup(){
 }
 </script>
 
+<script>
+
+ $(function () {
+    $("#relation").change(function () {
+    	 $('#row_dim').hide(); 
+        if (this.options[this.selectedIndex].value == "Work Related") {
+        	alert("s2");
+            $("#row_dim").show();
+        }
+    });
+}); 
+
+/* $(function() {
+    $('#relation').change(function(){
+    	alert("X");
+        $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
+    });
+}); */
+</script>
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -218,7 +241,7 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+	result = result  +'<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length1-200" class="form-control input-sm" value="" placeholder="Name *">';
 	result = result  +'</div>';
 	result = result  +'</div>';    
 	
@@ -230,23 +253,23 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+	result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="getRelation();">';
 	result = result + '<option value="">--Select Relation--</option>';
-	result = result + ' <option value="Work Related">Work Related</option>';
-	result = result + '<option  value="Family Related">Family Related</option>';
+	result = result + ' <option id="workRelated" valeu="Work Related">Work Related</option>';
+	result = result + '<option  id="familyRelated" value="Family Related">Family Related</option>';
 	result = result + ' </select>';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+	result = result  +'<div class="clearfix mb10" id="dvDesignation" style="display: none;">';
+	result = result  +'<div class="col-md-12" >';
+	result = result  +'<input type="text" name="designation" id="designationVal" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
@@ -339,11 +362,11 @@ function addReference(candidateId) {
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector10").removeAttr("style");
-		            			$("#selector10").css({ display: "block" });
+		            			$("#selector7").removeAttr("style");
+		            			$("#selector7").css({ display: "block" });
 	            				$("#refMsgDiv").html("Success!! New Candidate References added");
 		             			candReferencesList(candidateId);
-						 		resMsgFadein();
+						 		refMsgFadein();
 		            		 
 						},
 					});
@@ -377,9 +400,9 @@ function deleteReferencesPopup(){
 
 
 <script>
-	function resMsgFadein() {
-		$("#selector10").fadeIn(200);
-        $('#selector10').delay(2000).fadeOut('slow');
+	function refMsgFadein() {
+		$("#selector7").fadeIn(200);
+        $('#selector7').delay(2000).fadeOut('slow');
 	}
 </script> 
 <!-- End -->
@@ -394,6 +417,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -416,13 +440,13 @@ function deleteReference(candidateId,refId){
 		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
-        			 $("#selector10").removeAttr("style");
-         			 $("#selector10").css({ display: "block" });
+        			 $("#selector7").removeAttr("style");
+         			 $("#selector7").css({ display: "block" });
          			 $("#refMsgDiv").html("Reference deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
         			 candReferencesList(candidateId);
-        		     resMsgFadein();
+        		     refMsgFadein();
    		    	}
    		    },
 	     });
@@ -430,7 +454,7 @@ function deleteReference(candidateId,refId){
 }
 </script>
 
-     <script type="text/javascript">
+<script type="text/javascript">
 	function updateCandidateReference(candidateId, refId) {
   
 		var validationSettings = {
@@ -454,8 +478,8 @@ function deleteReference(candidateId,refId){
 						url : sourceleadUrl
 								+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&refId"+refId,
 						success : function(data) {
-	            			$("#selector10").removeAttr("style");
-	            			$("#selector10").css({ display: "block" });
+	            			$("#selector7").removeAttr("style");
+	            			$("#selector7").css({ display: "block" });
 	            			$("#refMsgDiv").html("Reference details updated");
 	            			closePopup();
 	            			candReferencesList(candidateId);
@@ -521,7 +545,7 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);">';
 								result = result + '<option value="">--Select Relation--</option>';
 								result = result + ' <option '+(json.relation == "Work Related" ? "selected" : '') +'>Work Related</option>';
 								result = result + '<option  '+(json.relation == "Family Related" ? "selected" : '') +'>Family Related</option>';
@@ -529,9 +553,9 @@ function deleteReference(candidateId,refId){
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
-								result = result  +'<div class="clearfix mb10">';
+								result = result  +'<div class="clearfix mb10" id="dvDesignationEdit">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="designation" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+								result = result  +'<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
@@ -574,4 +598,31 @@ function deleteReference(candidateId,refId){
 				});
 
 	}
+</script>
+
+<!-- If Selected value is Work Related then Designation text box will appear -->
+<script type="text/javascript">
+function getRelation(){
+	var relation = $("#relation").val();
+	if(relation == 'Work Related'){
+		$('#designationVal').val('');
+		$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100"); 
+		$("#dvDesignation").show();
+	}else if(relation == 'Family Related'){
+		$('#designationVal').val('');
+		$("#designationVal").attr("data-validation-optional", "true");
+		$("#dvDesignation").hide();
+	}
+}
+</script>
+
+<script>
+function editRelation(e){
+	if(e.value == "Work Related"){
+		 document.getElementById("dvDesignationEdit").style.display="block";
+	}else{
+		document.getElementById("dvDesignationEdit").style.display="none";
+	}
+}
+
 </script>

@@ -14,7 +14,7 @@
 	
 	<script type="text/javascript">
 		window.onload = function () {
-			getAllCountries();
+			initLocationAuto('associateLocation','associateCountry','associateState','associateCity','associateZipCode','associateLatitude','associateLongitude');
 			disableMonths();
 		 };
 	</script>
@@ -107,29 +107,58 @@
         </div>
         
         
-        <div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
-                 </select>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<select  class="chosen-select form-control" name="state" id="state" field-name="State"  >
-                 </select>
-				</div>
-		 </div>
+         <div class="form-group">
+          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9" id="locationField">
+          <div class="positionRelative">
+          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Locatin" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode');"></i>
+          </div>
+          </div>
+        </div>
 		
 		<div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  >
-                 </select>
-			</div>
-		</div>
+          <label class="col-md-3">Country</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}"  type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateState" name="state" placeholder="Enter your State" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">City</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">ZipCode</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          </div>
+        </div>
+        
+		
+		<div class="form-group hidden">
+          <label class="col-md-3">Lat</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateLatitude" name="latitude" type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group hidden" >
+          <label class="col-md-3">Long</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateLongitude" name="longitude"  type="text"></input>
+          </div>
+        </div> 
         
         <div class="form-group">
           <label class="col-md-3">Address</label>
@@ -510,103 +539,6 @@ function validate_fileupload(fileName)
     return false;
 }
 </script>
-<script type="text/javascript">
-function getAllCountries(){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---Select City---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<!-- Country,State,City Script Ends Here -->
 
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
@@ -720,13 +652,7 @@ function getCities(){
 		    }); 
 		    //Adding Customized Educations to the list
 	       
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
+	      
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -809,7 +735,7 @@ function getCities(){
 	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
 	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
 	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
 	     		var form = $('#candidate_form')[0];

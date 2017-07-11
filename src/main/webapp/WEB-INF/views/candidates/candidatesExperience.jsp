@@ -590,6 +590,7 @@ function removeEmployer(candidateemployerId, candidateId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmployer("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deletePopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteExcepPopUp").empty();
 	$("#deleteExcepPopUp").append(result);
 	$("#remove_user_pop_emp").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);

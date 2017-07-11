@@ -1293,30 +1293,10 @@ function setHours(finalmin,rowId){
 	    $("#conversionFrom").val(sum.toFixed(2));
 	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
-   /* =====================  After adding the rows calculate the discount start  ===================== */
-   var discountValue =  $("#discountValue").val();
-   var discountType =  $("#disCount").val();
-  
-   if(discountValue != null && discountValue != ''){
-		var total ='';
-		if(discountType == 'flat'){
-			total = arroundGrand-discountValue;
-			$("#discountTotal").val(discountValue.toFixed(2));
-			$("#grandTotal").val(total.toFixed(2));
-			$("#conversionFrom").val(total.toFixed(2));
-			$("#afterDiscountTotal").val(total.toFixed(2));
-			
-		}
-		if(discountType == 'percentage'){
-			var perCentValue = (arroundGrand * discountValue)/100;
-			total = arroundGrand - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
-			$("#grandTotal").val(total.toFixed(2));
-			$("#conversionFrom").val(total.toFixed(2));
-			$("#afterDiscountTotal").val(total.toFixed(2));
-		}
-   }
-   
+/*  After adding the rows calculate the discount start  */
+   calculateDiscount();
+
+/*  After adding the rows calculate the Tax discount start  */
 	    calculateTaxDiscount();
 	    
   }
@@ -1353,7 +1333,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
-			$("#discountTotal").val(subTotal);
+			$("#discountTotal").val("00.00");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1800,7 +1780,7 @@ function getDueDateByFrequency(){
 	
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
@@ -1865,7 +1845,7 @@ function saveInvoice(saveType){
 		        }else{
 		        	
 		    	        
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	        $.ajax({
 		    		    	 type: "POST",
 		    		    	 data: formData,

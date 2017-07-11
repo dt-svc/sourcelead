@@ -198,11 +198,30 @@ public class ClientServiceImpl implements ClientService{
 				}
 				if(jsonObj.has("orgCity") && !isNullOrEmpty(jsonObj.getString("orgCity"))){
 					clientOrgLocations.setCity(jsonObj.getString("orgCity"));
-				}
-				
-				else if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
+				}else if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 					clientOrgLocations.setCity(jsonObj.getString("city"));
 				}
+				
+				if(jsonObj.has("orgZipcode") && !isNullOrEmpty(jsonObj.getString("orgZipcode"))){
+					clientOrgLocations.setZipCode(jsonObj.getString("orgZipcode"));
+				}else if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
+					clientOrgLocations.setZipCode(jsonObj.getString("zipcode"));
+				}
+				
+				if(jsonObj.has("orgLocation") && !isNullOrEmpty(jsonObj.getString("orgLocation"))){
+					clientOrgLocations.setLocation(jsonObj.getString("orgLocation"));
+				}else if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+					clientOrgLocations.setLocation(jsonObj.getString("location"));
+				}
+				
+				if(jsonObj.has("latitude") && !isNullOrEmpty(jsonObj.getString("latitude"))){
+					clientOrgLocations.setLatitude(jsonObj.getString("latitude"));
+				}
+				
+				if(jsonObj.has("longitude") && !isNullOrEmpty(jsonObj.getString("longitude"))){
+					clientOrgLocations.setLongitude(jsonObj.getString("longitude"));
+				}
+				
 			}
 			
 			if(clientOrgLocations == null){
@@ -714,6 +733,20 @@ public class ClientServiceImpl implements ClientService{
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
+				
+				if(jsonObj.has("clientLocation") && jsonObj.getString("clientLocation") != null && !jsonObj.getString("clientLocation").isEmpty()){
+					orgLocations.setLocation(jsonObj.getString("clientLocation"));
+			     }else{
+			    	 
+			    	 orgLocations.setLocation("");
+			     }
+				
+				if(jsonObj.has("clientZipCode") && jsonObj.getString("clientZipCode") != null && !jsonObj.getString("clientZipCode").isEmpty()){
+					orgLocations.setZipCode(jsonObj.getString("clientZipCode"));
+			     }else{
+			    	 
+			    	 orgLocations.setZipCode("");
+			     }
 				/*if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
 					orgLocations.setEmail(jsonObj.getString("EmailId"));
 				}else{
@@ -1012,7 +1045,25 @@ public class ClientServiceImpl implements ClientService{
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
+				 
+			 if(orgSpoc.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				 globalVarsMap.put("changedOwnerOrg",orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+			 }
+			 if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				 globalVarsMap.put("changedOwnerOrg",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+			 }
+			 
+			 if(null != orgSpoc.getTempOwnerId()){
+				 User previousOwner= userService.getUserById(orgSpoc.getTempOwnerId());
+				 StringBuilder changedOwnerBuilder = new StringBuilder();
+				 if(null != previousOwner.getLastName()){
+					 globalVarsMap.put("changedOwnerName", changedOwnerBuilder.append(previousOwner.getFirstName()).append(" ").append(previousOwner.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("changedOwnerName", changedOwnerBuilder.append(previousOwner.getFirstName()).toString());
+				 }
+			 }
+			 
+			 	 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
 				 globalVarsMap.put("clientLastName",emailMessage.getLastName());
 				 globalVarsMap.put("loginUser", emailMessage.getFromName());
 				 globalVarsMap.put("loginOrgName",orgLocation.getOrgLocationName());
@@ -1024,7 +1075,7 @@ public class ClientServiceImpl implements ClientService{
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = null;
-				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_EMAIL);
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,Constants.ENTITY_TYPE_EMAIL);
 			
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
@@ -1076,7 +1127,6 @@ public class ClientServiceImpl implements ClientService{
 
 		@Override
 		public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations) throws Exception {
-			 
 			 EmailMessage emailMessage = new EmailMessage();
 			 if(null != orgSpoc.getOwnerUser()){
 				 emailMessage.setFirstName(orgSpoc.getOwnerUser().getFirstName());
@@ -1099,9 +1149,32 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
 				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 				 globalVarsMap.put("signature","Sourcelead Team");
+				 
+				 if(orgSpoc.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					 globalVarsMap.put("invitedOrg",orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+				 }
+				 if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					 globalVarsMap.put("invitedOrg",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 }
+				 
+				 StringBuilder linkBuilder = new StringBuilder();
+				 globalVarsMap.put("faqLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>").toString());
+				 
 				 StringBuilder loginBuilder = new StringBuilder();
 				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				
+				 StringBuilder fbLinkBuilder = new StringBuilder();
+				 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
+				
+				 StringBuilder linkedInLinkBuilder = new StringBuilder();
+				 globalVarsMap.put("linkedInLink",linkedInLinkBuilder.append("<a href='http://in.linkedin.com' target='_blank' alt='LinkedIn' title='LinkedIn' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/linkedin-35x35.gif' width='30px' height='30px'></a>").toString());
+				
+				 StringBuilder twitterLinkBuilder = new StringBuilder();
+				 globalVarsMap.put("twitterLink",twitterLinkBuilder.append("<a href='http://twitter.com/login' target='_blank' alt='Twitter' title='Twitter' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/twitter-35x35.gif' width='30px' height='30px'></a>").toString());
+				
+				 StringBuilder googleLinkBuilder = new StringBuilder();
+				 globalVarsMap.put("googleLink",googleLinkBuilder.append("<a href='http://www.google.com' target='_blank' alt='Google+' title='Google+' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/gplus-35x35.gif' width='30px' height='30px'></a>").toString());
+			 
 			 }else if(Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
@@ -1109,6 +1182,29 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
 					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 					 globalVarsMap.put("signature","Sourcelead Team"); 
+					 
+					 if(orgSpoc.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						 globalVarsMap.put("invitedOrg",orgSpoc.getOrgRelations().getLocationId().getOrg().getOrgName());
+					 }
+					 if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+						 globalVarsMap.put("invitedOrg",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 }
+					 
+					 StringBuilder linkBuilder = new StringBuilder();
+					 globalVarsMap.put("faqLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>").toString());
+					 
+					 StringBuilder fbLinkBuilder = new StringBuilder();
+					 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
+					
+					 StringBuilder linkedInLinkBuilder = new StringBuilder();
+					 globalVarsMap.put("linkedInLink",linkedInLinkBuilder.append("<a href='http://in.linkedin.com' target='_blank' alt='LinkedIn' title='LinkedIn' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/linkedin-35x35.gif' width='30px' height='30px'></a>").toString());
+					
+					 StringBuilder twitterLinkBuilder = new StringBuilder();
+					 globalVarsMap.put("twitterLink",twitterLinkBuilder.append("<a href='http://twitter.com/login' target='_blank' alt='Twitter' title='Twitter' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/twitter-35x35.gif' width='30px' height='30px'></a>").toString());
+					
+					 StringBuilder googleLinkBuilder = new StringBuilder();
+					 globalVarsMap.put("googleLink",googleLinkBuilder.append("<a href='http://www.google.com' target='_blank' alt='Google+' title='Google+' style='margin:5px 5px 0px 0px;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/gplus-35x35.gif' width='30px' height='30px'></a>").toString());
+					 
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			}

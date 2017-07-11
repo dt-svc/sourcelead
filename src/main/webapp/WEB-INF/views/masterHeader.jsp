@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- 
+ <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -99,9 +99,13 @@ width: 11.5%;
 .newdate .fa-calendar {
 	position: absolute; font-size: 16px; color: #666; top: 8px; right: 18px; 
 }
-
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+	display:none;
+}
 </style>
-
 <!-- <script>
 $(window).load(function() {
 	var url = window.location.href;
@@ -150,7 +154,7 @@ document.onkeydown=function(e){
 	32 = space
 	188 = comma
 -->
-
+ 
 <script type="text/javascript">
 function tagItBykeyForEmails(e){
 	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
@@ -399,7 +403,7 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;Job Seeker</p>
 						                   </div>
 						                </div>
 					                </a>
@@ -415,7 +419,7 @@ function preventTabkey(e){
 						                   </div>
 						                   <div class="pull-left">
 						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+						                     <p><i class="fa fa-user"></i>&nbsp;Freelance Recruiter</p>
 						                   </div>
 						                </div>
 					                </a>
@@ -467,12 +471,14 @@ function preventTabkey(e){
                     <c:if test="${report.actionLink != ''  && report.actionLink !='undefined' && ! empty report.actionLink}">
                      <a href="${report.actionLink}"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> --%>
+                      <span>${report.calDays}</span></a> 
                       </c:if>
                     <c:if test="${empty report.actionLink}">
                      <a href="#"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> 
+                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a>  --%>
+                      <span>${report.calDays}</span></a> 
                   	</c:if>
                    </div>
                   </div>
@@ -1333,13 +1339,13 @@ $("#searchType").selectpicker('refresh');
             <div class="form-group clearfix">
                 <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_length length2-100">
                 </div>
             </div>
             <div class="form-group clearfix">
                 <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Location</label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="location">
+                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="inviteLocation" onclick="initLocationAuto('inviteLocation');">
                 </div>
             </div>
             <div class="form-group clearfix">
@@ -1365,8 +1371,7 @@ $("#searchType").selectpicker('refresh');
         <div class="clearfix form-footer">
             <div class="pull-right mr">
           <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
-          <button type="button" class="btnClose btn btn-default btn-sm ml10">
-              <i class="fa fa-close paddingRight"></i>Cancel
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
             </button>
                 </div>
         </div>
@@ -1375,7 +1380,13 @@ $("#searchType").selectpicker('refresh');
       </div>
       
     </div>
-  </div> 
+  </div>
+  <script>
+  function flushInviteCompany(){
+	  document.getElementById("inviteCompany_form").reset();
+	  $("inviteCompany_form").validate().resetForm();
+  }
+  </script> 
   <script>
   $("#invitePop").click(function(){
   $(".modalInvite").fadeIn();
@@ -1384,10 +1395,12 @@ $("#searchType").selectpicker('refresh');
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
 	  $(".sideMask").fadeOut();
+	  flushInviteCompany();
 	  });
   $(".btnClose").click(function(){
 	  $(".modalInvite").fadeOut();
 	  $(".sideMask").fadeOut();
+	  flushInviteCompany();
 	  });
   </script>
 <!--  Company invite pop ends -->
@@ -1418,4 +1431,145 @@ $('body').on('blur', '#inviteCompany_form', function() {
 	$("#inviteCompany_form").showHelpOnFocus();
 	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<!-- 
+<script>
+// This example displays an address form, using the autocomplete feature
+// of the Google Places API to help users fill in the information.
+function initLocationAuto(id) {
+// 	geolocate();
+    initialize(id);
+}
+/* $("#autocomplete").on('focus', function () {
+    
+});
+ */
+var placeSearch, autocomplete;
+var componentForm = {
+    locality: 'long_name',
+    administrative_area_level_1: 'long_name',
+    country: 'long_name',
+    postal_code: 'short_name'
+};
+
+function initialize(id) {
+	   autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
+			        types: ['geocode']
+			    });
+	   
+    /* autocomplete = new google.maps.places.Autocomplete((document.getElementById(id)), {
+    	types: ['(cities)']
+    }); */
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+        fillInAddress();
+    });
+}
+function fillInAddress() {
+    var place = autocomplete.getPlace();
+	document.getElementById("latitude").value = place.geometry.location.lat();
+    document.getElementById("longitude").value = place.geometry.location.lng();
+	
+    for (var component in componentForm) {
+        document.getElementById(component).value = '';
+        document.getElementById(component).disabled = false;
+    }
+
+    for (var i = 0; i < place.address_components.length; i++) {
+        var addressType = place.address_components[i].types[0];
+        if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+        }
+    }
+}
+function geolocate() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+</script> -->
+
+<script>
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type);
+    geolocate(latitudeId,longtitudeId);
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
+    if(type == "invite"){
+    	 var input = (document.getElementById(locationId));
+    	    var options = {
+    	    		types: ['(cities)'],
+    	        componentRestrictions: {
+    	        	country: ["IN","US","AU","SG","GB","FR"]
+    	        }
+    	    };
+    	    autocomplete = new google.maps.places.Autocomplete(input, options);
+    }else{
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+    		types: ['(cities)'],
+      
+        });
+    }
+   
+    
+    
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+  
+  $("#"+countryId).val(address.country).change();
+  $("#"+stateId).val(address.state).change();
+  $("#"+cityId).val(address.city).change();
+  $("#"+zipCodeId).val(address.zipcode).change();
+  if(type == "invite"){
+	  getTimezonesList();
+  }
+});
+}
+function geolocate(latitudeId,longtitudeId) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+</script>
+<script>
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId){
+	$("#"+locationId).val('');
+	$("#"+countryId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+}
 </script>
