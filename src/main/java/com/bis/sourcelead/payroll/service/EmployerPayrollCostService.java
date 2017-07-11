@@ -10,7 +10,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
-import com.bis.sourcelead.payroll.entity.FinalPayrollReport;
+import com.bis.sourcelead.payroll.entity.UserPayroll;
 
 @Service
 public interface EmployerPayrollCostService {
@@ -19,6 +19,6 @@ public interface EmployerPayrollCostService {
 
 	List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation)throws Exception;
 
-	List<FinalPayrollReport> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+	List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 	
 }

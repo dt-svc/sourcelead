@@ -14,8 +14,6 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,14 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1000,7 +996,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts approveContracts(long recordId, String status, OrgLocations orgLocation,User user,Org org) throws Exception
+	public Contracts approveContracts(long recordId, String status, OrgLocations orgLocation,User user,Org org,String rejectReason) throws Exception
 	{
 		Contracts contracts  = contractsTemplateDao.getContractById(recordId);
 		Contracts upadatedContracts = null;
@@ -1137,7 +1133,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contractApproveEmail(contracts,user,org,orgLocation);
 				sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
+
+			contracts.setRejectedReason(rejectReason);
 			contracts.setTemplateSubmissionStatus(Constants.REJECTED);
+
 			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
 			 ContractsHistory contractsHistory = new ContractsHistory();
 			 contractsHistory.setFromStage(Constants.WAITING_FOR_APPROVER);

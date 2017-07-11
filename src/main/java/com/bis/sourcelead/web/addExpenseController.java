@@ -79,20 +79,19 @@ public class addExpenseController {
 		if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
 			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
 		  	
-		}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+		}/*else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		}
+		}*/
 		
-		ModelAndView model = new ModelAndView();
 		/*User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
 		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
-
-		
+		Expenses expense = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
 		if(StringUtils.isNotEmpty(expenseId) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
-			User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
-			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(Long.parseLong(expenseId),reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser);
+			//User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
+			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser, projectMembers.getProjects().getProjectName());
 		}*/
-
+		
+		ModelAndView model = new ModelAndView();
 		model.setViewName("expenses/reopenExpenseAcceptOrReject");
 		model.addObject("type",type);
 		model.addObject("expenseId",expenseId);

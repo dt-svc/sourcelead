@@ -10,6 +10,11 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
+<script>
+window.onload = function () {
+	getUserPayrollList();
+}
+</script>
 
   <!-- Content Area -->
   <section class="content-wraper">
@@ -30,129 +35,10 @@
 			<input type="button" class="btn btn-primary" value="Submit" />
 		</div>    	           
         </div>
-    <div class="project_wrap_table">
-    	<table>
-        	<tbody>
-			</tbody><thead>
-            	<tr>
-                	<th>Id</th>
-                    <th>Name</th>
-                    <th>Email Id</th>
-                    <th>Academic year</th>
-                    <th>Course</th>
-                    <th>Location</th>
-					<th>Stage</th>
-                </tr>
-			</thead>	
-                <tbody><tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                    
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr> 
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr> 
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                <tr>
-                	<td><div>BIS2616</div></td>
-                    <td><div class="proj_show"><span>Vannam</span><i class="fa fa-binoculars"></i></div></td>
-                    <td><div>Mahesh@gsd.com</div></td>
-                    <td><div>2014-2016</div></td>
-                    <td><div>Computers</div></td>
-                    <td><div>Address</div></td>
-                    <td><div>Current</div></td>
-                </tr>
-                			
-            </tbody>
-        </table>
-	</div>
-	
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>	
-    
+        <div id="loading"></div>
+    <div class="project_wrap_table datatable_filter">
+    <div id="userPayrollListDiv"></div>
+   </div>
 	
 	
 </div>     
@@ -163,6 +49,74 @@
  
   </section>
 
+<script>
+function getUserPayrollList(){
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				        url: sourceleadUrl+"/getUserPayrollList?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+				        success: function(json) {
+				        var result = "";				        	
+						result = result + '<table id="userPayrollList" class="display" cellspacing="0" width="100%" >';
+						result = result + '<thead>';
+						result = result + '<tr>';
+						result = result + '<th>Pay Cycle Start Date</th>';
+						result = result + '<th>Pay Cycle End Date</th>';
+						result = result + '<th>Amount</th>';
+						result = result + '</tr>';
+						result = result + '</thead>	';
+						result = result + '<tbody>';
+			        	  for (var i=0; i<json.length; i++)
+						{
+			        		 var opt = json[i];
+			        		    result = result + ' <tr>';
+			        		    if(opt.payrollStartDateStr !=null && opt.payrollStartDateStr !='' && opt.payrollStartDateStr !='undefined'){
+									result = result + ' <td><div class="tblminwidth-75">'+opt.payrollStartDateStr+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+			        		    
+			        		    if(opt.payrollEndDateStr !=null && opt.payrollEndDateStr !='' && opt.payrollEndDateStr !='undefined'){
+									result = result + ' <td><div class="tblminwidth-75">'+opt.payrollEndDateStr+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+								result = result + '<td><div class="tblminwidth-75">'+opt.amount+'</div></td>';
+								result = result + ' </tr>';
+						} 
+						result = result + '  </tbody>';
+						result = result + ' </table>';
+						$("#userPayrollListDiv").empty();
+						$("#userPayrollListDiv").append(result);
+						$("#loading").removeAttr("style");
+						userPayrollListPagination();
+				        	
+				        },
+				        
+				    });
+		 
+}
+</script>
+
+<script>
+function userPayrollListPagination(){ 
+    $('#userPayrollList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>")
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
