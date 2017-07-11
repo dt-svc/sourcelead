@@ -660,14 +660,16 @@ public class RequirementServiceImpl implements RequirementService {
 				  }
 				 
 			} 
+			if(!jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 			requirement.setRequirementApprover(requirementApproverHierarchyList);
-			
+			}
 			
 			if(jsonObj.has("manager") && StringUtils.isNotEmpty(jsonObj.getString("manager"))){
 				    User managerUserId = new User();
 				    managerUserId.setId(Long.parseLong(jsonObj.getString("manager")));
 				    requirement.setManagerUserId(managerUserId);
-			} 
+			}
+			
 			if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
 				  requirement.setPriority(jsonObj.getString("priority"));
 			} 
@@ -775,8 +777,9 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 				     
 			}
-			
-			requirement.setRequirementAssignTo(requirementAssignToList);
+			if(!jsonObj.getString("saveType").equalsIgnoreCase("draft")){
+				requirement.setRequirementAssignTo(requirementAssignToList);
+			}
 			//storing assigned team END
 			
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
