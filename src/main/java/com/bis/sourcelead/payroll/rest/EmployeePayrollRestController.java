@@ -28,9 +28,9 @@ import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
-import com.bis.sourcelead.payroll.entity.FinalPayrollReport;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
@@ -219,14 +219,14 @@ public class EmployeePayrollRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		
-		List<FinalPayrollReport> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,jsonObj);
+		List<UserPayroll> payrollReportList = employerPayrollCostService.runPayrollCycle(orgLocation,user,jsonObj);
 //		Collections.sort(payrollReportList,new FinalPayrollComparator());  
 		Collections.sort(payrollReportList, new Comparator() {  
             @Override  
             public int compare(Object obj1, Object obj2) {  
-            	FinalPayrollReport report1 = (FinalPayrollReport)obj1;  
-            	FinalPayrollReport report2 = (FinalPayrollReport)obj2; 
-            	return report1.getName().compareToIgnoreCase(report2.getName());  
+            	UserPayroll report1 = (UserPayroll)obj1;  
+            	UserPayroll report2 = (UserPayroll)obj2; 
+            	return report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName());  
             }  
         });
 	

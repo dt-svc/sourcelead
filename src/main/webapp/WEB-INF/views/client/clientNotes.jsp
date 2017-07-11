@@ -193,19 +193,18 @@ function addClientNotes(orgRelationId,clientLocationId) {
      result = result +"    <div class='dropdown-select mb10' id='categoryContactTypeListDivDiv'>";
      result = result +"    </div>";
      
-	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" onkeypress="clientNotesCommentRemoveSpaces();"></textarea>';
+	result = result  +'                <div class="row clearfix"> ';
+	result = result+'	                  <div class="col-md-12">';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
-	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
-	result = result + '	                    <p>Allow All Users</p>';
+	result = result+'   <input type="checkbox" class="pull-left" value= "Y" id="allowAll" name = "allowAll" checked="checked">';
+	result = result + '	                    <p class="pull-left mt5">Allow all users</p>';
 	result = result  +'                  </div>';     
 	
 	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
-	result = result  +'                  <div class="pull-right"> ';
+	result = result  +'                  <div class="pull-right mt5"> ';
     result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeClientNotes('+orgRelationId+');" />'; 
-  /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
 	result = result  +'                </div>';

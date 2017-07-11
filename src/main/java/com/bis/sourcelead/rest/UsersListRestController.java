@@ -47,6 +47,7 @@ import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -70,6 +71,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -184,6 +186,8 @@ public class UsersListRestController {
 	@Autowired
 	OrgDocumentsService orgDocumentsService;
 	
+	@Autowired
+	CandidateService candidateService;
 	/**
 	 * To get All the Users by filtering
 	 * 
@@ -1082,7 +1086,15 @@ public class UsersListRestController {
 			}
 
 			UserRole updateUserRole = userRoleService.addUserRole(userRole);
-
+			
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId,orgLocations.getId());
+			if(candidate != null){
+				candidate.setIsAssociate("N");
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+	
+			}
+			
 			// to assign primary role to another user
 			
 			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(),
