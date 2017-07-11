@@ -345,7 +345,7 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>----</div></td>";
         } */
        /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
-       	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+       	result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
        	/* } else{
        	 result = result +"<td><div>0</div></td>";
         } */
