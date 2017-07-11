@@ -40,7 +40,7 @@ public interface ContractsTemplateService {
 
 	Contracts getChildContractById(Long contractId);
 
-	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org)throws Exception;
+	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org, String rejectReason)throws Exception;
 	
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
