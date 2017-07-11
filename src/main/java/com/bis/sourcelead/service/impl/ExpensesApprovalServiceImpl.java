@@ -94,6 +94,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
 
+
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
 	
@@ -548,7 +549,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	}
 
 	@Override
-	public void sendReopenExpenseAcceptOrRejectMail(Long expenseId,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser) throws Exception {
+	public void sendReopenExpenseAcceptOrRejectMail(Expenses expenses, String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser, String projectName) throws Exception {
 		
 				 EmailScenario emailScenario = null;
 				 EmailScenario  notificationScenario = null;
@@ -563,15 +564,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-				 
-				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(expenseId);
+
+				 //ProjectMembers projectMembers = projectMembersDao.getgetProjectMemberById(expenseId);
 				 
 				//setting the class filed values
-				  Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 globalVarsMap.put("superUserName",loginUser.getFullName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
-				 globalVarsMap.put("managerName",reopenedUser.getFullName());
-				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				 
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
+				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("reopenUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("projectName", projectName);
+				 globalVarsMap.put("clientName",expenses.getClientName());
+				 globalVarsMap.put("startDate",expenses.getStartDateStr());
+				 globalVarsMap.put("endDate",expenses.getEndDateStr());
 				 globalVarsMap.put("reason",reason);
 				 
 				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
@@ -581,11 +586,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
-					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_EMAIL);
-					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_NOTIFICATION);
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
-					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_EMAIL);
-					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_NOTIFICATION); 
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION); 
 				 }
 				 
 				
@@ -593,10 +598,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;;
+				 String url = sourceleadUrl;
 				 
 				 //construct HTML template using required data
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLoc.getOrg(),orgLoc);
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(), orgLoc);
 				 emailMessage.setSubject(subject);
 				 emailMessage.setMessageBody(emailTemplate);
 				 
@@ -608,8 +613,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
 				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLoc, notificationScenario);
-				  
-	}
+
+		}
 
 	
 }

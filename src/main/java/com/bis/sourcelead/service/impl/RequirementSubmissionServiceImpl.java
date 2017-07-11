@@ -1562,10 +1562,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("initiatorUserName","--");
 			 }
 		 
-		 if(null != requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
-			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 if(null != requirement.getJobId() && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 globalVarsMap.put("requirementName",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
 			 }else{
-				 globalVarsMap.put("requirementName","--");
+				 globalVarsMap.put("requirementName", requirement.getJobTitle()); 
 			 }
 		
 		 if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
@@ -2337,10 +2338,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("userName",user.getFirstName());
 			 }
 		 
-		 if(null != requirement.getJobTitle() && !"".equalsIgnoreCase(requirement.getJobTitle())){
-			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 if(null != requirement.getJobId() && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementName",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+			 
 			 }else{
-				 globalVarsMap.put("requirementName","--");
+				 globalVarsMap.put("requirementName", requirement.getJobTitle());
 			 }
 		
 		 if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
