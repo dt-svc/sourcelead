@@ -357,40 +357,7 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
-	 /**
-	  * @author Rajashekar
-	  * 
-	  * Writes Projects Assgined employee data to excel and pdf based on exportType
-	  * @param projectId
-	  * @return
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
-	 @RequestMapping(value = "/exportProjectEmployeeList")
-	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
-		 List<ProjectMembers> list = employeeList.getProjectMembersList();
-		 Projects project = projectsService.getProjectById(projectId);
-		 
-		 File file = clientVendorExport.getexportProjectEmployeeFile(list,exportType,project); 
-		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-			if (mimeType == null) {
-				mimeType = "application/octet-stream";
-			}
-			response.setContentType(mimeType);
-			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-			response.setContentLength((int) file.length());
-			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-			FileCopyUtils.copy(inputStream, response.getOutputStream());
-			inputStream.close();
-			response.getOutputStream().close();
-			response.getOutputStream().flush();	
-			if(file!=null){
-				file.delete();
-			}
-		
-	  }
+	
 	
 	 
 	 /**
