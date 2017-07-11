@@ -33,6 +33,7 @@ import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -65,6 +66,9 @@ public class ExpensesController {
 	
 	@Autowired
 	ExpensesRestController expensesRestController;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(value = "/myExpensesList")
 	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
@@ -196,6 +200,18 @@ public class ExpensesController {
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
+			
+			if(expenses.getCreatedBy()!= null){
+				User createduser = userService.getUserByUserCode(expenses.getCreatedBy());
+				StringBuilder createdName = new StringBuilder();
+				if(createduser.getFirstName()!= null && createduser.getLastName()!= null){
+					createdName.append(createduser.getFirstName()).append(" ").append(createduser.getLastName());
+				}else{
+					createdName.append(createduser.getFirstName());
+				}
+				model.addObject("expensesCreatedBy", createdName);
+			}
+			
 			model.addObject("expenses", expenses);
 			
 			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenses.getId());

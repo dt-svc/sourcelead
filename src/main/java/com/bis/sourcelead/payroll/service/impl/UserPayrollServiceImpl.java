@@ -26,4 +26,9 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 		return userPayrollDao.getUserPayrollsBystartDateEndDte(orgLocationID,startDate,endDate);
 	}
 
+	@Override
+	public List<UserPayroll> getPayByUserId(Long userId, Long orgLocationId) throws Exception {
+		return userPayrollDao.getPayByUserId(userId, orgLocationId);
+	}
+
 }
