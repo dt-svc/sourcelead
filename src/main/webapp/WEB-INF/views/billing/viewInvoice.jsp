@@ -625,10 +625,10 @@ function addNotes() {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
+	 result = result +" <div class='col-md-12 inputOther inputOther'>";
     
 	
-     result = result +"    <div class='mt10'>";
+     result = result +"    <div class='clearfix'>";
      result = result +"    <div class='dropdown-select mb10' id='clientCategoryContactTypeListDivDiv'>";
      result = result +"    </div>";
  	result = result  +'                <div class="form-horizontal clearfix"> ';
@@ -636,17 +636,23 @@ function addNotes() {
 	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
 	result = result+'	                  </div>';
 	result = result  +'                  </div>';
+	
+	result = result+' <div class="row clearfix mt5"> ';
 	result = result+' <div class="col-md-9 checkBox"> ';
-	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
-	result = result + '	                    <p>Allow All Users</p>';
+	result = result+'   <input type="checkbox" value= "Y" id="allowAll" class="pull-left" name = "allowAll" checked="checked">';
+	result = result + '	                    <p class="pull-left mt5">Allow all users</p>';
 	result = result+'	                  </div>';
 	
-	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="col-md-3" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeInvoiceNotes();" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onClick ="storeInvoiceNotes();" />'; 
   /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
+	result = result  +'                  </div> ';
+	
+	
+	
 	result = result  +'                </div>';
 	
 	result = result  +'                </form>';
