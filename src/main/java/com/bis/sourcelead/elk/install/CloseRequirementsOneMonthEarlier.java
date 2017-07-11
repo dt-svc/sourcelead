@@ -26,7 +26,7 @@ public class CloseRequirementsOneMonthEarlier {
 	private ComboPooledDataSource comboPooledDataSource;
 	
 /**
- * @author LAxman
+ * @author Venkat I
  * this method is using for update the RequirmentUUID	
  * @throws IOException
  * @throws SQLException
