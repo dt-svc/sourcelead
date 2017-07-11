@@ -67,6 +67,7 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -166,6 +167,9 @@ public class RequirementListRestController {
 	 
 	 @Autowired
 	 RequirementOfferHistoryService requirementOfferHistoryService;
+	 
+	 @Autowired
+	 OrgLocationService orgLocationsService;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -798,6 +802,32 @@ public class RequirementListRestController {
 					 SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
 					 
 					 modifiedReqStatusMailtoVendorContact(requirement, loginUser, loginOrgLocation);
+				}
+			 
+			return "true";
+		 }
+		 
+		 @RequestMapping(value = "/saveChangedStatusFromDraft" , method = RequestMethod.POST)
+		 @ResponseBody String saveChangedStatusFromDraft(@RequestParam(value="requirementId", required=false) Long  requirementId,
+				                                  		 @RequestParam(value="status", required=false) String  status, @RequestParam(value = "userId", required = true) Long userId) throws Exception {
+			
+			   User loginUser = userService.getUserById(userId);
+			   // authorizing if the login user as Team Member Or Not
+				Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementId, loginUser.getId());
+				if(isLoginUserAsTeamMember){
+					return "false";
+				}else{
+					 Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+					 REQUIREMENT_SUBMISSION_STATUS previousStatus = requirement.getRequirementSubmissionStatus();
+					 REQUIREMENT_SUBMISSION_STATUS changedStatus = Enum.valueOf(REQUIREMENT_SUBMISSION_STATUS.class, status);
+					 requirement.setRequirementSubmissionStatus(changedStatus);
+					 requirement.setRequirementSubmissionPreviousStatus(previousStatus);
+					 
+					 requirement.setManagerUserId(loginUser);
+					 
+					 requirement.setUpdatedBy(loginUser.getUserCode());
+					 requirement.setUpdatedDate(commonUtil.currentDate());
+					 requirementService.addRequirement(requirement); 
 				}
 			 
 			return "true";

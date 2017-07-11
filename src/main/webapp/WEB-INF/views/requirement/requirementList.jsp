@@ -359,7 +359,7 @@ function prepareRequirementData(data){
            }else{
           	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
-          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
+          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -1790,25 +1790,31 @@ function changeStatusAuthorisation(requirementId){
 
 
 <script type="text/javascript">
-function changeStatus(requirementId){
-	
-		 
-
+function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
-	   $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
-          success :function(data) {
-        		  $("#changeStatusId" +requirementId).val('');
-            	  location.replace(sourceleadUrl+"/requirementList");
-            	  
-        	  
-          }
-}); 
-	   
-}
+	 var userId ='${SourceLeadWeb_userId}';
+         if(requirementStatus == "DRAFT"){
+        	 $.ajax({
+             type : "POST",
+        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,
+	        	 success :function(data) {
+	       		  $("#changeStatusId" +requirementId).val('');
+	           	  location.replace(sourceleadUrl+"/requirementList");
+	         	}
+        	});
+         }else{
+        	 $.ajax({
+             type : "POST",
+        	 url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
+	        	 success :function(data) {
+	       		  $("#changeStatusId" +requirementId).val('');
+	           	  location.replace(sourceleadUrl+"/requirementList");
+	         	}
+        	});
+         }
+	}
 </script>
 
 

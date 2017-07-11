@@ -1145,6 +1145,8 @@ public class EMailJobScheduler {
 					        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 				        				}
 				        				}
+				        				//this method is used to send the email when receiver signed the contract
+				        				contractSignedByReceiver(childContarct);
 				        			}
 				            	}
 				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
@@ -1218,6 +1220,81 @@ public class EMailJobScheduler {
 		        }
 	}
 	
+	
+	private void contractSignedByReceiver(Contracts contracts) throws Exception
+	{
+			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(owner.getFirstName());
+			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 emailMessage.setLastName(owner.getLastName());
+			 }else{
+				 emailMessage.setLastName("");
+			 }
+			 emailMessage.setToEmail(owner.getEmail());
+			 emailMessage.setFromEmail(receiver.getEmail());
+			 emailMessage.setCreatedBy("sladmin");
+			 if(receiver.getLastName()!= null && !"".equalsIgnoreCase(receiver.getLastName())){
+				 StringBuilder sb = new StringBuilder();
+				 emailMessage.setFromName(sb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+			 }else{
+				 emailMessage.setFromName(receiver.getFirstName());
+			 }
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+				 }else{
+					 globalVarsMap.put("contractTitle","--");
+				 }
+			 
+			 if(owner.getFirstName() != null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName() != null && !"".equalsIgnoreCase(owner.getLastName())){
+				StringBuilder ownersb = new StringBuilder();
+				 globalVarsMap.put("ownerUser", ownersb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("ownerUser",owner.getFirstName());
+				 }
+			 
+			 if(receiver.getFirstName() != null && !"".equalsIgnoreCase(receiver.getFirstName()) && receiver.getLastName() != null && !"".equalsIgnoreCase(receiver.getLastName())){
+					StringBuilder receiversb = new StringBuilder();
+					 globalVarsMap.put("receiverUser", receiversb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+					 }else{
+						 globalVarsMap.put("receiverUser",receiver.getFirstName());
+					 }
+			
+			 if(contracts.getContractOrgLocationId() != null){
+				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getLocationCode());
+				 }else{
+					 globalVarsMap.put("receiverOrg","--");
+				 }
+			 
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 String actionLink="";
+			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+		
+	}
+	
 	/**
 	 * @author : Pavan Jampana
 	 * this cron will used to send the remainder emails to respective owners about expiring of the contract. 
@@ -1278,6 +1355,7 @@ public class EMailJobScheduler {
 			contractExpiryRemainderMail(contracts);
 		}
 		
+		//this cron is related to invoices to run every day.
 		getDueDateCompletedInvoicesLists();
 
 	}

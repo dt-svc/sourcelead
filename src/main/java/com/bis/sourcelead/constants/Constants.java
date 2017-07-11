@@ -125,12 +125,16 @@ public class Constants {
 	public static final String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
 	public static final String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static final String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
+	public static final String VENDOR_INTERVIEW_RESCHEDULE = "Vendors Interview Reschedule";
 	public static final String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static final String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+	
+	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -251,6 +255,7 @@ public class Constants {
 	public static final String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
+	public static final String CONTRACT_SIGNED = "ContractSigned";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
