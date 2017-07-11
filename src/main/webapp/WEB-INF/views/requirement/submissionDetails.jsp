@@ -659,16 +659,6 @@ function getInternalInterviewsList(submissionId){
 		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
 		                    	   if(report.submissionStatus == "REJECTED"){
 		                    	   }else{
-		                    		   if(submissionId == report.interviewSubmissionId){
-			                    		   if(i == 0){
-					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-												result = result + '			</div>';
-												result = result + '			 </a> ';
-					                    				                    		
-					                    	}
-			                    	   }
-				                    	
 				                    	//Latest interview for Reschedule  ends
 			                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
@@ -686,6 +676,15 @@ function getInternalInterviewsList(submissionId){
 // 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
 		                    }
+		                    	 if(submissionId == report.interviewSubmissionId){
+		                    		   if(i == 0){
+				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+											result = result + '			</div>';
+											result = result + '			 </a> ';
+				                    				                    		
+				                    	}
+		                    	   }
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
@@ -2049,11 +2048,12 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result	+ ' <form id="rescheduleInterview_form"  name="rescheduleInterview_form" method="post">';
 	result = result + '			  <div class="reSchPopInn">';
 	result = result + '			   <input type="hidden" id="interviewId" name="interviewId" value='+interviewId+' >';
+	result = result + '			   <input type="hidden" id="scheduleType" name="scheduleType" value="reschedule" >';
 	result = result + '				  <h3>Reschedule</h3>';
 	result = result + '				  <div class="reSchPopCta">';									  	
 	result = result + '						<span id="rescheduleDateDiv">';
-	result = result + '						<input type="text" class="form-control input-sm" placeholder="Date" id="rescheduleDate" name="rescheduleDate" data-validation="required" field-name="Interview Date">';
-	result = result + '						<i class="fa fa-calendar"></i>';
+	result = result + '						<input type="text" class="form-control input-sm calendar" placeholder="Date" id="rescheduleDate" name="rescheduleDate" data-validation="required" field-name="Interview Date">';
+	//result = result + '						<i class="fa fa-calendar"></i>';
 	result = result + '						</span>	';									  	
 	result = result + '						<span class="timeDiv" id="rescheduleTimeDiv">';
 	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="Start Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
@@ -2071,7 +2071,7 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	 
 	result = result + '			<div class="form-group Pmess">';
 	result = result + '			          <label class="col-md-3 no_pad">Comment <b class="text-danger">*</b></label> ';
-	result = result + '					  <div class="col-md-9 no_pad">';
+	result = result + '					  <div class="col-md-9 no_pad custom-textarea">';
 	result = result + '						  <textarea class="form-control reSchtextarea" placeholder="Enter Message"  id="reschedulComment" name="reschedulComment" data-validation="required  validate_length length2-500" field-name="Comment"></textarea> ';
 	result = result + '					  </div>  ';
 	result = result + '			</div>';
@@ -2090,7 +2090,7 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result + '				</span>  ';
 	result = result + '			  </div>  ';
 	result = result + '						<div class="clearfix"></div> ';
-	result = result + '			<div class="clearfix mt"> ';
+	result = result + '			<div class="clearfix mt5"> ';
 	result = result + '				<div class="pull-right"> ';
 	result = result + '				  <button type="button" class="btn btn-sm btn-primary" onclick="rescheduleInterviewUpdate('+submissionId+')">Reschedule</button> ';
 	result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="rescheduleInterClose();">Cancel</button> ';
@@ -2453,7 +2453,7 @@ function proposeTime(interviewId,submissionId){
 	
 	result = result + '			<div class="clearfix mt"> ';
 	result = result + '				<div class="pull-right"> ';
-	result = result + '				  <button type="button" class="btn btn-sm btn-primary" onclick="saveProposeTime('+submissionId+')">Propose Time</button> ';
+	result = result + '				  <button type="button" class="btn btn-sm btn-primary" id="save_proposeTime" onclick="saveProposeTime('+submissionId+')">Propose Time</button> ';
 	result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="timePopUp();">Cancel</button> ';
 	result = result + '				</div> ';
 	result = result + '			  </div> ';
@@ -2580,6 +2580,8 @@ function saveProposeTime(submissionId){
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
 		//It will escape all the special characters
+		$("#save_proposeTime").attr("disabled", "disabled");
+        $("#save_proposeTime" ).addClass('button').val('Processing..');
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",

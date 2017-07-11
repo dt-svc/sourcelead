@@ -92,7 +92,9 @@ public class RequirementHelper {
 			requirementIndex.setZipCode(requirement.getZipCode());
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy());
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
-			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
+			if(requirement.getManagerUserId() != null){
+				requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
+			}
 
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if(null != requirement.getClosedDate()){

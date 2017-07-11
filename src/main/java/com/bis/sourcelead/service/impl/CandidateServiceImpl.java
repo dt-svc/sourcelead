@@ -982,6 +982,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 			}
 			
+			if(jsonObj.has("visa")){
+				
+				String visaList =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("visa");
+					visaList = jsonArray.toString();
+				}
+				catch(JSONException e){
+					visaList =jsonObj.getString("visa");
+				}
+				visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
+				visaList = visaList.replaceAll("\"", "");
+				candidate.setVisaType(visaList);
+		  	 
+			}else{
+				candidate.setVisaType(null);
+			}
+			
 			
 			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);

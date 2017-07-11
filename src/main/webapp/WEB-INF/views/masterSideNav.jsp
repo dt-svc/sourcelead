@@ -1,4 +1,3 @@
-
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
@@ -8,7 +7,7 @@
 
   <aside>
   <div class="side-bar theme_sideMenu">
-    <div class="side-bar-inner mt10">
+    <div class="side-bar-inner">
       <%-- <div class="user-panel">
 	<div class="media">
 		<div class="media-body">
@@ -290,6 +289,11 @@
          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
           <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
           	</c:if>	
+          	
+          	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_USER'}">
+          <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
+          	</c:if>	
+          	
         </ul>
       </div>
     </div>

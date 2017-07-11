@@ -124,7 +124,7 @@ public class SubmissionsRateController {
 		
 		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
+//			UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 			
 			List<RequirementRateSubmissionNegotiation> allSubmissionRateHistory = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId,requirementSubmission.getCandidate().getId());
 			//RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
@@ -172,7 +172,7 @@ public class SubmissionsRateController {
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
 			List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
 			StringBuilder tempHTML = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,type);
-			requirementSubmissionService.applicantAcceptMailAboutRateNegotiation(requirement,userRole.getUser(),requirementSubmission,orgLocations,tempHTML);
+			requirementSubmissionService.applicantAcceptMailAboutRateNegotiation(requirement,user,requirementSubmission,orgLocations,tempHTML);
 			
 		}
 		return model;
