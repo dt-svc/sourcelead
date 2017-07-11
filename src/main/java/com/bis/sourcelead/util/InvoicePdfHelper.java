@@ -842,13 +842,15 @@ public class InvoicePdfHelper {
 	}
 	
 	if(null != invoice.getInvoiceDate()){
-		billingArray[5] = invoice.getInvoiceDate().toString();
+		String invoiceDate = Constants.DF_DMY.format(invoice.getInvoiceDate());
+		billingArray[5] = invoiceDate;
 	}else{
 		billingArray[5] = "--";
 	}
 	
 	if(null != invoice.getDueDate()){
-		billingArray[6] = invoice.getDueDate().toString();  
+		String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+		billingArray[6] = dueDate;  
 	}else{
 		billingArray[6] = "--";
 	}

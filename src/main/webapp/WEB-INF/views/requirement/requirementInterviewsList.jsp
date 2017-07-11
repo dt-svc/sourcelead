@@ -12,14 +12,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/chosen.min.css">
-<link href="css/bootstrap-select.min.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-<link href="css/jquery-ui.css" rel="stylesheet">
-<link href="css/sourcelead-main.css" rel="stylesheet">
-<link href="css/timesheet.css" rel="stylesheet">
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -88,52 +80,52 @@
             <tbody>
             <c:forEach var="reqSub" items="${toDayReqInterviewscount}">
               <tr>
-			 <td><div><span>${reqSub.candidate.firstName}</span></div></td>
+			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
              <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
-			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.requirement.requirementUUID}'/>'>${reqSub.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
+			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
             </sec:authorize>
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
-            	<td><div><span>${reqSub.requirement.jobTitle}</span></div></td>
+            	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
-              <td><div><span>${reqSub.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
               
               <td><div><span>
-	              <c:if test="${not empty reqSub.candidateResumes.resumeUUID}">
-	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
-	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
+	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
+	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
+	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
 	              </c:if>
-	              <c:if test="${empty reqSub.candidateResumes.resumeUUID}">
+	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	             	 --
 	              </c:if>
               </span></div>
               </td>
-              <td><div><span>${reqSub.createdDateStr}</span></div></td>
+              <td><div><span>${reqSub.submissionId.createdDateStr}</span></div></td>
               
                <td><div><span>
-	              <c:if test="${not empty reqSub.numOfInterview}">
-	               ${reqSub.numOfInterview} 
+	              <c:if test="${not empty reqSub.submissionId.numOfInterview}">
+	               ${reqSub.submissionId.numOfInterview} 
 	              </c:if>
-	               <c:if test="${empty reqSub.numOfInterview}">
+	               <c:if test="${empty reqSub.submissionId.numOfInterview}">
 	               --
 	              </c:if>
               </span></div>
               </td>
                            
                <td><div><span>
-	               <c:if test="${not empty reqSub.vendorLocationId.org.orgName}">
-	            	  ${reqSub.vendorLocationId.org.orgName}
+	               <c:if test="${not empty reqSub.submissionId.createdUser}">
+	            	  ${reqSub.submissionId.createdUser}
 	              </c:if>
-	              <c:if test="${empty reqSub.vendorLocationId.org.orgName}">
+	              <c:if test="${empty reqSub.submissionId.createdUser}">
 	             	 --
 	              </c:if>
               </span></div></td>
               
                           
                <td><div><span>
-	               <c:if test="${not empty reqSub.submissionStatus}">
-	            	  ${reqSub.submissionStatus}
+	               <c:if test="${not empty reqSub.submissionId.submissionStatus}">
+	            	  ${reqSub.submissionId.submissionStatus}
 	              </c:if>
-	              <c:if test="${empty reqSub.submissionStatus}">
+	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
 	             	 --
 	              </c:if>
               </span></div></td>
@@ -173,45 +165,50 @@ window.onload = function () {
 </script>
 
 <script type="text/javascript">
-function loadRequirementApplicants(){
-	var tab = document.getElementById("tabList").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab;
-}
-function loadRequirementSubmissions(){
-	var tab = document.getElementById("tabList").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab;
-}
-function loadRequirementInterviews(){
-	var tab = document.getElementById("tabList").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab;
-}
-function loadRequirementOffers(){
-	var tab = document.getElementById("tabList").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab;
-}
+	function loadRequirementApplicants(){
+		var tab = document.getElementById("tabList").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
+	}
+	function loadRequirementSubmissions(){
+		var tab = document.getElementById("tabList").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
+	}
+	function loadRequirementInterviews(){
+		var tab = document.getElementById("tabList").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
+	}
+	function loadRequirementOffers(){
+		var tab = document.getElementById("tabList").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
+	}
 
-function tabsList(sel){
-	var tab = sel.value;
-	var reqList = document.getElementById("reqList").value;
-	if(reqList=="appList"){
-		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab;
+	function tabsList(sel){
+		var tab = sel.value;
+		var reqList = document.getElementById("reqList").value;
+		var orgLocId = '${SourceLeadWeb_orgLocationId}';
+		if(reqList=="appList"){
+			var sourceleadUrl = '${sourceleadUrl}';
+			window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
+		}
+		if(reqList=="subList"){
+			var sourceleadUrl = '${sourceleadUrl}';
+			window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
+			 }
+		if(reqList=="interList"){
+			var sourceleadUrl = '${sourceleadUrl}';
+			window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
+		}
+		if(reqList=="offerlist"){
+			var sourceleadUrl = '${sourceleadUrl}';
+			window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
+		}
 	}
-	if(reqList=="subList"){
-		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab;
-		 }
-	if(reqList=="interList"){
-		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab;
-	}
-	if(reqList=="offerlist"){
-		var sourceleadUrl = '${sourceleadUrl}';
-		window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab;
-	}
-}
-</script> 
+	</script> 

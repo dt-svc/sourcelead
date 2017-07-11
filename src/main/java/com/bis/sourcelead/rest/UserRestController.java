@@ -1337,6 +1337,14 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 						userRoleService.addUserRole(userRole);
 					}
 
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(userID),orgLocations.getId());
+					if(candidate != null){
+						candidate.setIsAssociate("Y");
+						candidateService.saveOrUpdateCandidate(candidate);
+						candidateService.saveOrUpdateCandidateElkDocument(candidate);
+							
+					}
+					
 					/*
     				 * Saving USER DB data as ElasticSearch Documents
     				 */

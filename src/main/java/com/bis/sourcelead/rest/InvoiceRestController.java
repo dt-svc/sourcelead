@@ -425,7 +425,9 @@ public class InvoiceRestController {
 			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 			}
-				
+			if(null != invoice.getProjectID()){
+				invoice.setProjectName(invoice.getProjectID().getProjectName());	
+			}
 			StringBuilder contactName = new StringBuilder();
 			if(null != invoice.getContactUser()){
 				if(invoice.getContactUser().getLastName() != null){
@@ -1104,8 +1106,8 @@ public class InvoiceRestController {
 		  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 		  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }else{
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		 
 		 //covert subject,body and signature
