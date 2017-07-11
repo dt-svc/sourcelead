@@ -665,22 +665,24 @@ function candidateProfile(candidateId){
 							result = result +'<div class="clearfix">';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
+							// here get lookup data skills and manually enter skills 
+							$.each( json.allAndCandidateSkills, function( i, skill ){
+								  var existed = 0;
 					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 						                var res = [];
 						                res = json.skillsName.split(",");
 						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
+						                	if(skill == item){
 						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
+						                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
 						                	}
 						                });
 					                }
 					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
+					                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
 					                }
-			                </c:forEach>
+								  
+								});
 			                result = result + '</select>';
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
@@ -761,7 +763,7 @@ function candidateProfile(candidateId){
 								
 								$(".btn-addskills").click(function(){
 									$(".add-skills").css({"display":"block","opacity":"1"});
-									$("#skillName").val('');
+// 									$("#skillName").val('');
 									 
 									 $("#skillName").val('').trigger("chosen:updated");
 									 
@@ -1340,29 +1342,76 @@ function updateDesignationType(){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		var select, chosen;
+		  //Adding Customized Skills to the list
+		   var select, chosen;
+	        select = $("#skillName");
+	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.bind(('keydown keyup'), function(e)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 select.append(option);
+	        			 select.find(option).prop('selected', true);
+	 	        		 $("#skillName").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 select.append(option);
+			        		 select.find(option).prop('selected', true);
+				        		$("#skillName").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
+		    
+		    
+		
+       /*  var select, chosen;
 	    select = $("#skillName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
 	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                $("#skillName option").each(function(){
-                      $(this).siblings("[value='"+ this.value+"']").remove();
-                });
-                //end
-        		$("#skillName").trigger("chosen:updated");
-        		
-	        }
-	    });
-		
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#skillName").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#skillName option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#skillName").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	}); */
+	    
+	    
+	    //Adding Customized Skills to the list
 	}
 
 	function saveSkill(candidateId){
@@ -1382,6 +1431,86 @@ function updateDesignationType(){
 	}
 </script>
 
+<!-- <script>
+	function editSkill(candidateId){
+		$("#skillName").prop('disabled', false).trigger("chosen:updated");
+		$("#editSkillBtn").remove();
+		$("#editSkillBtnSpan").hide();
+		window.skillCountBefore = $("#skillName :selected").length;
+		var result = '';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
+		$("#saveSkillBtnSpan").empty();
+		$("#saveSkillBtnSpan").append(result);
+		$("#saveSkillBtnSpan").show();
+		
+		var select, chosen;
+	    select = $("#skillName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.bind(('keydown keyup'), function(e)
+	    {
+			  //Adding Customized Skills to the list	
+    	 var enterSkillsArray = this.value.split(",");
+    	 if(enterSkillsArray.length > 1){
+      		 for (var i=0; i < enterSkillsArray.length; i++) {
+      			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+      			 select.append(option);
+      			 select.find(option).prop('selected', true);
+        		 $("#skillName").trigger("chosen:updated");
+               }
+    	 }else{
+	    	var newSkill = this.value.replace(","," ");
+	    	
+	    	 
+	        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	preventTabkey(e); 
+	        	var par = this.parent;
+	        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+	        		 select.append(option);
+	        		 select.find(option).prop('selected', true);
+		        		$("#skillName").trigger("chosen:updated");
+		        		
+		        		
+	        }
+    	 }
+    	
+    	/* var newSkill = this.value.replace(",","");
+        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+        {
+        	var par = this.parent;
+            var option = $("<option>").val(newSkill).text(newSkill);
+            select.append(option);
+            select.find(option).prop('selected', true);
+          //to doesn't allow duplicates
+               $("#skillName option").each(function(){
+                     $(this).siblings("[value='"+ this.value+"']").remove();
+               });
+               //end
+       		$("#skillName").trigger("chosen:updated");
+       		
+        } */
+	    });
+		
+	}
+
+	function saveSkill(candidateId){
+		$("#skillName").prop('disabled', true).trigger("chosen:updated");
+		window.skillCountAfter = $("#skillName :selected").length;
+		if(skillCountBefore != skillCountAfter){
+			saveSkils(candidateId);
+		}
+		$("#saveSkillBtn").remove();
+		$("#saveSkillBtnSpan").hide();
+		var result = '';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
+		$("#editSkillBtnSpan").empty();
+		$("#editSkillBtnSpan").append(result);
+		$("#editSkillBtnSpan").show();
+		skillCountAfter = skillCountBefore = 0;
+	}
+</script> -->
+
 <%-- 
      @author : sarath kumar.
      @author : venkat kesav (modified on 02/18/2017)
@@ -1390,7 +1519,7 @@ function updateDesignationType(){
      2.parameter : csrf token ,candidateId.
      3.ajax url implementation in CandidateListRestController.
 --%>
-<script>  
+<!-- <script>  
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
@@ -1411,7 +1540,7 @@ function updateDesignationType(){
 	 }
 	 
  }  
-</script>
+</script> -->
 
 
 <!-- Candidate Email validation script starts here -->
