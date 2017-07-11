@@ -23,7 +23,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       <div class="pull-left">
         <h2>Project Based Invoice</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Project Based Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Project Based Invoice</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
