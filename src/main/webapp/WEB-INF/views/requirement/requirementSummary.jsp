@@ -4479,7 +4479,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<label>Education</label>';
 		    result = result +'<div class="progress">';
 		    var educationGraph = (100 * report.educationPercentage)/report.totalEducationPercentage;
-		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.totalEducationPercentage+'% ';
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.educationPercentage+'% ';
    	        result = result +'</div>';
 		    result = result +' </div>';
 		    result = result +' </div>';
@@ -6093,7 +6093,8 @@ $('body').on('blur', '#updateCustomize_form', function() {
 </script>
 <script>
 function cancelCustomize(){
-	$("#customizePopUp").hide();
+	$(".project_inn_mask").fadeOut();
+	$("#customizePopUp").toggle();
 }
 </script>
 
