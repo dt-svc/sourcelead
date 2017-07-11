@@ -1794,11 +1794,11 @@ function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
-	   
+	 var userId ='${SourceLeadWeb_userId}';
          if(requirementStatus == "DRAFT"){
         	 $.ajax({
              type : "POST",
-        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
+        	 url: sourceleadUrl+"/saveChangedStatusFromDraft?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val('');
 	           	  location.replace(sourceleadUrl+"/requirementList");
