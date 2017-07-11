@@ -178,10 +178,10 @@
                      
              
           <div class="form-group">
-              <label class="col-md-4">Owner<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
-                  <option value=''>Select Owner</option>
+                  <option value=''>Select Signing Authority</option>
                   <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.ownerUserId.id}">
 	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>

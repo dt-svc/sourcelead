@@ -347,7 +347,7 @@ function displyContract(stage){
 			
 			if(null != json.ownerName && "" != json.ownerName && 'undefined' != json.ownerName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Signing Authority</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
 				result = result +	'	</div>';
 			}

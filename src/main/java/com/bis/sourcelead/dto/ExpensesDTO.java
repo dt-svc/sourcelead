@@ -36,6 +36,8 @@ private static final long serialVersionUID = 1L;
 	
 	private boolean sahApproved;
 	
+	private String expCreatedBy;
+	
 	public Long getId() {
 		return id;
 	}
@@ -147,6 +149,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getExpCreatedBy() {
+		return expCreatedBy;
+	}
+
+	public void setExpCreatedBy(String expCreatedBy) {
+		this.expCreatedBy = expCreatedBy;
 	}
 	
 }

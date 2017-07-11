@@ -2,18 +2,21 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript"
+	charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript"
+	charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
 <%-- 
@@ -116,31 +119,41 @@ function requirementListIndividualStatusCounts(){
 /*.tbldata-dotdot span{
 max-width:220px;
 } */
- .clsDatePicker {
-   z-index: 100000 !important;
+.clsDatePicker {
+	z-index: 100000 !important;
 }
-.side-bar .side-nav ul li span{
-  display: inline-block;
-  float: none;
+
+.side-bar .side-nav ul li span {
+	display: inline-block;
+	float: none;
 }
-.project_wrap_table span{
-display: inline;
+
+.project_wrap_table span {
+	display: inline;
 }
+
 .timesheet_out {
-overflow-x: auto;  background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); top:-45px;
+	overflow-x: auto;
+	background: #f5f5f5;
+	box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+	top: -45px;
 }
+
 .vendor_wrap {
-box-shadow:none;
+	box-shadow: none;
 }
+
 .require_wrap_table {
-overflow: inherit; min-height: 175px;
+	overflow: inherit;
+	min-height: 175px;
 }
+
 .require_wrap_table select {
-width:100% !important;
+	width: 100% !important;
 }
- </style>
- 
- 
+</style>
+
+
 
 <!-- my scripts -->
 
@@ -182,8 +195,9 @@ if(universalRequirementSearchList=="universalRequirementList")	 {
      2.parameter : csrf token .
      3.ajax url implementation in requirementListRestController.
 --%>
-<input type="hidden" name="noReq" id="noReq"/>
-<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage"/>
+<input type="hidden" name="noReq" id="noReq" />
+<input type="hidden" id="requirementEmptyListMessage"
+	name="requirementEmptyListMessage" />
 <div id="popUp"></div>
 <script>
 function requirementList(){  
@@ -1282,17 +1296,23 @@ function requirementPipeline(requirementId){
 
 
 <section class="content-wraper">
-  <section class="content-header clearfix">
-   <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector2"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+	<section class="content-header clearfix">
+		<c:if test="${!empty msg}">
+			<div class="success_pop" id="selector2" style="display: block;">
+				<i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
-	     </c:if>
-    <div class="pull-left">
-      <h2 class="pull-left paddingRight">Jobs List</h2> <span class="paddingLeft pull-left">|<a class="paddingLeft" href="<c:url value='/professionalRequirements'/>">Crowdsourcing Jobs</a></span>
-    </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job List</div>
-    	<%-- <div class=" pull-left reportsH">
+		</c:if>
+		<div class="pull-left">
+			<h2 class="pull-left paddingRight">Jobs List</h2>
+			<span class="paddingLeft pull-left">|<a class="paddingLeft"
+				href="<c:url value='/professionalRequirements'/>">Crowdsourcing
+					Jobs</a></span>
+		</div>
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo; Job List
+		</div>
+		<%-- <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
@@ -1305,119 +1325,141 @@ function requirementPipeline(requirementId){
 				</ul>
 			</div>
 		</div>   --%>
-  </section>
-  
-  
-  <div class="clearfix">
-  <div class="pull-left cand-advsrch advsrch_chosen">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
-          <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup reqadvsrch candAdvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
-            
-            <div class="row">
-              <div class="clearfix">
-                <div class="col-md-8">
-                  <label>Title</label>
-                  <div class="clearfix">
-                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Job Title" id="requirementTitle" name="requirementTitle">
-                    </select>
-                  </div>
-                </div>
-                  <div class="col-md-4">
-                  <label>Id</label>
-                  <div class="clearfix">
-                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Job Id" id="jobId" name="jobId">
-                    </select>
-                  </div>
-                </div>
-           
-              </div>
-              <div class="clearfix">
-            
-                <div class="col-md-4">
-                  <label>Job status </label>
-                  <div class="clearfix">
-                    <select id="requirementStatu" name="requirementStatus" class="chosen-select" data-placeholder="Job status " multiple>
-                      <option>NEW</option> 
-                      <option>DRAFT</option>
-                      <option>SUBMITTED</option>
-                      <option>OPEN</option>
-                      <option>CANCEL</option>
-                      <option>ONHOLD</option>
-                      <option>FILLEDCLOSED</option>
-                      <option>UNFILLEDCLOSED</option>
-                      <option>REJECTED</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label>Posted On</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="updatedOn" name="updatedOn" data-placeholder="Posted On">
-                      <option>All</option>
-                      <option>1 Day Ago</option>
-                      <option>3 Days Ago</option>
-                      <option>1 Week Ago</option>
-                      <option>2 Weeks Ago</option>
-                      <option>1 Month Ago</option>
-                      <option>3 Months Ago</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div class="col-md-4">
-                  <label>Client</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="client" name="client" data-placeholder="Select Client" multiple>
-                      <c:forEach var="report" items="${add_clientList}">
-							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
-			                    </c:if>  
-			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
-			                    </c:if>
-							</c:forEach>
-                    </select>
-                  </div>
-                </div>
-                
-                
-                
-              </div>
-              <div class="clearfix">
-						   <div class="col-md-4">
-							  <label>Country</label>
-							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country">
-								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
-						                </c:forEach>
-				                 </select>
-							  </div>
-						  </div>
-						  
-						  <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix adv-srh-chosen">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
-								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
-                                 </select>
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>City</label>
-							  <div class="clearfix adv-srh-chosen">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
-								      <option value="">---select city---</option>
-                                  </select>
-							  </div>
-						  </div>
-						  </div>
-              <div class="clearfix">
-              <%--   <div class="col-md-4">
+	</section>
+
+
+	<div class="clearfix">
+		<div class="pull-left cand-advsrch advsrch_chosen">
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
+				title="Advanced Search"
+				onClick="openPop();loadChosenRequirementScripts();"> Advanced
+				Search&nbsp;&nbsp; <i class="fa fa-search"></i>
+			</a>
+			<form:form id="requirement_form" name="requirement_form"
+				enctype='multipart/form-data'>
+				<div class="cand-advsrch-popup reqadvsrch candAdvsrch">
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+
+					<div class="row">
+						<div class="clearfix">
+							<div class="col-md-8">
+								<label>Title</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Job Title" id="requirementTitle"
+										name="requirementTitle">
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>Id</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Job Id" id="jobId" name="jobId">
+									</select>
+								</div>
+							</div>
+
+						</div>
+						<div class="clearfix">
+
+							<div class="col-md-4">
+								<label>Job status </label>
+								<div class="clearfix">
+									<select id="requirementStatu" name="requirementStatus"
+										class="chosen-select" data-placeholder="Job status " multiple>
+										<option>NEW</option>
+										<option>DRAFT</option>
+										<option>SUBMITTED</option>
+										<option>OPEN</option>
+										<option>CANCEL</option>
+										<option>ONHOLD</option>
+										<option>FILLEDCLOSED</option>
+										<option>UNFILLEDCLOSED</option>
+										<option>REJECTED</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>Posted On</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="updatedOn" name="updatedOn"
+										data-placeholder="Posted On">
+										<option>All</option>
+										<option>1 Day Ago</option>
+										<option>3 Days Ago</option>
+										<option>1 Week Ago</option>
+										<option>2 Weeks Ago</option>
+										<option>1 Month Ago</option>
+										<option>3 Months Ago</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>Client</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="client" name="client"
+										data-placeholder="Select Client" multiple>
+										<c:forEach var="report" items="${add_clientList}">
+											<c:if test="${report.locationId.id == loginOrgLocId}">
+												<option
+													value="${report.id},${report.responderLocationId.org.orgName}"
+													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+											</c:if>
+											<c:if
+												test="${report.responderLocationId.id == loginOrgLocId}">
+												<option
+													value="${report.id},${report.responderLocationId.org.orgName}"
+													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+											</c:if>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+
+
+
+						</div>
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Country</label>
+								<div class="clearfix adv-srh-chosen">
+									<select class="chosen-select" name="country" id="country"
+										field-name="Country">
+										<c:forEach var="cntry" items="${countryList}">
+											<option value="${cntry.name}"
+												${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>State</label>
+								<div class="clearfix adv-srh-chosen">
+									<select class="chosen-select" name="state" id="state"
+										field-name="State">
+										<option value="">---select state---</option>
+										<c:forEach var="state" items="${statesList}">
+											<option value="${state.stateName}">${state.stateName}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>City</label>
+								<div class="clearfix adv-srh-chosen">
+									<select class="chosen-select" name="city" id="city"
+										field-name="City">
+										<option value="">---select city---</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix">
+							<%--   <div class="col-md-4">
                   <label>Education</label>
                   <div class="clearfix">
                     <select class="chosen-select" id="education" name="education" data-placeholder="Education" multiple>
@@ -1433,40 +1475,54 @@ function requirementPipeline(requirementId){
                   </div>
                 </div> --%>
 
-                <div class="col-md-4 hidden">
-                  <label>Client</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
-                      <c:forEach var="report" items="${add_clientList}">
-							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
-			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
-			                    </c:if>  
-			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
-			                    </c:if>
-							</c:forEach>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
-              
-         <div class="col-md-4">
-         <label>Notice Period</label>
-          <div class="clearfix">
-             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" data-placeholder="Select Notice Period">
-	                 <option  ${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
-	                 <option  ${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
-	                 <option  ${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
-	                 <option  ${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
-	                 <option  ${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
-	             </select>
-         </div>
-       </div> 
-              
-              
-              
-           <%--    <div class="clearfix">
+							<div class="col-md-4 hidden">
+								<label>Client</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="client" name="client"
+										data-placeholder="Client" multiple>
+										<c:forEach var="report" items="${add_clientList}">
+											<c:if test="${report.locationId.id == loginOrgLocId}">
+												<option
+													value="${report.id},${report.responderLocationId.org.orgName}"
+													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+											</c:if>
+											<c:if
+												test="${report.responderLocationId.id == loginOrgLocId}">
+												<option
+													value="${report.id},${report.responderLocationId.org.orgName}"
+													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+											</c:if>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="col-md-4">
+							<label>Notice Period</label>
+							<div class="clearfix">
+								<select multiple class="chosen-select form-control"
+									id="noticePeriod" name="noticePeriod"
+									data-validation-optional="true"
+									data-placeholder="Select Notice Period">
+									<option
+										${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
+									<option
+										${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
+									<option
+										${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
+									<option
+										${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
+									<option
+										${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
+								</select>
+							</div>
+						</div>
+
+
+
+						<%--    <div class="clearfix">
                 <div class="col-md-12">
                   <label>Skills</label>
                   <div class="clearfix">
@@ -1483,126 +1539,173 @@ function requirementPipeline(requirementId){
                   </div>
                 </div>
               </div> --%>
-            </div>
-            <div class="row form-footer">
-              <div class="pull-right mr"> 
-              <!-- <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> 
+					</div>
+					<div class="row form-footer">
+						<div class="pull-right mr">
+							<!-- <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> 
               <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>  -->
-               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-success"/>
-               <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
-            <!--    <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> --></div>
-            </div>
-          </div>
-          </form:form>
-          
-        </div>
-  </div>
-  
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-      <div class="timesheet_head timesheetHead_Custom topfilters">
-       
-        <ul>
-        <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
-        
-        <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>
-           		<div id="filter1ApprovedPop" class="approved_pop">
-               		<ul>
-               	  		<c:forEach var="report" items="${add_clientList}">  
-	               	  		<c:if test="${report.locationId.id == loginOrgLocId}">  
-	               	  		<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="requirementList();"  type="checkbox"><label title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
-<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
-			                    </c:if>  
-			                    <c:if test="${report.responderLocationId.id == loginOrgLocId}"> 
-			                  	 	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="requirementList();"  type="checkbox"><label title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
-<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
-			                    </c:if>
-	 				 	</c:forEach>
-                   	</ul>
-               	</div>                	
-         </li>
-        
-        <!-- for status counts add this function to below.. onClick ="requirementListIndividualStatusCounts();" -->
-		<li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></b>
-		            <div id="filter2ApprovedPop" class="approved_pop">
-		              <ul>
-                		    <li><input id="c6" type="checkbox" name="requirementStatus" value ="NEW"  onclick="requirementList();"><label for="c6">New<span id="newRequirementCount"></span></label></li>
-							<li><input id="c7" name="requirementStatus" type="checkbox" value ="Draft"  onclick="requirementList();"><label for="c7">Draft<span id="draftRequirementCount"></span></label></li>
-							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Submitted <span id="submittedRequirementCount"></span></label></li>
-               				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c9">Open <span id="openRequirementCount"></span></label></li>
-               				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="10">On Hold <span id="onHoldRequirementCount"></span></label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c11">Cancel <span id="cancelRequirementCount"></span></label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="FILLEDCLOSED"  onclick="requirementList();"><label for="c11">Filled Closed<span id="filledClosedRequirementCount"></span></label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="UNFILLEDCLOSED"  onclick="requirementList();"><label for="c11">UnFilled Closed<span id="unFilledClosedRequirementCount"></span></label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="REJECTED"  onclick="requirementList();"><label for="c11">Rejected<span id="rejectedRequirementCount"></span></label></li>
-               				<li><input id="c12" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CLOSED"  onclick="requirementList();"><label for="c12">Closed<span id="closedRequirementCount"></span></label></li>
-               				
-		              </ul>
-		            </div>
-          </li>
-          </sec:authorize>
-          
-          <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
-          	<li> <a href="<c:url value='/requirement'/>"><i class="fa fa-plus"></i>Add Job</a></li>
-          </sec:authorize>
-          <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-          	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
-          </sec:authorize>
-          
-	      <li>
-	      <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-	          <a onclick="getActions();" class="action" href="javascript:void(0)">Template
-	          	<i class="fa fa-caret-down"></i>
-	          </a>
-	          <div class="action-pop">
-	          <span>
-	              <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-	                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Job</a>
-	               </sec:authorize> 
-	
-	              <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-	                 <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview</a>
-	             </sec:authorize> 
-	          </span>
-	          </div>
-	      </sec:authorize>
-	      </li>
-          
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
-           <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
-            <div id="exportPop">
-              <ul>
-                <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-                <li onclick="exportToExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-              </ul>
-            </div>
-          </li>
-          </sec:authorize>
-          
-          <div class="clearfix"></div>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
-      
-     <!--  <div id="loadingDiv"></div> -->
-      
-      <!-- list requirement -->
-      <div class="require_wrap_table datatable_filter">
-          <div id="requirementList"></div>
-      </div>
-    </div>
-    <div class="side_mask">
-      <div class="proj_close"></div>
-    </div>
-    <div class="clients_side_wrap">
-      <div class="clients_side_wrap_inn">
-      				<div id="requirementSideDiv">
-				     </div>  
-      </div>
-      <div id ="msgDiv"></div>
-    </div>
-    <!-- Project --> 
-  </div>
+							<input type="button" value="Search" id="search_requiremet"
+								onclick="searchRequirement();" class="btn btn-sm btn-success" />
+							<input type="button" value="Clear" id="clear_search"
+								onclick="clearSearch();" class="btn btn-sm btn-primary" />
+							<!--    <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
+						</div>
+					</div>
+				</div>
+			</form:form>
+
+		</div>
+	</div>
+
+	<div class="timesheet_out">
+		<div class="vendor_wrap">
+			<div class="timesheet_head timesheetHead_Custom topfilters">
+
+				<ul>
+					<sec:authorize
+						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
+
+						<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i
+							class="glyphicon glyphicon-play" id="clientsList"></i>
+							<div id="filter1ApprovedPop" class="approved_pop">
+								<ul>
+									<c:forEach var="report" items="${add_clientList}">
+										<c:if test="${report.locationId.id == loginOrgLocId}">
+											<li><input id="clientName${report.id}"
+												name="clientNameById" value="${report.id}"
+												onclick="requirementList();" type="checkbox"><label
+												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
+											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
+										</c:if>
+										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
+											<li><input id="clientName${report.id}"
+												name="clientNameById" value="${report.id}"
+												onclick="requirementList();" type="checkbox"><label
+												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
+											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
+										</c:if>
+									</c:forEach>
+								</ul>
+							</div></li>
+
+						<!-- for status counts add this function to below.. onClick ="requirementListIndividualStatusCounts();" -->
+						<li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i
+								class="glyphicon glyphicon-play"></i></b>
+							<div id="filter2ApprovedPop" class="approved_pop">
+								<ul>
+									<li><input id="c6" type="checkbox"
+										name="requirementStatus" value="NEW"
+										onclick="requirementList();"><label for="c6">New<span
+											id="newRequirementCount"></span></label></li>
+									<li><input id="c7" name="requirementStatus"
+										type="checkbox" value="Draft" onclick="requirementList();"><label
+										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
+									<li><input id="c8" type="checkbox"
+										name="requirementStatus" type="checkbox" value="submitted"
+										onclick="requirementList();"><label for="c8">Submitted
+											<span id="submittedRequirementCount"></span>
+									</label></li>
+									<li><input id="c9" type="checkbox"
+										name="requirementStatus" type="checkbox" value="open"
+										onclick="requirementList();"><label for="c9">Open
+											<span id="openRequirementCount"></span>
+									</label></li>
+									<li><input id="c10" type="checkbox"
+										name="requirementStatus" type="checkbox" value="onhold"
+										onclick="requirementList();"><label for="10">On
+											Hold <span id="onHoldRequirementCount"></span>
+									</label></li>
+									<li><input id="c11" type="checkbox"
+										name="requirementStatus" type="checkbox" value="CANCEL"
+										onclick="requirementList();"><label for="c11">Cancel
+											<span id="cancelRequirementCount"></span>
+									</label></li>
+									<li><input id="c11" type="checkbox"
+										name="requirementStatus" type="checkbox" value="FILLEDCLOSED"
+										onclick="requirementList();"><label for="c11">Filled
+											Closed<span id="filledClosedRequirementCount"></span>
+									</label></li>
+									<li><input id="c11" type="checkbox"
+										name="requirementStatus" type="checkbox"
+										value="UNFILLEDCLOSED" onclick="requirementList();"><label
+										for="c11">UnFilled Closed<span
+											id="unFilledClosedRequirementCount"></span></label></li>
+									<li><input id="c11" type="checkbox"
+										name="requirementStatus" type="checkbox" value="REJECTED"
+										onclick="requirementList();"><label for="c11">Rejected<span
+											id="rejectedRequirementCount"></span></label></li>
+									<li><input id="c12" type="checkbox"
+										name="requirementStatus" type="checkbox" value="CLOSED"
+										onclick="requirementList();"><label for="c12">Closed<span
+											id="closedRequirementCount"></span></label></li>
+
+								</ul>
+							</div></li>
+					</sec:authorize>
+
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+						<li><a href="<c:url value='/requirement'/>"><i
+								class="fa fa-plus"></i>Add Job</a></li>
+					</sec:authorize>
+					<sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
+						<li><a href="<c:url value='/team'/>"><i
+								class="fa fa-plus"></i>Team</a></li>
+					</sec:authorize>
+
+					<li><sec:authorize
+							access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+							<a onclick="getActions();" class="action"
+								href="javascript:void(0)">Template <i
+								class="fa fa-caret-down"></i>
+							</a>
+							<div class="action-pop">
+								<span> <sec:authorize
+										access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+										<a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Job</a>
+									</sec:authorize> <sec:authorize
+										access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+										<a href="<c:url value='/interViewFeedBackTemplate'/>"><i
+											class="fa fa-plus"></i>Interview</a>
+									</sec:authorize>
+								</span>
+							</div>
+						</sec:authorize></li>
+
+					<sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
+						<li title="Export" class="mrPOP" id="mypop"><i
+							class="glyphicon glyphicon-export"></i>
+							<div id="exportPop">
+								<ul>
+									<li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<li onclick="exportToExcel();"><i
+										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+								</ul>
+							</div></li>
+					</sec:authorize>
+
+					<div class="clearfix"></div>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+
+			<!--  <div id="loadingDiv"></div> -->
+
+			<!-- list requirement -->
+			<div class="require_wrap_table datatable_filter">
+				<div id="requirementList"></div>
+			</div>
+		</div>
+		<div class="side_mask">
+			<div class="proj_close"></div>
+		</div>
+		<div class="clients_side_wrap">
+			<div class="clients_side_wrap_inn">
+				<div id="requirementSideDiv"></div>
+			</div>
+			<div id="msgDiv"></div>
+		</div>
+		<!-- Project -->
+	</div>
 </section>
 
 <jsp:include page="addApplicantFromRequirementList.jsp" />
@@ -1610,9 +1713,11 @@ function requirementPipeline(requirementId){
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>
 <div class="vendor_error">
-  <p>Delete conformation message....</p>
-  <textarea placeholder="Enter message"></textarea>
-  <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+	<p>Delete conformation message....</p>
+	<textarea placeholder="Enter message"></textarea>
+	<a class="close_color" href="javascript:void(0)">Yes</a><a
+		href="javascript:void(0)">No</a>
+</div>
 
 <script type="text/javascript">
             $(function () {
@@ -1620,7 +1725,7 @@ function requirementPipeline(requirementId){
                     format: 'LT'
                 });
             });
-        </script> 
+        </script>
 <script type="text/javascript">
 		/* 	var config = {
 			  '.chosen-select'           : {},
@@ -1640,7 +1745,7 @@ function requirementPipeline(requirementId){
 			$('#np').trigger("chosen:updated");
 			
 			
- 		</script> 
+ 		</script>
 <script>
 $('#selector').delay(2000).fadeOut('slow');
 // Error pop
@@ -1705,7 +1810,7 @@ $( "ul#canName-ch li").click(function(){
   $("#canName").text(m);
 });
 });
-</script> 
+</script>
 <script>
 $( "#pri-ch li").click(function(){
    var m = $(this).text();
@@ -1719,7 +1824,7 @@ $( "#pri-ch li").click(function(){
       $("#pri-val").removeClass("text-danger text-primary").addClass("text-warning");
      }   
 });
-</script> 
+</script>
 <script>
 $(document).ready(function(){
 	// Levels adding script
@@ -1768,9 +1873,10 @@ $(".reminder").click(function(){
 function changeStatusAuthorisation(requirementId){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var userId = '${SourceLeadWeb_userId}';
 	   $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/changeStatusAuthorisation?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
+          url: sourceleadUrl+"/changeStatusAuthorisation?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,        
           success :function(data) {
         	  if(data == "true"){
         		  document.getElementById("changeStatusId" + requirementId).disabled=false;
@@ -1949,7 +2055,7 @@ function getActions(){
 		function openPop(){
 			$("div.cand-advsrch-popup").toggle();
 		}
-	</script> 
+	</script>
 
 
 <script>
@@ -2124,7 +2230,7 @@ $('body').on('blur', '#requirement_form', function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-</script> 
+</script>
 
 <script>
 function loadChosenRequirementScripts(){
@@ -2178,7 +2284,7 @@ function getStates(){
         $('#city').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>
 
 
 <script>
