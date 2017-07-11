@@ -689,6 +689,7 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
     });
 	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableDraft1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 function vendorListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft').DataTable( { 
@@ -724,6 +725,7 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableDraft").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 function appListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft2').DataTable( { 
@@ -757,6 +759,7 @@ function appListContractsPagination(SourceLeadWeb_loginOrg){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
+    $("#contractListTableDraft2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 </script>
 
@@ -1134,6 +1137,7 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWFA1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
@@ -1170,6 +1174,7 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWFA").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 
@@ -1207,6 +1212,7 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWFA2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 </script>
@@ -1518,6 +1524,7 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTS1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTS').DataTable( { 
@@ -1553,6 +1560,7 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTS").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTS2').DataTable({ 
@@ -1588,6 +1596,7 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTS2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 
@@ -2301,6 +2310,7 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableFinalize1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){ 
     $('#contractListTableFinalize').DataTable( { 
@@ -2336,6 +2346,7 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableFinalize").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	$('#contractListTableFinalize2').DataTable({ 
@@ -2371,6 +2382,7 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableFinalize2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 <!-- preparedContractListExpired -->
@@ -2642,6 +2654,7 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableEXP1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){ 
     $('#contractListTableEXP').DataTable( { 
@@ -2677,6 +2690,7 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableEXP").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	$('#contractListTableEXP2').DataTable({ 
@@ -2712,6 +2726,7 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableEXP2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 
@@ -3017,6 +3032,7 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableREJ1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){ 
     $('#contractListTableREJ').DataTable( { 
@@ -3052,6 +3068,7 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableREJ").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	$('#contractListTableREJ2').DataTable({ 
@@ -3087,6 +3104,7 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableREJ2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
