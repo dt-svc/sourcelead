@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -44,11 +43,13 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -86,6 +87,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
@@ -557,11 +564,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				 
-//				 ProjectMembers projectMembers = projectMembersDao.getgetProjectMemberById(expenseId);
+				 ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(expenseId);
 				 
 				//setting the class filed values
-				 /*
-				  * Map<String, String> globalVarsMap = new HashMap<String, String>();
+				  Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("superUserName",loginUser.getFullName());
 				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
 				 globalVarsMap.put("managerName",reopenedUser.getFullName());
@@ -575,11 +581,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
-					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
-					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
-					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
-					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION); 
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_EXPENSES,Constants.ENTITY_TYPE_NOTIFICATION); 
 				 }
 				 
 				
@@ -590,19 +596,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 String url = sourceleadUrl;;
 				 
 				 //construct HTML template using required data
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLoc.getOrg(),orgLoc);
 				 emailMessage.setSubject(subject);
 				 emailMessage.setMessageBody(emailTemplate);
 				 
 				 //calling the sendEmail method of emailScenerioUtil
-				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				
 				//calling the sendNotification method of emailScenerioUtil
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLocations, notificationScenario);
-				  */
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLoc, notificationScenario);
+				  
 	}
 
 	

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -76,13 +77,17 @@ public class addExpenseController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User reopenedUser = userService.getUserById(Long.parseLong(reOpenedUserId));
-		if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
-			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		  	
-		}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
-			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		}
-		
+	    
+			if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+			  	
+			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+			}
+			
+			if(reOpenedUserId !=null && !"reject".equalsIgnoreCase(reOpenedUserId)){
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(Long.parseLong(expenseId), reason, loginUser, orgLoc, type, reopenedUser);
+			}
 		ModelAndView model = new ModelAndView();
 		/*User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
 		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));

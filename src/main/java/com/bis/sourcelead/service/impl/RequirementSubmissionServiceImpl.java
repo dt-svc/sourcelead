@@ -1055,7 +1055,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 }
     	
     	 emailMessage.setCreatedBy(user.getUserCode());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setFromName(fullName);
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
