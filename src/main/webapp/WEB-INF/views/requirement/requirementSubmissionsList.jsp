@@ -83,7 +83,7 @@
             <tbody>
             <c:forEach var="reqSub" items="${toDayReqSubmissionsList}">
               <tr>
-			 <td><div><span>${reqSub.submissionId.submissionId.candidate.firstName}</span></div></td>
+			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
              <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
 			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
             </sec:authorize>
@@ -105,7 +105,7 @@
                <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	              <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
-	             <%--   <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
+	               <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	             	 --
@@ -165,7 +165,7 @@
 	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
 	             	 --
 	              </c:if>
-              </span></div></td>
+              </span></div></td> 
             
                </tr>
 			  </c:forEach>

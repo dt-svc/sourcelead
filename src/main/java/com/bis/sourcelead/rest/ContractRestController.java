@@ -548,14 +548,17 @@ public class ContractRestController {
 	@ResponseBody
 	public String approveContract(@RequestParam(value = "recordId", required = false) String recordId,
 			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "rejectReason", required = false) String rejectReason,
 			HttpServletRequest request)throws Exception{
 		String isAprroved = Constants.APPROVED;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Contracts updatedContract = contractsTemplateService.approveContracts(Long.parseLong(recordId),status,orgLocation,user,org);
+
+		Contracts updatedContract = contractsTemplateService.approveContracts(Long.parseLong(recordId),status,orgLocation,user,org,rejectReason);
 		if(Constants.REJECTED.equalsIgnoreCase(updatedContract.getTemplateSubmissionStatus())){
 			isAprroved = Constants.REJECTED;
+
 		}
 		return isAprroved;
 }
@@ -992,4 +995,5 @@ public class ContractRestController {
 		 ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);
 		 return contractsTemplate;
 	 }
+
 }

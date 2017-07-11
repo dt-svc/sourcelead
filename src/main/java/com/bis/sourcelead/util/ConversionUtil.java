@@ -246,7 +246,7 @@ public class ConversionUtil {
 	 * @return String
 	 * @throws ParseException
 	 */
-	public String getDateAsString(Date date){
+	public static String getDateAsString(Date date){
 		 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		 return dateFormat.format(date);
 
