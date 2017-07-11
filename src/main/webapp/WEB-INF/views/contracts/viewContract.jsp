@@ -68,16 +68,21 @@ $(document).ready(function(){
 	<input type="hidden" name="noteType" id="noteType" value = "Contract">
 		<div class="col-md-12 inputOther mt10 inputOther">
 		<div class="form-horizontal clearfix"><div class="clearfix">
-		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000" field-name="Note" class="form-control" onkeypress="viewContractCommentRemoveSpaces();"></textarea></div>
-		<div class="clearfix checkBox">
+		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000" field-name="Note" class="form-control" ></textarea></div>
+		
+		<div class="row clearfix mt5">
+		<div class="checkBox col-md-9">
 		<input type="checkbox" value="Y" id="allowAll" name="allowAll" checked="checked">
-		<span>Allow All Users</span>
+		<span>Allow all users</span>
 		</div>
-		<div class="clearfix mt5" id="docAddButton">
+		<div class="col-md-3" id="docAddButton">
 		<div class="pull-right">
 			<input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onclick="storeContractNotes();"></div>
 		</div>
-		</div></div>
+		</div>
+		
+		</div>
+		</div>
 		</div>
 		</form>
 	</div>
