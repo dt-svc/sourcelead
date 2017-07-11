@@ -11,4 +11,6 @@ public interface UserPayrollDao {
 
 	List<UserPayroll> getUserPayrollsBystartDateEndDte(Long orgLocationID, Date startDate, Date endDate)throws Exception;
 
+	List<UserPayroll> getPayByUserId(Long userId, Long orgLocationId)throws Exception;
+
 }
