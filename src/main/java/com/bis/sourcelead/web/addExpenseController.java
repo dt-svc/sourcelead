@@ -85,10 +85,7 @@ public class addExpenseController {
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
 			}
 			
-			if(reOpenedUserId !=null && !"reject".equalsIgnoreCase(reOpenedUserId)){
-				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(Long.parseLong(expenseId), reason, loginUser, orgLoc, type, reopenedUser);
-			}
-		ModelAndView model = new ModelAndView();
+		
 
 		/*User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
 		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
@@ -97,7 +94,6 @@ public class addExpenseController {
 			//User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
 			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser, projectMembers.getProjects().getProjectName());
 		}*/
-		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("expenses/reopenExpenseAcceptOrReject");
 		model.addObject("type",type);
