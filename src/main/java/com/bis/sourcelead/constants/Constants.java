@@ -56,12 +56,6 @@ public class Constants {
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
 	
-	public static final String Client_SOW = "Client SOW";
-	public static final String Vendor_SOW = "Vendor SOW";
-	public static final String FULL_TIME_OFFER = "Full time offer";
-	public static final String CLIENT_MSA = "Client MSA";
-	public static final String VENDOR_MSA = "Vendor MSA";
-	public static final String NDA = "NDA";
 	
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
@@ -131,6 +125,7 @@ public class Constants {
 	public static final String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
 	public static final String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static final String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
+	public static final String VENDOR_INTERVIEW_RESCHEDULE = "Vendors Interview Reschedule";
 	public static final String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static final String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
@@ -257,6 +252,7 @@ public class Constants {
 	public static final String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
+	public static final String CONTRACT_SIGNED = "ContractSigned";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
@@ -669,5 +665,34 @@ public class Constants {
     public static final String[] HR_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th"};
     public static final String BIS_USERS = "BIS_USERS";
     public static final String OVER_DUE = "Overdue";
+    
+    //contracts 
+    public static final String EXPIRED = "EXPIRED";
+    public static final String FINALIZED = "FINALIZED";
+    public static final String SEND_FOR_VERIFICATION = "SEND_FOR_VERIFICATION";
+    public static final String WAITING_TO_BE_VERIFY = "WAITING_TO_BE_VERIFY";
+    public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
+    public static final String DELETED = "DELETED";   
+    public static final String APPROVED = "APPROVED";  
+    
+    public static final String PENDING = "PENDING";
+    
+    public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
+    public static final String Client_SOW = "Client SOW";
+	public static final String Vendor_SOW = "Vendor SOW";
+	public static final String FULL_TIME_OFFER = "Full time offer";
+	public static final String CLIENT_MSA = "Client MSA";
+	public static final String VENDOR_MSA = "Vendor MSA";
+	public static final String NDA = "NDA";
+	public static final String NSA = "NSA";
+	public static final String CUSTOM_TYPE = "Custom";
+	public static final String NEW_TYPE = "New";
+	public static final String EXISTING_TYPE =  "Existing";
+	public static final String VENDOR_NDA = "Vendor NDA";
+	public static final String VENDOR_NSA = "Vendor NSA";
+	public static final String CLIENT_NDA = "Client NDA";
+	public static final String CLIENT_NSA = "Client NSA";
+	
+    
 
 }

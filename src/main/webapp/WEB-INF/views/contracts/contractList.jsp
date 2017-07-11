@@ -3364,23 +3364,21 @@ function CountClick(contractUUID,parentId){
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
 
-			  if(opt.docFile != null && opt.docFile !=""){
-				  result = result +'	       <label class="col-md-4 text-center"><a href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\">'+opt.fileName+'</a></label>                                                 ';
-			  }else{
-				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
-			  }
+				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</a></label>                                                 ';
 
-			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+				  /* if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
 				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 				  result = result +'	       <label class="text-center">--</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
 				  $("#saveAction").empty(); 
 			  }
-			  else{
-				  if(parentId != "--"){
+			  else{ 
+				   if(parentId != "--"){ */
 						  if(opt.docFile != null && opt.docFile !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+' <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
@@ -3401,15 +3399,15 @@ function CountClick(contractUUID,parentId){
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
 					  }
-				  }
+				/*   }
 				  else{
 					  $("#saveAction").empty(); 
 					  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 					  result = result +'	       <label class="text-center">--</label>                                                 ';
 					  result = result +'	       </div>			                                                                                                                  ';
 					  $("#saveAction").empty(); 
-				  }
-			  }
+				  } */
+			 /*  } */
 			  result = result +'			</div>                                                                                                                                ';
 			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
 			  result = result +'	 </div>                                                                                                                                   ';
@@ -3460,7 +3458,14 @@ document.getElementById("uploadBtn"+id).onchange = function () {
     });
 }
 </script>
-
+<script type="text/javascript">
+function previewContractDoc(docId,fileName){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	if(docId != null && docId != ""){
+		window.open(sourceleadUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
+	}  
+}
+</script>
 <script>
 function editOne(startDate,endDate){
 	$('.editNewDat').show();
