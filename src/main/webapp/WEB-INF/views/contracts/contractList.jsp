@@ -52,8 +52,8 @@ padding: 2px 300px 2px 0px;
 <li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft (${contractsCount.totalDraftCount})</a></li>
 <li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve (${contractsCount.totalWTACount})</a></li> 
 <li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Completed (${contractsCount.totalFinalizedCount})</a></li>
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList();">Expired (${contractsCount.totalExpiredCount})</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
@@ -386,7 +386,7 @@ function preparedContractListDraft(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -471,7 +471,7 @@ function preparedContractListDraft(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -553,7 +553,7 @@ function preparedContractListDraft(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -773,7 +773,7 @@ function preparedContractListWFA(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -880,7 +880,7 @@ function preparedContractListWFA(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -988,7 +988,7 @@ function preparedContractListWFA(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -1224,7 +1224,7 @@ function preparedContractListWTS(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -1304,7 +1304,7 @@ function preparedContractListWTS(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -1389,7 +1389,7 @@ function preparedContractListWTS(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -1604,7 +1604,7 @@ function preparedContractListWTV(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -1700,7 +1700,7 @@ function preparedContractListWTV(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -1793,7 +1793,7 @@ function preparedContractListWTV(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -2019,7 +2019,7 @@ function preparedContractListFinalize(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -2094,7 +2094,7 @@ function preparedContractListFinalize(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -2177,7 +2177,7 @@ function preparedContractListFinalize(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -2387,7 +2387,7 @@ function preparedContractListExpired(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -2454,7 +2454,7 @@ function preparedContractListExpired(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -2525,7 +2525,7 @@ function preparedContractListExpired(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -2728,7 +2728,7 @@ function preparedContractListRejected(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -2809,7 +2809,7 @@ function preparedContractListRejected(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '   <th>Start | End date</th>';
@@ -2892,7 +2892,7 @@ function preparedContractListRejected(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
