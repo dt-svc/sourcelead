@@ -5,20 +5,23 @@
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript"
+	charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript"
+	charset="utf-8"></script>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
-    overflow-x: auto;
-}
-.validation_p p.jquery_form_error_message {
-bottom:-25px !important;
+	overflow-x: auto;
 }
 
+.validation_p p.jquery_form_error_message {
+	bottom: -25px !important;
+}
 </style>
 <%-- 
      @author : prasadK.
@@ -77,10 +80,12 @@ function professionalCandidateReferences(candidateId){
 <script>
 function candReferencesList(candidateId){
 	var candidateType = '${candidateType}';
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var locationCode ='${SourceLeadWeb_locationCode}';
+	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
              			/*  var json = JSON.parse(data);  */
@@ -138,8 +143,8 @@ function candReferencesList(candidateId){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 			           		}else{
-			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+opt.id+');" title="Edit"></a>';
-			           			result = result+'<i class="glyphicon glyphicon-trash" onclick="removeReference('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			result = result+' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+opt.id+');" title="Edit"></a></sec:authorize>';
+			           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('+candidateId+','+opt.id+');" title= "Remove"></i></sec:authorize>';
 			           			}
 			           			
 			           		}
@@ -323,9 +328,9 @@ function addReference(candidateId) {
 			return o;
 		};
 	})(jQuery);
-</script>           
-    
- <%-- 
+</script>
+
+<%-- 
      @author : prasad K
      this script is for saving document
      1.usage     : onclick
@@ -343,9 +348,13 @@ function addReference(candidateId) {
 			 if ($('#canReference_form').validate(false, validationSettings)){
 				var frm = $('#canReference_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+				
 				var form = $('#canReference_form')[0];
 	      		var formData = new FormData(form); 
+			  	formData.append("json",con);
+			  	formData.append("candidateId",candidateId);
+			  	formData.append("userId",'${SourceLeadWeb_user.id}');
+			  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_ref").attr("disabled", "disabled");
          		$("#save_ref" ).addClass('button').val('Processing..');
@@ -358,12 +367,12 @@ function addReference(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector7").removeAttr("style");
-		            			$("#selector7").css({ display: "block" });
+		            			$("#selector10").removeAttr("style");
+		            			$("#selector10").css({ display: "block" });
 	            				$("#refMsgDiv").html("Success!! New Candidate References added");
 		             			candReferencesList(candidateId);
 						 		refMsgFadein();
@@ -396,7 +405,7 @@ function deleteReferencesPopup(){
 }
 </script>
 
-<div id="deleteReferencesPopup"></div> 
+<div id="deleteReferencesPopup"></div>
 
 
 <script>
@@ -404,7 +413,7 @@ function deleteReferencesPopup(){
 		$("#selector7").fadeIn(200);
         $('#selector7').delay(2000).fadeOut('slow');
 	}
-</script> 
+</script>
 <!-- End -->
 
 <script type="text/javascript">
@@ -435,13 +444,14 @@ function removeReference(candidateId, refId){
 function deleteReference(candidateId,refId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	//var message = confirm("You are choosing to delete the reference");
+	 var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId, 	   
+		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
-        			 $("#selector7").removeAttr("style");
-         			 $("#selector7").css({ display: "block" });
+        			 $("#selector10").removeAttr("style");
+         			 $("#selector10").css({ display: "block" });
          			 $("#refMsgDiv").html("Reference deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
@@ -469,17 +479,27 @@ function deleteReference(candidateId,refId){
 			var frm = $('#canReferenceEdit_form').serializeFormJSON();
 
 			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			
+			var form = $('#canReference_form')[0];
+      		var formData = new FormData(form); 
+      		formData.append("json",con);
+      		formData.append("candidateId",candidateId);
+      		formData.append("refId",refId);
+      		formData.append("userId",'${SourceLeadWeb_user.id}');
+		  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
 			//It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&refId"+refId,
+					     data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}",
 						success : function(data) {
-	            			$("#selector7").removeAttr("style");
-	            			$("#selector7").css({ display: "block" });
+	            			$("#selector10").removeAttr("style");
+	            			$("#selector10").css({ display: "block" });
 	            			$("#refMsgDiv").html("Reference details updated");
 	            			closePopup();
 	            			candReferencesList(candidateId);
