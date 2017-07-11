@@ -144,10 +144,17 @@ color:blue;
 <script>
 $(document).ready(function() {
 	 var requirementId = '${requirementId}'; 
-	 sideBar(requirementId); 
+	 var type = '${type}';
+	 if(type != null && type != '' && type != 'undefined'){
+			 sideBar(requirementId,type);
+	 }else{
+		 sideBar(requirementId); 
+	 } 
 });	
 </script>
+<script>
 
+</script>
 
 <script>
 function prepareAllCounts(requirementId){
@@ -580,10 +587,18 @@ function openTopDiv(){
 --%>
 
 <script>
-function sideBar(requirementId){
+function sideBar(requirementId,type){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
+	  
+	  var isDetailsTabActive = '';
+	  var isApplicantsTabActive = '';
+	  if(type == null || type == '' || type == 'undefined'){
+		  isDetailsTabActive = 'current'
+	  }else{
+		  isApplicantsTabActive = 'current'
+	  }
 	 
 	  $("#detailsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
@@ -800,15 +815,15 @@ function sideBar(requirementId){
 					    result = result+'  <div class="proj_close"></div>';
 					    result = result+'  <div class="project_side_wrap_inn_tabs">';
 					    result = result+'    <ul class="project-tabs-menu">';
-					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
+					    result = result+'      <li class="'+isDetailsTabActive+'" id="detailsTab"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					   
 					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CLOSED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
                             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
-					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+					    	result = result+'      <li class="'+isApplicantsTabActive+'" id="applicantsTab"><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
 					    	'</sec:authorize>';
 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
-                             result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                             result = result+'      <li id="recommendationsTab"><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
                              '</sec:authorize>';
                         }else if(json.requirementSubmissionStatus == 'CLOSED' && json.isreceivingApplicants == "Y"){
                         	 var all = 'all'; 
@@ -970,8 +985,38 @@ function sideBar(requirementId){
 					    
 			             $("#requirementSideDiv").empty();  
 			 		     $("#requirementSideDiv").append(result);  
-			 		     requirementDetails(requirementId);
-			 		    $("#detailsLoading").removeAttr("style");
+			 		     
+			 		    if(type != null && type != '' && type != 'undefined'){
+			 		    	 $("#actionsDiv" ).show();
+							 if(type == 'SHORTLIST'){
+								    filterReqSL(requirementId,type);
+									requirementStatusBar(requirementId);
+									tabEnable('','shortListli');
+							 }
+							 else if(type == 'SUBMIT_TO_CLIENT'){
+								    filterReqSC(requirementId,type);
+									requirementStatusBar(requirementId);
+									tabEnable('','submitToClientli');
+							 }
+							 else if(type == 'INTERVIEW'){
+								 filterReqIN(requirementId,type);
+									requirementStatusBar(requirementId);
+									tabEnable('','interviewli');
+							 }
+							 else if(type == 'OFFERMADE'){
+								 filterReqOffer(requirementId,type);
+									requirementStatusBar(requirementId);
+									tabEnable('','offerMadeli');
+							 }
+							 else{
+								    requirementPipeline(requirementId,'all');
+									requirementStatusBar(requirementId,type);
+							 }
+			 		    }else{
+			 		    	requirementDetails(requirementId);
+			 		    }
+			 		    
+			 		     $("#detailsLoading").removeAttr("style");
 				 		 
 			 		     /*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
@@ -1858,8 +1903,9 @@ function requirementPipeline(requirementId,submissionType){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
+							
 							prepareAllCounts(requirementId);
-					
+							return true;
 							
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
@@ -1875,10 +1921,12 @@ function requirementPipeline(requirementId,submissionType){
       					 result = result+"  </div> "; 
       					$("#requirementSideDiv").empty();
       				    $("#requirementSideDiv").append(result); 
+      				  return true;
                       }
                },
                  
             }); 
+	  return false;
 	 
 }
 </script>
@@ -4856,7 +4904,7 @@ function hilightTab(){
 
 <script>
 function requirementStatusBar(requirementId){
-	    var result = "";
+	var result = "";
 	    var all = 'all';
 	   var requestSent ='REQUEST_SENT';
        var shortList = 'SHORTLIST';
@@ -4945,21 +4993,28 @@ function requirementStatusBar(requirementId){
         
          result = result + ' </div>';  */
          result = result +' <div> <i class="ratepop rate_pop" id="ratepop"></div>';
-       $("#status-div").empty();
+         
+      $("#status-div").empty();
       $("#status-div").prepend(result);
-      $("#tab-2").prepend(status-div);
-	
+     // $("#tab-2").prepend(status-div);
+      
 }
 </script>
 
 <script>
-function tabEnable(local){
+function tabEnable(local,typeId){
 	$('.reqAct').each(function() {
 		 var localId = this.id;
 		 $("#"+localId).removeClass("reqAct");
     });
-	var tabId = local.id;
-	$("#"+tabId).addClass("reqAct");
+	if(typeId == null || typeId == '' || typeId == 'undefined'){
+		var tabId = local.id;
+		$("#"+tabId).addClass("reqAct");
+	}
+	else{
+		$("#"+typeId).addClass("reqAct");
+	}
+	
 }
 
 </script>
