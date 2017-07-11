@@ -313,6 +313,7 @@ public class Constants {
 	public static final String Receivable = "Receivable";
 	public static final String Payables = "Payables";
 	public static final String PAYROLL = "Payroll";
+	public static final String PAY = "Pay";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
