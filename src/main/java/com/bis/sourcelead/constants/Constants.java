@@ -487,7 +487,7 @@ public class Constants {
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] VENDOR_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
 			"Negotiation", "Contracted" };
-	public static final String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "New", "Active" };
+	public static final String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "Active", "In-Active" };
 	public static final String[] CLIENT_PAYMENT_TERMS = { "10 days", "15 days", "30 days", "45 days",
 			"60 days", "90 days" };
 	public static final int level1 = 1;

@@ -785,8 +785,8 @@ public class ClientServiceImpl implements ClientService{
 			String vendorCity = "vendorCity";
 			String vendorState = "vendorState";
 			String vendorCountry = "vendorCountry" ;
-			
-			
+			String vendorLocation = "vendorLocation";
+			String vendorZipCode = "vendorZipCode";
 			//  This pojo's are for Storing the updated value in Elk 
 			
 			OrgRelations orgRelationsForElk  = null;
@@ -852,6 +852,17 @@ public class ClientServiceImpl implements ClientService{
 			    	 
 			    	 orgLocations.setCountry("");
 			     }
+				if( jsonObj.has("vendorLocation") && jsonObj.getString(vendorLocation) != null && !jsonObj.getString(vendorLocation).isEmpty()){
+					orgLocations.setLocation(jsonObj.getString(vendorLocation));
+				}else{
+					orgLocations.setLocation("");
+				}
+				if( jsonObj.has("vendorZipCode") && jsonObj.getString(vendorZipCode) != null && !jsonObj.getString(vendorZipCode).isEmpty()){
+					orgLocations.setZipCode(jsonObj.getString(vendorZipCode));
+				}else{
+					orgLocations.setZipCode("");
+				}
+				
 				/*if(jsonObj.getString(emailId) !=null && !jsonObj.getString(emailId).isEmpty()){
 					orgLocations.setEmail(jsonObj.getString(emailId));
 				}else{
