@@ -1325,7 +1325,7 @@ $(document).ready(function () {
           <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
        			  <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >   
          </c:if>
-        <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
+        <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/requirementList'/>'" class="btn btn-default ml">
       </div>
     </div>
   </div>

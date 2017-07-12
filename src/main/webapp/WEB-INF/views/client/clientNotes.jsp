@@ -195,7 +195,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      
 	result = result  +'                <div class="row clearfix"> ';
 	result = result+'	                  <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox" class="pull-left" value= "Y" id="allowAll" name = "allowAll" checked="checked">';

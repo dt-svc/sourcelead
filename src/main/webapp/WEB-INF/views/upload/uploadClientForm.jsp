@@ -63,7 +63,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
 				</div>
 			  </div>
 			</div>
@@ -77,7 +77,7 @@ margin:10px 220px 0;
 			  <button class="btn btn-sm btn-primary" id="upload_button1" type="submit" onclick = "saveBulkImport(); check();uploadSave();checkFile()">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div> --%>

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
+import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -118,10 +119,10 @@ public class ExpensesRestController {
 	 }
 	
 	 @RequestMapping(value = "/rest/getExpenseEntryDetails")
-	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestParam(value = "userId", required = true) Long userId,@RequestParam(value = "locationCode", required = true) String locationCode) throws Exception {
+	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestParam ExpenseEntryDetailsUtilDTO eedDTO) throws Exception {
 		 ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
-		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		 List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(),userId);
+		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		 List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(),eedDTO.getUserId());
 		  if(projectMembersList != null && !projectMembersList.isEmpty()){
 			  ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 			  for(ProjectMembers pm : projectMembersList){

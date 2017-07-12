@@ -258,7 +258,12 @@ function clientContractsList(orgRelationId){
 		                		        	 }else if(output.templateSubmissionStatus == "EXPIRED"){
 		                		        		 expiredCount = expiredCount +1;     
 		                		        	 }
-		                		        	 opt = opt + '<div class="tblminwidth-75">'+output.templateSubmissionStatus+'</div>';
+		                		        	 if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+		                		        		 opt = opt + '<div class="tblminwidth-75">WAITING_FOR_APPROVAL</div>';
+		                		        	 }else{
+		                		        		 opt = opt + '<div class="tblminwidth-75">'+output.templateSubmissionStatus+'</div>';
+		                		        	 }
+		                		        	 
 		                		         }
 		                		         else{
 		                		        	 opt = opt + '<div class="tblminwidth-75 ">---</div>';
