@@ -524,7 +524,7 @@ function validateTaskName(){
 								onclick="saveProject();flushSaveProject()"
 								class="btn btn-primary"> <input type="button"
 								value="Cancel"
-								onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"
+								onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'"
 								class="btn btn-default ml">
 						</div>
 					</div>
