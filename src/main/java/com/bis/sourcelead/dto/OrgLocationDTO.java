@@ -32,7 +32,7 @@ public class OrgLocationDTO implements Serializable{
 	
 	List<String> menuList;
 	
-	List<String> roleActionsList;
+	//List<String> roleActionsList;
 	
 	List<String> menuIconsList;
 	
@@ -159,7 +159,7 @@ public class OrgLocationDTO implements Serializable{
 		this.menuList = menuList;
 	}
 
-	public List<String> getRoleActionsList()
+/*	public List<String> getRoleActionsList()
 	{
 		return roleActionsList;
 	}
@@ -168,7 +168,7 @@ public class OrgLocationDTO implements Serializable{
 	{
 		this.roleActionsList = roleActionsList;
 	}
-
+*/
 	public List<String> getMenuIconsList() {
 		return menuIconsList;
 	}

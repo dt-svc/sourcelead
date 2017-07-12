@@ -632,7 +632,11 @@ function getPayableInvoiceList(){
 					result = result +'<div class="tblminwidth-100">'+projectName+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
+				if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
 				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
@@ -641,7 +645,11 @@ function getPayableInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
+				if(dueDateStr !=null && dueDateStr !='' && dueDateStr !='undefined'){
 				result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
@@ -1420,7 +1428,7 @@ function generateAutomaticInvoice(){
             	 $("#invoiceLoading").removeAttr("style");
             	    $("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(data+" Records Imported Successfully.");
+	    			$("#msgDiv").html(data+" Bill(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/payablesList");	
         },

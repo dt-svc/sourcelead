@@ -1881,7 +1881,7 @@ public class TimesheetRestController {
 			 emailMessage.setFirstName(projectManager.getFirstName());
 			 emailMessage.setLastName(projectManager.getLastName());
 			 emailMessage.setToEmail(projectManager.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 //			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 

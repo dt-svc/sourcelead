@@ -132,9 +132,6 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
-	
-	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
-	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -316,7 +313,7 @@ public class Constants {
 	public static final String Receivable = "Receivable";
 	public static final String Payables = "Payables";
 	public static final String PAYROLL = "Payroll";
-	public static final String PAY = "Pay";
+	public static final String PAY = "Pay"; 
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -490,7 +487,7 @@ public class Constants {
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] VENDOR_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
 			"Negotiation", "Contracted" };
-	public static final String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "New", "Active" };
+	public static final String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "Active", "In-Active" };
 	public static final String[] CLIENT_PAYMENT_TERMS = { "10 days", "15 days", "30 days", "45 days",
 			"60 days", "90 days" };
 	public static final int level1 = 1;

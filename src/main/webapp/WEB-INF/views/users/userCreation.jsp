@@ -263,7 +263,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
             </div>

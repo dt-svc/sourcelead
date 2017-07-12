@@ -267,7 +267,7 @@ public class RequirementServiceImpl implements RequirementService {
 					location.append("--").append(",");
 				}
 			}if (jsonObj.has("city")) {
-				if (!jsonObj.getString("state").isEmpty()) {
+				if (!jsonObj.getString("city").isEmpty()) {
 					requirement.setCity(jsonObj.getString("city"));
 					location.append(jsonObj.getString("city"));
 					location.append(",");

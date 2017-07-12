@@ -209,7 +209,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
  result = result + '			                      </li>                                                                                                                                                                                        ';
  													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_INVOICE\')"> ';
- result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>        ';
+ result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill('+orgRelationId+');"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>        ';
  													'</sec:authorize>';
  result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>';
  result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
@@ -343,7 +343,6 @@ result = result  +'    <div class="billingArea"> ';
 	       				dueBeforeInvoiceAmount = parseFloat(dueBeforeInvoiceAmount) + parseFloat(report.dueBeforeInvoiceAmount);
 	       			}
 	        		
-	       			
 	       			var invoiceStatus = null;
 	       			if(report.invoiceStatus == "SENT"){
 	       				invoiceStatus = "Sent"
@@ -374,7 +373,11 @@ result = result  +'    <div class="billingArea"> ';
 					}
 					result = result +'         </td>';
 					result = result +'         <td> ';
+					if(report.invoiceDateStr !='' && report.invoiceDateStr != null && report.invoiceDateStr != 'undefined'){
 					result = result +'           <div class="tblminwidth-100">'+report.invoiceDateStr+'</div>';
+					}else{
+						result = result +'<div class="tblminwidth-100">--</div>  ';
+					}
 					result = result +'         </td>';
 					result = result +'         <td> ';
 					result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
@@ -383,7 +386,11 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
 					result = result +'         </td>';
 					result = result +'         <td> ';
+					if(report.dueDateStr !='' && report.dueDateStr != null && report.dueDateStr != 'undefined'){
 					result = result +'           <div class="tblminwidth-100">'+report.dueDateStr+'</div>';
+					}else{
+						result = result +'<div class="tblminwidth-100">--</div>  ';
+					}
 					result = result +'         </td>';
 					result = result +'         <td> ';
 					result = result +'           <div class="tbldata-dotdot-100">'+report.invoiceStatus+'</div>';
@@ -401,8 +408,12 @@ result = result  +'    <div class="billingArea"> ';
 					} 
 					result = result +'  </div> ';                                                                                                    
 					if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
-						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+							if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+						}else{
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+						}
 						}else{
 							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
@@ -416,7 +427,7 @@ result = result  +'    <div class="billingArea"> ';
 							
 						}else{
 							if(report.invoiceStatus == "Rejected"){
-								result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
+								result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
 							}else{
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 							}
@@ -614,35 +625,39 @@ function clientInvoicePagination(){
 
 
  <!-- Add invoice Popup -->
-		   <div class="addcandidate-popup">
-		    <div class="row">
-		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
-		      <div class="col-md-5 mt25">
-		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
-		          <div class="clearfix mb10"> 
-		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
-		          </div>
-		          <strong class="clearfix">Custom</strong></a>
-		          </div>
-		      </div>
-		
-		        <div class="col-md-5 mt25">
-		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
-		            <div class="clearfix mb10">
-		                <!--<i class="fa fa-usd fa-3x"></i>-->
-		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		            </div>
-		            <strong class="clearfix">Project Based </strong> </a> </div>
-		        </div>
-		          </div>
-		    </div>
-		  </div>
+		  <div id="createInvoiceDiv"></div>
 		  <div class="pop_mask"></div>
 		  <script>
 		    //addcandidate-popup script
-		    function createBill(){
+		    function createBill(orgRelationId){
+		        
+		      var result = '';
+		      result = result +'<div class="addcandidate-popup">';
+			  result = result +'  <div class="row">';
+			  result = result +'    <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
+			  result = result +'    <div class="col-md-5 mt25">';
+			  result = result +'      <div class="small-widget bgGreen">';
+			  result = result +'          <a onClick="createClientInvoice('+orgRelationId+',\'custom\');" title="Create custom invoice">';
+			  result = result +'        <div class="clearfix mb10"> ';
+			  result = result +'            <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
+			  result = result +'        </div>';
+			  result = result +'        <strong class="clearfix">Custom</strong></a>';
+			  result = result +'        </div>';
+			  result = result +'    </div>';
+			  result = result +'      <div class="col-md-5 mt25">';
+			  result = result +'        <div class="small-widget bg-yellow"> ';
+			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'project\');" title="Create project based invoice">';
+			  result = result +'          <div class="clearfix mb10">';
+			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
+			  result = result +'              <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+			  result = result +'          </div>';
+			  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
+			  result = result +'      </div>';
+			  result = result +'        </div>';
+			  result = result +'  </div>';
+			  result = result +'</div>';
+		        $("#createInvoiceDiv").empty();
+		        $("#createInvoiceDiv").append(result);
 		        $('.addcandidate-popup').fadeIn(200);
 		        $('.pop_mask').fadeIn(200);
 		    };
@@ -650,10 +665,20 @@ function clientInvoicePagination(){
 		        $('.addcandidate-popup').fadeOut(200);
 		        $('.pop_mask').fadeOut(200);
 		       }
+		       
+		       function createClientInvoice(orgRelationId,type){
+		    	   var sourceleadUrl = '${sourceleadUrl}';
+		    	   if(type == 'project'){
+		    			window.location.href = sourceleadUrl + "/createInvoiceProjectBased?&orgRelationId="+orgRelationId;
+		    	   }else{
+		    		   window.location.href = sourceleadUrl + "/createInvoice?&orgRelationId="+orgRelationId;
+		    	   }
+		       }
 		    </script> 
   
-  
-  <script>
+   <!-- Add invoice Popup End -->
+ 
+<script>
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);

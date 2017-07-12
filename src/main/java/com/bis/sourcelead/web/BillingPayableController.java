@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,7 +88,7 @@ public class BillingPayableController {
 	}
 	
 	@RequestMapping(value = "/createPayables")
-	public ModelAndView createPayables(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
+	public ModelAndView createPayables(@RequestParam(value="type", required=false) String type ,HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -97,11 +98,19 @@ public class BillingPayableController {
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		
+		Date currentDate = new Date();
+		String convertedDate = Constants.DMY.format(currentDate);
+		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createPayables");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Payables);
