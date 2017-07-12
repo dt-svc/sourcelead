@@ -217,7 +217,6 @@ function closePopup(){
     $("#relation").change(function () {
     	 $('#row_dim').hide(); 
         if (this.options[this.selectedIndex].value == "Work Related") {
-        	alert("s2");
             $("#row_dim").show();
         }
     });
@@ -529,9 +528,10 @@ function deleteReference(candidateId,refId){
 					url : sourceleadUrl
 							+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId +"&refId="+refId,
 					success : function(data) {
-						var json = JSON.parse(data);
-
+						
 						if (data != null && data != 'undefined' && data != "") {
+							
+							var json = JSON.parse(data);
 
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
@@ -573,7 +573,7 @@ function deleteReference(candidateId,refId){
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
-								result = result  +'<div class="clearfix mb10" id="dvDesignationEdit">';
+								result = result  +'<div class="clearfix mb10" id="dvDesignationEdit" style="display:block">';
 								result = result  +'<div class="col-md-12">';
 								result = result  +'<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 								result = result  +'</div>';
@@ -610,6 +610,12 @@ function deleteReference(candidateId,refId){
 									 e.stopPropagation();
 								 });
 								 
+								 if(json.relation == "Family Related"){
+										$("#dvDesignationEdit").css("display", "none");
+										$("#designationValEdit").removeAttr("data-validation");
+										$("#designationValEdit").attr("data-validation-optional", "true");
+									}
+								 
 							}
 							
 						}
@@ -640,8 +646,13 @@ function getRelation(){
 function editRelation(e){
 	if(e.value == "Work Related"){
 		 document.getElementById("dvDesignationEdit").style.display="block";
+		 $("#designationValEdit").removeAttr("data-validation-optional");
+		 $('#designationValEdit').attr("data-validation","required validate_Space validate_length length2-100"); 
 	}else{
 		document.getElementById("dvDesignationEdit").style.display="none";
+// 		$("#designationValEdit").attr("data-validation-optional", "true");
+		$('#designationValEdit').find('p.jquery_form_error_message').remove();
+		$('#designationValEdit').removeAttr("data-validation"); 
 	}
 }
 

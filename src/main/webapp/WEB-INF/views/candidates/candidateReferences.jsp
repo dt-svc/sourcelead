@@ -63,17 +63,19 @@
 		} else {
 			if (candidateType == "Candidates") {
 				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\')">';
-				result = result
-						+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('
-						+ candidateId
-						+ ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
+				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
+				'</sec:authorize>';
+				
+				'<sec:authorize access="!hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\')">';
+				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  class="addUser-org" ></a></span>';
 				'</sec:authorize>';
 			} else {
-				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\')">';
-				result = result
-						+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('
-						+ candidateId
-						+ ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_REFERENCE\')">';
+				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
+				'</sec:authorize>';
+				
+				'<sec:authorize access="!hasAnyRole(\'ROLE_ADD_ASSOCIATE_REFERENCE\')">';
+				result = result + '<span class="pad-sea"><a href="javascript:void(0)"   class="addUser-org" ></a></span>';
 				'</sec:authorize>';
 			}
 
@@ -195,18 +197,14 @@
 								result = result
 										+ '<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 							} else {
-								result = result
-										+ ' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
-										+ candidateId
-										+ ','
-										+ opt.id
-										+ ');" title="Edit"></a></sec:authorize>';
-								result = result
-										+ '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('
-										+ candidateId
-										+ ','
-										+ opt.id
-										+ ');" title= "Remove"></i></sec:authorize>';
+								if(candidateType == "Candidates"){
+									result = result +' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+									result = result + '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('+ candidateId + ',' + opt.id + ');" title= "Remove"></i></sec:authorize>';
+                   			 }else{
+                   				result = result +' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_ASSOCIATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+								result = result + '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_ASSOCIATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('+ candidateId + ',' + opt.id + ');" title= "Remove"></i></sec:authorize>';
+                   			 }
+								
 							}
 
 						}
