@@ -82,7 +82,8 @@
 						 var state = '';
 						 var city = '';
 						 var website = '';
-						var zipCode = '';
+					 	 var zipCode = '';
+					 	 var location = '';
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -97,6 +98,9 @@
 						}
 						if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
 							zipCode = json.zipCode;
+						}
+						if(json.location != null && json.location !='' && json.location !='undefined'){
+							location = json.location;
 						}
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
@@ -139,7 +143,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="clientLocation" id="clientLocation" value="'+json.location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + ' <input type="text" class="form-control" name="clientLocation" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
 							result = result + '</div>';
 							
