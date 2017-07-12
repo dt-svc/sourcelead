@@ -148,12 +148,12 @@ function requirementList(){
 		                     }else{
 		                    	 result = result +"<td><div>---</div></td>";
 		                     }
-	                    	 result = result +"<td><div>"+opt.noOfApplicants+"</div></td>";
+	                    	 result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfApplicants+"</div></a></td>";
 
-		                     result = result +"<td><div>"+opt.noOfShortlistedApplicants+"</div></td>";
-			                 result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
-		                     result = result +"<td><div>"+opt.noOfInterviewedApplicants+"</div></td>";
-		                     result = result +"<td><div>"+opt.noOfOfferedApplicants+"</div></td>";
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfShortlistedApplicants+"</div></a></td>";
+			                 result = result +"<td><a href='<c:url value='/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfSubmittedApplicants+"</div></a></td>";
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfInterviewedApplicants+"</div></a></td>";
+		                     result = result +"<td><a href='<c:url value='/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
 
 		                     result = result +"<td>";
 		                     result = result + '<div class="tblminwidth-75">';
