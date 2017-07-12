@@ -308,6 +308,12 @@
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
+								result = result + ' <input type="text" class="form-control" name="vendorLocation" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
+								result = result + '</div>';
+								
+								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Country</label>';
 								result = result + '<input type="text" name="clientCountry" id="existingCountry" value="'+country+'" readonly="readonly">';
 								result = result + '</div>  ';
@@ -320,6 +326,11 @@
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>City</label>';
 								result = result + '<input type="text" name="clientCity" id="existingCity" value="'+city+'" readonly="readonly">';
+								result = result + '</div> ';
+								
+								result = result + '<div class="user_summary_edit_cta">';
+								result = result + '<label>Zip Code</label>';
+								result = result + '<input type="text"  class="chosen-select form-control" name="vendorZipCode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
 								result = result + '</div> ';
 																							
 						}else{
