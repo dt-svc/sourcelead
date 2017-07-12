@@ -122,6 +122,17 @@
 							flatPercentageId = "";
 						}
 						
+						var proStatus ='';
+						if(json.projectStatus == 'STARTED'){
+							proStatus = 'Started';
+						}else if(json.projectStatus == 'INPROGRESS'){
+							proStatus = 'In-Progress';
+						}else if(json.projectStatus == 'ONHOLD'){
+							proStatus = 'On-Hold';
+						}else if(json.projectStatus == 'COMPLETED'){
+							proStatus = 'Completed';
+						}
+						
 						
 						
 						var result = "";
@@ -140,7 +151,7 @@
 	   		    		
 						result = result	+ '<div class="project_details_cta">';
 						result = result + '<strong>Status:</strong><span>';
-						result = result + json.projectStatus;
+						result = result +  proStatus;
 						result = result + '</span>';
 						result = result	+ '</div><div class="clearfix"></div>';
 						
