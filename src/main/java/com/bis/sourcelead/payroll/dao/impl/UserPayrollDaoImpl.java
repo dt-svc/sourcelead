@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
 @Repository
 public class UserPayrollDaoImpl implements UserPayrollDao{
@@ -46,16 +47,6 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			params.put("orgLocationId", orgLocationID);
 		}
 		
-//		java.sql.Date sqlStartDate = null;
-//		if (startDate != null) {
-//			sqlStartDate = new java.sql.Date(startDate.getTime());
-//		}
-//
-//		java.sql.Date sqlEndDate = null;
-//		if (endDate != null) {
-//			sqlEndDate = new java.sql.Date(endDate.getTime());
-//		}
-		
 		if(null != startDate && null != endDate){
 			java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 			java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
@@ -80,6 +71,20 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			}
         }
 		return qry.setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserPayroll> getPayByUserId(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserPayroll> userPayrollList = null;
+		String query = "from UserPayroll userPayroll  left join fetch userPayroll.userId where userPayroll.orgLocationId.id =:orgLocationId and userPayroll.userId.id = :userId";
+		userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		if(userPayrollList != null && userPayrollList.size() >0)
+		{
+			return userPayrollList;
+		}
+		return userPayrollList;
 	}
 
 	

@@ -674,7 +674,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(registration.getFirstName());
 		 emailMessage.setLastName(registration.getLastName());
 		 emailMessage.setToEmail(registration.getEmail());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail("info@sourcelead.com");
 		 emailMessage.setFromName("SourceLead");
 		 
 		//setting the class filed values

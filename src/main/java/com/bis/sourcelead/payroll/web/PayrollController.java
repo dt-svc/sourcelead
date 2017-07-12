@@ -99,4 +99,27 @@ public class PayrollController {
 		   model.setViewName("payroll/userMapping");
 	       return model;
 	}
+	
+	/**
+	 * @author Pavan Jampana
+	 * used to redirect to user pay screen
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/userPay")
+	public ModelAndView getUserPayroll(HttpServletRequest request) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("payroll/userPayroll");
+		   
+		   SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAY);
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+	       return model;
+	}
 }
