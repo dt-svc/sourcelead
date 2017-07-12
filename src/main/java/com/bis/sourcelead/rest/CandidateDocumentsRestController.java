@@ -127,9 +127,12 @@ public class CandidateDocumentsRestController {
 		
 		
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 String resultJson;
 		 List<CandidateDocuments>   CandidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
-		 
+		 for(CandidateDocuments canDoc : CandidateDocumentsList){
+				canDoc.setUserIdStr(user.getId());
+			}
 		 resultJson = commonUtil.toJSON(CandidateDocumentsList);
 		 return resultJson;
 	}	

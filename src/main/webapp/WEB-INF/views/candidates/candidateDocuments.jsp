@@ -650,7 +650,9 @@ function getDocument(candidateId, documentId){
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
+        			 if(json.fileName != null && json.fileName !="undefined" && json.fileName != ""){
         			 $("#docNameDiv").show();
+        			 }
         			 $("#docsName").append(json.fileName);
         			 $("#docsName").prop('title', json.fileName);
         			 $("#docUpdateButton").show();
