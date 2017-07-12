@@ -184,7 +184,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 						 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
 					 }
 					if(null != orgSpoc.getClientUser()){
-						if(orgSpoc.getClientUser().getLastName() != null && orgSpoc.getClientUser().getLastName() !=""){
+						if(orgSpoc.getClientUser().getLastName() != null && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
 							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
 						}else{
 							spocNameSB.append(orgSpoc.getClientUser().getFirstName().toString()); 
@@ -218,7 +218,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				//vendor summary contacts
 				  else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 if(orgSpoc.getVendorUser().getLastName() !=null && orgSpoc.getVendorUser().getLastName() !=""){
+					 if(orgSpoc.getVendorUser().getLastName() !=null && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
 						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()); 
 					 }else{
 						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName());

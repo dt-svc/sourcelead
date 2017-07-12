@@ -561,7 +561,7 @@ public class VendorImportServiceImpl implements VendorImportService {
 		if (clientObject.getFirstName() != null) {
 			jsonObj.put("firstName", clientObject.getFirstName());
 		}
-		if (clientObject.getLastName() != null && "".equalsIgnoreCase(clientObject.getLastName())) {
+		if (clientObject.getLastName() != null && !"".equalsIgnoreCase(clientObject.getLastName())) {
 			jsonObj.put("lastName", clientObject.getLastName());
 		}
 		if (clientObject.getPhone() != null) {
