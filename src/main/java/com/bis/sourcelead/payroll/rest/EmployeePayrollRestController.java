@@ -302,7 +302,7 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getUserPayrollList", method = RequestMethod.GET)
+	@RequestMapping(value = {"/getUserPayrollList","/rest/getUserPayrollList"}, method = RequestMethod.GET)
 	public List<UserPayroll> getUserPayrollList(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		List<UserPayroll> userpayroll = userPayrollService.getPayByUserId(userId, orgLocationId);
 		return userpayroll;
