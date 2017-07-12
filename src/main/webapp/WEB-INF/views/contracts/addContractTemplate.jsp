@@ -256,7 +256,7 @@
           <div class="pull-right">
           	<!-- <input type="button" value="Preview" id="save_Preview" class="btn btn-success" onclick="generatePDF();">  -->
             <input type="button" value="Save" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
-            <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/orgContractTemplate'/>'" class="btn btn-default ml10">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/orgContractTemplate'/>'" class="btn btn-default ml10">
           <!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
           </div>

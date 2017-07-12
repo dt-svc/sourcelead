@@ -141,7 +141,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendEmails();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
         <!-- Attachment button --> 

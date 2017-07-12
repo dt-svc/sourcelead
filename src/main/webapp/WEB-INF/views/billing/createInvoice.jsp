@@ -146,7 +146,7 @@ function errRemoveClientContact(){
 						<button type="button" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>

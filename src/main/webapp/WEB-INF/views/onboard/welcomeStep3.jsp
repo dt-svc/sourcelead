@@ -205,7 +205,7 @@
   </div>		  
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/onboardingCandidateSetp2'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/onboardingCandidateSetp2'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>

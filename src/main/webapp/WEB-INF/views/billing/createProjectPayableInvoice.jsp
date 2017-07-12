@@ -223,7 +223,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='/payablesList'/>'">Cancel</button>
               </div>
           </footer>
           </form:form>
