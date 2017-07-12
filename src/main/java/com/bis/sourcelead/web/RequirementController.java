@@ -69,6 +69,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
 
@@ -144,6 +145,11 @@ public class RequirementController {
 	
 	@Autowired
 	private RequirementInterviewerService requirementInterviewerService;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 	
 	@SuppressWarnings("unchecked")
@@ -453,12 +459,22 @@ public class RequirementController {
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
 	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
-			@RequestParam(value="type", required=false)String type) throws Exception {
+			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
+			@RequestParam(value="submissionId", required=false) String submissionId) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Requirement);
+		
+		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
@@ -531,6 +547,16 @@ public class RequirementController {
 			if(!isNullOrEmpty(type)){
 				model.addObject("type",type);
 			}
+			
+			if(!isNullOrEmpty(candidateUUID)){
+				Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
+				model.addObject("candidateId", canidate.getId());
+			}
+			
+			if(!isNullOrEmpty(submissionId)){
+				model.addObject("submissionId", submissionId);
+			}
+			
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
@@ -949,10 +975,6 @@ public class RequirementController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 		}
-	private boolean isNullOrEmpty(String msg) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 
 @RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)

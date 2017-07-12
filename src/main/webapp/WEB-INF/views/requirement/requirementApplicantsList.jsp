@@ -82,7 +82,7 @@
                <tr>
 			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
 			  <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
-			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
+			 	<td><div class="proj_show"><span><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID=${reqSub.submissionId.requirement.requirementUUID}&candidateUUID=${reqSub.submissionId.candidate.candidateUUID}&submissionId=${reqSub.submissionId.id}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
             </sec:authorize>
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
