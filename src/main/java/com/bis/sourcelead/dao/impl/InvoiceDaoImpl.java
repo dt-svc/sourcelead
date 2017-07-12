@@ -185,7 +185,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {

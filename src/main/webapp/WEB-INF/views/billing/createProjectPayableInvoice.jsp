@@ -59,7 +59,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Bill Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
-                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date"  type="text" data-validation="required" field-name="Bill Date" readonly>
+                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date" value="${currentDate}"  type="text" data-validation="required" field-name="Bill Date" readonly>
               </div>
             </div>
               
@@ -1342,6 +1342,7 @@ function getClientContactsExisted(clientContactId){
 <script>
 function getVendors(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getPayableVendorsList?${_csrf.parameterName}=${_csrf.token}",
@@ -1352,11 +1353,22 @@ function getVendors(){
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
-		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		if(orgRelationId == opt.id){
+			var selected = 'selected';
+			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+		}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		}
 		}
 		$("#vendorOrgRelationId").empty();
 		$("#vendorOrgRelationId").append(output);
 		$('#vendorOrgRelationId').trigger("chosen:updated");
+		
+		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
+			getVendorContacts();
+// 			flushValues();
+			getPaymentTerms();
+		}
 	},
 	});
 
