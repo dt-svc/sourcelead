@@ -395,6 +395,7 @@ function getOrgName(){
 function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
+	orgName = encodeURIComponent(orgName);
  	var orgLocationId = document.getElementById("orgLocationId").value; 
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(orgName){

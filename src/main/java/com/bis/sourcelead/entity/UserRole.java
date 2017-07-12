@@ -208,6 +208,21 @@ public class UserRole implements Serializable {
 
 	@Transient
 	private Integer projectApproverCount;
+	
+	@Transient
+	private Integer clientDocumentsOwnerCount;
+	
+	@Transient
+	private Integer vendorDocumentsOwnerCount;
+	
+	
+	@Transient
+	List<User> clientDocumentsOwnerList;
+
+	
+	@Transient
+	List<User> vendorDocumentsOwnerList;
+
 
 	@Transient
 	private Long userId;
@@ -714,6 +729,38 @@ public class UserRole implements Serializable {
 	public void setCurrencyConversionWithCountry(String currencyConversionWithCountry) {
 		this.currencyConversionWithCountry = currencyConversionWithCountry;
 
+	}
+
+	public Integer getClientDocumentsOwnerCount() {
+		return clientDocumentsOwnerCount;
+	}
+
+	public void setClientDocumentsOwnerCount(Integer clientDocumentsOwnerCount) {
+		this.clientDocumentsOwnerCount = clientDocumentsOwnerCount;
+	}
+
+	public Integer getVendorDocumentsOwnerCount() {
+		return vendorDocumentsOwnerCount;
+	}
+
+	public void setVendorDocumentsOwnerCount(Integer vendorDocumentsOwnerCount) {
+		this.vendorDocumentsOwnerCount = vendorDocumentsOwnerCount;
+	}
+
+	public List<User> getClientDocumentsOwnerList() {
+		return clientDocumentsOwnerList;
+	}
+
+	public void setClientDocumentsOwnerList(List<User> clientDocumentsOwnerList) {
+		this.clientDocumentsOwnerList = clientDocumentsOwnerList;
+	}
+
+	public List<User> getVendorDocumentsOwnerList() {
+		return vendorDocumentsOwnerList;
+	}
+
+	public void setVendorDocumentsOwnerList(List<User> vendorDocumentsOwnerList) {
+		this.vendorDocumentsOwnerList = vendorDocumentsOwnerList;
 	}
 
 }

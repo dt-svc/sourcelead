@@ -26,7 +26,7 @@ window.onload = function () {
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
        
-  <div class="pull-right brud-crum">Home &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
 

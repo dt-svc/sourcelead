@@ -562,6 +562,19 @@ public class CandidateListRestController {
 					boolQueryBuilder.must(skillBoolQueryBuilder);
 				}
 				
+				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				}
+				
+				ArrayList<String> candidateVisaArray = getSearchKeywordsFromChosenSelectField(jsonObj, "candidateVisa");
+				if(candidateVisaArray != null && !candidateVisaArray.isEmpty()){
+					BoolQueryBuilder visaBoolQueryBuilder = QueryBuilders.boolQuery();
+					for(String keywd : candidateVisaArray){
+						visaBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaType", keywd));
+					}
+					boolQueryBuilder.must(visaBoolQueryBuilder);
+				}
+				
 				
 				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
 					boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));

@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW_HISTORY", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentInterviewHistory")
@@ -74,9 +76,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String dateOfInterviewStr;
 	
 	@Transient
+	@JsonProperty
 	private String startTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String endTimeStr;
 	
 	@Transient
@@ -101,27 +105,33 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	@Transient
    	private String requirementId;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartDateTimeStr;
 	
 	@Transient
 	private String  interviewHistoryCreatedDate;
 	
 	@Transient
+	@JsonProperty
 	private String  interviewType;
 	
 	@Transient
+	@JsonProperty
 	private String  location;
 
 	@Transient
+	@JsonProperty
 	private String  companyName;
 
 	@Transient
+	@JsonProperty
 	private String  requirementUUID;
 	
 	@Transient
@@ -137,6 +147,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private Long interviewerId;
 	
 	@Transient
+	@JsonProperty
 	private List<RequirementInterviewHistory> interviewerList;
 	
 	@Transient
@@ -146,9 +157,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private List<Tasks> tasksList;
 	
 	@Transient
+	@JsonProperty
 	private String dayOfweek;
 
 	@Transient
+	@JsonProperty
 	private String selectedDate;
 	
 	@Transient

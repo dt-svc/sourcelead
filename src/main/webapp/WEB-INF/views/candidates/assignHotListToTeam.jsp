@@ -273,7 +273,11 @@ function assignHotListToTeam(){
 				success : function(result) {
 					if(result == "success"){
 						
-						location.replace(sourceleadUrl+"/assignHotListToTeam");  
+						 var table = $('#candidatePagination').DataTable();
+						 rowcollection.each(function(index,elem){
+							 hotlist[index] = $(elem).val();
+							 table.row('#hotList'+hotlist[index]).remove().draw( false );
+						 });
 					} 
 				},
 			}); 

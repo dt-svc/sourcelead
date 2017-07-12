@@ -793,6 +793,7 @@ function removeCertification(candidateCertificationId, candidateId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteCertificationPopUp").empty();
 	$("#deleteCertificationPopUp").append(result);
 	$("#remove_user_pop_certificates").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);

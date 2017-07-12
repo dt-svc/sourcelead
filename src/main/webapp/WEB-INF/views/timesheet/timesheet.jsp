@@ -1213,7 +1213,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 <script type="text/javascript">
 function viewSubmissionDocument(submissionDocumentId,title){
 	  var sourceleadUrl ='${sourceleadUrl}';
-		window.open(sourceleadUrl+'/viewDocument?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewDocument/'+title+'?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
 }
 
 

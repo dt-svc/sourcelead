@@ -43,7 +43,7 @@ function candidateResume(candidateId){
 	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
 	
 	result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
-    result  = result + '<i class="fa fa-check-circle"></i><span id="resMsgDiv"></span>';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="resumeMsgDiv"></span>';
     result  = result + '</div>';
     
 	result = result +' <div id="msgDiv3" ></div>';
@@ -244,9 +244,9 @@ function addResume(candidateId) {
 		             			$("#selector2").removeAttr("style");
 		             			$("#selector2").css({ display: "block" });
 		             			if(resumeId != null){
-		             				$("#resMsgDiv").html("Resume details updated");
+		             				$("#resumeMsgDiv").html("Resume details updated");
 		             			}else{
-		             				$("#resMsgDiv").html("Success!! New Resume added");
+		             				$("#resumeMsgDiv").html("Success!! New Resume added");
 		             			}		             			
 						 		candidateResumesList(candidateId);
 						 		resumesMsgFadein();
@@ -294,7 +294,7 @@ function addResume(candidateId) {
                                  $("#msgDiv3").empty();
                                  $("#msgDiv3").append(opt);
                          } */
-							result = result+'	      <table>';
+							result = result+'<table  class="display" cellspacing="0" width="100%">';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
 							result = result+'	            <th>Title</th>';
@@ -335,11 +335,11 @@ function addResume(candidateId) {
 					            	
 					            	result = result+'<tr>';
 					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
-					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
+					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span><a class="fa fa-eye" onClick="viewProfessionalCandidateResume(\''+opt.resumeUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
+					           		result = result+'<td><div class="tblicons">';
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -370,6 +370,14 @@ function addResume(candidateId) {
   }
 </script>
 
+<script>
+function viewProfessionalCandidateResume(resumeUUID,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(resumeUUID != null && resumeUUID !=""){
+	window.open(sourceleadUrl+'/viewProfessionalCandidateResume/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+	}
+}
+</script>
 
 <%-- 
      @author : Venkat Kesav
@@ -378,23 +386,23 @@ function addResume(candidateId) {
      2.parameter : candidateId, resumeId
      3.ajax url implementation in CandidateResumeRestController.
 --%>
-<script>
+<!-- <script>
 function deleteResume(candidateId, resumeId){
 	
 	alertMessage(candidateId, resumeId);
 }
-</script>
+</script> -->
 
-
+<div id="deleteResumePopUp"></div> 
 
 <script type="text/javascript">
-function alertMessage(candidateId, resumeId){
+function deleteResume(candidateId, resumeId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the resume</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteResumePopUp();'></b>";
 	result = result +"	</div>";
 	$("#deleteResumePopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -404,9 +412,8 @@ function alertMessage(candidateId, resumeId){
 </script>
 
 <script type="text/javascript">
-function cancel(){
-	$("#deleteResumePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+function deleteResumePopUp(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
 }
 </script>
 
@@ -422,10 +429,12 @@ function deleteSelectedResume(candidateId, resumeId){
 		    	if(data != null && data != 'undefined' && data != ""){
     			 $("#selector2").removeAttr("style");
      			 $("#selector2").css({ display: "block" });
-     			 $("#resMsgDiv").html("Resume deleted");
+     			 $("#resumeMsgDiv").html("Resume deleted");
     			 $("#popUpDivResume").removeClass("edit-details-active");
     			 candidateResumesList(candidateId);
+    			 deleteResumePopUp();
     			 resumesMsgFadein();
+    			 
 		    	}
 		    },
      });
@@ -461,6 +470,7 @@ function getResume(candidateId, resumeId){
         			 if(json.description != null && json.description != "undefined" && json.description != ""){
         				 $("textarea#description").val(json.description);
         			 }
+        			 
         			 
         			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
    		    }

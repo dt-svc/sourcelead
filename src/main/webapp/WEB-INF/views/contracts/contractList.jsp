@@ -50,10 +50,10 @@ padding: 2px 300px 2px 0px;
 <section class="contrHead"> 
 <ul> 
 <li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft (${contractsCount.totalDraftCount})</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
 <li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Completed (${contractsCount.totalFinalizedCount})</a></li>
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList();">Expired (${contractsCount.totalExpiredCount})</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
@@ -113,6 +113,8 @@ padding: 2px 300px 2px 0px;
        }
     </script> 
 
+
+<div id="popUp"></div>
 
 	
 <div class="content-area content-new clearfix">
@@ -386,7 +388,7 @@ function preparedContractListDraft(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -471,7 +473,7 @@ function preparedContractListDraft(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -553,7 +555,7 @@ function preparedContractListDraft(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -673,11 +675,6 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
                 },
                 customize: function(doc) {
                     doc.defaultStyle.alignment = 'center';
-                    doc.content.forEach(function(item) {
-                        if (item.table) {
-                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-                        } 
-                      })
                   },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
@@ -694,6 +691,7 @@ function listContractsPagination(SourceLeadWeb_loginOrg){
     });
 	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableDraft1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 function vendorListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft').DataTable( { 
@@ -713,11 +711,6 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
                 },
                 customize: function(doc) {
                     doc.defaultStyle.alignment = 'center';
-                    doc.content.forEach(function(item) {
-                        if (item.table) {
-                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-                        } 
-                      })
                   },               
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
@@ -734,6 +727,7 @@ function vendorListContractsPagination(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableDraft").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 function appListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft2').DataTable( { 
@@ -753,11 +747,6 @@ function appListContractsPagination(SourceLeadWeb_loginOrg){
                 },
                 customize: function(doc) {
                     doc.defaultStyle.alignment = 'center';
-                    doc.content.forEach(function(item) {
-                        if (item.table) {
-                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-                        } 
-                      })
                   },
                 title: SourceLeadWeb_loginOrg +' - Draft',
             }
@@ -772,6 +761,7 @@ function appListContractsPagination(SourceLeadWeb_loginOrg){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     } );
+    $("#contractListTableDraft2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 </script>
 
@@ -788,7 +778,7 @@ function preparedContractListWFA(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -863,7 +853,7 @@ function preparedContractListWFA(data){
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		  
 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
+	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
 	      	         }
 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	      	     		if(report.typeOfContract == "New"){
@@ -895,7 +885,7 @@ function preparedContractListWFA(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -971,7 +961,7 @@ function preparedContractListWFA(data){
 	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
         		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
+     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
      	         }
      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
      	     		if(output.typeOfContract == "New"){
@@ -1003,7 +993,7 @@ function preparedContractListWFA(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -1065,7 +1055,7 @@ function preparedContractListWFA(data){
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 					if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.approverUserId){
-					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
+					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+appReport.id+',\'REJECTED\');"></i></div></div>';
 					}
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
@@ -1133,11 +1123,6 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
@@ -1154,6 +1139,7 @@ function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWFA1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
@@ -1174,11 +1160,6 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
@@ -1195,6 +1176,7 @@ function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWFA").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 
@@ -1216,11 +1198,6 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
@@ -1237,6 +1214,7 @@ function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWFA2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 
 }
 </script>
@@ -1254,7 +1232,7 @@ function preparedContractListWTS(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -1334,7 +1312,7 @@ function preparedContractListWTS(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -1419,7 +1397,7 @@ function preparedContractListWTS(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -1532,11 +1510,6 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
@@ -1553,6 +1526,7 @@ function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTS1").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTS').DataTable( { 
@@ -1572,11 +1546,6 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
@@ -1593,6 +1562,7 @@ function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTS").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTS2').DataTable({ 
@@ -1612,11 +1582,6 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
@@ -1633,6 +1598,7 @@ function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTS2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 
@@ -1649,7 +1615,7 @@ function preparedContractListWTV(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -1745,7 +1711,7 @@ function preparedContractListWTV(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -1838,7 +1804,7 @@ function preparedContractListWTV(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -1958,11 +1924,6 @@ function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
@@ -1999,11 +1960,6 @@ function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
@@ -2041,11 +1997,6 @@ function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
@@ -2079,7 +2030,7 @@ function preparedContractListFinalize(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -2154,7 +2105,7 @@ function preparedContractListFinalize(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -2237,7 +2188,7 @@ function preparedContractListFinalize(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -2345,11 +2296,6 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
@@ -2366,6 +2312,7 @@ function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableFinalize1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){ 
     $('#contractListTableFinalize').DataTable( { 
@@ -2385,11 +2332,6 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  },  
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
@@ -2406,6 +2348,7 @@ function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableFinalize").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	$('#contractListTableFinalize2').DataTable({ 
@@ -2425,11 +2368,6 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
@@ -2446,6 +2384,7 @@ function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableFinalize2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 <!-- preparedContractListExpired -->
@@ -2462,7 +2401,7 @@ function preparedContractListExpired(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -2529,7 +2468,7 @@ function preparedContractListExpired(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
@@ -2600,7 +2539,7 @@ function preparedContractListExpired(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -2701,11 +2640,6 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
@@ -2722,6 +2656,7 @@ function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableEXP1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){ 
     $('#contractListTableEXP').DataTable( { 
@@ -2741,11 +2676,6 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
@@ -2762,6 +2692,7 @@ function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableEXP").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	$('#contractListTableEXP2').DataTable({ 
@@ -2781,11 +2712,6 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
@@ -2802,6 +2728,7 @@ function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableEXP2").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 
@@ -2818,7 +2745,7 @@ function preparedContractListRejected(data){
 		result = result + '   <tr>';
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
-		result = result + '    <th>Owner</th>';
+		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
@@ -2899,7 +2826,7 @@ function preparedContractListRejected(data){
 	opt = opt + '   <tr>';
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
-	opt = opt + '    <th>Owner</th>';
+	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
 	opt = opt + '   <th>Start | End date</th>';
@@ -2982,7 +2909,7 @@ function preparedContractListRejected(data){
 		res = res + '   <tr>';
 		res = res + '    <th>Title</th>';
 		res = res + '    <th>Type</th>';
-		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
@@ -3091,11 +3018,6 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
@@ -3112,6 +3034,7 @@ function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableREJ1").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){ 
     $('#contractListTableREJ').DataTable( { 
@@ -3131,11 +3054,6 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
@@ -3152,6 +3070,7 @@ function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableREJ").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	$('#contractListTableREJ2').DataTable({ 
@@ -3171,11 +3090,6 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	                },
 	                customize: function(doc) {
 	                    doc.defaultStyle.alignment = 'center';
-	                    doc.content.forEach(function(item) {
-	                        if (item.table) {
-	                         item.table.widths = ['*', '*', '*','*','*','*','*'] 
-	                        } 
-	                      })
 	                  }, 
 	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
@@ -3192,6 +3106,7 @@ function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableREJ2").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3236,15 +3151,17 @@ function finalizeContract(recordId,status){
 
 <script>
 function approveContract(recordId,status){
-	 var rowHtmlContent =  $("#row"+recordId).html();
+	var rejectReason =  $("#rejectContractId").val();
+	var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status+"&rejectReason="+rejectReason,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();
+        		$("#popUp").remove();
     	    	$("#row"+recordId).html(rowHtmlContent);
     	    	 $("#removeStatus"+recordId).html("");
     	        $("#removeReject"+recordId).html("<span>Rejected</span>").addClass('text-success');
@@ -3258,6 +3175,40 @@ function approveContract(recordId,status){
         	getTemplateList();
        },
    });  
+}
+</script>
+
+<script>
+function rejectedContractReason(recordId,status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Do you want to reject this contract?</p>";
+	result = result +"		<textarea  id='rejectContractId' name='rejectContractId'  placeholder='Reason here'></textarea>";
+	result = result + ' <div id="rejectContractIdDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='validateReason("+recordId+",\""+status+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function validateReason(recordId,status){
+	
+	var rejectReason =  $("#rejectContractId").val();
+	if(rejectReason != null && rejectReason !='undefined' && rejectReason !=''){
+		$("#rejectContractIdDiv").find('p.jquery_form_error_message').remove();
+		approveContract(recordId,status);
+	}else{
+		$("#rejectContractIdDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	}
+}
+</script>
+
+<script>
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -3469,23 +3420,21 @@ function CountClick(contractUUID,parentId){
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
 
-			  if(opt.docFile != null && opt.docFile !=""){
-				  result = result +'	       <label class="col-md-4 text-center"><a href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\">'+opt.fileName+'</a></label>                                                 ';
-			  }else{
-				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
-			  }
+				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</a></label>                                                 ';
 
-			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+				  /* if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
 				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 				  result = result +'	       <label class="text-center">--</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
 				  $("#saveAction").empty(); 
 			  }
-			  else{
-				  if(parentId != "--"){
+			  else{ 
+				   if(parentId != "--"){ */
 						  if(opt.docFile != null && opt.docFile !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
 							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+' <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
 							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
@@ -3506,15 +3455,15 @@ function CountClick(contractUUID,parentId){
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
 					  }
-				  }
+				/*   }
 				  else{
 					  $("#saveAction").empty(); 
 					  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 					  result = result +'	       <label class="text-center">--</label>                                                 ';
 					  result = result +'	       </div>			                                                                                                                  ';
 					  $("#saveAction").empty(); 
-				  }
-			  }
+				  } */
+			 /*  } */
 			  result = result +'			</div>                                                                                                                                ';
 			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
 			  result = result +'	 </div>                                                                                                                                   ';
@@ -3565,7 +3514,14 @@ document.getElementById("uploadBtn"+id).onchange = function () {
     });
 }
 </script>
-
+<script type="text/javascript">
+function previewContractDoc(docId,fileName){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	if(docId != null && docId != ""){
+		window.open(sourceleadUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
+	}  
+}
+</script>
 <script>
 function editOne(startDate,endDate){
 	$('.editNewDat').show();

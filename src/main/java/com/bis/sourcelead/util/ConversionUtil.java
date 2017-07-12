@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -245,7 +246,7 @@ public class ConversionUtil {
 	 * @return String
 	 * @throws ParseException
 	 */
-	public String getDateAsString(Date date){
+	public static String getDateAsString(Date date){
 		 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		 return dateFormat.format(date);
 
@@ -364,6 +365,22 @@ public class ConversionUtil {
 		// returning the last date
 		dates[1] = LocalDate.fromDateFields(calendarEnd.getTime());
 		return dates;
+	}
+
+	public List<LocalDate> getAllDatesBetweenGivenDates(LocalDate date1, LocalDate date2) {
+		List<LocalDate> datesList = null;
+		if(date1 !=null && date2 !=null){
+			datesList = new ArrayList<>();
+//			LocalDate date1 = new LocalDate(startDateUTC);
+//			LocalDate date2 = new LocalDate(endDateUTC); 
+			 while(date1.isBefore(date2)){
+				 datesList.add(date1);
+				 System.out.println("====================================="+date1);
+//			     System.out.println(date1.toString("MMM/yyyy"));
+			     date1 = date1.plus(Period.months(1));
+			 }
+		}
+		return datesList;		
 	}
 
 	

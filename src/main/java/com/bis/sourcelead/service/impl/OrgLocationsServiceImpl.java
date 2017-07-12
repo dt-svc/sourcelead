@@ -55,8 +55,8 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	}
 	
 	@Override
-	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception {
-		return orgLocationsDao.isLoginUserIsSuperUser(userId);
+	public Boolean isLoginUserIsSuperUser(Long userId,Long orgLocationId) throws Exception {
+		return orgLocationsDao.isLoginUserIsSuperUser(userId,orgLocationId);
 	}
 
 	@Override

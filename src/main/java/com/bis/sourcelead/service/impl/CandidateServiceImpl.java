@@ -982,6 +982,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 			}
 			
+			if(jsonObj.has("visa")){
+				
+				String visaList =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("visa");
+					visaList = jsonArray.toString();
+				}
+				catch(JSONException e){
+					visaList =jsonObj.getString("visa");
+				}
+				visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
+				visaList = visaList.replaceAll("\"", "");
+				candidate.setVisaType(visaList);
+		  	 
+			}else{
+				candidate.setVisaType(null);
+			}
+			
 			
 			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);
@@ -1200,7 +1218,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
-			if(candidate.getConsultantUser() != null){
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumesListByCandidateId(candidate.getId());
+			if(candidateResumes != null){
+			candidate.setCandidateResumeName(candidateResumes.getFileName());
+			candidate.setCandidateResumeFileType(candidateResumes.getFileContentType());
+			}if(candidate.getConsultantUser() != null){
 				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
 				candidate.setAssignedProjectsCount(assignedProjectsCount);
 			}

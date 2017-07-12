@@ -147,7 +147,7 @@ function getExpensesList(){
 					result = result +"<th>Client</th>";
 					result = result +"<th>Start Date</th>";
 					result = result +"<th>End Date</th>";
-					result = result +"<th>No of Exp</th>";
+					result = result +"<th>No of Items</th>";
 					result = result +"<th>Amount</th>";
 					result = result +"<th>Status</th>";
 					result = result +"</tr>";
@@ -363,12 +363,12 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'<table>';
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
-	        	result = result +'<th>Exp Category</th>';
 	        	result = result +'<th>Date</th>';
-	        	result = result +'<th>Payment Mode</th>';
-	        	result = result +'<th>Currency</th>';
+	        	result = result +'<th>Exp Category</th>';
 	        	result = result +'<th>Description</th>';
 	        	result = result +'<th>Amount</th>';
+	        	result = result +'<th>Currency</th>';
+	        	result = result +'<th>Payment Mode</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
@@ -410,12 +410,12 @@ var sourceleadUrl = '${sourceleadUrl}';
       		  }
 	        	
 	        	result = result +'<tr>';
-	        	result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'+expensesCategoryId+'</div></td>';
 	        	result = result +'<td><div>'+expenseDateStr+'</div></td>';
-	        	result = result +'<td><div>'+paymentMode+'</div></td>';
-	        	result = result +'<td><div>'+currencyType+'</div></td>';
+	        	result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'+expensesCategoryId+'</div></td>';
 	        	result = result +'<td><div class="tbldata-dotdot-me">'+description+'</div></td>';
 	        	result = result +'<td><div>'+amount+'</div></td>';
+	        	result = result +'<td><div>'+currencyType+'</div></td>';
+	        	result = result +'<td><div>'+paymentMode+'</div></td>';
 	        	result = result +'</tr>';
 	       }
 	        	result = result +'</tbody>';

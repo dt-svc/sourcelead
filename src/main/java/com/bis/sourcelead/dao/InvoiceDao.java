@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgRelations;
 
 public interface InvoiceDao{
@@ -35,6 +36,8 @@ public interface InvoiceDao{
 
 	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC)throws Exception;
 
-	List<Invoice> getDueDateCompletedInvoicesList() throws Exception;;
+	List<Invoice> getDueDateCompletedInvoicesList() throws Exception;
+
+	List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId)throws Exception;
 
 }

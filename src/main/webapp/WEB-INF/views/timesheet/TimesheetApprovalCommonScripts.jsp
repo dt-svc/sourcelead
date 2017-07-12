@@ -633,7 +633,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 <script type="text/javascript">
 function viewSubmissionDocument(submissionDocumentId,title){
 	  var sourceleadUrl ='${sourceleadUrl}';
-		window.open(sourceleadUrl+'/viewDocument?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewDocument/'+title+'?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
 }
 </script>
 	
@@ -1413,7 +1413,7 @@ function pagination(){
     		"sZeroRecords": "", "sEmptyTable": ""
     	}
     });
-    $('#example').wrap("<div class='overflow_Auto'></div>");
+    $('#example').wrap("<div class='overflow_Auto width100percnt'></div>");
 }
 </script>
 

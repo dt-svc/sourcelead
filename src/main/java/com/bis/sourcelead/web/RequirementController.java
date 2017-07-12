@@ -7,9 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,7 +48,6 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
-import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -68,6 +68,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
 
@@ -139,7 +140,11 @@ public class RequirementController {
 	ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
-	RequirementInterviewerService requirementInterviewerService;
+	private PdfConversionUtil pdfConversionUtil;
+	
+	@Autowired
+	private RequirementInterviewerService requirementInterviewerService;
+
 	
 	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
@@ -447,7 +452,8 @@ public class RequirementController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID) throws Exception {
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
+			@RequestParam(value="type", required=false)String type) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -522,6 +528,9 @@ public class RequirementController {
 				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
 			}
 			model.addObject("requirementUUID",requirementUUID);
+			if(!isNullOrEmpty(type)){
+				model.addObject("type",type);
+			}
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
@@ -945,4 +954,56 @@ public class RequirementController {
 		return false;
 	}
 
+
+@RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
+	public void viewJobSummaeyDocumentDocView(@RequestParam(value = "jobId", required = false) String jobId,
+			@PathVariable("title") String title, HttpServletResponse response)
+			throws Exception {
+
+		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(jobId));
+
+		byte[] pdfBytes = null;
+		if ("application/pdf".equalsIgnoreCase(requirement.getFileContentType())) {
+			pdfBytes = requirement.getDocFile();
+		} else {
+			pdfBytes = pdfConversionUtil.convertDocToPdf(requirement.getDocFile());
+		}
+		response.setHeader("Content-disposition", "inline; filename=contractPdf.pdf");
+		response.setContentType("application/pdf");
+		ServletOutputStream sos = response.getOutputStream();
+		if (null != pdfBytes) {
+			response.setContentLength(pdfBytes.length);
+			sos.write(pdfBytes);
+		}
+		sos.flush();
+		sos.close();
+
+	}	
+
+
+@RequestMapping(value = "/viewOfferDocumentDocView/{title}", method = RequestMethod.GET)
+	public void viewOfferDocumentDocView(@RequestParam(value = "offerID", required = false) String offerID,
+			@PathVariable("title") String title, HttpServletResponse response)
+		throws Exception {
+
+	RequirementOffers offer = requirementOffersService.getRequirementOfferId(Long.parseLong(offerID));
+
+	byte[] pdfBytes = null;
+	if ("application/pdf".equalsIgnoreCase(offer.getFileContentType())) {
+		pdfBytes = offer.getDocFile();
+	} else {
+		pdfBytes = pdfConversionUtil.convertDocToPdf(offer.getDocFile());
+	}
+	response.setHeader("Content-disposition", "inline; filename=contractPdf.pdf");
+	response.setContentType("application/pdf");
+	ServletOutputStream sos = response.getOutputStream();
+	if (null != pdfBytes) {
+		response.setContentLength(pdfBytes.length);
+		sos.write(pdfBytes);
+	}
+	sos.flush();
+	sos.close();
+
+}	
+	
 }

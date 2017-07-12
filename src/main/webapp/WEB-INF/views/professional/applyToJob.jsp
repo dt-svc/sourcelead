@@ -712,7 +712,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '</div>';
 		}
 		else{
-			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Import Resume</label>';
+			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();" data-validation="required" field-name="Import Resume" id="importResume">&nbsp;Import Resume</label>';
 			
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
@@ -1317,7 +1317,11 @@ function getResumesList(){
 	        	var json = JSON.parse(data);
 	        	if( json.length > 0){
 		        	var output = "";
-		        	output = output + "<option value=''>-- Select Resume --</option>"; 
+		        	if(json.length > 1){
+		        		output = output + "<option value=''>-- Select Resume --</option>";
+		        	}else{
+		        		getCandidateDetails();
+		        	}
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -2340,6 +2344,10 @@ function parseProfessionalResume(){
 	 $("#candidateSkills").val('').trigger("chosen:updated");
 	 document.getElementById("primarySkillDiv").style.display="";
 	 $("#primarySkill").val('');
+	 
+	 $('#importResume').removeAttr('data-validation');
+	 $('#importResume').attr("data-validation-optional","true"); 
+	 $('#importResume').find('p.jquery_form_error_message').remove(); 
 }
 </script>
 <script>

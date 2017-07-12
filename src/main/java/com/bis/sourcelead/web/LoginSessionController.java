@@ -212,6 +212,18 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
 			
+			
+			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId(),orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
+			
+			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(user.getId(),org.getId());
+			if(isSuperAdmin == true){
+				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
+			}
+			
+			
 			String[] modules = orgLocations.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
 				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
@@ -283,9 +295,11 @@ public class LoginSessionController {
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
 					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
 					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcome");
+					   model.setViewName("onboard/welcomeStep1");
 					}else{
 						model.setViewName("dashboard");
 					}
@@ -510,6 +524,16 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
+			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId(),orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
+			
+			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(user.getId(),org.getId());
+			if(isSuperAdmin == true){
+				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
+			}
+			
 			String[] modules = orgLocations.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
 				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
@@ -587,9 +611,11 @@ public class LoginSessionController {
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
 					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
 					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcome");
+					   model.setViewName("onboard/welcomeStep1");
 					}else{
 						model.setViewName("dashboard");
 					}
@@ -860,16 +886,6 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userType", user.getUserType());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCode", user.getUserCode());
 		SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
-		
-		boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
-		
-		boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(user.getId());
-		if(isSuperAdmin == true){
-			SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
-		}else{
-			SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
-		}
 		
 		StringBuilder userNameSB = new StringBuilder();
 		if(null != user.getLastName()){

@@ -599,7 +599,7 @@ function getContactsLists(){
 					        			}
 					        			result = result +'</td>';
 					        			result = result +'<td>';
-					        			result = result +'<div title=""><span>'+report.orgName+'</span></div>';
+					        			result = result +'<div title="'+report.orgName+'"><span>'+report.orgName+'</span></div>';
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        		if(report.releasedRequirement =="true"){

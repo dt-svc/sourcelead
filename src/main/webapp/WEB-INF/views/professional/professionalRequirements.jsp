@@ -134,7 +134,7 @@ window.onload = function () {
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home </a> &raquo; <a href="<c:url value='/requirementList'/>">Jobs List </a> </div>
+           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='/requirementList'/>">Jobs List </a> </div>
            </c:if>
           
           <div class="clearfix"></div> 
@@ -734,7 +734,7 @@ function requirementsList(offset){
 			 				var location = '';
 			 				var jobId = '';
 			 				var industryName = '';
-			 				
+			 				var visaType ='';
 			 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 			 					jobType = requirements.jobType;
 			 				}else{
@@ -776,6 +776,12 @@ function requirementsList(offset){
 			 					industryName = '--';
 			 				}
 			 				
+			 				if(requirements.visaTypes != null && requirements.visaTypes != '' && requirements.visaTypes != 'undefined'){
+			 					visaType = requirements.visaTypes;
+			 				}else{
+			 					visaType = '--';
+			 				}
+			 				
 			 				description =  description+'Job Title:'+requirements.jobTitle+";";
 			 				description =  description+'Posted By :'+requirements.postedOrg+";";
 			 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
@@ -798,6 +804,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
+			 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
@@ -1069,6 +1076,7 @@ function searchRequirement(offset){
 									 				var location = '';
 									 				var jobId = '';
 									 				var industryName = '';
+									 				var visaType ='';
 									 				
 									 				description =  description+'Job Title:'+requirements.jobTitle +";";
 									 				description =  description+' Posted By :'+requirements.postedOrg+";";
@@ -1113,6 +1121,12 @@ function searchRequirement(offset){
 									 					industryName = '--';
 									 				}
 									 				
+									 				if(requirements.visaTypes != null && requirements.visaTypes != '' && requirements.visaTypes != 'undefined'){
+									 					visaType = requirements.visaTypes;
+									 				}else{
+									 					visaType = '--';
+									 				}
+									 				
 									 				
 									 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
@@ -1125,6 +1139,7 @@ function searchRequirement(offset){
 									 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 									 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
 									 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
+									 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
 									 				result = result +'</span>';
 									 				result = result +'<h5>';
 									 				result = result +'<strong>Skills :</strong>';

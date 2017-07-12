@@ -146,6 +146,12 @@ function requirementProfile(requirementUUID){
 		    	if(json.location != null && json.location != '' && json.location != 'undefined'){
 		    		location = json.location
 		    	}
+		    	var visaType ='';
+		    	if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined'){
+ 					visaType = json.visaType;
+ 				}else{
+ 					visaType = '--';
+ 				}
 
 		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
@@ -308,11 +314,15 @@ function requirementDetails(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewProfessionalRequirementProfile(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 		            }
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+visaType+'">'+visaType+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="clearfix"></div>';
@@ -330,6 +340,16 @@ function requirementDetails(requirementUUID){
 	    });
    }
 </script>
+
+<script>
+function viewProfessionalRequirementProfile(jobId,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(jobId != null && jobId != ""){
+			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+		}  
+}
+</script>
+
 
 <script>
 function getReferalDetails(requirementUUID){

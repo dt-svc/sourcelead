@@ -197,7 +197,7 @@
 <!-- Report Chart desing -->
 <div class="clearfix"></div>
           <div class="clearfix mt10">
-              <div class="col-md-4">
+              <div class="col-md-3">
                   
                   <div class="clearfix billing_count">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome"></span>
@@ -220,19 +220,13 @@
                   </div>
               </div> -->
               
-              <div class="col-md-8 RepoPad">
+              <div class="col-md-9 RepoPad">
 <div class="project_side_wrap_inn_tabs">
-          <ul class="project-tabs-menu">
-            <li class="current"><a href="#tab-1">Invoice</a></li>
-           <!--  onclick="payableTab('payables');" -->
-            <li ><a href="#tab-2">Bill</a></li>
-            <div class="clearfix"></div>
-          </ul>
-          <div class="project_tabs">
-          
+          <div class="clearfix">
+            <div id="billing_chartdiv">
             
-            <div id="tab-1" class="project_tabs_inn datatable_filter">
-            </div>
+            <!-- <div id="tab-1" class="project_tabs_inn datatable_filter">
+            </div> -->
 
 			<div id="tab-2" class="project_tabs_inn datatable_filter">
           </div>
@@ -722,9 +716,68 @@ function getCustomReports(){
 }
 </script>
 
-
-
 <script>
+function getBillingReportsChart(invoiceType,json){
+	/* ;;; */
+	 $("#netIncome").html(json.netAmount);
+	 $("#receivedAmount").html(json.receivedAmount);
+	 $("#payableAmount").html(json.payableAmount); 
+	 
+	 //startatatat============
+	 var chartData = [];
+
+/* function generateChartData() {  ;;;*/
+  var firstDate = new Date();
+  for (var i = 0; i < json.billingGraphBean.length; i++) { 
+		 var opt = json.billingGraphBean[i]; 
+        chartData.push({
+        	country: opt.date,
+        	year2004: opt.income,
+        	year2005: opt.expenses
+      });
+  }
+	var chart = AmCharts.makeChart("billing_chartdiv", {
+	    "theme": "light",
+	    "type": "serial",
+	    "dataProvider":chartData ,
+	    "valueAxes": [{
+	        "unit": "",
+	        "position": "left",
+	        "title": "GDP growth rate",
+	    }],
+	    "startDuration": 1,
+	    "graphs": [{
+	        "balloonText": "GDP grow in [[category]] (2004): <b>[[value]]</b>",
+	        "fillAlphas": 0.9,
+	        "lineAlpha": 0.2,
+	        "title": "2004",
+	        "type": "column",
+	         "columnWidth":0.5,
+	        "valueField": "year2004"
+	    }, {
+	        "balloonText": "GDP grow in [[category]] (2005): <b>[[value]]</b>",
+	        "fillAlphas": 0.9,
+	        "lineAlpha": 0.2,
+	        "title": "2005",
+	        "type": "column",
+	        "clustered":true,
+	        "columnWidth":0.5,
+	        "valueField": "year2005"
+	    }],
+	    "plotAreaFillAlphas": 0.1,
+	    "categoryField": "country",
+	    "categoryAxis": {
+	        "gridPosition": "start"
+	    },
+	    "export": {
+	        "enabled": true
+	     }
+
+	});
+}
+</script>
+
+ <script>
 function getBillingReports(invoiceType){
 	 $("#netIncome").html(0);
 	 $("#receivedAmount").html(0);
@@ -740,52 +793,16 @@ function getBillingReports(invoiceType){
 		    	type: "GET",
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(data) {
+		        	 /* alert(data); */
 		        	 var json = JSON.parse(data);
-		        	 var result = "";
-		        	 result = result +'<div class="project_tabs_inn_head">';
-		        	 result = result +'</div>';
-		        	 result = result +'<div class="require_wrap_table dataFilterNew">';
-		        	 result = result +"<table id='billingReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
-		        	 result = result +'<thead>';
-		        	 result = result +'<tr>';
-		        	 result = result +'<th>Invoice Id</th>';
-		        	 result = result +'<th>Client</th>';
-		        	 result = result +'<th>Invoice Date</th>';
-		        	 result = result +'<th>Total</th>';
-		        	 result = result +'<th>Due Date</th>';                    
-		        	 result = result +'<th>Due Amount</th>';
-		        	 result = result +'</tr>';
-		        	 result = result +'</thead>';	
-		        	 result = result +'<tbody>';
-		        		 for (var i = 0; i < json.length; i++) { 
-			        		 var opt = json[i]; 
-			        		 $("#netIncome").html(opt.netIncome);
-				        	 $("#receivedAmount").html(opt.recievableAmount);
-				        	 $("#payableAmount").html(opt.payableAmount); 
-			        		 result = result +'<tr>';
-				        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
-				        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
-				        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
-				        	 result = result +'<td><div>'+opt.total+'</div></td> ';
-				        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
-				        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
-				        	 result = result +'</tr>'; 
-			        	 }
-		                result = result +'</tbody>';
-		                result = result +'</table>';
-		                result = result +'</div>';
-		                $("#tab-1").empty();
-		        	   $("#tab-1").append(result);
-		        	   billingReportPagination();
-		        	    
-		        	   getPayableBillingReports('payables');
+		        	 getBillingReportsChart(invoiceType,json);
 		         }
 			});	
 		}
 		
 }
 
-</script>
+</script> 
 
 <script>
 function getPayableBillingReports(invoiceType){
