@@ -33,6 +33,7 @@ $(document).ready(function(){
 	}else{
 		getClients();
 	}
+
 	
 });
 </script>
@@ -97,7 +98,7 @@ function errRemoveClientContact(){
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
 								<input type="text" class="form-control calendar"
-									id="invoiceDate" name="invoiceDate" value=""
+									id="invoiceDate" name="invoiceDate" value="${currentDate}"
 									placeholder="Invoice Date" id="invoiceDate" readonly
 									data-validation="required" field-name="Invoice Date">
 							</div>
@@ -1685,21 +1686,36 @@ function getSowRate(id){
 <script>
 function getClients(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationId ='${orgRelationId}';
+	
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?${_csrf.parameterName}=${_csrf.token}",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
-		output = output + "<option value=''>Select Client</option>";
+			output = output + "<option value=''>Select Client</option>";
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
-		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		if(orgRelationId == opt.id){
+			var selected = 'selected';
+			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+		}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		}
+		
 		}
 		$("#clientOrgRelationId").empty();
 		$("#clientOrgRelationId").append(output);
 		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		
+		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
+			getClientContacts();
+			errRemoveClient();
+			getPaymentTerms();
+		}
 	},
 	});
 

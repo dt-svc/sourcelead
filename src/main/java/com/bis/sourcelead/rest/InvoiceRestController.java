@@ -1616,9 +1616,9 @@ public class InvoiceRestController {
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		Invoice  pInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
-		pInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-		invoiceService.linkInvoice(pInvoice);
+		Invoice  childInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getId());
+		childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+		invoiceService.linkInvoice(childInvoice);
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
 
