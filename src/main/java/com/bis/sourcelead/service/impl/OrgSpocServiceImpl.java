@@ -187,7 +187,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 						if(orgSpoc.getClientUser().getLastName() != null && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
 							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
 						}else{
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName().toString()); 
+							spocNameSB.append(orgSpoc.getClientUser().getFirstName()); 
 						}
 						orgSpoc.setSpocName(spocNameSB.toString());
 						
