@@ -145,6 +145,11 @@ public class RequirementController {
 	
 	@Autowired
 	private RequirementInterviewerService requirementInterviewerService;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 	
 	@SuppressWarnings("unchecked")
@@ -542,13 +547,16 @@ public class RequirementController {
 			if(!isNullOrEmpty(type)){
 				model.addObject("type",type);
 			}
+			
 			if(!isNullOrEmpty(candidateUUID)){
 				Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
 				model.addObject("candidateId", canidate.getId());
 			}
+			
 			if(!isNullOrEmpty(submissionId)){
 				model.addObject("submissionId", submissionId);
 			}
+			
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
@@ -967,10 +975,6 @@ public class RequirementController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			} 
 		}
-	private boolean isNullOrEmpty(String msg) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 
 @RequestMapping(value = "/viewJobSummaryDocumentDocView/{title}", method = RequestMethod.GET)
