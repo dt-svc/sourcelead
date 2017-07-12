@@ -11,12 +11,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.ConversionUtil;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "USER_PYAROLL", catalog = "sourcelead")
@@ -48,6 +52,15 @@ public class UserPayroll implements Serializable {
 	
 	@Column(name = "PAYROLL_END_DATE")
 	private Date payrollEndDate;
+	
+	
+	@Transient
+	@JsonProperty
+	private String payrollStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String payrollEndDateStr;
 	
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
@@ -262,7 +275,20 @@ public class UserPayroll implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
+
+	public String getPayrollStartDateStr() {
+		if(payrollStartDate != null){
+			payrollStartDateStr = ConversionUtil.getDateAsString(payrollStartDate);
+		}
+		return payrollStartDateStr;
+	}
+
+	public String getPayrollEndDateStr() {
+		if(payrollEndDate != null){
+			payrollEndDateStr = ConversionUtil.getDateAsString(payrollEndDate);
+		}
+		return payrollEndDateStr;
+	}
+
 	
 }

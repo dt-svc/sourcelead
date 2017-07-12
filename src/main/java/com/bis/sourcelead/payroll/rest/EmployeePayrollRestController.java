@@ -36,6 +36,7 @@ import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
+import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -66,6 +67,9 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	private BisUserMappingService  bisUserMappingService;
+	
+	@Autowired
+	UserPayrollService userPayrollService;
 	
 	/**
 	 * insert upload rcords 
@@ -287,4 +291,21 @@ public class EmployeePayrollRestController {
 		AccountDeductions updatedAccountDeductions = accountDeductionsService.saveAccountDeductions(accountDeductions);
 		return commonUtil.toJSON(updatedAccountDeductions.getId());
 	}
+	
+	/**
+	 * @author BISraja
+	 * used for user payroll list based on user id
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getUserPayrollList", method = RequestMethod.GET)
+	public List<UserPayroll> getUserPayrollList(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception {
+		List<UserPayroll> userpayroll = userPayrollService.getPayByUserId(userId, orgLocationId);
+		return userpayroll;
+	}
+	
 }

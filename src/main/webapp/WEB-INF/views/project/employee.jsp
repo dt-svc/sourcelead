@@ -183,9 +183,9 @@
 		result = result +'<div class="" id="exportPop" style="display:none;">';
 		result = result +'<ul>';
 		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+			result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
 			
-			result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
+			result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
 
 		}/* else{
 			result = result +'<li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
@@ -1058,16 +1058,16 @@ function flushEmployee(){
 <!--  -->
 
 <script>
-function exportToPdf(projectId,projectName){
+function exportToPdf(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=pdf";
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=pdf";
 }
 </script>
 
 <script>
-function exportToExcel(projectId,projectName){
+function exportToExcel(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=xls";
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=xls";
 }
 </script>
 

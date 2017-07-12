@@ -84,7 +84,11 @@
 					</div>
 					<div class="project_details_cta">
 						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
-					</div>	                    			
+					</div>	 
+					<div class="project_details_cta">
+						<strong>Exp Created By:</strong><span>${expenses.expCreatedBy}</span><div class="clearfix"></div>
+					</div>
+					                   			
 					<div class="clearfix"></div>
 				</div>
            

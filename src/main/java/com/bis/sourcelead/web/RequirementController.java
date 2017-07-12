@@ -452,7 +452,8 @@ public class RequirementController {
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/requirementSummary")
-	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID) throws Exception {
+	public ModelAndView requirementSummary(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false)String requirementUUID,
+			@RequestParam(value="type", required=false)String type) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg= (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -527,6 +528,9 @@ public class RequirementController {
 				SourceLeadSessionManager.removeSessionAttribute(request, "reqsummaryMsg");
 			}
 			model.addObject("requirementUUID",requirementUUID);
+			if(!isNullOrEmpty(type)){
+				model.addObject("type",type);
+			}
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
