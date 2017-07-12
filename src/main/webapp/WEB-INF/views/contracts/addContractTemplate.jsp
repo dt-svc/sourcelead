@@ -70,7 +70,7 @@
             </div>
             </div>
              
-          <div class="form-group">
+          <!-- <div class="form-group">
               <label class="col-md-4">Letter head</label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="letterHead" name="letterHead">
@@ -78,7 +78,7 @@
                     <option value="Letter head-1">Letter head-1</option>
                   </select>
               </div>
-          </div>     
+          </div>  -->    
           </div>       
           <!--  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">         
             <div class="form-group">
