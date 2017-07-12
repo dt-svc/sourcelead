@@ -144,6 +144,10 @@ public class Constants {
 	public static final String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
 	public static final String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
 	public static final String MAIL_REJECT_REOPEN_TIMESHEET = "RejectReopenTimeSheet";
+
+	public static final String MAIL_ACCEPT_REOPEN_EXPENSES = "AcceptReopenExpenses";
+	public static final String MAIL_REJECT_REOPEN_EXPENSES = "RejectReopenExpenses";
+	
 	public static final String MAIL_BOX_SENT = "Sent";
 	public static final String MAIL_BOX_INBOX = "Inbox";
 	public static final String TASK_STATUS_OPEN = "Open";

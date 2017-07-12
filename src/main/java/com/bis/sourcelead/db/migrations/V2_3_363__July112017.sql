@@ -10,3 +10,4 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Rate Negotiation for {{UserR
 										  
 										  
  UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Rate Negotiation for {{ApplicantNegotiateRequirement.requirementName}} from {{ApplicantNegotiateRequirement.applicantName}} '  WHERE `UNIQUE_SCENARIO_NAME`='ApplicantNegotiateRequirement' and `ENTITY_TYPE`='Email';
+

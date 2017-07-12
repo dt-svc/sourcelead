@@ -143,7 +143,7 @@ public class SecurityConfig  {
     			.antMatchers("/getRequestedCandidates").permitAll() 
     			.antMatchers("/validateCampaignToEmail").permitAll() 
     			.antMatchers("/sendRequestForResume").permitAll() 
-    			.antMatchers("/displayOrgImageInMail").permitAll()
+    			.antMatchers("/displayOrgImageInMail/**").permitAll()
     			.antMatchers("/countryAutoComplete").permitAll() 
     			.antMatchers("/getStatesByCountry").permitAll()
     			.antMatchers("/getCitiesByStateAndCountry").permitAll()

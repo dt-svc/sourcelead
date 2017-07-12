@@ -1055,7 +1055,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 }
     	
     	 emailMessage.setCreatedBy(user.getUserCode());
-		 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setFromName(fullName);
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1366,10 +1366,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("initiatorUserName","--");
 			 }
 		 
-		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
-			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 if(requirement.getJobId()!= null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementName",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
 			 }else{
-				 globalVarsMap.put("requirementName","--");
+				 globalVarsMap.put("requirementName", requirement.getJobTitle());
 			 }
 		
 		 if(candidate.getFirstName() != null && candidate.getLastName()!= null && !"".equalsIgnoreCase(candidate.getFirstName()) && !"".equalsIgnoreCase(candidate.getLastName())){
@@ -2426,10 +2429,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("loginUser",users.getFirstName());
 			 }
 		 
-		 if(requirementSubmission.getRequirement().getJobTitle()!= null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
-			 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
+		 if(requirementSubmission.getRequirement().getJobId()!= null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())){
+			 
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementName",reqsb.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
 			 }else{
-				 globalVarsMap.put("requirementName","--");
+				 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
 			 }
 		
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
@@ -2513,10 +2519,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
-		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
-			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 if(requirement.getJobId()!= null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementName",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+			 
+			
 			 }else{
-				 globalVarsMap.put("requirementName","--");
+				 globalVarsMap.put("requirementName", requirement.getJobTitle());
 			 }
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder candBuild = new StringBuilder();
@@ -2540,6 +2551,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 if(tempHtml != null){
 			 globalVarsMap.put("negotiationTable",tempHtml.toString());
 		 }
+		 
+		 globalVarsMap.put("loginOrgName", orgLocations.getOrg().getOrgName());
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -2997,10 +3010,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("loginUser",users.getFirstName());
 			 }
 		 
-		 if(requirementSubmission.getRequirement().getJobTitle()!= null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())){
-			 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
+		 if(requirementSubmission.getRequirement().getJobId()!= null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementName",reqsb.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
 			 }else{
-				 globalVarsMap.put("requirementName","--");
+				 globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
 			 }
 		
 		 if(requirementSubmissionTemplateFields.getFirstName() != null && requirementSubmissionTemplateFields.getLastName()!= null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
