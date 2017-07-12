@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -93,7 +92,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	private EmailScenarioService emailScenarioService;
 	
 	@Autowired
-	EmailScenerioUtil emailScenerioUtil;
+	private EmailScenerioUtil emailScenerioUtil;
+
 
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
 	
@@ -564,7 +564,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-				 
+
 				 //ProjectMembers projectMembers = projectMembersDao.getgetProjectMemberById(expenseId);
 				 
 				//setting the class filed values
@@ -613,6 +613,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
 				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLoc, notificationScenario);
+
 		}
 
 	
