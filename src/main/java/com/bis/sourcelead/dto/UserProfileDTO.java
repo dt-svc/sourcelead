@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 public class UserProfileDTO implements Serializable{
@@ -15,7 +16,9 @@ public class UserProfileDTO implements Serializable{
 	
 	private String profileImageUrl;
 	
-	Map<String,OrgLocationDTO> orgLocationsList;
+	//Map<String,OrgLocationDTO> orgLocationsList;
+	
+	List<OrgLocationDTO> orgLocationsList;
 
 	public String getFirstName()
 	{
@@ -47,13 +50,12 @@ public class UserProfileDTO implements Serializable{
 		this.profileImageUrl = profileImageUrl;
 	}
 
-	public Map<String, OrgLocationDTO> getOrgLocationsList()
-	{
+	
+	public List<OrgLocationDTO> getOrgLocationsList() {
 		return orgLocationsList;
 	}
 
-	public void setOrgLocationsList(Map<String, OrgLocationDTO> orgLocationsList)
-	{
+	public void setOrgLocationsList(List<OrgLocationDTO> orgLocationsList) {
 		this.orgLocationsList = orgLocationsList;
 	}
 

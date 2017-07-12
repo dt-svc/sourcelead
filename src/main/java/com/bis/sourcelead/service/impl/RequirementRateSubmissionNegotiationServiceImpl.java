@@ -79,7 +79,7 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 			 
 	         tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 	         tempHTML.append("<tr>");
-	         tempHTML.append("<th> Requirement Title </th>");
+	         tempHTML.append("<th> Job Title </th>");
 //	         tempHTML.append("<th> Requirement Rate </th>");
 	         tempHTML.append("<th> Rate </th>");
 	         tempHTML.append("<th> By </th>");
