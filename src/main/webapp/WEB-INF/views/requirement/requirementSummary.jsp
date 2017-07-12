@@ -897,7 +897,7 @@ function sideBar(requirementId,type){
 							 
 							 result = result + '<ul class="nav nav-tabs">';
 							 result = result +' <li class="active" id="pipelineQuickviewTabsqv"><a data-toggle="tab" href="#quickview">Quickview</a></li>';
-							 result = result +'<li id="pipelineQuickviewTabsdetails"><a data-toggle="tab" href="#detailview">Detailed View</a></li>';
+							 result = result +'<li id="pipelineQuickviewTabsdetails"><a data-toggle="tab" id="detailedView" href="#detailview">Detailed View</a></li>';
 							 result = result +'</ul>';
 							 
 							 
@@ -1011,6 +1011,16 @@ function sideBar(requirementId,type){
 							 else{
 								    requirementPipeline(requirementId,'all');
 									requirementStatusBar(requirementId,type);
+									
+									 var candidateId = '${candidateId}';
+									 var submissionId = '${submissionId}';
+									 
+									 if(candidateId != null && candidateId != '' && candidateId != 'undefined' && 
+											 submissionId != null && submissionId != '' && submissionId != 'undefined'){
+										 applicantQuickViewProfile(submissionId,candidateId); 
+										 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId); 
+										 document.getElementById('detailedView').click();
+									 }
 							 }
 			 		    }else{
 			 		    	requirementDetails(requirementId,data);
