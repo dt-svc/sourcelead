@@ -183,22 +183,22 @@ public class OrgDaoImpl implements OrgDao {
 		return orgList;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Org getOrgByOrgCode(String orgCode) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Org> orgList = new ArrayList<Org>();
+		List<Org> orgList;
 		logger.debug("getOrgByOrgCode start");
 		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
 		logger.debug("getOrgByOrgCode end");
-		 return orgList.get(0);
-		 // Below code is Commented to written Exception
-		/*if (orgList.size() > 0) {
+		 
+		if (orgList != null && orgList.size() > 0) {
 			return orgList.get(0);
 		} else {
 			return null;
-		}*/
+		}
    	}
 	
 	private boolean isDuplicateWebsite(String host) {
