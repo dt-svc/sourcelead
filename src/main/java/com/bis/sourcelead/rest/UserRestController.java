@@ -999,7 +999,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			 User  user = userService.findByUserName(auth.getName());
 			 List<UserRole> userRoleList = null;
-			 Map<String,OrgLocationDTO> orgLocationsList = new HashMap<>();
+			 List<OrgLocationDTO> orgLocationsList = new ArrayList<>();
 			 
 	         UserProfileDTO userProfileDTO = new UserProfileDTO();
 	         userProfileDTO.setFirstName(user.getFirstName());
@@ -1032,7 +1032,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	        		        	    
 	        		        	    for(SourceleadActions actions : actionsList){
 	        		        	    	actionIdsList.add(actions.getId());
-	        		        	    	actionRolesList.add(actions.getActionRole());
+	        		        	    	//actionRolesList.add(actions.getActionRole());
 	        		        	    }
 	        		        	    
 	        		        	    tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
@@ -1047,9 +1047,9 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
 	        		        	    orgLocationDTO.setMenuList(tabNamesList);
 	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
-	        		        	    orgLocationDTO.setRoleActionsList(actionRolesList);
+	        		        	    //orgLocationDTO.setRoleActionsList(actionRolesList);
 	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
-	        		        	    orgLocationsList.put(orgLocations.getLocationCode(), orgLocationDTO);
+	        		        	    orgLocationsList.add(orgLocationDTO);
 	        		    	 }
 	        		     }
 	        		     
@@ -1337,6 +1337,14 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 						userRoleService.addUserRole(userRole);
 					}
 
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(userID),orgLocations.getId());
+					if(candidate != null){
+						candidate.setIsAssociate("Y");
+						candidateService.saveOrUpdateCandidate(candidate);
+						candidateService.saveOrUpdateCandidateElkDocument(candidate);
+							
+					}
+					
 					/*
     				 * Saving USER DB data as ElasticSearch Documents
     				 */

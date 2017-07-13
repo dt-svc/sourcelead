@@ -650,7 +650,9 @@ function getDocument(candidateId, documentId){
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
+        			 if(json.fileName != null && json.fileName !="undefined" && json.fileName != ""){
         			 $("#docNameDiv").show();
+        			 }
         			 $("#docsName").append(json.fileName);
         			 $("#docsName").prop('title', json.fileName);
         			 $("#docUpdateButton").show();
@@ -826,7 +828,7 @@ function createDocsType(candidateId){
 	result = result +'</td>';
 	result = result +'<td width="auto">';
 	result = result +'<div class="">';
-	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description"></textarea>';
+	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description" field-name="Description" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>';
 	result = result +'</div>';
 	result = result +'</td>';
 	result = result +'<td width="150px">';

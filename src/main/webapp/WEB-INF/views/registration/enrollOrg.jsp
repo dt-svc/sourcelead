@@ -126,21 +126,21 @@
 	        <div class="form-group">
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgCountry" name="country" placeholder="Enter your Country" value ="${country}" type="text" data-validation="required" readonly></input>
+	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>
 	          </div>
 	        </div>
 	        
 	        <div class="form-group">
 	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgState" name="state" placeholder="Enter your State" type="text" data-validation="required" readonly></input>
+	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>
 	          </div>
 	        </div>
 	        
 	        <div class="form-group">
 	          <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="orgCity" name="city" placeholder="Enter your City" type="text" data-validation="required"  readonly></input>
+	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" readonly></input>
 	          </div>
 	        </div>
 	        
@@ -203,7 +203,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>

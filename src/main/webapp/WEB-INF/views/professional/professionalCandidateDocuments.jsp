@@ -103,12 +103,9 @@ function candDocumentsList(candidateId){
 	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     /* result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>'; */
 	                     result  = result + '<th>Document Type</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
-	                 	/*  result  = result + '<th>Upload Status</th>';
-	                     result  = result + '<th>Document Status</th>'; */
 	                 	 result  = result + '<th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -116,14 +113,9 @@ function candDocumentsList(candidateId){
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
+	                    	 
+	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.id}' == opt.userIdStr)){
 	                    	 result  = result + ' <tr>';
-	                    	 
-	                    	/*  if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
-	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
-	                    	 }else{
-	                    		 result = result +"  <td><div>--</div></td>"; 
-	                    	 } */
-	                    	 
 	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 	    	             	 {
@@ -148,23 +140,6 @@ function candDocumentsList(candidateId){
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
 		                    	
-	                    	 
-							/* result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                    	 
-	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
-	                    		 result = result +"<td>";
-	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
-	                    		 if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined'){
-					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
-					        	   }
-	                    		 result = result +"</div>";
-	                    		 result = result +"</td>";
-	                    	 
-	                    	 }else{
-	                    		 result = result +"  <td><div>----</div></td>"; 
-	                    	 } */
-	                    	 
-		                   
 		                   result = result+'<td><div class="tblicons">';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -186,6 +161,8 @@ function candDocumentsList(candidateId){
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
 	                      } 
+	                     
+          }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateDocumentsList").append(result); 
@@ -307,7 +284,14 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="col-md-12">';
 	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"  field-name="Description" class="form-control"></textarea>';
 	result = result+'</div>';
-	result = result+'</div>';  
+	result = result+'</div>'; 
+	
+	result = result + '<div class="clearfix mb10">';
+	result = result + '<div class="clearfix checkbox">';
+	result = result + '<label>';
+	result = result	+ '<label> <input type="checkbox" id="isConfidential" value="Y" onClick ="" name="isConfidential">Is Confidential</label>';
+	result = result + '</div>';
+	result = result + '</div>';
 	
 	result = result+'<div class="clearfix mr mt" id="docsUpdateButton" style="display: none;">';
 	result = result+'<button type="button" id="updates_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
@@ -506,6 +490,9 @@ function getDocument(candidateId, documentId){
         				 $("textarea#description").val(json.description);
         			 }
         			 
+        			 if(json.isConfidential == "Y"){
+        			 $("#isConfidential").attr('checked', true)
+        			 }
    		    }
 	     });
 }
@@ -528,6 +515,7 @@ function removeDocument(candidateId, documentId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onclick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
 	$("#remove_user_pop_documents").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);

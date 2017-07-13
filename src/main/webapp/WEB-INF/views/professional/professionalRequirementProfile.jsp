@@ -146,6 +146,12 @@ function requirementProfile(requirementUUID){
 		    	if(json.location != null && json.location != '' && json.location != 'undefined'){
 		    		location = json.location
 		    	}
+		    	var visaType ='';
+		    	if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined'){
+ 					visaType = json.visaType;
+ 				}else{
+ 					visaType = '--';
+ 				}
 
 		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
@@ -313,6 +319,10 @@ function requirementDetails(requirementUUID){
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 		            }
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+visaType+'">'+visaType+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="clearfix"></div>';
@@ -540,7 +550,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '  <label class="col-md-12">Comment</label>';
 	                    result = result + '  <div class="col-md-12">';
-	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason"></textarea>';
+	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" field-name="Reason"></textarea>';
 	                    result = result + '  </div>';
 	                    result = result + '  </div>';
 	                    
@@ -594,21 +604,21 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    	 }
 		                     result = result + '<tr>';
 		                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
-		                     result = result + '<td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     result = result + '<td><div class="tbldata-dotdot-sm" title="'+report.proposeByName+'">'+report.proposeByName+'</div></td>';
 		                     }
 		                     else{
 		                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
 		                     }
 		                    
 		                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
-		                         result = result + '<td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                         result = result + '<td><div class="tblminwidth-75" title="'+report.rateAndType+'">'+report.rateAndType+'</div></td>';
 		                     } 
 		                     else{
 		                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
 		                     }
 		                     
 		                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
-		                         result = result + '<td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                         result = result + '<td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
 		                     }
 		                     else{
 		                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
@@ -688,13 +698,13 @@ function iconFun(el){
 	$(el).find("i").toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
 	$("#rateProposal").val('');
 	$("#rateType option:selected").removeAttr("selected");
-	$("#rateComment").val('');
+	$("#comment").val('');
 }
 
 function clearRatediv(){
 	$("#rateProposal").val('');
 	$("#rateType option:selected").removeAttr("selected");
-	$("#rateComment").val('');
+	$("#comment").val('');
 }
 
 

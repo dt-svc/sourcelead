@@ -133,7 +133,7 @@
   </div>		  
 		  
 <div class="welBtns">
-	<input type="button" onClick="javascript:location.href = '<c:url value='/offboardStep3'/>'"  value="Previous"><input type="button" value="Finish" class="Brig">
+	<input type="button" onClick="javascript:window.location.href = '<c:url value='/offboardStep3'/>'"  value="Previous"><input type="button" value="Finish" class="Brig">
 	<div class="clearfix"></div>
 </div>
 		  

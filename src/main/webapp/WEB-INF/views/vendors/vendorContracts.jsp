@@ -198,7 +198,7 @@ function vendorContractsList(orgRelationId){
 	                		    	result = result + '<tr id="row'+report.id+'">';
 	                		        result = result + '<td>';
 // 	                		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'"><a>'+report.contractTitle+'</a></span><i class="fa fa-binoculars"></i></div>';
 	                		        /* }else{
 	                		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 	                		        } */
@@ -237,7 +237,7 @@ function vendorContractsList(orgRelationId){
 	                		         if(report.templateSubmissionStatus !=null && report.templateSubmissionStatus != '' && report.templateSubmissionStatus != 'undefined'){
 	                		        	 if(report.templateSubmissionStatus == "DRAFT"){
 	                		        		 draftCount = draftCount+1;       
-	                		        	 }else if(report.templateSubmissionStatus == "WAITING_FOR_APPROVAL"){
+	                		        	 }else if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	                		        		 waitingForApprovalCount = waitingForApprovalCount +1;    
 	                		        	 }else if(report.templateSubmissionStatus == "WAITING_TO_BE_SIGNED"){
 	                		        		 waitingToBeSignedCount = waitingToBeSignedCount +1; 
@@ -252,7 +252,12 @@ function vendorContractsList(orgRelationId){
 	                		        	 }else if(report.templateSubmissionStatus == "EXPIRED"){
 	                		        		 expiredCount = expiredCount +1;     
 	                		        	 }
-	                		        	 result = result + '<div class="tblminwidth-75">'+report.templateSubmissionStatus+'</div>';
+	                		        	 if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+	                		        		 result = result + '<div class="tblminwidth-75">WAITING_FOR_APPROVAL</div>';
+	                		        	 }else{
+	                		        		 result = result + '<div class="tblminwidth-75">'+report.templateSubmissionStatus+'</div>';
+	                		        	 }
+	                		        	
 	                		         }
 	                		         else{
 	                		        	 result = result + '<div class="tblminwidth-75 ">---</div>';

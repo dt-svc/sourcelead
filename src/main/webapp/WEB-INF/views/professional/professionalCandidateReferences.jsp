@@ -5,20 +5,23 @@
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript"
+	charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript"
+	charset="utf-8"></script>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
-    overflow-x: auto;
-}
-.validation_p p.jquery_form_error_message {
-bottom:-25px !important;
+	overflow-x: auto;
 }
 
+.validation_p p.jquery_form_error_message {
+	bottom: -25px !important;
+}
 </style>
 <%-- 
      @author : prasadK.
@@ -77,10 +80,12 @@ function professionalCandidateReferences(candidateId){
 <script>
 function candReferencesList(candidateId){
 	var candidateType = '${candidateType}';
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var locationCode ='${SourceLeadWeb_locationCode}';
+	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+          url: sourceleadUrl+"/getCandidateReferencesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&locationCode="+locationCode,        
           success :function(json) {
            
              			/*  var json = JSON.parse(data);  */
@@ -138,8 +143,8 @@ function candReferencesList(candidateId){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 			           		}else{
-			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+opt.id+');" title="Edit"></a>';
-			           			result = result+'<i class="glyphicon glyphicon-trash" onclick="removeReference('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			result = result+' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+opt.id+');" title="Edit"></a></sec:authorize>';
+			           			result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('+candidateId+','+opt.id+');" title= "Remove"></i></sec:authorize>';
 			           			}
 			           			
 			           		}
@@ -206,6 +211,24 @@ function closePopup(){
 }
 </script>
 
+<script>
+
+ $(function () {
+    $("#relation").change(function () {
+    	 $('#row_dim').hide(); 
+        if (this.options[this.selectedIndex].value == "Work Related") {
+            $("#row_dim").show();
+        }
+    });
+}); 
+
+/* $(function() {
+    $('#relation').change(function(){
+    	alert("X");
+        $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
+    });
+}); */
+</script>
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -240,17 +263,17 @@ function addReference(candidateId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
-	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+	result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="getRelation();">';
 	result = result + '<option value="">--Select Relation--</option>';
-	result = result + ' <option value="Work Related">Work Related</option>';
-	result = result + '<option  value="Family Related">Family Related</option>';
+	result = result + ' <option id="workRelated" valeu="Work Related">Work Related</option>';
+	result = result + '<option  id="familyRelated" value="Family Related">Family Related</option>';
 	result = result + ' </select>';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="designation" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+	result = result  +'<div class="clearfix mb10" id="dvDesignation" style="display: none;">';
+	result = result  +'<div class="col-md-12" >';
+	result = result  +'<input type="text" name="designation" id="designationVal" field-name="Designation" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 	result = result  +'</div>';
 	result = result  +'</div>';
 	
@@ -304,9 +327,9 @@ function addReference(candidateId) {
 			return o;
 		};
 	})(jQuery);
-</script>           
-    
- <%-- 
+</script>
+
+<%-- 
      @author : prasad K
      this script is for saving document
      1.usage     : onclick
@@ -324,9 +347,13 @@ function addReference(candidateId) {
 			 if ($('#canReference_form').validate(false, validationSettings)){
 				var frm = $('#canReference_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+				
 				var form = $('#canReference_form')[0];
 	      		var formData = new FormData(form); 
+			  	formData.append("json",con);
+			  	formData.append("candidateId",candidateId);
+			  	formData.append("userId",'${SourceLeadWeb_user.id}');
+			  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_ref").attr("disabled", "disabled");
          		$("#save_ref" ).addClass('button').val('Processing..');
@@ -339,12 +366,12 @@ function addReference(candidateId) {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/saveCandidateReferences?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 								closePopup();
 								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector7").removeAttr("style");
-		            			$("#selector7").css({ display: "block" });
+		            			$("#selector10").removeAttr("style");
+		            			$("#selector10").css({ display: "block" });
 	            				$("#refMsgDiv").html("Success!! New Candidate References added");
 		             			candReferencesList(candidateId);
 						 		refMsgFadein();
@@ -377,7 +404,7 @@ function deleteReferencesPopup(){
 }
 </script>
 
-<div id="deleteReferencesPopup"></div> 
+<div id="deleteReferencesPopup"></div>
 
 
 <script>
@@ -385,7 +412,7 @@ function deleteReferencesPopup(){
 		$("#selector7").fadeIn(200);
         $('#selector7').delay(2000).fadeOut('slow');
 	}
-</script> 
+</script>
 <!-- End -->
 
 <script type="text/javascript">
@@ -398,6 +425,7 @@ function removeReference(candidateId, refId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("+candidateId+","+refId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteReferencesPopup").empty();
 	$("#deleteReferencesPopup").append(result);
 	$("#remove_user_pop_reference").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -415,13 +443,14 @@ function removeReference(candidateId, refId){
 function deleteReference(candidateId,refId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	//var message = confirm("You are choosing to delete the reference");
+	 var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId, 	   
+		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
-        			 $("#selector7").removeAttr("style");
-         			 $("#selector7").css({ display: "block" });
+        			 $("#selector10").removeAttr("style");
+         			 $("#selector10").css({ display: "block" });
          			 $("#refMsgDiv").html("Reference deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
@@ -434,7 +463,7 @@ function deleteReference(candidateId,refId){
 }
 </script>
 
-     <script type="text/javascript">
+<script type="text/javascript">
 	function updateCandidateReference(candidateId, refId) {
   
 		var validationSettings = {
@@ -449,17 +478,27 @@ function deleteReference(candidateId,refId){
 			var frm = $('#canReferenceEdit_form').serializeFormJSON();
 
 			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			
+			var form = $('#canReference_form')[0];
+      		var formData = new FormData(form); 
+      		formData.append("json",con);
+      		formData.append("candidateId",candidateId);
+      		formData.append("refId",refId);
+      		formData.append("userId",'${SourceLeadWeb_user.id}');
+		  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
 			//It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&refId"+refId,
+					     data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}",
 						success : function(data) {
-	            			$("#selector7").removeAttr("style");
-	            			$("#selector7").css({ display: "block" });
+	            			$("#selector10").removeAttr("style");
+	            			$("#selector10").css({ display: "block" });
 	            			$("#refMsgDiv").html("Reference details updated");
 	            			closePopup();
 	            			candReferencesList(candidateId);
@@ -489,9 +528,10 @@ function deleteReference(candidateId,refId){
 					url : sourceleadUrl
 							+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId +"&refId="+refId,
 					success : function(data) {
-						var json = JSON.parse(data);
-
+						
 						if (data != null && data != 'undefined' && data != "") {
+							
+							var json = JSON.parse(data);
 
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
@@ -525,7 +565,7 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation">';
+								result = result + '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);">';
 								result = result + '<option value="">--Select Relation--</option>';
 								result = result + ' <option '+(json.relation == "Work Related" ? "selected" : '') +'>Work Related</option>';
 								result = result + '<option  '+(json.relation == "Family Related" ? "selected" : '') +'>Family Related</option>';
@@ -533,9 +573,9 @@ function deleteReference(candidateId,refId){
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
-								result = result  +'<div class="clearfix mb10">';
+								result = result  +'<div class="clearfix mb10" id="dvDesignationEdit" style="display:block">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="designation" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+								result = result  +'<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
 								result = result  +'</div>';
 								result = result  +'</div>';
 								
@@ -570,6 +610,12 @@ function deleteReference(candidateId,refId){
 									 e.stopPropagation();
 								 });
 								 
+								 if(json.relation == "Family Related"){
+										$("#dvDesignationEdit").css("display", "none");
+										$("#designationValEdit").removeAttr("data-validation");
+										$("#designationValEdit").attr("data-validation-optional", "true");
+									}
+								 
 							}
 							
 						}
@@ -578,4 +624,36 @@ function deleteReference(candidateId,refId){
 				});
 
 	}
+</script>
+
+<!-- If Selected value is Work Related then Designation text box will appear -->
+<script type="text/javascript">
+function getRelation(){
+	var relation = $("#relation").val();
+	if(relation == 'Work Related'){
+		$('#designationVal').val('');
+		$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100"); 
+		$("#dvDesignation").show();
+	}else if(relation == 'Family Related'){
+		$('#designationVal').val('');
+		$("#designationVal").attr("data-validation-optional", "true");
+		$("#dvDesignation").hide();
+	}
+}
+</script>
+
+<script>
+function editRelation(e){
+	if(e.value == "Work Related"){
+		 document.getElementById("dvDesignationEdit").style.display="block";
+		 $("#designationValEdit").removeAttr("data-validation-optional");
+		 $('#designationValEdit').attr("data-validation","required validate_Space validate_length length2-100"); 
+	}else{
+		document.getElementById("dvDesignationEdit").style.display="none";
+// 		$("#designationValEdit").attr("data-validation-optional", "true");
+		$('#designationValEdit').find('p.jquery_form_error_message').remove();
+		$('#designationValEdit').removeAttr("data-validation"); 
+	}
+}
+
 </script>

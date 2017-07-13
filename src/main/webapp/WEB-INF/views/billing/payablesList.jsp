@@ -534,12 +534,13 @@ function getPayableInvoiceList(){
 			result = result +'         <th>ID</th>                    ';
 			result = result +'         <th>Vendor Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
-			result = result +'         <th>Bill Date</th>               ';
+			result = result +'         <th>Project Name</th>          ';
+			result = result +'         <th>Bill Date</th>             ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
 			result = result +'         <th>Due Date</th>              ';
 			result = result +'         <th>Status</th>                ';
-			result = result +'         <th>Payment Status</th>                ';
+			result = result +'         <th>Payment Status</th>        ';
 			result = result +'         <th>Action</th>                ';
 			result = result +'       </tr>                            ';
 			result = result +'     </thead>                           ';
@@ -591,7 +592,12 @@ function getPayableInvoiceList(){
         		}else{
         			invoiceDateStr = "";
         		}
-  		    		
+        		var projectName = "";
+       			if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+       				projectName = report.projectName;
+        		}else{
+        			projectName = "--";
+        		}	
         		result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
@@ -623,7 +629,14 @@ function getPayableInvoiceList(){
 				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
+					result = result +'<div class="tblminwidth-100">'+projectName+'</div>';
+				result = result +'         </td>';
+				result = result +'         <td> ';
+				if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
 				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
@@ -632,7 +645,11 @@ function getPayableInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
+				if(dueDateStr !=null && dueDateStr !='' && dueDateStr !='undefined'){
 				result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
@@ -738,7 +755,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"aaSorting": [[3,'desc']],
+    	"aaSorting": [[3,'asc']],
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
@@ -1411,7 +1428,7 @@ function generateAutomaticInvoice(){
             	 $("#invoiceLoading").removeAttr("style");
             	    $("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(data+" Records Imported Successfully.");
+	    			$("#msgDiv").html(data+" Bill(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/payablesList");	
         },

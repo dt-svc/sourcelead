@@ -60,6 +60,15 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				if(jsonObj.has("description")){
 					candidateDocuments.setDescription(jsonObj.getString("description"));
 				}
+				
+				// for professional user add is confidential Y/N
+				if(jsonObj.has("isConfidential") && !(jsonObj.getString("isConfidential").isEmpty())){
+					candidateDocuments.setIsConfidential("Y");
+	        		
+	        	}else{
+	        		candidateDocuments.setIsConfidential("N");
+	        	}
+				
 				candidateDocuments.setUpdatedBy(user.getUserCode());
 				candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 				if(!jsonObj.getString("docFile").equalsIgnoreCase("")){
@@ -82,6 +91,14 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				if(jsonObj.has("description")){
 					candidateDocuments.setDescription(jsonObj.getString("description"));
 				}
+				
+				// for professional user add is confidential Y/N
+				if(jsonObj.has("isConfidential") && !(jsonObj.getString("isConfidential").isEmpty())){
+					candidateDocuments.setIsConfidential("Y");
+	        		
+	        	}else{
+	        		candidateDocuments.setIsConfidential("N");
+	        	}
 				
 				candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_MANUALLY);
 				

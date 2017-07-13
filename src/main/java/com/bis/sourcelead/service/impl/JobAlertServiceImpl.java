@@ -171,5 +171,10 @@ public class JobAlertServiceImpl implements JobAlertService{
 		return jobAlertDao.getJobAlertCountByEmail(email);
 	}
 
+	@Override
+	public List<JobAlert> getJobAlertByEmailAndAlertDuration(String email, String duration) throws Exception {
+		return jobAlertDao.getJobAlertByEmailAndAlertDuration(email, duration);
+	}
+
 	
 }

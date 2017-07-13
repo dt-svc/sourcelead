@@ -1881,9 +1881,9 @@ public class TimesheetRestController {
 			 emailMessage.setFirstName(projectManager.getFirstName());
 			 emailMessage.setLastName(projectManager.getLastName());
 			 emailMessage.setToEmail(projectManager.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+//			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 String pattern = "dd-MM-yyyy";
 	         SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -1892,10 +1892,22 @@ public class TimesheetRestController {
 
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
-			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
-			 globalVarsMap.put("managerLastName",projectManager.getLastName());
+//			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+//			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 StringBuilder loginName = new StringBuilder();
+			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 globalVarsMap.put("loginUserFullName",loginName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUserFullName",loginUser.getFirstName());
+			 }
+			 StringBuilder managerName = new StringBuilder();
+			 if(null != projectManager.getLastName() && !"".equalsIgnoreCase(projectManager.getLastName())){
+				 globalVarsMap.put("managerFullName",managerName.append(projectManager.getFirstName()).append(" ").append(projectManager.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("managerFullName",projectManager.getFirstName());
+			 }
+//			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
+//			 globalVarsMap.put("managerLastName",projectManager.getLastName());
 			 //globalVarsMap.put("projectName", project.getProjectName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);

@@ -272,9 +272,12 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var accept = 'accept';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=accept",
+		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
 		success : function(data) {
 			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		},
@@ -306,12 +309,14 @@ function cancelReOpenRejected(){
 function storeReopenRejectedReason(expenseId,reOpenedUserId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var superUserId = '${SourceLeadWeb_superUserId}';
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var reason = document.getElementById("reOpenRejectedReason").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason,	    	   
+		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
 		    success: function(data) {
 		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		    }

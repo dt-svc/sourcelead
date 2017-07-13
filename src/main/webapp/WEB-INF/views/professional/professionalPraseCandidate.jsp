@@ -351,7 +351,7 @@
                </select>
            </div>
          </div>
-<div class="clearfix">
+      <div class="clearfix">
           <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
@@ -362,7 +362,30 @@
                 </select>
               </div>
             </div>
-          
+            
+            
+          <div class="form-group">
+              <label class="col-md-3">Immigration Status</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            
           <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
           <div class="col-md-9">
@@ -402,12 +425,13 @@
       </div> 
     </div>
     
-    
+    <div class="clearfix"></div>
+    <div class="col-md-12">
     <div class="form-footer clearfix mt">
-      <div class="col-lg-12">
-        <div class="pull-right">
+      
+        <div class="pull-right mr">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/professionalProfile'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -586,6 +610,7 @@ function validate_fileupload(fileName)
 		    	});
 		    //Adding Customized Skills to the list
 		    
+		    
 		    //Adding Customized Educations to the list
 	        var selectone, chosenone;
 	        selectone = $("#candidateEducation");
@@ -738,6 +763,8 @@ function validate_fileupload(fileName)
 	     						}
 	     						$("#candidateSkills").append(internalOutput);
 	     		        		$("#candidateSkills").trigger("chosen:updated");
+	     		        		$("#canVisa").append(internalOutput);
+	     		        		$("#canVisa").trigger("chosen:updated");
 	     		        		$("#candidateEducation").trigger("chosen:updated");
 	     		        		
 	     		        		$("#candidateEducation").empty();

@@ -207,7 +207,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
  result = result + '			                      </li>                                                                                                                                                                                        ';
  													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_BILL\')"> ';
- result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|</li>        ';
+ result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill('+orgRelationId+');"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|</li>        ';
  													'</sec:authorize>';
  result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>';
  result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
@@ -395,7 +395,11 @@ result = result  +'    <div class="billingArea"> ';
 					}
 					result = result +'         </td>';
 					result = result +'         <td> ';
+					if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
 					result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
+					}else{
+						result = result +'<div class="tblminwidth-100">--</div>';
+					}
 					result = result +'         </td>';
 					result = result +'         <td> ';
 					result = result +'           <div class="tbldata-dotdot_80" title="'+report.total+'">'+report.total+'</div>';
@@ -404,7 +408,11 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
 					result = result +'         </td>';
 					result = result +'         <td> ';
+					if(dueDateStr !=null && dueDateStr !='' && dueDateStr !='undefined'){
 					result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>';
+					}else{
+						result = result +'<div class="tblminwidth-100">--</div>';
+					}
 					result = result +'         </td>';
 					result = result +'         <td> ';
 					result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
@@ -640,7 +648,7 @@ function vendorInvoicePagination(){
 
 
  <!-- Add invoice Popup -->
-		   <div class="addcandidate-popup">
+		  <%--  <div class="addcandidate-popup">
 		    <div class="row">
 		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
 		      <div class="col-md-5 mt25">
@@ -664,20 +672,58 @@ function vendorInvoicePagination(){
 		        </div>
 		          </div>
 		    </div>
-		  </div>
+		  </div> --%>
+		   <div id="createBillDiv"></div>
 		  <div class="pop_mask"></div>
 		  <script>
 		    //addcandidate-popup script
-		    function createBill(){
-		        $('.addcandidate-popup').fadeIn(200);
-		        $('.pop_mask').fadeIn(200);
-		    };
+		    function createBill(orgRelationId){
+		    	
+		    	 var result = '';
+			        result = result +'<div class="addcandidate-popup">';
+				  result = result +'  <div class="row">';
+				  result = result +'    <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
+				  result = result +'    <div class="col-md-5 mt25">';
+				  result = result +'      <div class="small-widget bgGreen">';
+				  result = result +'          <a onClick="createVendorInvoice('+orgRelationId+',\'custom\');" title="Create custom bill">';
+				  result = result +'        <div class="clearfix mb10"> ';
+				  result = result +'            <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
+				  result = result +'        </div>';
+				  result = result +'        <strong class="clearfix">Custom</strong></a>';
+				  result = result +'        </div>';
+				  result = result +'    </div>';
+				  result = result +'      <div class="col-md-5 mt25">';
+				  result = result +'        <div class="small-widget bg-yellow"> ';
+				  result = result +'        <a onClick="createVendorInvoice('+orgRelationId+',\'project\');" title="Create project based bill">';
+				  result = result +'          <div class="clearfix mb10">';
+				  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
+				  result = result +'              <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+				  result = result +'          </div>';
+				  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
+				  result = result +'      </div>';
+				  result = result +'        </div>';
+				  result = result +'  </div>';
+				  result = result +'</div>';
+			        $("#createBillDiv").empty();
+			        $("#createBillDiv").append(result);
+			        $('.addcandidate-popup').fadeIn(200);
+			        $('.pop_mask').fadeIn(200);
+			    };
 		       function closeCandidate(){
 		        $('.addcandidate-popup').fadeOut(200);
 		        $('.pop_mask').fadeOut(200);
 		       }
+		       
+		       function createVendorInvoice(orgRelationId,type){
+		    	   var sourceleadUrl = '${sourceleadUrl}';
+		    	   if(type == 'project'){
+		    			window.location.href = sourceleadUrl + "/createInvoiceProjectPayableBased?&orgRelationId="+orgRelationId;
+		    	   }else{
+		    		   window.location.href = sourceleadUrl + "/createPayables?&orgRelationId="+orgRelationId;
+		    	   }
+		       }
 		    </script> 
-  
+   <!-- Add invoice Popup End-->
   
   <script>
 function receivePaymentPop1(invoiceId,total){

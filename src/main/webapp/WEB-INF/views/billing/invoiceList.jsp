@@ -498,6 +498,7 @@ function getInvoiceList(){
 			result = result +'         <th>ID</th>                    ';
 			result = result +'         <th>Client Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
+			result = result +'         <th>Project Name</th>   ';
 			result = result +'         <th>Invoice Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
@@ -560,6 +561,13 @@ function getInvoiceList(){
        			}else{
        				invoiceStatus = report.invoiceStatus
        			}
+       			var projectName = "";
+       			if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+       				projectName = report.projectName;
+        		}else{
+        			projectName = "--";
+        		}
+       			
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 
@@ -584,6 +592,12 @@ function getInvoiceList(){
 					result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
 				}
 				result = result +'         </td>';
+				
+
+				result = result +'         <td> ';
+					result = result +'<div class="tblminwidth-100">'+projectName+'</div>';
+				result = result +'         </td>';
+				
 				result = result +'         <td> ';
 				if(invoiceDateStr !=null && invoiceDateStr !='' && invoiceDateStr !='undefined'){
 					result = result +'<div class="tblminwidth-100">'+invoiceDateStr+'</div>';
@@ -598,7 +612,11 @@ function getInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
+				if(dueDateStr !=null && dueDateStr !='' && dueDateStr !='undefined'){
 				result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot-100">'+invoiceStatus+'</div>';
@@ -709,7 +727,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	//
-    	"aaSorting": [[3,'desc']],
+    	"aaSorting": [[3,'asc']],
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -988,6 +1006,7 @@ $(document).ready(function() {
     //search script
         function customInvoiceList() {
             var selectVal = $("#dayWiseTypeId").val();
+            alert(selectVal)
             if (selectVal == "custom") {
                 $(".custom_search").show();
                 customDate();
@@ -1334,7 +1353,7 @@ function generateAutomaticInvoice(){
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(data+" Records Imported Successfully.");
+	    			$("#msgDiv").html(data+" Invoice(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
@@ -1350,7 +1369,6 @@ function generateAutomaticInvoice(){
 </script> 
 <script>
 function mergeInvoice(parentTotalAmount){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var masterInvoiceId = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
@@ -1358,15 +1376,7 @@ function mergeInvoice(parentTotalAmount){
 	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
 	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
-	showDiffAmountPopup(calculatedAmount,currencyCode);
-	 $.ajax({
-   	 type: "POST",
-	     dataType : 'json',
-	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
-            success: function(data) {
-            	$('#testPurposeId').find('p.jquery_form_error_message').remove(); 
-       },
-   });  
+	showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId);
 }else{
 	$('span.jquery_form_error_message').show();
 }
@@ -1374,19 +1384,35 @@ function mergeInvoice(parentTotalAmount){
 </script>
 
 <script>
-function showDiffAmountPopup(calculatedAmount,currencyCode){
+function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMerge("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#invoice_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
+</script>
+
+<script>
+function proceedToMerge(checkVal,masterInvoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
+	            success: function(data) {
+	            	$("#popUp").empty();
+	            	$(".project_inn_mask").fadeOut(200);
+	            	location.replace(sourceleadUrl+"/invoiceList");	
+	       },
+	   });  
+}
 </script>
 
 <script type="text/javascript">
