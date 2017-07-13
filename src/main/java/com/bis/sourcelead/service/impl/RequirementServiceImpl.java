@@ -498,6 +498,10 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
+			if(jsonObj.has("releaseToAllUsers") && "Y".equalsIgnoreCase(jsonObj.getString("releaseToAllUsers"))){
+				requirement.setReleaseJobToAllUsers(jsonObj.getString("releaseToAllUsers"));
+			}
+			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
 			
 			

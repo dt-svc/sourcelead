@@ -170,7 +170,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			params.put("userId",user.getId());
 			
 			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (requirement.releaseJobToAllUsers = 'Y') OR ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
 				params.put("orgLocationId",orgLocationId);
 			}
 		}
