@@ -316,6 +316,15 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 EmailScenario  notificationScenario = null;
+			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+		 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(orgLoc.getOrgCode());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario); 
+
 	}
 }
 	 
