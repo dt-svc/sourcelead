@@ -463,7 +463,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
 			 globalVarsMap.put("interviewerLastName",emailMessage.getLastName());
 			 globalVarsMap.put("loginUser", emailMessage.getFromName());
-			 globalVarsMap.put("requirementTitle", requirementInterview.getRequirementTitle());
+			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
+			 Requirement requirement = requirementService.getRequirementByRequirementId(submission.getRequirement().getId());
+			 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 			 globalVarsMap.put("LoginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			globalVarsMap.put("interviewTableDetails",interviewTable.toString());
 		 //setting the Recipient information
@@ -519,25 +521,25 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	     			tempHTML.append("<tr>");
 			         
 			         if(requirementSubmissionTemplateFields.getLastName() != null && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
-		        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).append("</td>");
 		        	 }else{
-		        		 tempHTML.append("<td>").append(requirementSubmissionTemplateFields.getFirstName()).append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementSubmissionTemplateFields.getFirstName()).append("</td>");
 		        	 }
 			         
 			         if(interviewTypeValue != null && !"".equalsIgnoreCase(interviewTypeValue)){
-		        		 tempHTML.append("<td>").append(interviewTypeValue).append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append(interviewTypeValue).append("</td>");
 		        	 }else{
-		        		 tempHTML.append("<td>").append("--").append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
 			         if(dateOfInterviewValue != null && !"".equalsIgnoreCase(dateOfInterviewValue)){
-		        		 tempHTML.append("<td>").append(dateOfInterviewValue).append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append(dateOfInterviewValue).append("</td>");
 		        	 }else{
-		        		 tempHTML.append("<td>").append("--").append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
 			         if(requirementInterview.getLocation() != null && !"".equalsIgnoreCase(requirementInterview.getLocation())){
-		        		 tempHTML.append("<td>").append(requirementInterview.getLocation()).append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append(requirementInterview.getLocation()).append("</td>");
 		        	 }else{
-		        		 tempHTML.append("<td>").append("--").append("</td>");
+		        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
 		        	 }
 			         int i=0;
 			         if(null != templateId && !"".equalsIgnoreCase(templateId)){

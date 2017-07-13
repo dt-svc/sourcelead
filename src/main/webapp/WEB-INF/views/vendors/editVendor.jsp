@@ -82,7 +82,8 @@
 						 var state = '';
 						 var city = '';
 						 var website = '';
-						var zipCode = '';
+					 	 var zipCode = '';
+					 	 var location = '';
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -98,6 +99,9 @@
 						if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
 							zipCode = json.zipCode;
 						}
+						if(json.location != null && json.location !='' && json.location !='undefined'){
+							location = json.location;
+						}
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -110,6 +114,11 @@
 							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" title="'+json.webSite+'" value="'+json.webSite+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="vendorLocation" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
+							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Country</label>';
@@ -125,6 +134,11 @@
 							result = result + '<label>City</label>';
 							result = result + '<input type="text" name="vendorCity" id="existingCity" value="'+city+'" placeholder="City" readonly="readonly" >';
 							result = result + '</div> ';
+							
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Zip Code</label>';
+							result = result + '<input type="text"  class="chosen-select form-control" name="vendorZipCode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '</div> ';
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
 							result = result + '<label>Vendor Name <span	class="text-danger">*</span></label>';
@@ -139,7 +153,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
-							result = result + ' <input type="text" class="form-control" name="clientLocation" id="clientLocation" value="'+json.location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + ' <input type="text" class="form-control" name="clientLocation" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
 							result = result + '</div>';
 							
@@ -218,7 +232,12 @@
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorDetailsDiv").empty();
 				        $("#editVendorDetailsDiv").append(result);
-				        initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+				        if(json.orgType == 'Company'){
+				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite');
+				        }else{
+				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');				        	
+				        }
+				        
 				        
 				        $(function(){
 				            var config = {

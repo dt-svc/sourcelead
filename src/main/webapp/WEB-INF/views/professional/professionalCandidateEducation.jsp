@@ -61,6 +61,7 @@ function professionalCandidateEducation(candidateId){
 </script>
 
 
+
 <!-- Show success message after form submission script -->
 <script>
 	function eduMsgFadeinFunction() {
@@ -463,7 +464,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
+	result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 		                /*  for (var j = 0; j < json.educationList.length; j++) {
 								var education = json.educationList[j];
 								   if(education.name == json.name){
@@ -932,7 +933,7 @@ function clearSearchKey() {
  function validateEduname(candidateId) {
 	  var name = document.getElementById("candEdu").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	  var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateEduname?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
@@ -964,4 +965,3 @@ function toDate(selector) {
 }
 </script>
 <!-- script for dateformat in datepicker End -->
- 

@@ -68,7 +68,7 @@ $(document).ready(function(){
 	<input type="hidden" name="noteType" id="noteType" value = "Contract">
 		<div class="col-md-12 inputOther mt10 inputOther">
 		<div class="form-horizontal clearfix"><div class="clearfix">
-		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000" field-name="Note" class="form-control" ></textarea></div>
+		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000" field-name="Note" class="form-control" ></textarea></div>
 		
 		<div class="row clearfix mt5">
 		<div class="checkBox col-md-9">

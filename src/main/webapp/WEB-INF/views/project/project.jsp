@@ -11,8 +11,8 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/summernote.js"/>
-<link href="resources/css/summernote.css" rel="stylesheet"/>
+<script src="resources/js/summernote.js"></script>
+<link href="resources/css/summernote.css" rel="stylesheet" />
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -75,6 +75,21 @@ function validateTaskName(){
 	     	}
 		}
 	}
+	
+	
+	var fileCounter = 0;
+	function addFileUpload(){
+		
+		$('<div>').attr('style','display:table-cell').append('<input id="file' +  '" name = "project_files' + '" type="file" />' +
+	            '<input id="Button' + fileCounter + '" type="button" ' +
+	            'value="Remove Document" onclick = "RemoveFileUpload(this)" />').appendTo($('#FileUploadContainer'));
+
+	    		fileCounter++;
+	}
+	function RemoveFileUpload(div)
+	{
+		 document.getElementById("FileUploadContainer").removeChild(div.parentNode);
+	}
 </script>
 
 
@@ -93,7 +108,8 @@ function validateTaskName(){
 		<div id="loading"></div>
 		<div
 			class="clearfix form-area form-horizontal toggle-div remove-div mt">
-			<form:form id="project_form" name="project_form" method="post" enctype="multipart/form-data">
+			<form:form id="project_form" name="project_form" method="post"
+				enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
@@ -142,7 +158,8 @@ function validateTaskName(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3" for="Project Id">Status<span class="text-danger">*</span></label>
+							<label class="col-md-3" for="Project Id">Status<span
+								class="text-danger">*</span></label>
 							<div class="col-md-9 select-field">
 								<select class="form-control" name="Satatus" id="Satatus"
 									onchange="getStatus();">
@@ -177,37 +194,36 @@ function validateTaskName(){
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"
-										name="isAllowFreelanceDevelopers"> Allow 
-										Freelance Developers
+										name="isAllowFreelanceDevelopers"> Allow Freelance
+										Developers
 									</label>
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"
-										name="isAllowRemoteWork"> Allow
-										Remote Work
+										name="isAllowRemoteWork"> Allow Remote Work
 									</label>
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"
-										name="isAllowOverTime" id="isAllowOverTime" onchange="allowOverTime();"> Allow
-										Over Time
+										name="isAllowOverTime" id="isAllowOverTime"
+										onchange="allowOverTime();"> Allow Over Time
 									</label>
 								</div>
 							</div>
-						</div>	
-						
+						</div>
+
 
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -220,16 +236,16 @@ function validateTaskName(){
 											<option value="%">%</option>
 										</select>
 									</div>
-									<input type="number" min="0" max="100" step="0.5" value="0" id="flatPercentage"
-										name="flatPercentage" maxlength="5" class="form-control"
-										data-validation-optional="true" onblur="">
+									<input type="number" min="0" max="100" step="0.5" value="0"
+										id="flatPercentage" name="flatPercentage" maxlength="5"
+										class="form-control" data-validation-optional="true" onblur="">
 								</div>
 							</div>
 						</div>
-																						
-						
+
+
 					</div>
-					
+
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<c:if test="${empty user_List}">
 							<p style="font-size: 11px; color: red;" class="text-muted small">
@@ -247,10 +263,8 @@ function validateTaskName(){
 								<input type="text" class="form-control" name="ProjectName"
 									data-validation="required validate_Space validate_length length2-100"
 									field-name="Project Name" value=""> <span
-									class="hidden">Project Name</span>
-
-									
-								<span class="hidden">Enter Project Id</span>
+									class="hidden">Project Name</span> <span class="hidden">Enter
+									Project Id</span>
 
 							</div>
 						</div>
@@ -368,42 +382,41 @@ function validateTaskName(){
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"
-										name="isAllowOffshoreResource"> Allow 
-										Offshore Resource
+										name="isAllowOffshoreResource"> Allow Offshore
+										Resource
 									</label>
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"
-										name="isTimeEntryAfterDeadline"> Time
-										Entry after Deadline
+										name="isTimeEntryAfterDeadline"> Time Entry after
+										Deadline
 									</label>
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"
-										name="isAllowBidding"> Allow
-										Bidding
+										name="isAllowBidding"> Allow Bidding
 									</label>
 								</div>
 							</div>
-						</div>																		
+						</div>
 					</div>
 
 
@@ -416,18 +429,17 @@ function validateTaskName(){
 				<!--  div row start -->
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-					<h5>Budget Details</h5>
+						<h5>Budget Details</h5>
 						<div class="form-group" id="">
 							<label class="col-md-3"> </label>
-							<div class="col-md-9">
-							</div>
+							<div class="col-md-9"></div>
 						</div>
-					</div>						
+					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-												
+
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
@@ -436,7 +448,7 @@ function validateTaskName(){
 									data-validation-optional="true" class="form-control" onblur="">
 							</div>
 						</div>
-							
+
 						<div class="form-group">
 							<label class="col-md-3">Budget Approver</label>
 							<div class="col-md-9" id="chosen-budgetapprover">
@@ -452,11 +464,11 @@ function validateTaskName(){
 								</select>
 							</div>
 						</div>
-						
+
 
 					</div>
-					
-				
+
+
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
 						<div class="form-group" id="EstimatedBudgetDiv">
@@ -482,16 +494,22 @@ function validateTaskName(){
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<h5>Description</h5>
-						
+
 						<textarea maxlength="5000" cols="80" rows="10"
 							id="ProjectDescription" name="ProjectDescription"></textarea>
-							
+
 					</div>
-					
+
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<h5>Documents</h5>
-						<input type="file" name="project_files" id="project_files" multiple="multiple"/>
+						<input id="Button1" type="button" value="Add Document"
+							onclick="addFileUpload()" /> <br /> <br /> <br />
+						<div id="FileUploadContainer">
+							<!--FileUpload Controls will be added here -->
+						</div>
+						<br />
+						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
 
 				</div>
@@ -506,13 +524,13 @@ function validateTaskName(){
 								onclick="saveProject();flushSaveProject()"
 								class="btn btn-primary"> <input type="button"
 								value="Cancel"
-								onClick="javascript:location.href = '<c:url value='/projectDashboard'/>'"
+								onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'"
 								class="btn btn-default ml">
 						</div>
 					</div>
 				</div>
 
-				
+
 
 			</form:form>
 		</div>
@@ -984,7 +1002,12 @@ function flushProjectTasks(){
 	
 									output = output + "<tr>";
 									output = output+ "<td><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-									output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";
+									if(opt.user.lastName != null && opt.user.lastName !='Undefined' && opt.user.lastName != ''){
+										output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";	
+									}else{
+										output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"'>" + opt.user.firstName+ "</span></td>";
+									}
+									
 									output = output + "<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>" + opt.user.email+ "</span></td>";
 									output = output + "<td><span class='tbldata-dotdot-vsm' title='"+role+"'>" + role + "</span></td>";
 									output = output+ "<td><span class='' title='"+projectStartDate+"'><div class='input-group tblminwidth-150'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";

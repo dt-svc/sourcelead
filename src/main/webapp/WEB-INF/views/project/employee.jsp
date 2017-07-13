@@ -780,7 +780,11 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        		output = output + "<tr>";
 	        		//output = output + '<td><input type="checkbox"  class="submissionsChecks" name="submissionList[]" ></td>';
 	        		output = output + "<td><input type='hidden' id='projectStartDateStr'  value="+startDateStr+"><input type='hidden' id='projectEndDateStr'  value="+endDateStr+"><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
+	        		if(opt.user.lastName != null && opt.user.lastName !='Undefined' && opt.user.lastName != ''){
+						output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";	
+					}else{
+						output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"'>" + opt.user.firstName+ "</span></td>";
+					}
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";

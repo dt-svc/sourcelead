@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
+import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
@@ -139,7 +140,10 @@ public class ExpensesController {
 		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);*/
 		}
-		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(loginUser.getId(), orgLoc.getLocationCode());
+		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
+		eedDTO.setUserId(loginUser.getId());
+		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
@@ -266,7 +270,10 @@ public class ExpensesController {
 		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
 	    model.addObject("expensesCategoryList", expensesCategoryList);*/
 		
-		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(loginUser.getId(), orgLoc.getLocationCode());
+		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
+		eedDTO.setUserId(loginUser.getId());
+		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		model.addObject("expEntry", expEntryDTO);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
