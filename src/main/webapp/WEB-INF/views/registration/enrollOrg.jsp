@@ -203,7 +203,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>
