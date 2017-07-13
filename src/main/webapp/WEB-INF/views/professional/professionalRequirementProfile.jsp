@@ -242,8 +242,14 @@ function requirementProfile(requirementUUID){
 						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Submit</a>';
 					 }
 				 }else{
+					 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';
-				 }
+					 }
+					 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Submit</a>';
+	 
+					 }
+					 }
 				 
 			     result = result +'<a class="refer" onclick="referToJob('+json.id+');getUserContats('+json.id+');" href="javascript:void(0)">Refer</a>';
 			     result = result +'<div class="referWrap" id="refer">';
