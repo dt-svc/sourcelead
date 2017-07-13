@@ -133,7 +133,8 @@ public class Projects implements Serializable{
     @Column(name = "STATUS")
     private String status;
     
-    
+    @Column(name = "PROJECT_UUID")
+	private String projectUUID;
     
     @Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -375,6 +376,14 @@ public class Projects implements Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
 	}
 
 	public Date getCreatedDate() {

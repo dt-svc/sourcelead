@@ -10,16 +10,19 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -44,6 +47,9 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 private UserService userService;
+	 
+	 @Autowired
+	 ProjectsService projectsService;
 	
 	 
 	 /**
@@ -95,6 +101,36 @@ public class ProjectsController {
 				model.addObject("user_List", userList);
 				
 				model.setViewName("project/project");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+	}
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/projectSummary")
+		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   
+				ModelAndView model = new ModelAndView();
+				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				if(projects != null){
+					model.addObject("projectId", projects.getId());
+					model.addObject("projectName", projects.getProjectName());
+					if(projects.getStartDate() != null){
+						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+					}
+					if(projects.getEndDate() != null){
+						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+					}
+					model.addObject("projectStatus", projects.getProjectStatus());
+				}
+				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
