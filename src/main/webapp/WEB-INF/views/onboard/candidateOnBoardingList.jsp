@@ -170,7 +170,7 @@
                         		 }else{
                         			 if(opt.candidateOnBoardStatus == 'Rejected'){
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
-                        			 }if(opt.candidateOnBoardStatus == 'Accepted'){
+                        			 }else if(opt.candidateOnBoardStatus == 'Accepted'){
                             			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
                             		 }else{
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
