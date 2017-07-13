@@ -1010,7 +1010,7 @@ function sideBar(requirementId,type){
 							 }
 							 else{
 								    requirementPipeline(requirementId,'all');
-									requirementStatusBar(requirementId,type);
+									requirementStatusBar(requirementId);
 									
 									 var candidateId = '${candidateId}';
 									 var submissionId = '${submissionId}';
