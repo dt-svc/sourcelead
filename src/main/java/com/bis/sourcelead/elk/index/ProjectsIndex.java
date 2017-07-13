@@ -44,6 +44,8 @@ public class ProjectsIndex implements Serializable{
     
     private String updatedDate;
     
+    private String projectUUID;
+    
     
 	public String getSearchType() {
 		return searchType;
@@ -188,5 +190,12 @@ public class ProjectsIndex implements Serializable{
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-    
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
 }
