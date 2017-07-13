@@ -82,7 +82,9 @@ public class AddProjectsELK {
 					if(!isNullOrEmpty(rs.getString("PROJECT_STATUS"))){
 						projectsIndex.setProjectStatus(rs.getString("PROJECT_STATUS"));
 					}
-					
+					if(!isNullOrEmpty(rs.getString("PROJECT_UUID"))){
+			    		projectsIndex.setProjectUUID(rs.getString("PROJECT_UUID"));
+					}
 					
 					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					projectsIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));

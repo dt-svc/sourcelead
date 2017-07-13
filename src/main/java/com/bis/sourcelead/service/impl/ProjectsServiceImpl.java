@@ -423,13 +423,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
-		
+		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Projects updatedProjects = saveProject(projects);
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents
 		 */
-		saveOrUpdateProjectElkDocument(projects);
+		saveOrUpdateProjectElkDocument(updatedProjects);
 		
 		/**
 		 * this block is for submissions for project member
@@ -1748,7 +1748,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else{
 			projects.setIsMailToProjectManager(Status.N);
 		}
-    	
+	    projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     	Projects updatedProjects = saveProject(projects);
     	
     	Long[] ids = new Long[1000];
@@ -2330,6 +2330,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId) throws Exception
 			{
 				return projectsDao.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+			}
+
+			@Override
+			public Projects getProjectByProjectUUID(String projectUUID) throws Exception {
+				return projectsDao.getProjectByProjectUUID(projectUUID);
 			}
 
 
