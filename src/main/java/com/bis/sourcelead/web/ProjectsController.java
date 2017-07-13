@@ -106,17 +106,9 @@ public class ProjectsController {
 	}
 	 
 	 
-	 
-	 
-	 
-	 
-	 
 	 @RequestMapping(value = "/projectSummary")
-		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
-		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   
+		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,@RequestParam(value="tabType", required=false) String tabType,
+				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				if(projects != null){
@@ -130,7 +122,32 @@ public class ProjectsController {
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
+				model.addObject("projectUUID", projectUUID);
+				if(null != tabType && !tabType.isEmpty() && tabType != ""){
+					model.addObject("tabType", tabType);
+				}
 				model.setViewName("project/projectSummary");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+	}
+	 
+	 @RequestMapping(value = "/newResourceRequest")
+		public ModelAndView newResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+				ModelAndView model = new ModelAndView();
+				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				if(projects != null){
+					model.addObject("projectId", projects.getId());
+					model.addObject("projectName", projects.getProjectName());
+					if(projects.getStartDate() != null){
+						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+					}
+					if(projects.getEndDate() != null){
+						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+					}
+					model.addObject("projectStatus", projects.getProjectStatus());
+				}
+				model.addObject("projectUUID", projectUUID);
+				model.setViewName("project/newResourceRequest");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
