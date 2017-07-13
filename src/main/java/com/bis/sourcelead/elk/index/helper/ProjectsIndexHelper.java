@@ -53,8 +53,8 @@ public class ProjectsIndexHelper {
 			if(null != projects.getUpdatedDate()){
 				projectsIndex.setUpdatedDate(Constants.DF_YMD.format(projects.getUpdatedDate()));
 			}
+			projectsIndex.setProjectUUID(projects.getProjectUUID());
 			
-
 			if(null != projects.getOrgRelationId() && null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId() == projects.getOrgLocationsId().getId()){
 				projectsIndex.setClientName(projects.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}else if(null != projects.getOrgRelationId() && null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId() == projects.getOrgLocationsId().getId()){
