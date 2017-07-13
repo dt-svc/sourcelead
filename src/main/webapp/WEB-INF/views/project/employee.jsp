@@ -143,65 +143,91 @@
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
  	 var result = "";
-	 result = result + '    	<div class="timesheet_head clearfix">';
-	 result = result	+ '<ul>';
+ 	 
+ 	result = result + '    	<div class="col-md-12 mt">';
+ 	 result = result + '    	<div class="require_one">';
+	result = result + '       <div class="require_wrap_details_cta noPad">';
+	result = result + '   		<div class="NeDe"><b>Estimated Budget:</b> <span><strong>INR</strong> 250000</span><div class="clearfix"></div></div>';
+	result = result + '        	<div class="NeDe"><b>Estimated Hours:</b> <span>250</span><div class="clearfix"></div></div>';
+	result = result + '       </div>';
+	result = result + '       <div class="require_wrap_details_cta noPad">';
+	result = result + '           <div class="NeDe"><b>Actual Budget:</b> <span><strong class="pull-left">INR</strong> <div class="text-success pull-left">150000</div></span><div class="clearfix"></div></div>';
+	result = result + '        	<div class="NeDe"><b>Actual Hours:</b> <span>250</span><div class="clearfix"></div></div>';
+	result = result + '        	<div class="NeDe"><b>Expenses:</b> <span><strong>INR</strong> 50000</span><div class="clearfix"></div></div>';
+	result = result + '       </div>';
+	result = result + '       <div class="clearfix"></div>';
+	result = result + '     </div>';
+	result = result + '     </div>';
+	result = result + '       <div class="clearfix"></div>';
+	
+	
+result = result + '<div class="newPrTabs col-md-12">';
+result = result + '<ul class="newPrTabsMenu">';
+result = result + '<li class="current"><a href="#tab-a">Resources (10)</a></li>';
+result = result + '<li class=""><a href="#tab-b" onclick="resourceRequestsTab();">Resource Requests (10)</a></li>';
+result = result + '<li class=""><a href="#tab-c">Budget Requests (10)</a></li>';
+result = result + '<div class="clearfix"></div>';
+result = result + '</ul>';
 
-		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+result = result + '<div class="project_tabs mb">';
+	
+	//Resources Tab
+	result = result + '<div id="tab-a" class="newPrTabs_inn" style="display: block;">';
+	result = result + '    	<div class="timesheet_head clearfix">';
+		 result = result	+ '<ul>';
+			if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +'<li>';
- 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
- 		result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
- 		'</sec:authorize>';
- 		result = result +'</li>';
-		}/* else{
-			result = result +'<li>';
- 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
- 		result = result + '<a href="javascript:void(0)"  ><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
- 		'</sec:authorize>';
- 		
- 		result = result +'</li>';
-		} */
-		
-	    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-		result = result + '       	<ul>';
-		result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
-		result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
-		result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
-		result = result + '           </ul>';
-		result = result + '       </div>'; 
-		result = result + '   </li>';
-
- 
-		'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
-		result = result +'<li>';
-		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-			result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
-		}/* else{
-			result = result +' <a title="Export"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
-		} */
-		
-		result = result +'<div class="" id="exportPop" style="display:none;">';
-		result = result +'<ul>';
-		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-			result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
+	 			result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
+	 		'</sec:authorize>';
+	 		result = result +'</li>';
+			} 
+		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
+		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
+			result = result + '       	<ul>';
+			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
+			result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
+			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
+			result = result + '           </ul>';
+			result = result + '       </div>'; 
+			result = result + '   </li>';
+	 
+				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
+					result = result +'<li>';
+					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+						result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
+					} 
+					
+					result = result +'<div class="" id="exportPop" style="display:none;">';
+					result = result +'<ul>';
+					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
+						result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+						
+						result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
 			
-			result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
+					} 
+					result = result +'</ul>';
+					result = result +'</div>';
+					result = result +'</li> ';
+				'</sec:authorize>';
+			
+			result = result +'</ul>';
+		
+			getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
+			result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
+			result = result +'</div>';
+		result = result + '</div>';
+		
+	//	Resource Requests Tab
+		result = result + '<div id="tab-b" class="newPrTabs_inn">';
+		result = result + ' <div id="resourceRequestsTabDiv"></div>';
+		result = result + '</div>';
+		
+		result = result + '<div id="tab-c" class="newPrTabs_inn"><p>Tab3</p></div>';
+	result = result + '</div>';
 
-		}/* else{
-			result = result +'<li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
- 		result = result +'<li>Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-		} */
-		
-		result = result +'</ul>';
-		result = result +'</div>';
-		result = result +'</li> ';
-		'</sec:authorize>';
-		
-		result = result +'</ul>';
-		
-		getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
-		result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
-		result = result +'</div>';
+	result = result + '</div>';
+	result = result + ' <div class="clearfix"></div>';
 		
 		$("#tab-3").empty();  
 		$("#tab-2").empty();  
@@ -219,7 +245,15 @@
 		     $(".project_tabs_inn").not(tab).css("display", "none");
 		     $(tab).fadeIn();
 		 });
-		
+		$("#tab-a").show();
+	    $(".newPrTabsMenu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("current");
+	        $(this).parent().siblings().removeClass("current");
+	        var tab = $(this).attr("href");
+	        $(".newPrTabs_inn").not(tab).css("display", "none");
+	        $(tab).fadeIn();
+	    });		
 		
  }
  </script>
@@ -1314,4 +1348,66 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
+<script> 
+//  New project Tabs
+	$("#tab-a").show();
+    $(".newPrTabsMenu a").click(function(event) {
+    	alert("Hi Srinivas");
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".newPrTabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+</script>
+
 <!-- script for dateformat in datepicker End -->
+
+
+<!-- ====================================Resource RequestsTab Start=============================================== -->
+<script>
+function resourceRequestsTab(){
+	 var result = "";
+ 	 
+		result = result + '	<div class="project_tabs_inn_head">';
+		result = result + '	      <a href="request-resource.html">                                                          ';
+		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Resource</a> | &nbsp; &nbsp;             ';
+		result = result + '	       <input class="vendorfild" type="text"><i class="fa fa-search"></i>                       ';
+		result = result + '	       </div>                                                                                   ';
+		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table">                                  ';
+		result = result + '		<table>                                                                                     ';
+		result = result + '	 	<tbody>                                                                                     ';
+		result = result + '	     	<tr>                                                                                    ';
+		result = result + '	         	<th>Request Id</th>                                                                 ';
+		result = result + '	             <th>Description</th>                                                               ';
+		result = result + '	             <th>Approver</th>                                                                  ';
+		result = result + '	             <th>Req. Resources</th>                                                            ';
+		result = result + '	             <th>Alloted Resources</th>                                                         ';
+		result = result + '	             <th>Estimated Hours</th>                                                           ';
+		result = result + '	             <th>Estimated Budget</th>                                                          ';
+		result = result + '	             <th>Req. On</th>                                                                   ';
+		result = result + '	             <th>Req. By</th>                                                                   ';
+		result = result + '	             <th>Action</th>                                                                    ';
+		result = result + '	         </tr>                                                                                  ';
+		result = result + '	         <tr>                                                                                   ';
+		result = result + '	         	<td><div><a href="request-resource.html">BIS00001</a></div></td>                    ';
+		result = result + '	             <td><div>Designation1</div></td>                                                   ';
+		result = result + '	             <td><div>Approver-2</div></td>                                                     ';
+		result = result + '	             <td><div>10</div></td>                                                             ';
+		result = result + '	             <td><div>10</div></td>                                                             ';
+		result = result + '	             <td><div>100 hrs</div></td>                                                        ';
+		result = result + '	             <td><i class="fa fa-dollar pull-left"></i> <div class="pull-right">300000</div></td>';
+		result = result + '	             <td><div>23/05/2017</div></td>                                                     ';
+		result = result + '	             <td><div>Suresh Kumar</div></td>                                                   ';
+		result = result + '	             <td><div><b>Accept</b></div></td>                                                  ';
+		result = result + '	         </tr>                                                                                  ';
+		result = result + '	     </tbody>                                                                                   ';
+		result = result + '	 </table>                                                                                       ';
+		result = result + '</div>                                                                                           ';
+	    $("#resourceRequestsTabDiv").empty();
+	    $("#resourceRequestsTabDiv").append(result);  
+		 
+}
+</script>
+<!-- ====================================Resource RequestsTab End=============================================== -->
