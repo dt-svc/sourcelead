@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -752,6 +753,21 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectStatus <> 'ONHOLD'";
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
 		return projectsList;
+	}
+
+	@Override
+	@Transactional
+	public Projects getProjectByProjectUUID(String projectUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Projects> projects = new ArrayList<Projects>();
+		logger.debug("getProjectByProjectUUID start");
+		projects = session.createQuery("from Projects projects where projects.projectUUID = :projectUUID" ).setCacheable(true).setString("projectUUID", projectUUID ).setCacheable(true).list();
+		logger.debug("getProjectByProjectUUID end");
+		if (projects != null && projects.size() > 0) {
+			return projects.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }
