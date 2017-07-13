@@ -560,7 +560,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 emailMessage.setFromEmail(orgLoc.getUser().getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFullName());
+				 emailMessage.setFromName(orgLoc.getUser().getFirstName());
 				 
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -572,11 +572,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
 				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
-				 globalVarsMap.put("reopenUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("projectName", projectName);
 				 globalVarsMap.put("clientName",expenses.getClientName());
+				 
+				 if(null != expenses.getExpenseId()){
+					 if(null != expenses.getStartDate()){
+						 expenses.setStartDateStr(expenses.getStartDate().toString());
 				 globalVarsMap.put("startDate",expenses.getStartDateStr());
+					 }
+				 }	 
+				 if(null != expenses.getExpenseId()){
+					 if(null != expenses.getEndDate()){
+						 expenses.setEndDateStr(expenses.getEndDate().toString());
 				 globalVarsMap.put("endDate",expenses.getEndDateStr());
+					 }
+				 }
+				 globalVarsMap.put("amount",Float.toString(expenses.getTotalAmount()));
 				 globalVarsMap.put("reason",reason);
 				 
 				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
@@ -589,8 +601,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
-					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
-					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION); 
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION); 
 				 }
 				 
 				
