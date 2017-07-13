@@ -119,7 +119,7 @@ public class ExpensesRestController {
 	 }
 	
 	 @RequestMapping(value = "/rest/getExpenseEntryDetails")
-	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestParam ExpenseEntryDetailsUtilDTO eedDTO) throws Exception {
+	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody ExpenseEntryDetailsUtilDTO eedDTO) throws Exception {
 		 ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
 		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		 List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(),eedDTO.getUserId());
