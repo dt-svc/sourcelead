@@ -273,8 +273,11 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
-							expenseArray[0] = expenseId.getProjectMembers().getEmployee().getUser().getFirstName();
+						StringBuilder nameBuilder = new StringBuilder();
+						if(null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+							expenseArray[0] = nameBuilder.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString();
+						}else if((null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName())){
+							expenseArray[0] = nameBuilder.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).toString();
 						}else{
 							expenseArray[0] = "--";
 						}
@@ -446,10 +449,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
-							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+						StringBuilder nameBuider = new StringBuilder();
+						if(null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+							writeRow.createCell(0).setCellValue(nameBuider.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString());
+							createExcelsheet.autoSizeColumn(0);
+						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
+							writeRow.createCell(0).setCellValue(nameBuider.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).toString());
 							createExcelsheet.autoSizeColumn(0);
 						}
+						
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
 							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getEmail());
 							createExcelsheet.autoSizeColumn(1);
