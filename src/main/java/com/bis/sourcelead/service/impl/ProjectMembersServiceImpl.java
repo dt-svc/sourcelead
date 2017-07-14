@@ -675,6 +675,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
 		return projectMembersDao.getAllProjectsByOrgLocationId(orglocationId);
 	}
+
+	
+	
+	@Override
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId)
+	{
+		return projectMembersDao.getAllProjectsbyEmployeeId(employeeId);
+	}
 	
 
 }
