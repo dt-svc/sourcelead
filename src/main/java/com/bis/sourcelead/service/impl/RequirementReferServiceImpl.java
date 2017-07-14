@@ -197,11 +197,65 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 emailMessage.setFromName(loginUser.toString());
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("professinalName", professionalName);
+		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+ if(user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName())){
+			 
+			 StringBuilder lname=new StringBuilder();
+			 
+			 globalVarsMap.put("referedProfessionalFirstName",lname.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 
+		 }
+		 else{
+			 
+			 globalVarsMap.put("referedProfessionalFirstName", user.getFirstName());
+		 }
+		 
+		 
+		 
+		 
+		 if(requirement.getDescription() !=null && !"".equalsIgnoreCase(requirement.getDescription())){
+			 globalVarsMap.put("jobDescription", requirement.getDescription()); 
+		 }
+		 
+		 if(requirement.getLocation() !=null && !"".equalsIgnoreCase(requirement.getLocation())){
+			 globalVarsMap.put("jobLocation", requirement.getLocation()); 
+		 }
+		 
+		 if(requirement.getJobId() !=null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementTitle",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		 }
+		 
+		 else{
+			 globalVarsMap.put("requirementTitle", requirement.getJobTitle()); 
+			 
+		 }
+		 
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+		
+		 StringBuilder professionalReg = new StringBuilder();
+		 globalVarsMap.put("professionalReg",professionalReg.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+		 
+		 StringBuilder linkBuilder = new StringBuilder();
+		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>http://support.sourcelead.com/faq</a>").toString());
+		
+		 StringBuilder fbLinkBuilder = new StringBuilder();
+		 globalVarsMap.put("facebookLink",fbLinkBuilder.append("<a href='http://www.facebook.com' target='_blank' alt='Facebook' title='Facebook' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/facebook-35x35.gif' width='30px' height='30px'></a>").toString());
+		
+		 StringBuilder linkedInLinkBuilder = new StringBuilder();
+		 globalVarsMap.put("linkedInLink",linkedInLinkBuilder.append("<a href='http://in.linkedin.com' target='_blank' alt='LinkedIn' title='LinkedIn' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/linkedin-35x35.gif' width='30px' height='30px'></a>").toString());
+		
+		 StringBuilder twitterLinkBuilder = new StringBuilder();
+		 globalVarsMap.put("twitterLink",twitterLinkBuilder.append("<a href='http://twitter.com/login' target='_blank' alt='Twitter' title='Twitter' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/twitter-35x35.gif' width='30px' height='30px'></a>").toString());
+		
+		 StringBuilder googleLinkBuilder = new StringBuilder();
+		 globalVarsMap.put("googleLink",googleLinkBuilder.append("<a href='http://www.google.com' target='_blank' alt='Google+' title='Google+' style='margin:5px 5px 0px 0px; display: inline-block;'><img src='https://www.mail-signatures.com/articles/wp-content/themes/emailsignatures/images/gplus-35x35.gif' width='30px' height='30px'></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
