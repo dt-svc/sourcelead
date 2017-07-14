@@ -276,7 +276,9 @@ function addAttachment(entityRowId,from){
 						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
 						      </div>
 					      </div>
-						 <div class="clearfix" ></div>
+
+						 
+		 <div class="clearfix" style="position: static;"></div>
 		   </div>
 </div>
 
