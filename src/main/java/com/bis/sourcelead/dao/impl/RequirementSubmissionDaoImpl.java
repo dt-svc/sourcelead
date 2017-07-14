@@ -2546,11 +2546,15 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        }else{
 	        	List<RequirementSubmissionHistory> reqSubms = new ArrayList<>();
 	        	String query = "";
+
+	        	if(dateRange != null && "today".equals(dateRange)){
+	                query ="from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.candidateResumes where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
+
 	        	/*if(dateRange != null && "today".equals(dateRange)){
 	                query ="from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
 	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
+	     			query ="from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.candidateResumes where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}*/
 	        	if(dateRange != null && "today".equals(dateRange)){
@@ -2561,16 +2565,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}
 	        	
-				return reqSubms;
-	        	
 	        }
-			
+	        	return reqSubms;
 		}
 		
   }
-
-
-
-
-
-
+}
