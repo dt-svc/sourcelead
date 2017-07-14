@@ -2076,9 +2076,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setFromEmail("info@sourcelead.com");
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
