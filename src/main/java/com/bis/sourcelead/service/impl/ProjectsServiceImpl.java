@@ -681,8 +681,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if(user.getId() !=1 && user.getId() !=2){
 			List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
 		    Employees emp = empList.get(0);
-		    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
-			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
+		   /* logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
+			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());*/
 		    User toUser = emp.getUser();
 		    User fromUser = null;
 		    if(user.getId() != orgLocations.getUser().getId()){
@@ -2107,7 +2107,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			sendWeeklyBaseNotiFicationToAdmin(user,orgLocations); 
+			if(orgLocations != null){
+				sendWeeklyBaseNotiFicationToAdmin(user,orgLocations);	
+			}
+			 
 	     }
 	    
 		
