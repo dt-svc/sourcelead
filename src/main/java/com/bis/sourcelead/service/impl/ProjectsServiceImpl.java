@@ -423,13 +423,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
-		
+		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Projects updatedProjects = saveProject(projects);
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents
 		 */
-		saveOrUpdateProjectElkDocument(projects);
+		saveOrUpdateProjectElkDocument(updatedProjects);
 		
 		/**
 		 * this block is for submissions for project member
@@ -681,8 +681,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if(user.getId() !=1 && user.getId() !=2){
 			List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
 		    Employees emp = empList.get(0);
-		    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
-			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
+		   /* logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
+			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());*/
 		    User toUser = emp.getUser();
 		    User fromUser = null;
 		    if(user.getId() != orgLocations.getUser().getId()){
@@ -1748,7 +1748,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else{
 			projects.setIsMailToProjectManager(Status.N);
 		}
-    	
+	    projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     	Projects updatedProjects = saveProject(projects);
     	
     	Long[] ids = new Long[1000];
@@ -2076,9 +2076,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setFromEmail("info@sourcelead.com");
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -2107,7 +2107,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			sendWeeklyBaseNotiFicationToAdmin(user,orgLocations); 
+			if(orgLocations != null){
+				sendWeeklyBaseNotiFicationToAdmin(user,orgLocations);	
+			}
+			 
 	     }
 	    
 		
@@ -2330,6 +2333,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId) throws Exception
 			{
 				return projectsDao.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
+			}
+
+			@Override
+			public Projects getProjectByProjectUUID(String projectUUID) throws Exception {
+				return projectsDao.getProjectByProjectUUID(projectUUID);
 			}
 
 

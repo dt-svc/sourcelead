@@ -1536,9 +1536,12 @@ public class InvoiceRestController {
 			}
 			netAmount = recievableAmount - payableAmount;
 		}
-		if (invoiceList != null && invoiceList.size() > 0) {
-			for (Invoice invoice : invoiceList) {
-				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+//		logger.info("Final Response time = " + elapsedTime + " Millis");
+		if(invoiceList !=null && invoiceList.size()>0){
+			for(Invoice invoice : invoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 				}
 				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId()
@@ -1616,9 +1619,9 @@ public class InvoiceRestController {
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		Invoice  pInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
-		pInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-		invoiceService.linkInvoice(pInvoice);
+		Invoice  childInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getId());
+		childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+		invoiceService.linkInvoice(childInvoice);
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
 

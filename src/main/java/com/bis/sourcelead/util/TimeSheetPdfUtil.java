@@ -300,8 +300,8 @@ public class TimeSheetPdfUtil {
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
 //					grandTotalHours = getTotalHours(totalHours);
 					grandTotalHours = grandTotalHours + totalHours;
-					String billable = getTotalHours(billableHours.longValue());
-					String nonBillable = getTotalHours(nonBillableHours.longValue());
+					String billable = getTotalHours((long) (Math.round(billableHours)));
+					String nonBillable = getTotalHours((long) (Math.round(nonBillableHours)));
 					String grandtotal = getTotalHours(grandTotalHours);
 					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};

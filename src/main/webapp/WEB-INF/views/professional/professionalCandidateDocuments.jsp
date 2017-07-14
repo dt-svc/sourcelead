@@ -5,21 +5,26 @@
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript"
+	charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript"
+	charset="utf-8"></script>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
-    overflow-x: auto;
+	overflow-x: auto;
 }
+
 .validation_p p.jquery_form_error_message {
-bottom:-25px !important;
+	bottom: -25px !important;
 }
+
 .settPop .form-control {
-height: auto !important;
+	height: auto !important;
 }
 </style>
 <%-- 
@@ -35,7 +40,7 @@ height: auto !important;
 		$("#selector6").fadeIn(200);
         $('#selector6').delay(2000).fadeOut('slow');
 	}
-</script> 
+</script>
 <!-- End -->
 <script>
 function professionalCandidateDocuments(candidateId){
@@ -103,12 +108,9 @@ function candDocumentsList(candidateId){
 	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     /* result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>'; */
 	                     result  = result + '<th>Document Type</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
-	                 	/*  result  = result + '<th>Upload Status</th>';
-	                     result  = result + '<th>Document Status</th>'; */
 	                 	 result  = result + '<th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -116,14 +118,9 @@ function candDocumentsList(candidateId){
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
+	                    	 
+	                    	 if(opt.isConfidential == 'N' || (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.id}' == opt.userIdStr)){
 	                    	 result  = result + ' <tr>';
-	                    	 
-	                    	/*  if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
-	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
-	                    	 }else{
-	                    		 result = result +"  <td><div>--</div></td>"; 
-	                    	 } */
-	                    	 
 	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 	    	             	 {
@@ -148,23 +145,6 @@ function candDocumentsList(candidateId){
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
 		                    	
-	                    	 
-							/* result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                    	 
-	                    	 if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined'){
-	                    		 result = result +"<td>";
-	                    		 result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
-	                    		 if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined'){
-					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
-					        	   }
-	                    		 result = result +"</div>";
-	                    		 result = result +"</td>";
-	                    	 
-	                    	 }else{
-	                    		 result = result +"  <td><div>----</div></td>"; 
-	                    	 } */
-	                    	 
-		                   
 		                   result = result+'<td><div class="tblicons">';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
@@ -186,6 +166,8 @@ function candDocumentsList(candidateId){
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
 	                      } 
+	                     
+          }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>";
 	                     $("#candidateDocumentsList").append(result); 
@@ -270,9 +252,9 @@ function addDocument(candidateId, documentUUID) {
 	result = result  +'<div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	
-	result = result  +'<div class="clearfix mb10 col-md-12"> ';
+	result = result  +'<div class="clearfix mb10 col-md-12" id="nameDocIdDiv"> ';
 	
-	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);">';
+	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);validateDocName('+candidateId+');"  onkeyup ="validateDocName('+candidateId+');">';
 	                   <c:forEach var="doctype" items="${documentsList}">
     result = result +'<option value="" disabled selected></option>';	
 	result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
@@ -307,7 +289,14 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="col-md-12">';
 	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"  field-name="Description" class="form-control"></textarea>';
 	result = result+'</div>';
-	result = result+'</div>';  
+	result = result+'</div>'; 
+	
+	result = result + '<div class="clearfix mb10">';
+	result = result + '<div class="clearfix checkbox">';
+	result = result + '<label>';
+	result = result	+ '<label> <input type="checkbox" id="isConfidential" value="Y" onClick ="" name="isConfidential">Is Confidential</label>';
+	result = result + '</div>';
+	result = result + '</div>';
 	
 	result = result+'<div class="clearfix mr mt" id="docsUpdateButton" style="display: none;">';
 	result = result+'<button type="button" id="updates_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
@@ -383,7 +372,7 @@ function addDocument(candidateId, documentUUID) {
 			return o;
 		};
 	})(jQuery);
-</script>           
+</script>
 
 <script>
 function getDocumentType(documentType){
@@ -402,8 +391,8 @@ function getDocumentType(documentType){
 	}
 }
 </script>
-    
- <%-- 
+
+<%-- 
      @author : prasad K
      this script is for saving document
      1.usage     : onclick
@@ -472,7 +461,6 @@ function getDocumentType(documentType){
 function getDocument(candidateId, documentId){
 	  $("#docsName").attr("data-validation-optional", "true");
 	  $("#documentOtherType").attr("data-validation-optional", "true");
-	  
 	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
@@ -488,7 +476,9 @@ function getDocument(candidateId, documentId){
         			 $("#docsUpdateButton").show();
         			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
 	                     $("select#docuName").val(json.documentType);
+	                    
 	                     $("#docuName").trigger('chosen:updated');
+	                    
 	                    //here documentType is Other then documentOtherType  also display in Edit.
 	                   
 	                     if(json.documentType == 'Other'){
@@ -506,6 +496,11 @@ function getDocument(candidateId, documentId){
         				 $("textarea#description").val(json.description);
         			 }
         			 
+        			 if(json.isConfidential == "Y"){
+        			 $("#isConfidential").attr('checked', true)
+        			 }
+        			 
+        			 
    		    }
 	     });
 }
@@ -517,7 +512,7 @@ function deleteDocumentPopup(){
 }
 </script>
 
-<div id="deleteDocumentPopUp"></div> 
+<div id="deleteDocumentPopUp"></div>
 
 <script type="text/javascript">
 function removeDocument(candidateId, documentId){
@@ -588,3 +583,28 @@ function refreshDocList(candidateId){
 	candDocumentsList(candidateId);
 }
 </script>
+
+<script type="text/javascript">
+ function validateDocName(candidateId) {
+	  var name = document.getElementById("docuName").value; 
+ 	  $('#nameDocIdDiv').find('p.jquery_form_error_message').remove();
+	  var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateDocName?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameDocIdDiv').find('p.jquery_form_error_message').remove();
+						   $("#docuName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#save_doc").attr('disabled','disabled');
+						  $("#updates_doc").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('#nameDocIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameDocIdDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_doc").removeAttr("disabled");
+		        	}
+		        },
+		    });
+ }
+ </script>

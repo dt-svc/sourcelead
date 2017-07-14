@@ -199,6 +199,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
 	OrgSpocService orgSpocService;
 	
+	@Value("${env}")
+	private String environment;
+	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -3723,18 +3726,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setCreatedBy("sladmin");
-		 emailMessage.setFromName("info@sourcelead.com");
-		 
+		 if (environment.equalsIgnoreCase("prod")) {
+			 emailMessage.setFromName("info@sourcelead.com");
+		 }else{
+			 emailMessage.setFromName("qa@sourcelead.com");	 
+		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("professionalName", professionalName);
 		 globalVarsMap.put("employerName", requirement.getPostedOrgName());
-		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("experience", experience);
 		 globalVarsMap.put("location", location);
 		 globalVarsMap.put("professionalEmail", user.getEmail());
 		 
-		
+		 if(requirement.getJobId() !=null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder reqsb=new StringBuilder();
+			 
+			 globalVarsMap.put("requirementTitle",reqsb.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		 }
+		 
+		 else{
+			 globalVarsMap.put("requirementTitle", requirement.getJobTitle()); 
+			 
+		 }
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
