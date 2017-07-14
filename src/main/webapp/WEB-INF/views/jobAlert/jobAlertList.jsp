@@ -393,7 +393,7 @@ function jobAlertList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var report = json[i]; 
 	                    	 if(report.experience != null && report.experience != '' && report.experience != 'undefined'){
-	                    		 experience = report.experience + "&nbsp; Yeras";
+	                    		 experience = report.experience + "&nbsp; Years";
 	                    	 }else{
 	                    		 experience = "--";
 	                    	 }
