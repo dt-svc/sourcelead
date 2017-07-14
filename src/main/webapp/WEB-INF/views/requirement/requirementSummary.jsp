@@ -1010,7 +1010,7 @@ function sideBar(requirementId,type){
 							 }
 							 else{
 								    requirementPipeline(requirementId,'all');
-									requirementStatusBar(requirementId);
+									requirementStatusBar(requirementId,type);
 									
 									 var candidateId = '${candidateId}';
 									 var submissionId = '${submissionId}';
@@ -1337,6 +1337,14 @@ function requirementDetails(requirementId,data){
 			               result = result +'</div>';
 	          	           
 				           result = result +'<div class="clearfix"></div>';
+				           
+				           if(json.releaseJobToAllUsers  == 'Y'){
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> YES </span></div>';
+				            }else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> NO </span></div>';
+				            }
+			          	           
+						   result = result +'<div class="clearfix"></div>';
 			           	            
 			            
 			            //  Checking  for approval mechanism type  Parallel or Sequential
