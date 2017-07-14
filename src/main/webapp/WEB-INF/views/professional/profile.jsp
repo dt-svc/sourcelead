@@ -101,7 +101,7 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 alternateMobilePhone = "";
 		    	 }
-		    	 
+		    	
 		    	 if(json.country != null && json.country != '' && json.country !='undefined'){
 		    		 country = json.country;
 		    	 }else{
@@ -197,6 +197,10 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 rateType = "";
 		    	 }
+		    	 var location = '';
+		    	 if(json.location != null && json.location != '' && json.location != 'undefined'){
+		    		 location = json.location;
+		    	 }
 		    	 var result = "";
 				 result = result +'	<div class="content-area clearfix panelBody"> ';
 				 result = result +'	<section class="row pro_info">';
@@ -233,7 +237,7 @@ function getProfessionalInfo(){
 				 result = result +'	        <div class="reachout">';
 				 result = result +'	        <p><i class="fa fa-at" title="Mail me"></i>'+email+'</p>';
 				 result = result +'	        <p><i class="fa fa-phone" title="Call us"></i>'+mobilePhone+' '+alternateMobilePhone+'</p>';
-				 result = result +'	        <p><i class="fa fa-map-marker" title="Location"></i>'+country+' '+state+' '+city+'</p>';
+				 result = result +'	        <p><i class="fa fa-map-marker" title="Location"></i>'+location+'</p>';
 				 result = result +'	        </div>';
 				 result = result +'	    </div>';
 				 

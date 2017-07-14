@@ -75,10 +75,18 @@ public class CandidateOnBoardController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
+	
+	@RequestMapping(value = "/welcomeToOnboard")
+ 	public ModelAndView welcomeToOnboard() {
+ 			ModelAndView model = new ModelAndView();
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			model.setViewName("onboard/welcome");
+ 			return model;
+ 	}
+	
 	@RequestMapping(value = "/onboardingCandidateSetp2")
 	public ModelAndView onboardingCandidateSetp2(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;

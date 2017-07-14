@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_DOCUMENTS','IS_CONFIDENTIAL','VARCHAR(2) DEFAULT NULL AFTER `STATUS`');

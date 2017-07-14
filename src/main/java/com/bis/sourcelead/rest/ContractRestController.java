@@ -43,10 +43,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -56,6 +60,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -67,6 +72,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -188,7 +194,7 @@ public class ContractRestController {
 		
 		byte[] pdfBytes = null ;
 	
-		if(null != contract.getEnvelopId()&& contract.getTypeOfContract().equalsIgnoreCase("New")){
+		if(null != contract.getEnvelopId()&& contract.getTypeOfContract().equalsIgnoreCase(Constants.NEW_TYPE)){
 			if(null == contract.getContractsTemplate()){
 				Contracts con = contractsTemplateService.getContractById(contract.getParentContractId().getId());
 				pdfBytes = html2PdfUtil.getPdfBytes(con.getContractsTemplate(),contract,orgLocation,org);
@@ -198,17 +204,19 @@ public class ContractRestController {
 			}
 			
 		}
-		/*if(("New").equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
-		if(("New").equalsIgnoreCase(contract.getTypeOfContract())){
+		/*if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){*/
+		if((Constants.NEW_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 
-		if(("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
-		//if("Custom".equalsIgnoreCase(contract.getTypeOfContract())){
+		if((Constants.CUSTOM_TYPE).equalsIgnoreCase(contract.getTypeOfContract())){
+		//if(Constants.CUSTOM_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
+			  
+			  
 		}
 		
-		if("Existing".equalsIgnoreCase(contract.getTypeOfContract())){
+		if(Constants.EXISTING_TYPE.equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
@@ -223,31 +231,6 @@ public class ContractRestController {
           sos.close();
 	}
 	
-	
-	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
-	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);		
-		
-		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
-		String totalBody = header + contractsTemplate.getTemplateContent();
-    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-  	    Document document = new Document();
-  	    PdfWriter.getInstance(document, byteArray);
-  	    document.open();
-  	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(totalBody));
-  	    document.close();
-  	    byte[] pdfBytes = byteArray.toByteArray();
-  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-  	    response.setContentType("application/pdf");
-  	    response.setContentLength(pdfBytes.length);
-          ServletOutputStream sos = response.getOutputStream();
-          sos.write(pdfBytes);
-          sos.flush();
-          sos.close();
-	}
-
 	
 	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
 	public @ResponseBody String getAllTemplates(@RequestParam(value = "templateType", required = false) String templateType , HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -437,22 +420,22 @@ public class ContractRestController {
 		 contractsTemplateService.saveNewContract(contracts);
 		}*/
 		
-		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
+		if((Constants.WAITING_TO_BE_VERIFY).equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			String fromStage = childContarct.getTemplateSubmissionStatus();
 			String parentFromStage = contracts.getTemplateSubmissionStatus();
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus("FINALIZED");
+				childContarct.setTemplateSubmissionStatus(Constants.FINALIZED);
 				contracts.setId(contracts.getId());
-				contracts.setTemplateSubmissionStatus("FINALIZED");
+				contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
 			 
 			 ContractsHistory childContractsHistory = new ContractsHistory();
 			 childContractsHistory.setFromStage(fromStage);
 			 childContractsHistory.setContractsId(childContarct);
-			 childContractsHistory.setToStage("FINALIZED");
+			 childContractsHistory.setToStage(Constants.FINALIZED);
 			 childContractsHistory.setCreatedDate(new Date());
 			 childContractsHistory.setUpdatedDate(new Date());
 			 childContractsHistory.setCreatedBy(user.getUserCode());
@@ -463,7 +446,7 @@ public class ContractRestController {
 			 ContractsHistory parentContractsHistory = new ContractsHistory();
 			 parentContractsHistory.setFromStage(parentFromStage);
 			 parentContractsHistory.setContractsId(contracts);
-			 parentContractsHistory.setToStage("FINALIZED");
+			 parentContractsHistory.setToStage(Constants.FINALIZED);
 			 parentContractsHistory.setCreatedDate(new Date());
 			 parentContractsHistory.setUpdatedDate(new Date());
 			 parentContractsHistory.setCreatedBy(user.getUserCode());
@@ -565,14 +548,17 @@ public class ContractRestController {
 	@ResponseBody
 	public String approveContract(@RequestParam(value = "recordId", required = false) String recordId,
 			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "rejectReason", required = false) String rejectReason,
 			HttpServletRequest request)throws Exception{
-		String isAprroved = "APPROVED";
+		String isAprroved = Constants.APPROVED;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Contracts updatedContract = contractsTemplateService.approveContracts(Long.parseLong(recordId),status,orgLocation,user,org);
-		if("REJECTED".equalsIgnoreCase(updatedContract.getTemplateSubmissionStatus())){
-			isAprroved = "REJECTED";
+
+		Contracts updatedContract = contractsTemplateService.approveContracts(Long.parseLong(recordId),status,orgLocation,user,org,rejectReason);
+		if(Constants.REJECTED.equalsIgnoreCase(updatedContract.getTemplateSubmissionStatus())){
+			isAprroved = Constants.REJECTED;
+
 		}
 		return isAprroved;
 }
@@ -807,7 +793,16 @@ public class ContractRestController {
 				}
 			}
 			
+			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+    		if(null != contract.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateDao.getContractById(contract.getParentContractId().getId());
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+    		}else{
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+    		} 
 		 	
+    		contract.setContractRequestDocumentsList(contractRequestDocumentsList);
+    		
 			return commonUtil.toJSON(contract);
 		}
 	 
@@ -930,14 +925,14 @@ public class ContractRestController {
 		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
 		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
-				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				
 				String fromStage = "";
 				
 				ContractsHistory childContractsHistory = new ContractsHistory();
-				if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("EXPIRED"))
+				if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase(Constants.EXPIRED))
 				{
 					ContractsHistory contractsHistory = contractsTemplateService.getAllContractsHistoryByContractId(contracts.getId());
 					fromStage = contractsHistory.getFromStage();
@@ -987,4 +982,18 @@ public class ContractRestController {
 			
 			return "success";
 		}
+	 
+	 
+	 @RequestMapping(value = "/rest/getContractRequestDocumentsById")
+	 public ContractRequestDocuments getContractRequestDocumentsById(@RequestParam(value = "docId", required = true) Long docId) throws Exception {
+		 ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(docId);
+		 return contractRequestDocuments;
+	 }
+	 
+	 @RequestMapping(value = "/rest/getContractTemplateByTemplateUUID")
+	 public ContractsTemplate getContractTemplateByTemplateUUID(@RequestParam(value = "uuid", required = true) String uuid) throws Exception {
+		 ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);
+		 return contractsTemplate;
+	 }
+
 }

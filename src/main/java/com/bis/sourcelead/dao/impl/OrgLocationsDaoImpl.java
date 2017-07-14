@@ -89,14 +89,14 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean isLoginUserIsSuperUser(Long userId) throws Exception
+	public Boolean isLoginUserIsSuperUser(Long userId,Long orgLocationId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isSuperUser = false;
 		List<OrgLocations> orgLocations = new ArrayList<OrgLocations>();
 		try{
-			String query = ("from OrgLocations orgLocations where orgLocations.user.id = :userId");
-			orgLocations = session.createQuery(query.toString()).setLong("userId", userId).list();
+			String query = ("from OrgLocations orgLocations where orgLocations.user.id = :userId and orgLocations.id = :orgLocationId");
+			orgLocations = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
 			if (null != orgLocations && !orgLocations.isEmpty() && orgLocations.size() > 0) {
 				isSuperUser = true;
 			} 

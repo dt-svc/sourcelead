@@ -58,4 +58,10 @@ public class TabsServiceImpl implements TabsService {
 		return tabsDao.getCrowdSourcingTabsListByRoleId(roleId);
 	}
 
+	@Override
+	public List<String> getTabsNamesListByActionsIds(List<Long> actionIdsList) throws Exception
+	{
+		return tabsDao.getTabsNamesListByActionsIds(actionIdsList);
+	}
+
 }

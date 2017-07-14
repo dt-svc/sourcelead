@@ -73,6 +73,14 @@ public class OrgLocations implements Serializable{
 	@Column(name = "CITY")
 	private String city;
 	
+	@Column(name = "LOCATION")
+	private String location;
+	
+	@Column(name = "LATITUDE")
+	private String latitude;
+	
+	@Column(name = "LONGITUDE")
+	private String longitude;
 	
 	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)
@@ -230,6 +238,30 @@ public class OrgLocations implements Serializable{
 
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 	public String getCity() {

@@ -78,23 +78,32 @@
                     <option value="Letter head-1">Letter head-1</option>
                   </select>
               </div>
-          </div>     -->  
+          </div>  -->    
           </div>       
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">         
+          <!--  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">         
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
 					<textarea class="form-control" rows="3" id ="description"  name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250">${contractsTemplate.description}</textarea>
               </div>
-            </div>            
-            
-        </div>
+            </div>           
+        </div> --> 
+		
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<label class="col-md-2">Description</label>
+				<div class="col-md-10">
+				<textarea id="description" name="description" rows="4" field-name="description" class="form-control" data-validation="validate_length length1-250" data-validation-optional="true">${contractsTemplate.description}</textarea>
+				</div>
+			</div>
+		
+		
+		
       </div>
       
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			 <textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea> 
+			 <textarea id="txtEditor" name="templateContent"  data-validation="required" field-name="Template Content"  class="form-control newContrtextarea"></textarea> 
 			<!-- <textarea name="templateContent" class="form-control" id="txtEditor"></textarea> -->
 		</div>  
 		
@@ -256,7 +265,7 @@
           <div class="pull-right">
           	<!-- <input type="button" value="Preview" id="save_Preview" class="btn btn-success" onclick="generatePDF();">  -->
             <input type="button" value="Save" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
-            <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/orgContractTemplate'/>'" class="btn btn-default ml10">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/orgContractTemplate'/>'" class="btn btn-default ml10">
           <!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
           </div>
@@ -470,7 +479,7 @@ function generatePDF(id) {
 	       // var jsonData = encodeURIComponent(con);
 	        $( "#save_template" ).addClass('button').val('Processing..');
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 						type : "POST",
 		  	    	    data: formData,

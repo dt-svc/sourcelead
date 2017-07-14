@@ -228,6 +228,21 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("city") && jsonObj.getString("city") !=null){
 		candidate.setCity(jsonObj.getString("city"));
 		}
+		if(jsonObj.has("location") && jsonObj.getString("location") !=null){
+			candidate.setLocation(jsonObj.getString("location"));
+		}
+		if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") !=null){
+			candidate.setZipCode(jsonObj.getString("zipcode"));
+		}
+		
+		if(jsonObj.has("latitude") && jsonObj.getString("latitude") !=null){
+			candidate.setLatitude(jsonObj.getString("latitude"));
+		}
+		
+		if(jsonObj.has("longitude") && jsonObj.getString("longitude") !=null){
+			candidate.setLongitude(jsonObj.getString("longitude"));
+		}
+		
 		if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
 		candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 		}
@@ -387,9 +402,9 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for inviting candidate to sourcelead
 		 */
-		if(jsonObj.has("email") && null != jsonObj.getString("email") && Constants.YES.equalsIgnoreCase(jsonObj.getString("email"))){
-			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
-		}
+		 if(jsonObj.has("inviteEmail") && null != jsonObj.getString("inviteEmail") && Constants.YES.equalsIgnoreCase(jsonObj.getString("inviteEmail"))){
+				inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+			}
 		
 		/*
 		 * Saving Candidate DB data as ElasticSearch Documents
@@ -859,7 +874,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){
 				candidate.setLastName(candidate.getLastName());	
 			}
-			candidate.setCountry(candidate.getCountry());
+//			candidate.setCountry(candidate.getCountry());
+			if(jsonObj.has("country") && jsonObj.getString("country") !=null){
+				candidate.setCountry(jsonObj.getString("country"));
+			}
 			
 			if(jsonObj.has("state") && jsonObj.getString("state") !=null){
 			candidate.setState(jsonObj.getString("state"));
@@ -867,6 +885,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(jsonObj.has("city") && jsonObj.getString("city") !=null){
 			candidate.setCity(jsonObj.getString("city"));
 			}
+			if(jsonObj.has("location") && jsonObj.getString("location") !=null){
+				candidate.setLocation(jsonObj.getString("location"));
+			}
+			if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") !=null){
+				candidate.setZipCode(jsonObj.getString("zipcode"));
+			}
+			
 			if(jsonObj.has("mobilePhone") && jsonObj.getString("mobilePhone") !=null){
 			candidate.setMobilePhone(jsonObj.getString("mobilePhone"));
 			}
@@ -955,6 +980,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 			if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") !=null){
 				candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+			}
+			
+			if(jsonObj.has("visa")){
+				
+				String visaList =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("visa");
+					visaList = jsonArray.toString();
+				}
+				catch(JSONException e){
+					visaList =jsonObj.getString("visa");
+				}
+				visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
+				visaList = visaList.replaceAll("\"", "");
+				candidate.setVisaType(visaList);
+		  	 
+			}else{
+				candidate.setVisaType(null);
 			}
 			
 			
@@ -1175,7 +1218,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
-			if(candidate.getConsultantUser() != null){
+			CandidateResumes candidateResumes = candidateResumesService.getCandidateResumesListByCandidateId(candidate.getId());
+			if(candidateResumes != null){
+			candidate.setCandidateResumeName(candidateResumes.getFileName());
+			candidate.setCandidateResumeFileType(candidateResumes.getFileContentType());
+			}if(candidate.getConsultantUser() != null){
 				Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
 				candidate.setAssignedProjectsCount(assignedProjectsCount);
 			}

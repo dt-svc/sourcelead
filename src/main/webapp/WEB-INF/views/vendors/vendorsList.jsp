@@ -1746,7 +1746,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
-		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Jobs List</a></li>'; 
+		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Jobs</a></li>'; 
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		
@@ -1759,12 +1759,12 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		 // vendors associates list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
-		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
+		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associates</a></li>';
 		 '</sec:authorize>';
 		 
 		 // vendors notes list
 		
-		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes List</a></li>';
+		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes</a></li>';
 		
 
 
@@ -1877,6 +1877,16 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '</div>';
 							
 							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Vendor Location:</strong>';
+							if(json.location != null && json.location !='' && json.location !='undefined'){
+								result = result + '<span>'+json.location+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Vendor Country:</strong>';
 							if(json.country != null && json.country !='' && json.country !='undefined'){
 								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
@@ -1898,6 +1908,15 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '<strong>Vendor City:</strong>';
 							if(json.city != null && json.city !='' && json.city !='undefined'){
 								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Vendor Zip Code:</strong>';
+							if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
+								result = result + '<span>'+json.zipCode+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}

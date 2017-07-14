@@ -68,16 +68,21 @@ $(document).ready(function(){
 	<input type="hidden" name="noteType" id="noteType" value = "Contract">
 		<div class="col-md-12 inputOther mt10 inputOther">
 		<div class="form-horizontal clearfix"><div class="clearfix">
-		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000" field-name="Note" class="form-control" onkeypress="viewContractCommentRemoveSpaces();"></textarea></div>
-		<div class="clearfix checkBox">
+		<textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000" field-name="Note" class="form-control" ></textarea></div>
+		
+		<div class="row clearfix mt5">
+		<div class="checkBox col-md-9">
 		<input type="checkbox" value="Y" id="allowAll" name="allowAll" checked="checked">
-		<span>Allow All Users</span>
+		<span>Allow all users</span>
 		</div>
-		<div class="clearfix mt5" id="docAddButton">
+		<div class="col-md-3" id="docAddButton">
 		<div class="pull-right">
 			<input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onclick="storeContractNotes();"></div>
 		</div>
-		</div></div>
+		</div>
+		
+		</div>
+		</div>
 		</div>
 		</form>
 	</div>
@@ -195,12 +200,17 @@ output  = output + '        </div>';
 				var json_obj = JSON.parse(conOne);
 				json_obj['contractUUID'] = contractUUID;
 				var con = JSON.stringify(json_obj);
-				con = con.replace(/[{}]/g, "");
+				//con = con.replace(/[{}]/g, "");
 				var form = $('#notes_Contracts')[0];
-	      		var formData = new FormData(form); 
+	      		var formData = new FormData(form);
+	      		formData.append("json",con);
+	      		
+	      		var userId = '${SourceLeadWeb_user.id}';
+	      		formData.append("userId",userId);
+	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
+	      	    formData.append("locationCode",locationCode);
+	      	    
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#save_note").attr("disabled", "disabled");
-         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -210,7 +220,7 @@ output  = output + '        </div>';
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							closeDocPopup();
 							addContractNotes();
@@ -337,7 +347,7 @@ function displyContract(stage){
 			
 			if(null != json.ownerName && "" != json.ownerName && 'undefined' != json.ownerName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Signing Authority</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
 				result = result +	'	</div>';
 			}
@@ -416,6 +426,52 @@ function displyContract(stage){
 			}
 			
 			result = result +	'<div class="clearfix"/>';
+			if(json.contractRequestDocumentsList.length>0){
+			
+				result = result +	'<h4>Requested Documents</h4>';
+				
+				result = result + '	<div class="clients_wrap_table">';
+				result = result +  '<table id="contractListTableREJ2" class="display" cellspacing="0" width="100%" >';
+				result = result + '	<thead>';
+				result = result + '   <tr>';
+				result = result + '    <th>Doc Name</th>';
+				result = result + '    <th>Doc Type</th>';
+				result = result + '    <th>Description</th>';
+				result = result + '    <th>Action</th>';
+				result = result + '   </tr>';
+				result = result + '	</thead>';
+				result = result + '	<tbody>';
+				
+				  for (var i = 0; i < json.contractRequestDocumentsList.length; i++) {
+		    	      var opt=json.contractRequestDocumentsList[i];
+						result = result + '   <tr>';
+						result = result + '    <td>'+opt.fileName+'</td>';
+						if(opt.docType != null && opt.docType != 'undefined' && opt.docType != ""){
+							result = result + '    <td>'+opt.docType+'</td>';
+						}
+						else{
+							result = result + '    <td>--</td>';
+						}
+						if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+							result = result + '    <td>'+opt.description+'</td>';
+						}
+						else{
+							result = result + '    <td>--</td>';
+						}
+						 if(opt.docFile != null && opt.docFile !=""){
+							result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
+		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
+						 }else{
+							 result = result + '    <td>--</td>';
+						 }
+		           			result = result + '   </tr>';
+				  }
+				result = result + '	</tbody>';
+				result = result + '</table>';
+				result = result + '	</div>';
+				result = result +	'<div class="clearfix"/>';
+			}
+					
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
 			result = result +	'<h4>Billing Details</h4>';
@@ -547,7 +603,14 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 </script>
-
+<script type="text/javascript">
+function previewContractDoc(docId,fileName){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	if(docId != null && docId != ""){
+		window.open(sourceleadUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
+	}  
+}
+</script>
 <script>
 function editOne(startDate,endDate){
 	$('.editNewDat').show();
@@ -597,6 +660,7 @@ $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-detail
 });
 function closeDocPopup(){
 $("#popUpDiv").removeClass("edit-details-active");
+$("#notes_Contracts")[0].reset();
 }
 </script>
 

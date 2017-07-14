@@ -33,6 +33,7 @@ $(document).ready(function(){
 	}else{
 		getClients();
 	}
+
 	
 });
 </script>
@@ -97,7 +98,7 @@ function errRemoveClientContact(){
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
 								<input type="text" class="form-control calendar"
-									id="invoiceDate" name="invoiceDate" value=""
+									id="invoiceDate" name="invoiceDate" value="${currentDate}"
 									placeholder="Invoice Date" id="invoiceDate" readonly
 									data-validation="required" field-name="Invoice Date">
 							</div>
@@ -146,7 +147,7 @@ function errRemoveClientContact(){
 						<button type="button" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+							onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -1293,30 +1294,10 @@ function setHours(finalmin,rowId){
 	    $("#conversionFrom").val(sum.toFixed(2));
 	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
-   /* =====================  After adding the rows calculate the discount start  ===================== */
-   var discountValue =  $("#discountValue").val();
-   var discountType =  $("#disCount").val();
-  
-   if(discountValue != null && discountValue != ''){
-		var total ='';
-		if(discountType == 'flat'){
-			total = arroundGrand-discountValue;
-			$("#discountTotal").val(discountValue.toFixed(2));
-			$("#grandTotal").val(total.toFixed(2));
-			$("#conversionFrom").val(total.toFixed(2));
-			$("#afterDiscountTotal").val(total.toFixed(2));
-			
-		}
-		if(discountType == 'percentage'){
-			var perCentValue = (arroundGrand * discountValue)/100;
-			total = arroundGrand - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
-			$("#grandTotal").val(total.toFixed(2));
-			$("#conversionFrom").val(total.toFixed(2));
-			$("#afterDiscountTotal").val(total.toFixed(2));
-		}
-   }
-   
+/*  After adding the rows calculate the discount start  */
+   calculateDiscount();
+
+/*  After adding the rows calculate the Tax discount start  */
 	    calculateTaxDiscount();
 	    
   }
@@ -1353,7 +1334,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
-			$("#discountTotal").val(subTotal);
+			$("#discountTotal").val("00.00");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1705,21 +1686,36 @@ function getSowRate(id){
 <script>
 function getClients(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationId ='${orgRelationId}';
+	
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?${_csrf.parameterName}=${_csrf.token}",
 		success :function(data) {
 		var json = JSON.parse(data);
 		var output = "";
-		output = output + "<option value=''>Select Client</option>";
+			output = output + "<option value=''>Select Client</option>";
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
-		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		if(orgRelationId == opt.id){
+			var selected = 'selected';
+			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+		}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		}
+		
 		}
 		$("#clientOrgRelationId").empty();
 		$("#clientOrgRelationId").append(output);
 		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		
+		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
+			getClientContacts();
+			errRemoveClient();
+			getPaymentTerms();
+		}
 	},
 	});
 
@@ -1800,7 +1796,7 @@ function getDueDateByFrequency(){
 	
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
@@ -1865,7 +1861,7 @@ function saveInvoice(saveType){
 		        }else{
 		        	
 		    	        
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	        $.ajax({
 		    		    	 type: "POST",
 		    		    	 data: formData,

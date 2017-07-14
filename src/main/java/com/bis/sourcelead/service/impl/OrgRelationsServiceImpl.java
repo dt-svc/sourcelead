@@ -151,7 +151,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
+						orgRelation.setLocation(orgRelation.getResponderLocationId().getLocation());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
+						orgRelation.setZipCode(orgRelation.getResponderLocationId().getZipCode());
 						orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 						orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
@@ -174,8 +176,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
 						orgRelation.setState(orgRelation.getLocationId().getState());
+						orgRelation.setLocation(orgRelation.getLocationId().getLocation());
 						orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getLocationId().getEmail());
+						orgRelation.setZipCode(orgRelation.getLocationId().getZipCode());
 						orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
 						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
 						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));

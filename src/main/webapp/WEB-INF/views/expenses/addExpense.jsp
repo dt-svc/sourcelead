@@ -18,6 +18,14 @@
  <script type="text/javascript">
 		window.onload = function () {
 			getClientBasedOnSelectedProject();
+			
+			var entrySize = '${expenses.expensesEntries.size()}';
+			if(entrySize>0){
+				$('#maxRecCount').val('${2*expenses.expensesEntries.size()+1}');
+			}
+			else{
+				$('#maxRecCount').val('1');
+			}
 		 };
 </script>
 <!-- View Content Area Starts-->
@@ -53,25 +61,26 @@
                 <div class="form-group">
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : ExpensesId}" readonly="readonly">
+                    <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : expEntry.expenseId}" readonly="readonly">
                     <input type="hidden"  class="form-control" name="expenseId" value="${expenses.id}">
                   </div>
                 </div>  
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
+
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<c:if test="${fn:length(projectMembersList) gt 1}">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 1}">
 								<option value="">Select Project</option>
 							</c:if>
-							<c:forEach var="projMembers" items="${projectMembersList}">
-							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
+							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
+							       <option  ${expenses.projectMemberId == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -79,7 +88,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" autocomplete="off" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -87,11 +96,11 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						  </div>					  
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+						  </div> 		  
 						</div>
 	              </div>
 	            </div>
@@ -103,36 +112,37 @@
 <div class="form-group">
 <span class="col-md-3">Expenses Amount Total:</span>
 <div class="col-md-9">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
-	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
+
  <input type="hidden"  name="maxRecCount" id="maxRecCount" value="${2*expenses.expensesEntries.size()+1}">
 	<table id="categoryTable">
 	    <thead>
 			<tr id="divEntityTsRow0">
-				<th>Exp Category</th>
 				<th>Date</th>
-				<th>Payment Mode</th>
-				<th>Currency</th>
-				<th>Amount</th>
+				<th>Exp Category</th>
 				<th>Description</th>
+				<th>Amount</th>
+				<th>Currency</th>
+				<th>Payment Mode</th>
 				<th>Action</th>
 			</tr>
 		</thead>	
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
+			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.expensesCategoryId.expensesName}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
+			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
 			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
@@ -149,15 +159,15 @@
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 						<select class="chosen-select form-control" id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
-							<option value="">Select Category Type</option>
-							<c:forEach var="expCat" items="${expensesCategoryList}">
+						<option value="">Select Category Type</option>
+							<c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 							       <option  ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.expensesName}</option>
 							</c:forEach>
 						</select>
 					</div>
 							<div class="col-md-4 mb10">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDate}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10">
 								<label>Receipt Issued by</label>
@@ -167,25 +177,26 @@
 								<label>Payment Mode</label>
 								<select id="paymentMode${entryCount.count}" name="paymentMode${entryCount.count}" class="form-control" field-name="Payment Mode" data-validation-optional="true">
 								         <option value="">Select Mode</option>
-		                                 <option  value="Credit Card" ${entry.paymentMode.value == 'Credit Card' ? 'selected' : ''}>Credit Card</option>
-		                                 <option  value="Debit Card" ${entry.paymentMode.value == 'Debit Card' ? 'selected' : ''}>Debit Card</option>
-		                                 <option  value="Cash" ${entry.paymentMode.value == 'Cash' ? 'selected' : ''}>Cash</option>
-		                                 <option  value="Cheque" ${entry.paymentMode.value == 'Cheque' ? 'selected' : ''}>Cheque</option>
-		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
+								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
+							                  <option  ${entry.paymentMode.value == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
+							             </c:forEach>
 								</select>
 							</div>	
 		                  <div id="amountDiv${entryCount.count}" class='col-md-4 mb10 valid_ation'>
 			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
-												  <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
-												  	<option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
+											 <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
+									                  <option  ${entry.currencyType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
+									              </c:forEach>
+												  	<%-- <option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
 												  	<option value='AUD' ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
 												  	<option value='USD' ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
 												  	<option value='GBP' ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
 												  	<option value='SGD' ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
-												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
-												  </select>
+												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option> --%>
+										  </select>
 									</div>
 								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${entryCount.count});">
 									</div>
@@ -435,7 +446,7 @@ function expensesDateCheck(){
 <script>
 function withdrawMyExpense(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
    	       url: sourceleadUrl+"/withDrawExpense?${_csrf.parameterName}=${_csrf.token}&expenseId="+'${expenses.id}',		

@@ -112,7 +112,7 @@ padding-left: 25px;
    function offboardCandidateDetails(){
 	    var offboardUUID = '${offboardUUID}';
 	    var sourceleadUrl ='${sourceleadUrl}';  
-	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offboardUUID, 
@@ -293,7 +293,7 @@ padding-left: 25px;
 	   var sourceleadUrl = '${sourceleadUrl}';
 	   var offboardUUID = '${offboardUUID}';
 	  
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   
 	    getOffboardCheckList(sourceleadUrl,offboardUUID);
 	   
@@ -320,7 +320,7 @@ padding-left: 25px;
 	   
 	   var offboardUUID = '${offboardUUID}';
 	    var sourceleadUrl ='${sourceleadUrl}';  
-	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getOffboardCandidateTasksByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID, 
@@ -413,7 +413,7 @@ padding-left: 25px;
 	   
 	   var offboardUUID = '${offboardUUID}';
 	    var sourceleadUrl ='${sourceleadUrl}';  
-	  // $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  // $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "GET",
 	    	 url: sourceleadUrl+"/getOffboardCandidateDocumentsByOffboardUUID?${_csrf.parameterName}=${_csrf.token}&offboardUUID="+offboardUUID, 

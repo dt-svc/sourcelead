@@ -44,27 +44,44 @@ function generatrPayroll(data,payrollCycle){
 							result = result + ' <td><div>--</div></td>';
 						}
 	        		    
-	        		    if(opt.name !=null && opt.name !='' && opt.name !='undefined'){
-							result = result + ' <td><div class="tblminwidth-75">'+opt.name+'</div></td>';
+	        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
+							result = result + ' <td><div class="tblminwidth-75">'+opt.employeeName+'</div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
-						result = result + '<td><div class="tblminwidth-75">'+opt.totalMarchHrs+'</div></td>';
-						result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.halfHrs+'</div></td>';
+						result = result + '<td><div class="tblminwidth-75">'+opt.totalHours+'</div></td>';
+						result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.halfHours+'</div></td>';
 						if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
-							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.payRate+'</div></td>';
+							result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tbldata-dotdot-sm"">'+opt.payRate+'</div></td>';
 						}else{
-							result = result + ' <td><div>--</div></td>';
+							result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div>0</div></td>';
 						}
-						if(opt.amount !=null && opt.checkDateStr !='' && opt.amount !='undefined'){
+						if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
 							result = result + '<td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-125 text-right">'+opt.amount+'</div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
-						result = result + ' <td><div class="tblminwidth-75">'+opt.preDeductions+'</div></td>';
-						result = result + '<td><div class="tblminwidth-75">'+opt.finalAmount+'</div></td>';
-						result = result + '<td><div class="tblminwidth-75">'+opt.postDeductions+'</div></td>';
-						result = result + ' <td><div class="tblminwidth-75">'+opt.reimbursement+'</div></td>';
+						if(opt.preDeductins !=null && opt.preDeductins !='' && opt.preDeductins !='undefined'){
+							result = result + ' <td><div class="tblminwidth-75">'+opt.preDeductins+'</div></td>';
+						}else{
+							result = result + ' <td><div class="tblminwidth-75">0</div></td>';
+						}
+						if(opt.finalAmount !=null && opt.finalAmount !='' && opt.finalAmount != 'undefined'){
+							result = result + '<td><div class="tblminwidth-75">'+opt.finalAmount+'</div></td>';
+						}else{
+							result = result + '<td><div class="tblminwidth-75">0</div></td>';
+						}
+						if(opt.postDeductions !=null && opt.postDeductions !='' && opt.postDeductions !='undefined'){
+							result = result + '<td><div class="tblminwidth-75">'+opt.postDeductions+'</div></td>';
+						}else{
+							result = result + '<td><div class="tblminwidth-75">0</div></td>';
+						}
+						if(opt.reimbursement !=null && opt.reimbursement !='' && opt.reimbursement !='undefined'){
+							result = result + ' <td><div class="tblminwidth-75">'+opt.reimbursement+'</div></td>';	
+						}else{
+							result = result + ' <td><div class="tblminwidth-75">0</div></td>';
+						}
+						
 						if(opt.status !=null && opt.status !='undefined' && opt.status !=''){
 							result = result + '<td><div class="tblminwidth-75">'+opt.status+'</div></td>';
 						}else{
@@ -87,6 +104,10 @@ function generatrPayroll(data,payrollCycle){
 				$("#wagesAndTaxListDiv").empty();
 				$("#finalPayrollReportDiv").empty();
 				$("#finalPayrollReportDiv").append(result);
+				/*  document.getElementById("applicantsContractsList").style.display="block"; 
+				$("#payScale"). */
+				$('#payScale').css('display','block');
+				$('#payCycleName').html(payrollCycle);
 				finalPayrollreportPagination();
 }
 </script>

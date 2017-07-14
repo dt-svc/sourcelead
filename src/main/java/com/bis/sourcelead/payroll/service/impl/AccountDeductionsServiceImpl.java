@@ -353,4 +353,18 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	{
 		return accountDeductionsDao.getDeductionsDetailsbyId(deductionId);
 	}
+
+
+	@Override
+	public AccountDeductions getDeductionsbyId(Long deductionId)
+	{
+		return accountDeductionsDao.getDeductionsbyId(deductionId);
+	}
+
+
+	@Override
+	public AccountDeductions saveAccountDeductions(AccountDeductions accountDeductions) throws Exception
+	{
+		return accountDeductionsDao.saveAccountDeductions(accountDeductions);
+	}
 }

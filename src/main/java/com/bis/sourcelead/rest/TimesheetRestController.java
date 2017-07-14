@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -71,6 +72,7 @@ import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
@@ -146,6 +148,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
 	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
@@ -1211,11 +1216,11 @@ public class TimesheetRestController {
 						  }
 							  
 					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
-					    	tabDiv.append("<div class='commentTime'>");
+					    	tabDiv.append("<div class='commentTime pull-right'>");
 					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comment here'>").append(ts.getWeekcomments()).append("</textarea>");
 					    	tabDiv.append("</div>");
 						}else{
-							tabDiv.append("<div class='commentTime'>");
+							tabDiv.append("<div class='commentTime pull-right'>");
 							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comment here'></textarea>");
 							tabDiv.append("</div>");
 						}
@@ -1317,6 +1322,7 @@ public class TimesheetRestController {
 								    		&& !approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue())){
 										documentBuffer.append("<input class='dele' type='button' onClick='deleteSubmissionDocument(\""+tsd.getId()+"\");' >");
 									}
+									documentBuffer.append("<input class='deleApp' type='button' onClick='viewSubmissionDocument(\""+tsd.getId()+"\",\""+tsd.getFileName()+"\");' >");
 									documentBuffer.append("</strong>");
 							} 
 						}
@@ -1875,9 +1881,9 @@ public class TimesheetRestController {
 			 emailMessage.setFirstName(projectManager.getFirstName());
 			 emailMessage.setLastName(projectManager.getLastName());
 			 emailMessage.setToEmail(projectManager.getEmail());
-			 emailMessage.setFromEmail("peopleaxisindia@gmail.com");
+			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
+//			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
 			 String pattern = "dd-MM-yyyy";
 	         SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -1886,10 +1892,22 @@ public class TimesheetRestController {
 
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
-			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
-			 globalVarsMap.put("managerLastName",projectManager.getLastName());
+//			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+//			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+			 StringBuilder loginName = new StringBuilder();
+			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 globalVarsMap.put("loginUserFullName",loginName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("loginUserFullName",loginUser.getFirstName());
+			 }
+			 StringBuilder managerName = new StringBuilder();
+			 if(null != projectManager.getLastName() && !"".equalsIgnoreCase(projectManager.getLastName())){
+				 globalVarsMap.put("managerFullName",managerName.append(projectManager.getFirstName()).append(" ").append(projectManager.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("managerFullName",projectManager.getFirstName());
+			 }
+//			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
+//			 globalVarsMap.put("managerLastName",projectManager.getLastName());
 			 //globalVarsMap.put("projectName", project.getProjectName());
 			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);
@@ -2106,6 +2124,7 @@ public class TimesheetRestController {
 				}
 			
 		}
+		
 		
 		@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS')")
 		@RequestMapping(value = "/deleteSubmissionDocument", method = RequestMethod.POST)

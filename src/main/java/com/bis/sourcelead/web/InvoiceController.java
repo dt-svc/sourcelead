@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +63,7 @@ public class InvoiceController {
  * @throws Exception
  */
 	@RequestMapping(value = "/createInvoice")
-	public ModelAndView invoiceList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
+	public ModelAndView invoiceList(@RequestParam(value="type", required=false) String type , @RequestParam(value="orgRelationId", required=false) Long orgRelationId ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -71,6 +72,11 @@ public class InvoiceController {
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{
@@ -78,6 +84,9 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/createInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		Date currentDate = new Date();
+		String convertedDate = Constants.DMY.format(currentDate);
+		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
@@ -212,7 +221,7 @@ public class InvoiceController {
 	
 
 	@RequestMapping(value = "/createInvoiceProjectBased")
-	public ModelAndView createInvoiceProjectBased(HttpServletRequest request) throws Exception {
+	public ModelAndView createInvoiceProjectBased(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -223,11 +232,19 @@ public class InvoiceController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		
+		Date currentDate = new Date();
+		String convertedDate = Constants.DMY.format(currentDate);
+		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
@@ -237,7 +254,7 @@ public class InvoiceController {
 
 	
 	@RequestMapping(value = "/createInvoiceProjectPayableBased")
-	public ModelAndView createInvoiceProjectPayableBased(HttpServletRequest request) throws Exception {
+	public ModelAndView createInvoiceProjectPayableBased(@RequestParam(value="orgRelationId", required=false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -248,11 +265,18 @@ public class InvoiceController {
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		Date currentDate = new Date();
+		String convertedDate = Constants.DMY.format(currentDate);
+		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectPayableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);

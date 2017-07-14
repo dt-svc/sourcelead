@@ -79,10 +79,10 @@ function submitToClient(requirementId){
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
 	    			    
-			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
+			            result = result + '<td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
 			           
 			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.candidateEmail+'</span></div></td>';
+			        	   result = result + '<td><div><span title="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -135,7 +135,7 @@ function submitToClient(requirementId){
 							result = result + ' </select></td>';
 			           
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+			        	   result = result + '<td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'</span></div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -293,7 +293,7 @@ function clientSubmissions(requirementId){
 	 
 	 if(selectedShortlists.length > 0){
 		 if(selectedShortlists.length <= 50){
-			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type: "POST",
 			    	url: sourceleadUrl+"/submitShortlistedToClient?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
@@ -324,7 +324,7 @@ function alertMessage(message){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -334,9 +334,10 @@ function alertMessage(message){
 </script>
 
 <script type="text/javascript">
-function cancel(){
+function cancelSumitToClient(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+	$(".sideMask").fadeOut(200);
 }
 </script>
 
@@ -494,7 +495,7 @@ function addEmailtemplate(requirementId){
 	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel123();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
@@ -520,7 +521,7 @@ function addEmailtemplate(requirementId){
 		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#pipeline_user_pop").slideDown(200);
@@ -532,7 +533,7 @@ function addEmailtemplate(requirementId){
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Submission Rate is Required</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#pipeline_user_pop").slideDown(200);
@@ -645,7 +646,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
     		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#sendMail").addClass('button').val('Processing..');
-     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,

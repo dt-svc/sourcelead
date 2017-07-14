@@ -61,7 +61,7 @@ public class Invoice {
 	private String invoiceId;
 	
 	@ManyToOne
-    @JoinColumn(name="PROJECT_ID", nullable=false ) 
+    @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
 	
 	@Column(name = "INVOICE_TYPE")

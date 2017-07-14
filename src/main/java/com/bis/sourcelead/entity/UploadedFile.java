@@ -15,6 +15,8 @@ public class UploadedFile implements Serializable{
 	private MultipartFile file;
 	
 	private String email;
+	
+	private String inviteEmail;
 
 	public String getEmail() {
 		return email;
@@ -30,5 +32,13 @@ public class UploadedFile implements Serializable{
 
 	public void setFile(MultipartFile file) {
 		this.file = file;
+	}
+
+	public String getInviteEmail() {
+		return inviteEmail;
+	}
+
+	public void setInviteEmail(String inviteEmail) {
+		this.inviteEmail = inviteEmail;
 	}
 }

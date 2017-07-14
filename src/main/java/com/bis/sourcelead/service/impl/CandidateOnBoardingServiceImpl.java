@@ -158,6 +158,10 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setAddress2(null);
 		}
 		
+		if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
+			candidateOnBoarding.setLocation(jsonObj.getString("location"));
+		}
+		
 		if(jsonObj.has("country") && !isNullOrEmpty(jsonObj.getString("country"))){
 			candidateOnBoarding.setCountry(jsonObj.getString("country"));
 		}
@@ -338,6 +342,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUser == null){
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
+		}else{
+			onboardingUser.setPassword(sourceleadPasswordEncoder.encode(password));
+			userDao.addUser(onboardingUser);
 		}
 		
 		onboardingUserRole = userRoleDao.getUserDetailsByUserIdAndLocationId(onboardingUser.getId(), orgLocations.getId());
@@ -612,8 +619,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 StringBuilder builder=new StringBuilder();
-		 emailMessage.setFirstName(builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
@@ -625,7 +631,14 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 StringBuilder builder=new StringBuilder();
+		 
+		 if(user.getLastName() !=null){
+		 globalVarsMap.put("firstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 }
+		 else{
+		 globalVarsMap.put("firstName", user.getFirstName());
+		 }
 		// globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());

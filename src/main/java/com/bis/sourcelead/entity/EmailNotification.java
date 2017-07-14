@@ -35,7 +35,7 @@ public class EmailNotification implements Serializable{
 	@Column(name="SUBJECT", columnDefinition = "TEXT")
 	private String subject;
 
-	@Column(name="BODY", columnDefinition = "LONGTEXT")
+	@Column(name="BODY", columnDefinition = "LONGTEXT default NULL")
 	private String body;
 	
 	@Column(name="DELIVERY_STATUS")

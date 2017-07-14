@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -18,6 +19,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
@@ -50,8 +53,11 @@ public class InvoiceServiceTest {
 	}
 	@Autowired
 	InvoiceService invoiceService;
+	
+	@Autowired
+	InvoiceDao invoiceDao;
 
-	@Test
+	//@Test
 	public void savInvoice() throws Exception{
 		
 		Invoice invoice = new Invoice();
@@ -101,9 +107,29 @@ public class InvoiceServiceTest {
         
         invoiceLineItemsSet.add(invoiceLineItems);
         invoice.setInvoiceLineItems(invoiceLineItemsSet);
-//        invoiceService.saveInvoice(invoice);
         logger.info("invoice saved successfully");
 	}
-	
+	/**
+	 * @author Rajashekar 
+	 * changing invoice payment status when due date is over
+	 * @throws Exception
+	 */
+	@Test
+	public void checkDeuDate() throws Exception{
+		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
+		invoiceList.forEach(invoice -> {
+			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
+				if (invoice.getDueDate().after(new Date())) {
+					invoice.setPaymentStatus(Constants.OVER_DUE);
+					try {
+						invoiceDao.saveInvoce(invoice);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		});
+	}
 	
 }

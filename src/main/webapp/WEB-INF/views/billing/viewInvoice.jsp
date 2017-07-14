@@ -70,7 +70,7 @@ $(document).ready(function(){
 <%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
               <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
 <%--               </sec:authorize> --%>
-                <h5>Note List</h5>
+                <h5>Notes</h5>
               </a>
             </li>
             
@@ -625,28 +625,34 @@ function addNotes() {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
+	 result = result +" <div class='col-md-12 inputOther inputOther'>";
     
 	
-     result = result +"    <div class='mt10'>";
+     result = result +"    <div class='clearfix'>";
      result = result +"    <div class='dropdown-select mb10' id='clientCategoryContactTypeListDivDiv'>";
      result = result +"    </div>";
  	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_Space validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control"></textarea>';
 	result = result+'	                  </div>';
 	result = result  +'                  </div>';
+	
+	result = result+' <div class="row clearfix mt5"> ';
 	result = result+' <div class="col-md-9 checkBox"> ';
-	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
-	result = result + '	                    <p>Allow All Users</p>';
+	result = result+'   <input type="checkbox" value= "Y" id="allowAll" class="pull-left" name = "allowAll" checked="checked">';
+	result = result + '	                    <p class="pull-left mt5">Allow all users</p>';
 	result = result+'	                  </div>';
 	
-	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="col-md-3" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeInvoiceNotes();" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onClick ="storeInvoiceNotes();" />'; 
   /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
+	result = result  +'                  </div> ';
+	
+	
+	
 	result = result  +'                </div>';
 	
 	result = result  +'                </form>';
@@ -671,12 +677,19 @@ function addNotes() {
 		if ($('#invoiceNotes_form').validate(false, validationSettings)){ 
 				var frm = $('#invoiceNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
+				//con = con.replace(/[{}]/g, "");
 				var form = $('#invoiceNotes_form')[0];
-	      		var formData = new FormData(form); 
+	      		var formData = new FormData(form);
+	      		formData.append("json",con);
+	      		
+	      		var userId = '${SourceLeadWeb_user.id}';
+	      		formData.append("userId",userId);
+	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
+	      	    formData.append("locationCode",locationCode);
+	      			
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#submit_comment").attr("disabled", "disabled");
-         		$("#submit_comment" ).addClass('button').val('Processing..');
+				$("#save_note").attr("disabled", "disabled");
+         		$("#save_note" ).addClass('button').val('Processing..');
 		        var jsonData = encodeURIComponent(con);
 				$.ajax({
 						type : "POST",
@@ -686,7 +699,7 @@ function addNotes() {
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							closeDocPopup();
 							invoiceNotes();

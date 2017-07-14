@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.rest.CrowdSourcingRequirementsRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -83,6 +84,9 @@ public class ProfessionalRequirementsController {
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	CrowdSourcingRequirementsRestController crowdSourcingRequirementsRestController;
 	
 	
 	@Autowired
@@ -167,7 +171,7 @@ public class ProfessionalRequirementsController {
 	 			return model;
 	 	}
 	 
-	    @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	    /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 	    @RequestMapping(value = "/bankAccountDetails")
 	 	public ModelAndView bankAccountDetails(HttpServletRequest request) throws Exception {
 	    	
@@ -531,4 +535,13 @@ public class ProfessionalRequirementsController {
 		 return model;
 			
 		}
+	 
+	 
+	 /* @PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_PROFILE')")
+	  @RequestMapping(value = "/getProfessionalInterviewsEvent")
+	  public  String getProfessionalInterviewsEvent(String dateRange, HttpServletRequest request) throws Exception {
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 return crowdSourcingRequirementsRestController.getProfessionalInterviewsEventDashBoard(dateRange, candidateId,loginOrgLocations);
+	  }*/
 }

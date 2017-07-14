@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="resources/css/jquery.timepicker.css">
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 
-
+ <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/masterHeaderAction.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
@@ -130,6 +130,15 @@ cursor: inherit; font-size: 18px; width: auto; clear: both; float: left;
 }
 .jobResultsInn.job_ResultsInn h4 {
 cursor: pointer; font-size: 16px; width: auto; clear: both; float: left;
+}
+.profilerefresh-icon {
+	position: absolute; right:16px; top:1px; height: 28px; line-height: 14px;
+}
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+	display:none;
 }
 </style>
 
@@ -796,7 +805,7 @@ function requirementsFilter(type){
 		postedOrgName = $("#postedOrg").val();
 	}
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({ 
 	   	type: "POST",
@@ -809,9 +818,9 @@ function requirementsFilter(type){
 	    		}
 	    		$("#noResultsDiv").css("display", "none");
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
@@ -840,7 +849,7 @@ function getOpenJobsELKList(type){
 	if(type == "more"){
 		offset = $("#openJobsOffset").val();
 	}
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({ 
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
@@ -851,9 +860,9 @@ function getOpenJobsELKList(type){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
-	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	$("#openJobsRequirementTitleId").val('');
 				$("#openJobsLocationId").val('');
 				$("#openJobsExperienceId").val('');
@@ -883,6 +892,30 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				var picture="";
 				var description='';
 				var comment='';
+				var rate=''
+				var rateType= '';
+				var currencyType = '';
+				
+				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
+					rate = requirements.rate+" - "+requirements.maxRate;
+				}else if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
+					rate = requirements.rate;
+				}else{
+					rate="--";
+				}
+				
+				if(requirements.rateType != null && requirements.rateType != '' && requirements.rateType != 'undefined'){
+					currencyType = requirements.rateType;
+				}else{
+					currencyType ="--";
+				}
+				
+				if(requirements.currentRateCurrency != null && requirements.currentRateCurrency != '' && requirements.currentRateCurrency != 'undefined' && requirements.rateType != null && requirements.rateType != '' && requirements.rateType != 'undefined' && requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined' && requirements.maxRate != null && requirements.maxRate != '' && requirements.maxRate != 'undefined'){
+					rateType = requirements.currentRateCurrency;
+				}else{
+					rateType ="--";
+				}
+				
 				if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined' && requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 				}else if(requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
@@ -944,11 +977,25 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				}else{
 				result = result +'	<b><i class="fa fa-map-marker"></i>--</b>';	
 				}
+				
+				if(rate != null && rate != '' && rate !='undefined'){
+				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
+				description =  description+'Rate: '+rate+";";
+				}else{
+				result = result +'	<b><i class="fa fa-rupee"></i>--</b>';	
+				}
+				
 				if(requirements.noticePeriod != null && requirements.noticePeriod != '' && requirements.noticePeriod !='undefined'){
 				result = result +'	<b><i class="fa fa-bell"></i>'+requirements.noticePeriod+'</b>';
 				description =  description+'Notice Period :'+requirements.noticePeriod+";";
 				}else{
 				result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
+				}
+				if(requirements.visaTypes != null && requirements.visaTypes != '' && requirements.visaTypes !='undefined'){
+				result = result +'	<b><i class="fa fa-plane"></i>'+requirements.visaTypes+'</b>';
+				description =  description+'Visa Type :'+requirements.visaTypes+";";
+				}else{
+				result = result +'	<b><i class="fa fa-plane"></i>--</b>';	
 				}
 				result = result +'	</span>';
 				result = result +'	</div>';
@@ -1089,7 +1136,31 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				var link="";
 				var picture="";
 				var description='';
-				var comment='';		      
+				var comment='';	
+				var rate=''
+			    var rateType= '';
+				var currencyType = '';
+					
+					if(json.rate != null && json.rate != '' && json.rate != 'undefined' && json.maxRate != null && json.maxRate != '' && json.maxRate != 'undefined'){
+						rate = json.rate+" - "+json.maxRate;
+					}else if(json.rate != null && json.rate != '' && json.rate != 'undefined'){
+						rate = json.rate;
+					}else{
+						rate="--";
+					}
+					
+					if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+						currencyType = json.rateType;
+					}else{
+						currencyType ="--";
+					}
+					
+					if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined' && json.rateType != null && json.rateType != '' && json.rateType != 'undefined' && json.rate != null && json.rate != '' && json.rate != 'undefined' && json.maxRate != null && json.maxRate != '' && json.maxRate != 'undefined'){
+						rateType = json.currencyCode;
+					}else{
+						rateType ="--";
+					}
+				
     
 		      result = result +' <div class="beard clearfix">';
 		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();"><i class="fa fa-arrow-left text-muted paddingRight"></i>Back to List</a>';
@@ -1142,6 +1213,14 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-bell"></i>--</b>';	
 				}
+				
+				
+				if(rate != null && rate != '' && rate !='undefined'){
+				result = result +'	<b><i class="fa fa-rupee"></i>'+rate+'-'+rateType+'/'+currencyType+'</b>';
+				}else{
+				result = result +'	<b><i class="fa fa-rupee"></i>--</b>';	
+				}
+				
 				result = result +'	</span>';
 				result = result +'    </div>';			
 				result = result +'  <div class="jobApply">';
@@ -1180,6 +1259,18 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}else{
 				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted:</label>--</b>';	
 				}
+				if(json.visaType != null && json.visaType != '' && json.visaType !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:'+json.visaType+'</label></b>';
+				}else{
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Immigration Type:</label>--</b>';	
+				}
+				
+				if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:'+json.fileName+'</label><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewJobSummaryDocument(\''+json.id+'\',\''+json.fileName+'\');"></a></b>';
+				}else{
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Attachment:</label>--</b>';	
+				}
+				
 				result = result +'	</div>';
 				result = result +'	<div class="jobShare">';
 				if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString !='undefined'){
@@ -1218,7 +1309,15 @@ function backtoList(){
 
 </script>
 
+<script>
+function viewJobSummaryDocument(jobId,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(jobId != null && jobId != ""){
+			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+		}  
+}
 
+</script>
 <script>
 function openJobSearchRequirement(){
  			/* if ($('#openJobsAdvancedForm').validate(false, validationSettings)){   */
@@ -1745,7 +1844,26 @@ function createAlert(requirementUUID){
         	 
         	 var json = JSON.parse(data);
         	 var experience = json['maxExp'];
-        	 
+        	  var state = '';
+        	  var location ='';
+        	  var country = '';
+        	  var city = '';
+        	  var zipCode ='';
+        	  if(json['location'] != null && json['location'] != '' && json['location'] != 'undefined'){
+        		  location = json['location'];
+        	  }
+        	  if(json['country'] != null && json['country'] != '' && json['country'] != 'undefined'){
+        		  country = json['country'];
+        	  }
+        	  if(json['state'] != null && json['state'] != '' && json['state'] != 'undefined'){
+        		  state = json['state'];
+        	  }
+        	  if(json['city'] != null && json['city'] != '' && json['city'] != 'undefined'){
+        		  city = json['city'];
+        	  }
+        	  if(json['zipCode'] != null && json['zipCode'] != '' && json['zipCode'] != 'undefined'){
+        		  zipCode = json['zipCode'];
+        	  }
         	 result = "";
         	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
         	 result = result +'	 <div class="modal-dialog modal-lg">';
@@ -1767,30 +1885,44 @@ function createAlert(requirementUUID){
         	 result = result +'         		<input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" field-name="Email" onblur="validateAlertUserEmail();" data-validation="required validate_Space validate_length length2-100 validate_email">';
         	 result = result +'         	</div>';
         	 result = result +'         </div>';
-        	 result = result +'         <div class="form-group clearfix">';
-        	 result = result +'         	<label class="col-md-3">Country</label>';
-        	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="country" onchange="getStatesjobalert();">';
-        	 result = result +'         		</select>';
-        	 result = result +'         	</div>';
-        	 result = result +'         </div>';
         	 
         	 result = result +'         <div class="form-group clearfix">';
-        	 result = result +'         	<label class="col-md-3">State</label>';
-        	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="state" id="statejobalert" onchange="getCitiesjobalert();">';
-        	 result = result +'         		</select>';
-        	 result = result +'         	</div>';
-        	 result = result +'         </div>';
-        	 
-        	 
-        	 result = result +'         <div class="form-group clearfix">';
-        	 result = result +'         	<label class="col-md-3">City</label>';
-        	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="city" id="cityjobalert">';
-        	 result = result +'         		</select>';
-        	 result = result +'         	</div>';
-        	 result = result +'         </div>';
+			 result = result +'         	<label class="col-md-3">Location</label>';
+			 result = result +'         	<div class="col-md-9">';
+			 result = result + '             <input type="text" class="form-control input-sm" name="location"  id="jobLocation" value="'+location+'" placeholder="Location" field-name="Locatin" >';
+			 result = result + '                <i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'jobLocation\',\'jobCountry\',\'jobState\',\'jobCity\',\'jobZipCode\');"></i>';
+			 result = result +'         	</div>';
+			 result = result +'         </div>';
+			 
+			 result = result +'         <div class="form-group clearfix">';
+			 result = result +'         	<label class="col-md-3">Country</label>';
+			 result = result +'         	<div class="col-md-9">';
+			 result = result +'         		<input type="text" class="form-control" placeholder="Country" id="jobCountry" name="country" value="'+country+'" readonly>';
+			 result = result +'         	</div>';
+			 result = result +'         </div>';
+			 
+			 result = result +'         <div class="form-group clearfix">';
+			 result = result +'         	<label class="col-md-3">State</label>';
+			 result = result +'         	<div class="col-md-9">'; 
+			 result = result +'         		<input type="text" class="form-control" placeholder="State" id="jobState" name="state" value="'+state+'" readonly>';
+			 result = result +'         	</div>';
+			 result = result +'         </div>';
+			 
+			 
+			 result = result +'         <div class="form-group clearfix">';
+			 result = result +'         	<label class="col-md-3">City</label>';
+			 result = result +'         	<div class="col-md-9">';
+			 result = result +'         		<input type="text" class="form-control" placeholder="City" id="jobCity" name="city" value="'+city+'" readonly>';
+			 result = result +'         	</div>';
+			 result = result +'         </div>';
+			 
+			 result = result +'         <div class="form-group clearfix">';
+			 result = result +'         	<label class="col-md-3">Zip Code</label>';
+			 result = result +'         	<div class="col-md-9">';
+			 result = result +'         		<input type="text" class="form-control" placeholder="Zip Code" id="jobZipCode" name="zipcode" value="'+zipCode+'">';
+			 result = result +'         	</div>';
+			 result = result +'         </div>';
+			 
         	 
         	 result = result +'         <div class="form-group clearfix">';
         	 result = result +'         	<label class="col-md-3">Experience</label>';
@@ -1959,6 +2091,7 @@ function createAlert(requirementUUID){
         	 result = result +'</form>';
          $("#createAlertPopUpDiv").empty();
          $("#createAlertPopUpDiv").append(result);
+         publicPageLocationAuto('jobLocation','jobCountry','jobState','jobCity','jobZipCode');
          var config = {
         			  '.chosen-select'           : {},
         			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -2042,31 +2175,6 @@ function createAlert(requirementUUID){
         				       
         	    	         }
         		    });
-               $("#countryjobalert").chosen();
-               $("#statejobalert").chosen();
-               $("#cityjobalert").chosen();
-
-                            
-          	 getAllCountriesJObalert(json['country']);
-           	
-          	 if(json['state'] != null && json['state'] != '' && json['state'] != 'undefined'){
-          		getStatesjobalert(json['country'],json['state']);
-          	 }else{
-          		getStatesjobalert(json['country']);
-          	 }
-          	 if(json['city'] != null && json['city'] != '' && json['city'] != 'undefined'){
-          		getCitiesjobalert(json['country'],json['state'],json['city']);
-          	 }
-               
-               
-               
-               $("#countryjobalert").on('change', function (e) {
-               	   getStatesjobalert();
-               });
-
-               $("#statejobalert").on('change', function (e) {
-               	   getCitiesjobalert();
-               });
          }
 	 });
 	
@@ -2353,7 +2461,82 @@ function validateAlertUserEmail(){
 
 </script>
 
-
+<script>
+function publicPageLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,type) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type);
+    geolocate();
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
+    if(type == "invite"){
+    	 var input = (document.getElementById(locationId));
+    	    var options = {
+    	        types: ['geocode'],
+    	        componentRestrictions: {
+    	        	country: ["IN","US","AU","SG","GB","FR"]
+    	        }
+    	    };
+    	    autocomplete = new google.maps.places.Autocomplete(input, options);
+    }else{
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+            types: ['geocode'],
+      
+        });
+    }
+   
+    
+    
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+  
+  $("#"+countryId).val(address.country).change();
+  $("#"+stateId).val(address.state).change();
+  $("#"+cityId).val(address.city).change();
+  $("#"+zipCodeId).val(address.zipcode).change();
+  if(type == "invite"){
+	  getTimezonesList();
+  }
+});
+}
+function geolocate() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById("latitude").value = latitude;
+            document.getElementById("longitude").value = longitude;
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+</script>
+<script>
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId){
+	$("#"+locationId).val('');
+	$("#"+countryId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+}
+</script>
 <script src="resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />

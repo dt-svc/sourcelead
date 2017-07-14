@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementReportService;
@@ -296,21 +297,21 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
-							if("submission".equals(rsh.getToStage())){
+							if(ApplicantSubmissionStatus.SUBMISSION.toString().equals(rsh.getToStage())){
 								submissionDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("shortList".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.SHORTLIST.toString().equals(rsh.getToStage())){
 								shortlistDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("interview".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.INTERVIEW.toString().equals(rsh.getToStage())){
 								interviewDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("offer_made".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.OFFERMADE.toString().equals(rsh.getToStage())){
 								offerDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("request_sent".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.REQUEST_SENT.toString().equals(rsh.getToStage())){
 								requestSentDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("submit_to_client".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equals(rsh.getToStage())){
 								submitToClientDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("rejected".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.REJECTED.toString().equals(rsh.getToStage())){
 								rejectedDate = getDateStr(rsh.getCreatedDate(),timezone);
-							}else if("backout".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.BACKOUT.toString().equals(rsh.getToStage())){
 								backedOutDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}
 						}
@@ -415,21 +416,21 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportDao.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
-							if("submission".equals(rsh.getToStage())){
+							if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
 								applicantsCount++;
-							}else if("shortList".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.SHORTLIST.toString().equalsIgnoreCase(rsh.getToStage())){
 								shortlistedCount++;
-							}else if("interview".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.INTERVIEW.toString().equalsIgnoreCase(rsh.getToStage())){
 								interviewsCount++;
-							}else if("offer_made".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(rsh.getToStage())){
 								offeredCount++;
-							}else if("request_sent".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.REQUEST_SENT.toString().equalsIgnoreCase(rsh.getToStage())){
 								requestSentCount++;
-							}else if("submit_to_client".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equalsIgnoreCase(rsh.getToStage())){
 								submitToClientCount++;
-							}else if("rejected".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.REJECTED.toString().equalsIgnoreCase(rsh.getToStage())){
 								rejectedCount++;
-							}else if("backout".equals(rsh.getToStage())){
+							}else if(ApplicantSubmissionStatus.BACKOUT.toString().equalsIgnoreCase(rsh.getToStage())){
 								backoutCount++;
 							}
 						}

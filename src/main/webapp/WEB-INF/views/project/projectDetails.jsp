@@ -23,6 +23,13 @@
 						var projectSequeneNumber = "";
 						var invoiceFrequency = "";
 						var isTimesheetAttachmentRequired = "";
+						var allowFreeLance = "";
+						var allowRemote = "";
+						var allowOvertime = "";
+						var allowTimeEntryAfterDeadLine = "";
+						var allowBidding = "";
+						var allowOffShore = "";
+						var flatPercentageId = "";
 						
 						
 						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
@@ -32,6 +39,50 @@
 					    	 isTimesheetAttachmentRequired = "NO";
 					    }
 						
+						
+						if (json.allowFreeLance != null && json.allowFreeLance != '' && json.allowFreeLance != 'undefined'
+							&& json.allowFreeLance == '1') {
+							allowFreeLance = "YES";
+				     	} else {
+				     		allowFreeLance = "NO";
+				    	}
+
+						if (json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined'
+							&& json.allowRemote == '1') {
+							allowRemote = "YES";
+				     	} else {
+				     		allowRemote = "NO";
+				    	}
+						
+						if (json.allowOvertime != null && json.allowOvertime != '' && json.allowOvertime != 'undefined'
+							&& json.allowOvertime == '1') {
+							allowOvertime = "YES";
+				     	} else {
+				     		allowOvertime = "NO";
+				    	}
+						
+						if (json.allowTimeEntryAfterDeadLine != null && json.allowTimeEntryAfterDeadLine != '' && json.allowTimeEntryAfterDeadLine != 'undefined'
+							&& json.allowTimeEntryAfterDeadLine == '1') {
+							allowTimeEntryAfterDeadLine = "YES";
+				     	} else {
+				     		allowTimeEntryAfterDeadLine = "NO";
+				    	}
+						
+						if (json.allowBidding != null && json.allowBidding != '' && json.allowBidding != 'undefined'
+							&& json.allowBidding == '1') {
+							allowBidding = "YES";
+				     	} else {
+				     		allowBidding = "NO";
+				    	}
+						
+						if (json.allowOffShore != null && json.allowOffShore != '' && json.allowOffShore != 'undefined'
+							&& json.allowOffShore == '1') {
+							allowOffShore = "YES";
+				     	} else {
+				     		allowOffShore = "NO";
+				    	}						
+						
+					
 						if (json.endDateStr != null && json.endDateStr != ''
 								&& json.endDateStr != 'undefined') {
 							endDateStr = json.endDateStr;
@@ -65,12 +116,28 @@
 							clientName = "--";
 						}
 						
+						if (json.overtimeRateType != null && json.overtimeRateType != '' && json.overtimeRateType != 'undefined') {
+							flatPercentageId = json.overtimeRateType
+						} else {
+							flatPercentageId = "";
+						}
 						
-					
+						var proStatus ='';
+						if(json.projectStatus == 'STARTED'){
+							proStatus = 'Started';
+						}else if(json.projectStatus == 'INPROGRESS'){
+							proStatus = 'In-Progress';
+						}else if(json.projectStatus == 'ONHOLD'){
+							proStatus = 'On-Hold';
+						}else if(json.projectStatus == 'COMPLETED'){
+							proStatus = 'Completed';
+						}
+						
+						
 						
 						var result = "";
-						result = result	+ ' <div class="project_tabs_inn_table">';
-						result = result + '	<div class="project_details">';
+						result = result	+ '<div class="project_tabs_inn_table">';
+						result = result + '<div class="project_details">';
 						result = result + '<div class="useredit useredit_a">';
 						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
@@ -81,51 +148,26 @@
 	   		    		result = result +'</sec:authorize>';
 						
 	   		    		result = result + '</div>';
+	   		    		
 						result = result	+ '<div class="project_details_cta">';
 						result = result + '<strong>Status:</strong><span>';
-						result = result + json.projectStatus;
-						result = result + '	</i></span>';
-						result = result	+ '</div></span><div class="clearfix"></div>';
+						result = result +  proStatus;
+						result = result + '</span>';
+						result = result	+ '</div><div class="clearfix"></div>';
+						
 						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
-
 						result = result + '<div class="clearfix"></div>';
+
 						result = result	+ '<div class="project_details_cta" id="ProjectIdDiv">';
 						result = result + '<strong>Project Id:</strong>';
-						result = result + '<span>'+projectSequeneNumber+'</span><div class="clearfix"></div>';
+						result = result + '<span>'+projectSequeneNumber+'</span>';
+						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 
 						result = result	+ '	<div class="project_details_cta" id="projectNameId">';
 						result = result + '	<strong>Project name:</strong>';
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
-
-						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Manager 1:</strong><span>';
-
-						for (var j = 0; j < json.managersList.length; j++) {
-							var manager = json.managersList[j];
-							if (json.manager1 == manager.id) {
-								result = result + manager.firstName + " "
-										+ manager.lastName;
-							}
-						}
-						result = result	+ '</span><div class="clearfix"></div>';
-						result = result + '	</div>';
-
-						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
-							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '	<strong>Manager 2:</strong><span>';
-
-							for (var j = 0; j < json.managersList.length; j++) {
-								var manager = json.managersList[j];
-								if (json.manager2 == manager.id) {
-									result = result + manager.firstName + " "
-											+ manager.lastName;
-								}
-							}
-							result = result	+ '</span><div class="clearfix"></div>';
-							result = result + '	</div>';
-						}
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
@@ -147,42 +189,47 @@
 						result = result + '<span title="'+endDateStr+'">'+endDateStr+'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
-
-						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created By:</strong><span title="'+json.createdByName+'">'+json.createdByName+'</span><div class="clearfix"></div>';
-						result = result + '</div>';
-						result = result	+ '<div class="project_details_cta">';
-						result = result	+ '<strong>Created date:</strong><span title="'+json.createdDateStr+'">'+json.createdDateStr+'</span><div class="clearfix"></div>';
-
-						result = result + '</div>';
-						if (json.updatedDateStr != null
-								&& json.updatedDateStr != ''
-								&& json.updatedDateStr != 'undefiend') {
-							result = result	+ '<div class="project_details_cta">';
-							result = result	+ '<strong>Last Updated:</strong><span title="'+json.updatedDateStr+'">'+json.updatedDateStr+'</span><div class="clearfix"></div>';
-							result = result + '</div>';
-						}
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Invoice Frequencey:</strong>';
-						result = result + '<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
+						result = result + '<strong>Allow Freelance Developers:</strong>';
+						result = result + '<span>'+allowFreeLance+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Allow Offshore Resource:</strong>';
+						result = result + '<span>'+allowOffShore+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Timesheet Attachment Required:</strong>';
-						result = result + '<span>'+isTimesheetAttachmentRequired+'</span><div class="clearfix"></div>';
+						result = result + '<strong>Allow Remote Work:</strong>';
+						result = result + '<span>'+allowRemote+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Time Entry after Deadline:</strong>';
+						result = result + '<span>'+allowTimeEntryAfterDeadLine+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Allow Overtime:('+flatPercentageId+')</strong>';
+						result = result + '<span>'+allowOvertime+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';		
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Allow Bidding:</strong>';
+						result = result + '<span>'+allowBidding+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
 						result = result	+ '<strong>Description:</strong>';
-						result = result + '<span title="'+description+'">'+ description +'</span><div class="clearfix"></div>';
+						result = result + '<span>'+ description +'</span><div class="clearfix"></div>';
 						result = result + '</div>';
-						
-						result = result + '<div class="clearfix"></div>';
 						
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
 						result = result + '</div>';
@@ -193,6 +240,7 @@
 						$("#tab-1").empty();
 						$("#tab-2").empty();
 						$("#tab-3").empty();
+						$("#tab-4").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
 						
@@ -269,7 +317,7 @@
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
 						result = result	+ '<div class="user_summary_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
-						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Sequene Number" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
+						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta">';
@@ -302,7 +350,7 @@
 						result = result + '</select>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Project Name<span	class="text-danger">*</span></label>';
+						result = result + '<label>Project name<span	class="text-danger">*</span></label>';
 						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta">';
@@ -447,7 +495,7 @@
 						result = result + '</div>';
 					result = result + '<div class="clearfix"></div>';
 						
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta pull-right">';
 						
 						result = result	+ '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+ ');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+ projectId + ');" type="button">';
 						result = result + '</div>		';

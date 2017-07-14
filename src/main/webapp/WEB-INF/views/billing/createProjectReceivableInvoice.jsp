@@ -23,7 +23,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
       <div class="pull-left">
         <h2>Project Based Invoice</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Project Based Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Project Based Invoice</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -62,7 +62,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
-                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Invoice Date"  type="text" data-validation="required" field-name="Invoice Date" readonly>
+                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" value="${currentDate}" placeholder="Invoice Date"  type="text" data-validation="required" field-name="Invoice Date">
               </div>
             </div>
               
@@ -228,7 +228,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT');">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -1215,7 +1215,7 @@ function saveInvoice(saveType){
  	 	    var formData = new FormData(form); 
  	 	    var sourceleadUrl ='${sourceleadUrl}';
 		    	        
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	        $.ajax({
 		    		    	 type: "POST",
 		    		    	 data: formData,
@@ -1255,7 +1255,7 @@ function saveProjectInvoice(saveType){
  	 	    var formData = new FormData(form); 
  	 	    var sourceleadUrl ='${sourceleadUrl}';
 	    	        
-	    	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	        $.ajax({
 	    		    	 type: "POST",
 	    		    	 data: formData,
@@ -1446,6 +1446,7 @@ function getClientContactsExisted(clientContactId){
 <script>
 function getClients(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationId ='${orgRelationId}';
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?${_csrf.parameterName}=${_csrf.token}",
@@ -1456,11 +1457,22 @@ function getClients(){
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
-		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		if(orgRelationId == opt.id){
+			var selected = 'selected';
+			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+		}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		}
 		}
 		$("#clientOrgRelationId").empty();
 		$("#clientOrgRelationId").append(output);
 		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		if(orgRelationId != null && orgRelationId != '' && orgRelationId != 'undefined'){
+			getClientContacts();
+			getPaymentTerms();
+// 			flushValues();
+		}
 	},
 	});
 
@@ -1672,7 +1684,7 @@ function getDueDateByFrequency(){
 	
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
