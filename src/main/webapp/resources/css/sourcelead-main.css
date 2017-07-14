@@ -5830,7 +5830,9 @@ ul.jobs-360{
     height: 350px; position: relative;
 }
 /*360 view styles */
-
+.experience-drop .dropdown-menu.open {
+    max-height: 250px !important; overflow: auto;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

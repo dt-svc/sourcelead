@@ -10,6 +10,137 @@
 
 
 
+   <div id="resourceInfoRow" style="display: none; float: left;">
+      <form:form id="add_resource_form" name="add_resource_form" >
+       <div class="addResource add-resource">
+		<span class="addResClo addResClose"><i class="fa fa-times"></i></span>
+          <div class="col-xs-12 col-sm-12 myForm noPad clearfix">
+              <div class="col-md-3 mb10 dropdown-select">
+               <label>Role <span class="text-danger paddingLeft">*</span></label>
+                <select class="form-control" name='roleREPLACEROWID' id='roleREPLACEROWID' >
+                  <option selected="">---Select Role---</option>
+                  <option>Role 1</option>
+                  <option>Role 2</option>
+                  <option>Role 3</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            <div class="col-md-3 mb10">
+               <label>Custom Role<span class="text-danger paddingLeft">*</span></label>
+                <input type="text" name='customRoleREPLACEROWID' id='customRoleREPLACEROWID' class="form-control">
+              </div>
+              <div class="col-md-3 mb10 dropdown-select">
+               <label>No. of Resources <span class="text-danger paddingLeft">*</span></label>
+                <input type="text" class="form-control" name='noOfResourcesREPLACEROWID' id='noOfResourcesREPLACEROWID' field-name="No. of Resources" data-validation="required validate_Space validate_length length1-15 validate_int">
+              </div>
+              <div class="col-md-3 mb10 dropdown-select">
+               <label>Experience</label>
+                  <div class="row experience-drop">
+                      <div class="col-md-6">
+                      <select class="form-control selectpicker" name='minREPLACEROWID' id='minREPLACEROWID'>
+             		  <option value="">Min Years</option>
+             		  <c:forEach begin="0" end="25" varStatus="loop">
+						    <option>${loop.index}</option>
+						</c:forEach>
+             		</select>
+                          </div>
+                      <div class="col-md-6">
+                      <select class="form-control selectpicker" name='maxREPLACEROWID' id='maxREPLACEROWID'>
+             		  <option value="">Max Years</option>
+             		  <c:forEach begin="0" end="25" varStatus="loop">
+						    <option>${loop.index}</option>
+						</c:forEach>
+             		</select>
+                      </div>
+                 </div>
+              </div>
+              
+              <div class="col-md-3 mb10 dropdown-select">
+               <label>Primary Skills <span class="text-danger paddingLeft">*</span></label>
+                <input type="text" class="form-control" name='primarySkillREPLACEROWID' id='primarySkillREPLACEROWID' field-name="Primary Skill" data-validation="required validate_Space validate_length length2-200">
+              </div>
+              <!--  Rate Per div  -->
+              <div class="col-md-6">
+              <div class="clearfix">
+                              <label class="pull-left">Bill Rate</label><label class="pull-right">Pay Rate</label>
+             <div class="clearfix"></div>
+             <div class="input-group payrate_p">
+                <div class="input-group-btn selp-custom-min selp-customMin">
+                  <select class="selectpicker" name='currencyCodeREPLACEROWID' id='currencyCodeREPLACEROWID' >
+	                 <option value="INR">INR</option>
+	                 <option value="AUD">AUD</option>
+	                 <option value="USD">USD</option>
+	                 <option value="GBP">GBP</option>
+	                 <option value="SGD">SGD</option>
+	                 <option value="EUR">EUR</option>
+              
+                </select>
+                </div>
+                <div class="pull-left input_minmax">
+                <input type="text" class="form-control" name='billRateREPLACEROWID' id='billRateREPLACEROWID' field-name="Min Rate" placeholder="Min Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                <input type="text" class="form-control" name='payRateREPLACEROWID' id='payRateREPLACEROWID'   field-name="Max Rate" placeholder="Max Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                </div>
+                 <div class="row" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
+              </div> 
+                <div class="input-group-btn selp-custom-min payrate_p">
+                  <select class="selectpicker ratetype"  name='rateTypeREPLACEROWID' id='rateTypeREPLACEROWID' field-name="Rate Per">
+                    <option value="">Rate Per</option>
+                    <option value="Hourly">Hourly</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Bi-weekly">Bi-weekly</option>
+                    <option value="Semi-Monthly">Semi-Monthly</option>
+                    <option value="Monthly" >Monthly</option>
+                    <option value="Bi-Monthly">Bi-Monthly</option>
+                    <option value="Yearly">Yearly</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+              </div>
+
+              <div class="col-md-3 mb10">
+               <label>Start Date</label>
+                <input type="text" class="form-control calendar" name='startDateREPLACEROWID' id='startDateREPLACEROWID' placeholder="start Date" readonly>
+              </div>
+              <div class="col-md-3 mb10">
+               <label>End Date</label>
+                <input type="text" class="form-control calendar" name='endDateREPLACEROWID' id='endDateREPLACEROWID' placeholder="End Date" readonly>
+              </div>  
+              <div class="col-md-3 mb10">
+               <label>Estimated Hours</label>
+                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID'>
+              </div>  
+              <div class="col-md-3 mb10 currencySymbol">
+                  <label>Estimated Budget</label>
+                  <div class="positionRelative">
+                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID'>
+                 <span class="currencyValue">INR</span>
+                      </div>
+              </div>
+               <div class="col-md-3 mb10 dropdown-select">
+               <label>Consulting <span class="text-danger paddingLeft">*</span></label>
+                <select class="form-control" name='consultingREPLACEROWID' id='consultingREPLACEROWID' data-validation="required">
+                  <option selected="">--Select--</option>
+                        <option value="Offsite">Off Site</option>
+                        <option value="Onsite">On Site</option>
+                        <option value="Onsite">Near Shore</option>
+                        <option value="Onsite">Off Shore</option>
+                        <option value="Onsite">Hybrid</option>
+                </select>
+              </div>
+            
+            </div>
+			<div class="col-xs-12 col-sm-12 myForm noPad clearfix">
+				<div class="pull-right mr">
+					<input type='button' class="btn btn-primary btn-sm mr10" onclick='addNewResourceRequestTbl(REPLACEROWID);' value='Add'/> 
+				    <input type='button' class="btn btn-default btn-sm cancel-btn" value='Cancel'/>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+          </div>
+          </form:form>
+   </div>
       <!-- Content Area -->
        <section class="content-wraper">
         <section class="content-header clearfix">
@@ -23,6 +154,7 @@
         </section>
 	   
 		   <div class="content-area content-new clearfix">
+		     <form:form id="add_newResource_form" name="add_newResource_form" >
 			    <div class="row form-horizontal mt myForm">
 			      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
 			         <div class="row">
@@ -31,21 +163,20 @@
 			              <label class="col-md-3">Request Id<span class="text-danger paddingLeft">*</span></label>
 								<div class="col-md-9">
 					                  <div class="form-icon">
-					                   <input class="form-control pull-left" name="Project Id" value="" type="text">
+					                   <input class="form-control pull-left" name="requestId" id="requestId" field-name="Request Id" data-validation="required validate_Space validate_length length1-15 validate_int" >
 					                   <i class="fa fa-refresh btn btn-default formic1" title="Project Id"></i>
-					                   <span class="hidden">Project Id</span> 
 					                   </div>
 					           </div>            
 					     </div>
 			            <div class="form-group">
 			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
 			            <div class="col-md-9">
-			             <select class="form-control chosen-select" multiple data-placeholder="Select Approver">
-                  <option>Approver 1</option>
-                  <option>Approver 2</option>
-                  <option>Approver 3</option>
-                  <option>Approver 4</option>
-                </select></div>
+			             <select class="form-control chosen-select" data-placeholder="Select Approver">
+		                  <option>Approver 1</option>
+		                  <option>Approver 2</option>
+		                  <option>Approver 3</option>
+		                  <option>Approver 4</option>
+		                </select></div>
 			            </div>
 			            <div class="form-group">
 			              <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
@@ -57,106 +188,16 @@
 			          </div>
 			
 			<div class="project_side_wrap_inn_tabs mt clearfix">
+			    <input type="hidden"  name="maxRecCount" id="maxRecCount" value="1">
 			    <div class="project_tabs_inn_head">
-			        <a href="javascript:void(0)" class="AdRes"><i class="glyphicon glyphicon-plus"></i>Add</a>
+			        <a href="javascript:addResourceInfo()" class="AdRes"><i class="glyphicon glyphicon-plus"></i>Add</a>
 			    </div>
-			    <div class="addResource add-resource" style="display: block;">
-					<span class="addResClo addResClose"><i class="fa fa-times"></i></span>
-			          <div class="col-xs-12 col-sm-12 myForm noPad clearfix">
-			              
-			              <div class="col-md-3 mb10 dropdown-select">
-			               <label>Role <span class="text-danger paddingLeft">*</span></label>
-			                <select class="form-control">
-			                  <option selected="">---Select Role---</option>
-			                  <option>Role 1</option>
-			                  <option>Role 2</option>
-			                  <option>Role 3</option>
-			                  <option>Other</option>
-			                </select>
-			              </div>
-			            <div class="col-md-3 mb10">
-			               <label>Custom Role<span class="text-danger paddingLeft">*</span></label>
-			                <input type="text" class="form-control">
-			              </div>
-			              <div class="col-md-3 mb10 dropdown-select">
-			               <label>No. of Resources <span class="text-danger paddingLeft">*</span></label>
-			                <input type="text" class="form-control" name="" value="">
-			              </div>
-			              <div class="col-md-3 mb10 dropdown-select">
-			               <label>Experience</label>
-			                  <div class="row">
-			                      <div class="col-md-6">
-			                    <input type="text" class="form-control" name="" value="Min">
-			                          </div>
-			                      <div class="col-md-6">
-			                        <input type="text" class="form-control" name="" value="Max">
-			                      </div>
-			                 </div>
-			              </div>
-			              
-			              <div class="col-md-3 mb10 dropdown-select">
-			               <label>Primary Skills <span class="text-danger paddingLeft">*</span></label>
-			                <input type="text" class="form-control" name="" value="">
-			              </div>
-			              
-			              <div class="col-md-3 mb10">
-			               <label>Bill Rate (Per hour)</label>
-			                <input type="text" class="form-control" name="Request Id" value="">
-			              </div>
-			              <div class="col-md-3 mb10">
-			               <label>Pay Rate (Per hour)</label>
-			                <input type="text" class="form-control" name="Request Id" value="">
-			              </div>
-			
-			              <div class="col-md-3 mb10">
-			               <label>Start Date</label>
-			                <input type="text" class="form-control calendar" name="Request Id" value="">
-			              </div>
-			              <div class="col-md-3 mb10">
-			               <label>End Date</label>
-			                <input type="text" class="form-control calendar" name="Request Id" value="">
-			              </div>  
-			              <div class="col-md-3 mb10">
-			               <label>Estimated Hours</label>
-			                <input type="text" class="form-control timeicon" name="Request Id" value="">
-			              </div>  
-			              <div class="col-md-3 mb10 currencySymbol">
-			                  
-			                  <label>Estimated Budget</label>
-			                  <div class="positionRelative">
-			                <input type="text" class="form-control" name="Request Id" value="">
-			                 <span class="currencyValue">INR</span>
-			                      </div>
-			              </div>
-			              
-			                    
-	                    <div class="col-md-3 mb10 dropdown-select">
-			               <label>Consulting <span class="text-danger paddingLeft">*</span></label>
-			                <select class="form-control">
-			                  <option selected="">--Select--</option>
-	                          <option value="Offsite">Off Site</option>
-	                          <option value="Onsite">On Site</option>
-	                          <option value="Onsite">Near Shore</option>
-	                          <option value="Onsite">Off Shore</option>
-	                          <option value="Onsite">Hybrid</option>
-			                </select>
-			              </div>
-			            
-			            </div>
-						<div class="col-xs-12 col-sm-12 myForm noPad clearfix">
-							<div class="pull-right mr">
-								<button class="btn btn-primary btn-sm mr10"><i class="fa fa-plus"></i> Add </button>
-							    <button class="btn btn-default btn-sm cancel-btn">Cancel</button>
-							</div>
-						</div>
-							<div class="clearfix"></div>
-			          </div>
-						
+			    <div id="resourceInfoDiv"></div>
 			<!-- Table Starts Here -->
 			<div class="project_tabs_inn_table col-md-12">
-					<table>
+					<table id="newResourceReauestTable">
 			        	<tbody>
-			            	<tr>
+			            	<tr d="divResourceTsRow0">
 			                    <th>Role</th>
 			                    <th>No.Resources</th>
 			                    <th>Exp.</th>
@@ -168,7 +209,7 @@
 			                    <th>Est Budget</th>
 			                    <th>Action</th>
 			                </tr>
-			                <tr>
+			            <tr>
 			                	<td><div>Admin</div></td>
 			                    <td><div>10</div></td>
 			                    <td><div>6 Years</div></td>
@@ -185,8 +226,9 @@
 			                    <td><div>200</div></td>
 			                    <td><div>25000</div></td>
 			                    <td><div><i class=" fa fa-edit"></i><i class="glyphicon glyphicon-trash"></i></div></td>
-			                </tr>
+			                </tr>  
 			            </tbody>
+			            
 			            <tfoot class="table-footer">
 			                <tr>
 			                    <td><strong>Total</strong></td>
@@ -206,21 +248,60 @@
 					<div class="form-footer clearfix mt">
 					  <div class="col-lg-12">
 						<div class="pull-right">
-						  <input type="button" value="Save" class="btn btn-primary" id="save">
+						  <input type="button" value="Save" class="btn btn-primary" id="save" onclick="saveResources();">
 						  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
 						</div>
 					  </div>
 					</div>        
 			        </div> 
-			
 			      </div>
+			      </form:form>
 			    </div>
 			
 	   </section>
           
-            <jsp:include page="../masterFooter.jsp" />	
+           
 
-	<script>
+		<div id="divAddRowTr1Td1" style="display: none; float: left;">
+		    <div id="roleRowREPLACEROWID">ROLEVALUES-</div>
+		</div>
+		<div id="divAddRowTr1Td2" style="display: none; float: left;">
+		    <div id="noOfResourcesRowREPLACEROWID">RESOURCECOUNTVALUE</div>
+		</div>
+		<div id="divAddRowTr1Td3" style="display: none; float: left;">
+		<div class="width150px inr_values"><small id="minRowREPLACEROWID">MINVALUE</small> <small id="maxRowREPLACEROWID">MAXVALUE</small></div>
+		</div>
+		<div id="divAddRowTr1Td4" style="display: none; float: left;">
+		    <div id="primarySkillsRowREPLACEROWID">PRIMARYSKILLSVALUES</div>
+		</div>
+		<div id="divAddRowTr1Td5" style="display: none; float: left;">
+		<div class="width215px">
+               <small class="text-muted paddingRight pull-left" id="currencyCodeRowREPLACEROWID">CURRENCYCODEVALUE</small>
+              <div class="width150px inr_values"><small id="billRateRowREPLACEROWID">BILLRATEVALUE</small> <small id="payRateRowREPLACEROWID">PAYRATEVALUE</small></div>
+              <small class="text-muted pull-right paddingLeft" id="rateTypeRowREPLACEROWID">RATETYPEVALUE</small>
+           </div>
+		</div>
+		<div id="divAddRowTr1Td6" style="display: none; float: left;">
+		    <div id="startDateRowREPLACEROWID">STARTDATEVALUE</div>
+		    <div id="startDateRowREPLACEROWID">ENDDATEVALUE</div>
+		</div>
+
+		<div id="divAddRowTr1Td7" style="display: none; float: left;">
+		    <div id="consultingRowREPLACEROWID">CONSULTINGVALUE</div>
+		</div>
+		<div id="divAddRowTr1Td8" style="display: none; float: left;">
+		    <div id="estimatedHoursRowREPLACEROWID">ESTIMATEDHOURSVALUE</div>
+		</div>
+		<div id="divAddRowTr1Td9" style="display: none; float: left;">
+		    <div id="estimatedBudgetRowREPLACEROWID">ESTIMATEDBUDGETVALUE</div>
+		</div>
+		
+		<div id="divAddRowTr1Td10" style="display: none; float: left;">
+		    <div><i class=" fa fa-edit"></i><i class="glyphicon glyphicon-trash"></i></div>
+		</div>
+		
+
+	<!-- <script>
 	$(".addResource").slideUp(0); 
 	$(".AdRes").click(function(){
 		$(".addResource").slideToggle(0);
@@ -232,7 +313,204 @@
 		$(".addResource").slideUp(0);
 	});
 	
+	</script> -->
+	
+	<script>
+	function addResourceInfo(){
+		var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+		$("#maxRecCount").val(parseInt(maxRowNum + 1));
+		
+		$("#resourceInfoDiv").append("<div id='resourceInfoContent"+maxRowNum+"'></div>");
+		
+		var divRowTd2_0Str = document.getElementById("resourceInfoRow").innerHTML;
+		divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEROWID/g, (maxRowNum));
+		
+		$("#resourceInfoContent"+maxRowNum).append(divRowTd2_0Str);
+		$('#startDate'+maxRowNum).datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true
+		});
+		$('#endDate'+maxRowNum).datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true
+		});
+		$(".addResource").removeAttr('style');
+		$(".addResource").attr('style','display:block');
+	}
 	</script>
 	
-
+	<script>
+	function addNewResourceRequestTbl(maxRowNum){
+		/* if ($('#add_resource_form').validate(false, validationSettings)){ */
+			var tbl = document.getElementById("newResourceReauestTable");
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divResourceTsRow" + maxRowNum);
+			
+			//role
+			var cell0 = row.insertCell(0);
+			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
+			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var role =  $('#role'+maxRowNum).val();
+			if(role == null || role == '' || role == 'undefined'){
+				role = "--";
+			}
+			divRowTd1Str = divRowTd1Str.replace(/ROLEVALUES/g,role);
+			cell0.innerHTML = divRowTd1Str;
+			
+			//No.Resources
+			var cell1 = row.insertCell(1);
+			var divRowTd2Str = document.getElementById("divAddRowTr1Td2").innerHTML;
+			divRowTd2Str = divRowTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var resourceCount =  $('#noOfResources'+maxRowNum).val();
+			if(resourceCount == null || resourceCount == '' || resourceCount == 'undefined'){
+				resourceCount = "--";
+			}
+			divRowTd2Str = divRowTd2Str.replace(/RESOURCECOUNTVALUE/g,resourceCount);
+			cell1.innerHTML = divRowTd2Str;
+			
+			//Experience
+			var cell2 = row.insertCell(2);
+			var divRowTd3Str = document.getElementById("divAddRowTr1Td3").innerHTML;
+			divRowTd3Str = divRowTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var minEx =  $('#min'+maxRowNum).val();
+			var maxEx =  $('#max'+maxRowNum).val();
+			if(minEx == null || minEx == '' || minEx == 'undefined'){
+				minEx = "--";
+			}if(maxEx == null || maxEx == '' || maxEx == 'undefined'){
+				maxEx = "--";
+			}
+			divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
+			divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			cell2.innerHTML = divRowTd3Str;
+			
+			//Primary Skills
+			var cell3 = row.insertCell(3);
+			var divRowTd4Str = document.getElementById("divAddRowTr1Td4").innerHTML;
+			divRowTd4Str = divRowTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var primarySkills =  $('#primarySkill'+maxRowNum).val();
+			if(primarySkills == null || primarySkills == '' || primarySkills == 'undefined'){
+				primarySkills = "--";
+			}
+			divRowTd4Str = divRowTd4Str.replace(/PRIMARYSKILLSVALUES/g,primarySkills);
+			cell3.innerHTML = divRowTd4Str;
+			
+			//Bill/Pay Rate 
+			var cell4 = row.insertCell(4);
+			var divRowTd4Str = document.getElementById("divAddRowTr1Td5").innerHTML;
+			divRowTd4Str = divRowTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var currencyCode =  $('#currencyCode'+maxRowNum).val();
+			var billRate =  $('#billRate'+maxRowNum).val();
+			var payRate =  $('#payRate'+maxRowNum).val();
+			var rateType =  $('#rateType'+maxRowNum).val();
+			alert("billRate"+billRate);
+			alert("payRate"+payRate);
+			alert("rateType"+rateType);
+			
+			if(currencyCode == null || currencyCode == '' || currencyCode == 'undefined'){
+				currencyCode = "--";
+			}if(billRate == null || billRate == '' || billRate == 'undefined'){
+				billRate = "--";
+			}if(payRate == null || payRate == '' || payRate == 'undefined'){
+				payRate = "--";
+			}if(rateType == null || rateType == '' || rateType == 'undefined'){
+				rateType = "--";
+			}
+			divRowTd4Str = divRowTd4Str.replace(/CURRENCYCODEVALUE/g,currencyCode);
+			divRowTd4Str = divRowTd4Str.replace(/BILLRATEVALUE/g,billRate);
+			divRowTd4Str = divRowTd4Str.replace(/PAYRATEVALUE/g,payRate);
+			divRowTd4Str = divRowTd4Str.replace(/RATETYPEVALUE/g,rateType);
+			cell4.innerHTML = divRowTd4Str;
+			
+			//StartDate and EndDate
+			var cell5 = row.insertCell(5);
+			var divRowTd5Str = document.getElementById("divAddRowTr1Td6").innerHTML;
+			divRowTd5Str = divRowTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var startDate =  $('#startDate'+maxRowNum).val();
+			if(startDate == null || startDate == '' || startDate == 'undefined'){
+				startDate = "--";
+			}
+			divRowTd5Str = divRowTd5Str.replace(/STARTDATEVALUE/g,startDate);
+			var endDate =  $('#endDate'+maxRowNum).val();
+			if(endDate == null || endDate == '' || endDate == 'undefined'){
+				endDate = "--";
+			} 
+			divRowTd5Str = divRowTd5Str.replace(/ENDDATEVALUE/g,endDate);
+			
+			cell5.innerHTML = divRowTd5Str;
+			
+			
+			var cell6 = row.insertCell(6);
+			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
+			divRowTd6Str = divRowTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var consulting =  $('#consulting'+maxRowNum).val();
+			if(consulting == null || consulting == '' || consulting == 'undefined'){
+				consulting = "--";
+			}
+			divRowTd6Str = divRowTd6Str.replace(/CONSULTINGVALUE/g,consulting);
+			cell6.innerHTML = divRowTd6Str;
+			
+			
+			var cell7 = row.insertCell(7);
+			var divRowTd7Str = document.getElementById("divAddRowTr1Td8").innerHTML;
+			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var estimatedHours =  $('#estimatedHours'+maxRowNum).val();
+			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
+				estimatedHours = "--";
+			}
+			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
+			cell7.innerHTML = divRowTd7Str;
+			
+			var cell8 = row.insertCell(8);
+			var divRowTd8Str = document.getElementById("divAddRowTr1Td9").innerHTML;
+			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var estimatedBudget =  $('#estimatedBudget'+maxRowNum).val();
+			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
+				estimatedBudget = "--";
+			}
+			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
+			cell8.innerHTML = divRowTd8Str;
+			
+			
+			var cell9 = row.insertCell(9);
+			var divRowTd9Str = document.getElementById("divAddRowTr1Td10").innerHTML;
+			divRowTd9Str = divRowTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell9.innerHTML = divRowTd9Str;
+// 		}
+	}
+	$('body').on('blur', '#add_resource_form', function() {
+		$("#add_resource_form").showHelpOnFocus();
+		$("#add_resource_form").validateOnBlur(false, validationSettings);
+	});
+	</script>
+	<script>
+	function saveResource(){
+		validateProjectSequeneNumber();
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#add_newResource_form').validate(false, validationSettings)) {
+			
+		}
+		
+	}
+	$('body').on('blur', '#add_newResource_form', function() {
+		$("#add_newResource_form").showHelpOnFocus();
+		$("#add_newResource_form").validateOnBlur(false, validationSettings);
+	});
+	</script>
+	
+	<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script>
+ <jsp:include page="../masterFooter.jsp" />	
 </html>
