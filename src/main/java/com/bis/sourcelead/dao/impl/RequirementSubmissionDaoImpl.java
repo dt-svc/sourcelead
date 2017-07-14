@@ -2565,16 +2565,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}
 	        	
-				return reqSubms;
-	        	
 	        }
-			
+	        	return reqSubms;
 		}
 		
   }
-
-
-
-
-
-
+}
