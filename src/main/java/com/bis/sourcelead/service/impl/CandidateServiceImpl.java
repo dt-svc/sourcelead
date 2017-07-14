@@ -42,6 +42,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -101,6 +103,9 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
+	
+	@Autowired
+	CandidateDocumentsService candidateDocumentsService;
 	
 	/*@Autowired
 	CandidateSkillsService candidateSkillsService;*/
@@ -330,7 +335,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setSkillsName(candidateSkills);
 		}
 		
-		if(jsonObj.has("visa")){
+		if(jsonObj.has("visa")&& jsonObj.getString("visa") !=null){
 			
 			String visaList =null;
 			try{
@@ -344,8 +349,6 @@ public class CandidateServiceImpl implements CandidateService {
 			visaList = visaList.replaceAll("\"", "");
 			candidate.setVisaType(visaList);
 	  	 
-		}else{
-			candidate.setVisaType(null);
 		}
 		
 		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
@@ -1270,6 +1273,80 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
+	}
+
+	@Override
+	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception
+	{
+
+		 int percentage = 0;
+		 Integer status = Constants.CANDIDATE_ACTIVE;
+			if(can != null){
+				//Basic Details - 30 %
+				if(can.getFirstName()!=null && can.getLocation()!=null && can.getEmail()!=null && can.getDesignationType()!=null){
+					percentage = 30;
+				}
+				//Resume  Details - 10 %
+				List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(can.getId(), status);
+				if(!candidateResumesList.isEmpty()){
+					percentage = percentage +10;
+				}
+				//Education Details - 10 %
+				 List<CandidateEducation>  candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(can.getId(), loginOrgLocation.getId());
+				 if(!candidatesEducationList.isEmpty()){
+						percentage = percentage +10;
+				 }
+				//Employment  Details - 10 %
+				 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(can.getId(), loginOrgLocation.getId());
+				 if(!candidatesEmployersList.isEmpty()){
+						percentage = percentage +10;
+				 }
+				 
+				 //Skills Details - 10 %
+				 if(can.getSkillsName()!=null && !"".equalsIgnoreCase(can.getSkillsName()) ){
+						percentage = percentage +10;
+				 }
+				 
+				//PrimarySkill Details - 5 %
+				 if(can.getPrimarySkill()!=null && !"".equalsIgnoreCase(can.getPrimarySkill())){
+						percentage = percentage + 5;
+				 }
+				 
+				 
+				 int countOtherDetails = 0;
+				 if(can.getSummary() != null && !"".equalsIgnoreCase(can.getSummary()) ){
+					 countOtherDetails++;
+				 }
+				 if(can.getVisaType()!=null && !"".equalsIgnoreCase(can.getVisaType())){
+					 countOtherDetails++;
+				 }
+				 if(can.getExpectedRate()!=null && !"".equalsIgnoreCase(can.getExpectedRate())){
+					 countOtherDetails++;
+				 }
+				 if((can.getExperienceYears()!= null && !"".equalsIgnoreCase(can.getExperienceYears()) && Long.parseLong(can.getExperienceYears())>0) || (can.getExperienceMonths()!= null && !"".equalsIgnoreCase(can.getExperienceMonths())&& Long.parseLong(can.getExperienceMonths())>0)){
+					 countOtherDetails++;
+				 }
+				//any two OtherDetails - 10 %
+				 if(countOtherDetails>=2){
+					 percentage = percentage + 10; 
+				 }
+				//if only one OtherDetails - 5 %
+				 else if(countOtherDetails==1){
+					 percentage = percentage + 5; 
+				 }
+				 
+				//photo Details - 5 %
+				 if(can.getDocFile()!=null){
+					 percentage = percentage + 5; 
+				 }
+
+				//document Details - 10 %
+				 List<CandidateDocuments>   candidateDocumentsList = candidateDocumentsService.getCandidateDocumentsListByCandidateIdAndOrgLocationID(can.getId(), loginOrgLocation.getId());
+				 if(!candidateDocumentsList.isEmpty()){
+						percentage = percentage +10;
+				 }
+			}
+			return percentage;
 	}
 
 }

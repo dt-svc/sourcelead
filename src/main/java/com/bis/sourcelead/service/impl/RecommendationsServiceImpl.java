@@ -872,12 +872,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education) {
-		if(set != null && set.size() >0){
-			for(String edu : set){
-					if(education.contains(edu)){
-						return 10;
-//						matchedSkillCount++;
-					}
+		if(!"".equalsIgnoreCase(education)){
+			if(set != null && set.size() >0){
+				for(String edu : set){
+						if(education.contains(edu)){
+							return 10;
+	//						matchedSkillCount++;
+						}
+				}
 			}
 		}
 //		return matchedSkillCount*educationPercentage;

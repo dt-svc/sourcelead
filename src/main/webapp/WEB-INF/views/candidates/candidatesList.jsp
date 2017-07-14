@@ -481,7 +481,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well well-sm text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix nomr">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
@@ -501,6 +501,30 @@ function candidateSideBar(candidateId){
 						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
+						 
+						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">  ';
+						if(json.profilePercentage>=50){ 
+							result = result+'   <div class="progress-bar  progress-bar-success  ';
+						}
+						else{
+							result = result+'   <div class="progress-bar  progress-bar-danger  ';
+						}
+						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+						result = result+'   </div>  ';
+						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> ';
+						/* else{ 
+							result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">                                                                                                                                                       ';
+							result = result+'   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+							result = result+'    <p id="disVal"> '+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+							result = result+'   </div>                                                                                                                                                                     ';
+							result = result+' </div>                                                                                                                                                                       ';
+							result = result+' </div> ';
+						} */
+						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';

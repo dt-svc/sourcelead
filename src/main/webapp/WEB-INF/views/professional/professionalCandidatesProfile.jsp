@@ -878,12 +878,13 @@ function professionalProfile(candidateId){
 		 }else{
 			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
 		 }
-		 
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({  
 	          type : "POST",
 	          url: Urlcheck,        
 	          success :function(data) {
 	        	  getProfessionalInfo();
+	        	  $("#loading").removeAttr('style');
 	        },
 	          
 	     }); 
@@ -1520,15 +1521,13 @@ function makeAsPublicVisibility(){
 	 }else{
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
-            	  candidateQuickViewProfile(candidateId);
-              }
+        	  getProfessionalInfo();
+        	  $("#loading").removeAttr('style');
        },
          
     }); 
