@@ -285,6 +285,21 @@ function addResume(candidateId) {
 
 		            			$("#disVal").empty();
 		            			$("#disVal").append(result+'%');
+		            			// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(result>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(result+'%');
+		            			
+		            			
 							 	$("#popUpDivResume").removeClass("edit-details-active");
 		             			$("#selector2").removeAttr("style");
 		             			$("#selector2").css({ display: "block" });
@@ -529,7 +544,7 @@ function deleteResume(candidateId, resumeId){
          			 if(data<50){
 	          			  /* $("#perVal").removeClass("progress-bar-success"); */
 	          			   $("#perVal").removeClass('progress-bar-success');
-	          			   $("#perVal").addClass("progress-bar-danger");
+	          			  $("#perVal").addClass("progress-bar-danger");
 	          			 }
 	          			 if(data>=50){
 	          				 $("#perVal").removeClass('progress-bar-danger');
@@ -538,6 +553,22 @@ function deleteResume(candidateId, resumeId){
 
     			 	$("#disVal").empty();
     				$("#disVal").append(data+'%');
+    				
+    				
+    				// for quick view bar update
+        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+          			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+        			$("#quickDisVal").empty();
+        			$("#quickDisVal").append(data+'%');
+    				
         			 $("#selector2").removeAttr("style");
          			 $("#selector2").css({ display: "block" });
          			 $("#resMsgDiv").html("Resume deleted");

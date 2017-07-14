@@ -619,6 +619,21 @@ function getDocumentType(documentType){
 			          			 }
 			          			 $("#disVal").empty();
 			          			$("#disVal").append(result+'%');
+			          			
+			          		// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(result>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(result+'%');
+			          			
 								$("#popUpDiv").removeClass("edit-details-active");
 		            			$("#selector9").removeAttr("style");
 		            			$("#selector9").css({ display: "block" });
@@ -747,6 +762,19 @@ function deleteDocument(candidateId, documentId){
          			 }
          			 $("#disVal").empty();
          			$("#disVal").append(data+'%');
+         			// for quick view bar update
+        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+          			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+        			$("#quickDisVal").empty();
+        			$("#quickDisVal").append(data+'%');
         			 $("#selector9").removeAttr("style");
          			 $("#selector9").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");

@@ -335,7 +335,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setSkillsName(candidateSkills);
 		}
 		
-		if(jsonObj.has("visa")){
+		if(jsonObj.has("visa")&& jsonObj.getString("visa") !=null){
 			
 			String visaList =null;
 			try{
@@ -349,8 +349,6 @@ public class CandidateServiceImpl implements CandidateService {
 			visaList = visaList.replaceAll("\"", "");
 			candidate.setVisaType(visaList);
 	  	 
-		}else{
-			candidate.setVisaType(null);
 		}
 		
 		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
@@ -1322,7 +1320,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 if(can.getVisaType()!=null && !"".equalsIgnoreCase(can.getVisaType())){
 					 countOtherDetails++;
 				 }
-				 if(can.getRate()!=null && !"".equalsIgnoreCase(can.getRate())){
+				 if(can.getExpectedRate()!=null && !"".equalsIgnoreCase(can.getExpectedRate())){
 					 countOtherDetails++;
 				 }
 				 if((can.getExperienceYears()!= null && !"".equalsIgnoreCase(can.getExperienceYears()) && Long.parseLong(can.getExperienceYears())>0) || (can.getExperienceMonths()!= null && !"".equalsIgnoreCase(can.getExperienceMonths())&& Long.parseLong(can.getExperienceMonths())>0)){

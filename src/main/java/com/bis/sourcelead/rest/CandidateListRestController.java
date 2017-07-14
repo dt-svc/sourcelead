@@ -1330,6 +1330,7 @@ public class CandidateListRestController {
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "success";
 				}else{
+					can.setVisaType("");
 					candidateService.saveOrUpdateCandidate(can);
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";

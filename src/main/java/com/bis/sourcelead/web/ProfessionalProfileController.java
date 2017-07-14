@@ -114,7 +114,9 @@ public class ProfessionalProfileController {
 		public String getProfessionalInfo(@RequestParam(value="candidateStatus", required=false) String  candidateStatus,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		        Candidate can = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		        Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(can.getId()));
+		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		        //Candidate candidate =	candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(loginUser.getId(), candidateStatus);
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
@@ -135,7 +137,8 @@ public class ProfessionalProfileController {
 			        }
 			        	
 		        }
-		        
+		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
+		        candidate.setProfilePercentage(percentage);
 		        resultJson = commonUtil.toJSON(candidate);
 				return resultJson;
 	}
