@@ -1092,10 +1092,12 @@ function showList(){
 			 				
 			 				  result = result + ' <tr>';
 			        		   if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
+			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
 			        			   result = result +"<td>"    
-			        			   result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
+			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
 					       	    	result = result +"<img onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+sourceleadUrl+"/displayUserImage/"+userRole.userId+"' alt='image'>";
 									result = result + ''+userRole.userName+'</a></td>';
+									'</sec:authorize>';
 								}else{
 								result = result + ' <td><div>--</div></td>';
 								}
