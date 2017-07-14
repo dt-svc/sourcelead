@@ -142,7 +142,7 @@ public class RequirementListRestController {
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	@Autowired
-	OrgLocationService orgLocationsService;
+	OrgLocationService orgLocationService;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
