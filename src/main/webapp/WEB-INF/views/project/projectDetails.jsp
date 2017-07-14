@@ -421,9 +421,9 @@
 						result = result + '	<label>Client</label>';
 
 						if (json.relationId != null) {
-							result = result	+ '<select id="clientId" disabled="disabled" name="clientId">';
+							result = result	+ '<select class="noImg" id="clientId" disabled="disabled" name="clientId">';
 						} else {
-							result = result	+ '<select id="clientId" name="clientId">';
+							result = result	+ '<select class="noImg" id="clientId" name="clientId">';
 						}
 						result = result + "<option value=''>Select</option>";
 						for (var i = 0; i < json.clientName.length; i++) {
