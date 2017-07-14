@@ -99,5 +99,7 @@ public interface CandidateDao {
 	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId,Long userId) throws Exception;
 	
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
+	
+	public List<Candidate> getRequestedCandidatesList(List<Long> orgLocationsIds,List<Long> roleIds,String resourceType)throws Exception ;
 
 }

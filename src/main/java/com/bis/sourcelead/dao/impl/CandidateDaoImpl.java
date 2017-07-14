@@ -1036,5 +1036,35 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.orgRelationId.id = :orgRelationId and candidate.isAssociate = 'Y'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getRequestedCandidatesList(List<Long> orgLocationsIds, List<Long> roleIds,
+			String resourceType) throws Exception {
+		
+		String subQuery1 = "";
+		String subQuery2 = "";
+		
+		if(orgLocationsIds != null){
+			subQuery1 = " and candidate.orgLocationId.id IN (:orgLocationsIds)"; 
+		}
+		
+		if(roleIds != null){
+			subQuery2 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id IN (:roleIds) )"; 
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.status ='1' and candidate.isAssociate = 'Y' "+subQuery1+" "+subQuery2+" ";
+        
+		if(orgLocationsIds != null && roleIds != null){
+			return  session.createQuery(query).setParameterList("orgLocationsIds", orgLocationsIds).setParameterList("roleIds", roleIds).setCacheable(true).list();
+		}else if(orgLocationsIds != null && roleIds == null){
+			return  session.createQuery(query).setParameterList("orgLocationsIds", orgLocationsIds).setCacheable(true).list();
+		}else if(orgLocationsIds == null && roleIds != null){
+			return  session.createQuery(query).setParameterList("roleIds", roleIds).setCacheable(true).list();
+		}else{
+			return  session.createQuery(query).setCacheable(true).list();
+		}
+	}
 }
 

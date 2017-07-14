@@ -1272,4 +1272,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidate;
 	}
 
+	@Override
+	public List<Candidate> getRequestedCandidatesList(List<Long> orgLocationsIds, List<Long> roleIds,
+			String resourceType) throws Exception {
+		return candidateDao.getRequestedCandidatesList(orgLocationsIds, roleIds, resourceType);
+	}
+
 }
