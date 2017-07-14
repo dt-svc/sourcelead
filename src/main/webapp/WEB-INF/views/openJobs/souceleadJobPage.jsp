@@ -160,7 +160,7 @@ display: none;}
 			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
 			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
 			<span><input type="button" value="Search" class="searchBtn" onclick="redirectPage();"></span>
-			<h3><b id="ADS">Advanced Search</b></h3>
+			<!-- <h3><b id="ADS">Advanced Search</b></h3> -->
 			<div class="clear"></div>
 		</section>
 	</content>		
