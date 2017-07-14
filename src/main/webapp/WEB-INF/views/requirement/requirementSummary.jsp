@@ -4315,7 +4315,7 @@ function requirementRecommendations(requirementId){
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
 		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Customize score" onClick="openPop('+requirementId+')">Customize Score </a>            ';
-		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUserd('+requirementId+');" >Compare</a>            ';
+		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
 		    result = result +'                   <div id="customizeScoreDiv"></div>';
 		    result = result +'		        </div>';
 
