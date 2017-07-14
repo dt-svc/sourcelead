@@ -1,6 +1,6 @@
 #for reuirement interview mail for Interviewers
 SET SQL_SAFE_UPDATES=0;
-UPDATE `sourcelead`.`email_scenario` SET `BODY`='Dear {{InterviewerInvitationRedifined.InterviewerFirstName}} {{InterviewerInvitationRedifined.InterviewerLastName}},\n\nWe invite you to kindly consent to be a Interviewer for the Position {{InterviewerInvitationRedifined.RequirementTitle}},Following are the details for interview.\n {{InterviewerInvitationRedifined.interviewTableDetails}}\n\nFor clear details login into the system.\n{{InterviewerInvitationRedifined.LoginLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Interviewer InvitationRedifined' and `ENTITY_TYPE`='Email';
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{InterviewerInvitationRedifined.InterviewerFirstName}} {{InterviewerInvitationRedifined.InterviewerLastName}},\n\nWe invite you to kindly consent to be a Interviewer for the Position {{InterviewerInvitationRedifined.RequirementTitle}},Following are the details for interview.\n {{InterviewerInvitationRedifined.interviewTableDetails}}\n\nFor clear details login into the system.\n{{InterviewerInvitationRedifined.LoginLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Interviewer InvitationRedifined' and `ENTITY_TYPE`='Email';
 
 
 
