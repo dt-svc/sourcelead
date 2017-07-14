@@ -46,7 +46,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
  </section>
  
  <div class="content-area content-new clearfix">
