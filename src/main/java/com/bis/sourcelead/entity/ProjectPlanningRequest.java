@@ -1,37 +1,20 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
@@ -50,6 +33,10 @@ public class ProjectPlanningRequest implements Serializable{
 	
     @Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
     private String description;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "PROJECT_ID")
+  	private Projects projectId;
     
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "APPROVER_USER_ID")
@@ -110,6 +97,14 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Projects getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Projects projectId) {
+		this.projectId = projectId;
 	}
 
 	public User getApproverUser() {
