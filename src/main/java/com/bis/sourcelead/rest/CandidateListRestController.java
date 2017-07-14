@@ -60,6 +60,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -67,7 +71,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateDocumentsService;
+import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateHotListService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -101,6 +109,17 @@ public class CandidateListRestController {
 	 @Autowired
 	 CandidateService candidateService;
 	 
+	 @Autowired
+	 CandidateResumesService candidateResumesService;
+	 
+	 @Autowired
+	 CandidateEducationService candidateEducationService;
+	 
+	 @Autowired
+	 CandidateEmployersService candidateEmployersService;
+	 
+	 @Autowired
+	 CandidateDocumentsService candidateDocumentsService;
 	 
 	/* @Autowired
 	 CandidateSkillsService candidateSkillsService;*/
@@ -717,6 +736,8 @@ public class CandidateListRestController {
 			
 			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 			
+			int percentage = candidateService.getCandidatePercentage(can,loginOrgLocation);
+			
 			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			for(LookUpData lookUpData :skillsList){
@@ -794,12 +815,15 @@ public class CandidateListRestController {
 				}
 				
 			}
+			
+			can.setProfilePercentage(percentage);
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
 			 
 
-	 /**
+
+	/**
 	   *  This Method is for deleting CandidateImage
 	   *  
 	   * @author sarath kumar
