@@ -307,10 +307,11 @@ function cpagination(url){
 	    	"aaSorting": [[7,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": true,
+	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 160px; height: 160px;'/>"
 	     }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -1024,7 +1025,7 @@ function cancel(candidateId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Candidate List - <span class="label label-success">${candidateCount}</span></h2>
+      <h2>Candidate List</h2>
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
