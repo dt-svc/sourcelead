@@ -261,7 +261,7 @@ function getOrgLocationRoles(){
 	        	for (var i=0; i<json.length; i++)
 				{
 		        		var opt = json[i];
-		        		output = output + '<li><input value="'+opt.id+'" name="roles" checked type="checkbox" onclick="getAssociatesFilter()">'+opt.displayName+'</li>';
+		        		output = output + '<li><input value="'+opt.id+'" name="roles" checked type="checkbox" onclick="getAssociatesFilter()"><label>'+opt.displayName+'</label></li>';
 				}
 	        	$("#orgLocationRoles").empty();
 		        $("#orgLocationRoles").append(output);
@@ -311,7 +311,7 @@ function getAssociatesFilter(){
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result +'<th>';
-	        	result = result +'<input id="checkbox1" type="checkbox">';
+	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
 	        	result = result +'</th>';
 	        	/* result = result +'<th>ID</th>'; */
 	        	result = result +'<th>Name</th>';
@@ -372,7 +372,7 @@ function getAssociatesFilter(){
 	        		
 	        		    result = result +'<tr>';
 			        	result = result +'<td>';
-			        	result = result +'<input  type="checkbox">';
+			        	result = result +'<td><input id="'+report.id+'" value="'+report.id+','+candidate+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
 			        	result = result +'</td>';
 			        	/*result = result +'<td>';
 			        	 result = result +'<div><span title="0025896">0025896</span></div>'; 
@@ -462,6 +462,22 @@ function pagination(){
     });
     $('#associatesListPagination').wrap("<div class='overflow_Auto'></div>");
 }
+</script>
+
+<script>
+	function toggleAssociates(source) {
+	    var checkboxes = document.querySelectorAll('input[name="associates[]"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+	        if (checkboxes[i] != source)
+	            checkboxes[i].checked = source.checked;
+	        
+	    }
+	$('input:checkbox:not(#checkAllAssociates)').click(function() {
+	    if(!this.checked) {
+	        $('#checkAllAssociates').removeAttr('checked');
+	    }
+	});
+	}
 </script>
 
 
