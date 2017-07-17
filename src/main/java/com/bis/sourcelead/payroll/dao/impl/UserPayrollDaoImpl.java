@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
@@ -85,6 +86,19 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 			return userPayrollList;
 		}
 		return userPayrollList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Checks> getChecksList(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Checks> checkslList = null;
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
+		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if (checkslList != null && checkslList.size() > 0) {
+			return checkslList;
+		}
+		return checkslList;
 	}
 
 	
