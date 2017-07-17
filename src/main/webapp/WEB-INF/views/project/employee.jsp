@@ -1140,10 +1140,10 @@ function resourceRequestsTab(){
 	 var result = "";
  	 
 		result = result + '	<div class="project_tabs_inn_head">';
-		result = result + '	      <a href="request-resource.html">';
+		result = result + '	      <a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
 		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a> | &nbsp; &nbsp;';
 		result = result + '	      <a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'">';
-		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a> | &nbsp; &nbsp;             ';
+		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a> | &nbsp; &nbsp;';
 		result = result + '	       <input class="vendorfild" type="text"><i class="fa fa-search"></i>';
 		result = result + '	       </div>';
 		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table">';
