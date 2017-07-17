@@ -20,7 +20,7 @@ function compareRecommendedUsers(requirementId){
 	    	type: "GET",
 	        url: sourceleadUrl+"/getCandidatesToCompare?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+locationId,
 	        success: function(data) {
-	        	compareRecommendedUsersdiv(data);
+	        	compareRecommendedUsersdiv(data,requirementId);
 	        }
 	 });
 	
@@ -29,7 +29,7 @@ function compareRecommendedUsers(requirementId){
 
 
 <script>
-function compareRecommendedUsersdiv(data){
+function compareRecommendedUsersdiv(data,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var result = '';
     result = result +'<div class="sideMask" style="display: block;"></div>';
@@ -144,7 +144,7 @@ function compareRecommendedUsersdiv(data){
     result = result +'                <div class="profilecompare-widget col-md-3">';
     result = result +'                <!-- Profile Header -->';
     result = result +'                    <div class="clearfix mb10">';
-    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList1" onchange="getCandidatetoCompare(1);">';
+    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList1" onchange="getCandidatetoCompare(1,'+requirementId+');">';
     result = result +'                        </select>';
     result = result +'                    </div>';
     result = result +'                   <div id="profileDiv1"></div>';
@@ -154,7 +154,7 @@ function compareRecommendedUsersdiv(data){
     result = result +'                <div class="profilecompare-widget col-md-3">';
     result = result +'                <!-- Profile Header -->';
     result = result +'                    <div class="clearfix mb10">';
-    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList2">';
+    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList2" onchange="getCandidatetoCompare(2,'+requirementId+');">';
     result = result +'                        </select>';
     result = result +'                    </div>';
     result = result +'                   <div id="profileDiv2"></div>';
@@ -163,7 +163,7 @@ function compareRecommendedUsersdiv(data){
     
     result = result +'                <div class="profilecompare-widget col-md-3">';
     result = result +'                    <div class="clearfix mb10">';
-    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList3">';
+    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList3" onchange="getCandidatetoCompare(3,'+requirementId+');">';
     result = result +'                        </select>';
     result = result +'                    </div>';
     result = result +'                   <div id="profileDiv3"></div>';
@@ -172,7 +172,7 @@ function compareRecommendedUsersdiv(data){
     
     result = result +'                <div class="profilecompare-widget col-md-3">';
     result = result +'                    <div class="clearfix mb10">';
-    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList4">';
+    result = result +'                        <select class="chosen-select form-control" id="compareCandidateList4" onchange="getCandidatetoCompare(4,'+requirementId+');">';
     result = result +'                        </select>';
     result = result +'                    </div>';
     result = result +'                   <div id="profileDiv4"></div>';
@@ -384,9 +384,185 @@ function prepareCandidateGrid(data){
 </script>
 
 <script>
-function getCandidatetoCompare(div){
-	var candidate = $("#compareCandidateList1").val();
-	alert(candidate)
+function getCandidatetoCompare(div,requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var candidateId = "";
+	if(div == 1){
+		candidateId = $("#compareCandidateList1").val();
+	}
+	if(div == 2){
+		candidateId = $("#compareCandidateList2").val();
+	}
+	if(div == 3){
+		candidateId = $("#compareCandidateList3").val();
+	}
+	if(div == 4){
+		candidateId = $("#compareCandidateList4").val();
+	}
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	candidateDiv(json,div);
+	        }
+	 });
+}
+</script>
+
+<script>
+function candidateDiv(report,div){
+  		var firstName ="";
+	   	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
+	    	 firstName = report.firstName;
+	    }else{
+	    	 firstName = "---";
+	    } 
+	   	
+	   	var lastName = "";
+	    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
+	    	lastName = report.lastName;
+	    }else{
+	    	lastName = "---";
+	    } 
+	   	
+	   	var primarySkill = "";
+	    if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefiend'){
+	    	primarySkill = report.primarySkill;
+	    }else{
+	    	primarySkill = "---";
+	    }
+	   	
+	   	var rate ="";
+	    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefiend') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefiend')){
+	    	rate = report.expectedRate + ' ' + report.rateType;
+	    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefiend'){
+	    	rate = report.expectedRate;
+	    }else{
+	    	rate = "---";
+	    }
+	   	
+	    if(report.totalExp != null && report.totalExp != '' && report.totalExp != 'undefiend'){
+	    	var totalExp = report.totalExp + " Year(s)";
+	    }else{
+	    	var totalExp = "---";
+	    } 
+	   	
+	   	var location ="";
+	    if(report.location != null && report.location != '' && report.location != 'undefiend'){
+	    	location = report.location;
+	    }else{
+	    	location = "---";
+	    } 
+	   	
+	   	var noticePriod ="";
+	    if(report.noticePriod != null && report.noticePriod != '' && report.noticePriod != 'undefiend'){
+	    	noticePriod = report.noticePriod;
+	    }else{
+	    	noticePriod = "---";
+	    }
+	   	
+	   	var candieducation = "---";
+	    if(report.education != null && report.education != '' && report.education != 'undefiend'){
+	    	for(i=0;i<=education.length;i++){
+	    		candieducation = candieducation + education[i];
+	    	}
+	    } 
+	   	
+	   	var candivisaType = "---";
+	    if(report.visaType != null && report.visaType != '' && report.visaType != 'undefiend'){
+	    	for(i=0;i<=visaType.size;i++){
+	    		candivisaType = candivisaType + visaType[i];
+	    	}
+	    }
+	   	
+	   	var skillsName = "";
+	    if(report.skillsName != null && report.skillsName != '' && report.skillsName != 'undefiend'){
+	    	
+	    	var skill = report.skillsName;
+	 		var res = [];
+	 		res = skill.split(',');
+	 		var minSkills = res.slice(0,5);
+	    	/* alert(minSkills.length)
+	    	var cvSkills = "";
+	    	for(i = 0; i<minSkills.length ; i++){
+	    		cvSkills += minSkills[i] + ", ";
+	    	}
+	    	alert(cvSkills) */
+	    	skillsName = minSkills;
+	    }
+	   var opt = "";
+	   	 	opt = opt +'                <div class="profilecompare-widget_hdr clearfix">';
+	   	    opt = opt +'                <div class="profileImg text-center clearfix mt10 positionRelative">';
+	    	    opt = opt +'                    <img src="resources/images/userprofileImg.jpg" alt="Profile Image">';
+	   	    opt = opt +'                    <i class="valid-profile fa fa-check-square text-success"></i>';
+	   	    opt = opt +'                </div>';
+	   	    opt = opt +'                 <div class="text-center clearfix col-md-12 profile-progress">';
+	   	    opt = opt +'                     <!-- Progress Bar -->';
+	   	    opt = opt +'            <div class="progress">';
+	   	    opt = opt +'            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:80%">';
+	   	    opt = opt +'            80%';
+	   	    opt = opt +'            </div>';
+	   	    opt = opt +'            </div> ';
+	   	    opt = opt +'                     <!-- Progress Bar -->';
+	   	    opt = opt +'                 </div>';
+	   	    opt = opt +'                <div class="text-center clearfix">';
+	   	    opt = opt +'                <p>';
+	   	    opt = opt +'                    <span>';
+	   	    opt = opt +'                    <strong>'+firstName+' '+lastName+'</strong>';
+	   	    opt = opt +'                    </span>';
+	   	    opt = opt +'                </p>';
+	   	    opt = opt +'                <p>Primary:<span class="paddingLeft">'+primarySkill+'</span></p>';
+	   	    if(report.email != null && report.email !='' && report.email !='undefined'){
+	   	    	opt = opt +'                <p>Email:<span class="paddingLeft">'+report.email+'</span></p>';
+	   	    }else{
+	   	    	opt = opt +'                <p>Email:<span class="paddingLeft">---</span></p>';
+	   	    }
+	   	    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
+	   	    	opt = opt +'                <p>Ph:<span class="paddingLeft">'+report.mobilePhone+'</span></p>';
+	   	    }else{
+	   	    	opt = opt +'                <p>Ph:<span class="paddingLeft">---</span></p>';
+	   	    }
+	   	    opt = opt +'                </div>';
+	   	    opt = opt +'                </div>';
+	   	    opt = opt +'                <!-- Profile Header -->';
+	   	    opt = opt +'                <!-- profile_personalInfo -->';
+	   	    opt = opt +'                <div class="profile_personalInfo">';
+	   	    opt = opt +'                <ul class="list-unstyled mb clearfix">';
+		   	 if(report.candidateScore != null && report.candidateScore !='' && report.candidateScore !='undefined'){
+		   		opt = opt +'                <li>'+report.candidateScore+'%</li>';
+		   	 }else{
+		   		opt = opt +'                <li>0%</li>';
+		   	 }
+	   	    opt = opt +'                <li>'+rate+'</li>';
+	   	    opt = opt +'                <li>'+totalExp+'</li>';
+	   	    opt = opt +'                <li>'+location+'</li>';
+	   	    opt = opt +'                <li>'+noticePriod+'</li>';
+	   	    opt = opt +'                <li>'+candieducation+'</li>';
+	   	    opt = opt +'                <li>'+candivisaType+'</li>';
+	   	    opt = opt +'                <li>'+skillsName+'</li>';
+	   	    opt = opt +'                </ul>';
+	   	    opt = opt +'               <button type="button" value="" class="btn btn-primary btn-sm btn-block mt10 clearfix">View Profile</button>';
+	   	    opt = opt +'                </div>';
+	   	    opt = opt +'                <!-- profile_personalInfo -->';
+	   	    
+	   	    if(div==1){
+	   	    	$("#profileDiv1").empty();
+	   	    	$("#profileDiv1").append(opt);
+	   	    }
+	   	    if(div==2){
+	   	    	$("#profileDiv2").empty();
+	   	    	$("#profileDiv2").append(opt);
+	   	    }
+	   	    if(div==3){
+	   	    	$("#profileDiv3").empty();
+	   	    	$("#profileDiv3").append(opt);
+	   	    }
+	   	    if(div==4){
+	   	    	$("#profileDiv4").empty();
+	   	    	$("#profileDiv4").append(opt);
+	   	    }
 }
 </script>
 

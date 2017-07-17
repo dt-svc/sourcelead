@@ -26,6 +26,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
@@ -266,6 +268,7 @@ public class Candidate implements Serializable{
 	private String candidateUpdateDateToString;
 	
 	 @Transient
+	 @JsonProperty
 	 private String candidateScore;
 	    
 	 @Transient

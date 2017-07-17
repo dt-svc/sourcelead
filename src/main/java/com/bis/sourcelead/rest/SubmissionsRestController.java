@@ -28,7 +28,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
-import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -39,6 +38,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -54,6 +54,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
@@ -121,8 +123,14 @@ public class SubmissionsRestController {
 	@Autowired
 	RequirementElkUtil requirementElkUtil;
 	
-	 @Autowired
-	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	@Autowired
+	private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	RecommendationsService recommendationsService;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -145,10 +153,13 @@ public class SubmissionsRestController {
 	}
 
 	@RequestMapping(value = "/getCandidateDetails")
+	@ResponseBody
 	public String getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
 
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
 		String resultJson = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
@@ -161,11 +172,21 @@ public class SubmissionsRestController {
 			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
 		
-		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
+		//this block of code is added to get customized score for candidate. -- pavan jampana
+		if(requirementId != null){
+			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+			String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+			if(score != null && !"".equalsIgnoreCase(score)){
+				candidate.setCandidateScore(score);
+			}
+		}
+		
+		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocationId);
 		if(null != currentEmployer){
 			candidate.setEmployer(currentEmployer.getName());
 		}else{
-			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
+			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
 			if(null != lastCompanyEmployer){
 				candidate.setEmployer(lastCompanyEmployer.getName());
 			}
