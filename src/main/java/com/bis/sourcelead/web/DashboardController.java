@@ -212,11 +212,12 @@ public class DashboardController {
 		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
 			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 			requirementSubmissionHistory2.getSubmissionId().setNumOfInterview(interviewedCount);
-			//List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndSubId(loginOrgLocations.getId(), requirementSubmission.getId());
-				if("SUBMISSION".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
-				}
-		}
+		   // List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndSubId(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getId());
+			 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
+			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
+			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(rsh.getSubmissionId().getCreatedDate()));
+		    }
+		  }
 		model.addObject("tab",tab);
 		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
 		request.getSession().setAttribute("sessionData",sessionData);
