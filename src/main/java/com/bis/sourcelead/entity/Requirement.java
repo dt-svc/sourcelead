@@ -84,6 +84,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
 	
+	@Column(name = "APPRVER_HIERARCHY")
+	private String approverHierarchy;
+	
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -1523,6 +1526,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getApproverHierarchy() {
+		return approverHierarchy;
+	}
+
+	public void setApproverHierarchy(String approverHierarchy) {
+		this.approverHierarchy = approverHierarchy;
 	}
 
 

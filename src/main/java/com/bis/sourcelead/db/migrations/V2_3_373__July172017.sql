@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','APPRVER_HIERARCHY','VARCHAR(10) NULL');

@@ -368,7 +368,6 @@ public class RequirementListRestController {
 		String resultJson = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 		if (requirementId != null && !requirementId.isEmpty()) {
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
@@ -376,12 +375,7 @@ public class RequirementListRestController {
 				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
 			}
 			// to get the RequirementApproverHierarchy to set the Status
-			Boolean isLoginUserAsApprover = false;
-			RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());
-			if (requirementApproverHierarchy != null) {
-				requirement.setRequirementApproverHierarchyStatus(requirementApproverHierarchy.getRequirementApproverStatus().toString());
-				isLoginUserAsApprover = true;
-			}
+		
 			if (requirement.getSpocId() != null) {
 				if (requirement.getClientId() != null) {
 					if (requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")) {
@@ -427,36 +421,46 @@ public class RequirementListRestController {
 			if (requirement.getSubmissionTemplateId() != null) {
 				requirement.setClientSubmissionTemplate(requirement.getSubmissionTemplateId().getTemplateName());
 			}
-			List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
-			/*
-			 * Integer highestLevel = requirementApproverHierarchyService.
-			 * getRequirementApproverHierarachyWithHighestLevel(Long.parseLong(
-			 * requirementId));
-			 */
+			
 			ArrayList<String> ar = new ArrayList<String>();
-			if (list != null && list.size() > 0) {
-				StringBuilder sb = new StringBuilder();
-				for (RequirementApproverHierarchy approverN : list) {
-					StringBuilder approverSB = new StringBuilder();
-					if (null != approverN.getApproverUserId().getLastName()) {
-						ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
+			Boolean isLoginUserAsApprover = false;
+			
+			
+			if(requirement.getApproverHierarchy().equalsIgnoreCase(Constants.YES)){
+				
+				List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
+				if (list != null && list.size() > 0) {
+					StringBuilder sb = new StringBuilder();
+					for (RequirementApproverHierarchy approverN : list) {
+						
+						if(approverN.getApproverUserId().getId().equals(user.getId()) && isLoginUserAsApprover == false){
+							requirement.setRequirementApproverHierarchyStatus(approverN.getRequirementApproverStatus().toString());
+							isLoginUserAsApprover = true;
+						}
+						
+						StringBuilder approverSB = new StringBuilder();
+						if (null != approverN.getApproverUserId().getLastName()) {
+							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).append(" ").append(approverN.getApproverUserId().getLastName()).toString());
+						}
+						else {
+							ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).toString());
+						}
+						requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
+						if (null != approverN.getRejectedReason()
+								&& !approverN.getRejectedReason().equalsIgnoreCase("")
+								&& Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())) {
+							requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
+						}
 					}
-					else {
-						ar.add(approverSB.append(approverN.getApproverUserId().getFirstName()).toString());
-					}
-					requirement.setApprovalMechanismType(approverN.getHierarchyType().toString());
-					if (null != approverN.getRejectedReason()
-							&& !approverN.getRejectedReason().equalsIgnoreCase("")
-							&& Constants.REJECTED.equalsIgnoreCase(approverN.getRequirementApproverStatus().toString())) {
-						requirement.setRejectReasonForRequirement(sb.append(approverN.getRejectedReason()).toString());
-					}
+					requirement.setApproverNames(ar);
 				}
-				requirement.setApproverNames(ar);
 			}
 			else {
 				requirement.setApproverNames(ar);
 			}
+			
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
+			
 			// UnWanted Code
 			/*
 			 * Boolean isLoginUserAsTeamMember = requirementAssignToService.

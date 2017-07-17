@@ -599,6 +599,7 @@ public class RequirementServiceImpl implements RequirementService {
 					    }
 						  requirementApproverHierarchyList.add(rah);
 				  }
+			     
 				 
 			} 
 			//approval saving for parallel
@@ -658,8 +659,16 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  requirementApproverHierarchyList.add(rah);
 				  }
+				  
 				 
-			} 
+			}
+			
+			if(jsonObj.has("parallelApprover") || (jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1")))){
+				requirement.setApproverHierarchy(Constants.YES);
+			}else{
+				requirement.setApproverHierarchy(Constants.NO);
+			}
+			
 			if(!jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 			requirement.setRequirementApprover(requirementApproverHierarchyList);
 			}

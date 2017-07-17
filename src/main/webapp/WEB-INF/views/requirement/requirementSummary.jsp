@@ -613,8 +613,6 @@ function sideBar(requirementId,type){
               			var jobType = '';
               			if(json.jobType != null && json.jobType != '' && json.jobType != 'undefined'){
               				jobType = '-'+json.jobType;
-             			 	}else{
-             			 		jobType = '';
              			 	}
               			
               			
