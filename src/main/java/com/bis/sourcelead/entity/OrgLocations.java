@@ -141,6 +141,13 @@ public class OrgLocations implements Serializable{
     @Column(name = "IS_PRIMARY")
 	private String isPrimary;
     
+    @Column(name = "GENERATED_USER_ID")
+	private String generatedUserId;
+    
+    
+    @Column(name = "SYSTEM_GENERATED_ID")
+	private String systemGeneratedId;
+    
     @Transient
     private String orgName;
     
@@ -564,6 +571,25 @@ public class OrgLocations implements Serializable{
 		this.orgLocationUserLastName = orgLocationUserLastName;
 	}
 
+	public String getGeneratedUserId()
+	{
+		return generatedUserId;
+	}
+
+	public void setGeneratedUserId(String generatedUserId)
+	{
+		this.generatedUserId = generatedUserId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
 	
 	
 }
