@@ -139,8 +139,6 @@ float: left !important;
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
-
-
 </style>
  
 <script>
@@ -1664,20 +1662,31 @@ function requirementPipeline(requirementId,submissionType){
 			   	        		}else{
 			   	        			candidateSource = "";
 			   	        		}
-
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.id+','+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
+						           		result = result + '<td><div onclick="applicantQuickViewProfile('+report.id+','+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show positionRelative"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i>';
+						           		if(report.candidateScore != null && report.candidateScore != '' && report.candidateScore != 'undefined'){
+						  				  if(report.candidateScore >=50){ 
+						  				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
+						  				  }
+						  			  } 
+						  		    result = result +' </div></td>';
+						           	'</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
+						           		result = result + '<td><div class="tbldata-dotdot proj_show positionRelative"><span class="pull-left">'+report.candidateName+'</span>';
+						           		if(report.candidateScore != null && report.candidateScore != '' && report.candidateScore != 'undefined'){
+						  				  if(report.candidateScore >=50){ 
+						  				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
+						  				  }
+						  			  } 
+						  		    result = result +' </div></td>';
+						           	'</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+						        	   result = result + '<td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 							           }
 							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
+							        	result = result + '<td><div><span>--</span></div></td>';
 						    	     }
 						           
 						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
@@ -4353,7 +4362,13 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+');" class="proj_show"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+');" class="proj_show tbldata-dotdot-me"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
+		    if(report.finalScore != null && report.finalScore != '' && report.finalScore != 'undefined'){
+				  if(report.finalScore >=50){ 
+				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
+				  }
+			  } 
+		    result = result +' </div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.email != null && report.email !='' && report.email !='undefined'){
 		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
