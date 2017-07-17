@@ -2528,7 +2528,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			//params.put("submissionStatus",submissionStatus);
 	    		}
 	    		String whereCondition = subQuery;
-	    		Query query =  session.createQuery(from+" "+whereCondition+" ");
+	    		Query query =  session.createQuery(from+" "+whereCondition+" group by rsh.submissionId");
 	    		
 	    		for (String str : query.getNamedParameters())
 	            {
@@ -2554,10 +2554,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}*/
 	        	if(dateRange != null && "today".equals(dateRange)){
-	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate group by rsh.submissionId";
 	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate";
+	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate group by rsh.submissionId";
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}
 	        	

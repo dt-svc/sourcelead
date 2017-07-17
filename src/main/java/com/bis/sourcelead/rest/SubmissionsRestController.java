@@ -554,7 +554,7 @@ public class SubmissionsRestController {
 			HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
-
+	
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
@@ -587,6 +587,10 @@ public class SubmissionsRestController {
 		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
 		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
 		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
+		submission.setProfilePercentage(percentage);
 		resultJson = toJSON(submission);
 		return resultJson;
 
