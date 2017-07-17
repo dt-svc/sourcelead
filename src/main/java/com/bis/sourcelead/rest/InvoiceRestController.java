@@ -1536,9 +1536,12 @@ public class InvoiceRestController {
 			}
 			netAmount = recievableAmount - payableAmount;
 		}
-		if (invoiceList != null && invoiceList.size() > 0) {
-			for (Invoice invoice : invoiceList) {
-				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+//		logger.info("Final Response time = " + elapsedTime + " Millis");
+		if(invoiceList !=null && invoiceList.size()>0){
+			for(Invoice invoice : invoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 				}
 				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId()

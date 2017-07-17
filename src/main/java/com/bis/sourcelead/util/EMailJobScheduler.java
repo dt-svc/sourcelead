@@ -654,9 +654,9 @@ public class EMailJobScheduler {
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");
 												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
 												 }else{
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
 												 }
 												 
 												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -678,9 +678,9 @@ public class EMailJobScheduler {
 													    
 												 }
 											     if(frequency != null && !frequency.isEmpty()){
-												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
-												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
 												 
 												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
 												  StringBuilder projectStringBuilder=new StringBuilder();
@@ -695,7 +695,7 @@ public class EMailJobScheduler {
 												    	}
 												    }
 												    
-												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
+												  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
 												  tempHTML.append("</tr>");
 									          }
 								       }	
@@ -1324,7 +1324,7 @@ public class EMailJobScheduler {
 		
 		List<Contracts> oneWeekContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(startDateUTC,endDateUTC);
 		for(Contracts contracts : oneWeekContractsList){
-			contractExpiryRemainderMail(contracts);
+			contractExpiryRemainderMail(contracts,7);
 		}
 		
 		//to fire two days before
@@ -1338,10 +1338,10 @@ public class EMailJobScheduler {
 		
 		List<Contracts> twoDaysContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(twoDaysStartDateUTC,twoDaysEndDateUTC);
 		for(Contracts contracts : twoDaysContractsList){
-			contractExpiryRemainderMail(contracts);
+			contractExpiryRemainderMail(contracts,2);
 		}
 		
-		//to fire two days before
+		//to fire one days before
 		DateTime oneDay = zoned;
 		String oneDayStartDate = outputFormatter1.print(oneDay);
 		String oneDayStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayStartDate);
@@ -1352,7 +1352,7 @@ public class EMailJobScheduler {
 		
 		List<Contracts> oneDayContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(oneDayStartDateUTC,oneDayEndDateUTC);
 		for(Contracts contracts : oneDayContractsList){
-			contractExpiryRemainderMail(contracts);
+			contractExpiryRemainderMail(contracts,1);
 		}
 		
 		//this cron is related to invoices to run every day.
@@ -1383,12 +1383,13 @@ public class EMailJobScheduler {
 	}
 	
 
-	private void contractExpiryRemainderMail(Contracts contracts) throws Exception
+	private void contractExpiryRemainderMail(Contracts contracts, int days) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 
 				 emailMessage.setLastName(owner.getLastName());
 			 }else{
 				 emailMessage.setLastName("");
@@ -1397,6 +1398,10 @@ public class EMailJobScheduler {
 			 emailMessage.setFromEmail("info@sourcelead.com");
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName("SourceLead Admin"); 
+			 
+			 String endDate = Constants.DMY.format(contracts.getEndDate());
+			 String startDate = Constants.DMY.format(contracts.getStartDate());
+			 String dayCount = String.valueOf(days);
 			 
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1414,13 +1419,13 @@ public class EMailJobScheduler {
 				 }
 			
 			 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
-				 globalVarsMap.put("contractEndDate", contracts.getEndDate().toString());
+				 globalVarsMap.put("contractEndDate", endDate);
 				 }else{
 					 globalVarsMap.put("contractEndDate","--");
 				 }
 			 
 			 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
-				 globalVarsMap.put("contractStartDate", contracts.getStartDate().toString());
+				 globalVarsMap.put("contractStartDate", startDate);
 				 }else{
 					 globalVarsMap.put("contractStartDate","--");
 				 }
@@ -1431,6 +1436,17 @@ public class EMailJobScheduler {
 					 globalVarsMap.put("status","--");
 				 }
 			 
+			 globalVarsMap.put("expiringdays",dayCount);
+			 if(contracts.getContactUser().getLastName() !=null && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
+				 
+				 StringBuilder builder=new StringBuilder();
+				 
+				 globalVarsMap.put("clientContact",builder.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+				 
+			 }
+			 else{
+			 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
+			 }
 			 
 			if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 				StringBuilder creatorSb = new StringBuilder();

@@ -46,7 +46,7 @@
       <div class="pull-left">
         <h2>Onboard & Offboard Dashboard</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard List </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Onboard & Offboard</div>
  </section>
  
  <div class="content-area content-new clearfix">
@@ -170,7 +170,7 @@
                         		 }else{
                         			 if(opt.candidateOnBoardStatus == 'Rejected'){
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
-                        			 }if(opt.candidateOnBoardStatus == 'Accepted'){
+                        			 }else if(opt.candidateOnBoardStatus == 'Accepted'){
                             			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
                             		 }else{
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
