@@ -167,7 +167,17 @@ public class CandidateListRestController {
 	@RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
 	public ResponseList<CandidateIndex> searchCandidate(CandidateSearchDTO search, HttpServletRequest request)
 			throws Exception {
-		System.out.println(search.getSearch() != null ? search.getSearch().values() : "");
+		/*
+		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
+		 */
+		String[] tableColumns = {"", "firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
+		
+		int sortColumnIndex = 7; //by default sorting using updated date
+		boolean sortColumnOrder = false; //by default descending order
+		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
+			sortColumnOrder = !search.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+		}
 
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -481,9 +491,10 @@ public class CandidateListRestController {
 
 			System.out.println(boolQueryBuilder);
 			System.out.println(boolQueryBuilderForCount);
+			
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-							search.getStart(), search.getLength(), "updatedDate", SortOrder.DESC, boolQueryBuilder);
+							search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
 			if (null != searchHits && searchHits.length > 0) {

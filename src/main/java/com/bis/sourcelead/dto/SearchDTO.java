@@ -19,6 +19,8 @@ public class SearchDTO implements Serializable {
 	private int length;
 	
 	private Map<String, String> search;
+//	private Map<String, String> columns;
+	private List<Map<String, String>> order;
 
 	public List<String> getAnyOfKeyword() {
 		return anyOfKeyword;
@@ -107,5 +109,14 @@ public class SearchDTO implements Serializable {
 	public void setSearch(Map<String, String> search) {
 		this.search = search;
 	}
+
+	public List<Map<String, String>> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order) {
+		this.order = order;
+	}
+
 
 }

@@ -178,7 +178,7 @@ function cpagination(url){
             { "data": "email" },
             { "data": "mobilePhone" },
             { "data": "country"},
-            { "data": "candidateUpdateDateToString" }
+            { "data": "updatedDate" }
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -218,11 +218,11 @@ function cpagination(url){
 	            		lastName = "";
 	            	}
             		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+"); candidateSideBar("+full.candidateId+");'><span title='"+data+" "+lastName+"'>"+data+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+"); candidateSideBar("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+data+" "+lastName+"'>"+data+" "+lastName+"</span></div></td>";
+	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span></div></td>";
 	              '</sec:authorize>';
 	              return result;
             }
@@ -291,7 +291,7 @@ function cpagination(url){
                   }
                 }, {
                   "targets": colIndex++,
-                  "data": "candidateUpdateDateToString",
+                  "data": "updatedDate",
                   "render": function ( data, type, opt, meta ) {
                   		var result = "";
                   		if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
@@ -307,7 +307,7 @@ function cpagination(url){
 	    	"aaSorting": [[7,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": false,
+	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
