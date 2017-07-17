@@ -139,6 +139,8 @@ float: left !important;
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
+
+
 </style>
  
 <script>
@@ -4280,7 +4282,7 @@ function requirementRecommendations(requirementId){
     	    
     	     result = result +' <div class="clients_side_wrap">';
 			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
-
+			 result = result +'<div id="candidateCompare" ></div>>';
 			 result = result + '<ul class="nav nav-tabs">';
 			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
 			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
@@ -4313,10 +4315,10 @@ function requirementRecommendations(requirementId){
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
 		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Customize score" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
 		    result = result +'                   <div id="customizeScoreDiv"></div>';
 		    result = result +'		        </div>';
 
-		    
 		    
 		    
 		    result = result +'</div>';
@@ -6349,6 +6351,7 @@ return result;
 <jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
 
 
 

@@ -23,7 +23,7 @@
 <body>
   
 <div class="regis_bg">
-	<div class="regis_logo"><img src="resources/images/SourceLead-logo-white.png" alt=""/></div>
+	<div class="regis_logo"><img src="resources/images/SourceLead-logo.png" alt=""/></div>
     <div class="regis_wrap">
      <div id="loading"></div> 
     	<div class="signin_wrap reset_wrap_a" id="signin">
