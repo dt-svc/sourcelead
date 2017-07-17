@@ -367,7 +367,20 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private List<Contracts> contractsList;
 	 
+	 @Transient
+	 private int profilePercentage;
 	 
+	public int getProfilePercentage()
+	{
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage)
+	{
+		this.profilePercentage = profilePercentage;
+	}
+
+
 	public Long getId() {
 		return id;
 	}

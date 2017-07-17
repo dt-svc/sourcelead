@@ -28,10 +28,9 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -41,6 +40,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -49,6 +49,7 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -83,15 +84,18 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 UserRoleService userRoleService;
 	 
 	 @Autowired
-	 public EmployeesService employeesService;
+	 private EmployeesService employeesService;
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
 	 @Autowired
-	 public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
-	
+	 
+	 @Autowired
+	 private ExpensesReportService expensesReportService;
+	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
 	@Override
@@ -674,6 +678,60 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId) throws Exception {
 		return projectMembersDao.getAllProjectsByOrgLocationId(orglocationId);
+	}
+
+
+	@Override
+	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
+	{
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
+		for (ProjectMembers projectMember : projectMembersList) {
+			try {
+				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(projectMember.getId());
+				projectMember.setProjectName(projectMember.getProjects().getProjectName());
+				if (pmh.getProjectAssignedDate() != null) {
+					projectMember.setProjectAssignedDateStr(ConversionUtil.getDateAsString(pmh.getProjectAssignedDate()));
+				}
+				if (pmh.getProjectTerminationDate() != null) {
+					projectMember.setProjectEndDateStr(ConversionUtil.getDateAsString(pmh.getProjectTerminationDate()));
+				}
+				if (pmh.getStatus() != null) {
+					projectMember.setProjectStatus(pmh.getStatus());
+				}
+				if (pmh.getProjectAssignedDate() != null
+						&& pmh.getProjectTerminationDate() != null) {
+					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "DRAFT");
+					projectMember.setDraftHrs(String.valueOf(draftTimesheetsSubmissionsCountAsEmployee));
+					Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "SUBMITTED");
+					projectMember.setSubmittedHrs(String.valueOf(submittedTimesheetsSubmissionsCountAsEmployee));
+					Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "APPROVED");
+					projectMember.setApprovedHrs(String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee));
+					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "REJECTED");
+					projectMember.setRejectedHrs(String.valueOf(rejectedTimesheetsSubmissionsCountAsEmployee));
+				}
+				if (projectMember.getProjects() != null) {
+					if (projectMember.getProjects().getStartDate() != null) {
+						Date empStaerDate = projectMember.getProjects().getStartDate();
+						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), empStaerDate, commonUtil.currentDate());
+						if (expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()) {
+							for (Expenses exp : expensesClaimendAmount) {
+								projectMember.setUserExpensesClaimedAmount(exp.getTotalAmount());
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return projectMembersList;
+	}
+	
+	
+	@Override
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId)
+	{
+		return projectMembersDao.getAllProjectsbyEmployeeId(employeeId);
 	}
 	
 

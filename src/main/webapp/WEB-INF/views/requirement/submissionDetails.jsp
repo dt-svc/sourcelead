@@ -44,13 +44,7 @@
  }
  </style>
  
-<!-- <div class="new_side_wrap">
-	<div class="new_side_wrap_inn">
-		<div class="new_side_wrap_cta">
-		<div id="editSubmittedApplicantDiv"></div>
-		</div>
-	</div>
-</div>  --> 
+ 
  
  
 <script>
@@ -202,6 +196,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' </ul>';
                result = result + '</div>';
                result = result + '</div>';
+               result = result+'  <div class="UsProBar progViPro1">';                                                                                                                                        
+				 result = result+' <div class="progress nomr">  ';
+					if(json.profilePercentage>=50){ 
+						result = result+'   <div class="progress-bar  progress-bar-success  ';
+					}
+					else{
+						result = result+'   <div class="progress-bar  progress-bar-danger  ';
+					}
+				result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+				result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+				result = result+'   </div>  ';
+				result = result+' </div>                 ';                                                                                                                                                      
+				result = result+' </div> ';
                result = result + '<div class="other-detials">';
                result = result + '<div class="professinal-details">';
                result = result+'<ul class="list-inline list-unstyled">';
@@ -400,7 +407,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   			 result = result + '<div class="col-md-6">';
 			  			 result = result + '<div class="release-jobs submissionDetails">';
 					     result = result + '<div class="clearfix sub-details">';
-					     result = result + ' <h2 class="active">Submission Details <i class="fa fa-edit text-success paddingRight" title="Edit" style="display :none" onclick="editSubmittedApplicant('+requirementId+','+candidateId+');"></i></h2>';
+					     result = result + ' <h2 class="active">Submission Details</h2>';
 					     result = result + ' <div class="content clearfix" style="display: block;">';
 					     result = result + submissionDetails;
 					     result = result + ' </div>';
