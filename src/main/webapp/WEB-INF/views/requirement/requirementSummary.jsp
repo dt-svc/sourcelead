@@ -4282,7 +4282,7 @@ function requirementRecommendations(requirementId){
     	    
     	     result = result +' <div class="clients_side_wrap">';
 			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
-			 result = result +'<div id="candidateCompare" ></div>>';
+			 result = result +'<div id="candidateCompare" ></div>';
 			 result = result + '<ul class="nav nav-tabs">';
 			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
 			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
@@ -4353,7 +4353,7 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+'); clientSideBar('+report.candidateId+');" class="proj_show"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+');" class="proj_show"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.email != null && report.email !='' && report.email !='undefined'){
 		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
