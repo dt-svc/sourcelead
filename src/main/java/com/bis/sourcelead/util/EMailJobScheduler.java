@@ -654,9 +654,9 @@ public class EMailJobScheduler {
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");
 												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
 												 }else{
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
 												 }
 												 
 												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -678,9 +678,9 @@ public class EMailJobScheduler {
 													    
 												 }
 											     if(frequency != null && !frequency.isEmpty()){
-												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
-												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
 												 
 												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
 												  StringBuilder projectStringBuilder=new StringBuilder();
@@ -695,7 +695,7 @@ public class EMailJobScheduler {
 												    	}
 												    }
 												    
-												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
+												  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
 												  tempHTML.append("</tr>");
 									          }
 								       }	

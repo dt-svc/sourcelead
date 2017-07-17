@@ -229,10 +229,10 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-3">';
 				 result = result +'	        <h5>Can be Reached at</h5>';
 				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt10">';
-				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
-				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
-				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw"><i class="fa fa-twitter-square fa-2x"></i></a></li>';
-				 result = result +'	            <li><a href="'+googlePlus+'" title="Google" class="btn-go"><i class="fa fa-google-plus-square fa-2x"></i></a></li>';
+				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb" target="_blank"><i class="fa fa-facebook-square fa-2x" target="_blank"></i></a></li>';
+				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li" target="_blank"><i class="fa fa-linkedin-square fa-2x" target="_blank"></i></a></li>';
+				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw" target="_blank"><i class="fa fa-twitter-square fa-2x" target="_blank"></i></a></li>';
+				 result = result +'	            <li><a href="'+googlePlus+'" title="Google" class="btn-go" target="_blank"><i class="fa fa-google-plus-square fa-2x" target="_blank"></i></a></li>';
 				 result = result +'	        </ul>';
 				 result = result +'	        <div class="reachout">';
 				 result = result +'	        <p><i class="fa fa-at" title="Mail me"></i>'+email+'</p>';
