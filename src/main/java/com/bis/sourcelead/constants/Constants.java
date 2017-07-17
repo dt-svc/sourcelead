@@ -680,7 +680,6 @@ public class Constants {
     
     public static final String PENDING = "PENDING";
     
-    public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
     
     public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
     public static final String Client_SOW = "Client SOW";
