@@ -1,43 +1,64 @@
-SET SQL_SAFE_UPDATES = 0;
-#23.Rate Negotiation [Applicant to org user]
-  UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ApplicantNegotiateRequirement.initiatorUserName}},\nI would like to request a rate change for the following job.\nKindly please review and update me as soon as possible\n\nPlease find out the details below details . \n{{ApplicantNegotiateRequirement.negotiationTable}}\n\nPlease login to SourceLead to check more details\n' WHERE `UNIQUE_SCENARIO_NAME`='ApplicantNegotiateRequirement' and `ENTITY_TYPE`='Email';
-										  
-										  
- UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Rate Negotiation for {{ApplicantNegotiateRequirement.requirementName}} from {{ApplicantNegotiateRequirement.applicantName}} '  WHERE `UNIQUE_SCENARIO_NAME`='ApplicantNegotiateRequirement' and `ENTITY_TYPE`='Email';
-									 
-									   
-									 
-#26.Rate negotiation accept[ORG acceptence]					 
-									 
- INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
-VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'UserAcceptRateNegotiation' and `ENTITY_TYPE` = 'Email'),
-'loginOrgName','{{UserAcceptRateNegotiation.loginOrgName}}');
-									 
-									 
-									 
- UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{UserAcceptRateNegotiation.applicantName}},\n\nWe are pleased to accept the rate negotiated by you for the following position\nplease find the details of the position below {{UserAcceptRateNegotiation.requirementName}}\nFinalized Rate  : {{UserAcceptRateNegotiation.finalRate}}\none of our Human Resources team will get in touch with you on next steps\nLooking forward to work with you ' WHERE `UNIQUE_SCENARIO_NAME`='UserAcceptRateNegotiation' and `ENTITY_TYPE`='Email';
-									 
-									 
-									 
- UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='{{UserAcceptRateNegotiation.loginOrgName}} has accepted the Rate for {{UserAcceptRateNegotiation.requirementName}}'  WHERE `UNIQUE_SCENARIO_NAME`='UserAcceptRateNegotiation' and `ENTITY_TYPE`='Email';
-									  
-									  
-									  
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SIGNATURE`='Best Regards \n{{UserAcceptRateNegotiation.userName}},\n{{UserAcceptRateNegotiation.loginOrgName}}' WHERE`UNIQUE_SCENARIO_NAME`='UserAcceptRateNegotiation' and `ENTITY_TYPE`='Email';
-									  
-									  
-									  
-									  
-#24.Rate Negotiation Acceptance[Applicant]
- UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ApplicantAcceptRequirement.initiatorUserName}},\n\nI am pleased to accept the rate offered by you for the following position.\nplease let me know the next steps\n\nJob ID/name : {{ApplicantAcceptRequirement.requirementName}}\nExeperience : {{ApplicantAcceptRequirement.experience}}\nLocation : {{ApplicantAcceptRequirement.location}}\nRate :{{ApplicantAcceptRequirement.requirementRate}}\nSkills  : {{ApplicantAcceptRequirement.skills}}\nJob Description :  {{ApplicantAcceptRequirement.jobDescription}} . \n' WHERE `UNIQUE_SCENARIO_NAME`='ApplicantAcceptRequirement' and `ENTITY_TYPE`='Email';
-										  
-										  
- UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='{{ApplicantAcceptRequirement.applicantName}} has accepted the Rate for {{ApplicantAcceptRequirement.requirementName}}  '  WHERE `UNIQUE_SCENARIO_NAME`='ApplicantAcceptRequirement' and `ENTITY_TYPE`='Email';
-									 
-									 
-#29.Rate negotiation [Cleint to vendor]	 
-									 
- UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{ClientRateNegotiation.clientContact}},\n\nI would like to request a rate change for the following Job.\nKindly please review and update me as soon as possible\nPlease find out the details below\n{{UserRateNegotiation.negotiationTable}}' WHERE `UNIQUE_SCENARIO_NAME`='ClientRateNegotiation' and `ENTITY_TYPE`='Email';
-										  
-  UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Rate Negotiation for {{ClientRateNegotiation.requirementName}} from {{ClientRateNegotiation.loginOrgName}} '  WHERE `UNIQUE_SCENARIO_NAME`='ClientRateNegotiation' and `ENTITY_TYPE`='Email';
-									 
+#for reuirement interview mail for Interviewers
+SET SQL_SAFE_UPDATES=0;
+UPDATE `sourcelead`.`email_scenario` SET `BODY`='Dear {{InterviewerInvitationRedifined.InterviewerFirstName}} {{InterviewerInvitationRedifined.InterviewerLastName}},\n\nWe invite you to kindly consent to be a Interviewer for the Position {{InterviewerInvitationRedifined.RequirementTitle}},Following are the details for interview.\n {{InterviewerInvitationRedifined.interviewTableDetails}}\n\nFor clear details login into the system.\n{{InterviewerInvitationRedifined.LoginLink}}'WHERE `UNIQUE_SCENARIO_NAME`='Interviewer InvitationRedifined' and `ENTITY_TYPE`='Email';
+SET SQL_SAFE_UPDATES=1;
+
+
+#4.Job Apply[Applicant]
+	UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`= ' Dear {{AppliedRequirement.professionalName}}\n\nThis is to confirm that we have received your application for the below mentioned Job.\nJob ID and Title : {{AppliedRequirement.requirementTitle}}\nEmployer Name : {{AppliedRequirement.employerName}}\nExperience : {{AppliedRequirement.experience}}\nLocation : {{AppliedRequirement.location}}\n\nIf your profile is suitable for the above position we will contact you.\nyou can also track the progress by logging in to SourceLead application.\n\nMake sure your contact information is up to date under your profile.' , `SUBJECT`='Alert !! - This is to confirm that we received your application for the {{AppliedRequirement.requirementTitle}} ' WHERE `UNIQUE_SCENARIO_NAME`='Applied To Requirement' and `ENTITY_TYPE`='Email';
+	
+	
+	#2.Registration[Professional]
+	INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'supportLink','{{ProfessionalInvitation.supportLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'facebookLink','{{ProfessionalInvitation.facebookLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'linkedInLink','{{ProfessionalInvitation.linkedInLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'twitterLink','{{ProfessionalInvitation.twitterLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'googleLink','{{ProfessionalInvitation.googleLink}}');
+
+
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{ProfessionalInvitation.professionalName}}\n\nWelcome to SourceLead a Global Talent Harvesting Platform to Manage Human Resource.\n\nThis email is being sent to you because you have registered with SourceLead.\n\nSourceLead makes it easy for teams to work more efficiently by Automating the process of Human resource management.\nIt has many more benefits for professionals like you.Over 8,000 remote teams uses it daily.\n\nMore Technical Questions?\nSee:{{ProfessionalInvitation.supportLink}}\n\nNeed Support?\nWe have video tutorials, live chat, and a great support site to help if you get stuck.\n\n',`SIGNATURE`='Team SourceLead\nWelcome aboard, great to have you!\n{{ProfessionalInvitation.facebookLink}}\t{{ProfessionalInvitation.linkedInLink}}\t{{ProfessionalInvitation.twitterLink}}\t{{ProfessionalInvitation.googleLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Professional Invitation' and `ENTITY_TYPE`='Email';
+
+
+
+
+
+#3.Registration [Recruiter]
+
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'supportLink','{{RecruiterInvitation.supportLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'facebookLink','{{RecruiterInvitation.facebookLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'linkedInLink','{{RecruiterInvitation.linkedInLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'twitterLink','{{RecruiterInvitation.twitterLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'googleLink','{{RecruiterInvitation.googleLink}}');
+
+set SQL_SAFE_UPDATES=0;
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`= 'Dear {{RecruiterInvitation.recruiterName}}\n\nWelcome to SourceLead a Global Talent Harvesting Platform to Manage Human Resource.\n\nThis email is being sent you because you have registered with SourceLead as freelance recruiter.\n\nSourceLead makes it easy for teams to work more efficiently by Managing the Resources. Over 8,000 remote teams uses it daily.\n\nMore Technical Questions?\nSee:{{RecruiterInvitation.supportLink}}\n\nNeed Support?\nWe have video tutorials, live chat, and a great support site to help if you get stuck.\n\nUser Name : {{RecruiterInvitation.loginUserName}}\n Your Sourcelead URL : {{RecruiterInvitation.resetLink}}\n\n',`SIGNATURE`='Team SourceLead\nWelcome aboard, great to have you!\n{{RecruiterInvitation.facebookLink}}\t{{RecruiterInvitation.linkedInLink}}\t{{RecruiterInvitation.twitterLink}}\t{{RecruiterInvitation.googleLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Individual Recruiter Invitation' and `ENTITY_TYPE`='Email';
