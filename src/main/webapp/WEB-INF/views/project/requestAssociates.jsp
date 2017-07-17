@@ -165,7 +165,7 @@
 
 <div class="side_mask">
     <div class="proj_close"></div>
-</div>  
+</div> 
 <div id="associatesList"></div>
 
 <script>
@@ -319,7 +319,7 @@ function getAssociatesFilter(){
 	        	result = result +'<th>Rate</th>';
 	        	result = result +'<th>Emp. Type</th>';
 	        	result = result +'<th>Manager</th>';
-	        	result = result +'<th>Resume</th>';
+	            result = result +'<th>Resume</th>'; 
 	        	result = result +'<th>Projects</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
@@ -330,6 +330,11 @@ function getAssociatesFilter(){
 	        		
 	        		var candidate = '';
 	        		var primarySkill = '';
+	        		var currentRate = '';
+	        		var currentRateType = '';
+	        		var currentRateCurrency = '';
+	        		var designationType = '';
+	        		var candidateResume = '';
 	        		
 	        		
 	        		if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
@@ -343,6 +348,27 @@ function getAssociatesFilter(){
 	        		}else{
 	        			primarySkill = "-----"
 	        		}
+	        		
+	        		if(report.designationType != null && report.designationType != '' && report.designationType != 'undefined'){
+	        			designationType = report.designationType;
+	        		}else{
+	        			designationType = "-----"
+	        		}
+	        		
+	        		if(report.currentRate != null && report.currentRate != '' && report.currentRate != 'undefined'){
+	        			currentRate = report.currentRate;
+	        			currentRateType = report.currentRateType;
+	        			currentRateCurrency = report.currentRateCurrency
+	        		}else{
+	        			currentRate = "-----";
+	        		}
+	        		
+	        		 
+	        		if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
+	        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+	        		}else{
+	        			candidateResume = "-----";
+	        		} 
 	        		
 	        		    result = result +'<tr>';
 			        	result = result +'<td>';
@@ -375,23 +401,26 @@ function getAssociatesFilter(){
 			        	result = result +'</td>';
 			        	result = result +'<td>';
 			        	result = result +'<div class="tbldata-dotdot-sm">';
-			        	result = result +'<small class="pull-left">USD</small>';
-			        	result = result +'<div class="tbldata-dotdot-100 pull-left">102365478</div>';
-			        	result = result +'<small class="pull-right" title="Semi_Monthly">SM</small>';
+			        	result = result +'<small class="pull-left">'+currentRateCurrency+'</small>';
+			        	result = result +'<div class="tbldata-dotdot-100 pull-left">'+currentRate+'</div>';
+			        	result = result +'<small class="pull-right">'+currentRateType+'</small>';
 			        	result = result +'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div title="Development" class="tbldata-dotdot_80">C2C</div>';
+			        	result = result +'<div title="'+designationType+'" class="tbldata-dotdot_80">'+designationType+'</div>';
 			        	result = result +'</td>';
 			        	result = result +'<td>';
-			        	result = result +'<div title="Development" class="tbldata-dotdot_80">Manager</div>';
+			        	result = result +'<div title="'+report.reportingManager+'" class="tbldata-dotdot_80">'+report.reportingManager+'</div>';
 			        	result = result +'</td>';
+			        	
 			        	result = result +'<td>';
-			        	result = result +'<i class="fa fa-download" title="Download Resume"></i>';
-			        	result = result +'</td>';
+			        	result = result +candidateResume;
+			        	result = result +'</td>'; 
+			        
+			        	
 			        	result = result +'<td>';
 			        	result = result +'<div title="Development" class="tblminwidth-50 projects_div">  ';                
-			        	result = result +'3';
+			        	result = result +report.assignedProjectsCount;
 			        	result = result +'</div>';
 			        	result = result +'</td>';
 			        	result = result +'</tr>';
@@ -403,13 +432,14 @@ function getAssociatesFilter(){
 					
 						$("#associatesListFilter").empty();
 					    $("#associatesListFilter").append(result);
+					    $("#associatesListLoader").removeAttr("style"); 
 					    pagination();
 					    
 	        	}
 			   
 	        });
 	
-	 $("#associatesListLoader").removeAttr("style"); 
+	
 	
 	
 	

@@ -182,9 +182,6 @@ public class ProjectsController {
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 		model.addObject("orgLocationsList", orgLocationsList);
 		
-		List<Roles> rolesList = rolesService.getRoles(orgLocations.getId());
-		model.addObject("rolesList", rolesList);
-		
 		model.setViewName("project/requestAssociates");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
