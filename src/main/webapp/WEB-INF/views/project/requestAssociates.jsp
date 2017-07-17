@@ -198,7 +198,7 @@ function getAssociates(){
 	result = result +'<ul class="location-filter">';
 	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
 	result = result +'<li>';
-	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationRoles();getAssociatesFilter()"  name="orgLocations" ${SourceLeadWeb_orgLocations.id  == locations.id ? "checked" : ''} type="radio">';
+	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationRoles();"  name="orgLocations" ${SourceLeadWeb_orgLocations.id  == locations.id ? "checked" : ''} type="radio">';
 	result = result +'<label class="radioAlign"><img src="resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
 	result = result +'</li>';
 	result = result +'</c:forEach>';
@@ -281,10 +281,10 @@ function getAssociatesFilter(){
 		roles.push($(this).val());
 	    });
 	
-	var orgLocations = [];
+	var orgLocationId
 	$('input:radio[name=orgLocations]:checked').each(function() 
 		    {
-		orgLocations.push($(this).val());
+		orgLocationId = $(this).val();
 	    });
 	
 	var resourceType = [];
@@ -293,14 +293,14 @@ function getAssociatesFilter(){
 		resourceType.push($(this).val());
     });
 	
-	var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
+	
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#associatesListLoader").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations+"&roles="+roles+"&resourceType="+resourceType+"&loginOrgLocationId="+loginOrgLocationId, 
+	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType, 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);

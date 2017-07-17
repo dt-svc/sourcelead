@@ -167,6 +167,6 @@ public interface CandidateService {
 	
 	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception;
 	
-	public List<Candidate> getRequestedCandidatesList(List<Long> orgLocationsIds,List<Long> roleIds,String resourceType)throws Exception ;
+	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId,List<Long> roleIds,String resourceType)throws Exception ;
 
 }

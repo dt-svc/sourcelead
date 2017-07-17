@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
 public class ProjectPlanningRestController {
@@ -35,25 +29,12 @@ public class ProjectPlanningRestController {
 	RolesService roleService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
-	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocations", required=false) String orgLocations,
-			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType,
-			 @RequestParam(value="loginOrgLocationId", required=false) Long loginOrgLocationId) throws Exception{ 
+	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType) throws Exception{ 
 		 
 		String resultJson;
 		
-		List<Long> orgLocationIds = null; 
 		List<Long> roleIds = null; 
-		
-		if(!isNullOrEmpty(orgLocations)){
-			orgLocationIds = new ArrayList<Long>();
-			 String[] orgLocationsList = orgLocations.split(",");
-			 for(int i=0; i < orgLocationsList.length; i++){
-				 orgLocationIds.add(Long.valueOf(orgLocationsList[i]));
-			 }
-		}else{
-			orgLocationIds = new ArrayList<Long>();
-			orgLocationIds.add(loginOrgLocationId);
-		}
 		
 		if(!isNullOrEmpty(roles)){
 			roleIds = new ArrayList<Long>();
@@ -64,7 +45,7 @@ public class ProjectPlanningRestController {
 			 
 		}
 		
-		 List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationIds, roleIds, resourceType);
+		 List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType);
 		 
 		 resultJson = commonUtil.toJSON(candidatesList);
 		 return resultJson;
