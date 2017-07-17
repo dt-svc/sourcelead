@@ -36,6 +36,7 @@ window.onload = function () {
 			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
+			<li title="HR Deductions"><a id="BisChecks" onclick="bisChecksList();">Bis Checks</a></li>
 			<li title="Paylist"><a id="paylistLi" onclick="runPayrollCycles('main');">Run Payroll</a></li>
 			<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 		</ul>
@@ -61,7 +62,7 @@ window.onload = function () {
      <ul class="pull-right">
      <li>
      <a href="javascript:void(0)" onclick="flushValues();" class="addcon-pop">
-      	<i class="glyphicon glyphicon-plus paddingRight" ></i>Add Document</a>
+      	<i class="glyphicon glyphicon-plus paddingRight" ></i>Import File</a>
                   <!-- Popup Div -->
                  <form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
                   <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div" onclick="flushValues();"></i>
@@ -86,6 +87,7 @@ window.onload = function () {
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
                              <option value="BIS_USERS">BIS Users</option>
+                             <option value="BIS_CHECKS">BIS Checks</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
@@ -191,6 +193,7 @@ window.onload = function () {
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
     	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
+    	<div id="checksListDiv" class="datatable_filter"></div>
     	<div id="finalPayrollReportDiv" class="repoPositiAs repoPositiRunPay"></div>
 	</div>
 	
@@ -351,6 +354,7 @@ function loadEmployeePayrollCost(){
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
+						$("#checksListDiv").empty();
 						$("#finalPayrollReportDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
@@ -543,6 +547,7 @@ $(".addcon-pop").click(function() {
 			$("#accountDedLi").removeClass('wVer');
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			loadEmployeePayrollCost();
 		}else if(payrollType == "WAGE_TAX"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -550,6 +555,7 @@ $(".addcon-pop").click(function() {
 			$("#accountDedLi").removeClass('wVer');
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			wagesAndTaxList();
 		}else if(payrollType == "ACCOUNT_DEDUCTIONS"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -557,15 +563,26 @@ $(".addcon-pop").click(function() {
 			$("#accountDedLi").addClass('wVer');
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			accountDeductionsList();
 		}else if(payrollType == "HR_DEDUCTIONS"){
 			$("#empPayrollCostLi").removeClass('wVer');
 			$("#WageTaxSummaryLi").removeClass('wVer');
 			$("#accountDedLi").removeClass('wVer');
 			$("#paylistLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			$("#HrdedLi").addClass('wVer');
 			hrDeductionsList();
+		}else if(payrollType == "BIS_CHECKS"){
+			$("#empPayrollCostLi").removeClass('wVer');
+			$("#WageTaxSummaryLi").removeClass('wVer');
+			$("#accountDedLi").removeClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").addClass('wVer');
+			bisChecksList();
 		}
+		
 	}
 	
 </script>
@@ -676,4 +693,5 @@ function cancel(){
 <jsp:include page="accountDeductionsList.jsp" />
 <jsp:include page="hrDeductionsList.jsp" />
 <jsp:include page="finalPayrollReport.jsp" />
+<jsp:include page="checksList.jsp" />
 <jsp:include page="../masterFooter.jsp" />
