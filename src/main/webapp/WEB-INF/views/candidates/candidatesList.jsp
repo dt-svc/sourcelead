@@ -160,7 +160,7 @@ else{
   }
 
 function cpagination(url){ 
-	console.log(url);
+	var colIndex = 0;
 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     		"processing": true,
@@ -181,7 +181,7 @@ function cpagination(url){
             { "data": "candidateUpdateDateToString" }
         ],
         "columnDefs": [ {
-	    	  	"targets": 0,
+	    	  	"targets": colIndex++,
 	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
 	    	  	"sortable": false,
@@ -207,7 +207,7 @@ function cpagination(url){
 		              return  result;
 	    	  	}
 	      }, {
-            "targets": 1,
+            "targets": colIndex++,
             "data": "firstName",
             "render": function ( data, type, full, meta ) {
             		var result = "";
@@ -227,7 +227,7 @@ function cpagination(url){
 	              return result;
             }
           }, {
-              "targets": 2,
+              "targets": colIndex++,
               "data": "primarySkill",
               "render": function ( data, type, full, meta ) {
               		var result = "";
@@ -239,7 +239,7 @@ function cpagination(url){
   	              return result;
               }
             }, {
-                "targets": 3,
+                "targets": colIndex++,
                 "data": "designationType",
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
@@ -256,13 +256,13 @@ function cpagination(url){
     	              return result;
                 }
           },{
-	    	  	"targets": 4,
+	    	  	"targets": colIndex++,
 	    	  	"data": "email",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		return "<div ><span title='"+opt.email+"'>"+opt.email+"</span></div>";
 	    	  	}
 	    	  },{
-	    	  	"targets": 5,
+	    	  	"targets": colIndex++,
 	    	  	"data": "mobilePhone",
 	    	  	"render": function(data, type, full, meta) {
 	    	  		var mobilePhone = "";
@@ -274,7 +274,7 @@ function cpagination(url){
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
 	    	  }, {
-                  "targets": 6,
+                  "targets": colIndex++,
                   "data": "country",
                   "render": function ( data, type, opt, meta ) {
                   		var location = "";
@@ -290,7 +290,7 @@ function cpagination(url){
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
                 }, {
-                  "targets": 7,
+                  "targets": colIndex++,
                   "data": "candidateUpdateDateToString",
                   "render": function ( data, type, opt, meta ) {
                   		var result = "";
@@ -1107,7 +1107,7 @@ function cancel(candidateId){
 						
 						 
 					 </div>
-						
+						<c:set var="currency" value=""></c:set>
 						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-6 payrate_p">

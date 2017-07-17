@@ -178,7 +178,12 @@ public class CandidateListRestController {
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+//		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
+		
+		BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+
+		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+//		boolQueryBuilderForCount.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 
 		if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
 			if (Constants.NO.equalsIgnoreCase(search.getIsAssociate())) {
@@ -234,7 +239,6 @@ public class CandidateListRestController {
 				}
 			}
 			boolQueryBuilder.must(anyBoolQueryBuilder);
-//			boolQueryBuilder.must(QueryBuilders.matchPhraseQuery("_all", anyKeyWordArray.get(0)));
 		}
 		// All Keywords
 		List<String> allKeyWordArray = search.getAllKeywords();
@@ -475,6 +479,8 @@ public class CandidateListRestController {
 
 		try {
 
+			System.out.println(boolQueryBuilder);
+			System.out.println(boolQueryBuilderForCount);
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
 							search.getStart(), search.getLength(), "updatedDate", SortOrder.DESC, boolQueryBuilder);
@@ -494,7 +500,12 @@ public class CandidateListRestController {
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
-				response.setRecordsTotal(response.getRecordsFiltered());
+				
+				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
+								0, 10, "updatedDate", SortOrder.DESC, boolQueryBuilderForCount);
+				
+				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
 			}
 			response.setData(candidatesList);
 		} catch (Exception e) {
