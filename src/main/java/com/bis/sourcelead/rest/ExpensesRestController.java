@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -119,7 +120,7 @@ public class ExpensesRestController {
 	 }
 	
 	 @RequestMapping(value = "/rest/getExpenseEntryDetails")
-	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestParam ExpenseEntryDetailsUtilDTO eedDTO) throws Exception {
+	 public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody ExpenseEntryDetailsUtilDTO eedDTO) throws Exception {
 		 ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
 		 OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		 List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(),eedDTO.getUserId());
