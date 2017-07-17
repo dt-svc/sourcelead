@@ -2293,10 +2293,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
 
-		 if(null != attachmentZip){
+		 if(attachmentZip !=null){
 			 attachmentList.add(attachmentZip);
 		 }
-		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
+		 if(documentList !=null && !documentList.isEmpty() && documentList.size() > 0){
 		 attachmentList.addAll(documentList);
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
