@@ -19,9 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +46,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -61,12 +60,12 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -102,6 +101,9 @@ public class ContractRestController {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Autowired
 	EmployeesService employeesService;
@@ -950,7 +952,6 @@ public class ContractRestController {
 		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
 		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
-		 		Date previousEndDate = null;
 		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
@@ -958,7 +959,6 @@ public class ContractRestController {
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				
 				String fromStage = "";
-				
 				ContractsHistory childContractsHistory = new ContractsHistory();
 				if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase(Constants.EXPIRED))
 				{
@@ -967,6 +967,7 @@ public class ContractRestController {
 	        		Date date = new Date();
 	        		String currentTimeStr = TZ_DF_TS.format(date);
 					Date curDate = TZ_DF_TS.parse(currentTimeStr);
+					
 	        		if(convertedEndDate.after(curDate)|| convertedEndDate.equals(curDate)){
 	        			childContractsHistory.setFromStage(contracts.getTemplateSubmissionStatus());
 	        			childContractsHistory.setContractsId(contracts);
@@ -1002,13 +1003,17 @@ public class ContractRestController {
 			 	}
 			 	
 			 // updating contract end date 
-			 	previousEndDate = contracts.getEndDate();
+			 	Date previousEndDate = contracts.getEndDate();
 			 	contracts.setEndDate(convertedEndDate);
 			 	contracts.setUpdatedDate(new Date());
 			 	contracts.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveNewContract(contracts);
+				if(contracts.getContractType().equalsIgnoreCase(Constants.CLIENT_MSA) || contracts.getContractType().equalsIgnoreCase(Constants.VENDOR_MSA)){
 				sendEndDateModifyMailToReceiver(contracts,orgLocation,previousEndDate);
+				}
+				if(contracts.getContractType().equalsIgnoreCase(Constants.Client_SOW) || contracts.getContractType().equalsIgnoreCase(Constants.Vendor_SOW)){
 				workOrderEndDateModifySowJobIdAndTitle(contracts,orgLocation);
+				}
 		 	}
 		 	
 			
@@ -1018,21 +1023,34 @@ public class ContractRestController {
 	 
 	private void workOrderEndDateModifySowJobIdAndTitle(Contracts contracts, OrgLocations orgLocation) throws Exception
 	{    
-		Long userId = contracts.getCandidate().getConsultantUser().getId();
-		 Employees emp = employeesService.getEmployeeByUserId(userId);
-		List<ProjectMembers> pmList = projectMembersService.getAllProjectsbyEmployeeId(emp.getId());
+		StringBuilder projectName = new StringBuilder();
+		StringBuilder projectId = new StringBuilder();
+		if(contracts.getCandidate() != null){
+			if(contracts.getCandidate().getId() != null){
+				Long candidateId = contracts.getCandidate().getId();
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				if(candidate.getConsultantUser() != null){
+					if(candidate.getConsultantUser().getId() != null){
+						Employees emp = employeesService.getEmployeeByUserId(candidate.getConsultantUser().getId());
+						if(emp.getId() != null){
+							List<ProjectMembers> pMember = projectMembersService.getAllProjectsbyEmployeeId(emp.getId());
+							 pMember.forEach(pm->{
+								 projectName.append(pm.getProjects().getProjectName()).append(",");
+								 projectId.append(pm.getProjects().getId());
+							});
+						}
+					}
+				}
+			}
+		}
+		 
+		
 		User ownerUser = userService.getUserById(contracts.getOwnerUserId().getId());
 		 User contactUser = userService.getUserById(contracts.getContactUser().getId());
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 StringBuilder builder=new StringBuilder();
 		 emailMessage.setFirstName(contactUser.getFirstName());
-		 if(contactUser.getLastName()!= null && !"".equalsIgnoreCase(contactUser.getLastName())){
-			 emailMessage.setLastName(contactUser.getLastName());
-		 }else{
-			 emailMessage.setLastName("");
-		 }
 		 
 		 emailMessage.setToEmail(contactUser.getEmail());
 		 emailMessage.setFromEmail(ownerUser.getEmail());
@@ -1052,37 +1070,63 @@ public class ContractRestController {
 		 globalVarsMap.put("contractTitle", contracts.getContractTitle());
 		 globalVarsMap.put("lastName",emailMessage.getLastName());
 		 
-		 if(ownerUser.getFirstName() != null && !"".equalsIgnoreCase(ownerUser.getFirstName())  && ownerUser.getLastName() != null && !"".equalsIgnoreCase(ownerUser.getLastName())){
+		 if(ownerUser.getLastName() != null && !"".equalsIgnoreCase(ownerUser.getLastName())){
 			 StringBuilder ownerBuilder=new StringBuilder();
-			 ownerBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()); 
-			 globalVarsMap.put("contractOwner", ownerBuilder.toString());
+			 globalVarsMap.put("contractOwner", ownerBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 		 }else{
 			 globalVarsMap.put("contractOwner", ownerUser.getFirstName());
 		 }
-		 if(contactUser.getFirstName() != null && !"".equalsIgnoreCase(contactUser.getFirstName())  && contactUser.getLastName() != null && !"".equalsIgnoreCase(contactUser.getLastName())){
+		 if(contactUser.getLastName() != null && !"".equalsIgnoreCase(contactUser.getLastName())){
 			 StringBuilder contactBuilder=new StringBuilder();
-			 contactBuilder.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()); 
-			 globalVarsMap.put("contactUser", contactBuilder.toString());
+			 globalVarsMap.put("contactUser", contactBuilder.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString()); 
 		 }else{
 			 globalVarsMap.put("contactUser", contactUser.getFirstName());
 		 }
-		 globalVarsMap.put("jobId",contracts.getRequirementSubmission().getRequirement().getJobId());
-		 globalVarsMap.put("jobTitle",contracts.getRequirementSubmission().getRequirement().getJobTitle());
-		 globalVarsMap.put("initiatorLocation",contracts.getOrgLocationId().getOrg().getOrgName());
-		 StringBuilder countbuilder = new StringBuilder();
-		 globalVarsMap.put("projectId",countbuilder.append(contactUser.getUserCandidatesCount()).toString());
-		 globalVarsMap.put("projectTitle",contracts.getApplicantName());
-		 if(contracts.getBillingRateType() != null && !"".equalsIgnoreCase(contracts.getBillingRateType()) && contracts.getBillingRatePer() != null && !"".equalsIgnoreCase(contracts.getBillingRatePer())){
-			  StringBuilder contractBuilder = new StringBuilder();
-			  contractBuilder.append(contracts.getBillingRateType()).append(" ").append(contracts.getBillingRatePer());
-			  globalVarsMap.put("contractOwner", contractBuilder.toString());
+		 if(contracts.getRequirementSubmission().getRequirement().getJobId() != null && !"".equalsIgnoreCase(contracts.getRequirementSubmission().getRequirement().getJobId())){
+			 globalVarsMap.put("jobId",contracts.getRequirementSubmission().getRequirement().getJobId());
 		 }else{
-			 globalVarsMap.put("contactUser", contracts.getBillingRateType());
+			 globalVarsMap.put("jobId","--");
+		 }
+		 globalVarsMap.put("JobTitle",contracts.getRequirementSubmission().getRequirement().getJobTitle());
+		 globalVarsMap.put("InitiatorLocation",contracts.getOrgLocationId().getOrg().getOrgName());
+		 if(projectId.toString() != null && !"".equalsIgnoreCase(projectId.toString())){
+			 globalVarsMap.put("projectId",projectId.toString());
+		 }else{
+			 globalVarsMap.put("projectId","--");
+		 }
+		 if(projectName != null && !"".equalsIgnoreCase(projectName.toString())){
+			 globalVarsMap.put("projectTitle",projectName.substring(0, projectName.length() - 1).toString());
+		 }else{
+			 globalVarsMap.put("projectTitle","--");
+		 }
+		 if(contracts.getBillingAmount() != null && !"".equalsIgnoreCase(contracts.getBillingAmount())){
+			  StringBuilder contractBuilder = new StringBuilder();
+			  contractBuilder.append(contracts.getBillingRateType()).append(" ").append(contracts.getBillingAmount()).append(" / ").append(contracts.getBillingRatePer());
+			  globalVarsMap.put("Rate", contractBuilder.toString());
+		 }else{
+			 globalVarsMap.put("Rate", "--");
 		 }
 		 
-		 globalVarsMap.put("startDate", ConversionUtil.getDateAsString(contracts.getStartDate()).toString());
-		 globalVarsMap.put("endDate",ConversionUtil.getDateAsString(contracts.getEndDate()).toString());
-		 globalVarsMap.put("partnerOrganisation",contracts.getContractOrgLocationId().getOrg().getOrgName());
+		 
+		 	String startTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			String contractStartDate= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), startTimeStr);
+			Date contractConverteDate = TZ_DF_TS.parse(contractStartDate);
+			String contractDateInTimezone = Constants.DMY.format(contractConverteDate);
+			globalVarsMap.put("StartDate",contractDateInTimezone);
+		 
+		 if(contracts.getEndDate() != null){
+			 	String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
+				DateFormat TZ_DF_ETS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String contractEndDate= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+				Date contractConvertedDate = TZ_DF_ETS.parse(contractEndDate);
+				String contractEndDateInTimezone = Constants.DMY.format(contractConvertedDate);
+				globalVarsMap.put("EndDate",contractEndDateInTimezone);
+			}else{
+				globalVarsMap.put("EndDate","--");
+			}
+		 
+		 globalVarsMap.put("PartnerOrganisation",contracts.getContractOrgLocationId().getOrg().getOrgName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
@@ -1117,14 +1161,8 @@ public class ContractRestController {
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 StringBuilder builder=new StringBuilder();
 		 emailMessage.setFirstName(contactUser.getFirstName());
-		 if(contactUser.getLastName()!= null && !"".equalsIgnoreCase(contactUser.getLastName())){
-			 emailMessage.setLastName(contactUser.getLastName());
-		 }else{
-			 emailMessage.setLastName("");
-		 }
-		 
+		 		 
 		 emailMessage.setToEmail(contactUser.getEmail());
 		 emailMessage.setFromEmail(ownerUser.getEmail());
 		 if(ownerUser.getLastName() != null && !"".equalsIgnoreCase(ownerUser.getLastName())){
@@ -1141,26 +1179,45 @@ public class ContractRestController {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("contractTitle", contracts.getContractTitle());
-		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
 		 
-		 if(ownerUser.getFirstName() != null && !"".equalsIgnoreCase(ownerUser.getFirstName())  && ownerUser.getLastName() != null && !"".equalsIgnoreCase(ownerUser.getLastName())){
+		 if(ownerUser.getLastName() != null && !"".equalsIgnoreCase(ownerUser.getLastName())){
 			 StringBuilder ownerBuilder=new StringBuilder();
-			 ownerBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()); 
-			 globalVarsMap.put("contractOwner", ownerBuilder.toString());
+			 globalVarsMap.put("contractOwner", ownerBuilder.append(ownerUser.getFirstName()).append(" ").append(ownerUser.getLastName()).toString());
 		 }else{
 			 globalVarsMap.put("contractOwner", ownerUser.getFirstName());
 		 }
-		 if(contactUser.getFirstName() != null && !"".equalsIgnoreCase(contactUser.getFirstName())  && contactUser.getLastName() != null && !"".equalsIgnoreCase(contactUser.getLastName())){
+		 if(contactUser.getLastName() != null && !"".equalsIgnoreCase(contactUser.getLastName())){
 			 StringBuilder contactBuilder=new StringBuilder();
-			 contactBuilder.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()); 
-			 globalVarsMap.put("contactUser", contactBuilder.toString());
+			 globalVarsMap.put("contactUser", contactBuilder.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).toString()); 
 		 }else{
 			 globalVarsMap.put("contactUser", contactUser.getFirstName());
 		 }
-		 globalVarsMap.put("previousEndDate",ConversionUtil.getDateAsString(previousEndDate));
-		 globalVarsMap.put("startDate",ConversionUtil.getDateAsString(contracts.getStartDate()));
-		 globalVarsMap.put("presentEndDate",ConversionUtil.getDateAsString(contracts.getEndDate()));    
-		 globalVarsMap.put("receiverOrg",contracts.getContractOrgLocationId().getLocationCode());
+		 
+		 if(previousEndDate != null){
+			 String previousEndTimeStr = Constants.TZ_DF.format(previousEndDate);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String contractPreviousEndDate= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), previousEndTimeStr);
+				Date contractConvertPreviousEndDate = TZ_DF_TS.parse(contractPreviousEndDate);
+				String contractConvertDateInTimezone = Constants.DMY.format(contractConvertPreviousEndDate);
+			 globalVarsMap.put("previousEndDate",contractConvertDateInTimezone);
+		 }
+		 if(contracts.getStartDate() != null){
+			 String startDate = Constants.TZ_DF.format(contracts.getStartDate());
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String contractStartDate= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), startDate);
+				Date contractConvertStartDate = TZ_DF_TS.parse(contractStartDate);
+				String contractConvertDateInTimezone = Constants.DMY.format(contractConvertStartDate);
+			 globalVarsMap.put("startDate",contractConvertDateInTimezone);
+		 }
+		 if(contracts.getEndDate() != null){
+			 String presentEndDate = Constants.TZ_DF.format(contracts.getEndDate());
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String contractEndDate= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), presentEndDate);
+				Date contractConvertEndDate = TZ_DF_TS.parse(contractEndDate);
+				String contractConvertDateInTimezone = Constants.DMY.format(contractConvertEndDate);
+			 globalVarsMap.put("presentEndDate",contractConvertDateInTimezone);    
+		 }
+		 globalVarsMap.put("receiverOrg",contracts.getContractOrgLocationId().getOrg().getOrgName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
