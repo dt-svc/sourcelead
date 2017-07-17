@@ -97,6 +97,8 @@ public class OrgSettingsRestController {
 	@Autowired
 	ModulesService modulesService;
 	
+	
+	
    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
    public String saveOrgSettings(@RequestParam(value="json", required=false) String json,MultipartHttpServletRequest request) throws Exception {
@@ -488,6 +490,28 @@ public class OrgSettingsRestController {
 	 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	resultJson = toJSON(orgLocations);
 		return resultJson;
+
+	}
+    
+    /**
+     * 
+     * Handles requests for the Cooling Off Period service.
+     * 
+     * @author prasadK
+     * @date 17th July 2017
+     *
+     */
+    @RequestMapping(value = "/getOrgShortCode")
+	public String getOrgShortCode(@RequestParam("locationCode") String locationCode) throws Exception {
+		
+	 	//String resultJson = null;
+	 	OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	 	
+	 	
+	 	
+		//orgLocationService.saveOrgLocationsOrgShortCod(orgLocation);
+	 //	resultJson = toJSON(orgLocation);
+		return orgLocation.getGeneratedUserId();
 
 	}
     
