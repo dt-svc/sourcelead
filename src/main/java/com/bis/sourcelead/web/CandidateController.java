@@ -474,6 +474,36 @@ public class CandidateController {
 
 		} 
 	 
+	 
+	 
+	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	 @RequestMapping(value = "/candidateSummary")
+		public ModelAndView candidateSummary(@RequestParam(value="candidateId", required=false) String candidateId,HttpServletRequest request) throws Exception {
+		 	logger.debug("Display the candiade page");
+		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ModelAndView model = new ModelAndView();
+			model.setViewName("candidates/addCandidate");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			/*Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			}
+           
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);
+            
+            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);*/
+			
+			return model;
+	    }
+	 
+	 
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;

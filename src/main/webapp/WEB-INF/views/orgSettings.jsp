@@ -37,6 +37,8 @@ window.onload = function () {
 	editOrgLocationAuto('orgEditState','orgEditCity','orgEditZipCode');
 	getAllCountries();
 	colourpicker();
+	orgShortCode();
+	alert("hiiiiiiiiiii");
  };
 </script>
 
@@ -425,6 +427,19 @@ function cancelOrgImg(){
                             </div>
                 			<div id="coolingOffPeriodDiv"></div>            
             			</div>
+            			
+            			
+                        <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="orgShortCodeHeading">Organization Short Code</h4>
+                                    <div id="orgShortCodeLoading"></div>
+                                </div>
+                            </div>
+                			<div id="orgShortCodeDiv"></div>            
+            			</div>            			
+            			
+            			
         			</div>
     			</div>
     
@@ -732,6 +747,7 @@ function configCoolingOff(){
 					result = result + '</div>';
 					result = result + '</div>';
 					
+					
 					result = result + '<div class="pull-right">';
 					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
 					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
@@ -757,6 +773,28 @@ function configCoolingOff(){
 				       $("#coolingOff").trigger('chosen:update');
 		        },
 		 });
+}
+</script>
+
+
+<script>
+function orgShortCode(){
+	$("#orgShortCodeDiv").empty(); 
+					result = result + '<form id="orgShortCode_form"  name="orgShortCode_form" method="post">'; 
+					alert("2121313");
+					result = result + '<div class="form-group">';
+					result = result + '<label class="col-md-3">Orgnization Short Code<i class="" title="System Generated Id"></i></label>';
+					result = result + '<div class="col-md-4"><input type="text" name="generatedUserId" id="generatedUserId" class="form-control input-sm"></div>';
+					result = result + '</div>';
+					
+					result = result + '<div class="pull-right">';
+					result = result + '<input type="submit" value="Save" id="saveOrgShortCode_button" class="btn btn-primary mr">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+					result = result + '</div>';
+					result = result + ' </form>';
+					$("#orgShortCodeDiv").empty(); 
+					$("#orgShortCodeDiv").append(result);
+					
 }
 </script>
 

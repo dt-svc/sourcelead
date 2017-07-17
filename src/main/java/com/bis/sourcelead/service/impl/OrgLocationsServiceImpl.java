@@ -90,8 +90,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
-		orgLocationsDao.updateOrgLocations(orgLocations);
+      
+        orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId());
 		
+        orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
 	}

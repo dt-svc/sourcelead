@@ -266,6 +266,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
 	
+	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
+	private String releaseJobToAllUsers;
+	
 	@Transient
 	private String closedDateStringFormat;
 	
@@ -1340,6 +1343,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
+	}
+
+	public String getReleaseJobToAllUsers()
+	{
+		return releaseJobToAllUsers;
+	}
+
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
+	{
+		this.releaseJobToAllUsers = releaseJobToAllUsers;
 	}
 
 	public String getNoticePeriod() {
