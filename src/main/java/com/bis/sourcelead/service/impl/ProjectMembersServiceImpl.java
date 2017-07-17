@@ -681,7 +681,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId,Long orgLocationId) throws Exception
+	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
 	{
 		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
 		for (ProjectMembers projectMember : projectMembersList) {
@@ -694,28 +694,31 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				if (pmh.getProjectTerminationDate() != null) {
 					projectMember.setProjectEndDateStr(ConversionUtil.getDateAsString(pmh.getProjectTerminationDate()));
 				}
-				
-				if(pmh.getStatus() != null){
+				if (pmh.getStatus() != null) {
 					projectMember.setProjectStatus(pmh.getStatus());
 				}
-				if (pmh.getProjectAssignedDate() != null && pmh.getProjectTerminationDate() != null) {
+				if (pmh.getProjectAssignedDate() != null
+						&& pmh.getProjectTerminationDate() != null) {
 					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "DRAFT");
-					projectMember.setDraftHrs(draftTimesheetsSubmissionsCountAsEmployee.toString());
+					projectMember.setDraftHrs(String.valueOf(draftTimesheetsSubmissionsCountAsEmployee));
 					Float submittedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "SUBMITTED");
-					projectMember.setSubmittedHrs(submittedTimesheetsSubmissionsCountAsEmployee.toString());
+					projectMember.setSubmittedHrs(String.valueOf(submittedTimesheetsSubmissionsCountAsEmployee));
 					Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "APPROVED");
-					projectMember.setApprovedHrs(approvalTimesheetsSubmissionsCountAsEmployee.toString());
+					projectMember.setApprovedHrs(String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee));
 					Float rejectedTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "REJECTED");
-					projectMember.setRejectedHrs(rejectedTimesheetsSubmissionsCountAsEmployee.toString());
+					projectMember.setRejectedHrs(String.valueOf(rejectedTimesheetsSubmissionsCountAsEmployee));
 				}
-					 Date empStaerDate = projectMember.getProjects().getStartDate();
-					 List<Expenses> expensesClaimendAmount  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),empStaerDate,new Date());
-					 if(expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()){
-					 for(Expenses exp:expensesClaimendAmount){
-						 projectMember.setUserExpensesClaimedAmount(exp.getTotalAmount());
-					 }
-				 }
-				
+				if (projectMember.getProjects() != null) {
+					if (projectMember.getProjects().getStartDate() != null) {
+						Date empStaerDate = projectMember.getProjects().getStartDate();
+						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), empStaerDate, commonUtil.currentDate());
+						if (expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()) {
+							for (Expenses exp : expensesClaimendAmount) {
+								projectMember.setUserExpensesClaimedAmount(exp.getTotalAmount());
+							}
+						}
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

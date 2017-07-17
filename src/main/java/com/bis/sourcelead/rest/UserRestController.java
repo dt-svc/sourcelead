@@ -1413,19 +1413,20 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 	 
 	 
-	 	/**
-		 * To get the assigned projects list for user based on userId and OrgLocationId
-		 * @author Rakshith
-		 * @param 
-		 * @param 
-		 * @return
-		 * @throws Exception
-		 */
-		@RequestMapping(value = { "/getAssignedProjectsListForUser", "/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
-		public @ResponseBody List<ProjectMembers>  getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
-			
-			List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId,orgLocationId);
-			return projectMembersList;
-		}
-	 
+	/**
+	 * To get the assigned projects list for user based on userId and
+	 * OrgLocationId
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return json object
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAssignedProjectsListForUser",
+			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		return projectMembersList;
+	}
 }
