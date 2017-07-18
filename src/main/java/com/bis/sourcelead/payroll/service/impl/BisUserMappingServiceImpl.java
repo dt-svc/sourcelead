@@ -353,6 +353,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			BisUserMapping bisUser = bisUserMappingDao.getBisUserById(importedUserId);
 			if(slUser != null && bisUser !=null){
 				bisUser.setUserId(slUser);
+				bisUser.setStatus("MAPPED");
 				 bisuser = bisUserMappingDao.saveBisUserMapping(bisUser);
 			}
 		}
@@ -378,6 +379,11 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			}
 		}
 		return date;
+	}
+
+	@Override
+	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
+		return bisUserMappingDao.getEmployeeList(orgLocationId);
 	}
 
 }

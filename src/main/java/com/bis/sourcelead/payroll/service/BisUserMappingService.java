@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
+import com.bis.sourcelead.payroll.entity.Checks;
 
 public interface BisUserMappingService {
 
@@ -21,5 +22,7 @@ public interface BisUserMappingService {
 	List<BisUserMapping> getMappedUsersListByOrgLocationId(Long orgLocationId)throws Exception;
 
 	Integer saveChecksData(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+
+	List<BisUserMapping> getEmployeeList(Long orgLocationId)throws Exception;
 
 }
