@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,6 +50,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -72,7 +75,6 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 
 /**
  * 
@@ -148,8 +150,32 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
 	private ProjectsService projectsService;
     
+    
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+    
+    
+    @Override
+	public String getCandidateId(OrgLocations orgLocations) {
+		
+    	Long number = 000000001L;
+		String candidateId = null;
+		Candidate checkNumber = candidateDao.checkCandidateIdNumberInDatebase(orgLocations.getId());
+		if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+			candidateId = number.toString();
+		}else{
+		String canIdNumber = checkNumber.getGeneratedId();
+		String canIdNum = canIdNumber.substring(2, canIdNumber.length());
+		Long canId = Long.parseLong(canIdNum)+1;
+			candidateId = canId.toString();
+		}
+		
+        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+        String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
+        StringBuffer sb = new StringBuffer();
+		return sb.append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidatesId).toString();
+		
 	}
 	
 	/**
@@ -395,6 +421,16 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+		
+		/*
+		 * System Generated Id For Candidate
+		 */
+		/*String entityGenId = RandomStringUtils.randomNumeric(9);
+		StringBuffer sb = new StringBuffer();
+		candidate.setSystemGeneratedId(Constants.CANDIDATE_ENTITY);
+		candidate.setGeneratedId(sb.append(candidate.getSystemGeneratedId()).append(entityGenId).toString());*/
+		
+		candidate.setGeneratedId(getCandidateId(orgLocations));
 		
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);

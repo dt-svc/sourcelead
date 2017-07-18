@@ -439,7 +439,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String requirementOrgName;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 	
+	@Transient
+	private String systemGeneratedId;
 	
 	@Transient
 	private Integer vendorInterviewsCount;
@@ -1527,7 +1531,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		return serialVersionUID;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
 
-	
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
 
 }

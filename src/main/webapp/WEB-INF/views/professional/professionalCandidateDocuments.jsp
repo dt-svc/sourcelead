@@ -254,7 +254,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result  +'<div class="clearfix mb10 col-md-12" id="nameDocIdDiv"> ';
 	
-	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);validateDocName('+candidateId+');"  onkeyup ="validateDocName('+candidateId+');">';
+	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);">';
 	                   <c:forEach var="doctype" items="${documentsList}">
     result = result +'<option value="" disabled selected></option>';	
 	result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
