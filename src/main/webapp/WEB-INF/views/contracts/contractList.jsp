@@ -3331,16 +3331,16 @@ function getStageCounts(){
     		   $("#draft").html('Draft ('+json.totalDraftCount+')');
     	   }
     	   if(json.totalWTACount != null && json.totalWTACount != "" && json.totalWTACount != 'undefined'){
-    		   $("#approve").html('Approve ('+json.totalWTACount+')');
+    		   $("#approve").html('Waiting ('+json.totalWTACount+')');
     	   }
     	   if(json.totalWTSCount != null && json.totalWTSCount != "" && json.totalWTSCount != 'undefined'){
     		   $("#sign").html('Sign ('+json.totalWTSCount+')');
     	   }
     	   if(json.totalWTVCount != null && json.totalWTVCount != "" && json.totalWTVCount != 'undefined'){
-    		   $("#verify").html('Verify ('+json.totalWTVCount+')');
+    		   $("#verify").html('Counter sign ('+json.totalWTVCount+')');
     	   }
     	   if(json.totalFinalizedCount != null && json.totalFinalizedCount != "" && json.totalFinalizedCount != 'undefined'){
-    		   $("#finalised").html('Finalized ('+json.totalFinalizedCount+')');
+    		   $("#finalised").html('Completed ('+json.totalFinalizedCount+')');
     	   }
     	   if(json.totalExpiredCount != null && json.totalExpiredCount != "" && json.totalExpiredCount != 'undefined'){
     		   $("#expired").html('Expired ('+json.totalExpiredCount+')');

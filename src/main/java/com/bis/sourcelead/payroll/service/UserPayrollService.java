@@ -12,7 +12,7 @@ public interface UserPayrollService {
 
 	List<UserPayroll> getUserPayrollsBystartDateEndDte(Long orgLocationId, Date startDate, Date endDate)throws Exception;
 	
-	List<UserPayroll> getPayByUserId(Long userId,Long orgLocationId)throws Exception;
+	List<UserPayroll> getPayByUserId(Long userId,Long orgLocationId,String selectedYear)throws Exception;
 
 	List<Checks> getChecksList(Long userId, Long orgLocationId)throws Exception;
 }
