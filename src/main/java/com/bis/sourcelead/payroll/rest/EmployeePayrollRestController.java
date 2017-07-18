@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -41,6 +44,7 @@ import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -71,6 +75,9 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	UserPayrollService userPayrollService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	/**
 	 * insert upload rcords 
@@ -327,4 +334,34 @@ public class EmployeePayrollRestController {
 		return checksList;
 	}
 	
+	
+	/**
+	 * Returns payroll documents upload jsp
+	 * @param request
+	 * @return ModelAndView
+	 */
+	 @RequestMapping(value = "/uploadDocuments")
+		public ModelAndView fileUploadForm(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAYROLL);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("payroll/payrollUploadForm");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	 
+	 @RequestMapping(value = { "/getEmployeeList", "/rest/getEmployeeList" }, method = RequestMethod.GET)
+		public List<BisUserMapping> getEmployeeList(@RequestParam(value = "userId", required = false) Long userId,
+				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+						throws Exception {
+			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
+			return bisUsersList;
+		}
 }

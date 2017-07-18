@@ -98,6 +98,20 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		return checks;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<BisUserMapping> bisUserList = null;
+		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId";
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(bisUserList != null && bisUserList.size() >0)
+		{
+			return bisUserList;
+		}
+		return bisUserList;
+	}
+
 
 
 
