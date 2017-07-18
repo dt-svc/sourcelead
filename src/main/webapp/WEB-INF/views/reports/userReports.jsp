@@ -55,7 +55,7 @@
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
 					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				   <%--  <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Submitted Applicants</a></li>
 <%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
@@ -743,11 +743,11 @@ function getBillingReportsChart(invoiceType,json){
 	    "valueAxes": [{
 	        "unit": "",
 	        "position": "left",
-	        "title": "GDP growth rate",
+	        "title": "Amount",
 	    }],
 	    "startDuration": 1,
 	    "graphs": [{
-	        "balloonText": "GDP grow in [[category]] (2004): <b>[[value]]</b>",
+	        "balloonText": "Income in [[category]] (2004): <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2004",
@@ -755,7 +755,7 @@ function getBillingReportsChart(invoiceType,json){
 	         "columnWidth":0.5,
 	        "valueField": "year2004"
 	    }, {
-	        "balloonText": "GDP grow in [[category]] (2005): <b>[[value]]</b>",
+	        "balloonText": "Expenses in [[category]] (2005): <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2005",
