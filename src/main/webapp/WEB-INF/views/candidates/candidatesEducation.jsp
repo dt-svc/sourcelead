@@ -366,25 +366,37 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEduSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduSave = 'yy-dd-mm'; 
+	  }
+	  
 	$('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatEduSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	            //var dt = new Date(selected);
-	            var dt = toDate("#startDate");
+	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatEduSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            //var dt = new Date(selected);
-	            var dt = toDate("#endDate");
+	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -615,27 +627,41 @@ function EditEducation(candidateId,candidateEducationId) {
 	
 	var datepickerEndDate = toDate("#endDateEdit");
 	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEduUpdate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduUpdate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+	  }
+	
+	
 	$('#startDateEdit').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatEduUpdate,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  maxDate: datepickerEndDate,
+	  	  //maxDate: datepickerEndDate,
 	      onSelect: function (selected) {
 	            //var dt = new Date(selected);
-	            var dt = toDate("#startDateEdit");
+	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatEduUpdate,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  minDate: datepickerStartDate,
+	  	  //minDate: datepickerStartDate,
 	      onSelect: function (selected) {
 	            //var dt = new Date(selected);
-	            var dt = toDate("#endDateEdit");
+	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }

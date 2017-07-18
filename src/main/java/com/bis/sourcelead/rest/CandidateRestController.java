@@ -575,6 +575,7 @@ public class CandidateRestController {
 	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 String resultJson;
+		 SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 		 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 		 for(RequirementSubmission req :requirementSubmission ){
 			 req.setPositionType(req.getRequirement().getJobTitle());
@@ -582,7 +583,7 @@ public class CandidateRestController {
 			 req.setState(req.getRequirement().getState());
 			 req.setCity(req.getRequirement().getCity());
 			 req.setRate(req.getRequirement().getRate());
-			 req.setCreatedDateStr(Constants.DMY.format(req.getCreatedDate()));
+			 req.setCreatedDateStr(format.format(req.getCreatedDate()));
 			 if(req.getRequirement().getManagerUserId().getLastName() != null){
 				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() +" "+req.getRequirement().getManagerUserId().getLastName());
 			 }else{

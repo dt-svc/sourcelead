@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -155,12 +156,13 @@ public class CandidateCertificationsRestController {
 			String resultJson;
 
 			CandidateCertifications  candidateCertificationsList = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
-			
+			Candidate can = candidateService.getCandidateById(candidateId);
+			SimpleDateFormat formatter = can.getOrgLocationId().getLocFullFormDateFormatter();
 			if(candidateCertificationsList.getValidFrom() != null){
-				candidateCertificationsList.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidFrom())); 
+				candidateCertificationsList.setCandidatevalidFromDateToString(formatter.format(candidateCertificationsList.getValidFrom())); 
 			 }
 			 if(candidateCertificationsList.getValidTo() != null){
-				 candidateCertificationsList.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidTo())); 
+				 candidateCertificationsList.setCandidatevalidToDateToString(formatter.format(candidateCertificationsList.getValidTo())); 
 			 }
 			resultJson = commonUtil.toJSON(candidateCertificationsList);
 			 return resultJson;
