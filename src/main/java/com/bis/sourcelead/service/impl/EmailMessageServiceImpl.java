@@ -161,7 +161,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
-
+		//TODO remove this statement once the email issues is resolved
+		logger.info("@@@@@@@@@@@@@@@@@ Email: "+username+" Password: ");
+		logger.info("@@@@@@@@@@@@@@@@@ from Email: "+emailMessage.getFromEmail());
 		props.put("mail.smtp.host", "secure.emailsrvr.com");
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
@@ -248,6 +250,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				
 
 					message.setContent(mimeMultipart);
+					//TODO remove this statement once the email issues is resolved
+					logger.info("################# Email: "+username+" Password: "+password);
+					logger.info("################# from Email: "+message.getFrom());
 				    Transport.send(message);
 				}
 			} else {
@@ -258,7 +263,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 				message.setContent(multipart);
 				//TODO remove this statement once the email issues is resolved
-				logger.info("################# Email: "+username+" Password: ");
+				logger.info("################# Email: "+username+" Password: "+password);
 				logger.info("################# from Email: "+message.getFrom());
 				Transport.send(message);
 			}
