@@ -2,6 +2,8 @@ package com.bis.sourcelead.aspect;
 
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -15,8 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ActionRolesService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
 *
 * @author Pradeep kumar Reddy
@@ -25,12 +31,11 @@ import com.bis.sourcelead.service.ActionRolesService;
 @Component
 public class LoggingAspect {
 	
-//	@Autowired
-//	private SessionFactory sessionFactory;
-//	
-//	@Autowired
-//	private ActionRolesService actionRolesService;
+	@Autowired
+	private AuditRecordDAO auditRecordDAO;
 	
+	@Autowired(required=true)
+	private HttpServletRequest request;
 
    private Logger logger = LoggerFactory.getLogger(getClass());
    
@@ -107,7 +112,7 @@ public class LoggingAspect {
        return result;
    }
 
-   @Before("execution(* com.bis.sourcelead.rest..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage() ")
+   @Before("execution(* com.bis.sourcelead.web..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage() ")
    public void logBeforeWebService(JoinPoint joinPoint) throws Throwable {
        logger.info("**********Web Service Layer Before Method Excution ************");
        logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -125,25 +130,24 @@ public class LoggingAspect {
    }
 
    
-   @AfterReturning(pointcut = "execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
-   public void logAfterReturningWebService(JoinPoint joinPoint, Object result) {
+   @AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..))", returning = "result")
+   public void logAfterReturningWebService(JoinPoint joinPoint, Object result) throws Exception {
        logger.info("********** Web Service Layer After Method Exectution ************");
        logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
        logger.info("Method name : " + joinPoint.getSignature().getName());
        logger.info("Method returned value  : " + result);
        
+      request = ((ServletRequestAttributes) RequestContextHolder
+    	        .getRequestAttributes()).getRequest();
        
-//       try {
-//    	   if(joinPoint.getSignature().getName().equalsIgnoreCase("createUser"))
-//    		   logger.info("pradeep::"+actionRolesService.getActionNameUsingMethodName(joinPoint.getSignature().getName()));
-//	} catch (Exception e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
+       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+       AuditRecord ar = new AuditRecord();
+       ar.setMethodName(joinPoint.getSignature().getName());
+       auditRecordDAO.save(ar,user);
        
    	}
 
-   @AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
+   @AfterThrowing(pointcut = "execution(* com.bis.sourcelead.web.*.*(..))", throwing = "error")
    public void logAfterThrowingWebService(JoinPoint joinPoint, Throwable error) {
        logger.info("********** Web Service Layer Method Throwing Error ************");
        logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());

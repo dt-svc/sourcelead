@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ActionRolesDao;
+import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.service.ActionRolesService;
@@ -51,7 +52,7 @@ public class ActionRolesServiceImpl implements ActionRolesService{
 	}
 
 	@Override
-	public String getActionNameUsingMethodName(String methodName) throws Exception {
+	public ActionNames getActionNameUsingMethodName(String methodName) throws Exception {
 		// TODO Auto-generated method stub
 		return actionRolesDao.getActionNameUsingMethodName(methodName);
 	}
