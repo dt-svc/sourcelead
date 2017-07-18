@@ -1,5 +1,6 @@
 
 # Contract_approve_Notification
+SET SQL_SAFE_UPDATES=0;
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Approval Request for Contract {{approverUpdatedContract.ContractTitle}}    '  WHERE `UNIQUE_SCENARIO_NAME`='approverUpdatedContract' and `ENTITY_TYPE`='Notification';
 
 
@@ -17,3 +18,4 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('ContractSigned', 'Notification');
 
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES('ContractSigned', 'Notification', 'ContractSigned', 'used to notify contract owner about contract signed.', '{{ContractSigned.contractTitle}} has been signed by {{ContractSigned.receiverOrg}}. ', 'sourcelead', '', '{{ContractSigned.contractTitle}} has been signed by {{ContractSigned.receiverOrg}}.','N','SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
+SET SQL_SAFE_UPDATES=1;
