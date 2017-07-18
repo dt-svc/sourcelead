@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.CandidateHotList;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -1035,6 +1036,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.orgRelationId.id = :orgRelationId and candidate.isAssociate = 'Y'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.id =(SELECT MAX(candi.id) FROM Candidate candi where candi.orgLocationId.id =:orgLocationId)";  
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(candidate.isEmpty()){
+			return null;
+		}
+		return candidate.iterator().next();	
 	}
 }
 
