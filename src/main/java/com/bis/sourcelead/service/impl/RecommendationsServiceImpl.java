@@ -854,21 +854,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType) {
-
 		float visaPer = 0;       
        if(visaType !=null){
     	   if(set != null && set.size() >0){
    			for(String visa : set){
    					if(visaType.contains(visa)){
-   						return 10;
-//   						matchedSkillCount++;
+   						return visaPer = 10;
    					}
    			}
    		}
    
        }
-//				return matchedSkillCount*visaTypePercentage;
-	return 0;
+	return visaPer;
 		
 	}
 	
@@ -882,17 +879,17 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education) {
-
-		if(set != null && set.size() >0){
-			for(String edu : set){
-					if(education.contains(edu)){
-						return 10;
-//						matchedSkillCount++;
+		float eduPer = 0; 
+		if(education !=null){
+				if(set != null && set.size() >0){
+					for(String edu : set){
+							if(education.contains(edu)){
+								return eduPer = 10;
+							}
+						}
 					}
-				}
-			}
-//		return matchedSkillCount*educationPercentage;
-		return 0;
+		 }
+		return eduPer;
 		
 	}
 	
