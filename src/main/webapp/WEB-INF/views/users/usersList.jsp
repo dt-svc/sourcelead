@@ -16,7 +16,7 @@ text-align: center;
 font-size: 18px;
 font-weight: bold;
 vertical-align: middle;
-padding: 20px 15px;`
+padding: 20px 15px;
 clear: both;
 display: inline-block;
 margin: auto;
