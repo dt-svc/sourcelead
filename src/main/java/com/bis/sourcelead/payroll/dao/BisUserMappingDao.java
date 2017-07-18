@@ -18,6 +18,9 @@ public interface BisUserMappingDao {
 
 	Checks saveChecks(Checks checks)throws Exception;
 
+	List<BisUserMapping> getEmployeeList(Long orgLocationId)throws Exception;
+
+
 
 
 

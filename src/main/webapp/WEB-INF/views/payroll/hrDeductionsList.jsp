@@ -1,6 +1,7 @@
 
 <script>
 function hrDeductionsList(){
+	$("#addPayrollDiv").hide();
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
@@ -92,6 +93,7 @@ function hrDeductionsList(){
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
+						$("#employeeListDiv").empty();
 						$("#checksListDiv").empty();
 						$("#finalPayrollReportDiv").empty();
 						$("#hrDeductionsListDiv").append(result);
@@ -119,7 +121,7 @@ function hrDeductionsListTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#hrDeductionsListTable").wrap("<div class='overflow_Auto'></div>");
+    $("#hrDeductionsListTable").wrap("<div class='overflow_Auto width100percnt'></div>");
 }
 </script>
 

@@ -1,7 +1,7 @@
 
 <script>
 function bisChecksList(){
-	
+	$("#addPayrollDiv").hide();
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	
@@ -12,7 +12,7 @@ function bisChecksList(){
 				        url: sourceleadUrl+"/getChecksList?${_csrf.parameterName}=${_csrf.token}?userId="+userId+"&orgLocationId="+orgLocationId,
 				        success: function(data) {
 						 var result = "";				        	
-						result = result + '<table id="rajashekar" class="display" cellspacing="0" width="100%" >';
+						result = result + '<table id="checksListTable" class="display" cellspacing="0" width="100%" >';
 						result = result + '<thead>';
 						result = result + '<tr>';
 						result = result + '<th>Emp Id</th>';
@@ -130,11 +130,12 @@ function bisChecksList(){
 						$("#hrDeductionsListDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
 						$("#finalPayrollReportDiv").empty();
+						$("#employeeListDiv").empty();
 						$("#checksListDiv").empty();
 						$("#checksListDiv").append(result);
 						$("#loading").removeAttr("style");
 						$('#payScale').css('display','none');
-						pavanPag(); 
+						checksListPagination(); 
 				        	
 				        },
 				        
@@ -146,8 +147,8 @@ function bisChecksList(){
 
 
 <script>
-function pavanPag(){ 
-    $('#rajashekar').DataTable( { 
+function checksListPagination(){ 
+    $('#checksListTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
@@ -158,7 +159,7 @@ function pavanPag(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#rajashekar").wrap("<div class='overflow_Auto'></div>")
+    $("#checksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>")
 }
 </script>
 
