@@ -188,12 +188,10 @@ public class CandidateListRestController {
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-//		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 		
 		BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
 
 		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-//		boolQueryBuilderForCount.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 
 		if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
 			if (Constants.NO.equalsIgnoreCase(search.getIsAssociate())) {
@@ -203,6 +201,7 @@ public class CandidateListRestController {
 
 		if (Constants.YES.equalsIgnoreCase(search.getIsAssociate())) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
+			boolQueryBuilderForCount.must(QueryBuilders.matchQuery("isAssociate", "Y"));
 			if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", search.getCandidateType()));
 			}
@@ -233,8 +232,8 @@ public class CandidateListRestController {
 		List<String> anyKeyWordArray = search.getAnyOfKeyword();
 		if(anyKeyWordArray == null)
 			anyKeyWordArray = new ArrayList<>();
-		if(search.getSearch().containsKey("value") && !search.getSearch().get("value").isEmpty()) {
-			anyKeyWordArray.add(search.getSearch().get("value"));
+		if(StringUtils.isNotEmpty(search.getSearchValue())) {
+			anyKeyWordArray.add(search.getSearchValue());
 		}
 		if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
