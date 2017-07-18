@@ -770,5 +770,18 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 	}
 
+	@Override
+	@Transactional
+	public Projects checkProjectIdNumberInDatebase(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects projects where projects.id =(SELECT MAX(pj.id) FROM Projects pj where pj.orgLocationsId.id =:orgLocationId)";  
+		List<Projects> project  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(project.isEmpty()){
+			return null;
+		}
+		return project.iterator().next();	
+	}
+
 }
 
