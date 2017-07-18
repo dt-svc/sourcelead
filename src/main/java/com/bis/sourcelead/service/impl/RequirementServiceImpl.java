@@ -229,7 +229,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement = new Requirement();
 				requirement.setCreatedDate(commonUtil.currentDate());
 				requirement.setTotalApplicants(0);
-				requirement.setCreatedBy(user.getUserCode());
+				requirement.setCreatedBy(user);
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 				requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -2767,13 +2767,12 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
 		
 		for(Requirement req :list){
-			User createdUser = userService.getUserByUserCode(req.getCreatedBy());
-			if(createdUser != null){
+			if(req.getCreatedBy() != null){
 				String lastName = "";
-				if(StringUtils.isNotEmpty(createdUser.getLastName())){
-					lastName = " "+createdUser.getLastName();
+				if(StringUtils.isNotEmpty(req.getCreatedBy().getLastName())){
+					lastName = " "+req.getCreatedBy().getLastName();
 				}
-				req.setCreatedByName(createdUser.getFirstName()+lastName);
+				req.setCreatedByName(req.getCreatedBy().getFirstName()+lastName);
 			}
 			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
 		}
@@ -2917,7 +2916,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				 }
 				reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 				reqTemplate.setCreatedDate(commonUtil.currentDate());
-				reqTemplate.setCreatedBy(user.getUserCode());
+				reqTemplate.setCreatedBy(user);
 				reqTemplate.setUpdatedBy(user.getUserCode());
 				reqTemplate.setUpdatedDate(commonUtil.currentDate());
 				
@@ -3194,7 +3193,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
 		            		requirement = getData(requirementIndex,user);
 		            	}
@@ -3459,7 +3458,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
 		            		requirement = getData(requirementIndex,user);
 		            	}

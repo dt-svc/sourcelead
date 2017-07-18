@@ -756,7 +756,7 @@ public class ClientRestController {
 				StringBuilder name = new StringBuilder();
 				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				
-				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations);
+				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations,userRoleName);
 				for(RequirementSubmission reqsub : subList){
 					RequirementSubmission sourceSub = requirementSubmissionService.getClientRequierementSubmission(reqsub.getId());
 					int vendorInterviewsCount = 0;

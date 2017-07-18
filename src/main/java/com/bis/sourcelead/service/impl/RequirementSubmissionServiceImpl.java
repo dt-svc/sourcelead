@@ -777,8 +777,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 
 	@Override
-	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation) throws Exception {
-		return requirementSubmissionDao.getSubmissionsByRequirementId(requirementId,user, loginOrgLocation);
+	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation,String loginUserRole) throws Exception {
+		return requirementSubmissionDao.getSubmissionsByRequirementId(requirementId,user, loginOrgLocation,loginUserRole);
 	}
 
 	@Override
@@ -1724,8 +1724,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
-			OrgLocations loginOrgLocation, String submissionType) throws Exception {
-		return requirementSubmissionDao.getSubmissionsByRequirementIdandStatus(requirementId,user,loginOrgLocation,submissionType);
+			OrgLocations loginOrgLocation, String submissionType,String loginUserRole) throws Exception {
+		return requirementSubmissionDao.getSubmissionsByRequirementIdandStatus(requirementId,user,loginOrgLocation,submissionType,loginUserRole);
 	}
 
 	@Override

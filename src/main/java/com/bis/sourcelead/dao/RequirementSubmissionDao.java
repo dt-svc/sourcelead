@@ -28,7 +28,7 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
-	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
+	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation,String loginUserRole) throws Exception;
 
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId)throws Exception;
 	
@@ -97,7 +97,7 @@ public interface RequirementSubmissionDao {
 	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
-			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+			OrgLocations loginOrgLocation, String submissionType,String loginUserRole)throws Exception;
 	
 	RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId);
 

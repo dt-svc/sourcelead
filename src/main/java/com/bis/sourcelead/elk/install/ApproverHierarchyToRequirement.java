@@ -21,7 +21,7 @@ public class ApproverHierarchyToRequirement {
 	
 /**
  * @author Venkat I
- * this method is using for update the RequirmentUUID	
+ * this method is using for update the Approver hierarchy	
  * @throws IOException
  * @throws SQLException
  */

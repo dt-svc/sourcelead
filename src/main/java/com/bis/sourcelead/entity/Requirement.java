@@ -242,8 +242,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY")
-	private String createdBy;
+	@ManyToOne
+    @JoinColumn(name="CREATED_BY", nullable=false )        
+    private User createdBy;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -816,11 +817,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy() {
+	
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
