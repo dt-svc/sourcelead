@@ -489,9 +489,6 @@ public class CandidateListRestController {
 
 		try {
 
-			System.out.println(boolQueryBuilder);
-			System.out.println(boolQueryBuilderForCount);
-			
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
 							search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
