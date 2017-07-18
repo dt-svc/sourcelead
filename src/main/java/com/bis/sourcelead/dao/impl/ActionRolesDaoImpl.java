@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ActionRolesDao;
+import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.ActionRoles;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.enums.Status;
@@ -131,16 +132,19 @@ public class ActionRolesDaoImpl implements ActionRolesDao{
 
 
 	@Override
-	public String getActionNameUsingMethodName(String methodName) throws Exception {
+	public ActionNames getActionNameUsingMethodName(String methodName) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		String actionName = "";
+		List<ActionNames> actionNames = new ArrayList<ActionNames>();
 		logger.debug("getActionNameUsingMethodName start");
-		String query = "select action_name from testing test  where test.method_name =:methodName ";
-		actionName = session.createQuery(query).setString("methodName", methodName).setCacheable(true).getQueryString();
+		String query = "from ActionNames  actNames  where actNames.methodName =:methodName ";
+		actionNames = session.createQuery(query).setString("methodName", methodName).setCacheable(true).list();
 		logger.debug("getActionNameUsingMethodName end");
-		
-		return actionName;
+		if (actionNames.size() > 0) {
+			return actionNames.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }
