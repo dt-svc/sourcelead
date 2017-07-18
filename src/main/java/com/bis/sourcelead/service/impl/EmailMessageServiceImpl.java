@@ -257,6 +257,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				multipart.addBodyPart(messageBodyPart);
 
 				message.setContent(multipart);
+				//TODO remove this statement once the email issues is resolved
+				logger.info("################# Email: "+username+" Password: ");
+				logger.info("################# from Email: "+message.getFrom());
 				Transport.send(message);
 			}
 		} catch (MessagingException e) {
