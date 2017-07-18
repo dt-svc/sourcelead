@@ -680,6 +680,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsByOrgLocationId(orglocationId);
 	}
 
+
 	@Override
 	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
 	{
@@ -724,6 +725,13 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			}
 		}
 		return projectMembersList;
+	}
+	
+	
+	@Override
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId)
+	{
+		return projectMembersDao.getAllProjectsbyEmployeeId(employeeId);
 	}
 	
 

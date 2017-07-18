@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
@@ -105,6 +106,8 @@ public class EmployeePayrollRestController {
 				 isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.BIS_USERS.equalsIgnoreCase(payrollType)){
 				isInserted = bisUserMappingService.saveBisUserData(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.BIS_CHECKS.equalsIgnoreCase(payrollType)){
+				isInserted = bisUserMappingService.saveChecksData(multipartFile,orgLocation,user,jsonObj);
 			}
 		}else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
@@ -308,6 +311,21 @@ public class EmployeePayrollRestController {
 					throws Exception {
 		List<UserPayroll> userpayroll = userPayrollService.getPayByUserId(userId, orgLocationId,selectedYear);
 		return userpayroll;
+	}
+	
+	/**
+	 * Get Checks list of payroll
+	 * @param userId
+	 * @param orgLocationId
+	 * @return json object
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getChecksList", "/rest/getChecksList" }, method = RequestMethod.GET)
+	public List<Checks> getChecksList(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+					throws Exception {
+		List<Checks> checksList = userPayrollService.getChecksList(userId, orgLocationId);
+		return checksList;
 	}
 	
 }

@@ -90,5 +90,6 @@ public interface ProjectMembersService {
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
 
 	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId,Long orgLocationId)throws Exception;
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
 	
 }

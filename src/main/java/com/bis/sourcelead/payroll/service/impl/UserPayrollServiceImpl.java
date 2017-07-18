@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -49,6 +50,11 @@ public class UserPayrollServiceImpl implements UserPayrollService{
 			endDay = cal.getTime();
 		}
 		return userPayrollDao.getPayByUserId(userId, orgLocationId,startDay,endDay);
+	}
+
+	@Override
+	public List<Checks> getChecksList(Long userId, Long orgLocationId) throws Exception {
+		return userPayrollDao.getChecksList(userId, orgLocationId);
 	}
 
 }

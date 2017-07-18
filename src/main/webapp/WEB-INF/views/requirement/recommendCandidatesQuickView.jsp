@@ -16,7 +16,7 @@
 --%>
 
 <script>
-function recomendcandidateQuickViewProfile(candidateId){
+function recomendcandidateQuickViewProfile(candidateId,recScore){
 	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
@@ -117,7 +117,11 @@ function recomendcandidateQuickViewProfile(candidateId){
 				
 					result = result+'                <div class="media-right">                                                                                                                     ';
 					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
-					
+					if(recScore != null && recScore != '' && recScore != 'undefined'){
+						  if(recScore >=50){ 
+						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+						  }
+					  }
 					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 					result = result+' <div class="progress nomr">  ';
 					if(json.profilePercentage>=50){ 

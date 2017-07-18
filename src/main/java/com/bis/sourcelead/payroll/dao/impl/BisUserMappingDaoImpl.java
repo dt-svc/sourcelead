@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
@@ -83,6 +84,18 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 			return bisUserList;
 		}
 		return bisUserList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Checks saveChecks(Checks checks) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			session.saveOrUpdate(checks);
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return checks;
 	}
 
 
