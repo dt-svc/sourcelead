@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -44,6 +46,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	@Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 
 	/**
@@ -175,11 +180,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		// return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
-	
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId); 
+		SimpleDateFormat formatter = candidate.getOrgLocationId().getLocFullFormDateFormatter();
 		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 			for(CandidateResumes canResumes :candidateResumesList){
 				if(canResumes.getUpdatedDate() != null){
-					canResumes.setCandidateResumeUpdateDateToString(Constants.DF_DMY.format(canResumes.getUpdatedDate()));
+					canResumes.setCandidateResumeUpdateDateToString(formatter.format(canResumes.getUpdatedDate()));
 				}
 			}
 			return candidateResumesList;
