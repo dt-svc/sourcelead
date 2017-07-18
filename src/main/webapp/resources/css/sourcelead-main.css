@@ -5830,6 +5830,63 @@ ul.jobs-360{
     height: 350px; position: relative;
 }
 /*360 view styles */
+.bootstrap_dropdownMenu-right {
+	left: inherit; right:0;
+}
+.dropdown-menu.bootstrap_dropdownMenu ul li {
+	clear: both; display: inline-block; margin: 0; width: 100%;
+}
+.resourcetype-filter {
+    min-height: 75px;
+}
+.resourcetype-filter input[type="checkbox"] {
+	width: 25px; float: left;
+}
+.resourcetype-filter label {
+	min-width: 120px; float: left; position: relative; top:2px;
+}
+.location-filter {
+    min-height: 100px; max-height: 200px; overflow-y: auto; width:300px;
+}
+.location-filter input[type="checkbox"] {
+	width: 25px; float: left;
+}
+.location-filter label {
+	min-width: 150px; float: left; position: relative; top:2px;
+}
+.location-filter label img{
+	max-width: 30px; height: auto; float: left; padding-right:5px; position: relative;top:1px;
+}
+.show_Empdetails {
+	position: relative;	float: right;
+}
+.show_Empdetails .emailvalues {
+    padding:5px 10px; text-align:left; margin-top: 0px; width: 310px; background-color: #e3f2fd;
+    border: 1px solid #90caf9; border-radius: 5px; position: absolute; z-index: 99; top: -15px;
+    right: 10px; display: none; box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+ }
+ .show_Empdetails .emailvalues:before {
+    top: 5px; right: 0%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+    pointer-events: none; border-color: rgba(194, 225, 245, 0); border-right-color: #42a5f5;
+    border-width: 8px; margin-left: 0px;
+}
+ .show_Empdetails .emailvalues p {
+ 	margin-bottom: 5px;
+ }
+.show_Empdetails .emailvalues .fa{
+	padding-right: 5px;
+}
+.show_Empdetails:hover .emailvalues{
+	display: block;
+}
+.radioAlign {
+	float: none !important; top: 0px !important; padding: 0px 0px 0px 7px !important;
+}
+.ml10 {
+	margin-left: 10px !important;
+}
+
+
 
 /* media 320px */
 @media (max-width: 320px) {

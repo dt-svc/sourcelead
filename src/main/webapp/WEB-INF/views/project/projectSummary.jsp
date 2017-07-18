@@ -63,6 +63,8 @@ window.onload = function () {
 	var projectStartDate = '${projectStartDate}';
 	var projectEndDate = '${projectEndDate}';
 	var projectStatus = '${projectStatus}';
+	
+	var tabType = '${tabType}';
 	projectSideBar(projectId,projectName,projectStartDate,projectEndDate,projectStatus);
  };
 </script>
@@ -70,18 +72,19 @@ window.onload = function () {
  
  <script>
  function projectSideBar(projectId,projectName,startDateStr,endDateStr, status){ 
+		    var tabType = '${tabType}';
 	  	    var result = "";
 	  	    result = result + '<input type="hidden" name="projectId" id="projectId" value="'+projectId+'" >';
 	  	    result = result + '<div class="project_side_wrap_inn_tabs">';
 		  	result = result + '<ul class="project-tabs-menu">';
 		  	
 			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		  	   result = result + ' <li class="current"><a href="#tab-1" onClick="projectDetails('+projectId+');" >Details</a></li>';
+		  	   result = result + ' <li class="current" id="details"><a href="#tab-1" onClick="projectDetails('+projectId+');" >Details</a></li>';
 			'</sec:authorize>';
 		  	
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 		  	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">' 
-		  	         result = result + '<li><a href="#tab-2" id="empTab" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
+		  	         result = result + '<li id="requestResources"><a href="#tab-2" id="empTab" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
 		  	    '</sec:authorize>';
 		  	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'
 			  	    result = result + '<li class="current"><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Employees</a></li>';
@@ -122,21 +125,28 @@ window.onload = function () {
 		    $("#projectNameById").empty(); 
 		    $("#projectNameById").append(projectName); 
 		 	
-		    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		        projectDetails(projectId);
-			'</sec:authorize>';
-			
-			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-			    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-			       projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
-			    '</sec:authorize>';
-			'</sec:authorize>';
-			
-			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
-			 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-			      projectTask(projectId, status)
-			  '</sec:authorize>';
-		  	'</sec:authorize>';
+		  	if(tabType != null && tabType != '' && tabType != 'undefined'){
+		  		 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+				 document.getElementById('resourceTab').click();
+				 document.getElementById('requestResources').className = 'current'
+			     document.getElementById("details").removeAttribute("class")
+			}else{
+				  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+			        projectDetails(projectId);
+				  '</sec:authorize>';
+				  
+				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+				    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
+				       projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
+				    '</sec:authorize>';
+				'</sec:authorize>';
+				
+				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
+				 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
+				      projectTask(projectId, status)
+				  '</sec:authorize>';
+			  	'</sec:authorize>'; 
+			}
  }
  </script> 
  

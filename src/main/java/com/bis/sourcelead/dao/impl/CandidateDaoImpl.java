@@ -1036,5 +1036,43 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.orgRelationId.id = :orgRelationId and candidate.isAssociate = 'Y'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
+			String resourceType) throws Exception {
+		
+		String subQuery1 = "";
+		String subQuery2 = "";
+		String subQuery3 = "";
+				
+		if(roleIds != null){
+			subQuery1 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id IN (:roleIds) )"; 
+		}
+		
+		if(!isNullOrEmpty(resourceType)){
+			String[] type = resourceType.split(",");
+			if(type.length > 1){
+				subQuery2 = " and candidate.isFavouriteAssociate = '1' and candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))";
+			}else{
+				if(type[0].equalsIgnoreCase("hotlist")){
+				subQuery2 = " and candidate.isFavouriteAssociate = '1' ";
+				}else{
+					subQuery2 = " and candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))";
+				}
+			}
+		}
+		
+		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState = 'ACTIVE')";
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" ";
+        
+		if(roleIds != null){
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setParameterList("roleIds", roleIds).setCacheable(true).list();
+		}else{
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		}
+	}
 }
 
