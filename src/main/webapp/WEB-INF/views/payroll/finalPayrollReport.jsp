@@ -102,6 +102,7 @@ function generatrPayroll(data,payrollCycle){
 				$("#accountDeductionsListDiv").empty();
 				$("#hrDeductionsListDiv").empty();
 				$("#wagesAndTaxListDiv").empty();
+				$("#checksListDiv").empty();
 				$("#finalPayrollReportDiv").empty();
 				$("#finalPayrollReportDiv").append(result);
 				/*  document.getElementById("applicantsContractsList").style.display="block"; 
