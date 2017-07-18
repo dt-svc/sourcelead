@@ -303,9 +303,10 @@ public class EmployeePayrollRestController {
 	 */
 	@RequestMapping(value = { "/getUserPayrollList", "/rest/getUserPayrollList" }, method = RequestMethod.GET)
 	public List<UserPayroll> getUserPayrollList(@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "selectedYear", required = false) String selectedYear)
 					throws Exception {
-		List<UserPayroll> userpayroll = userPayrollService.getPayByUserId(userId, orgLocationId);
+		List<UserPayroll> userpayroll = userPayrollService.getPayByUserId(userId, orgLocationId,selectedYear);
 		return userpayroll;
 	}
 	
