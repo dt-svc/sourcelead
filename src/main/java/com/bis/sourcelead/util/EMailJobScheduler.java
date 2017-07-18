@@ -1146,7 +1146,7 @@ public class EMailJobScheduler {
 				        				}
 				        				}
 				        				//this method is used to send the email when receiver signed the contract
-				        				contractSignedByReceiver(childContarct);
+				        				contractSignedByReceiver(contracts);
 				        			}
 				            	}
 				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
@@ -1266,7 +1266,7 @@ public class EMailJobScheduler {
 					 }
 			
 			 if(contracts.getContractOrgLocationId() != null){
-				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getLocationCode());
+				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
 				 }else{
 					 globalVarsMap.put("receiverOrg","--");
 				 }
@@ -1274,6 +1274,10 @@ public class EMailJobScheduler {
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
+			 
+			 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
 
 			
 			 //covert subject,body and signature
@@ -1291,7 +1295,8 @@ public class EMailJobScheduler {
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 String actionLink="";
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+			 
+		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario);
 		
 	}
 	
