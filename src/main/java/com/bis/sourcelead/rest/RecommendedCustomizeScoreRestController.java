@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.CandidateCompareDTO;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
@@ -27,6 +30,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementService;
@@ -65,6 +69,9 @@ public class RecommendedCustomizeScoreRestController {
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 OrgLocationService orgLocationService;
 	 
 	 
 	@RequestMapping(value = "/getCustomizeScore")
@@ -272,6 +279,7 @@ public class RecommendedCustomizeScoreRestController {
 	@ResponseBody
 	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
+		OrgLocations orglocation = orgLocationService.getOrgLocations(orgLocationId);
 		CandidateCompareDTO candidateCompare = new CandidateCompareDTO();
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 		List<CandidateIndex> candidateList = null;
@@ -319,6 +327,16 @@ public class RecommendedCustomizeScoreRestController {
 			}
 		}
 		if (candidateList != null) {
+			for(int i = 0; i<candidateList.size(); i++){
+				CandidateIndex candidate = candidateList.get(i);
+				Candidate can = candidateService.getCandidateByCandidateId(candidate.getCandidateId());
+				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
+				candidate.setCurrentResumeId(candidateResume.getId());
+				candidate.setCurrentResumeName(candidateResume.getFileName());
+				candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
+				int percentage = candidateService.getCandidatePercentage(can,orglocation);
+				candidate.setProfilePercentage(percentage);
+			}
 			candidateCompare.setCandidateList(candidateList);
 		}
 		return candidateCompare;

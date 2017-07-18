@@ -140,6 +140,13 @@ float: left !important;
 color:blue;
 }
 
+.new_side_wrap {
+	z-index:100000 !important; 
+}
+.side_mask {
+z-index:99999 !important;
+}
+
 
 </style>
  
@@ -4282,7 +4289,7 @@ function requirementRecommendations(requirementId){
     	    
     	     result = result +' <div class="clients_side_wrap">';
 			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
-			 result = result +'<div id="candidateCompare" ></div>>';
+			 result = result +'<div id="candidateCompare" ></div>';
 			 result = result + '<ul class="nav nav-tabs">';
 			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
 			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
