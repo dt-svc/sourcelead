@@ -22,7 +22,9 @@ VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Invoic
 
  INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
 VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'InvoiceClientPayableReminderEmail' and `ENTITY_TYPE` = 'Email'),
-'LoginUser','{{InvoiceClientPayableReminderEmail.LoginUser}}');	 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+'LoginUser','{{InvoiceClientPayableReminderEmail.LoginUser}}');	 
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
 VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'InvoiceClientPayableReminderEmail' and `ENTITY_TYPE` = 'Email'),
 'orgName','{{InvoiceClientPayableReminderEmail.orgName}}');	
 
@@ -55,7 +57,7 @@ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_S
 VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'InvoiceClientPayableReminderEmail' and `ENTITY_TYPE` = 'Email'),
 'attachement','{{InvoiceClientPayableReminderEmail.attachement}}');	
 											
-											#email_scenario
+											# email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) 
 											VALUES ('InvoiceClientPayableReminderEmail', 'Email', 'InvoiceClientPayableReminderEmail', 'Invoice Reminder Mail To Client', 'Remider Payment Due for Invoice-{{InvoiceClientPayableReminderEmail.invoiceID}}', 'sourcelead', 'Thanks & Regards \n {{InvoiceClientPayableReminderEmail.LoginUser}},\n {{InvoiceClientPayableReminderEmail.orgName}}', 'Dear {{InvoiceClientPayableReminderEmail.clientName}},\n This is a reminder that your invoice {{InvoiceClientPayableReminderEmail.invoiceID}} is past due.\nPlease process the payment as soon as possible.\n\nPlease find the details below\nGrand total:{{InvoiceClientPayableReminderEmail.grandTotal}} Due date-{{InvoiceClientPayableReminderEmail.dueDate}}\n  {{InvoiceClientPayableReminderEmail.acceptLink}} \n {{InvoiceClientPayableReminderEmail.rejectLink}} \n {{InvoiceClientPayableReminderEmail.attachement}}', 'N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 											
