@@ -552,10 +552,8 @@ public class RequirementListRestController {
 		
 		String resultJson = null;
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = null;
-		if (null != loginOrgLocation.getTimezone()) {
-			timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
-		}
+		Timezone timezone = (Timezone) SourceLeadSessionManager.getSessionAttribute(request, "timezone");;
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		if (requirementId != null && !requirementId.isEmpty()) {
