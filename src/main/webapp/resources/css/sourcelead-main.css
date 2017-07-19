@@ -5892,6 +5892,9 @@ ul.jobs-360{
 {
 	width:105px;
 }
+.changeRate_div.estRate_div {
+	width:175px;
+}
 
 /* media 320px */
 @media (max-width: 320px) {

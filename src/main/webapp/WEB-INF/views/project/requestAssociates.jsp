@@ -139,7 +139,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDrateType" name="REPLACEROWIDrateType">
@@ -171,13 +171,28 @@
 
 <div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-         <input class="form-control input-sm" type="text" id="REPLACEROWIDestHours" name="REPLACEROWIDestHours" data-validation="required validate_int" field-name="Est Hours">
+         <input class="form-control input-sm" type="text" id="REPLACEROWIDestHours" name="REPLACEROWIDestHours" data-validation-optional="true" data-validation="validate_Space validate_int" field-name="Est Hours">
 	</div>
 </div>
 
 <div id="divTaskTd8" style="display: none; float: left;">
-	<div class="tbldata-dotdot-100">
-         <input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget" data-validation="required validate_int" field-name="Est Budget">
+	<div class="changeRate_div estRate_div">
+          
+           <div class="pull-left dropdown-select drpdownCurrency">
+                      <select id="REPLACEROWIDestBudgetCurrencyType" name="REPLACEROWIDestBudgetCurrencyType">
+	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
+		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
+		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
+		                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
+		                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
+		                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
+                     </select>
+         </div>
+          
+         <div class="pull-left inputRate">
+         	<input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget" data-validation-optional="true"  data-validation="validate_int validate_Space validate_length length1-15" field-name="Est Budget">
+         </div>
+        
 	</div>
 </div>
                   
