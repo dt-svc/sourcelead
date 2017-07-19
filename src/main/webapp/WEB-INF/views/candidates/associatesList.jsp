@@ -51,6 +51,22 @@
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  
 <script>
+var isAssociate = 'Y';
+var sourceleadUrl = "${sourceleadUrl}";
+var _csrfParam = '${_csrf.parameterName}';
+var _csrfToken = '${_csrf.token}';
+var associateFlag = false;
+'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+	associateFlag = true;
+'</sec:authorize>';
+var name1Flag = false;
+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+name1Flag = true;
+'</sec:authorize>';
+var name2Flag = false;
+'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+name2Flag = true;
+'</sec:authorize>';
  window.onload = function() {
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
@@ -64,265 +80,7 @@
     padding-right: 5px;
 }
 </style>
-<script>
-function candidateListCheck(serachValue,universalCanddateSearchList,candidateKeyword,candidateIdSearchId){
-if(universalCanddateSearchList=="universalCanddateList")	 {
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getUniversalCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
-          success :function(data) {
-              	 prepareCandidateList(data);
-         },
-          
-     }); 
-  }
-  if(candidateKeyword == "candidateSearch"){
-	  candidateSideBar(candidateIdSearchId);
-	  candidateQuickViewProfile(candidateIdSearchId);
-	  candidateList();
-	  $("#upcandidateStatus").val('');
-  }
-else{
-	candidateList();
-	 	$("#upcandidateStatus").val('');
-	}
-  }
-  </script>
-
-<%-- 
-     @author : Laxman.
-     this script is for get candidate list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in CandidateListRestController.
---%>
-<input type="hidden" id="noCandidates" name="noCandidates"/>
-<script>
-  function candidateList(){ 	 
-	  
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  
-	  var candFilterRadio = $('input[name=candidateStatus]');
-	  var candidateStatus = candFilterRadio.filter(':checked').val();
-	  
-	  if(candidateStatus == 1){
-          $("#canDiv").text("Active Candidates");
-      }else if(candidateStatus == 0){
-    	  $("#canDiv").text("In Active Candidates");
-      }else if(candidateStatus == 2){
-    	  $("#canDiv").text("All Associates");
-      }else{
-          $("#canDiv").removeAttr("onClick");
-      }
-	 
-	  
-	  var candTypeRadio = $('input[name=candidateType]');
-	  var candidateType = candTypeRadio.filter(':checked').val();
-	  
-	  var isAssociate = "Y";
-	  
-
-	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
-	  
-	  
-	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 
-	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType,       
-            success :function(data) {
-                	 prepareCandidateList(data);
-           },
-            
-       }); 
-  } 
-</script>
- <script>
-  function prepareCandidateList(data){
-	 	     $("#candidateList").removeAttr("style");
-	     	 $("#candidateList").empty();
-	     	 var result = "";
-	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
-	          result = result +"<thead>"; 
-	          result = result +"  <tr>"; 
-	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
-	          result = result +"    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>";
-	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Primary Skill</th>"; 
-	         /*  result = result +"    <th>Skills</th>";  */
-	          result = result +"    <th>Employment Type</th>"; 
-	          result = result +"    <th>Email</th>"; 
-	          result = result +"    <th>Mobile Number</th>"; 
-	          result = result +"    <th>Location</th>"; 
-	          result = result +"    <th>Last Update</th>"; 
-	          result = result +"  </tr>"; 
-	          result = result +"</thead>";
-	          result = result +"<tbody>"; 
-	          var json = JSON.parse(data);
-	          for (var i = 0; i < json.length; i++) { 
-	         	 var opt = json[i]; 
-	         	 var mobilePhone = "";
-	         	 var designation ="";
-	         	 var address="";
-	         	 var isFavouriteAssociate = "";
-	         	 var isFavClass = "";
-	         	 var designationType = "";
-	         	 var candidateUpdateDateToString ="";
-	         	        if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
-	         		       mobilePhone = opt.mobilePhone;
-		            	}else{
-		            		mobilePhone = "----";
-		            	}
-	         	        
-		            	
-		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
-		            		address = opt.address;
-		            	}else{
-		            		address = "----";
-		            	}
-		            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
-		            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
-		            	}else{
-		            		candidateUpdateDateToString = "---";
-		            	} 
-		            	
-		            	
-		            	
-		            	if(opt.isFavouriteAssociate == '1'){
-		            		isFavouriteAssociate = "checked";
-		            		isFavClass = "activestar-rating";
-		            	}
-		            	if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-		            		lastName = opt.lastName;
-		            	}else{
-		            		lastName = "";
-		            	}
-		            	var location = "---";
-		            	
-		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
-		            		location = opt.country;
-		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            			location = opt.state+", "+location;
-			            	}
-		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            			location = opt.city+", "+location;
-			            	}
-		            	}
-		            	
-		            	
-		            	
-	              result = result +"<tr>";
-	              result = result +"<td style='width : 25px;'>";
-	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
-	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_INTO_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavouriteAssociate+" onclick='addFavourite("+opt.candidateId+")'></input>";
-	              '</sec:authorize>';
-	             
-	              result = result +" <label></label>";
-	              result = result +"</div>";
-	              result = result +"</td>";
-	
-	             
-	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+opt.candidateId+"); candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
-	              '</sec:authorize>';
-	              
-	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
-	              '</sec:authorize>';
-	              
-	              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined"){
-	            	  result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
-	              }else{
-	            	  
-	            	  result = result +"  <td><div>----</div></td>";
-	              }
-	            
-	             /*  if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
-	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
-	              }else{
-	            	  
-	            	  result = result +"  <td><div>----</div></td>";
-	              } */
-	             
-	              
-	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
-	             	 {
-	            	  if(opt.designationOtherType !=null && opt.designationOtherType !='' && opt.designationOtherType !="undefined"){
-	                   result = result +"  <td><div>"+opt.designationOtherType+"</div></td>";
-	             	 }else{
-	             		result = result +"  <td><div>"+opt.designationType+"</div></td>"; 
-	             	 }
-	             	 }else{
-	             		 result = result +"  <td><div>----</div></td>"; 
-	             	 }
-	              
-	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
-	             
-	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
-	              
-	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
-	
-	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
-	              result = result +"</tr>"; 
-	          }
-	          result = result +" </tbody>";
-	          result = result +"</table>";
-	          $("#noCandidates").val('');
-	          $("#candidateList").append(result);
-	          $("#noCandidates").val(json.length);
-	          cpagination(); 
-  }
-</script>
-<%-- 
-     @author : Laxman.
-     this script is for prepare pagination to candidateList.
-     1.usage     : used in candidateList() function.
---%>
-
-<!--  <script>
-function cpagination(){  
-    $('#candidatePagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     	"sSearch": ""
-     	}
-    } );
-}
-
-</script>
- -->
-<script>
-function cpagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
-    $('#candidatePagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-		"aaSorting": [[7,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $("#candidatePagination").wrap("<div class='overflow_Auto'></div>"); 
-}
-</script> 
-
-
-
-
+<script type="text/javascript" src="resources/js/candidateTable.js"></script>
 <%-- 
      @author : Laxman.
      this script is for show side bar when you click on the candidate name.
@@ -1126,13 +884,13 @@ function cancel(candidateId){
 									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
 										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
-										        <option value="">Currency</option>
-										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
-								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
-								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
-								                 <option ${currency  == 'GPB' ? 'selected' : ''}>GPB</option>
-								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
-								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
+										        <option value="" selected="selected">Currency</option>
+										         <option>INR</option>
+								                 <option>AUD</option>
+								                 <option>USD</option>
+								                 <option>GPB</option>
+								                 <option>SGD</option>
+								                 <option>EUR</option>
 				                            </select>
 										</div>
 										 <div id="minRateDiv">
@@ -1231,7 +989,7 @@ function cancel(candidateId){
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
 								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+							                      <option value="${cntry.name}">${cntry.name}</option>
 						                </c:forEach>
 				                 </select>
 							  </div>
@@ -1317,7 +1075,7 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();minMaxExperience();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList();minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
@@ -1398,6 +1156,9 @@ function cancel(candidateId){
         </ul>
         
         <div class="clearfix"></div>
+        <div class='remove_search'>
+        		<input type='text' placeholder='search' id='dataTableSearch'/>
+        </div>
       </div>
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
@@ -2180,72 +1941,6 @@ function getCities(){
 				$this.next().css({'width': '100%'});
 				})
 </script> 
-    
-    
-    <script type="text/javascript">
-	function searchCandidate() {
-		var minRate = $('#minRate').val(); 
-		var maxRate = $('#maxRate').val();
-		 if((minRate != null && minRate != "" && minRate !='undefined') || (maxRate != null && maxRate != "" && maxRate !='undefined')){
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-			 
-			 $('#currency').removeAttr('data-validation-optional');
-			 $('#currency').attr("data-validation","required"); 
-		 }else{
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-			 
-			 $('#currency').removeAttr('data-validation');
-			 $('#currency').attr("data-validation-optional","true"); 
-		 }
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
-		
-		 if ($('#candidatelist_form').validate(false, validationSettings)){ 
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidatelist_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
-			var form = $('#candidatelist_form')[0];
-      		var formData = new FormData(form); 
-			//It will escape all the special characters
-			$("#search_candidate").attr("disabled", "disabled");
-			$("#search_candidate").addClass('button').val('Processing..');
-			var isAssociate = "Y";
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&isAssociate="+isAssociate,
-						success : function(data) {
-							$("#search_candidate").addClass('button').val('Search');
-							$("#search_candidate").removeAttr("disabled");
-							closePop();
-							prepareCandidateList(data);
-						},
-					}); 
-			return true;
-		 }else{ 
-				return false;
-		 } 
-	} 
-	
-	$('body').on('blur', '#candidatelist_form', function() {
-		$("#candidatelist_form").showHelpOnFocus();
-		$("#candidatelist_form").validateOnBlur(false, validationSettings);
-	});
-</script>
 
 <script>
 //Function to validate if maxExpYears  value is more the minExpYears  value

@@ -373,7 +373,13 @@ function prepareRequirementData(data){
            }else{
           	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
-          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
+          if(opt.isAllowStageAccess != null && opt.isAllowStageAccess != '' && opt.isAllowStageAccess != 'undefined' && opt.isAllowStageAccess != 'false'){
+        	  result = result +"<td><div style='width:75px'><select   name='changeStatusId"+opt.id+"' disabled='disabled'   id='changeStatusId"+opt.id+"'>";
+          }
+          else{
+        	  result = result +"<td><div style='width:75px'><select   name='changeStatusId"+opt.id+"'   onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
+          }
+          
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -525,10 +531,14 @@ function prepareRequirementData(data){
     $("#noReq").val('');
     $("#requirementList").append(result); 
     $("#requirementEmptyListMessage").val(json.length);
-    for (var i = 0; i < json.length; i++) { 
+    
+    
+  
+    
+    /* for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
-    }
+    } */
     
     pagination(); 
     msgFadein1(); 
@@ -555,11 +565,11 @@ function pagination(){
     } );
 }
 </script>
-<script>
+<!-- <script>
 function statusvalidating(id){
 	changeStatusAuthorisation(id);
 }
-</script>
+</script> -->
 
 <%-- 
      @author : sarath kumar.
@@ -1869,7 +1879,7 @@ $(".reminder").click(function(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function changeStatusAuthorisation(requirementId){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1889,7 +1899,7 @@ function changeStatusAuthorisation(requirementId){
           }
 }); 
 }
-</script>
+</script> -->
 
 
 

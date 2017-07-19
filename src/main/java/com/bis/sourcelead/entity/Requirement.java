@@ -419,6 +419,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String orgcode;
 
 	@Transient
+	private String isAllowStageAccess;
+	
+	@Transient
 	private String reqlevel1ApproverStatus;
 	
 	@Transient
@@ -1244,6 +1247,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.orgcode = orgcode;
 	}
 	
+	public String getIsAllowStageAccess() {
+		return isAllowStageAccess;
+	}
+
+	public void setIsAllowStageAccess(String isAllowStageAccess) {
+		this.isAllowStageAccess = isAllowStageAccess;
+	}
+
 	public String getReqlevel1ApproverStatus() {
 		return reqlevel1ApproverStatus;
 	}

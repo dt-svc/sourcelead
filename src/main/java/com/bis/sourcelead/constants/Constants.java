@@ -115,7 +115,9 @@ public class Constants {
 	public static final String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	public static final String CUSTOM_USER_EMAIL = "customUserEmail";
 	public static final String INVOICE_CLIENT_RECEIVABLE_MAIL = "InvoiceClientAcceptEmail";
+	public static final String INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL = "InvoiceClientReceivableReminderEmail";
 	public static final String INVOICE_CLIENT_PAYABLE_MAIL = "InvoiceClientPayableEmail";
+	public static final String INVOICE_CLIENT_PAYABLE_REMINDER_MAIL = "InvoiceClientPayableReminderEmail";
 	public static final String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static final String ADD_OFFER_MAIL = "Forward the Mail";
 	public static final String NOTIFICATION_TO_CLIENT = "Notification To Client";
