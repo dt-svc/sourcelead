@@ -112,6 +112,8 @@ public interface ProjectsService {
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 
-		List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception ;
+		List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId) throws Exception ;
+		
+		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
 }

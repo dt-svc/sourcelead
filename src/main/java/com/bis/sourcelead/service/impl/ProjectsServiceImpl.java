@@ -2332,5 +2332,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
 			}
 
+			@Override
+			public Projects getProjectByProjectUUID(String projectUUID) throws Exception {
+				return projectsDao.getProjectByProjectUUID(projectUUID);
+			}
+
 
 }

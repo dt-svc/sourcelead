@@ -301,6 +301,19 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
+							<div class="form-group">
+							<label class="col-md-3">Date Format</label>
+							<div class="col-md-9">
+							
+							 <select class="chosen-select form-control" id="dateFormat1" name="dateFormat1">
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-dd-MM</option>
+							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-MM-dd</option>
+							 </select>
+							</div>
+							</div>
+							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
@@ -1117,7 +1130,6 @@ var validationSettings = {
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-	          		
         		    var sourceleadUrl = '${sourceleadUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
@@ -1390,6 +1402,11 @@ function getOrgLocationDetails(orgLocationId){
 	    	        result = result +'<div class="form-group">';
 	    	        result = result +'<label class="col-md-4">Time Zone :</label>';
 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['timeZoneName']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Date Format :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['dateFormat']+'</p>';
 	    	        result = result +'</div>';
     	        
     	        result = result +'</div>';
@@ -1746,6 +1763,15 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
+	            result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Date Format</label>';
+	            result = result +'<div class="col-md-9">';
+	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
+	            result = result +'</select>';
+	            //result = result +'<span class="hidden">Time Zone</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
+	            
           
 	            
         
@@ -1900,6 +1926,18 @@ function getLocationCities(){
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var country = $('#orgSetCountry').val();
+	$("#dateFormat").empty();
+	if(country == "India"){
+		$('#dateFormat').append("<option value='dd-MM-yyyy' selected>dd-MM-yyyy</option>");
+		$('#dateFormat').append("<option value='MM-dd-yyyy'>MM-dd-yyyy</option>");
+		$('#dateFormat').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
+		$('#dateFormat').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
+	}else{
+		$('#dateFormat').append("<option value='MM-dd-yyyy' selected>MM-dd-yyyy</option>");
+		$('#dateFormat').append("<option value='dd-MM-yyyy'>dd-MM-yyyy</option>");
+		$('#dateFormat').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
+		$('#dateFormat').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
+	}
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 

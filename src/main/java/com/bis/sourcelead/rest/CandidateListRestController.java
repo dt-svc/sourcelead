@@ -221,7 +221,7 @@ public class CandidateListRestController {
 			}
 			
 //			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(), candidateStatus.toString());
-			 
+			 SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 			try {
 				
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
@@ -233,7 +233,7 @@ public class CandidateListRestController {
 			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
 			    	    if(candidateIndex.getUpdatedDate() != null){
 			    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
-							String  updatedDate = Constants.DF_DMY.format(date1);
+							String  updatedDate = format.format(date1);
 			    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
 			   			}
 			    	    candidatesList.add(candidateIndex);

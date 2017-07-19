@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -42,6 +43,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private CandidateService candidateService;
 
 	
 	/**
@@ -90,10 +94,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
 					try {
 						
-						String pattern = "dd-MM-yyyy";
-                        SimpleDateFormat format = new SimpleDateFormat(pattern);
-                        
-                        Date validFrom = format.parse(jsonObject.getString("validFrom"));
+						/*String pattern = "dd-MM-yyyy";
+                        SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+						SimpleDateFormat formatter = orgLocationId.getLocFullFormDateFormatter();
+                        Date validFrom = formatter.parse(jsonObject.getString("validFrom"));
                         candidatecertificate.setValidFrom(validFrom);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -106,10 +110,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				}
 				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
 					try {
-						String pattern = "dd-MM-yyyy";
-                        SimpleDateFormat format = new SimpleDateFormat(pattern);
-                        
-                        Date validTo = format.parse(jsonObject.getString("validTo"));
+						/*String pattern = "dd-MM-yyyy";
+                        SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+                        SimpleDateFormat formatter = orgLocationId.getLocFullFormDateFormatter();
+                        Date validTo = formatter.parse(jsonObject.getString("validTo"));
                         candidatecertificate.setValidTo(validTo);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -163,12 +167,14 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 				Long orgLocationId) throws Exception {
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
+			 Candidate can = candidateService.getCandidateById(candidateId);
+				SimpleDateFormat formatter = can.getOrgLocationId().getLocFullFormDateFormatter();
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(formatter.format(candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(formatter.format(candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;

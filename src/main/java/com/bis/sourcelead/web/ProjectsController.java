@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,16 +11,21 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -44,6 +50,12 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 private UserService userService;
+	 
+	 @Autowired
+	 ProjectsService projectsService;
+	 
+	 @Autowired
+	 RolesService rolesService;
 	
 	 
 	 /**
@@ -98,5 +110,82 @@ public class ProjectsController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
+	 
+	 
+	 @RequestMapping(value = "/projectSummary")
+		public ModelAndView projectSummary(@RequestParam(value="projectUUID", required=true) String projectUUID,@RequestParam(value="tabType", required=false) String tabType,
+				HttpServletRequest request) throws Exception {
+				ModelAndView model = new ModelAndView();
+				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				if(projects != null){
+					model.addObject("projectId", projects.getId());
+					model.addObject("projectName", projects.getProjectName());
+					if(projects.getStartDate() != null){
+						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+					}
+					if(projects.getEndDate() != null){
+						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+					}
+					model.addObject("projectStatus", projects.getProjectStatus());
+				}
+				model.addObject("projectUUID", projectUUID);
+				if(null != tabType && !tabType.isEmpty() && tabType != ""){
+					model.addObject("tabType", tabType);
+				}
+				model.setViewName("project/projectSummary");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+	}
+	 
+	 @RequestMapping(value = "/newResourceRequest")
+		public ModelAndView newResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+				ModelAndView model = new ModelAndView();
+				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				if(projects != null){
+					model.addObject("projectId", projects.getId());
+					model.addObject("projectName", projects.getProjectName());
+					if(projects.getStartDate() != null){
+						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+					}
+					if(projects.getEndDate() != null){
+						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+					}
+					model.addObject("projectStatus", projects.getProjectStatus());
+				}
+				model.addObject("projectUUID", projectUUID);
+				model.setViewName("project/newResourceRequest");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				return model;
+	}
+	 
+	 
+    @RequestMapping(value = "/requestAssociates")
+	public ModelAndView requestAssociates(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    
+	    ModelAndView model = new ModelAndView();
+		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(projects != null){
+			model.addObject("projectId", projects.getId());
+			model.addObject("projectName", projects.getProjectName());
+			if(projects.getStartDate() != null){
+				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+			}
+			if(projects.getEndDate() != null){
+				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+			}
+			model.addObject("projectStatus", projects.getProjectStatus());
+		}
+		model.addObject("projectUUID", projectUUID);
+		
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		model.addObject("orgLocationsList", orgLocationsList);
+		
+		model.setViewName("project/requestAssociates");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+    }
+
 
 }
