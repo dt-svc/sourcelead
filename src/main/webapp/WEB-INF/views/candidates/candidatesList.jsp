@@ -925,6 +925,20 @@ function refreshImageBlock(candidateId){
 						 
 						 
 						 result = result+'  </div>';
+						 
+						 result = result+' <div class="mb mt5 UsProBar">';
+						 result = result+' <div class="progress nomr"> ';
+						 if(json.profilePercentage>=50){
+						 result = result+' <div class="progress-bar progress-bar-success ';
+						 }
+						 else{
+						 result = result+' <div class="progress-bar progress-bar-danger ';
+						 }
+						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+						 result = result+' </div> ';
+						 result = result+' </div> ';
+						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
