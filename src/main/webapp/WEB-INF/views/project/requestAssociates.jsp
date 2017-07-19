@@ -23,6 +23,8 @@
     
 <div class="content-area content-new clearfix">
     <div class="row form-horizontal mt myForm">
+      <div id="choicepopUp"></div>
+      <div id="associateRequestLoading"></div>
       
       <form:form id="requestAssociates_form" name="requestAssociates_form" method="post">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
@@ -49,11 +51,11 @@
             <div class="form-group">
               <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
-                <select class="chosen-select form-control">
-                  <option>Approver 1</option>
-                  <option>Approver 2</option>
-                  <option>Approver 3</option>
-                  <option>Approver 4</option>
+                <select class="chosen-select form-control" data-validation="required" field-name="Approver">
+                <option selected value=''>--Select Approver--</option>
+	                <c:forEach var="approver" items="${approversList}">
+	                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
+	                </c:forEach>
                 </select>
               </div>
             </div>
@@ -196,6 +198,7 @@ function getRequestedAssociateListDiv(){
 	 
 	 result = result +'<div class="require_wrap_table mt10">';
 	 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+	 result = result +'  <input type="hidden" id="associatesRowsCount" name="associatesRowsCount" value="0" />';
 	 result = result +'<table>';
 	 result = result +'<tbody>';
 	 result = result +'<thead id="addRequestTbl">';
@@ -226,12 +229,18 @@ function getRequestedAssociateListDiv(){
 
 <script type="text/javascript">
 	function removeRow(rowId) {
+		
+		var associatesRowsCount = $("#associatesRowsCount").val();
+		var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
+		$("input[name = 'associatesRowsCount']").val(rowsCount - 1);
+		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addRequestTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
+		
 	}
 </script>
 
@@ -565,42 +574,51 @@ var validationSettings = {
    };  
          $('body').on('submit', '#requestAssociates_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
-        		e.preventDefault();
-            	
-        		var frm = $('#requestAssociates_form').serializeFormJSON();
-            	var con = JSON.stringify(frm);
-			    con = con.replace(/[{}]/g, ""); 
-			    var jsonData = encodeURIComponent(con);
-         		var sourceleadUrl ='${sourceleadUrl}';
-         		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-         		
-         		/*  	$.ajax({
-          	      type: "POST",
-          	      contentType : 'application/json; charset=utf-8',
-          	      dataType : 'json',
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
-                			  
-                			  
-                  	success: function(result) {
-			        	if((result == 'orgList')){
-			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#loading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}
-			        	
-			        },  
-               }); */  
-                
-            	    return true;
+        		
+        		  
+        		var associatesRowsCount = document.getElementById("associatesRowsCount").value;
+        		if(associatesRowsCount == 0){
+        			alertMessage();
+        			 return false;
+        		}else{
+        			
+        			e.preventDefault();
+                	
+            		var frm = $('#requestAssociates_form').serializeFormJSON();
+                	var con = JSON.stringify(frm);
+    			    con = con.replace(/[{}]/g, ""); 
+    			    var jsonData = encodeURIComponent(con);
+             		var sourceleadUrl ='${sourceleadUrl}';
+             		
+             		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+             		
+             		/* $.ajax({
+              	      type: "POST",
+              	      contentType : 'application/json; charset=utf-8',
+              	      dataType : 'json',
+                    	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
+                    			  
+                    			  
+                      	success: function(result) {
+    			        	if((result == 'orgList')){
+    			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
+    			        	}
+    			        	else if((result == 'Invalid Sub Modules')){
+    			        		$("#loading").removeAttr("style");
+    			        		document.getElementById("subModule").style.display="";
+    			        	}
+    			        	
+    			        },  
+                   }); */  
+             		 return true;
+                	   
+        		}
+        	
             }
             else{
             	return false;	
                }
             });
-         //$('#createOrg_form').showHelpOnFocus();
             
          $('body').on('blur', '#requestAssociates_form', function() {
      		$("#requestAssociates_form").showHelpOnFocus();
@@ -610,8 +628,31 @@ var validationSettings = {
 	</script>
 	
 	
+<script type="text/javascript">
+function alertMessage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Select atleast one associate</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 	
-	<script type="text/javascript">
+	
+<script type="text/javascript">
 (function ($) {
    $.fn.serializeFormJSON = function () {
 
@@ -661,6 +702,9 @@ var validationSettings = {
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 			
+			var associatesRowsCount = $("#associatesRowsCount").val();
+			var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
+			$("input[name = 'associatesRowsCount']").val(rowsCount + 1);
 			
 			
 			var row = tbl.insertRow(maxRowNum);
