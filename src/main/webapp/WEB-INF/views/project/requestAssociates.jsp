@@ -443,7 +443,7 @@ function getAssociatesFilter(){
 	        	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
-	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates();"></th>';
 	        	/* result = result +'<th>ID</th>'; */
 	        	result = result +'<th>Name</th>';
 	        	result = result +'<th>Primary Skill</th>';
@@ -872,18 +872,17 @@ function toDate(selector) {
 </script>
 
 <script>
-	function toggleAssociates(source) {
-	    var checkboxes = document.querySelectorAll('input[name="associates[]"]');
-	    for (var i = 0; i < checkboxes.length; i++) {
-	        if (checkboxes[i] != source)
-	            checkboxes[i].checked = source.checked;
-	        
-	    }
-	$('input:checkbox:not(#checkAllAssociates)').click(function() {
-	    if(!this.checked) {
-	        $('#checkAllAssociates').removeAttr('checked');
-	    }
-	});
+	function toggleAssociates() {
+	var checked = document.getElementById("checkAllAssociates").checked  
+	    if(checked) {
+	        $('.myCheckbox').each(function() {
+	            this.checked = true;   
+	        });
+	    }else{
+	        $('.myCheckbox').each(function() {
+	            this.checked = false;      
+	        });         
+	    } 
 	}
 </script>
 
