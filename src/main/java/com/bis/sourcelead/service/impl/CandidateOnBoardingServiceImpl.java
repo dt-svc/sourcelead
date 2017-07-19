@@ -123,6 +123,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		CandidateOnBoarding candidateOnBoarding = null;
 		
+		//date format code
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		
 		if(jsonObj.has("savedonboardId") && !isNullOrEmpty(jsonObj.getString("savedonboardId"))){
 			candidateOnBoarding = candidateOnBoardingDao.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("savedonboardId")));
 		}else{
@@ -206,11 +209,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(jsonObj.has("startDate") && !isNullOrEmpty(jsonObj.getString("startDate"))){
-			candidateOnBoarding.setStartDate(commonUtil.getDateFormat(jsonObj.getString("startDate")));
+			candidateOnBoarding.setStartDate(dateFormat.parse(jsonObj.getString("startDate")));
 		}
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOnBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));
+			candidateOnBoarding.setEndDate(dateFormat.parse(jsonObj.getString("endDate")));
 		}else{
 			candidateOnBoarding.setEndDate(null);
 		}
@@ -266,7 +269,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(jsonObj.has("dueDate") && !isNullOrEmpty(jsonObj.getString("dueDate"))){
-			candidateOnBoarding.setDueDate(commonUtil.getDateFormat(jsonObj.getString("dueDate")));
+			candidateOnBoarding.setDueDate(dateFormat.parse(jsonObj.getString("dueDate")));
 		}else{
 			candidateOnBoarding.setDueDate(null);
 		}
