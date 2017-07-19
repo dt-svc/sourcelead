@@ -38,7 +38,6 @@ window.onload = function () {
 	getAllCountries();
 	colourpicker();
 	orgShortCode();
-	alert("hiiiiiiiiiii");
  };
 </script>
 
@@ -436,10 +435,11 @@ function cancelOrgImg(){
                                     <div id="orgShortCodeLoading"></div>
                                 </div>
                             </div>
-                			<div id="orgShortCodeDiv"></div>            
+                			<div class="form-group">
+                			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
+                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
+                			</div>         
             			</div>            			
-            			
-            			
         			</div>
     			</div>
     
@@ -773,28 +773,6 @@ function configCoolingOff(){
 				       $("#coolingOff").trigger('chosen:update');
 		        },
 		 });
-}
-</script>
-
-
-<script>
-function orgShortCode(){
-	$("#orgShortCodeDiv").empty(); 
-					result = result + '<form id="orgShortCode_form"  name="orgShortCode_form" method="post">'; 
-					alert("2121313");
-					result = result + '<div class="form-group">';
-					result = result + '<label class="col-md-3">Orgnization Short Code<i class="" title="System Generated Id"></i></label>';
-					result = result + '<div class="col-md-4"><input type="text" name="generatedUserId" id="generatedUserId" class="form-control input-sm"></div>';
-					result = result + '</div>';
-					
-					result = result + '<div class="pull-right">';
-					result = result + '<input type="submit" value="Save" id="saveOrgShortCode_button" class="btn btn-primary mr">';
-					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
-					result = result + '</div>';
-					result = result + ' </form>';
-					$("#orgShortCodeDiv").empty(); 
-					$("#orgShortCodeDiv").append(result);
-					
 }
 </script>
 

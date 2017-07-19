@@ -3,10 +3,12 @@ package com.bis.sourcelead.service;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.form.OrgSettings;
 
 public interface OrgLocationService {
@@ -42,5 +44,11 @@ public interface OrgLocationService {
 	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception;
 	
 	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception;
+
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation, JSONObject jsonObj, String type) throws SourceLeadConstraintViolationException, JSONException, NumberFormatException, Exception;
+
+	public String getDateFormatByOrgLocation(OrgLocations orgLocation);
+
+	public boolean validateOrgShortCode(String orgShortId);
 
 }

@@ -59,6 +59,9 @@ public class OrgLocations implements Serializable{
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
+	
+	@Column(name = "DATE_FORMAT")
+	private String dateFormat;
 	 
 	
 	@Column(name = "COUNTRY")
@@ -589,6 +592,14 @@ public class OrgLocations implements Serializable{
 	public void setSystemGeneratedId(String systemGeneratedId)
 	{
 		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 	
 	
