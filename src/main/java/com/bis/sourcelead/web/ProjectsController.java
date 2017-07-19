@@ -21,11 +21,13 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -56,6 +58,7 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 RolesService rolesService;
+	 
 	
 	 
 	 /**
@@ -181,6 +184,9 @@ public class ProjectsController {
 		
 		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 		model.addObject("orgLocationsList", orgLocationsList);
+		
+		List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+		model.addObject("approversList", approversList);
 		
 		model.setViewName("project/requestAssociates");
 		model.addObject("sourceleadUrl", sourceleadUrl);
