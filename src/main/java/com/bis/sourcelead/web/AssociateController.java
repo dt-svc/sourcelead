@@ -97,7 +97,7 @@ public class AssociateController {
 		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalCanddateList")){
 		    model.addObject("universalCanddateList", "universalCanddateList");
 		    model.addObject("serachValue",searchValue);
-		    model.addObject("searchType", "Candidate");
+		    model.addObject("searchType", "Associate");
 		}
 		
 		List<Countries> countryList = countriesService.getAllCountries();
