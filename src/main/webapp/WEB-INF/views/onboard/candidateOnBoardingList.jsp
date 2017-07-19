@@ -105,12 +105,12 @@
  
  <script>
  function getOnboardCandidatesList(){
-	 
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getOnboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
             success :function(data) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
@@ -217,10 +217,11 @@
  function getOffboardCandidatesList(){
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var locationCode = '${SourceLeadWeb_locationCode}'
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getOffboardCandidateList?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,    
             success :function(data) {
                		
 			    	     $("#onboardingLoading").removeAttr("style");
