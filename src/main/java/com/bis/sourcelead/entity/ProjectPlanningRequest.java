@@ -73,6 +73,20 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "STATUS")
    	private Integer status;
     
+	@Column(name = "CREATED_DATE")
+    private Date createdDate;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+    
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "CREATED_BY")
+  	private User createdBy;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "UPDATED_BY")
+  	private User updatedBy;
+    
     
     
     public Long getId() {
@@ -203,14 +217,6 @@ public class ProjectPlanningRequest implements Serializable{
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
@@ -219,28 +225,21 @@ public class ProjectPlanningRequest implements Serializable{
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy() {
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public User getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-	@Column(name = "CREATED_DATE")
-    private Date createdDate;
-    
-    @Column(name = "CREATED_BY")
-    private String createdBy;
-    
-    @Column(name = "UPDATED_DATE")
-    private Date updatedDate;
-    
-    @Column(name = "UPDATED_BY")
-    private String updatedBy;
-    
-   
-
 
 	
 }
