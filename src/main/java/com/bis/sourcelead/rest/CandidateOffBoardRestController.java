@@ -49,6 +49,7 @@ import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
 import com.bis.sourcelead.service.OffboardCheckListService;
 import com.bis.sourcelead.service.OffboardTasksService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -93,6 +94,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     TaskService taskService;
+    
+    @Autowired
+    private OrgLocationService orgLocationService;
     
     @Autowired
     CandidateOnBoardingService candidateOnBoardingService;
@@ -141,9 +145,11 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = userService.getUserById(offboardUserId);
 		Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), loginOrgLocation.getId());
+		// date format 
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		if(null != employees){
 			if(null != employees.getHireDate()){
-				user.setDateOfJoin(Constants.DMY.format(employees.getHireDate()));
+				user.setDateOfJoin(dateFormat.format(employees.getHireDate()));
 			}
 			
 			if(!isNullOrEmpty(employees.getUserEmploymentType())){
@@ -729,11 +735,11 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/getOffboardCandidateList")
-		 public String getOffboardCandidateList(HttpServletRequest request) throws Exception {
+		 public String getOffboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
 
 			String resultJson;
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			
+			OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 			List<CandidateOffBoarding> candidateOffBoardingList = candidateOffBoardingService.getCandidateOffBoardingListByOrgLocationId(loginOrgLocation.getId());
 			List<CandidateOffBoarding> offBoardingList = new ArrayList<CandidateOffBoarding>();
 			
@@ -741,15 +747,15 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				for(CandidateOffBoarding candidateOffBoarding : candidateOffBoardingList){
 					
 					if(null != candidateOffBoarding.getDateOfJoin()){
-						candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
+						candidateOffBoarding.setDateOfJoinStr(formatter.format(candidateOffBoarding.getDateOfJoin()));
 					}
 					
 					if(null != candidateOffBoarding.getEffectiveDate()){
-						candidateOffBoarding.setEffectiveDateStr(Constants.DMY.format(candidateOffBoarding.getEffectiveDate()));
+						candidateOffBoarding.setEffectiveDateStr(formatter.format(candidateOffBoarding.getEffectiveDate()));
 					}
 					
 					if(null != candidateOffBoarding.getEndDate()){
-						candidateOffBoarding.setEndDateStr(Constants.DMY.format(candidateOffBoarding.getEndDate()));
+						candidateOffBoarding.setEndDateStr(formatter.format(candidateOffBoarding.getEndDate()));
 					}
 					
 					StringBuilder candidateName = new StringBuilder();
@@ -776,27 +782,30 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/loadOffboardingCandidateDetails")
-		 public String loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,HttpServletRequest request) throws Exception {
+		 public String loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,
+				 @RequestParam(value="locationCode") String locationCode) throws Exception {
 
 			String resultJson;
 			StringBuilder candidateName = new StringBuilder();
-			
+			// date format
+			OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
 			CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offBoardingUUID);
 			if(null != candidateOffBoarding){
 				
 				candidateOffBoarding.setOffBoardUserId(candidateOffBoarding.getUserId().getId());
 			
 				if(null != candidateOffBoarding.getDateOfJoin()){
-					candidateOffBoarding.setDateOfJoinStr(Constants.DMY.format(candidateOffBoarding.getDateOfJoin()));
+					candidateOffBoarding.setDateOfJoinStr(dateFormat.format(candidateOffBoarding.getDateOfJoin()));
 				}
 				
 				
 				if(null != candidateOffBoarding.getEndDate()){
-					candidateOffBoarding.setEndDateStr(Constants.DMY.format(candidateOffBoarding.getEndDate()));
+					candidateOffBoarding.setEndDateStr(dateFormat.format(candidateOffBoarding.getEndDate()));
 				}
 				
 				if(null != candidateOffBoarding.getEffectiveDate()){
-					candidateOffBoarding.setEffectiveDateStr(Constants.DMY.format(candidateOffBoarding.getEffectiveDate()));
+					candidateOffBoarding.setEffectiveDateStr(dateFormat.format(candidateOffBoarding.getEffectiveDate()));
 				}
 				
 				
