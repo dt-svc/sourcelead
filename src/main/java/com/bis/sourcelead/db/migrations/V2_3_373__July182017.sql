@@ -1,2 +1,2 @@
-ALTER TABLE `sourcelead`.`org_locations` 
+ALTER TABLE `sourcelead`.`ORG_LOCATIONS`
 ADD COLUMN `DATE_FORMAT` VARCHAR(45) NULL AFTER `IS_PRIMARY`;
