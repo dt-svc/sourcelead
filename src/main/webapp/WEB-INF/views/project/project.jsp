@@ -245,8 +245,7 @@ function validateTaskName(){
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<c:if test="${empty user_List}">
 							<p style="font-size: 11px; color: red;" class="text-muted small">
-								<i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will
-								have access to Edit/Approve/Reject TimeSheet
+								<i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will have access to Edit/Approve/Reject TimeSheet
 							</p>
 						</c:if>
 
@@ -256,11 +255,8 @@ function validateTaskName(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="ProjectName"
-									data-validation="required validate_Space validate_length length2-100"
-									field-name="Project Name" value=""> <span
-									class="hidden">Project Name</span> <span class="hidden">Enter
-									Project Id</span>
+								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-100"
+									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden">Enter Project Id</span>
 
 							</div>
 						</div>
