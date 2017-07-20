@@ -169,8 +169,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 					 resourceRequest.setEstimatedHours(Double.valueOf(jsonObj.getString(i+"estHours")));
 				 }
 				 
-				 if(jsonObj.has(i+"estBudgetCurrencyType") && !isNullOrEmpty(jsonObj.getString(i+"estBudgetCurrencyType"))){
-					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString(i+"estBudgetCurrencyType"));
+				 if(jsonObj.has("estimatedBudgetCurrencyType") && !isNullOrEmpty(jsonObj.getString("estimatedBudgetCurrencyType"))){
+					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
 				 }
 				 
 				 if(jsonObj.has(i+"estBudget") && !isNullOrEmpty(jsonObj.getString(i+"estBudget"))){
