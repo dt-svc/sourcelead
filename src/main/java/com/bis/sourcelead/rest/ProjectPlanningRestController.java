@@ -1,8 +1,15 @@
 package com.bis.sourcelead.rest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,14 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 public class ProjectPlanningRestController {
@@ -42,6 +54,9 @@ public class ProjectPlanningRestController {
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	ProjectPlanningRequestService projectPlanningRequestService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
@@ -120,6 +135,61 @@ public class ProjectPlanningRestController {
 		 resultJson = commonUtil.toJSON(rolesList);
 		 return resultJson;
 	  }
+	 
+	 
+	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
+		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate) throws Exception {
+			
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+			int estimatedHours = 0;
+			
+			try {
+
+				Date requestStartDate =  formatter.parse(startDate);
+				Calendar startCal = Calendar.getInstance();
+				startCal.setTime(requestStartDate); 
+				
+				Date requestEndDate =  formatter.parse(endDate);
+				Calendar endCal = Calendar.getInstance();
+				endCal.setTime(requestEndDate); 
+				
+				int workDays = 0;
+				
+			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			        startCal.setTime(requestEndDate);
+			        endCal.setTime(requestStartDate);
+			    }
+
+			    do {
+			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			            ++workDays;
+			        }
+			        startCal.add(Calendar.DATE, 1);
+			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
+
+			    estimatedHours = (workDays*Constants.WORKING_HOURS);
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+			
+			return estimatedHours;
+		} 
+	 
+	 
+	  @RequestMapping(value = "/saveResourceRequest")
+		public @ResponseBody String saveResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    
+		    JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		    projectPlanningRequestService.saveProjectPlanningRequest(jsonObj, user, orgLocations, projectUUID,saveType);
+		   
+		    return "success";
+	    }
 	 
 	 
 
