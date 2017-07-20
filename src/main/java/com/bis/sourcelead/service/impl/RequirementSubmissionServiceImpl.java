@@ -2041,12 +2041,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	 
    	SubmissionXls submissionXls =  saveSubmissionTracker(dateFormat,createExcelworkbook,requirement,user);
     
+   	
+   	
+   	
    	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls,submissionId);
 	
 		
 	}
 /**
  * prepares email template with attachments
+ * don't use this method for email sending 
  * @param jsonObj
  * @param user
  * @param files
@@ -2054,6 +2058,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
  * @param submissionXls
  * @param submissionId 
  * @throws Exception
+ * 
  */
 	private void sendMailTemplateWithAttachment(JSONObject jsonObj, User user, Map files, OrgLocations loginOrgLocation,
 			SubmissionXls submissionXls, String[] submissionId) throws Exception {
@@ -2070,6 +2075,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		emailMessage.setCreatedBy(user.getUserCode());
 		emailMessage.setFromEmail(user.getEmail());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		StringBuilder emailBuild = new StringBuilder();
 		emailMessage.setFromName(emailBuild.append(user.getFirstName()).append("").append(user.getLastName()).toString());
 		InternetAddress[] iAdressArray = null;
@@ -2157,7 +2163,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			
 			User toUser = userService.findByEmail(jsonObj.getString("toMailId"));
-			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList,submissionId);
+			emailMessage.setSubmissionId(submissionId);
+			
+			emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList);
 			String actionLink="";
 			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
 		}
