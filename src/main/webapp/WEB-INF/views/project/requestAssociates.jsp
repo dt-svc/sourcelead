@@ -139,7 +139,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate"  data-validation="validate_Space validate_int validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDrateType" name="REPLACEROWIDrateType">
@@ -229,14 +229,31 @@ function getRequestedAssociateListDiv(){
 	 result = result +'<th>Action</th>';
 	 result = result +'</tr>';
 	 result = result +'  </thead>';
-	 
-	
 	 result = result +'</tbody>';
 	 result = result +'</table>';  
 	 result = result +'</div>';   
 	 
+	 result = result +'<div id="norecordsfound"></div>'; 
+	 
 	 $("#searchAssociatesList").empty();
      $("#searchAssociatesList").append(result);
+     
+     emptyRecordsList();
+}
+</script>
+
+<script>
+function emptyRecordsList(){
+	 var result = '';
+	 result = result+"   <div class='row'>"; 
+	 result = result+"	<div class='col-lg-12'>"; 
+	 result = result+"		<div class='dataTables_empty'>"; 
+	 result = result+"		</div>"; 
+	 result = result+"	</div>"; 
+	 result = result+"  </div> ";
+	 
+	 $("#norecordsfound").empty();
+     $("#norecordsfound").append(result);
 }
 </script>
 
@@ -248,6 +265,11 @@ function getRequestedAssociateListDiv(){
 		var associatesRowsCount = $("#associatesRowsCount").val();
 		var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
 		$("input[name = 'associatesRowsCount']").val(rowsCount - 1);
+		
+		associatesRowsCount = $("#associatesRowsCount").val();
+		if(associatesRowsCount == 0){
+			emptyRecordsList();
+		}
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addRequestTbl').rows[rowId];
@@ -421,7 +443,7 @@ function getAssociatesFilter(){
 	        	result = result +'<table id="associatesListPagination" cellspacing="0" width="100%">';
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
-	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates();"></th>';
 	        	/* result = result +'<th>ID</th>'; */
 	        	result = result +'<th>Name</th>';
 	        	result = result +'<th>Primary Skill</th>';
@@ -828,6 +850,8 @@ function cancel(){
 			divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
 			cell8.innerHTML = divTaskTd9Str;
 			
+			 $("#norecordsfound").empty();
+			
 			
 		   });
 		
@@ -848,18 +872,17 @@ function toDate(selector) {
 </script>
 
 <script>
-	function toggleAssociates(source) {
-	    var checkboxes = document.querySelectorAll('input[name="associates[]"]');
-	    for (var i = 0; i < checkboxes.length; i++) {
-	        if (checkboxes[i] != source)
-	            checkboxes[i].checked = source.checked;
-	        
-	    }
-	$('input:checkbox:not(#checkAllAssociates)').click(function() {
-	    if(!this.checked) {
-	        $('#checkAllAssociates').removeAttr('checked');
-	    }
-	});
+	function toggleAssociates() {
+	var checked = document.getElementById("checkAllAssociates").checked  
+	    if(checked) {
+	        $('.myCheckbox').each(function() {
+	            this.checked = true;   
+	        });
+	    }else{
+	        $('.myCheckbox').each(function() {
+	            this.checked = false;      
+	        });         
+	    } 
 	}
 </script>
 
