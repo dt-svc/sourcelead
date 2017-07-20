@@ -15,6 +15,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -65,7 +66,7 @@ public class LoggingAspect {
 	}
 
 
-	@AfterReturning(pointcut = "execution(* com.bis.sourcelead.web..*.*(..))", returning = "result")
+	@AfterReturning(pointcut = "@annotation(org.springframework.security.access.prepost.PreAuthorize) && execution(* com.bis.sourcelead.web..*.*(..))", returning = "result")
 	public void logAfterReturningWebService(JoinPoint joinPoint, Object result) throws Exception {
 		logger.info("********** Web Service Layer After Method Execution ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -75,10 +76,10 @@ public class LoggingAspect {
 		request = ((ServletRequestAttributes) RequestContextHolder
 				.getRequestAttributes()).getRequest();
 
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String methodName = joinPoint.getSignature().getName();
-		if(user != null)
-			actionHistoryService.saveActionHistory(methodName,user);
+//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//		String methodName = joinPoint.getSignature().getName();
+//		if(user != null)
+//			actionHistoryService.saveActionHistory(methodName,user);
 
 	}
 
@@ -107,7 +108,7 @@ public class LoggingAspect {
 	}
 
 
-	@AfterReturning(pointcut = "execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
+	@AfterReturning(pointcut = "@annotation(org.springframework.security.access.prepost.PreAuthorize) && execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
 	public void logAfterReturningRestService(JoinPoint joinPoint, Object result) throws Exception {
 		logger.info("********** Rest Service Layer After Method Exectution ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
@@ -59,7 +61,8 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void saveActionHistory(String methodName,User user) throws Exception {
-
+		Session session = this.sessionFactory.getCurrentSession();
+		
 		ActionNames actionNames = getActionNameUsingMethodName(methodName);
 
 		if(actionNames!=null)
@@ -68,9 +71,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			actionHistory.setUserId(user.getId());
 			actionHistory.setActionName(actionNames.getActionName());
 			actionHistory.setActionPerformed(user.getFirstName()+" performed "+ actionNames.getActionName()+" Action ");
-			actionHistory.setActionTime(CommonUtil.currentDate());
-
-			Session session = this.sessionFactory.getCurrentSession();
+			actionHistory.setActionTime(new Date());
 
 			try {
 				if (actionHistory != null) {

@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ACTION_HISTORY")
@@ -33,6 +36,10 @@ public class ActionHistory implements Serializable{
 	
 	@Column(name = "ACTION_TIME")
     private Date actionTime;
+	
+	@Transient
+	@JsonProperty
+	private String actionTimeStr;
 	
 	public Long getId() {
 		return id;
@@ -72,6 +79,14 @@ public class ActionHistory implements Serializable{
 
 	public void setActionTime(Date actionTime) {
 		this.actionTime = actionTime;
+	}
+
+	public String getActionTimeStr() {
+		return actionTimeStr;
+	}
+
+	public void setActionTimeStr(String actionTimeStr) {
+		this.actionTimeStr = actionTimeStr;
 	}
 
 

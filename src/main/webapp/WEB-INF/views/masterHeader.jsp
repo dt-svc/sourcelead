@@ -74,7 +74,6 @@ top:10px;
 z-index: 999999;
 width: 11.5%;
 }
- 
 .addTask-widget.addTask-widget-active {
 	z-index:1000 !important;
 }
@@ -195,7 +194,10 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
+			var sourceleadUrl = '${sourceleadUrl}';
+			var userId = '${SourceLeadWeb_userId}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userId="+userId;
+			//document.getElementById("logoutForm").submit();
 		}
 </script>
 
