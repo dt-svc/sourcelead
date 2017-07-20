@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequestService{
@@ -88,6 +89,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		projectPlanningRequest.setCreatedBy(loginUser);
 		projectPlanningRequest.setUpdatedBy(loginUser);
 		projectPlanningRequest.setStatus(Constants.RECORD_ACTIVE);
+		projectPlanningRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		projectPlanningRequest.setCreatedDate(new Date());
 		projectPlanningRequest.setUpdatedDate(new Date());
 		

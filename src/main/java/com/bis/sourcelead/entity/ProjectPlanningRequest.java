@@ -76,6 +76,9 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "STATUS")
    	private Integer status;
     
+    @Column(name = "REQUEST_UUID")
+   	private String requestUUID;
+    
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
 	
@@ -214,6 +217,14 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getRequestUUID() {
+		return requestUUID;
+	}
+
+	public void setRequestUUID(String requestUUID) {
+		this.requestUUID = requestUUID;
 	}
 
 	public Date getCreatedDate() {

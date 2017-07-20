@@ -70,6 +70,7 @@
                    Search Associates
                </a>
 			</div>
+		<div id="resourceListLoading"></div>
 		<div id="searchAssociatesList"></div>
     </div>
 </div>        
@@ -206,8 +207,8 @@ function getRequestedAssociateListDiv(){
 	
 	 var result = '';
 	 
+	 
 	 result = result +'<div class="require_wrap_table mt10">';
-	 result = result +'<div id="resourceListLoading">';
 	 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	 result = result +'  <input type="hidden" id="associatesRowsCount" name="associatesRowsCount" value="0" />';
 	 result = result +'  <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${SourceLeadWeb_currencyCode}" />';
@@ -859,6 +860,7 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
+			      minDate : 0,
 				  onSelect : function(selected) {
 					  var dt = toDate("#"+maxRowNum+"sdate-input");
 						dt.setDate(dt.getDate() + 1);
@@ -871,6 +873,7 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
+			      minDate : 0,
 				  onSelect : function(selected) {
 					  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
