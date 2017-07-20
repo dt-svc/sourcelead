@@ -22,4 +22,6 @@ public interface ProjectMembersHistoryDao {
     
 	ProjectMembersHistory getProjectMembeHistoryForHotlistCandidatesByUsedId(Long userId) throws Exception;
 
+	ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId) throws Exception;
+
 }
