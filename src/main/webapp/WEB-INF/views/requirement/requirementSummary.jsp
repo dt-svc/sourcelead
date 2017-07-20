@@ -735,9 +735,9 @@ function sideBar(requirementId,type){
 			        	 result = result+'<li> <i class="fa fa-user" title="Manager"></i><span id="canName"> --- </span></li>';	
 			        }
 			        var mydate = json.requirementCreatedDateToString;
-			        var str = mydate.split("-");
-			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]);
-			        result = result+'<li><i class="fa fa-clock-o" title="Job Posted Date"></i><span>'+strFormatedDate+'</span></li>';
+			        /* var str = mydate.split("-");
+			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]); */
+			        result = result+'<li><i class="fa fa-clock-o" title="Job Posted Date"></i><span>'+mydate+'</span></li>';
 			        
 			        if(json.closedDateStringFormat != null && json.closedDateStringFormat != '' && json.closedDateStringFormat != 'undefined'){
 				        result = result+'<li><i class="fa fa-clock-o" title="Job Closed Date"></i><span>'+json.closedDateStringFormat+'</span>';
