@@ -45,7 +45,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 
 	@Override
 	public void saveProjectPlanningRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,
-			String projectUUID) throws JSONException, Exception {
+			String projectUUID,String saveType) throws JSONException, Exception {
 		
 		ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
 		
@@ -82,8 +82,6 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			projectPlanningRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
 		}
 		
-		
-		
 		projectPlanningRequest.setOrgLocationId(orgLocations);
 		projectPlanningRequest.setRequestedUser(loginUser.getFullName());
 		projectPlanningRequest.setCreatedBy(loginUser);
@@ -96,7 +94,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size());
-		projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST);
+		projectPlanningRequest.setAllocatedResources(0);
+		
+		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
+		}else{
+			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+		}
+		projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST);
 		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
 		
 	}

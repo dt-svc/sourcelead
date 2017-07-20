@@ -79,6 +79,9 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
+    @Column(name = "REQUEST_TYPE")
+   	private String requestType;
+    
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
 	
@@ -225,6 +228,14 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setRequestUUID(String requestUUID) {
 		this.requestUUID = requestUUID;
+	}
+
+	public String getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
 	}
 
 	public Date getCreatedDate() {

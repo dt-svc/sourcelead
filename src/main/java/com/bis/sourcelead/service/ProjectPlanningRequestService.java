@@ -8,5 +8,5 @@ import com.bis.sourcelead.entity.User;
 
 public interface ProjectPlanningRequestService {
 
-	public void saveProjectPlanningRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,String projectUUID) throws JSONException, Exception;
+	public void saveProjectPlanningRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,String projectUUID,String saveType) throws JSONException, Exception;
 }

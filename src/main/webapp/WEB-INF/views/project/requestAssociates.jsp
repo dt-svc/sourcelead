@@ -78,7 +78,8 @@
 	<div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
 			<div class="pull-right">
-			  <input type="submit" value="Save" class="btn btn-primary" id="save_request_associate">
+			  <input type="button" value="Draft" class="btn btn-primary" onclick="requestAssociate('Draft');">
+			  <input type="button" value="Send" class="btn btn-primary" onclick="requestAssociate('Send');">
 			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
 			</div>
 		  </div>
@@ -656,68 +657,57 @@ function pagination(){
 </script>
 
 
-
-<script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
-         $('body').on('submit', '#requestAssociates_form', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-        		
-        		  
-        		var associatesRowsCount = document.getElementById("associatesRowsCount").value;
-        		if(associatesRowsCount == 0){
-        			alertMessage();
-        			 return false;
-        		}else{
-        			
-        			e.preventDefault();
-                	
-        			var frm = $('#requestAssociates_form').serializeFormJSON();
-        			var jsonData = JSON.stringify(frm);
-        		
-        			
-        			var form = $('#requestAssociates_form')[0];
-        		    var formData = new FormData(form);
-        		  	formData.append("json",jsonData);
-        		  	
-             		var sourceleadUrl ='${sourceleadUrl}';
-             		var projectUUID = '${projectUUID}';
-             		
-             		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-             		
-             		$.ajax({
-						type : "POST",
-		  	    	    data: formData,
-		  	    	    contentType : 'application/json; charset=utf-8',
-		  		        processData: false,
-		  		        contentType:false, 
-		  	    	    dataType : 'json',
-						url : sourceleadUrl+"/saveResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
-						success : function(result) {
-							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
-						},
-					});  
-             		 return true;
-                	   
-        		}
-        	
-            }
-            else{
-            	return false;	
-               }
-            });
-            
-         $('body').on('blur', '#requestAssociates_form', function() {
-     		$("#requestAssociates_form").showHelpOnFocus();
-     		$("#requestAssociates_form").validateOnBlur(false, validationSettings);
-     	});
-     
-	</script>
+<script>
+function requestAssociate(saveType){
 	
+	 if ($('#requestAssociates_form').validate(false, validationSettings)){ 
+		 
+ 		var associatesRowsCount = document.getElementById("associatesRowsCount").value;
+ 		if(associatesRowsCount == 0){
+ 			alertMessage();
+ 			 return false;
+ 		}else{
+ 			
+ 			e.preventDefault();
+         	
+ 			var frm = $('#requestAssociates_form').serializeFormJSON();
+ 			var jsonData = JSON.stringify(frm);
+ 		
+ 			
+ 			var form = $('#requestAssociates_form')[0];
+ 		    var formData = new FormData(form);
+ 		  	formData.append("json",jsonData);
+ 		  	
+      		var sourceleadUrl ='${sourceleadUrl}';
+      		var projectUUID = '${projectUUID}';
+      		
+      		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+      		
+      		$.ajax({
+					type : "POST",
+	  	    	    data: formData,
+	  	    	    contentType : 'application/json; charset=utf-8',
+	  		        processData: false,
+	  		        contentType:false, 
+	  	    	    dataType : 'json',
+					url : sourceleadUrl+"/saveResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
+					success : function(result) {
+						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
+					},
+				});  
+      		 return true;
+         	   
+ 		}
+	 }else{
+			return false;
+	  }
+	 
+	  $('body').on('blur', '#requestAssociates_form', function() {
+   		$("#requestAssociates_form").showHelpOnFocus();
+   		$("#requestAssociates_form").validateOnBlur(false, validationSettings);
+   	});
+}
+</script>
 	
 <script type="text/javascript">
 function alertMessage(){
