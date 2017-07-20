@@ -45,7 +45,8 @@ public class ProjectPlanningRestController {
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
-			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType) throws Exception{ 
+			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType,
+			 @RequestParam(value="selectedAssociates", required=false) String selectedAssociates) throws Exception{ 
 		 
 		String resultJson;
 		
@@ -60,13 +61,24 @@ public class ProjectPlanningRestController {
 			 
 		}
 		
+		List<Long> associateIds = null; 
+		if(!isNullOrEmpty(selectedAssociates)){
+			associateIds = new ArrayList<Long>();
+			 String[] associateIdsList = selectedAssociates.split(",");
+			 for(int i=0; i < associateIdsList.length; i++){
+				 associateIds.add(Long.valueOf(associateIdsList[i]));
+			 }
+		}
+		
+		
 		List<Candidate> assoicatesList = new ArrayList<Candidate>(); 
-		List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType);
+		List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType,associateIds);
 		 for(Candidate candidate : candidatesList){
 			 Integer projectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
 			 candidate.setAssignedProjectsCount(projectsCount);
 			 
 			 UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(candidate.getConsultantUser().getId(), orgLocationId);
+			 candidate.setUserRole(userRole.getRoles().getDisplayName());
 			 if(userRole.getReportingManager() != null){
 				 StringBuilder reportingManager = new StringBuilder();
 				 if(!isNullOrEmpty(userRole.getReportingManager().getLastName())){

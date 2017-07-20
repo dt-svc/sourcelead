@@ -213,6 +213,9 @@ public class Candidate implements Serializable{
 	private String rate;
 	
 	@Transient
+	private String userRole;
+	
+	@Transient
 	private String candidateName;
 	
 	@Transient
@@ -1432,6 +1435,16 @@ public class Candidate implements Serializable{
 
 	public void setReportingManager(String reportingManager) {
 		this.reportingManager = reportingManager;
+	}
+
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
 	}
 
 

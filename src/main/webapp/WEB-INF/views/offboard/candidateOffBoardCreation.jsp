@@ -854,8 +854,20 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 <script>
   $( function() {
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
+	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  minDate: 0 ,
@@ -865,7 +877,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	  });
 	  
 	  $('#effectiveDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  minDate: 0  ,
@@ -1027,11 +1039,12 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	 if(offBoardingUUID){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID, 
+	    	 url: sourceleadUrl+"/loadOffboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&offBoardingUUID="+offBoardingUUID+"&locationCode="+locationCode, 
 	        success: function(data) {
 	        	
 	        	 var json = JSON.parse(data);

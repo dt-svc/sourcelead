@@ -5885,8 +5885,16 @@ ul.jobs-360{
 .ml10 {
 	margin-left: 10px !important;
 }
-
-
+.changeRate_div.changeRateDiv {
+	width:280px;
+}
+.changeRate_div.changeRateDiv .drpdownMonthly select
+{
+	width:105px;
+}
+.changeRate_div.estRate_div {
+	width:175px;
+}
 
 /* media 320px */
 @media (max-width: 320px) {
