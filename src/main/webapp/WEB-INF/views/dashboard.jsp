@@ -311,8 +311,16 @@ $('#dasboardTaskDatpicker').datepicker({
 	result=result+'</div>';
 	result=result+'</div>';
 	result=result+'<div class="clearfix">';
-	result=result+'<p class="text-muted small" style="font-size: 11px;" title="Org Short code cannot be changed once submitted."><i class="fa fa-info-circle"></i> Org Short code cannot be changed once submitted.</p>';
+	result=result+'<p class="text-muted small" style="font-size: 11px;" title="Org Short code cannot be modified once submitted."><i class="fa fa-info-circle"></i> Org Short code cannot be modified once submitted.</p>';
 	result=result+'</div>';
+	
+	result=result+'<div class="form-group">';
+	result=result+'<label>Average Working Hours</label>';
+	result=result+'<div class="clearfix dropdown-select" id="averageWorkingHoursDiv">';
+	result=result+'<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours">';
+	result=result+'</div>';
+	result=result+'</div>';
+	
 	result=result+'</div>';
 	result=result+'</div>';
 	result=result+'<div class="clearfix">';
@@ -360,6 +368,20 @@ $(function(){
         return false;
     });
 });
+$(function() {
+	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+$(function(){
+    $("#averageWorkingHours").keyup(function(event){
+        var ew = $("#averageWorkingHours").val();
+        $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+        if(ew > 24){
+        	$("#averageWorkingHours").val('');
+        	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        }
+    });
+});
+
 </script>
 
 
