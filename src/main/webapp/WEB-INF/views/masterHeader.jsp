@@ -44,6 +44,16 @@
 <script src="resources/js/themeswitcher.js"></script>
 <script src="resources/js/moment.min.js"></script>
 <script src="resources/js/datetime-moment.js"></script>
+
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
