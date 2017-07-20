@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.quartz.impl.jdbcjobstore.CalendarIntervalTriggerPersistenceDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -180,6 +181,14 @@ public class SubmissionsRestController {
 			if(score != null && !"".equalsIgnoreCase(score)){
 				candidate.setCandidateScore(score);
 			}
+		}
+		int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+		candidate.setProfilePercentage(percentage);
+		
+		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
+		if(candidateResume != null){
+			candidate.setResumeUUID(candidateResume.getResumeUUID());
+			candidate.setCandidateResumeName(candidateResume.getFileName());
 		}
 		
 		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocationId);

@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.CandidateCompareDTO;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
@@ -27,6 +30,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementService;
@@ -51,20 +55,11 @@ public class RecommendedCustomizeScoreRestController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	 @Autowired
-	 private CandidateResumesService candidateResumeSerivce;
+	@Autowired
+	CommonUtil commonUtil;
 	 
-	 @Autowired
-	 private CandidateService candidateService;
-	 
-	 @Autowired
-	 private RecommendationsService recommendationsService;
-	 
-	 @Autowired
-	 private RequirementService requirementService;
-	 
-	 @Autowired
-	 CommonUtil commonUtil;
+	@Autowired
+	OrgLocationService orgLocationService;
 	 
 	 
 	@RequestMapping(value = "/getCustomizeScore")
@@ -272,55 +267,7 @@ public class RecommendedCustomizeScoreRestController {
 	@ResponseBody
 	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
-		CandidateCompareDTO candidateCompare = new CandidateCompareDTO();
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		List<CandidateIndex> candidateList = null;
-		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
-		if (null != recommendedCustomizeScore) {
-			candidateList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId);
-		}
-		if (requirement != null) {
-			if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-				candidateCompare.setJobId(requirement.getJobId());
-			}
-			if (requirement.getJobTitle() != null
-					&& !"".equalsIgnoreCase(requirement.getJobTitle())) {
-				candidateCompare.setJobTitile(requirement.getJobTitle());
-			}
-			if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate())) {
-				candidateCompare.setJobRate(requirement.getRate());
-			}
-			if (requirement.getRateType() != null
-					&& !"".equalsIgnoreCase(requirement.getRateType())) {
-				candidateCompare.setJobRatePer(requirement.getRateType());
-			}
-			if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
-				candidateCompare.setJobSkills(requirement.getSkills());
-			}
-			if (requirement.getVisaType() != null
-					&& !"".equalsIgnoreCase(requirement.getVisaType())) {
-				candidateCompare.setJobVisa(requirement.getVisaType());
-			}
-			if (requirement.getLocation() != null
-					&& !"".equalsIgnoreCase(requirement.getLocation())) {
-				candidateCompare.setJobLocation(requirement.getLocation());
-			}
-			if (requirement.getMinExp() != null
-					&& !"".equalsIgnoreCase(requirement.getMinExp())) {
-				candidateCompare.setJobMinExp(requirement.getMinExp());
-			}
-			if (requirement.getMaxExp() != null
-					&& !"".equalsIgnoreCase(requirement.getMaxExp())) {
-				candidateCompare.setJobMaxExp(requirement.getMaxExp());
-			}
-			if (requirement.getNoticePeriod() != null
-					&& !"".equalsIgnoreCase(requirement.getNoticePeriod())) {
-				candidateCompare.setJobNoticePeriod(requirement.getNoticePeriod());
-			}
-		}
-		if (candidateList != null) {
-			candidateCompare.setCandidateList(candidateList);
-		}
+		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId);
 		return candidateCompare;
 	}
 	
