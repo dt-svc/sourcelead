@@ -22,6 +22,8 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectPlanningRequest;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -189,6 +191,27 @@ public class ProjectPlanningRestController {
 		    projectPlanningRequestService.saveProjectPlanningRequest(jsonObj, user, orgLocations, projectUUID,saveType);
 		   
 		    return "success";
+	    }
+	  
+	  
+	  @RequestMapping(value = "/getPlanningRequestListByProjectUUID")
+		public @ResponseBody String getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+		    
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  String resultJson;
+		  Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		  List<ProjectPlanningRequest> planningRequestList = new ArrayList<ProjectPlanningRequest>();
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
+		  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
+			  SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
+			  if(null != planningRequest.getCreatedDate()){
+				  planningRequest.setRequestedDateStr(format.format(planningRequest.getCreatedDate()));
+				}
+			  planningRequestList.add(planningRequest);
+		  }
+		  
+		  resultJson = commonUtil.toJSON(planningRequestList);
+		  return resultJson;
 	    }
 	 
 	 
