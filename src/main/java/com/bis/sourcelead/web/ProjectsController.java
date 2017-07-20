@@ -18,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -62,6 +64,9 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 ProjectPlanningRequestService projectPlanningRequestService;
+	 
+	 @Autowired
+	 ProjectMembersService projectMembersService;
 	 
 	
 	 
@@ -140,8 +145,12 @@ public class ProjectsController {
 					model.addObject("tabType", tabType);
 				}
 				
+				Integer projectMembersCount = projectMembersService.getAllProjectMembersCountByProjectId(projects.getId());
+				model.addObject("projectMembersCount", projectMembersCount);
+				
 				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
 				model.addObject("resourceRequestsCount", resourceRequestsCount);
+				
 				
 				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
