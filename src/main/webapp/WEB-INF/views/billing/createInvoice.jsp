@@ -601,11 +601,22 @@ function errRemoveClientContact(){
 				text = text+'</div>';
 				cell0.innerHTML = text;
 				
+				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				   var finalDateFormatInvoiceEdit = '';
+				  if(locationDate.match("yyyy-MM-dd")){
+					  finalDateFormatInvoiceEdit = 'yy-mm-dd';
+				  }if(locationDate.match("dd-MM-yyyy")){
+					  finalDateFormatInvoiceEdit = 'dd-mm-yy'; 
+				  }if(locationDate.match("MM-dd-yyyy")){
+					  finalDateFormatInvoiceEdit = 'mm-dd-yy'; 
+				  }if(locationDate.match("yyyy-dd-MM")){
+					  finalDateFormatInvoiceEdit = 'yy-dd-mm'; 
+				  } 
 				
 				$( "#"+maxRowNum+"sdate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }
@@ -614,7 +625,7 @@ function errRemoveClientContact(){
 				$( "#"+maxRowNum+"edate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }
@@ -768,25 +779,47 @@ function cancel(){
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			   var finalDateFormatInvoiceSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatInvoiceSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatInvoiceSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatInvoiceSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatInvoiceSave = 'yy-dd-mm'; 
+			  } 
+			  
 			$( "#"+maxRowNum+"sdate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
+					  var dt = $(this).datepicker('getDate', '+1d');
+			            dt.setDate(dt.getDate() + 1);
+			            $("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+			            
+			            
+					  /* var dt = toDate("#"+maxRowNum+"sdate-input");
 						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt); */
 			 	  }
 			    });
 			
 			$( "#"+maxRowNum+"edate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  
+					  var dt = $(this).datepicker('getDate', '-1d');
+			            dt.setDate(dt.getDate() - 1);
+			            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+			            
+					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 			 	  }
 			    });
 			
@@ -1558,12 +1591,23 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->
 <script>
 	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEndDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEndDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEndDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEndDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEndDate = 'yy-dd-mm'; 
+		  }
 		$('#invoiceDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#invoiceDate");
+			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
@@ -1571,11 +1615,11 @@ function calculateTaxDiscount(){
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#dueDate");
+			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#invoiceDate").datepicker("option", "maxDate", dt);
 				errDueDate();
@@ -1628,10 +1672,22 @@ function getSowRate(id){
 	    });
 	  }); */
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEndDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEndDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEndDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEndDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEndDate = 'yy-dd-mm'; 
+	  }
+	  
 	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
-	      dateFormat : 'dd-mm-yy',
+	      dateFormat : finalDateFormatEndDate,
 	      minDate: 0  ,
 		  onSelect : function(selected) {
 	 	  }
@@ -1640,7 +1696,7 @@ function getSowRate(id){
 	$( "#0edate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
-	      dateFormat : 'dd-mm-yy',
+	      dateFormat : finalDateFormatEndDate,
 	      minDate: 0  ,
 		  onSelect : function(selected) {
 	 	  }
@@ -1796,11 +1852,12 @@ function getDueDateByFrequency(){
 	
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
+	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);

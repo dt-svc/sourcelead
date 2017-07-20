@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,10 +83,11 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		model.setViewName("billing/createInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
-		String convertedDate = Constants.DMY.format(currentDate);
+		String convertedDate = formatter.format(currentDate);
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -187,6 +189,7 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;

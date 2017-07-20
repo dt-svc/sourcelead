@@ -196,8 +196,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org org,String loginOrgCurrencyCode) throws Exception {
 		
 		
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
+		//String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         Invoice invoice = null;
         
@@ -569,8 +570,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private Set<InvoiceLineItems> getInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice,List<Long> invoiceLineItemsIdsList, List<String> submissionApproverHierarchyIds,List<TimesheetSubmissionsDocuments> docusList) throws Exception {
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
-		 String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		 //String pattern = "dd-MM-yyyy";
+	     SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 	     
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
