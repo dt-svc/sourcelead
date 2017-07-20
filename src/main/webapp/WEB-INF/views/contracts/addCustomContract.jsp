@@ -864,7 +864,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="none";
  	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="block";
@@ -877,7 +876,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -890,7 +888,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -903,7 +900,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -916,7 +912,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -929,7 +924,6 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
