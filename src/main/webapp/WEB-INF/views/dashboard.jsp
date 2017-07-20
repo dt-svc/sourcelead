@@ -477,7 +477,7 @@ function getDateFormatByOrgLocation() {
              	url: sourceleadUrl+"/getDateFormatByOrgLocation?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode, 
                	success: function(result) {
 						$("#dateFormatForOrgId").empty();
-						$("#dateFormatForOrgId").append("<option value=''>-- Select Date Format --</option>");
+						$("#dateFormatForOrgId").append("<option value='' disabled selected>-- Select Date Format --</option>");
 						if(result == 'dd-MM-yyyy'){
 							$("#dateFormatForOrgId").append("<option value='dd-MM-yyyy' selected>dd-MM-yyyy</option>");
 						    $('#dateFormatForOrgId').append("<option value='MM-dd-yyyy'>MM-dd-yyyy</option>");
@@ -499,7 +499,6 @@ function getDateFormatByOrgLocation() {
 	                        $('#dateFormatForOrgId').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
 	                        $('#dateFormatForOrgId').append("<option value='yyyy-MM-dd' selected>yyyy-MM-dd</option>");
 						}else{
-							$("#dateFormatForOrgId").append("<option value=''>-- Select Date Format --</option>");
 							$("#dateFormatForOrgId").append("<option value='dd-MM-yyyy'>dd-MM-yyyy</option>");
 						    $('#dateFormatForOrgId').append("<option value='MM-dd-yyyy'>MM-dd-yyyy</option>");
 	                        $('#dateFormatForOrgId').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");

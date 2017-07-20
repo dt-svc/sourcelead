@@ -251,6 +251,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			if(jsonObj.has("dateFormatForOrg") && !"".equalsIgnoreCase(jsonObj.getString("dateFormatForOrg"))){
 				orgLocation.setDateFormat(jsonObj.getString("dateFormatForOrg"));
 			}
+			if(jsonObj.has("averageWorkingHours") && !"".equalsIgnoreCase(jsonObj.getString("averageWorkingHours"))){
+				orgLocation.setAverageWorkingHours(Integer.parseInt(jsonObj.getString("averageWorkingHours")));
+			}
 		}
 		return orgLocationsDao.saveOrgLocationsOrgShortCode(orgLocation);
 		
