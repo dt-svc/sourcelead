@@ -142,7 +142,9 @@
  <script>
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
- 	 var result = "";
+ 	 
+	   var resourceRequestsCount = '${resourceRequestsCount}';
+	   var result = "";
  	 
  	result = result + '    	<div class="col-md-12 mt">';
  	 result = result + '    	<div class="require_one">';
@@ -164,7 +166,7 @@
 result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
 result = result + '<li class="current"><a href="#tab-a">Resources (10)</a></li>';
-result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests (10)</a></li>';
+result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>';
 result = result + '<li class=""><a href="#tab-c">Budget Requests (10)</a></li>';
 result = result + '<div class="clearfix"></div>';
 result = result + '</ul>';
@@ -1178,13 +1180,13 @@ function resourceRequestsTab(){
 	    			
 	    			result = result + '	         <tr>';
 	    			result = result + '	         	<td><div><a href="#">'+report.requestId+'</a></div></td>';
-		    		result = result + '	             <td><div>'+report.approverName+'</div></td>';
+		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';
 		    		result = result + '	             <td><i class="pull-left"></i>'+report.estimatedBudgetCurrency+'<div class="pull-right">'+report.estimatedBudget+'</div></td>';
-		    		result = result + '	             <td><div>'+report.requestedDateStr+'</div></td>';
-		    		result = result + '	             <td><div>'+report.requestedUser+'</div></td>';
+		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
+		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
 		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div></td>';
 		    		result = result + '	         </tr>';
 	    		}

@@ -195,4 +195,9 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		return projectPlanningRequestDao.getProjectPlanningRequestByProjectId(projectId);
 	}
 
+	@Override
+	public Integer getProjectPlanningRequestCountByProjectId(Long projectId) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestCountByProjectId(projectId);
+	}
+
 }

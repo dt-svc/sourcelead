@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -58,6 +59,9 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 RolesService rolesService;
+	 
+	 @Autowired
+	 ProjectPlanningRequestService projectPlanningRequestService;
 	 
 	
 	 
@@ -135,6 +139,10 @@ public class ProjectsController {
 				if(null != tabType && !tabType.isEmpty() && tabType != ""){
 					model.addObject("tabType", tabType);
 				}
+				
+				Integer resourceRequestsCount = projectPlanningRequestService.getProjectPlanningRequestCountByProjectId(projects.getId());
+				model.addObject("resourceRequestsCount", resourceRequestsCount);
+				
 				model.setViewName("project/projectSummary");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;

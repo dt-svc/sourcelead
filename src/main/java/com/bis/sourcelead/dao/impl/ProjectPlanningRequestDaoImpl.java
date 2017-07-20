@@ -65,4 +65,23 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		
 		return projectPlanningRequestList;
 	}
+
+	@Override
+	@Transactional
+	public Integer getProjectPlanningRequestCountByProjectId(Long projectId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query ="select count(*)from ProjectPlanningRequest projectPlanningRequest where projectPlanningRequest.projectId = :projectId and projectPlanningRequest.status = '1'";
+		
+		List<Long> requestsCount =   session.createQuery(query.toString())
+				                         .setLong("projectId", projectId)
+				                         .setCacheable(true)
+				                         .list();
+			Integer count = 0;
+			if(requestsCount != null && !requestsCount.isEmpty()){
+					count = requestsCount.get(0).intValue();
+			}
+			return count;
+	}
 }
