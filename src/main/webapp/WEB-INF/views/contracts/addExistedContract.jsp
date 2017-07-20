@@ -590,30 +590,49 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 
 <script>
 	$(function() {
-
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatExistedContractSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatExistedContractSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatExistedContractSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatExistedContractSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatExistedContractSave = 'yy-dd-mm'; 
+		  }
 		$('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatExistedContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
-                  var dt = toDate("#startDate");
-                  dt.setDate(dt.getDate() + 1);
-                  $("#endDate").datepicker("option", "minDate", dt);
+            	 var dt = $(this).datepicker('getDate', '+1d');
+  	            dt.setDate(dt.getDate() + 1);
+  	            $("#endDate").datepicker("option", "minDate", dt);
                   removeValid();  
             }
         });
         
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatExistedContractSave,
             changeMonth: true,
               changeYear: true,
               onSelect: function (selected) {
-                  var dt = toDate("#endDate");
+            	  var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
-        
+        $('#joinDate').datepicker({
+            dateFormat: finalDateFormatExistedContractSave,
+            changeMonth: true,
+              changeYear: true,
+            onSelect: function (selected) {
+                  var dt = toDate("#joinDate");
+                  dt.setDate(dt.getDate() + 1);
+                  removeValid();
+              }
+        });
         document.getElementById("uploadBtn").onchange = function () {
     	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
     	    };
