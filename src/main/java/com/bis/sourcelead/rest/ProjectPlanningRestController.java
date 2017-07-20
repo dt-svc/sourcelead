@@ -1,6 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -132,6 +136,47 @@ public class ProjectPlanningRestController {
 		 return resultJson;
 	  }
 	 
+	 
+	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
+		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate) throws Exception {
+			
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+			int estimatedHours = 0;
+			
+			try {
+
+				Date requestStartDate =  formatter.parse(startDate);
+				Calendar startCal = Calendar.getInstance();
+				startCal.setTime(requestStartDate); 
+				
+				Date requestEndDate =  formatter.parse(endDate);
+				Calendar endCal = Calendar.getInstance();
+				endCal.setTime(requestEndDate); 
+				
+				int workDays = 0;
+				
+			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			        startCal.setTime(requestEndDate);
+			        endCal.setTime(requestStartDate);
+			    }
+
+			    do {
+			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			            ++workDays;
+			        }
+			        startCal.add(Calendar.DATE, 1);
+			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
+
+			    estimatedHours = (workDays*Constants.WORKING_HOURS);
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+			
+			return estimatedHours;
+		} 
 	 
 	 
 	  @RequestMapping(value = "/saveResourceRequest")

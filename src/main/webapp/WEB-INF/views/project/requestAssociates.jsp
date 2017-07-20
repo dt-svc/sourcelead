@@ -139,7 +139,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate"  data-validation="validate_Space validate_int validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate" data-validation-optional="true"  data-validation="validate_Space validate_int validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDbillRateRateType" name="REPLACEROWIDbillRateRateType">
@@ -171,26 +171,19 @@
 
 <div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-         <input class="form-control input-sm" type="text" id="REPLACEROWIDestHours" name="REPLACEROWIDestHours" data-validation-optional="true" data-validation="validate_Space validate_int" field-name="Est Hours">
+         <input class="form-control input-sm" type="text" id="REPLACEROWIDestHours" name="REPLACEROWIDestHours" data-validation-optional="true" onblur="calculateTotalEstimateHours();" data-validation="validate_Space validate_int" field-name="Est Hours">
 	</div>
 </div>
 
 <div id="divTaskTd8" style="display: none; float: left;">
 	<div class="changeRate_div estRate_div">
           
-           <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDestBudgetCurrencyType" name="REPLACEROWIDestBudgetCurrencyType">
-	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
-		                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
-                     </select>
-         </div>
-          
+          <div class="pull-left mt10">
+                 <div id="REPLACEROWIDestBudgetCurrencyType" name="REPLACEROWIDestBudgetCurrencyType" value='${SourceLeadWeb_currencyCode}'>${SourceLeadWeb_currencyCode}</div>
+          </div> 
+		  
          <div class="pull-left inputRate">
-         	<input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget" data-validation-optional="true"  data-validation="validate_int validate_Space validate_length length1-15" field-name="Est Budget">
+         	<input class="form-control input-sm" type="text" id="REPLACEROWIDestBudget" name="REPLACEROWIDestBudget" data-validation-optional="true" onblur="calculateTotalEstimateBudget();"  data-validation="validate_int validate_Space validate_length length1-15" field-name="Est Budget">
          </div>
         
 	</div>
@@ -209,13 +202,16 @@
 <script>
 function getRequestedAssociateListDiv(){
 	
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	
 	 var result = '';
 	 
 	 result = result +'<div class="require_wrap_table mt10">';
+	 result = result +'<div id="resourceListLoading">';
 	 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	 result = result +'  <input type="hidden" id="associatesRowsCount" name="associatesRowsCount" value="0" />';
+	 result = result +'  <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${SourceLeadWeb_currencyCode}" />';
 	 result = result +'<table>';
-	 result = result +'<tbody>';
 	 result = result +'<thead id="addRequestTbl">';
 	 result = result +'<tr id="divTsRow0">';
 	 result = result +'<th>Name</th>';
@@ -228,8 +224,23 @@ function getRequestedAssociateListDiv(){
 	 result = result +'<th>Est Budget</th>';
 	 result = result +'<th>Action</th>';
 	 result = result +'</tr>';
-	 result = result +'  </thead>';
-	 result = result +'</tbody>';
+	 result = result +'</thead>';
+	 
+	 result = result +'<tfoot class="table_footer">';
+	 
+	 result = result +'<tr>';
+
+	 result = result +'<td colspan="6"></td>';
+	 result = result +'<td><div class="tblminwidth-150"><span class="pull-left paddingRight"></span>Hours<input type="text" value = "0" id="estimatedHrs" name="estimatedHrs" class="ReadTextFli" readonly></div>';
+	 result = result +'</td>';
+	 
+	 
+	 result = result +'<td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "0" id="estimatedBudget" name="estimatedBudget" class="ReadTextFli" readonly></div>';
+	 result = result +'</td>';
+	 result = result +'<td>&nbsp;</td>';
+	 result = result +'</tr>';
+	 result = result +'</tfoot>';
+	 
 	 result = result +'</table>';  
 	 result = result +'</div>';   
 	 
@@ -272,15 +283,58 @@ function emptyRecordsList(){
 		}
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
+		
 		var r = document.getElementById('addRequestTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
+			calculateTotalEstimateHours();
+			calculateTotalEstimateBudget();
 		}
+		
+		
 		
 	}
 </script>
 
+
+<script>
+function calculateTotalEstimateHours(){
+	 var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	  if(maxTsRowNum > 1){
+		  var totalHours = 0;
+		  for(var i=1; i<maxTsRowNum; i++){
+			  if(document.getElementById(i+"estHours")){
+				 var estimatedHours = document.getElementById(i+"estHours").value;
+				  if(estimatedHours != null && estimatedHours != '' && estimatedHours != 'undefined'){
+					  totalHours = totalHours+parseInt(document.getElementById(i+"estHours").value);
+				  }
+			  }
+		  }
+		  
+		  $("#estimatedHrs").val(totalHours);
+	  }
+}
+</script>
+
+<script>
+function calculateTotalEstimateBudget(){
+	 var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	  if(maxTsRowNum > 1){
+		  var totalBudget = 0;
+		  for(var i=1; i<maxTsRowNum; i++){
+			  if(document.getElementById(i+"estBudget")){
+				 var estimatedBuget = document.getElementById(i+"estBudget").value;
+				  if(estimatedBuget != null && estimatedBuget != '' && estimatedBuget != 'undefined'){
+					  totalBudget = totalBudget+parseInt(document.getElementById(i+"estBudget").value);
+				  }
+			  }
+		  }
+		  
+		  $("#estimatedBudget").val(totalBudget);
+	  }
+}
+</script>
 
 <div class="side_mask">
     <div class="proj_close"></div>
@@ -787,7 +841,7 @@ function cancel(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'requestStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input"  name="'+maxRowNum+'requestStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -795,7 +849,7 @@ function cancel(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'requestEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input"  name="'+maxRowNum+'requestEndDate" >';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
@@ -809,6 +863,7 @@ function cancel(){
 					  var dt = toDate("#"+maxRowNum+"sdate-input");
 						dt.setDate(dt.getDate() + 1);
 						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+						getEstimatedHours(maxRowNum)
 			 	  }
 			    });
 			
@@ -820,6 +875,7 @@ function cancel(){
 					  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
 						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+						getEstimatedHours(maxRowNum)
 			 	  }
 			    });
 			
@@ -863,10 +919,35 @@ function cancel(){
 	}
   </script>
   
-  <script>
+<script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
     return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+
+
+<script>
+function getEstimatedHours(rowId){
+	var startDate = document.getElementById(rowId+"sdate-input").value;
+	var endDate = document.getElementById(rowId+"edate-input").value;
+	if(startDate && endDate){
+		
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate, 
+		        success: function(estimatedHours) {
+		        	
+		        	$('#'+rowId+'estHours').val(estimatedHours);
+		        	calculateTotalEstimateHours();
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
 }
 </script>
 

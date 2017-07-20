@@ -609,6 +609,7 @@ public class Constants {
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
 	public static final String RESOURCE_REQUEST = "Requested";
+	public static final int WORKING_HOURS = 8;
 	
 	
 	

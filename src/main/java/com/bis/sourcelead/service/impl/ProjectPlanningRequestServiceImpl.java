@@ -68,6 +68,21 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			
 		}
 		
+		
+		if(jsonObj.has("estimatedHrs") && !"".equalsIgnoreCase(jsonObj.getString("estimatedHrs"))){
+			projectPlanningRequest.setEstimatedHours(Double.valueOf(jsonObj.getString("estimatedHrs")));
+		}
+		
+		if(jsonObj.has("estimatedBudget") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudget"))){
+			projectPlanningRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString("estimatedBudget")));
+		}
+		
+		if(jsonObj.has("estimatedBudgetCurrencyType") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudgetCurrencyType"))){
+			projectPlanningRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
+		}
+		
+		
+		
 		projectPlanningRequest.setOrgLocationId(orgLocations);
 		projectPlanningRequest.setRequestedUser(loginUser.getFullName());
 		projectPlanningRequest.setCreatedBy(loginUser);
