@@ -2216,4 +2216,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		billingReportDTO.setBillingGraphBean(incomeExpenseList);
 		return billingReportDTO;
 	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
+	}
 }
