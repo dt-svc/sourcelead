@@ -190,4 +190,9 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		 return resourceRequestSet;
 	}
 
+	@Override
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByProjectId(Long projectId) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByProjectId(projectId);
+	}
+
 }

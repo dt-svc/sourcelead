@@ -1137,48 +1137,87 @@ function toDate(selector) {
 function resourceRequestsTab(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
-	 var result = "";
- 	 
-		result = result + '	<div class="project_tabs_inn_head">';
-		result = result + '	      <a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
-		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a> | &nbsp; &nbsp;';
-		result = result + '	      <a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'">';
-		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a> | &nbsp; &nbsp;';
-		result = result + '	       <input class="vendorfild" type="text"><i class="fa fa-search"></i>';
-		result = result + '	       </div>';
-		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result = result + '		<table>';
-		result = result + '	 	<tbody>';
-		result = result + '	     	<tr>';
-		result = result + '	         	<th>Request Id</th>';
-		result = result + '	             <th>Description</th>';
-		result = result + '	             <th>Approver</th>';
-		result = result + '	             <th>Req. Resources</th>';
-		result = result + '	             <th>Alloted Resources</th>';
-		result = result + '	             <th>Estimated Hours</th>';
-		result = result + '	             <th>Estimated Budget</th>';
-		result = result + '	             <th>Req. On</th>';
-		result = result + '	             <th>Req. By</th>';
-		result = result + '	             <th>Action</th>';
-		result = result + '	         </tr>';
-		result = result + '	         <tr>';
-		result = result + '	         	<td><div><a href="request-resource.html">BIS00001</a></div></td>';
-		result = result + '	             <td><div>Designation1</div></td>';
-		result = result + '	             <td><div>Approver-2</div></td>';
-		result = result + '	             <td><div>10</div></td>';
-		result = result + '	             <td><div>10</div></td>';
-		result = result + '	             <td><div>100 hrs</div></td>';
-		result = result + '	             <td><i class="fa fa-dollar pull-left"></i> <div class="pull-right">300000</div></td>';
-		result = result + '	             <td><div>23/05/2017</div></td>';
-		result = result + '	             <td><div>Suresh Kumar</div></td>';
-		result = result + '	             <td><div><b>Accept</b></div></td>';
-		result = result + '	         </tr>';
-		result = result + '	     </tbody>';
-		result = result + '	 </table>';
-		result = result + '</div>';
-	    $("#resourceRequestsTabDiv").empty();
-	    $("#resourceRequestsTabDiv").append(result);  
+	 
+	 
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
+	        success: function(data) {
+	        	
+	        	
+	        	var json = JSON.parse(data);
+	        	var result = "";
+	        	 
+	    		result = result + '	<div class="project_tabs_inn_head timesheet_head">';
+	    		result = result + '	<ul>';
+	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
+	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>Request Associates</a></li>';
+	    		result = result + '	      <li><a href="'+sourceleadUrl+'/newResourceRequest?projectUUID='+projectUUID+'">';
+	    		result = result + '	       <i class="glyphicon glyphicon-plus"></i>New Resource Request</a>&nbsp; &nbsp;</li>';
+	    		result = result + '	</ul>';
+	    		result = result + '	       </div>';
+	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
+	    		result = result + '		<table id="planningRequestsPaginationList" cellspacing="0" width="100%">';
+	    		result = result + '	    <thead>';
+	    		result = result + '	     	<tr>';
+	    		result = result + '	         	<th>Request Id</th>';
+	    		result = result + '	             <th>Approver</th>';
+	    		result = result + '	             <th>Req. Resources</th>';
+	    		result = result + '	             <th>Alloted Resources</th>';
+	    		result = result + '	             <th>Estimated Hours</th>';
+	    		result = result + '	             <th>Estimated Budget</th>';
+	    		result = result + '	             <th>Req. On</th>';
+	    		result = result + '	             <th>Req. By</th>';
+	    		result = result + '	             <th>Action</th>';
+	    		result = result + '	         </tr>';
+	    		result = result + '	    </thead>';
+	    		result = result + '	 	<tbody>';
+	    		
+	    		for (var i=0; i<json.length; i++){
+	    			var report = json[i];
+	    			
+	    			result = result + '	         <tr>';
+	    			result = result + '	         	<td><div><a href="#">'+report.requestId+'</a></div></td>';
+		    		result = result + '	             <td><div>'+report.approverName+'</div></td>';
+		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';
+		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
+		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';
+		    		result = result + '	             <td><i class="pull-left"></i>'+report.estimatedBudgetCurrency+'<div class="pull-right">'+report.estimatedBudget+'</div></td>';
+		    		result = result + '	             <td><div>'+report.requestedDateStr+'</div></td>';
+		    		result = result + '	             <td><div>'+report.requestedUser+'</div></td>';
+		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div></td>';
+		    		result = result + '	         </tr>';
+	    		}
+	    		
+	    		
+	    		result = result + '	     </tbody>';
+	    		result = result + '	 </table>';
+	    		result = result + '</div>';
+	    	    $("#resourceRequestsTabDiv").empty();
+	    	    $("#resourceRequestsTabDiv").append(result); 
+	    	    planningRequestsPagination();
+	        }
+	   
+     });
 		 
+}
+</script>
+
+<script>
+function planningRequestsPagination(){  
+    $('#planningRequestsPaginationList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 25, 30, -1], [5, 15, 25, 30, "All"]],
+		"aaSorting": [[4,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <!-- ====================================Resource RequestsTab End=============================================== -->

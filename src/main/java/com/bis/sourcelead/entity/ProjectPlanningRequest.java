@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -98,6 +99,10 @@ public class ProjectPlanningRequest implements Serializable{
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
+	
+	@Transient
+    private String requestedDateStr;
+	
     
     
     
@@ -277,6 +282,14 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setProjectPlanningResourceRequestList(
 			Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList) {
 		this.projectPlanningResourceRequestList = projectPlanningResourceRequestList;
+	}
+
+	public String getRequestedDateStr() {
+		return requestedDateStr;
+	}
+
+	public void setRequestedDateStr(String requestedDateStr) {
+		this.requestedDateStr = requestedDateStr;
 	}
 
 	
