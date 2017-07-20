@@ -349,10 +349,6 @@ function certificationPagination(){
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 7
-			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -447,6 +443,23 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 		 
+		 
+		 /* $('html').click(function(){
+			$(".edit-details").removeClass("edit-details-active");
+		   });	 */
+		
+		
+		/*  $(".addUser-org").click(function(){
+			 $(".edit-details").toggleClass("edit-details-active");
+		 });  */
+		/* $(".edit-details").toggleClass("edit-details-active");
+		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+			 e.stopPropagation();
+		 }); */
+	 /* $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	   });	 */
+
 	  $('#StartDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
@@ -604,6 +617,26 @@ function addCertification(candidateId) {
 									 e.stopPropagation();
 								 });
 								 
+								 
+								 
+								/*  $('html').click(function(){
+									$(".edit-details").removeClass("edit-details-active");
+								   });	
+								 */
+								
+								/*  $(".addUser-org").click(function(){
+									 $(".edit-details").toggleClass("edit-details-active");
+								 });  */
+								/* $(".edit-details").toggleClass("edit-details-active");
+								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+									 e.stopPropagation();
+								 }); */
+							 /* $('html').click(function(){
+								$(".edit-details").removeClass("edit-details-active");
+							   });	 */
+
+							  /*  var certificateStartDate = $("#StartDateEdit").val();
+								var certificateEndDate = $("#EndDateEdit").val(); */
 								
 								var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
@@ -737,6 +770,7 @@ function removeCertification(candidateCertificationId, candidateId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteCertificationPopUp").empty();
 	$("#deleteCertificationPopUp").append(result);
 	$("#remove_user_pop_certificates").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -806,6 +840,11 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 function selectScoreType(){
 	
 	 var selectedText = document.getElementById("scoreType").value;
+	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
+		 $("#candidateScore").removeAttr("readonly");
+	}else{
+		 $("#candidateScore").attr("readonly", "readonly");
+	} */
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
@@ -867,10 +906,15 @@ function scoreAndScoreType(){
 	 if(candidateScore.match(cgpanum)){
 		 $("#scoreType").val('CGPA'); 
 	 }
+	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
+		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+	 }
+	 if(selectedText == '' && candidateScore == ''){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 }
 	 if(candidateScore == ''){
 		 $("#scoreType").val('');
 	 }
-	 
 }
 </script>
 
@@ -901,4 +945,5 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
+
 <!-- script for dateformat in datepicker End -->             
