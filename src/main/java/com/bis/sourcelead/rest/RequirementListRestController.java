@@ -181,6 +181,7 @@ public class RequirementListRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 		List<Requirement> requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(), status, clients, user, userRoleName);
 		for (Requirement requirement : requirementList) {
 			/*
@@ -193,7 +194,8 @@ public class RequirementListRestController {
 			 * requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.
 			 * toString()); } }
 			 */
-			requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
+			
+			requirement.setPostedDateStr(formatter.format(requirement.getCreatedDate()));
 			/*
 			 * int totalApplicatsCountForRequirement = 0;
 			 * totalApplicatsCountForRequirement = requirementSubmissionService.
@@ -372,8 +374,12 @@ public class RequirementListRestController {
 		if (requirementId != null && !requirementId.isEmpty()) {
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+			 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+			 if(requirement.getCreatedDate()!=null){
+					requirement.setRequirementCreatedDateToString(formatter.format(requirement.getCreatedDate()));
+				}
 			if (null != requirement.getClosedDate()) {
-				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
+				requirement.setClosedDateStringFormat(formatter.format(requirement.getClosedDate()));
 			}
 			// to get the RequirementApproverHierarchy to set the Status
 			Boolean isLoginUserAsApprover = false;
