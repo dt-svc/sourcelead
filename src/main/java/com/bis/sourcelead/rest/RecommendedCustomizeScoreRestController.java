@@ -55,23 +55,11 @@ public class RecommendedCustomizeScoreRestController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	 @Autowired
-	 private CandidateResumesService candidateResumeSerivce;
+	@Autowired
+	CommonUtil commonUtil;
 	 
-	 @Autowired
-	 private CandidateService candidateService;
-	 
-	 @Autowired
-	 private RecommendationsService recommendationsService;
-	 
-	 @Autowired
-	 private RequirementService requirementService;
-	 
-	 @Autowired
-	 CommonUtil commonUtil;
-	 
-	 @Autowired
-	 OrgLocationService orgLocationService;
+	@Autowired
+	OrgLocationService orgLocationService;
 	 
 	 
 	@RequestMapping(value = "/getCustomizeScore")
@@ -279,66 +267,7 @@ public class RecommendedCustomizeScoreRestController {
 	@ResponseBody
 	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
-		OrgLocations orglocation = orgLocationService.getOrgLocations(orgLocationId);
-		CandidateCompareDTO candidateCompare = new CandidateCompareDTO();
-		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		List<CandidateIndex> candidateList = null;
-		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
-		if (null != recommendedCustomizeScore) {
-			candidateList = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId);
-		}
-		if (requirement != null) {
-			if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
-				candidateCompare.setJobId(requirement.getJobId());
-			}
-			if (requirement.getJobTitle() != null
-					&& !"".equalsIgnoreCase(requirement.getJobTitle())) {
-				candidateCompare.setJobTitile(requirement.getJobTitle());
-			}
-			if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate())) {
-				candidateCompare.setJobRate(requirement.getRate());
-			}
-			if (requirement.getRateType() != null
-					&& !"".equalsIgnoreCase(requirement.getRateType())) {
-				candidateCompare.setJobRatePer(requirement.getRateType());
-			}
-			if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
-				candidateCompare.setJobSkills(requirement.getSkills());
-			}
-			if (requirement.getVisaType() != null
-					&& !"".equalsIgnoreCase(requirement.getVisaType())) {
-				candidateCompare.setJobVisa(requirement.getVisaType());
-			}
-			if (requirement.getLocation() != null
-					&& !"".equalsIgnoreCase(requirement.getLocation())) {
-				candidateCompare.setJobLocation(requirement.getLocation());
-			}
-			if (requirement.getMinExp() != null
-					&& !"".equalsIgnoreCase(requirement.getMinExp())) {
-				candidateCompare.setJobMinExp(requirement.getMinExp());
-			}
-			if (requirement.getMaxExp() != null
-					&& !"".equalsIgnoreCase(requirement.getMaxExp())) {
-				candidateCompare.setJobMaxExp(requirement.getMaxExp());
-			}
-			if (requirement.getNoticePeriod() != null
-					&& !"".equalsIgnoreCase(requirement.getNoticePeriod())) {
-				candidateCompare.setJobNoticePeriod(requirement.getNoticePeriod());
-			}
-		}
-		if (candidateList != null) {
-			for(int i = 0; i<candidateList.size(); i++){
-				CandidateIndex candidate = candidateList.get(i);
-				Candidate can = candidateService.getCandidateByCandidateId(candidate.getCandidateId());
-				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
-				candidate.setCurrentResumeId(candidateResume.getId());
-				candidate.setCurrentResumeName(candidateResume.getFileName());
-				candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
-				int percentage = candidateService.getCandidatePercentage(can,orglocation);
-				candidate.setProfilePercentage(percentage);
-			}
-			candidateCompare.setCandidateList(candidateList);
-		}
+		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId);
 		return candidateCompare;
 	}
 	
