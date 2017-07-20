@@ -226,7 +226,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("expenseId",sah.getExpenseId().getExpenseId());
 				 }
 			 }
-			 
+			 globalVarsMap.put("frequencyType",sah.getExpenseId().getProjectMembers().getProjects().getInvoiceFrequency());
 			 if(null != sah.getExpenseId()){
 				 if(null != sah.getExpenseId().getStartDate()){
 			 globalVarsMap.put("startDate",Constants.DMY.format(sah.getExpenseId().getStartDate()));
@@ -245,7 +245,7 @@ public class ExpensesApprovalRestController {
 			// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("loginOrg",loginOrgLocation.getOrgLocationName());
 			 
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();

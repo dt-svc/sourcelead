@@ -23,119 +23,105 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Component
-public  class SourceleadELKBaseIndexer<T> {
+public class SourceleadELKBaseIndexer<T> {
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadELKBaseIndexer.class);
-	
+
 	@Autowired
 	SourceleadELKTransportClient sourceleadELKTransportClient;
 
 	@Bean
 	public SourceleadELKBaseIndexer<T> getSourceleadELKBaseIndexer() {
-	  return new SourceleadELKBaseIndexer<T>();
+		return new SourceleadELKBaseIndexer<T>();
 	}
-    
+
 	/**
 	 * 
 	 * @param entityClass
 	 * @param index
 	 * @param type
 	 * @param id
-	 * @purpose : For To Save/Update  Elk Document Based On id
+	 * @purpose : For To Save/Update Elk Document Based On id
 	 */
-	public void saveOrUpdateElkDocument(T entityClass,String index,String type,String id) {
+	public void saveOrUpdateElkDocument(T entityClass, String index, String type, String id) {
 		String entityInJson = null;
 		try {
-		    entityInJson = toJSON(entityClass);
-			sourceleadELKTransportClient.getClient().prepareUpdate(index, type,id).setDoc(entityInJson).get();
-			logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	sourceleadELKTransportClient.getClient().prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
-		    logger.info(type+" has been indexed.");
+			entityInJson = toJSON(entityClass);
+			sourceleadELKTransportClient.getClient().prepareUpdate(index, type, id).setDoc(entityInJson).get();
+			logger.info(type + " has been updated.");
+		} catch (DocumentMissingException e) {
+			sourceleadELKTransportClient.getClient().prepareIndex(index, type, id).setSource(entityInJson).execute()
+					.actionGet();
+			logger.info(type + " has been indexed.");
+		} catch (Exception e) {
+			logger.error(type + " could not be serialized. " + e.getLocalizedMessage());
 		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-    }
-	
+
+	}
+
 	/**
 	 * @param entityClass
 	 * @param index
 	 * @param type
 	 * @param id
-	 *  @purpose : For To Delete  Elk Document Based on db(ElkDocument) id
+	 * @purpose : For To Delete Elk Document Based on db(ElkDocument) id
 	 */
-	public void deleteElkDocument(T entityClass,String index,String type,String id) {
+	public void deleteElkDocument(T entityClass, String index, String type, String id) {
 		try {
-			 sourceleadELKTransportClient.getClient().prepareDelete(index, type,id).execute().actionGet();
-			 //sourceleadELKTransportClient.shutdown();
-			 logger.info(index+" Document With id :"+ id +" has been deleted.");
+			sourceleadELKTransportClient.getClient().prepareDelete(index, type, id).execute().actionGet();
+			// sourceleadELKTransportClient.shutdown();
+			logger.info(index + " Document With id :" + id + " has been deleted.");
+		} catch (Exception e) {
+			logger.error(index + " Document With id :" + id + " deletion fails " + ExceptionUtils.getFullStackTrace(e));
 		}
-		catch (Exception e) {
-			logger.error(index+" Document With id :"+ id +" deletion fails "+ExceptionUtils.getFullStackTrace(e));
-		}
-		
-		
+
 	}
-	public  SearchHits searchDocumentWithMaxResults(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
-		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index)
-				                 
-				                 .setTypes(type)
-				                  .setQuery(query)
-				                  .addSort("updatedDate", SortOrder.DESC)
-				                 .setFrom(offset).setSize(maxResults)
-	                             .execute()
-	                             .actionGet();
-		 
-		 return response.getHits();
 
-  }
-	
-	
-	public  SearchHits searchDocumentWithMaxResultsForCampaigns(String index,String type,int offset,int maxResults,BoolQueryBuilder query){
-		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index)
-				                 
-				                 .setTypes(type)
-				                  .setQuery(query)
-				                  .addSort("mailBoxId", SortOrder.DESC)
-				                 .setFrom(offset).setSize(maxResults)
-	                             .execute()
-	                             .actionGet();
-		 
-		 return response.getHits();
+	public SearchHits searchDocumentWithMaxResults(String index, String type, int offset, int maxResults,
+			BoolQueryBuilder query) {
+		return searchDocumentWithMaxResults(index, type, offset, maxResults, "updatedDate", SortOrder.DESC, query).getHits();
+	}
 
- }
-	
-	
-	
-	public  SearchHits searchDocument(String index,String type,BoolQueryBuilder query){
-		 SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type).setQuery(query)
-	                             .execute()
-	                             .actionGet();
-			
-			/* System.out.println("Current results: " + results.length);
-			for (SearchHit hit : results) {
-				System.out.println("------------------------------");
-				Map<String,Object> result = hit.getSource();
-				System.out.println(result);
-			}*/
-		 
-		 return response.getHits();
+	public SearchResponse searchDocumentWithMaxResults(String index, String type, int offset, int maxResults,
+			String sortColoumn, SortOrder sortOrder, BoolQueryBuilder query) {
+		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
+				.setQuery(query).addSort(sortColoumn, sortOrder).setFrom(offset).setSize(maxResults).execute()
+				.actionGet();
 
-   }
-	
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
-	
-   
+		return response;
+	}
 
+	public SearchHits searchDocumentWithMaxResultsForCampaigns(String index, String type, int offset, int maxResults,
+			BoolQueryBuilder query) {
+		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index)
+
+				.setTypes(type).setQuery(query).addSort("mailBoxId", SortOrder.DESC).setFrom(offset).setSize(maxResults)
+				.execute().actionGet();
+
+		return response.getHits();
+
+	}
+
+	public SearchHits searchDocument(String index, String type, BoolQueryBuilder query) {
+		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
+				.setQuery(query).execute().actionGet();
+
+		/*
+		 * System.out.println("Current results: " + results.length); for (SearchHit hit
+		 * : results) { System.out.println("------------------------------");
+		 * Map<String,Object> result = hit.getSource(); System.out.println(result); }
+		 */
+
+		return response.getHits();
+
+	}
+
+	public String toJSON(Object obj) {
+		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
+			public HierarchicalStreamWriter createWriter(Writer writer) {
+				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
+			}
+		});
+		return xstream.toXML(obj);
+	}
 
 }
