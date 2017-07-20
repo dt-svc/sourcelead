@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -61,10 +65,10 @@ public class ProjectPlanningRequest implements Serializable{
    	private String estimatedBudgetCurrency;
     
     @Column(name = "REQUEST_STATUS")
-   	private String REQUEST_STATUS;
+   	private String requestStatus;
     
     @Column(name = "REQUESTED_USER")
-   	private String REQUESTED_USER;
+   	private String requestedUser;
     
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
@@ -72,6 +76,33 @@ public class ProjectPlanningRequest implements Serializable{
     
     @Column(name = "STATUS")
    	private Integer status;
+    
+    @Column(name = "REQUEST_UUID")
+   	private String requestUUID;
+    
+    @Column(name = "REQUEST_TYPE")
+   	private String requestType;
+    
+	@Column(name = "CREATED_DATE")
+    private Date createdDate;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+    
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "CREATED_BY")
+  	private User createdBy;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "UPDATED_BY")
+  	private User updatedBy;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
+	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
+	
+	@Transient
+    private String requestedDateStr;
+	
     
     
     
@@ -163,20 +194,21 @@ public class ProjectPlanningRequest implements Serializable{
 		this.estimatedBudgetCurrency = estimatedBudgetCurrency;
 	}
 
-	public String getREQUEST_STATUS() {
-		return REQUEST_STATUS;
+
+	public String getRequestStatus() {
+		return requestStatus;
 	}
 
-	public void setREQUEST_STATUS(String rEQUEST_STATUS) {
-		REQUEST_STATUS = rEQUEST_STATUS;
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
 	}
 
-	public String getREQUESTED_USER() {
-		return REQUESTED_USER;
+	public String getRequestedUser() {
+		return requestedUser;
 	}
 
-	public void setREQUESTED_USER(String rEQUESTED_USER) {
-		REQUESTED_USER = rEQUESTED_USER;
+	public void setRequestedUser(String requestedUser) {
+		this.requestedUser = requestedUser;
 	}
 
 	public OrgLocations getOrgLocationId() {
@@ -195,20 +227,28 @@ public class ProjectPlanningRequest implements Serializable{
 		this.status = status;
 	}
 
+	public String getRequestUUID() {
+		return requestUUID;
+	}
+
+	public void setRequestUUID(String requestUUID) {
+		this.requestUUID = requestUUID;
+	}
+
+	public String getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
+	}
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
 	}
 
 	public Date getUpdatedDate() {
@@ -219,28 +259,38 @@ public class ProjectPlanningRequest implements Serializable{
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy() {
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public User getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
-	@Column(name = "CREATED_DATE")
-    private Date createdDate;
-    
-    @Column(name = "CREATED_BY")
-    private String createdBy;
-    
-    @Column(name = "UPDATED_DATE")
-    private Date updatedDate;
-    
-    @Column(name = "UPDATED_BY")
-    private String updatedBy;
-    
-   
+	public Set<ProjectPlanningResourceRequest> getProjectPlanningResourceRequestList() {
+		return projectPlanningResourceRequestList;
+	}
 
+	public void setProjectPlanningResourceRequestList(
+			Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList) {
+		this.projectPlanningResourceRequestList = projectPlanningResourceRequestList;
+	}
+
+	public String getRequestedDateStr() {
+		return requestedDateStr;
+	}
+
+	public void setRequestedDateStr(String requestedDateStr) {
+		this.requestedDateStr = requestedDateStr;
+	}
 
 	
 }

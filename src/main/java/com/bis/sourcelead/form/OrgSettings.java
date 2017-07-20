@@ -30,6 +30,8 @@ public class OrgSettings {
 	
 	private String timeZone;
 	
+	private String dateFormat1;
+	
 	
 
 	public Integer getId() {
@@ -135,5 +137,15 @@ public class OrgSettings {
 	public void setTimeZone(String timeZone) {
 		this.timeZone = timeZone;
 	}
+
+	public String getDateFormat1() {
+		return dateFormat1;
+	}
+
+	public void setDateFormat1(String dateFormat1) {
+		this.dateFormat1 = dateFormat1;
+	}
+
+	
 
 }

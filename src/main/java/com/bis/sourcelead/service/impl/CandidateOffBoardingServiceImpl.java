@@ -86,6 +86,9 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 		CandidateOffBoarding candidateOffBoarding = null;
 		
+		// date format
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		
 		if(jsonObj.has("savedoffboardId") && !isNullOrEmpty(jsonObj.getString("savedoffboardId"))){
 			candidateOffBoarding = candidateOffBoardingDao.getCandidateOffBoardingById(Long.valueOf(jsonObj.getString("savedoffboardId")));
 		}else{
@@ -115,7 +118,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		if(jsonObj.has("dateOfJoin") && !isNullOrEmpty(jsonObj.getString("dateOfJoin"))){
-			candidateOffBoarding.setDateOfJoin(commonUtil.getDateFormat(jsonObj.getString("dateOfJoin")));
+			candidateOffBoarding.setDateOfJoin(dateFormat.parse(jsonObj.getString("dateOfJoin")));
 		}
 		
 		if(jsonObj.has("role") && !isNullOrEmpty(jsonObj.getString("role"))){
@@ -128,7 +131,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOffBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));
+			candidateOffBoarding.setEndDate(dateFormat.parse(jsonObj.getString("endDate")));
 		}
 		
 		if(jsonObj.has("reason") && !isNullOrEmpty(jsonObj.getString("reason"))){
@@ -150,7 +153,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		if(jsonObj.has("effectiveDate") && !isNullOrEmpty(jsonObj.getString("effectiveDate"))){
-			candidateOffBoarding.setEffectiveDate(commonUtil.getDateFormat(jsonObj.getString("effectiveDate")));
+			candidateOffBoarding.setEffectiveDate(dateFormat.parse(jsonObj.getString("effectiveDate")));
 		}
 		
 		if(jsonObj.has("offboardingTemplate") && !isNullOrEmpty(jsonObj.getString("offboardingTemplate"))){

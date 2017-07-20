@@ -213,6 +213,9 @@ public class Candidate implements Serializable{
 	private String rate;
 	
 	@Transient
+	private String userRole;
+	
+	@Transient
 	private String candidateName;
 	
 	@Transient
@@ -366,6 +369,15 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private List<Contracts> contractsList;
+	 
+	 @Transient
+	 private String reportingManager;
+	 
+	 @Transient
+	 private String resumeUUID;
+	 
+	 @Transient
+	 private String isResumeExists;
 	 
 	 
 	public Long getId() {
@@ -1413,6 +1425,46 @@ public class Candidate implements Serializable{
 
 	public void setCandidateResumeFileType(String candidateResumeFileType) {
 		this.candidateResumeFileType = candidateResumeFileType;
+	}
+
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
+	}
+
+
+	public String getIsResumeExists() {
+		return isResumeExists;
+	}
+
+
+	public void setIsResumeExists(String isResumeExists) {
+		this.isResumeExists = isResumeExists;
 	}
 
 	

@@ -534,6 +534,8 @@ public class UsersListRestController {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		
+		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
@@ -547,7 +549,7 @@ public class UsersListRestController {
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			if (employee.getHireDate() != null) {
-				userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_DMY.format(employee.getHireDate()));
+				userRole.setHireDateStr(formatter.format(employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
@@ -1678,8 +1680,9 @@ public class UsersListRestController {
 			 */
 			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
+					//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					 SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+					employees.setHireDate(formatter.parse(jsonObj.getString("DateofJoin")));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

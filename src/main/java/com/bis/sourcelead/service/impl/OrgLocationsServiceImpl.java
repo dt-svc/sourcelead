@@ -87,6 +87,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		orgLocations.setPhone(orgSettings.getPhone());
 		orgLocations.setFax(orgSettings.getFax());
 		orgLocations.setTimezone(timezone);
+		orgLocations.setDateFormat(orgSettings.getDateFormat1());
 	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());

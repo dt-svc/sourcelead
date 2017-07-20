@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -161,12 +162,13 @@ public class CandidateEducationRestController {
 	public String getCandidateEducationBycandidateIdandEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
 		String resultJson;
 		 CandidateEducation  candidatesEducationList = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
-		
+		 Candidate can = candidateService.getCandidateById(candidateId);
+		 SimpleDateFormat formatter = can.getOrgLocationId().getLocFullFormDateFormatter();
 		 if(candidatesEducationList.getStartDate() != null){
-			 candidatesEducationList.setStartDateStr(Constants.DF_DMY.format(candidatesEducationList.getStartDate())); 
+			 candidatesEducationList.setStartDateStr(formatter.format(candidatesEducationList.getStartDate())); 
 			 }
 			 if(candidatesEducationList.getEndDate() != null){
-				 candidatesEducationList.setEndDateStr(Constants.DF_DMY.format(candidatesEducationList.getEndDate())); 
+				 candidatesEducationList.setEndDateStr(formatter.format(candidatesEducationList.getEndDate())); 
 			 }
 			/* List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
 			 candidatesEducationList.setEducationList(educationsList);*/

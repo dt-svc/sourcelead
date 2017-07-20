@@ -608,6 +608,20 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
+	public static final String RESOURCE_REQUEST_WAITING_FOR_APPROVAL = "Waithing For Approval";
+	public static final String RESOURCE_REQUEST_DRAFT = "Draft";
+	public static final String RESOURCE_REQUEST_APPROVED = "Approved";
+	public static final String RESOURCE_REQUEST_REJECTED = "Rejected";
+	public static final String RESOURCE_REQUEST_ON_HOLD = "On hold";
+	
+	public static final String RESOURCE_REQUEST_NEW_REQUEST = "New Request";
+	public static final String RESOURCE_REQUEST_ASSOCIATE_REQUEST = "Associate Request";
+	
+	
+	public static final int WORKING_HOURS = 8;
+	
+	
+	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";
 	public static final String DRAFT = "DRAFT";
