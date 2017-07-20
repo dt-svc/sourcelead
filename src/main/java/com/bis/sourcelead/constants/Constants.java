@@ -608,6 +608,10 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
+	public static final String RESOURCE_REQUEST = "Requested";
+	
+	
+	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";
 	public static final String DRAFT = "DRAFT";

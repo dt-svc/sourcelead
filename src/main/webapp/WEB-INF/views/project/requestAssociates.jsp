@@ -51,7 +51,7 @@
             <div class="form-group">
               <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
-                <select class="chosen-select form-control" data-validation="required" field-name="Approver">
+                <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
                 <option selected value=''>--Select Approver--</option>
 	                <c:forEach var="approver" items="${approversList}">
 	                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
@@ -99,7 +99,7 @@
 			id="REPLACEROWIDcandidateFullName" name="REPLACEROWIDcandidateFullName" />
 		
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate" />
+			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidateId" />
 		
 		<!-- <input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDlineItemId" name="REPLACEROWIDlineItemId">
@@ -129,7 +129,7 @@
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="changeRate_div changeRateDiv">
                   <div class="pull-left dropdown-select drpdownCurrency">
-                      <select id="REPLACEROWIDcurrency" name="REPLACEROWIDcurrency">
+                      <select id="REPLACEROWIDbillRateCurrency" name="REPLACEROWIDbillRateCurrency">
 	                     <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
@@ -142,7 +142,7 @@
                       <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="REPLACEROWIDbillRate"  data-validation="validate_Space validate_int validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
-                  <select id="REPLACEROWIDrateType" name="REPLACEROWIDrateType">
+                  <select id="REPLACEROWIDbillRateRateType" name="REPLACEROWIDbillRateRateType">
 	                    <option value="Hourly">Hourly</option>
 	                    <option value="Weekly">Weekly</option>
 	                    <option value="Bi-weekly">Bi-weekly</option>
@@ -621,32 +621,31 @@ var validationSettings = {
         			
         			e.preventDefault();
                 	
-            		var frm = $('#requestAssociates_form').serializeFormJSON();
-                	var con = JSON.stringify(frm);
-    			    con = con.replace(/[{}]/g, ""); 
-    			    var jsonData = encodeURIComponent(con);
+        			var frm = $('#requestAssociates_form').serializeFormJSON();
+        			var jsonData = JSON.stringify(frm);
+        		
+        			
+        			var form = $('#requestAssociates_form')[0];
+        		    var formData = new FormData(form);
+        		  	formData.append("json",jsonData);
+        		  	
              		var sourceleadUrl ='${sourceleadUrl}';
+             		var projectUUID = '${projectUUID}';
              		
              		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
              		
-             		/* $.ajax({
-              	      type: "POST",
-              	      contentType : 'application/json; charset=utf-8',
-              	      dataType : 'json',
-                    	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&json="+jsonData,
-                    			  
-                    			  
-                      	success: function(result) {
-    			        	if((result == 'orgList')){
-    			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
-    			        	}
-    			        	else if((result == 'Invalid Sub Modules')){
-    			        		$("#loading").removeAttr("style");
-    			        		document.getElementById("subModule").style.display="";
-    			        	}
-    			        	
-    			        },  
-                   }); */  
+             		$.ajax({
+						type : "POST",
+		  	    	    data: formData,
+		  	    	    contentType : 'application/json; charset=utf-8',
+		  		        processData: false,
+		  		        contentType:false, 
+		  	    	    dataType : 'json',
+						url : sourceleadUrl+"/saveResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
+						success : function(result) {
+							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
+						},
+					});  
              		 return true;
                 	   
         		}
@@ -951,7 +950,9 @@ $(document).ready(function() {
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
 		}
-		
+  </script>
+	
+	<script type="text/javascript">
 		function openPop(){
 			$("div.cand-advsrch-popup").toggle();
 		}
