@@ -78,6 +78,9 @@ public class ProjectPlanningResourceRequest implements Serializable{
     
     @Column(name = "STATUS")
    	private Integer status;
+    
+    @Column(name = "RESOURCE_STATUS")
+   	private String resourceStatus;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -262,6 +265,14 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getResourceStatus() {
+		return resourceStatus;
+	}
+
+	public void setResourceStatus(String resourceStatus) {
+		this.resourceStatus = resourceStatus;
 	}
 	
 
