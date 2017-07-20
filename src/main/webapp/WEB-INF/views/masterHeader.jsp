@@ -308,7 +308,7 @@ function preventTabkey(e){
 			
 			
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
 			</div>
 			</form:form>
@@ -1228,7 +1228,13 @@ function universalSearch(){
 	 if(sourceleadUrl == ''){
 		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 }
-	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+	 if(searchType == "Candidate") {
+		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 } else if(searchType == "Associate") {
+		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 } else {
+		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+	 }
 }
 </script>
 
