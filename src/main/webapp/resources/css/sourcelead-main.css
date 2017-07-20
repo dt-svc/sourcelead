@@ -5833,6 +5833,38 @@ ul.jobs-360{
 .experience-drop .dropdown-menu.open {
     max-height: 250px !important; overflow: auto;
 }
+.request-resources .col-md-3 {
+	min-height: 70px;
+}
+.request-resources label {
+	margin-bottom: 2px;
+}
+.request-resources .currencySymbol .currencyValue {
+	padding: 7.5px 5px;
+}
+/* Custom inr Values */
+.width90px{
+    width: 90px; display: inline-block;
+}
+.width100px{
+    width: 100px; display: inline-block;
+}
+.width150px{
+    width: 150px; display: inline-block;
+}
+.width215px{
+    width: 215px; display: inline-block;
+}
+.inr_values small {
+    font-size: 100%; padding: 0 5px;
+}
+.width180px {
+	width: 180px;
+}
+.payrateType {
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 60px; display: block; margin: 0 auto;
+}
+/* Custom inr Values */
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
