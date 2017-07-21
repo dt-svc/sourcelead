@@ -20,5 +20,7 @@ public interface ProjectPlanningRequestService {
 	public void saveProjectNewResourceRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,String projectUUID,String saveType) throws JSONException, Exception;
 
 	ProjectPlanningRequest getProjectPlanningRequestByRequestUUID(String requestUUID) throws Exception;
+	
+	ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception;
 
 }

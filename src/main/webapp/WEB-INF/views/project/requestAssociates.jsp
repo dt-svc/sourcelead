@@ -424,10 +424,12 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 			      dateFormat : 'dd-mm-yy',
 			      minDate : 0,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
-						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
-						getEstimatedHours(maxRowNum)
+					  var id = $(this).attr('id');
+					  var rowId = id.split("sdate-input")[0];
+					  var dt = toDate("#"+rowId+"sdate-input");
+					  dt.setDate(dt.getDate() + 1);
+					  $("#"+rowId+"edate-input").datepicker("option", "minDate", dt);
+					  getEstimatedHours(rowId);
 			 	  }
 			    });
 			
@@ -437,10 +439,12 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 			      dateFormat : 'dd-mm-yy',
 			      minDate : 0,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  var id = $(this).attr('id');
+					  var rowId = id.split("edate-input")[0];
+					   var dt = toDate("#"+rowId+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
-						getEstimatedHours(maxRowNum)
+						$("#"+rowId+"sdate-input").datepicker("option", "maxDate", dt);
+						getEstimatedHours(rowId)
 			 	  }
 			    });
 			
@@ -1137,7 +1141,6 @@ function getEstimatedHours(rowId){
 	var startDate = document.getElementById(rowId+"sdate-input").value;
 	var endDate = document.getElementById(rowId+"edate-input").value;
 	if(startDate && endDate){
-		
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
