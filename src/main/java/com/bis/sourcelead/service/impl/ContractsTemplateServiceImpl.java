@@ -1209,14 +1209,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 StringBuilder linkBuild = new StringBuilder();
 			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
-			
+			SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			if(contracts.getStartDate() != null){
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 				if(null != timezone && null != timezone.getTimeZoneId()){
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = dateFormat.format(converteDate);
 					globalVarsMap.put("StartDate",currentDateInTimezone);	
 				}
 		    }else{
@@ -1230,7 +1230,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = dateFormat.format(converteDate);
 					globalVarsMap.put("EndDate",currentDateInTimezone);	
 				}
 		    }else{
@@ -1338,14 +1338,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 StringBuilder linkBuild = new StringBuilder();
 		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
-		
+		SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
 			String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 			if(null != timezone && null != timezone.getTimeZoneId()){
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				currentDateInTimezone = dateFormat.format(converteDate);
 				globalVarsMap.put("StartDate",currentDateInTimezone);	
 			}
 	    }else{
@@ -1359,7 +1359,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				currentDateInTimezone = dateFormat.format(converteDate);
 				globalVarsMap.put("EndDate",currentDateInTimezone);	
 			}
 	    }else{
@@ -1448,14 +1448,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 StringBuilder linkBuild = new StringBuilder();
 		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
-		
+		SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if(contracts.getStartDate() != null){
 			String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 			if(null != timezone && null != timezone.getTimeZoneId()){
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				currentDateInTimezone = dateFormat.format(converteDate);
 				globalVarsMap.put("StartDate",currentDateInTimezone);	
 			}
 	    }else{
@@ -1469,7 +1469,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				currentDateInTimezone = dateFormat.format(converteDate);
 				globalVarsMap.put("EndDate",currentDateInTimezone);	
 			}
 	    }else{
@@ -1573,7 +1573,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailMessage.setToEmail(owner.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 
+		 SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder msgBuild = new StringBuilder();
 			 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()); 
@@ -1601,7 +1601,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
 			Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-			interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+			interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 			globalVarsMap.put("EndDate", interviewDateInTimezone);
 		    }else{
 				 globalVarsMap.put("EndDate","--");
@@ -1612,7 +1612,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 				globalVarsMap.put("StartDate", interviewDateInTimezone);
 			    }else{
 					 globalVarsMap.put("StartDate","--");
