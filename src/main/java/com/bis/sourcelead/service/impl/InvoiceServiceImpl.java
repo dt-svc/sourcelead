@@ -788,7 +788,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
-		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		 SimpleDateFormat dateFormat = orglocations.getLocFullFormDateFormatter();
+		 String date = (dateFormat.format(invoice.getDueDate()));
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
@@ -888,8 +889,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType) throws Exception
 	{
 		Invoice invoice = new Invoice();
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         
         //-----------------------------
@@ -1036,8 +1037,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private Set<InvoiceLineItems> getProjectInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice) throws Exception {
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
-		 String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		 //String pattern = "dd-MM-yyyy";
+	     SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 	     
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRowNum"));
 		 for(int i=1;i<maxRowCount;i++){

@@ -736,8 +736,8 @@ public class InvoiceRestController {
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
@@ -836,8 +836,8 @@ public class InvoiceRestController {
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
@@ -995,9 +995,9 @@ public class InvoiceRestController {
 		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 
-		 String createdDate = (Constants.DF_DMY.format(invoice.getCreatedDate()));
-		 String dueDate = (Constants.DF_DMY.format(invoice.getDueDate()));
+		 SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		 String createdDate = (dateFormat.format(invoice.getCreatedDate()));
+		 String dueDate = (dateFormat.format(invoice.getDueDate()));
 		 
 		 StringBuilder stringBuildername = new StringBuilder();
 			globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
