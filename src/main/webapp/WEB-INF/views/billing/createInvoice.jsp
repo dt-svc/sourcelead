@@ -131,6 +131,13 @@ function errRemoveClientContact(){
 									name="billingAddress" placeholder="Invoice Address"></textarea>
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-md-3">Account Details</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="2" id="accountDetails"
+									name="accountDetails" placeholder="Account Details"></textarea>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -173,6 +180,13 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
+	<div class="tbldata-dotdot select-field">
+		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="REPLACEROWIDDescription"
+			data-validation="required" field-name="Description"></textarea>
+	</div>
+</div>
+
+<div id="divTaskTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 select-field">
 		<select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow" onchange="getSowRate(REPLACEROWID);">
 			<option value=''>-Select sow-</option>
@@ -180,7 +194,7 @@ function errRemoveClientContact(){
 	</div>
 </div>
 
-<div id="divTaskTd4" style="display: none; float: left;">
+<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
@@ -189,7 +203,7 @@ function errRemoveClientContact(){
 	</div>
 </div>
 
-<div id="divTaskTd5" style="display: none; float: left;">
+<div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
 		<input type="text" class="form-control input-sm inline_field"
 			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
@@ -198,14 +212,14 @@ function errRemoveClientContact(){
 	</div>
 </div>
 
-<div id="divTaskTd6" style="display: none; float: left;">
+<div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm text-right">
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
 			placeholder="00:00" class="ReadTextFli" readonly>
 	</div>
 </div>
 
-<div id="divTaskTd7" style="display: none; float: left;">
+<div id="divTaskTd8" style="display: none; float: left;">
 	<a class="text-danger tblminwidth-50" title="Remove row"
 		id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i
 		class="fa fa-remove"></i></a>
@@ -224,6 +238,7 @@ function errRemoveClientContact(){
 		 result = result +'  <tr id="divTsRow0">';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
+		 result = result +'  <th>Description</th>';
 		 result = result +'  <th>SOW</th>';
 		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
@@ -234,7 +249,7 @@ function errRemoveClientContact(){
            
 		 result = result +'  <tfoot class="table_footer">';
 		 result = result +'  <tr>';
-		 result = result +'  <td colspan="4"></td>';
+		 result = result +'  <td colspan="5"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
 		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
@@ -244,7 +259,7 @@ function errRemoveClientContact(){
 		 result = result +'  </table>';
 		 result = result +'  </div>';
          
-         result = result +'  <div class="clearfix invoice_other">';
+         result = result +'  <div class="clearfix invoice_other mt">';
          result = result +'  <div class="col-md-5">';
          result = result +'  <div class="clearfix mb">';
          result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
@@ -406,7 +421,9 @@ function errRemoveClientContact(){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	
+		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           		$("#accountDetails").val(json['accountDetails']);
+		           	}
 		           	buildLineItemAndTaxAddRows();
 		           	
 		           	editInvoice(json['invoiceLineItemsList']);
@@ -628,28 +645,33 @@ function errRemoveClientContact(){
 				cell1.innerHTML = divTsTd2Str;
 				
 				var cell1 = row.insertCell(2);
-				var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+				var divTsTd10Str = document.getElementById("divTaskTd3").innerHTML;
+				divTsTd10Str = divTsTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd10Str;
+				
+				var cell1 = row.insertCell(3);
+				var divTsTd3Str = document.getElementById("divTaskTd4").innerHTML;
 				divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd3Str;
 				
-				var cell1 = row.insertCell(3);
-				var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+				var cell1 = row.insertCell(4);
+				var divTsTd4Str = document.getElementById("divTaskTd5").innerHTML;
 				divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd4Str;
 				
-				var cell1 = row.insertCell(4);
-				var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+				var cell1 = row.insertCell(5);
+				var divTsTd5Str = document.getElementById("divTaskTd6").innerHTML;
 				divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd5Str;
 				
 				
-				var cell1 = row.insertCell(5);
-				var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+				var cell1 = row.insertCell(6);
+				var divTsTd6Str = document.getElementById("divTaskTd7").innerHTML;
 				divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd6Str;
 				
-				var cell1 = row.insertCell(6);
-				var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+				var cell1 = row.insertCell(7);
+				var divTsTd7Str = document.getElementById("divTaskTd8").innerHTML;
 				divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd7Str;
 				
@@ -658,6 +680,7 @@ function errRemoveClientContact(){
 				
 				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
 				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
+				$('#'+maxRowNum+'Description').val(opt.inlineDescription);
 				$('#'+maxRowNum+'lineItemId').val(opt.id);
 				
 				$('#'+maxRowNum+'rate').val(opt.rate);
@@ -798,28 +821,33 @@ function cancel(){
 			cell1.innerHTML = divTsTd2Str;
 			
 			var cell1 = row.insertCell(2);
-			var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+			var divTsTd10Str = document.getElementById("divTaskTd3").innerHTML;
+			divTsTd10Str = divTsTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd10Str;
+			
+			var cell1 = row.insertCell(3);
+			var divTsTd3Str = document.getElementById("divTaskTd4").innerHTML;
 			divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd3Str;
 			
-			var cell1 = row.insertCell(3);
-			var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+			var cell1 = row.insertCell(4);
+			var divTsTd4Str = document.getElementById("divTaskTd5").innerHTML;
 			divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd4Str;
 			
-			var cell1 = row.insertCell(4);
-			var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+			var cell1 = row.insertCell(5);
+			var divTsTd5Str = document.getElementById("divTaskTd6").innerHTML;
 			divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd5Str;
 			
 			
-			var cell1 = row.insertCell(5);
-			var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+			var cell1 = row.insertCell(6);
+			var divTsTd6Str = document.getElementById("divTaskTd7").innerHTML;
 			divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd6Str;
 			
-			var cell1 = row.insertCell(6);
-			var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+			var cell1 = row.insertCell(7);
+			var divTsTd7Str = document.getElementById("divTaskTd8").innerHTML;
 			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd7Str;
 			
