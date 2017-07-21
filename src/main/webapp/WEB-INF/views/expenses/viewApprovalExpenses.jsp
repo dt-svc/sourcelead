@@ -149,7 +149,7 @@
 				        <td colspan="6">
 						<div class="expDetails">
 							<ul>
-							    <li><strong>Date :111111</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
+							    <li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
