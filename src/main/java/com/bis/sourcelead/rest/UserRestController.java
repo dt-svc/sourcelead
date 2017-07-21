@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
@@ -51,7 +58,6 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
@@ -78,9 +84,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -1103,10 +1106,16 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 				 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
 				    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))
 				 { 		
-					 Client client = Client.create();
-					 WebResource webResource = client.resource(sourceleadUrl+"/rest/");
-					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
-					 int status = response.getStatus();
+					 final String uri = sourceleadUrl+"/rest/";
+	                    RestTemplate restTemplate = new RestTemplate();
+	                    HttpHeaders headers = new HttpHeaders();
+	                    headers.add("X-Username", jsonObject.getString("username"));
+	                    headers.add("X-Password", jsonObject.getString("password"));
+	                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+	                    HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+	                     int status = response.getStatusCode().value();
+
 					 if(status == HttpServletResponse.SC_OK){
 						 String header = response.getHeaders().get("X-CustomToken").toString();
 						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");

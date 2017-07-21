@@ -13,7 +13,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -33,7 +32,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -41,8 +39,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,12 +184,10 @@ public class CandidateListRestController {
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-//		boolQueryBuilder.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 		
 		BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
 
 		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-//		boolQueryBuilderForCount.mustNot(QueryBuilders.matchQuery("userId", user.getId()));
 
 		if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
 			if (Constants.NO.equalsIgnoreCase(search.getIsAssociate())) {
@@ -203,6 +197,7 @@ public class CandidateListRestController {
 
 		if (Constants.YES.equalsIgnoreCase(search.getIsAssociate())) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
+			boolQueryBuilderForCount.must(QueryBuilders.matchQuery("isAssociate", "Y"));
 			if (StringUtils.isNotEmpty(search.getCandidateType()) && !"All".equalsIgnoreCase(search.getCandidateType())) {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", search.getCandidateType()));
 			}
@@ -233,8 +228,8 @@ public class CandidateListRestController {
 		List<String> anyKeyWordArray = search.getAnyOfKeyword();
 		if(anyKeyWordArray == null)
 			anyKeyWordArray = new ArrayList<>();
-		if(search.getSearch().containsKey("value") && !search.getSearch().get("value").isEmpty()) {
-			anyKeyWordArray.add(search.getSearch().get("value"));
+		if(StringUtils.isNotEmpty(search.getSearchValue())) {
+			anyKeyWordArray.add(search.getSearchValue());
 		}
 		if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -489,9 +484,6 @@ public class CandidateListRestController {
 
 		try {
 
-			System.out.println(boolQueryBuilder);
-			System.out.println(boolQueryBuilderForCount);
-			
 			SearchResponse searchResponse = sourceleadELKBaseIndexer
 					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
 							search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
