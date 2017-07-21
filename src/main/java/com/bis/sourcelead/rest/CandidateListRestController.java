@@ -65,6 +65,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -76,9 +77,11 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -121,12 +124,18 @@ public class CandidateListRestController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+    CandidateActivityCommonUtil candidateActivityCommonUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1239,16 +1248,28 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
 	public String saveOrUpdateOnlySkillBycandidateId(
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request)
+			@RequestParam(value = "skillName", required = false) String skillName)
 			throws Exception {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		CandidateHistory candidateHistory = new CandidateHistory();
+		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
+			String skill = can.getSkillsName();
+			if(can.getSkillsName() == null){
+				skill = "";
+			}
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(skill).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, candidateHistory, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
 			can.setSkillsName("");
@@ -1260,15 +1281,27 @@ public class CandidateListRestController {
 
 	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 	public String saveOrUpdateOnlyVisaBycandidateId(
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request)
 			throws Exception {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		CandidateHistory candidateHistory = new CandidateHistory();
+		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(visaName)) {
+			String visa = can.getVisaType();
+			if(can.getVisaType() == null){
+				visa = "";
+			}
+			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(visa).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			can.setVisaType(visaName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, candidateHistory, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
 			candidateService.saveOrUpdateCandidate(can);

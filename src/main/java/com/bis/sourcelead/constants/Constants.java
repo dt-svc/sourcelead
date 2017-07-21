@@ -699,5 +699,24 @@ public class Constants {
 	public static final String CLIENT_NSA = "Client NSA";
 	
     
-
+	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
+	public static final String OLD_VALUE_TAG_END = "</span>";
+	public static final String NEW_VALUE_TAG_INITIATION = "<span class='textline-updated'>";
+	public static final String NEW_VALUE_TAG_END = "</span>";
+	
+	
+	public static final String JOBS_ACTION_ICON_CLASS = "fa fa-briefcase";
+	public static final String CANDIDATE_ACTION_ICON_CLASS = "fa fa-user";
+	public static final String PROJECTS_ACTION_ICON_CLASS = "fa fa-bar-chart";
+	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o";
+	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator";
+	
+	
+	public static final String CANDIDATE_ADDED_MANUALLY = "added candidate manually";
+	public static final String CANDIDATE_EDITTED = "candidate updated";
+	public static final String CANDIDATE_SKILL_UPDATED = "candidate skill updated";
+	public static final String CANDIDATE_VISA_UPDATED = "candidate immigration status updated";
+	
+	
+	
 }

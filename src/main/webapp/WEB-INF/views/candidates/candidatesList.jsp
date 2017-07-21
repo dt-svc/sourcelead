@@ -52,6 +52,7 @@
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
+ <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
  
 <script>
 var isAssociate = 'N';
@@ -468,7 +469,11 @@ function candidateSideBar(candidateId){
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
 						 candidateProfile(candidateId,candidateType);
-			 			 
+						 
+						 var output = "";
+						 output = output + '<a data-toggle="tab" href="#timelineview" onclick="getActivityDiv('+candidateId+')">Timeline</a>';
+						 $("#candTimelineView").empty();  
+			 		     $("#candTimelineView").append(output);
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
  	    	         var result ="";
@@ -1169,6 +1174,7 @@ function cancel(candidateId){
  <ul class="nav nav-tabs">
     <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
     <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed View</a></li>
+    <li id="candTimelineView"></li>
   </ul>
 
   <div class="tab-content">
@@ -1183,6 +1189,249 @@ function cancel(candidateId){
 			     </div>  
 	    </div>
 	     </div>
+	<div id="timelineview" class="tab-pane fade">
+	    <div class="clients_side_wrap_inn">
+	             <div id="candidateTimelineDiv">
+	             
+	             
+	             
+	             
+	             
+	             
+	             	<!-- <div class="content-area clearfix">
+				      <div id="accordion-sl" class="release-jobs"> 
+				        Accordion First Tab
+				        <div class="clearfix timeline">
+				          <h2>11/07/2017</h2>
+				          <div class="content content-custom clearfix">
+				            <div class="timeline_inner">
+				              <div class="row mt">
+				                <div class="col-md-12"> 
+				                  The time line
+				                  <ul class="timeline">
+				                    timeline time label
+				                    <li class="time-label hidden"> <span class="bg-red"> 10 Feb. 2014 </span> </li>
+				                    /.timeline-label 
+				                    timeline item
+				                    <li> <i class="fa fa-envelope bg-blue"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
+				                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+				                        <div class="timeline-body"> Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+				                          weebly ning heekya handango imeem plugg dopplr jibjab, movity
+				                          jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+				                          quora plaxo ideeli hulu weebly balihoo... </div>
+				                        <div class="timeline-footer"> <a class="btn btn-primary btn-xs">Read more</a> <a class="btn btn-danger btn-xs">Delete</a> </div>
+				                      </div>
+				                    </li>
+				                    END timeline item 
+				                    timeline item
+				                    <li> <i class="fa fa-user bg-aqua"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
+				                        <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
+				                        <div class="timeline-body"></div>
+				                      </div>
+				                    </li>
+				                    END timeline item 
+				                    timeline item
+				                    <li> <i class="fa fa-comments bg-yellow"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-clock-o bg-purple"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-briefcase bg-green"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i>1 day ago</span>
+				                        <h3 class="timeline-header"><a href="#">Requirement</a></h3>
+				                        <div class="timeline-body">
+				                          <p>We have urgent requirement for Core Java with NMS/EMS domain. Job Description : ... Not disclosed.</p>
+				                          <p>Posted by: HR</p>
+				                        </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-bar-chart bg-maroon"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Projects</a></h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-calculator bg-olive"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Expenses</a></h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    END timeline item
+				                  </ul>
+				                </div>
+				                /.col 
+				              </div>
+				            </div>
+				          </div>
+				        </div>
+				        Accordion First Tab Ends 
+				        
+				        Accordion second Tab
+				        <div class="clearfix timeline">
+				          <h2>11/07/2017</h2>
+				          <div class="content content-custom clearfix">
+				            <div class="timeline_inner">
+				              <div class="row mt">
+				                <div class="col-md-12"> 
+				                  The time line
+				                  <ul class="timeline">
+				                    timeline time label
+				                    <li class="time-label hidden"> <span class="bg-red"> 10 Feb. 2014 </span> </li>
+				                    /.timeline-label 
+				                    timeline item
+				                    <li> <i class="fa fa-envelope bg-blue"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
+				                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+				                        <div class="timeline-body"> Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+				                          weebly ning heekya handango imeem plugg dopplr jibjab, movity
+				                          jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+				                          quora plaxo ideeli hulu weebly balihoo... </div>
+				                        <div class="timeline-footer"> <a class="btn btn-primary btn-xs">Read more</a> <a class="btn btn-danger btn-xs">Delete</a> </div>
+				                      </div>
+				                    </li>
+				                    END timeline item 
+				                    timeline item
+				                    <li> <i class="fa fa-user bg-aqua"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
+				                        <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
+				                      </div>
+				                    </li>
+				                    END timeline item 
+				                    timeline item
+				                    <li> <i class="fa fa-comments bg-yellow"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-clock-o bg-purple"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-briefcase bg-green"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i>1 day ago</span>
+				                        <h3 class="timeline-header"><a href="#">Requirement</a></h3>
+				                        <div class="timeline-body">
+				                          <p>We have urgent requirement for Core Java with NMS/EMS domain. Job Description : ... Not disclosed.</p>
+				                          <p>Posted by: HR</p>
+				                        </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-bar-chart bg-maroon"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Projects</a></h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    <li> <i class="fa fa-calculator bg-olive"></i>
+				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
+				                        <h3 class="timeline-header"><a href="#">Expenses</a></h3>
+				                        <div class="timeline-body"> Take me to your leader!
+				                          Switzerland is small and neutral!
+				                          We are more like Germany, ambitious and misunderstood! </div>
+				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
+				                      </div>
+				                    </li>
+				                    END timeline item
+				                  </ul>
+				                </div>
+				                /.col 
+				              </div>
+				            </div>
+				          </div>
+				        </div>
+				        Accordion second Tab Ends 
+				      </div>
+				    </div>
+	             
+	              -->
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+	             
+			     </div>  
+	    </div>
+	</div>
   </div>			     
     </div>
     <!-- Compnay details Ends --> 
@@ -1204,6 +1453,8 @@ function activeTab(){
 	$("#candQuickView").addClass("active");
 	$("#quickview").addClass("active in");
 	$("#detailview").removeClass("active in");
+	$("#candTimelineView").removeClass("active");
+	$("#timelineview").removeClass("active in");
 }
 </script>
 
