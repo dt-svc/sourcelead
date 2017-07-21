@@ -100,11 +100,12 @@ public class ProjectPlanningRequest implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
+	private Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList;
+	
 	@Transient
     private String requestedDateStr;
 	
-    
-    
     
     public Long getId() {
 		return id;
@@ -292,5 +293,12 @@ public class ProjectPlanningRequest implements Serializable{
 		this.requestedDateStr = requestedDateStr;
 	}
 
-	
+	public Set<ProjectPlanningNewResourceRequest> getProjectPlanningNewResourceRequestList() {
+		return projectPlanningNewResourceRequestList;
+	}
+
+	public void setProjectPlanningNewResourceRequestList(
+			Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) {
+		this.projectPlanningNewResourceRequestList = projectPlanningNewResourceRequestList;
+	}
 }

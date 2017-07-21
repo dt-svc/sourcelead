@@ -193,6 +193,16 @@ public class ProjectPlanningRestController {
 		    return "success";
 	    }
 	  
+	  @RequestMapping(value = "/saveNewResourceRequest")
+	  public @ResponseBody String saveNewResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,
+			@RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		    projectPlanningRequestService.saveProjectNewResourceRequest(jsonObj, user, orgLocations, projectUUID,saveType);
+		   
+		    return "success";
+      }
 	  
 	  @RequestMapping(value = "/getPlanningRequestListByProjectUUID")
 		public @ResponseBody String getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
