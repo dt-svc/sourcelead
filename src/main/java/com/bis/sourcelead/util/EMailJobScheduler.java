@@ -133,6 +133,9 @@ public class EMailJobScheduler {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;	
+	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -983,7 +986,8 @@ public class EMailJobScheduler {
 		}
 		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("info@sourcelead.com");
+		// emailMessage.setFromEmail("info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("");
 		 emailMessage.setFromName("Sourcelead Team");
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1400,7 +1404,7 @@ public class EMailJobScheduler {
 				 emailMessage.setLastName("");
 			 }
 			 emailMessage.setToEmail(owner.getEmail());
-			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName("SourceLead Admin"); 
 			 
@@ -1705,7 +1709,7 @@ public class EMailJobScheduler {
 		 
 		 emailMessage.setToEmail(jobAlert.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

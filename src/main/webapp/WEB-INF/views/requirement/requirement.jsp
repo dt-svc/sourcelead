@@ -3145,7 +3145,6 @@ $('.chosen-select').each(function() {
 
 <script>
 function getEditRequirementDetails(requirementId){
-	
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(templateId !=''){
 		$.ajax({

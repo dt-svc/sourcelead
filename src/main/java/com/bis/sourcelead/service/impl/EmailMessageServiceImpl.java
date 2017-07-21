@@ -159,7 +159,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	}
 
 	private void sendMessage(EmailMessage emailMessage, InternetAddress[] iAdressArray,
-			List<EmailAttachment> attachmentList) {
+			List<EmailAttachment> attachmentList) throws Exception {
 
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
@@ -211,12 +211,25 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
-
+			MimeMultipart mimeMultipart = new MimeMultipart();;
+			if(emailMessage.getSubmissionId()!=null&& emailMessage.getSubmissionId().length>0){
+				if (emailMessage != null && Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())) {
+					if (emailMessage.getSubmissionId().length >= 10) {
+						mimeMultipart = createResumeZipFile(emailMessage.getSubmissionId());
+					} else {
+						List<EmailAttachment> attachmentListNewlyAdded = createResumesWithoutZip(emailMessage.getSubmissionId());
+						attachmentList.addAll(attachmentListNewlyAdded);
+					}
+				}
+			}
+			BodyPart messageBodyPart = new MimeBodyPart();
+			
 			if (null != attachmentList && attachmentList.size() > 0) {
+				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+				mimeMultipart.addBodyPart(messageBodyPart);
 				for (EmailAttachment attachment : attachmentList) {
 
 					DataSource dataSource = null;
-					MimeMultipart mimeMultipart = null;
 					if (null != attachment.getUUID()) {
 						UUID = attachment.getUUID();
 					}
@@ -225,44 +238,26 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 					if (null != xls) {
 						dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
-						mimeMultipart = new MimeMultipart();
-
-						BodyPart messageBodyPart = new MimeBodyPart();
-						messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-						mimeMultipart.addBodyPart(messageBodyPart);
-
 						MimeBodyPart xlsBodyPart = new MimeBodyPart();
 						xlsBodyPart.setDataHandler(new DataHandler(dataSource));
 						xlsBodyPart.setFileName(xls.getFileName());
-
 						mimeMultipart.addBodyPart(xlsBodyPart);
 					} else {
-
 						dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
-						mimeMultipart = new MimeMultipart();
-
-						BodyPart messageBodyPart = new MimeBodyPart();
-						messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-						mimeMultipart.addBodyPart(messageBodyPart);
-
 						MimeBodyPart bodyPart = new MimeBodyPart();
 						bodyPart.setDataHandler(new DataHandler(dataSource));
 						bodyPart.setFileName(attachment.getName());
 						mimeMultipart.addBodyPart(bodyPart);
 					}
-
 					message.setContent(mimeMultipart);
-					Transport.send(message);
 				}
 			} else {
-				BodyPart messageBodyPart = new MimeBodyPart();
 				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-				Multipart multipart = new MimeMultipart();
-				multipart.addBodyPart(messageBodyPart);
-
-				message.setContent(multipart);
-				Transport.send(message);
+				mimeMultipart.addBodyPart(messageBodyPart);
+				message.setContent(mimeMultipart);
 			}
+
+			Transport.send(message);
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {
@@ -386,9 +381,31 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
-
 			String UUID = null;
+			if (null != emailMessage.getEmailType()
+					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
+				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
+				message.setRecipients(Message.RecipientType.BCC, iAdressArray);
+			}
+			// here mail forward from custom user mail(not with default mail) by
+			// prasad salina
+			else if (null != emailMessage.getEmailType()
+					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.CUSTOM_USER_EMAIL)) {
+				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
+				message.setRecipients(Message.RecipientType.TO, iAdressArray);
+			} else {
+				if (null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional")
+						|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
+					message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
+				} else {
+					message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+				}
+
+				message.setRecipients(Message.RecipientType.TO, iAdressArray);
+			}
+			//message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+
+			//String UUID = null;
 			message.addRecipients(Message.RecipientType.TO, iAdressArray);
 			message.setHeader("Content-Type", "text/html; charset=UTF-8");
 			message.setSubject(emailMessage.getSubject());
