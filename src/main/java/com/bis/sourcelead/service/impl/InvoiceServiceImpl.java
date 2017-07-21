@@ -2306,5 +2306,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		
 	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
+	}
 	
 }
