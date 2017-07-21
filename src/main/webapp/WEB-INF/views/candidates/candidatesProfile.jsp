@@ -234,7 +234,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6" id="locationField">';
-							result = result + '<input type="text" class="form-control input-sm" name="location"  id="cpLocation"  value="'+location+'" placeholder="Location" field-name="Locatin" data-validation="required">';
+							result = result + '<input type="text" class="form-control input-sm" name="location"  id="cpLocation"  value="'+location+'" placeholder="Location" field-name="Location" data-validation="required">';
 							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\');"></i>';
 							result = result + '</div>'; 
 							
