@@ -73,6 +73,36 @@ public class UniversalSearchHelper {
 	 * @return ArrayList<MatchQueryBuilder>
 	 */
 	public ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForClientVendor(String keywd) {
+		
+		
+//		  matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+//		    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+//		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+//		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+//			
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+//			
+//			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+//			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
 		  matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
 		    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
