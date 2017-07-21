@@ -68,4 +68,7 @@ public interface InvoiceService {
 
 	BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate, String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId)throws Exception;
 
+	void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception;
+	
+
 }

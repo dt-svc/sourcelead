@@ -44,6 +44,16 @@
 <script src="resources/js/themeswitcher.js"></script>
 <script src="resources/js/moment.min.js"></script>
 <script src="resources/js/datetime-moment.js"></script>
+
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -308,7 +318,7 @@ function preventTabkey(e){
 			
 			
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
 			</div>
 			</form:form>
@@ -762,6 +772,7 @@ function notificationStatusAsRead(){
       <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
       <li><a href="#" class="" id="btn4"><span class="hdr-grey"></span><span class="dark-grey"></span></a></li>
       <li><a href="#" class="" id="btn5"><span class="hdr-greydrk"></span><span class="sidenav-purle"></span></a></li>
+      <li><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
     </ul>
   </div>
 <!--  Theme Swithcer div ends  -->
@@ -1228,7 +1239,13 @@ function universalSearch(){
 	 if(sourceleadUrl == ''){
 		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 }
-	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+	 if(searchType == "Candidate") {
+		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 } else if(searchType == "Associate") {
+		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 } else {
+		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+	 }
 }
 </script>
 

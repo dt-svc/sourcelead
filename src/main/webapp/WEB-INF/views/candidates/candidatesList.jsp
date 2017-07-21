@@ -6,14 +6,6 @@
 
 <meta name="format-detection" content="telephone=no">
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
-
 <%-- 
      @author : p.sarath kumar
      this script is for candidate Activation
@@ -54,6 +46,22 @@
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  
 <script>
+var isAssociate = 'N';
+var sourceleadUrl = "${sourceleadUrl}";
+var _csrfParam = '${_csrf.parameterName}';
+var _csrfToken = '${_csrf.token}';
+var associateFlag = false;
+'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+	associateFlag = true;
+'</sec:authorize>';
+var name1Flag = false;
+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+name1Flag = true;
+'</sec:authorize>';
+var name2Flag = false;
+'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+name2Flag = true;
+'</sec:authorize>';
  window.onload = function() {
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
@@ -67,281 +75,7 @@
     padding-right: 5px;
 }
 </style>
-<script>
-function candidateListCheck(serachValue,universalCanddateSearchList,candidateKeyword,candidateIdSearchId){
-if(universalCanddateSearchList=="universalCanddateList")	 {
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getUniversalCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
-          success :function(data) {
-              	 prepareCandidateList(data);
-         },
-          
-     }); 
-  }
-  if(candidateKeyword == "candidateSearch"){
-	  candidateSideBar(candidateIdSearchId);
-	  candidateQuickViewProfile(candidateIdSearchId);
-	  candidateList();
-	  $("#upcandidateStatus").val('');
-  }
-else{
-	candidateList();
-	 	$("#upcandidateStatus").val('');
-	}
-  }
-  </script>
-
-<%-- 
-     @author : sarath kumar.
-     this script is for get candidate list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in CandidateListRestController.
---%>
-<input type="hidden" id="noCandidates" name="noCandidates"/>
-<script>
-  function candidateList(){ 	 
-	  
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  
-	  var candFilterRadio = $('input[name=candidateStatus]');
-	  var candidateStatus = candFilterRadio.filter(':checked').val();
-	  
-	  if(candidateStatus == 1){
-          $("#canDiv").text("Active Candidates");
-      }else if(candidateStatus == 0){
-    	  $("#canDiv").text("In Active Candidates");
-      }else if(candidateStatus == 2){
-    	  $("#canDiv").text("All Candidates");
-      }else{
-          $("#canDiv").removeAttr("onClick");
-      }
-	  
-	  
-	  var candTypeRadio = $('input[name=candidateType]');
-	  var candidateType = candTypeRadio.filter(':checked').val();
-	  
-	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
-	  
-	var isAssociate = "N";
-	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 
-	  $.ajax({
-           type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType,       
-            success :function(data) {
-                	 prepareCandidateList(data);
-           },
-            
-       }); 
-  } 
-</script>
- <script>
-  function prepareCandidateList(data){
-	  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-	 	     $("#candidateList").removeAttr("style");
-	     	 $("#candidateList").empty();
-	     	 var result = "";
-	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
-	          result = result +"<thead>"; 
-	          result = result +"  <tr>"; 
-	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
-	          result = result +"    <th>&nbsp;</th>";
-	          result = result +"    <th>Name</th>"; 
-	          result = result +"    <th>Primary Skill</th>"; 
-	         /*  result = result +"    <th>Skills</th>";  */
-	          result = result +"    <th>Employment Type</th>"; 
-	          result = result +"    <th>Email</th>"; 
-	          result = result +"    <th>Mobile Number</th>"; 
-	          result = result +"    <th>Location</th>"; 
-	          result = result +"    <th>Last Update</th>"; 
-	          result = result +"  </tr>"; 
-	          result = result +"</thead>";
-	          result = result +"<tbody>"; 
-	          var json = JSON.parse(data);
-	          for (var i = 0; i < json.length; i++) { 
-	         	 var opt = json[i]; 
-	         	 var mobilePhone = "";
-	         	 var designation ="";
-	         	 var address="";
-	         	 var isFavourite = "";
-	         	 var isFavClass = "";
-	         	 var designationType = "";
-	         	 var candidateUpdateDateToString ="";
-	         	        if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
-	         		       mobilePhone = opt.mobilePhone;
-		            	}else{
-		            		mobilePhone = "----";
-		            	}
-	         	        
-		            	
-		            	if(opt.address != null && opt.address != 'undefined' && opt.address != ""){
-		            		address = opt.address;
-		            	}else{
-		            		address = "----";
-		            	}
-		            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
-		            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
-		            	}else{
-		            		candidateUpdateDateToString = "---";
-		            	} 
-		            	
-		            	
-		            	
-		            	if(opt.isFavourite == '1'){
-		            		isFavourite = "checked";
-		            		isFavClass = "activestar-rating";
-		            	}
-		            	if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-		            		lastName = opt.lastName;
-		            	}else{
-		            		lastName = "";
-		            	}
-		            	var location = "---";
-		            	
-		            	if(opt.country != null && opt.country != "" && opt.country != 'undefined'){
-		            		location = opt.country;
-		            		if(opt.state != null && opt.state != "" && opt.state != 'undefined'){
-		            			location = opt.state+", "+location;
-			            	}
-		            		if(opt.city != null && opt.city != "" &&  opt.city != 'undefined'){
-		            			location = opt.city+", "+location;
-			            	}
-		            	}
-		            	
-		            	
-		            	
-	              result = result +"<tr>";
-	              result = result +"<td style='width:40px; display: inline-block'>";
-
-	              if(opt.isAssociate == "Y"){
-	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
-	              }
-
-	              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
-	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"   <input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
-	              '</sec:authorize>';
-	             
-	              result = result +" <label></label>";
-	              result = result +"</div>";
-	              
-	              result = result +"</td>";
-	
-	             
-	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+opt.candidateId+"); candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
-	              '</sec:authorize>';
-	              
-	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span></div></td>";
-	              '</sec:authorize>';
-	              
-	              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined"){
-	            	  result = result +"  <td><div><span title='"+opt.primarySkill+"'>"+opt.primarySkill+"</span></div></td>";
-	              }else{
-	            	  
-	            	  result = result +"  <td><div>----</div></td>";
-	              }
-	            
-	             /*  if(opt.skillsName != null && opt.skillsName != '' && opt.skillsName != "undefined"){
-	            	  result = result +"  <td><div><span title='"+opt.skillsName+"'>"+opt.skillsName+"</span></div></td>";
-	              }else{
-	            	  
-	            	  result = result +"  <td><div>----</div></td>";
-	              } */
-	             
-	              
-	              if(opt.designationType != null && opt.designationType != '' && opt.designationType != "undefined")
-	             	 {
-	            	  if(opt.designationOtherType !=null && opt.designationOtherType !='' && opt.designationOtherType !="undefined"){
-	                   result = result +"  <td><div>"+opt.designationOtherType+"</div></td>";
-	             	 }else{
-	             		result = result +"  <td><div>"+opt.designationType+"</div></td>"; 
-	             	 }
-	             	 }else{
-	             		 result = result +"  <td><div>----</div></td>"; 
-	             	 }
-	              
-	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
-	             
-	              result = result +"  <td><div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div></td>";
-	              
-	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
-	
-	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
-	              result = result +"</tr>"; 
-	          }
-	          result = result +" </tbody>";
-	          result = result +"</table>";
-	          $("#noCandidates").val('');
-	          $("#candidateList").append(result);
-	          $("#noCandidates").val(json.length);
-	          cpagination(); 
-	 /*  }
-	  else{
-     	 $("#candidateList").removeAttr("style");
-	         var result ="";
-			 result = result+"			<div class='blank-pages'>";
-			 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-			 result = result+"			        <p>No Candidates Found</p>";
-			 result = result+"			 </div>";
-			$("#noCandidates").val("nocandidate");
-			$("#candidateList").empty();
-		    $("#candidateList").append(result); 
-      } */
-  }
-</script>
-<%-- 
-     @author : sarath kumar.
-     this script is for prepare pagination to candidateList.
-     1.usage     : used in candidateList() function.
---%>
-
-<!--  <script>
-function cpagination(){  
-    $('#candidatePagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     	"sSearch": ""
-     	}
-    } );
-}
-
-</script>
- -->
-<script>
-function cpagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
-    $('#candidatePagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-		"aaSorting": [[7,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-    $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-}
-</script> 
-
-
-
-
+<script type="text/javascript" src="resources/js/candidateTable.js"></script>
 <%-- 
      @author : sarath kumar.
      this script is for show side bar when you click on the candidate name.
@@ -379,7 +113,7 @@ function candidateSideBar(candidateId){
 			            
 			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths+''+'(Months)';            			 		
+         			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
          			 		experienceMonths = ' ';  
          			 	 }
@@ -535,7 +269,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<ul class="list-unstyled">';
 			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
-			            	 result = result+'<li>Experience -'+json.experienceYears+' (Years) '+experienceMonths+'</li>';
+			            	 result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
               		       }else{
               		   		 result = result+'<li>Experience ----</li>';  
               		       }
@@ -647,7 +381,7 @@ function candidateSideBar(candidateId){
 			             result = result+'			</div>';
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
+			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 
@@ -925,10 +659,10 @@ function addFavourite(candidateId){
 			url : sourceleadUrl+"/saveCandidateAsFavourite?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 			success : function(result) {
 				if(checked){
-					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
-					 document.getElementById("favourite"+candidateId).removeAttribute("class")
+					 document.getElementById("favourite"+candidateId).removeAttribute("class");
 					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
 				}
 				
@@ -1040,7 +774,7 @@ function cancel(candidateId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Candidate List - <span class="label label-success">${candidateCount}</span></h2>
+      <h2>Candidate List</h2>
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -1101,19 +835,6 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
-					  
-					  <div class="clearfix">
-						<div class="col-md-8">
-						<label>Immigration Status</label>
-							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
-								<c:forEach var="visa" items="${visaList}">
-								<option value="${visa.name}">${visa.name}</option>
-								</c:forEach>
-								</select>
-							 </div>
-						</div>
-					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Skills</label>
@@ -1136,7 +857,7 @@ function cancel(candidateId){
 						
 						 
 					 </div>
-						
+						<c:set var="currency" value=""></c:set>
 						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-6 payrate_p">
@@ -1251,7 +972,7 @@ function cancel(candidateId){
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
 								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+							                      <option value="${cntry.name}">${cntry.name}</option>
 						              </c:forEach>
 				                 </select>
 							  </div>
@@ -1337,12 +1058,11 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate(); minMaxExperience();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
-				  </div>
 				  </div>
 			  </form:form>
       </div>
@@ -1421,7 +1141,11 @@ function cancel(candidateId){
         </ul>
         
         <div class="clearfix"></div>
+        <div class='remove_search'>
+        		<input type='text' placeholder='search' id='dataTableSearch'/>
+        </div>
       </div>
+      
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
         <div id="emptyPopup"></div>
@@ -1706,7 +1430,7 @@ function exportToExcel(){
 function showComment(candidateId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
-		result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_Space validate_length length2-500" field-name="Comment" onkeypress="candiateListCommentRemoveSpaces();"></textarea>';
+	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
 	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
 	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
@@ -1721,15 +1445,7 @@ function closeComment(){
 }
 </script>
 
- <script>
-   function candiateListCommentRemoveSpaces() {
-	    var output = document.getElementById("comment").value;
-	    output = output.replace(/\s/g, "") 
-	    if(output.length != 0){
-	    $("#comment").removeAttr("data-validation");
-	    }
-	}
-</script>
+
 <%-- 
      @author : Venkat Kesav
      this script is for saving Comment
@@ -1960,7 +1676,6 @@ function getCities(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
-	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -2199,40 +1914,6 @@ function getCities(){
 		    	 }
 		    });
 		    
-		  //Adding Customized Visa to the list
-	        var selectnine, chosennine;
-	        selectnine = $("#canVisa");
-	        selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:' });
-		    chosennine = selectnine.data('chosen');
-		    chosennine.search_field.bind(('keydown keyup'), function(e10)
-		    { 
-		    	 
-		    	 var enterVisaArray = this.value.split(",");
-		    	 if(enterVisaArray.length > 1){
-	        		 for (var i=0; i < enterVisaArray.length; i++) {
-	        			 var option = $("<option>").val(enterVisaArray[i].replace(",","")).text(enterVisaArray[i].replace(",",""));
-	        			 selectnine.append(option);
-	        			 selectnine.find(option).prop('selected', true);
-	 	        		 $("#canVisa").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newVisa = this.value.replace(","," ");
-			    	
-			    	 
-			        if (tagItBykeyForVisa(e10) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			        {
-			        	preventTabkey(e10); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newVisa.replace(",","")).text(newVisa.replace(",",""));
-			        		 selectnine.append(option);
-			        		 selectnine.find(option).prop('selected', true);
-				        		$("#canVisa").trigger("chosen:updated");
-				        		
-				        		
-			        }
-		    	 }
-		    });
-		    
 		    
 		    
 		      $("#country").on('change', function (e) {
@@ -2265,7 +1946,6 @@ function getCities(){
 		 };
 	</script> -->
 <!-- Add candidate Popup -->
-	
       <div class="addcandidate-popup">
 				  <div class="row">
                       <div class="col-md-offset-2 col-md-8">
@@ -2377,73 +2057,7 @@ function getCities(){
        } */
     </script>
     
-    
-    
-    
-    <script type="text/javascript">
-	function searchCandidate() {
-		var minRate = $('#minRate').val(); 
-		var maxRate = $('#maxRate').val();
-		 if((minRate != null && minRate != "" && minRate !='undefined') || (maxRate != null && maxRate != "" && maxRate !='undefined')){
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-			 
-			 $('#currency').removeAttr('data-validation-optional');
-			 $('#currency').attr("data-validation","required"); 
-		 }else{
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-			 
-			 $('#currency').removeAttr('data-validation');
-			 $('#currency').attr("data-validation-optional","true"); 
-		 }
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
-		
-		 if ($('#candidatelist_form').validate(false, validationSettings)){ 
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#candidatelist_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
-			var form = $('#candidatelist_form')[0];
-      		var formData = new FormData(form); 
-			//It will escape all the special characters
-			$("#search_candidate").attr("disabled", "disabled");
-			$("#search_candidate").addClass('button').val('Processing..');
-			var isAssociate = "N";
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&isAssociate="+isAssociate,
-						success : function(data) {
-							$("#search_candidate").addClass('button').val('Search');
-							$("#search_candidate").removeAttr("disabled");
-							closePop();
-							prepareCandidateList(data);
-						},
-					}); 
-			return true;
-		 }else{ 
-				return false;
-		 } 
-	} 
-	
-	$('body').on('blur', '#candidatelist_form', function() {
-		$("#candidatelist_form").showHelpOnFocus();
-		$("#candidatelist_form").validateOnBlur(false, validationSettings);
-	});
-</script>
+   
 
 <script>
 //Function to validate if maxExpYears  value is more the minExpYears  value
@@ -2487,7 +2101,6 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
-	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2530,7 +2143,6 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
-	     $("#canVisa").val('');
 	     $("#primarySkill").val('');
 	    
 	}

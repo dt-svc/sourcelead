@@ -1378,6 +1378,9 @@ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 275px; di
 .tbldata-dotdot_50 {
 	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px; display: block; margin: 0 auto;
 }
+td.tbldata-dotdot_50 {
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px !important; display: block; margin: 0 auto;
+}
 .require_wrap_table select {
 appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:none; -o-appearance:none;
 }
