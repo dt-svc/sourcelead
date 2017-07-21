@@ -177,11 +177,14 @@
 			            <div class="form-group">
 			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
 			            <div class="col-md-9">
-			             <select class="form-control chosen-select" data-placeholder="Select Approver" data-validation="required">
-		                  <c:forEach var="report" items="${userList}">
-							 <option value="${report.id}">${report.firstName}</option>
-						  </c:forEach>
-		                </select></div>
+			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
+		                <option selected value=''>--Select Approver--</option>
+			                <c:forEach var="approver" items="${approversList}">
+			                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
+			                </c:forEach>
+		                </select>
+		                
+		                </div>
 			            </div>
 			            <div class="form-group">
 			              <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
@@ -232,14 +235,24 @@
 			    </div> 
 			</div>        
 			
-					<div class="form-footer clearfix mt">
+				<%--  <div class="form-footer clearfix mt">
 					  <div class="col-lg-12">
 						<div class="pull-right">
 						  <input type="button" value="Save" class="btn btn-primary" id="save" onclick="saveResources();">
 						  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
 						</div>
 					  </div>
-					</div>        
+					</div> --%>  
+					
+				<div class="form-footer clearfix mt">
+				  <div class="col-lg-12">
+					<div class="pull-right">
+					  <input type="button" value="Draft" class="btn btn-warning mr" onclick="saveNewResourceRequest('Draft');">
+					  <input type="button" value="Send" class="btn btn-primary" onclick="saveNewResourceRequest('Send');">
+					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
+					</div>
+				  </div>
+			</div>    	    
 			        </div> 
 			      </div>
 			      </form:form>
@@ -592,36 +605,7 @@
 	}
 }
 </script>
-
 	
-	<script>
-	function saveResource(){
-		validateProjectSequeneNumber();
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-		if ($('#add_newResource_form').validate(false, validationSettings)) {
-			
-		}
-		
-	}
-	$('body').on('blur', '#add_newResource_form', function() {
-		$("#add_newResource_form").showHelpOnFocus();
-		$("#add_newResource_form").validateOnBlur(false, validationSettings);
-	});
-	</script>
-	
-	<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script>
 <script>
 function changeRole(e,rowId){
 	var other =  e.value;
@@ -788,6 +772,28 @@ function minMaxExperience(rowId){
     }
 }
 
+</script>
+
+<script>
+function saveNewResourceRequest(saveType){
+	if ($('#add_newResource_form').validate(false, validationSettings)) {
+		
+	}
+}
+$('body').on('blur', '#add_newResource_form', function() {
+	$("#add_newResource_form").showHelpOnFocus();
+	$("#add_newResource_form").validateOnBlur(false, validationSettings);
+});
+
+</script>
+	
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
 </script>
  <jsp:include page="../masterFooter.jsp" />	
 </html>

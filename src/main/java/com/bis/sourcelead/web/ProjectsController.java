@@ -67,10 +67,6 @@ public class ProjectsController {
 	 @Autowired
 	 ProjectMembersService projectMembersService;
 	 
-	
-	 @Autowired
-	 RolesService rolesService;
-	 
 	 @Autowired
 	 CountriesService countriesService;
 	 
@@ -188,8 +184,9 @@ public class ProjectsController {
 			    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 			    model.addObject("rolesList", rolesList);
 			    
-			    Collection<User> userList = userService.getUsersByUserRoles(orgLocations.getId());
-			    model.addObject("userList", userList);
+			    List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+				model.addObject("approversList", approversList);
+				
 			    
 			    
 				model.addObject("projectUUID", projectUUID);
