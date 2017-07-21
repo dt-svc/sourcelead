@@ -21,6 +21,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
@@ -115,13 +116,13 @@ public class LoggingAspect {
 		logger.info("Method name : " + joinPoint.getSignature().getName());
 		logger.info("Method returned value  : " + result);
 
-		request = ((ServletRequestAttributes) RequestContextHolder
-				.getRequestAttributes()).getRequest();
-
+		request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+				
+		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession)request.getSession().getAttribute("userLoginSession");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String methodName = joinPoint.getSignature().getName();
 		if(user != null)
-			actionHistoryService.saveActionHistory(methodName,user);
+			actionHistoryService.saveActionHistory(methodName,userLoginSession);
 
 	}
 

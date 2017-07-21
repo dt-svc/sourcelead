@@ -33,11 +33,8 @@ public class ActionHistoryRestController {
 	private ConversionUtil conversionUtil;
 	
 	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ActionHistory> getExpensesCategoryList(@RequestParam(value = "userId", required = true) Long userId,HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		User user = userService.getUserById(userId);
-		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(user.getId());
+	public @ResponseBody List<ActionHistory> getExpensesCategoryList(@RequestParam(value="userLoginLogoutSessionId", required=false) Long userLoginLogoutSessionId) throws Exception {
+		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSessionId);
 		if(actionHistoryList != null){
 			for(ActionHistory actionHistory:actionHistoryList){
 				actionHistory.setActionTimeStr(conversionUtil.getDateAsString(actionHistory.getActionTime()));

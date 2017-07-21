@@ -18,6 +18,7 @@ import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -52,7 +53,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 	public List<ActionHistory> getAllExpensesCategoryByLocationId(Long userId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ActionHistory ac where ac.userId = :userId ";
+		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId where ac.userLoginLogoutSessionId.id = :userId ";
 		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
 		return actionHistoryList;
 	}
@@ -60,23 +61,23 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveActionHistory(String methodName,User user) throws Exception {
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
+				
 		ActionNames actionNames = getActionNameUsingMethodName(methodName);
 
 		if(actionNames!=null)
 		{
 			ActionHistory actionHistory = new ActionHistory();
-			actionHistory.setUserId(user.getId());
 			actionHistory.setActionName(actionNames.getActionName());
-			actionHistory.setActionPerformed(user.getFirstName()+" performed "+ actionNames.getActionName()+" Action ");
+			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
 			actionHistory.setActionTime(new Date());
-
+			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
 			try {
 				if (actionHistory != null) {
 					session.saveOrUpdate(actionHistory);
-					System.out.println(user.getFirstName()+" performed "+ actionNames.getActionName() +" Action ");
 				}
 			} catch (Exception exception) {
 				//					    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"expenses"));
