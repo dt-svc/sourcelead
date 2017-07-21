@@ -221,14 +221,15 @@ window.onload = function () {
             <div class="form-group">
               <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" type="text">
+                <input class="form-control" type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
               </div>
             </div>
             
             <div class="form-group">
               <label class="col-md-3">Last Name</label>
               <div class="col-md-9">
-                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
+                <input type="text" class="form-control" id="lastName"
+									name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
               </div>
             </div>
 			
