@@ -17,7 +17,9 @@ border-color: #1ab394;
 cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
 font-size: 13px; width: 75px;
 }
-
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    z-index: 900000 !important;
+}
 </style>
 
 <script type="text/javascript">
