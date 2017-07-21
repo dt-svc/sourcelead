@@ -1,11 +1,15 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
 
@@ -31,4 +35,18 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
+
+	@Override
+	@Transactional
+	public List<Long> getProjectPlanningResourceRequestIdsByRequestId(Long projectPlanningRequestId) throws Exception {
+		
+		logger.debug("In ProjectPlanningResourceRequestDaoImpl class getProjectPlanningResourceRequestIdsByRequestId method");
+		Session session = this.sessionFactory.getCurrentSession();
+			 
+		String query = "select lineItems.id from ProjectPlanningResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId ";
+		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("projectPlanningRequestId", projectPlanningRequestId)
+									.setCacheable(true).list();
+		
+		return lineItemsIdsList;
+	}
 }

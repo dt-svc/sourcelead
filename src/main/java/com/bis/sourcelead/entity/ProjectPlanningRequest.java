@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,6 +21,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
@@ -103,7 +107,13 @@ public class ProjectPlanningRequest implements Serializable{
 	@Transient
     private String requestedDateStr;
 	
-    
+	@Transient
+	@JsonProperty
+    private Long approverId;
+	
+	@Transient
+	@JsonProperty
+	List<ProjectPlanningResourceRequest> resourceRequestList;
     
     
     public Long getId() {
@@ -290,6 +300,29 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setRequestedDateStr(String requestedDateStr) {
 		this.requestedDateStr = requestedDateStr;
+	}
+
+	public Long getApproverId() {
+		if(approverUser != null && approverUser.getId() != null){
+			approverId = approverUser.getId();
+		}
+		return approverId;
+	}
+
+	public void setApproverId(Long approverId) {
+		this.approverId = approverId;
+	}
+
+	public List<ProjectPlanningResourceRequest> getResourceRequestList() {
+		resourceRequestList = new ArrayList<>();
+		if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
+			resourceRequestList.addAll(projectPlanningResourceRequestList);
+		}
+		return resourceRequestList;
+	}
+
+	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
+		this.resourceRequestList = resourceRequestList;
 	}
 
 	

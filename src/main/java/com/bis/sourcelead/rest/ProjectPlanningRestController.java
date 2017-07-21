@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectPlanningRequest;
+import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -33,6 +35,7 @@ import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -59,6 +62,9 @@ public class ProjectPlanningRestController {
 	
 	@Autowired
 	ProjectPlanningRequestService projectPlanningRequestService;
+	
+	@Autowired
+	UserService userService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
@@ -213,6 +219,28 @@ public class ProjectPlanningRestController {
 		  resultJson = commonUtil.toJSON(planningRequestList);
 		  return resultJson;
 	    }
+	  
+	  
+	  
+	  @RequestMapping(value = "/getResourceRequestDetailsByRequestUUID")
+		 public ProjectPlanningRequest getResourceRequestDetailsByRequestUUID(@RequestParam(value="requestUUID", required=false) String requestUUID) throws Exception {
+				
+				return  projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+		 }
+	  
+	  
+	  
+	  @RequestMapping(value = "/getResourceRequestApproversList", method = RequestMethod.GET)
+		public @ResponseBody String getResourceRequestApproversList(@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		    
+		  String resultJson;
+		  
+	      List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocationId,Long.valueOf(Constants.TAB_PROJECTS));
+		  
+		  resultJson = commonUtil.toJSON(approversList);
+		  return resultJson;
+	    }
+	  
 	 
 	 
 
