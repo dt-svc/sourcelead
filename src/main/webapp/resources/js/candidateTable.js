@@ -241,12 +241,13 @@ function cpagination(url){
                 }, {
                   "targets": colIndex++,
                   "data": "updatedDate",
+                  "className": "tblminwidth-75",
                   "render": function ( data, type, opt, meta ) {
                   		var result = "";
                   		if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
-                  			result = opt.candidateUpdateDateToString; 
+                  			result = "<div>"+opt.candidateUpdateDateToString+"</div>"; 
 			            	}else{
-			            		result = "---";
+			            		result = "<div>---</div>";
 			            	}
       	              return result;
                   }
