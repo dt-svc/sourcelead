@@ -804,7 +804,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
-			 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
+			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';

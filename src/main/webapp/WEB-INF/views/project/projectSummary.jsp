@@ -97,7 +97,7 @@ window.onload = function () {
 			  	'</sec:authorize>';
 		  	'</sec:authorize>';
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		  	   result = result + ' <li class="current"><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
+		  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
 			'</sec:authorize>';
 			
 		  	result = result + ' <div class="clearfix"></div>';

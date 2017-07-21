@@ -1,0 +1,9 @@
+
+ALTER TABLE `sourcelead`.`project_documents` 
+CHANGE COLUMN `FILE_NAME` `FILE_NAME` VARCHAR(500) NULL DEFAULT NULL ;
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_DOCUMENTS','DESCRIPTION','VARCHAR(500) NULL AFTER `FILE_TYPE`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_DOCUMENTS','STATUS','INT(5)  NULL AFTER `DESCRIPTION`');
+
+
+

@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
 
+import com.bis.sourcelead.entity.ProjectDocuments;
+import com.bis.sourcelead.model.ProjectDocumentBO;
+
 public interface GenericDao<T extends Serializable> {
 	
 	public void setEntityClass(Class<T> entityClass);
@@ -23,5 +26,9 @@ public interface GenericDao<T extends Serializable> {
 
 	public List<T> findByCriteria(String property, Long value);
 	
-
+	List<ProjectDocuments> getProjectDocumentsListByProjectIdId(Long projectId) throws Exception;
+	
+	ProjectDocuments getDocumentById(Long porjectDocumentId)throws Exception;
+	
+	ProjectDocuments updateProjectDocuments(ProjectDocuments projectDocuments) throws Exception;
 }
