@@ -17,6 +17,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -221,6 +222,37 @@ public class ProjectsController {
 		
 		List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 		model.addObject("approversList", approversList);
+		
+		model.setViewName("project/requestAssociates");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+    }
+    
+    
+    
+    
+    @RequestMapping(value = "/editResourceRequest")
+	public ModelAndView editResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    
+	    ModelAndView model = new ModelAndView();
+		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(projects != null){
+			model.addObject("projectId", projects.getId());
+			model.addObject("projectName", projects.getProjectName());
+			if(projects.getStartDate() != null){
+				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+			}
+			if(projects.getEndDate() != null){
+				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+			}
+			model.addObject("projectStatus", projects.getProjectStatus());
+		}
+		model.addObject("projectUUID", projectUUID);
+		model.addObject("requestUUID",requestUUID);
+		
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		model.addObject("orgLocationsList", orgLocationsList);
 		
 		model.setViewName("project/requestAssociates");
 		model.addObject("sourceleadUrl", sourceleadUrl);

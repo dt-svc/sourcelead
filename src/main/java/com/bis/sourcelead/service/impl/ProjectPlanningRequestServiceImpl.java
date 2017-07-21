@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectPlanningRequestDao;
+import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -43,6 +44,10 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	@Autowired
 	RolesServiceImpl rolesServiceImpl;
+
+	@Autowired
+	ProjectPlanningResourceRequestDao projectPlanningResourceRequestDao;
+
 	
 	protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -52,7 +57,13 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	public void saveProjectPlanningRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,
 			String projectUUID,String saveType) throws JSONException, Exception {
 		
-		ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
+		ProjectPlanningRequest projectPlanningRequest  = null;
+		if(jsonObj.has("savedPlanningRequestUUID") && !"".equalsIgnoreCase(jsonObj.getString("savedPlanningRequestUUID"))){
+			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(jsonObj.getString("savedPlanningRequestUUID"));
+		}else{
+			projectPlanningRequest = new ProjectPlanningRequest();
+			projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST);
+		}
 		
 		if(jsonObj.has("requestId") && !"".equalsIgnoreCase(jsonObj.getString("requestId"))){
 			projectPlanningRequest.setRequestId(jsonObj.getString("requestId"));
@@ -96,7 +107,11 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		projectPlanningRequest.setCreatedDate(new Date());
 		projectPlanningRequest.setUpdatedDate(new Date());
 		
-		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest);
+		List<Long> resourceRequestIds = null;
+		if(projectPlanningRequest.getId() != null){
+			 resourceRequestIds = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestIdsByRequestId(projectPlanningRequest.getId());
+		}
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -106,7 +121,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		}else{
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
 		}
-		projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST);
+		
 		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
 		
 	}
@@ -173,7 +188,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		
 	}
 	
-	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest) throws Exception {
+	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds) throws Exception {
 		
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
 		 
@@ -340,5 +355,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		return projectPlanningRequestDao.getProjectPlanningRequestCountByProjectId(projectId);
 	}
 
-
+	@Override
+	public ProjectPlanningRequest getProjectPlanningRequestByRequestUUID(String requestUUID) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(requestUUID);
+	}
 }
