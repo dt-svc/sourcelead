@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -159,7 +161,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private UniversalSearchHelper universalSearchHelper;
-
+    
+	 
+	 
+	 @Override
+		public String getProjectId(OrgLocations orgLocations) {
+			
+	    	Long number = 000000001L;
+			String candidateId = null;
+			Projects checkNumber = projectsDao.checkProjectIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+				candidateId = number.toString();
+			}else{
+			String canIdNumber = checkNumber.getGeneratedId();
+			String canIdNum = canIdNumber.substring(2, canIdNumber.length());
+			Long canId = Long.parseLong(canIdNum)+1;
+				candidateId = canId.toString();
+			}
+			
+	        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
+	        StringBuffer sb = new StringBuffer();
+			return sb.append(Constants.PROJECT_ENTITY).append(ConvetredCandidatesId).toString();
+			
+		}
+	 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
@@ -420,6 +446,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
 		projects.setProjectTasks(projectTasksList);
 		//prepare projectmembers list...
+		
+		// generated id for project
+		
+		projects.setGeneratedId(getProjectId(loginOrgLocation));
 		
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
