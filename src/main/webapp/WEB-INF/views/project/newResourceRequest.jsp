@@ -23,7 +23,7 @@
                 <select class="form-control" name='roleREPLACEROWID' id='roleREPLACEROWID'  field-name="Role" data-validation="required" onchange="changeRole(this,REPLACEROWID);" >
                  <option value="">-Select Role-</option>
                    <c:forEach var="option" items="${rolesList}">
-					 <option value="${option.displayName}">${option.displayName}</option>
+					 <option value="${option.id}">${option.displayName}</option>
 				  </c:forEach>
 				  <option value="Other">Other</option>
                 </select>
@@ -121,7 +121,7 @@
                   <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>
                   <div class="positionRelative">
                 <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="required validate_length length1-10">
-                 <span class="currencyValue">${currencyCode}</span>
+                 <span class="currencyValue" value="${currencyCode}" name="budgetCurrency">${currencyCode}</span>
                       </div>
               </div>
                <div class="col-md-3 dropdown-select">
@@ -159,7 +159,9 @@
         </section>
 	   
 		   <div class="content-area content-new clearfix">
+		   <div id="associateRequestLoading"></div>	
 		     <form:form id="add_newResource_form" name="add_newResource_form" >
+		        <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${currencyCode}"> 	 
 			    <div class="row form-horizontal mt myForm">
 			      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
 			         <div class="row">
@@ -189,7 +191,7 @@
 			            <div class="form-group">
 			              <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
 			              <div class="col-md-9">
-			                  <textarea cols="1" class="form-control" field-name="Description" data-validation="required validate_length length2-5000"></textarea>
+			                  <textarea cols="1" class="form-control" field-name="Description" id="description" name="description" data-validation="required validate_length length2-5000"></textarea>
 			              </div>
 			            </div>
 			            </div>
@@ -234,16 +236,6 @@
 			<!-- Table Ends Here -->
 			    </div> 
 			</div>        
-			
-				<%--  <div class="form-footer clearfix mt">
-					  <div class="col-lg-12">
-						<div class="pull-right">
-						  <input type="button" value="Save" class="btn btn-primary" id="save" onclick="saveResources();">
-						  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
-						</div>
-					  </div>
-					</div> --%>  
-					
 				<div class="form-footer clearfix mt">
 				  <div class="col-lg-12">
 					<div class="pull-right">
@@ -382,7 +374,8 @@
 			var cell0 = row.insertCell(0);
 			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
 			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-			var role =  $('#role'+maxRowNum).val();
+			var roleId =  $('#role'+maxRowNum).val();
+			var role = $("#role"+maxRowNum+" option[value='"+roleId+"']").text()
 			var customeRole = $('#customRole'+maxRowNum).val();
 			if(role == "Other"){
 				divRowTd1Str = divRowTd1Str.replace(/ROLEVALUES/g,customeRole);
@@ -777,8 +770,30 @@ function minMaxExperience(rowId){
 <script>
 function saveNewResourceRequest(saveType){
 	if ($('#add_newResource_form').validate(false, validationSettings)) {
-		
-	}
+		var frm = $('#add_newResource_form').serializeFormJSON();
+			var jsonData = JSON.stringify(frm);
+			var form = $('#add_newResource_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData);
+  			var sourceleadUrl ='${sourceleadUrl}';
+  			var projectUUID = '${projectUUID}';
+	  		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  		$.ajax({
+					type : "POST",
+	  	    	    data: formData,
+	  	    	    contentType : 'application/json; charset=utf-8',
+	  		        processData: false,
+	  		        contentType:false, 
+	  	    	    dataType : 'json',
+					url : sourceleadUrl+"/saveNewResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType, 
+					success : function(result) {
+						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
+					},
+				});  
+  		       return true;
+	      }else{
+		       return false;
+	    }
 }
 $('body').on('blur', '#add_newResource_form', function() {
 	$("#add_newResource_form").showHelpOnFocus();
