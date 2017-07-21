@@ -104,6 +104,9 @@ public class ProjectPlanningRequest implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
+	private Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList;
+	
 	@Transient
     private String requestedDateStr;
 	
@@ -115,6 +118,7 @@ public class ProjectPlanningRequest implements Serializable{
 	@JsonProperty
 	List<ProjectPlanningResourceRequest> resourceRequestList;
     
+
     
     public Long getId() {
 		return id;
@@ -302,6 +306,16 @@ public class ProjectPlanningRequest implements Serializable{
 		this.requestedDateStr = requestedDateStr;
 	}
 
+
+	public Set<ProjectPlanningNewResourceRequest> getProjectPlanningNewResourceRequestList() {
+		return projectPlanningNewResourceRequestList;
+	}
+
+	public void setProjectPlanningNewResourceRequestList(
+			Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) {
+		this.projectPlanningNewResourceRequestList = projectPlanningNewResourceRequestList;
+	}
+
 	public Long getApproverId() {
 		if(approverUser != null && approverUser.getId() != null){
 			approverId = approverUser.getId();
@@ -324,6 +338,4 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
 		this.resourceRequestList = resourceRequestList;
 	}
-
-	
 }

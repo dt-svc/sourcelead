@@ -2,9 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.util.Collection;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -13,8 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -23,6 +21,7 @@ import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -69,7 +68,8 @@ public class ProjectsController {
 	 @Autowired
 	 ProjectMembersService projectMembersService;
 	 
-	
+	 @Autowired
+	 CountriesService countriesService;
 	 
 	 /**
 	  * This method for get project by id
@@ -161,6 +161,9 @@ public class ProjectsController {
 	 @RequestMapping(value = "/newResourceRequest")
 		public ModelAndView newResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				 Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
@@ -173,6 +176,20 @@ public class ProjectsController {
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
+				
+				 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+					if(null != countries){
+		            model.addObject("loginCountryName", countries.getName());
+		            model.addObject("currencyCode", countries.getCurrency());
+					}
+			    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+			    model.addObject("rolesList", rolesList);
+			    
+			    List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
+				model.addObject("approversList", approversList);
+				
+			    
+			    
 				model.addObject("projectUUID", projectUUID);
 				model.setViewName("project/newResourceRequest");
 				model.addObject("sourceleadUrl", sourceleadUrl);
