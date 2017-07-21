@@ -4,8 +4,9 @@ public enum Project_Status {
 	STARTED("Started"),
 	INPROGRESS("In-Progress"),
 	COMPLETED("Completed"),
-	ONHOLD("On-Hold");
-	
+	ONHOLD("On-Hold"),
+	DROPPED("Dropped"),
+	NOTSTARTED("Not Started");
 	
     private String value;
 	private Project_Status(String value){
