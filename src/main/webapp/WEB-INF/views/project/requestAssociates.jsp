@@ -78,7 +78,7 @@
 	<div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
 			<div class="pull-right">
-			  <input type="button" value="Draft" class="btn btn-primary" onclick="requestAssociate('Draft');">
+			  <input type="button" value="Draft" class="btn btn-warning mr" onclick="requestAssociate('Draft');">
 			  <input type="button" value="Send" class="btn btn-primary" onclick="requestAssociate('Send');">
 			  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" class="btn btn-default ml">
 			</div>
