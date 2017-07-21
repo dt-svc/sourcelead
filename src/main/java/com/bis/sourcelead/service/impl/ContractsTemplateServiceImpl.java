@@ -2132,19 +2132,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setVendorContactName(vendorName.toString());
 				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-				DateFormat standardFormat = new SimpleDateFormat("dd-MM-yyyy");
+				   SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 				if (null != contracts && null != contracts.getStartDate()) {
 					String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
 					String currentDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(), currentTimeStr);
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = standardFormat.format(converteDate);
+					currentDateInTimezone = formatter.format(converteDate);
 					contracts.setStartDateStr(currentDateInTimezone);
 				}
 				if (null != contracts && null != contracts.getEndDate()) {
 					String endTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
 					String endDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(), endTimeStr);
 					Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-					endDateInTimezone = standardFormat.format(endconverteDate);
+					endDateInTimezone = formatter.format(endconverteDate);
 					contracts.setEndDateStr(endDateInTimezone);
 				}
 				/*

@@ -60,6 +60,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -147,6 +148,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
 	private ProjectsService projectsService;
+    
+    @Autowired
+    OrgLocationService orgLocationService;
     
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1210,11 +1214,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
 	{
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		 OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
+	        SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 		for (Candidate candidate : candidateList) {
 			StringBuilder sb = new StringBuilder();
 			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 			candidate.setEmail(candidate.getEmail());
-			candidate.setCandidateUpdateDateToString(Constants.DMY.format(candidate.getUpdatedDate()));
+			candidate.setCandidateUpdateDateToString(formatter.format(candidate.getUpdatedDate()));
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
