@@ -698,6 +698,10 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 	
+	public static final String CANDIDATE_ENTITY = "CD";
+	
+	public static final String JOB_ENTITY = "JB";
+	
     
 
 }
