@@ -12,9 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.constants.Constants;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_RESOURCE_REQUEST")
@@ -33,7 +37,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
   	private ProjectPlanningRequest projectPlanningRequestId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
    	@JoinColumn(name = "CANDIDATE_ID")
   	private Candidate candidateId;
 	
@@ -95,6 +99,18 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
+	
+	@Transient
+	@JsonProperty
+	private Long requestedCandidateId;
 	
 	
 	
@@ -273,6 +289,39 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public void setResourceStatus(String resourceStatus) {
 		this.resourceStatus = resourceStatus;
+	}
+
+	public String getStartDateStr() {
+		if(startDate != null){
+			startDateStr = Constants.DMY.format(startDate);	
+		}
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		if(endDate != null){
+			endDateStr = Constants.DMY.format(endDate);	
+		}
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public Long getRequestedCandidateId() {
+		if(candidateId != null && candidateId.getId() != null){
+			requestedCandidateId = candidateId.getId();	
+		}
+		return requestedCandidateId;
+	}
+
+	public void setRequestedCandidateId(Long requestedCandidateId) {
+		this.requestedCandidateId = requestedCandidateId;
 	}
 	
 
