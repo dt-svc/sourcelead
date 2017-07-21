@@ -601,7 +601,7 @@ function getSpocUserDetails(){
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
-	        			 $("#firstName").val('');
+	        			 //$("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
@@ -609,7 +609,7 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    $("#lastName").val('');
+	        			    //$("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -617,7 +617,7 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    $("#phoneNumber").val('');
+	        			    //$("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
