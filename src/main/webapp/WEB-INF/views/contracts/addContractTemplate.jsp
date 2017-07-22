@@ -81,34 +81,14 @@
 										${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full
 										Time Offer</option>
 
-									<!--  <option value="Client MSA">Client MSA</option>
-                    <option value="Vendor MSA">Vendor MSA</option>
-                    <option value="Client SOW">Client SOW</option>
-                    <option value="Vendor SOW">Vendor SOW</option>
-                    <option value="NDA">NDA</option>
-                    <option value="NSA">NSA</option> -->
+									
 								</select>
 							</div>
 						</div>
 
-						<!-- <div class="form-group">
-              <label class="col-md-4">Letter head</label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="letterHead" name="letterHead">
-                    <option value="Letter head">Letter head</option>
-                    <option value="Letter head-1">Letter head-1</option>
-                  </select>
-              </div>
-          </div>  -->
+						
 					</div>
-					<!--  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">         
-            <div class="form-group">
-              <label class="col-md-4">Description</label>
-              <div class="col-md-8">
-					<textarea class="form-control" rows="3" id ="description"  name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250">${contractsTemplate.description}</textarea>
-              </div>
-            </div>           
-        </div> -->
+					
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<label class="col-md-2">Description</label>
@@ -128,9 +108,8 @@
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9">
 							<textarea id="txtEditor" name="templateContent"
-								data-validation="required" field-name="Template Content"
-								class="form-control newContrtextarea"></textarea>
-							<!-- <textarea name="templateContent" class="form-control" id="txtEditor"></textarea> -->
+								data-validation="required" class="form-control newContrtextarea">${contractsTemplate.templateContent}</textarea>
+							
 						</div>
 
 
@@ -220,8 +199,7 @@
 										Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element111')"><i></i>
 								<p class="copyText" id="text_element111">[Offer Rate]</p></li>
-								<!--  <li onclick="copyToClipboard('text_element112')"><i></i><p class="copyText" id="text_element112">[Rate Per]</p></li>
-                 <li onclick="copyToClipboard('text_element113')"><i></i><p class="copyText" id="text_element113">[Rate Type]</p></li> -->
+								
 							</ul>
 
 							<ul id="vendorsow" style="display: none">
@@ -255,8 +233,7 @@
 										Jurisdiction]</p></li>
 								<li onclick="copyToClipboard('text_element114')"><i></i>
 								<p class="copyText" id="text_element114">[Offer Rate]</p></li>
-								<!--  <li onclick="copyToClipboard('text_element115')"><i></i><p class="copyText" id="text_element115">[Rate Per]</p></li>
-                 <li onclick="copyToClipboard('text_element116')"><i></i><p class="copyText" id="text_element116">[Rate Type]</p></li> -->
+								
 							</ul>
 							<ul id="nda" style="display: none">
 								<li onclick="copyToClipboard('text_element52')"><i></i>
@@ -459,7 +436,18 @@
 
 <script src="resources/js/summernote.js"></script>
 <script>
-	$('#txtEditor').summernote();
+	$('#txtEditor').summernote({
+  toolbar: [
+    // [groupName, [list of button]]
+    ['style', ['bold', 'italic', 'underline', 'clear']],
+    ['font', ['strikethrough', 'superscript', 'subscript']],
+    ['fontsize', ['fontsize']],
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+	['link',['link','insert','unlink']],
+    ['height', ['height']]
+  ]
+});
 </script>
 
 
@@ -669,12 +657,8 @@ function generatePDF(id) {
 $(document).ready(function(){
 	var templateId  = "${templateId}";
 	editContractTemplate(templateId);
-	
-/* 	var contractsTemplate = "${templateContent}";
-		$(".Editor-container").find('.Editor-editor').html(contractsTemplate);	 */
-	
 });
-//$(".Editor-container").find('.Editor-editor').html("Rajashekar").css('border','1px solid red');
+
 </script>
 
 <script>
