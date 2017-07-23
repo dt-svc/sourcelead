@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -44,6 +45,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	@Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+    CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 
 	/**
@@ -111,6 +115,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			 }
 		}
 		candidateResumesDao.updateCandidateResume(candidateResume);
+		
+		candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
 		
 		/*
 		 * updating Candidate Resume DB data in existing candidateindex

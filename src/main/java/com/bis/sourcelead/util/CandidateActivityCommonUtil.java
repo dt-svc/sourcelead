@@ -204,8 +204,9 @@ public class CandidateActivityCommonUtil {
 	
 	
 	
-	public void storeCandidateEducationHistory(CandidateEducation candidateEducation, CandidateEducationHistory candidateEducationHistory, User user) throws Exception
+	public void storeCandidateEducationHistory(CandidateEducation candidateEducation, User user) throws Exception
 	{
+		CandidateEducationHistory candidateEducationHistory = new CandidateEducationHistory();
 		candidateEducationHistory.setCandidateEducation(candidateEducation);
 		candidateEducationHistory.setOrglocationId(candidateEducation.getOrglocationId());
 		candidateEducationHistory.setCandidateId(candidateEducation.getCandidateId());
@@ -225,8 +226,9 @@ public class CandidateActivityCommonUtil {
 	}
 	
 	
-	public void storeCandidateEmployersHistory(CandidateEmployers candidateEmployers, CandidateEmployersHistory candidateEmployersHistory, User user) throws Exception
+	public void storeCandidateEmployersHistory(CandidateEmployers candidateEmployers, User user) throws Exception
 	{
+		CandidateEmployersHistory candidateEmployersHistory = new CandidateEmployersHistory();
 		candidateEmployersHistory.setCandidateEmployers(candidateEmployers);
 		candidateEmployersHistory.setOrgLocationId(candidateEmployers.getOrgLocationId());
 		candidateEmployersHistory.setCandidateId(candidateEmployers.getCandidateId());
@@ -248,8 +250,9 @@ public class CandidateActivityCommonUtil {
 	}
 	
 	
-	public void storeCandidateResumesHistory(CandidateResumes candidateResumes, CandidateResumesHistory candidateResumesHistory, User user) throws Exception
+	public void storeCandidateResumesHistory(CandidateResumes candidateResumes, User user) throws Exception
 	{
+		CandidateResumesHistory candidateResumesHistory = new CandidateResumesHistory();
 		candidateResumesHistory.setCandidateResumes(candidateResumes);
 		candidateResumesHistory.setOrgLocationId(candidateResumes.getOrgLocationId());
 		candidateResumesHistory.setCandidateId(candidateResumes.getCandidateId());

@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -38,6 +39,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	
 	/**
@@ -105,8 +109,10 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		}
 		
         candidateEmployers = candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+        candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
         if(null != currentEmployer){
         	candidateEmployersDao.storeCandidateEmployers(currentEmployer);
+        	candidateActivityCommonUtil.storeCandidateEmployersHistory(currentEmployer, user);
         }
 		
 		/*

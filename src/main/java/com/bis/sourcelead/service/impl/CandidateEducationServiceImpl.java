@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -42,6 +43,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
  
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	/**
 	 * @author ajith kumar
@@ -131,6 +135,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		candidateEducation.setUpdatedDate(commonUtil.currentDate());
 		}
 		candidateEducation = candidateEducationDao.storeCandidateEducation(candidateEducation);
+		
+		candidateActivityCommonUtil.storeCandidateEducationHistory(candidateEducation, user);
 		
 		/*
 		 * updating Candidate Education DB data in existing candidateindex
