@@ -679,6 +679,9 @@ function getSowRate(id){
 	        },
 	        
 	    });	
+	}else{
+		 $ ('#'+id+'rate').val(0);
+		totalHoursCalculateAmount(id);
 	}
 	
 }
