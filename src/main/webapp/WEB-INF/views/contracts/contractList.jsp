@@ -1089,7 +1089,7 @@ function preparedContractListWFA(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
+	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Waiting ('+approveCount+')');
 	
 	
     $("#vendorContractsList").empty();
@@ -1891,7 +1891,7 @@ function preparedContractListWTV(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
+	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Counter sign ('+verifyCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -2263,7 +2263,7 @@ function preparedContractListFinalize(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#finalised").html('Finalized ('+finalisedCount+')');
+	$("#finalised").html('Completed ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
