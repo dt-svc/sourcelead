@@ -38,7 +38,6 @@
 
 <script>
 function getRequestedAssociatesList(){
-	var projectUUID = '${projectUUID}';
 	var requestUUID = '${requestUUID}';
 	
 	var sourceleadUrl ='${sourceleadUrl}';

@@ -393,7 +393,12 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 
 	@Override
 	public ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return projectPlanningRequestDao.getProjectPlanningRequestById(id);
+	}
+
+	@Override
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus)
+			throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId,requestStatus);
 	}
 }

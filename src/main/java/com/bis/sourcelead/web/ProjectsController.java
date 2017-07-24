@@ -263,7 +263,6 @@ public class ProjectsController {
     
     @RequestMapping(value = "/viewResourceRequest")
 	public ModelAndView viewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
-	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    
 	    ModelAndView model = new ModelAndView();
 		model.addObject("projectUUID", projectUUID);
@@ -273,6 +272,26 @@ public class ProjectsController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
     }
+    
+    @RequestMapping(value = "/requestedAssociatesList")
+   	public ModelAndView requestedAssociatesList(@RequestParam(value="requestUUID", required=true) String requestUUID,HttpServletRequest request) throws Exception {
+   	    
+   	    ModelAndView model = new ModelAndView();
+   		
+   	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+	
+		model.addObject("requestUUID",requestUUID);
+   		model.setViewName("requestedAssociatesList");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
 
 
 
