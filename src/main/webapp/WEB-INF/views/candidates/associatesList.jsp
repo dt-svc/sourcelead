@@ -140,7 +140,17 @@ else{
 </script>
  <script>
   function prepareCandidateList(data){
-	 	     $("#candidateList").removeAttr("style");
+			  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+			  if(locationList.match("yyyy-MM-dd")){
+				  associateListDate = 'YYYY-MM-DD';
+			  }if(locationList.match("dd-MM-yyyy")){
+				  associateListDate = 'DD-MM-YYYY'; 
+			  }if(locationList.match("MM-dd-yyyy")){
+				  associateListDate = 'MM-DD-YYYY'; 
+			  }if(locationList.match("yyyy-dd-MM")){
+				  associateListDate = 'YYYY-DD-MM'; 
+			  }  
+			  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -155,7 +165,7 @@ else{
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile Number</th>"; 
 	          result = result +"    <th>Location</th>"; 
-	          result = result +"    <th>Last Update</th>"; 
+	          result = result +"    <th>Last Update <br>(<small class='custom-small'>"+associateListDate+"</small>)</th>"; 
 	          result = result +"  </tr>"; 
 	          result = result +"</thead>";
 	          result = result +"<tbody>"; 
@@ -260,11 +270,11 @@ else{
 	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
-	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
-	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
+	              result = result +"  <td><div class='tblminwidth-90'>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
 	          }
 	          result = result +" </tbody>";
