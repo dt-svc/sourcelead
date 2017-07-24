@@ -383,6 +383,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     public void addOfferMailScenario(User loginUser,RequirementSubmission applicant,OrgLocations orgLocations,RequirementOffers requirementOffers,Candidate candidate) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(applicant.getId());
             EmailMessage emailMessage = new EmailMessage();
+            SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
             emailMessage.setFirstName(loginUser.getFirstName());
             emailMessage.setLastName(loginUser.getLastName());
             emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
@@ -446,7 +447,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
                             
             if (requirementOffers.getDateOfJoining() != null) {
-                    requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+                    requirementOffers.setDateOfJoiningStr(dateFormat.format((requirementOffers.getDateOfJoining())));
                     globalVarsMap.put("dateofJoin",requirementOffers.getDateOfJoiningStr());
             } else {
                     globalVarsMap.put("dateofJoin", "--");
@@ -454,7 +455,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             
         //commented by prasad salina, here i am sending offer id    
-       /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
+       /* globalVarsMap.put("acceptLink","<a href='"+sourceleadUrl+"/"+"accept  OrRejectOffer?offerStatus=Accepted&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#61D339 ; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>");
         globalVarsMap.put("rejectLink","<a href='"+sourceleadUrl+"/"+"acceptOrRejectOffer?offerStatus=Rejected&submissionId="+applicant.getId() +"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>");*/
 
          StringBuilder acceptLinkBuilder=new StringBuilder();
@@ -963,6 +964,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		User vendorContactUser = null;
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
+		 SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
 		 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
@@ -982,7 +984,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			 globalVarsMap.put("vendorContactName",vendorName.append(emailMessage.getFirstName()).toString());
 		 }
 		 
-		 globalVarsMap.put("offeredJoinDate",conversionUtil.getDateAsString(requirementOffers.getDateOfJoining()));
+		 globalVarsMap.put("offeredJoinDate",dateFormat.format(requirementOffers.getDateOfJoining()));
 		 
 		 StringBuilder applicant = new StringBuilder();
 		 if(null != requirementOffers.getSubmissionId().getCandidate().getLastName()){

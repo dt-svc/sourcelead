@@ -786,8 +786,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
-		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		 SimpleDateFormat dateFormat=orglocations.getLocFullFormDateFormatter();
+		 String date = (dateFormat.format(invoice.getDueDate()));
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
