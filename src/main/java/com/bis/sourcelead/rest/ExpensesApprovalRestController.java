@@ -226,7 +226,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("expenseId",sah.getExpenseId().getExpenseId());
 				 }
 			 }
-			 
+			 globalVarsMap.put("frequencyType",sah.getExpenseId().getProjectMembers().getProjects().getInvoiceFrequency());
 			 if(null != sah.getExpenseId()){
 				 if(null != sah.getExpenseId().getStartDate()){
 			 globalVarsMap.put("startDate",Constants.DMY.format(sah.getExpenseId().getStartDate()));
@@ -245,7 +245,7 @@ public class ExpensesApprovalRestController {
 			// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
+			 globalVarsMap.put("loginOrg",loginOrgLocation.getOrgLocationName());
 			 
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();
@@ -275,6 +275,7 @@ public class ExpensesApprovalRestController {
 			 
 			
 			 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
+			 // TODO @Shivayogi  i have checked it,its working fine . if migration is not there it will throw null pointer.
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
@@ -291,7 +292,7 @@ public class ExpensesApprovalRestController {
 				 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }
 			 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(loginOrgCode);
 			String actionLink = "";

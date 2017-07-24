@@ -293,8 +293,7 @@ public class EmployeePayrollRestController {
 	}
 	
 	/**
-	 * @author BISraja
-	 * used for user payroll list based on user id
+	 * @author BISraja used for user payroll list based on user id
 	 * 
 	 * @param userId
 	 * @param orgLocationId
@@ -302,8 +301,10 @@ public class EmployeePayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = {"/getUserPayrollList","/rest/getUserPayrollList"}, method = RequestMethod.GET)
-	public List<UserPayroll> getUserPayrollList(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception {
+	@RequestMapping(value = { "/getUserPayrollList", "/rest/getUserPayrollList" }, method = RequestMethod.GET)
+	public List<UserPayroll> getUserPayrollList(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)
+					throws Exception {
 		List<UserPayroll> userpayroll = userPayrollService.getPayByUserId(userId, orgLocationId);
 		return userpayroll;
 	}

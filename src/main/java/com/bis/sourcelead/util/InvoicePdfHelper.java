@@ -112,6 +112,9 @@ public class InvoicePdfHelper {
 			// save image file in pdf
 			document = addLogoToPdfFile(document, org,orgLocation);
 			Paragraph p;
+			p= new Paragraph("Bill", font12b);
+		        p.setAlignment(Element.ALIGN_CENTER );
+		        document.add(p);
 			p = new Paragraph("Billing Id :" + invoice.getInvoiceId(), font10);
 			p.setAlignment(Element.ALIGN_RIGHT);
 			document.add(p);
@@ -316,6 +319,9 @@ public class InvoicePdfHelper {
 				// save image file in pdf
 				document = addLogoToPdfFile(document, org,orgLocation);
 				Paragraph p;
+				p= new Paragraph("Invoice", font12b);
+			        p.setAlignment(Element.ALIGN_CENTER );
+			        document.add(p);
 				p = new Paragraph("Invoice Id :" + invoice.getInvoiceId(), font10);
 				p.setAlignment(Element.ALIGN_RIGHT);
 				document.add(p);
@@ -529,7 +535,7 @@ public class InvoicePdfHelper {
 			document.add(image);
 		}else{
 		Paragraph p;
-		p = new Paragraph("Org Name: " + orgLocations.getOrgLocationName(), font12b);
+		p = new Paragraph(" " + orgLocations.getOrgLocationName(), font12b);
 		p.setAlignment(Element.ALIGN_TOP);
 		document.add(p);
 		}

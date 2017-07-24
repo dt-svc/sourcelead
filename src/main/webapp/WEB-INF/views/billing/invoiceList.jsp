@@ -17,7 +17,9 @@ border-color: #1ab394;
 cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
 font-size: 13px; width: 75px;
 }
-
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    z-index: 900000 !important;
+}
 </style>
 
 <script type="text/javascript">
@@ -612,7 +614,11 @@ function getInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
+				if(dueDateStr !=null && dueDateStr !='' && dueDateStr !='undefined'){
 				result = result +'           <div class="tblminwidth-100">'+dueDateStr+'</div>';
+				}else{
+					result = result +'<div class="tblminwidth-100">--</div>';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot-100">'+invoiceStatus+'</div>';
@@ -1002,6 +1008,7 @@ $(document).ready(function() {
     //search script
         function customInvoiceList() {
             var selectVal = $("#dayWiseTypeId").val();
+            alert(selectVal)
             if (selectVal == "custom") {
                 $(".custom_search").show();
                 customDate();
@@ -1348,7 +1355,7 @@ function generateAutomaticInvoice(){
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(data+" Records Imported Successfully.");
+	    			$("#msgDiv").html(data+" Invoice(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
@@ -1364,7 +1371,6 @@ function generateAutomaticInvoice(){
 </script> 
 <script>
 function mergeInvoice(parentTotalAmount){
-	var sourceleadUrl ='${sourceleadUrl}';
 	var masterInvoiceId = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
@@ -1372,15 +1378,7 @@ function mergeInvoice(parentTotalAmount){
 	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
 	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
-	showDiffAmountPopup(calculatedAmount,currencyCode);
-	 $.ajax({
-   	 type: "POST",
-	     dataType : 'json',
-	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
-            success: function(data) {
-            	$('#testPurposeId').find('p.jquery_form_error_message').remove(); 
-       },
-   });  
+	showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId);
 }else{
 	$('span.jquery_form_error_message').show();
 }
@@ -1388,19 +1386,35 @@ function mergeInvoice(parentTotalAmount){
 </script>
 
 <script>
-function showDiffAmountPopup(calculatedAmount,currencyCode){
+function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMerge("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#invoice_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
+</script>
+
+<script>
+function proceedToMerge(checkVal,masterInvoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
+	            success: function(data) {
+	            	$("#popUp").empty();
+	            	$(".project_inn_mask").fadeOut(200);
+	            	location.replace(sourceleadUrl+"/invoiceList");	
+	       },
+	   });  
+}
 </script>
 
 <script type="text/javascript">

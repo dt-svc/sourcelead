@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -100,6 +101,12 @@ public class CandidateDocuments implements Serializable{
 	
 	@Column(name = "STATUS ")
 	private Integer status;
+	
+	@Column(name="IS_CONFIDENTIAL")
+	private String isConfidential;
+	
+	@Transient
+	private Long userIdStr;
 
 	public Long getId() {
 		return id;
@@ -269,6 +276,22 @@ public class CandidateDocuments implements Serializable{
 	public void setRequestedDocRejectedReason(String requestedDocRejectedReason)
 	{
 		this.requestedDocRejectedReason = requestedDocRejectedReason;
+	}
+
+	public String getIsConfidential() {
+		return isConfidential;
+	}
+
+	public void setIsConfidential(String isConfidential) {
+		this.isConfidential = isConfidential;
+	}
+
+	public Long getUserIdStr() {
+		return userIdStr;
+	}
+
+	public void setUserIdStr(Long userIdStr) {
+		this.userIdStr = userIdStr;
 	}
 	
 }

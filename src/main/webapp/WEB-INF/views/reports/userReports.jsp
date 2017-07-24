@@ -743,11 +743,11 @@ function getBillingReportsChart(invoiceType,json){
 	    "valueAxes": [{
 	        "unit": "",
 	        "position": "left",
-	        "title": "GDP growth rate",
+	        "title": "Amount",
 	    }],
 	    "startDuration": 1,
 	    "graphs": [{
-	        "balloonText": "GDP grow in [[category]] (2004): <b>[[value]]</b>",
+	        "balloonText": "Income in [[category]] (2004): <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2004",
@@ -755,7 +755,7 @@ function getBillingReportsChart(invoiceType,json){
 	         "columnWidth":0.5,
 	        "valueField": "year2004"
 	    }, {
-	        "balloonText": "GDP grow in [[category]] (2005): <b>[[value]]</b>",
+	        "balloonText": "Expenses in [[category]] (2005): <b>[[value]]</b>",
 	        "fillAlphas": 0.9,
 	        "lineAlpha": 0.2,
 	        "title": "2005",

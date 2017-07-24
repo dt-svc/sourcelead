@@ -127,7 +127,7 @@ function getNotificationtLists(){
 				    result = result +'	<tr>';
 					result = result +'	  <td class="noti-checkbox tblminwidth-50">';
 					result = result +'			<label>';
-					result = result +'			   <input type="checkbox"  id="selectid" onclick="totalCheck1();" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
+					result = result +'			   <input type="checkbox"  id="selectid" onclick="totalCheck1();checkCheckBox();" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
 					result = result +'			  <span></span>';
 					result = result +'			</label>';
 					result = result +'	  </td>';
@@ -182,6 +182,27 @@ function getNotificationtLists(){
     });
 }
 </script>
+
+<script>
+function checkCheckBox(){
+	var allCheckBoxCount  = $('input[name="check[]"]').length;
+	var checked = $("input[name='check[]']:checked").length;
+	if(checked < allCheckBoxCount ){
+		$('#selectall').prop('checked', false);
+		$("#navbar1").addClass("fa-trash-o delete-icn");
+		if(checked == 0){
+			$("#navbar1").removeClass("fa-trash-o delete-icn");
+		}
+	}else if(checked == allCheckBoxCount){
+		$('#selectall').prop('checked', true);
+		$("#navbar1").addClass("fa-trash-o delete-icn");
+		if(checked == 0){
+			$("#navbar1").removeClass("fa-trash-o delete-icn");
+		}
+	}
+}
+</script>
+
 <script>
 function notificationPagination(){  
     $('#notificationList').DataTable( { 
