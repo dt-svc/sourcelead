@@ -115,7 +115,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 		
 		RequirementOffers requirementOffers = null;
-		
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		for (long c = 1; c < maxCount; c++) {
 				if(jsonObj.has(c+"applicantId")){
@@ -140,7 +140,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"joiningDate") && jsonObj.getString(c+"joiningDate") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"joiningDate"))){
-									requirementOffers.setDateOfJoining(commonUtil.getDateFormat(jsonObj.getString(c+"joiningDate")));
+									requirementOffers.setDateOfJoining(dateFormat.parse(jsonObj.getString(c+"joiningDate")));
 								}
 								
 								if(jsonObj.has(c+"PaymentType") && !jsonObj.getString(c+"PaymentType").isEmpty()){

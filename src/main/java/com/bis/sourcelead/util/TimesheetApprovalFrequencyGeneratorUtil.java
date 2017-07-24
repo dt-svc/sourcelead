@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.ibm.icu.text.SimpleDateFormat;
 
 @Component
 public  class TimesheetApprovalFrequencyGeneratorUtil {
@@ -58,7 +59,8 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 				
 					Date empStartDate = project.getStartDate();
 					Date empEndDate = project.getEndDate();
-					DateFormat format = Constants.DF_STD_DMY;
+					//DateFormat format = Constants.DF_STD_DMY;
+					java.text.SimpleDateFormat format = project.getOrgLocationsId().getLocFullFormDateFormatter();
 					 try {
 						    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
 						   
