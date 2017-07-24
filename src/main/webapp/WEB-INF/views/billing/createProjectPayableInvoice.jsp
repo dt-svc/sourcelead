@@ -21,7 +21,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Project Based Bill</h2>
+        <h2>Project Bill</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
     </section>
@@ -373,7 +373,7 @@ function populateInlineItemsGrid(data){
              result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
              result = result +'  <td>';
-             result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
+             result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
              result = result +'  </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -518,9 +518,9 @@ function populateInlineItemsGrid1(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description">'+opt.inlineDescription+'</textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
     	 }else{
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
     	 }
          
          result = result +'  </td>';

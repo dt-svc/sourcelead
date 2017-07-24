@@ -765,7 +765,7 @@ function clearSearch(){
 
 
 
-<<script type="text/javascript">
+<script type="text/javascript">
  function preparedClientDetails(data){
 	 
 	 var json = JSON.parse(data);
