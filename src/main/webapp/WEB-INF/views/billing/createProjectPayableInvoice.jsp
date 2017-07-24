@@ -665,6 +665,7 @@ function populateInlineItemsGrid1(data){
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
@@ -677,6 +678,10 @@ function getSowRate(id){
         },
         
     });
+}else{
+	 $ ('#'+id+'rate').val(0);
+	 totalHoursCalculateAmount(id);
+}
 }
 </script>
   
