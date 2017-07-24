@@ -259,7 +259,7 @@ function expensesPagination(){
 <script>
 
 function expenseView(expenseId){
-var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$(".project_side_wrap").addClass("project_side_wrap_active");
 	        $(".side_mask").fadeIn(200);
 	        $("body").css('overflow-y', 'hidden');
@@ -454,10 +454,21 @@ var sourceleadUrl = '${sourceleadUrl}';
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatExpenses = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatExpenses = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatExpenses = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatExpenses = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatExpenses = 'yy-dd-mm'; 
+		  }
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatExpenses,
 			onSelect : function(selected) {
 				$("#filterEndDate").datepicker("option", "minDate", selected);
 			}
@@ -467,7 +478,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		$('#filterEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatExpenses,
 			onSelect : function(selected) {
 				$("#filterStartDate").datepicker("option", "maxDate", selected);
 			}
