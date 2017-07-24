@@ -218,6 +218,18 @@ function selectOfferApplicants(){
 <script type="text/javascript">
 	function addOfferRow() {
 		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatOffer = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatOffer = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatOffer = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatOffer = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatOffer = 'yy-dd-mm'; 
+		  }
+		
 		$("#isFlushCandidateRequired").val('N');
 		
 		var checkMaxTsRowNum = $("#maxOfferRowNum").val();
@@ -261,7 +273,7 @@ function selectOfferApplicants(){
 		$("#"+maxRowNum+"applicantId").chosen();
 		
 		$('.Datepicker').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatOffer,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {

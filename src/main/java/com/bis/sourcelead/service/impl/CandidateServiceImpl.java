@@ -1271,6 +1271,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setUpdatedDate(commonUtil.currentDate());
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);
