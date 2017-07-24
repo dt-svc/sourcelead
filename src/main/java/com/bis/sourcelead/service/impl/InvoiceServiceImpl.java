@@ -271,6 +271,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setBillingAddress(null);
 		}
 		
+		if(jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))){
+			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
+		}
+		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
 			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
@@ -640,6 +644,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }else{
 						 invoiceLineItems.setAmount(null);
 					 }
+					 if(null != jsonObj.getString(i+"Description") && !"".equalsIgnoreCase(jsonObj.getString(i+"Description"))){
+						 invoiceLineItems.setInlineDescription(jsonObj.getString(i+"Description"));
+					 }
 	              // As of Now we are not storing seperateInvoice status
 //					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
 //							invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
@@ -857,7 +864,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
@@ -2301,10 +2308,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		
+	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
 	}
 	
 }

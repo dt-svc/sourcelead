@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.constants.Constants;
+
 @Entity
 @Table(name = "PROJECT_DOCUMENTS")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocuments")
@@ -41,6 +43,12 @@ public class ProjectDocuments implements Serializable {
     @Column(name="FILE_CONTENTS",length=100000)
     private byte [] fileContents;
 
+	@Column(name = "DESCRIPTION")
+	private String description;
+	
+	@Column(name = "STATUS")
+	private Integer status;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -87,12 +95,29 @@ public class ProjectDocuments implements Serializable {
 		
 	}
 
-	public ProjectDocuments(String fileName, String fileType, byte[] fileContents, Projects projects) {
+	public ProjectDocuments(String fileName, String fileType, byte[] fileContents, Projects projects,Integer status) {
 		super();
 		this.fileName = fileName;
 		this.fileType = fileType;
 		this.fileContents = fileContents;
+		this.status = Constants.CANDIDATE_ACTIVE;
 		this.projects = projects;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	
