@@ -31,7 +31,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
+import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -64,7 +66,13 @@ public class ProjectPlanningRestController {
 	ProjectPlanningRequestService projectPlanningRequestService;
 	
 	@Autowired
+	ProjectPlanningResourceRequestService projectPlanningResourceRequestService;
+	
+	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
@@ -205,12 +213,14 @@ public class ProjectPlanningRestController {
 	 
 	 
 	  @RequestMapping(value = "/saveResourceRequest")
-		public @ResponseBody String saveResourceRequest(@RequestParam(value="projectUUID", required=true) String projectUUID,
-				@RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
-		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		public @ResponseBody String saveResourceRequest(@RequestParam("json") String jsonPayload,@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="saveType", required=true) String saveType,@RequestParam(value="", required=true) Long userId,
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
-		    JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		    User user = userService.getUserById(userId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		    
+		    JSONObject jsonObj = new JSONObject(jsonPayload);
 		    projectPlanningRequestService.saveProjectPlanningRequest(jsonObj, user, orgLocations, projectUUID,saveType);
 		   
 		    return "success";
@@ -228,23 +238,12 @@ public class ProjectPlanningRestController {
       }
 	  
 	  @RequestMapping(value = "/getPlanningRequestListByProjectUUID")
-		public @ResponseBody String getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
 		    
-		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  String resultJson;
 		  Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
-		  List<ProjectPlanningRequest> planningRequestList = new ArrayList<ProjectPlanningRequest>();
 		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
-		  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
-			  SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
-			  if(null != planningRequest.getCreatedDate()){
-				  planningRequest.setRequestedDateStr(format.format(planningRequest.getCreatedDate()));
-				}
-			  planningRequestList.add(planningRequest);
-		  }
-		  
-		  resultJson = commonUtil.toJSON(planningRequestList);
-		  return resultJson;
+		  return projectPlanningRequestList;
 	    }
 	  
 	  
@@ -269,7 +268,7 @@ public class ProjectPlanningRestController {
 	    }
 	  
 	  
-	  @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
+	    @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
 		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByApproverIdAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,
 				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
 		    
@@ -279,8 +278,29 @@ public class ProjectPlanningRestController {
 		  return projectPlanningRequestList;
 		  
 	    }
-	  
-	 
+	    
+	   
+	    @RequestMapping(value = "/rejectRequestedAssociate", method = RequestMethod.POST)
+		public @ResponseBody String rejectRequestedAssociate(@RequestParam("json") String jsonPayload) throws Exception {
+		  
+	    	 JSONObject jsonObj = new JSONObject(jsonPayload);
+	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
+	    		 ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
+	    		 StringBuilder rejectReason = new StringBuilder();
+	    		 rejectReason = rejectReason.append("Reason for ").append(resourceRequest.getCandidateName()).append(" : ").append(jsonObj.getString("rejectedReason"));
+	    		 resourceRequest.setRejectedReason(rejectReason.toString());
+	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
+	    		 
+	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestById(resourceRequest.getProjectPlanningRequestId().getId());
+	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);
+	    		 
+	    		 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
+	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    	 }
+		  
+		     return "sucess";
+		  
+	    }
 	 
 
 	 

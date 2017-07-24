@@ -82,6 +82,9 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "STATUS")
    	private Integer status;
     
+    @Column(name="REJECTED_REASON", columnDefinition = "LONGTEXT default NULL")
+	private String rejectedReason;
+    
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
@@ -357,5 +360,26 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getRejectedReason() {
+        if(rejectedReason == null || rejectedReason.isEmpty()){
+        	resourceRequestList = new ArrayList<>();
+        	if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
+        		resourceRequestList.addAll(projectPlanningResourceRequestList);
+        		StringBuilder reason = new StringBuilder();
+        		for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList ){
+        			if(resourceRequest.getRejectedReason() != null && !resourceRequest.getRejectedReason().isEmpty()){
+        				reason = reason.append("\n").append(resourceRequest.getRejectedReason()).append("\n");
+        			}
+        			rejectedReason = reason.toString();
+        		}
+        	}
+		}
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
 	}
 }
