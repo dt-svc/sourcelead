@@ -712,10 +712,15 @@ public class Constants {
 	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator";
 	
 	
-	public static final String CANDIDATE_ADDED_MANUALLY = "added candidate manually";
-	public static final String CANDIDATE_EDITTED = "candidate updated";
-	public static final String CANDIDATE_SKILL_UPDATED = "candidate skill updated";
-	public static final String CANDIDATE_VISA_UPDATED = "candidate immigration status updated";
+	public static final String CANDIDATE_ADDED_MANUALLY = "has added candidate manually";
+	public static final String CANDIDATE_EDITTED = "has updated profile";
+	public static final String CANDIDATE_SKILL_UPDATED = "has updated candidate skill";
+	public static final String CANDIDATE_VISA_UPDATED = "has updated candidate immigration status";
+	public static final String CANDIDATE_RESUME_UPDATED = "has updated candidate resume";
+	public static final String CANDIDATE_EMPLOYERS_UPDATED = "has updated candidate employers data";
+	public static final String CANDIDATE_EDUCATION_UPDATED = "has updated candidate education";
+	public static final String CANDIDATE_CERTIFICATION_UPDATED = "has updated candidate certification";
+	public static final String CANDIDATE_DOCUMENTS_UPDATED = "has updated candidate documents";
 	
 	
 	

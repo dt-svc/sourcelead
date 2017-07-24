@@ -3,6 +3,8 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.entity.CandidateCertificationsHistory;
+import com.bis.sourcelead.entity.CandidateDocumentsHistory;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.CandidateHistory;
@@ -21,4 +23,8 @@ public interface CandidateHistoryDao {
 	public List<CandidateResumesHistory> storeCandidateResumesHistoryList(Set<CandidateResumesHistory> candidateResumesHistoryList) throws Exception;
 	
 	public List<CandidateHistory> getCandidateHistoryListByCandidateId(Long candidateId) throws Exception;
+	
+	public CandidateCertificationsHistory storeCandidateCertificationsHistory(CandidateCertificationsHistory candidateCertificationsHistory) throws Exception;
+	
+	public CandidateDocumentsHistory storeCandidateDocumentsHistory(CandidateDocumentsHistory candidateDocumentsHistory) throws Exception;
 }

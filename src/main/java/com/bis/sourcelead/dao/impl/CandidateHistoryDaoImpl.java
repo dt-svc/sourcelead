@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateHistoryDao;
+import com.bis.sourcelead.entity.CandidateCertificationsHistory;
+import com.bis.sourcelead.entity.CandidateDocumentsHistory;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.CandidateHistory;
@@ -213,5 +215,43 @@ public class CandidateHistoryDaoImpl implements CandidateHistoryDao {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return candidateHistoryList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateCertificationsHistory storeCandidateCertificationsHistory(CandidateCertificationsHistory candidateCertificationsHistory) throws Exception
+	{
+		logger.debug("Storing candidateCertificationsHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidateCertificationsHistory != null) {
+				session.saveOrUpdate(candidateCertificationsHistory);
+			}
+			logger.debug("candidateCertificationsHistory Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "candidateCertificationsHistory"));
+			throw new SourceLeadConstraintViolationException(message.toString()
+					+ exception.getCause().toString());
+		}
+		return candidateCertificationsHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateDocumentsHistory storeCandidateDocumentsHistory(CandidateDocumentsHistory candidateDocumentsHistory) throws Exception
+	{
+		logger.debug("Storing candidateDocumentsHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidateDocumentsHistory != null) {
+				session.saveOrUpdate(candidateDocumentsHistory);
+			}
+			logger.debug("candidateDocumentsHistory Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "candidateDocumentsHistory"));
+			throw new SourceLeadConstraintViolationException(message.toString()
+					+ exception.getCause().toString());
+		}
+		return candidateDocumentsHistory;
 	}
 }

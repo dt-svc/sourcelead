@@ -12,6 +12,10 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.dao.CandidateHistoryDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateCertificationsHistory;
+import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateDocumentsHistory;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -268,5 +272,52 @@ public class CandidateActivityCommonUtil {
 		candidateResumesHistory.setCreatedBy(user.getUserCode());
 		candidateResumesHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateResumesHistory(candidateResumesHistory);
+	}
+	
+	public void storeCandidateCertificationsHistory(CandidateCertifications candidateCertifications, User user) throws Exception
+	{
+		CandidateCertificationsHistory candidateCertificationsHistory = new CandidateCertificationsHistory();
+		candidateCertificationsHistory.setCandidateCertifications(candidateCertifications);
+		candidateCertificationsHistory.setOrgLocationId(candidateCertifications.getOrgLocationId());
+		candidateCertificationsHistory.setCandidateId(candidateCertifications.getCandidateId());
+		candidateCertificationsHistory.setName(candidateCertifications.getName());
+		candidateCertificationsHistory.setProvider(candidateCertifications.getProvider());
+		candidateCertificationsHistory.setScore(candidateCertifications.getScore());
+		candidateCertificationsHistory.setScoreType(candidateCertifications.getScoreType());
+		candidateCertificationsHistory.setDescription(candidateCertifications.getDescription());
+		candidateCertificationsHistory.setValidFrom(candidateCertifications.getValidFrom());
+		candidateCertificationsHistory.setValidTo(candidateCertifications.getValidTo());
+		candidateCertificationsHistory.setStatus(candidateCertifications.getStatus());
+		candidateCertificationsHistory.setCreatedUser(user);
+		candidateCertificationsHistory.setCreatedBy(user.getUserCode());
+		candidateCertificationsHistory.setCreatedDate(commonUtil.currentDate());
+		candidateHistoryDao.storeCandidateCertificationsHistory(candidateCertificationsHistory);
+	}
+	
+	
+	public void storeCandidateDocumentsHistory(CandidateDocuments candidateDocuments, User user) throws Exception
+	{
+		CandidateDocumentsHistory candidateDocumentsHistory = new CandidateDocumentsHistory();
+		candidateDocumentsHistory.setCandidateDocuments(candidateDocuments);
+		candidateDocumentsHistory.setOrgLocationId(candidateDocuments.getOrgLocationId());
+		candidateDocumentsHistory.setCandidateId(candidateDocuments.getCandidateId());
+		candidateDocumentsHistory.setRequestedDocumentsId(candidateDocuments.getRequestedDocumentsId());
+		candidateDocumentsHistory.setIsRequestedDocRequired(candidateDocuments.getIsRequestedDocRequired());
+		candidateDocumentsHistory.setDocUploadStatus(candidateDocuments.getDocUploadStatus());
+		candidateDocumentsHistory.setRequestedDocStatus(candidateDocuments.getRequestedDocStatus());
+		candidateDocumentsHistory.setRequestedDocRejectedReason(candidateDocuments.getRequestedDocRejectedReason());
+		candidateDocumentsHistory.setDocumentType(candidateDocuments.getDocumentType());
+		candidateDocumentsHistory.setDocumentOtherType(candidateDocuments.getDocumentOtherType());
+		candidateDocumentsHistory.setDocFile(candidateDocuments.getDocFile());
+		candidateDocumentsHistory.setFileContentType(candidateDocuments.getFileContentType());
+		candidateDocumentsHistory.setFileName(candidateDocuments.getFileName());
+		candidateDocumentsHistory.setDescription(candidateDocuments.getDescription());
+		candidateDocumentsHistory.setDocumentUUID(candidateDocuments.getDocumentUUID());
+		candidateDocumentsHistory.setIsConfidential(candidateDocuments.getIsConfidential());
+		candidateDocumentsHistory.setStatus(candidateDocuments.getStatus());
+		candidateDocumentsHistory.setCreatedUser(user);
+		candidateDocumentsHistory.setCreatedBy(user.getUserCode());
+		candidateDocumentsHistory.setCreatedDate(commonUtil.currentDate());
+		candidateHistoryDao.storeCandidateDocumentsHistory(candidateDocumentsHistory);
 	}
 }
