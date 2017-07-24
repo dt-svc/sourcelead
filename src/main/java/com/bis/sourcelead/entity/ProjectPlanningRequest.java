@@ -118,7 +118,9 @@ public class ProjectPlanningRequest implements Serializable{
 	@JsonProperty
 	List<ProjectPlanningResourceRequest> resourceRequestList;
     
-
+	@Transient
+	@JsonProperty
+	List<ProjectPlanningNewResourceRequest> newResourceRequestList;
     
     public Long getId() {
 		return id;
@@ -337,5 +339,17 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
 		this.resourceRequestList = resourceRequestList;
+	}
+	
+	public List<ProjectPlanningNewResourceRequest> getNewResourceRequestList() {
+		newResourceRequestList = new ArrayList<>();
+		if(projectPlanningNewResourceRequestList != null && !projectPlanningNewResourceRequestList.isEmpty()){
+			newResourceRequestList.addAll(projectPlanningNewResourceRequestList);
+		}
+		return newResourceRequestList;
+	}
+
+	public void setNewResourceRequestList(List<ProjectPlanningNewResourceRequest> newResourceRequestList) {
+		this.newResourceRequestList = newResourceRequestList;
 	}
 }

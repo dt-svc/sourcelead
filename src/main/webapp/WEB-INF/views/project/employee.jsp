@@ -1188,7 +1188,7 @@ function resourceRequestsTab(){
 						
 						}
 	    			}else{
-	    				result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';
+	    				result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
 	    			}
 	    			result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';

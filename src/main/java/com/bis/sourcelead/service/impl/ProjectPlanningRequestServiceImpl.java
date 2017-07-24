@@ -282,16 +282,23 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 
 			 if(jsonObj.has("noOfResources"+i) && !isNullOrEmpty(jsonObj.getString("noOfResources"+i))){
 				 resourceRequest.setNoOfResource(jsonObj.getInt("noOfResources"+i));
-			
-			 if(jsonObj.has("role"+i) && !isNullOrEmpty(jsonObj.getString("role"+i))){
-				 Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(jsonObj.getString("role"+i)));
-				 resourceRequest.setRoleId(roles);
-				 resourceRequest.setRoleName(roles.getDisplayName());
+			if(jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
+				resourceRequest.setRoleId(null);
+				 resourceRequest.setRoleName(jsonObj.getString("role"+i));
+				 if(jsonObj.has("customRole"+i) && !isNullOrEmpty(jsonObj.getString("customRole"+i))){
+					 resourceRequest.setOtherRole(jsonObj.getString("customRole"+i));
+				 }
+				 
+			}else if(jsonObj.has("role"+i) && !isNullOrEmpty(jsonObj.getString("role"+i))){
+				if(!jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
+					Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(jsonObj.getString("role"+i)));
+					 resourceRequest.setRoleId(roles);
+					 resourceRequest.setRoleName(roles.getDisplayName());	
+				}
+				 
 			 }
 
-			 if(jsonObj.has("customRole"+i) && !isNullOrEmpty(jsonObj.getString("customRole"+i))){
-				 resourceRequest.setOtherRole(jsonObj.getString("customRole"+i));
-			 }
+			
 			 if(jsonObj.has("min"+i) && !isNullOrEmpty(jsonObj.getString("min"+i))){
 				 resourceRequest.setMinExperience(jsonObj.getInt("min"+i));
 			 }
@@ -332,7 +339,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
 			 }
 			 if(jsonObj.has("consulting"+i) && !isNullOrEmpty(jsonObj.getString("consulting"+i))){
-				 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("consulting"+i));
+				 resourceRequest.setConsultingType(jsonObj.getString("consulting"+i));
 			 }
 			 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 			 resourceRequest.setStatus(Constants.RECORD_ACTIVE);

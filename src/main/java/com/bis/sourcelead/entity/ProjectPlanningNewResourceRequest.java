@@ -12,9 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.constants.Constants;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_NEW_RESOURCE_REQUEST")
@@ -34,7 +38,7 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	@Column(name = "OTHER_ROLE")
 	private String otherRole;
     
-	 @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
    	@JoinColumn(name = "ROLE_ID")
   	private Roles roleId;
 	 
@@ -101,6 +105,14 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
+	
 	public Long getId() {
 		return id;
 	}
@@ -293,5 +305,28 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
- 
+	public String getStartDateStr() {
+		if(startDate != null){
+			startDateStr = Constants.DMY.format(startDate);	
+		}
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		if(endDate != null){
+			endDateStr = Constants.DMY.format(endDate);	
+		}
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	
+	
 }

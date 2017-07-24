@@ -8,6 +8,18 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+ <script type="text/javascript">
+		window.onload = function () {
+// 			getRequestedAssociateListDiv();
+			var requestUUID = '${requestUUID}';
+			if(requestUUID != null && requestUUID != '' && requestUUID != 'undefined'){
+				loadRequestDetails();
+			}else{
+				getApproversList();
+			}
+		 };
+   </script>
+   
 <style type="text/css">
 .ReadTextFli {
 	text-align: center;
@@ -121,7 +133,7 @@
                   <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>
                   <div class="positionRelative">
                 <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="required validate_length length1-10">
-                 <span class="currencyValue" value="${currencyCode}" name="budgetCurrency">${currencyCode}</span>
+                 <span class="currencyValue" value="${currencyCode}" id="budgetCurrencyREPLACEROWID" name="budgetCurrencyREPLACEROWID">${currencyCode}</span>
                       </div>
               </div>
                <div class="col-md-3 dropdown-select">
@@ -130,9 +142,9 @@
                   <option selected value="">--Select--</option>
                         <option value="Offsite">Off Site</option>
                         <option value="Onsite">On Site</option>
-                        <option value="Onsite">Near Shore</option>
-                        <option value="Onsite">Off Shore</option>
-                        <option value="Onsite">Hybrid</option>
+                        <option value="NearShore">Near Shore</option>
+                        <option value="OffShore">Off Shore</option>
+                        <option value="Hybrid">Hybrid</option>
                 </select>
               </div>
             
@@ -181,9 +193,9 @@
 			            <div class="col-md-9">
 			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
 		                <option selected value=''>--Select Approver--</option>
-			                <c:forEach var="approver" items="${approversList}">
+			                <%-- <c:forEach var="approver" items="${approversList}">
 			                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
-			                </c:forEach>
+			                </c:forEach> --%>
 		                </select>
 		                
 		                </div>
@@ -809,6 +821,440 @@ $('body').on('blur', '#add_newResource_form', function() {
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
+</script>
+
+
+
+
+<!-- ===================================================================================================================== -->
+
+
+<script>
+function loadRequestDetails(){
+	var requestUUID = '${requestUUID}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	         success: function(json) {
+	        	 $("#requestId").val(json.requestId);
+	        	 $("textarea[name = 'description']").val(json.description);
+	        	 getApproversList(json.approverId);
+	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
+	        	  
+	        	 loadResourceRequestsList(json.newResourceRequestList,json.estimatedHours,json.estimatedBudget,json.requestedResources);
+	        	 
+	        	 
+	         }
+	 });
+	
+}
+</script>
+<script>
+function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimatedBudget,requestedResources){
+// 	 $("#maxRecCount").val(newResourceRequestList.length + 1);
+	 for(var i=0; i<newResourceRequestList.length; i++){
+		var report = newResourceRequestList[i];
+		 var maxRowNum = i+1;
+		 editResourceInfo(maxRowNum,report);
+		 var tbl = document.getElementById("newResourceReauestTable");
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divResourceTsRow" + maxRowNum);
+			hideAndShowDetailsRow(maxRowNum,'Hide');
+			
+			$("#addResourceRequestButton"+maxRowNum).removeAttr('value');
+			$("#addResourceRequestButton"+maxRowNum).attr('value','Update');
+			
+			$("#addResourceRequestButton"+maxRowNum).removeAttr('onclick');
+			$("#addResourceRequestButton"+maxRowNum).attr('onclick','updateResourceRequestTbl('+maxRowNum+')');
+			
+			$("#cancelResourceRequestButton"+maxRowNum).removeAttr('onclick');
+			$("#cancelResourceRequestButton"+maxRowNum).attr('onclick','hideAndShowDetailsRow('+maxRowNum+',"Hide")');
+			
+			//role
+			var cell0 = row.insertCell(0);
+			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
+			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var role = report.roleName;
+			var customeRole = report.otherRole;
+			if(role == "Other"){
+				divRowTd1Str = divRowTd1Str.replace(/ROLEVALUES/g,customeRole);
+			}else{
+				divRowTd1Str = divRowTd1Str.replace(/ROLEVALUES/g,role);
+			}
+			cell0.innerHTML = divRowTd1Str;
+			
+			
+			//No.Resources
+			var cell1 = row.insertCell(1);
+			var divRowTd2Str = document.getElementById("divAddRowTr1Td2").innerHTML;
+			divRowTd2Str = divRowTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var resourceCount =  report.noOfResource;
+			if(resourceCount == null || resourceCount == '' || resourceCount == 'undefined'){
+				resourceCount = "--";
+			}
+			divRowTd2Str = divRowTd2Str.replace(/RESOURCECOUNTVALUE/g,resourceCount);
+			cell1.innerHTML = divRowTd2Str;
+			
+			
+			//Experience
+			var cell2 = row.insertCell(2);
+			var divRowTd3Str = document.getElementById("divAddRowTr1Td3").innerHTML;
+			divRowTd3Str = divRowTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var minEx =  report.minExperience;
+			var maxEx = report.maxExperience;
+			if(minEx == null || minEx == '' || minEx == 'undefined'){
+				minEx = "--";
+			}if(maxEx == null || maxEx == '' || maxEx == 'undefined'){
+				maxEx = "--";
+			}
+			divRowTd3Str = divRowTd3Str.replace(/MINVALUE/g,minEx);
+			divRowTd3Str = divRowTd3Str.replace(/MAXVALUE/g,maxEx);
+			cell2.innerHTML = divRowTd3Str;
+			
+			//Primary Skills
+			var cell3 = row.insertCell(3);
+			var divRowTd4Str = document.getElementById("divAddRowTr1Td4").innerHTML;
+			divRowTd4Str = divRowTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var primarySkills =  report.skills;
+			if(primarySkills == null || primarySkills == '' || primarySkills == 'undefined'){
+				primarySkills = "--";
+			}
+			divRowTd4Str = divRowTd4Str.replace(/PRIMARYSKILLSVALUES/g,primarySkills);
+			cell3.innerHTML = divRowTd4Str;
+			
+			//Bill/Pay Rate 
+			var cell4 = row.insertCell(4);
+			var divRowTd4Str = document.getElementById("divAddRowTr1Td5").innerHTML;
+			divRowTd4Str = divRowTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var currencyCode =  report.rateCurrency;
+			var billRate =  report.billRate;
+			var payRate =  report.payRate;
+			var rateType =  report.rateType;
+			
+			if(currencyCode == null || currencyCode == '' || currencyCode == 'undefined'){
+				currencyCode = "--";
+			}if(billRate == null || billRate == '' || billRate == 'undefined'){
+				billRate = "--";
+			}if(payRate == null || payRate == '' || payRate == 'undefined'){
+				payRate = "--";
+			}if(rateType == null || rateType == '' || rateType == 'undefined'){
+				rateType = "--";
+			}
+			divRowTd4Str = divRowTd4Str.replace(/CURRENCYCODEVALUE/g,currencyCode);
+			divRowTd4Str = divRowTd4Str.replace(/BILLRATEVALUE/g,billRate);
+			divRowTd4Str = divRowTd4Str.replace(/PAYRATEVALUE/g,payRate);
+			divRowTd4Str = divRowTd4Str.replace(/RATETYPEVALUE/g,rateType);
+			cell4.innerHTML = divRowTd4Str;
+			
+			
+			//StartDate and EndDate
+			var cell5 = row.insertCell(5);
+			var divRowTd5Str = document.getElementById("divAddRowTr1Td6").innerHTML;
+			divRowTd5Str = divRowTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var startDate = report.startDateStr;
+			if(startDate == null || startDate == '' || startDate == 'undefined'){
+				startDate = "--";
+			}
+			divRowTd5Str = divRowTd5Str.replace(/STARTDATEVALUE/g,startDate);
+			var endDate =  report.endDateStr;
+			if(endDate == null || endDate == '' || endDate == 'undefined'){
+				endDate = "--";
+			} 
+			divRowTd5Str = divRowTd5Str.replace(/ENDDATEVALUE/g,endDate);
+			cell5.innerHTML = divRowTd5Str;
+			
+			//Consulting Type
+			var cell6 = row.insertCell(6);
+			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
+			divRowTd6Str = divRowTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var consulting =  report.consultingType;
+			if(consulting == null || consulting == '' || consulting == 'undefined'){
+				consulting = "--";
+			}
+			divRowTd6Str = divRowTd6Str.replace(/CONSULTINGVALUE/g,consulting);
+			cell6.innerHTML = divRowTd6Str;
+			
+			//Estimated Hours
+			var cell7 = row.insertCell(7);
+			var divRowTd7Str = document.getElementById("divAddRowTr1Td8").innerHTML;
+			divRowTd7Str = divRowTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var estimatedHours =  report.estimatedHours;
+			if(estimatedHours == null || estimatedHours == '' || estimatedHours == 'undefined'){
+				estimatedHours = "--";
+			}
+			divRowTd7Str = divRowTd7Str.replace(/ESTIMATEDHOURSVALUE/g,estimatedHours);
+			cell7.innerHTML = divRowTd7Str;
+			
+			//Estimated Budget
+			var cell8 = row.insertCell(8);
+			var divRowTd8Str = document.getElementById("divAddRowTr1Td9").innerHTML;
+			divRowTd8Str = divRowTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+			var estimatedBudget =  report.estimatedBudget;
+			if(estimatedBudget == null || estimatedBudget == '' || estimatedBudget == 'undefined'){
+				estimatedBudget = "--";
+			}
+			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
+			cell8.innerHTML = divRowTd8Str;
+			
+			
+			var cell9 = row.insertCell(9);
+			var divRowTd9Str = document.getElementById("divAddRowTr1Td10").innerHTML;
+			divRowTd9Str = divRowTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell9.innerHTML = divRowTd9Str;
+			totalResoursec(maxRowNum);
+			totalEstimatedHours(maxRowNum);
+			totalEstimatedBudget(maxRowNum);			
+	 }
+	 
+	    $("#totalResourcesId").val(requestedResources);
+		$("#totalEstHours").val(estimatedHours);
+		$("#totalEstBudget").val(estimatedBudget);
+}
+</script>
+<script>
+function getApproversList(approverId){
+var sourceleadUrl ='${sourceleadUrl}';
+var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	$.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    		success: function(data) {
+	        	var json = JSON.parse(data);
+	     		var output = "";
+	     			output = output + "<option value=''>--Select Approver--</option>";
+	     		for (var i=0; i<json.length; i++)
+	     		{
+		     		var opt = json[i];
+		     		var fullname = '';
+		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		     			fullname = opt.firstName+" "+opt.lastName;
+		     		}else{
+		     			fullname = opt.firstName;
+		     		}
+		     		
+		     		if(approverId != null && approverId != '' && approverId != 'undefined' && approverId == opt.id){
+		     			var selected = 'selected';
+		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+fullname+" ("+opt.userType+")</option>";
+		     		}else{
+		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     		} 
+	     		}
+	     		$("#approver").empty();
+	     		$("#approver").append(output);
+	     		$('#approver').trigger("chosen:updated");
+	     		
+	        	 
+	         }
+	 });
+}
+</script>
+		
+
+<script>
+	function editResourceInfo(maxRowNum,report){
+			$("#maxRecCount").val(parseInt(maxRowNum + 1));
+			$("#resourceInfoDiv").append("<div id='resourceInfoContent"+maxRowNum+"'></div>");
+			var billRate = '';
+			var payRate = '';
+			var startDateStr = '';
+			var endDateStr = '';
+			
+			if(report.billRate != null && report.billRate != '' && report.billRate != 'undefined'){
+				billRate = report.billRate;
+			}
+			if(report.payRate != null && report.payRate != '' && report.payRate != 'undefined'){
+				payRate = report.payRate;
+			}
+			if(report.startDateStr != null && report.startDateStr != '' && report.startDateStr != 'undefined'){
+				startDateStr = report.startDateStr;
+			}
+			if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+				endDateStr = report.endDateStr;
+			}
+			
+			var divRowTd2_0Str ='';
+			divRowTd2_0Str = divRowTd2_0Str +'<div class="addResource add-resource">';
+			divRowTd2_0Str = divRowTd2_0Str +'	<span class="addResClo addResClose"></span>';
+			divRowTd2_0Str = divRowTd2_0Str +'      <div class="col-xs-12 col-sm-12 myForm noPad clearfix request-resources">';
+
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Role 11 <span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="role'+maxRowNum+'" id="role'+maxRowNum+'"  field-name="Role" data-validation="required" onchange="changeRole(this,'+maxRowNum+');" >';
+			divRowTd2_0Str = divRowTd2_0Str +'             <option value="">-Select Role-</option>';
+			if(report.roleName == 'Other'){
+				divRowTd2_0Str = divRowTd2_0Str +'         <c:forEach var="option" items="${rolesList}">';
+				divRowTd2_0Str = divRowTd2_0Str +'  <option value="${option.id}">${option.displayName}</option>';
+		       divRowTd2_0Str = divRowTd2_0Str +'  </c:forEach>';
+		       divRowTd2_0Str = divRowTd2_0Str +'			  <option value="Other" selected >Other</option>';
+			}
+			else{
+				divRowTd2_0Str = divRowTd2_0Str +'         <c:forEach var="option" items="${rolesList}">';
+				divRowTd2_0Str = divRowTd2_0Str +'  <option value="${option.id}" '+ (report.roleId.id == "${option.id}" ? "selected" : '') + '>${option.displayName}</option>';
+		       divRowTd2_0Str = divRowTd2_0Str +'  </c:forEach>';
+		       divRowTd2_0Str = divRowTd2_0Str +'			  <option value="Other"  >Other</option>';
+			}
+			divRowTd2_0Str = divRowTd2_0Str +'            </select>';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
+			
+			/* '+ (report.roleId.id == "${option.id}" ? "selected" : '' */
+			divRowTd2_0Str = divRowTd2_0Str +'         <div class="col-md-3" id="otherRoleDiv'+maxRowNum+'" style="display:'+(report.roleName == 'Other' ? 'block':'none')+'">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Custom Role<span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" value ="'+report.otherRole+'" '+(report.roleName == 'Other' ? 'data-validation="required"':'')+' name="customRole'+maxRowNum+'" id="customRole'+maxRowNum+'" class="form-control" field-name="Custom Role">';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>'; 
+			
+			divRowTd2_0Str = divRowTd2_0Str +' <div class="col-md-3 dropdown-select">';
+			divRowTd2_0Str = divRowTd2_0Str +'  <label>No. of Resources <span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'  <input type="text" class="form-control" value="'+report.noOfResource+'" name="noOfResources'+maxRowNum+'" id="noOfResources'+maxRowNum+'"  field-name="No. of Resources" data-validation="required validate_length length1-15 validate_int">';
+			divRowTd2_0Str = divRowTd2_0Str +' </div>';
+		
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Experience</label>';
+			divRowTd2_0Str = divRowTd2_0Str +'              <div class="row experience-drop">';
+			divRowTd2_0Str = divRowTd2_0Str +'                  <div class="col-md-6">';
+			divRowTd2_0Str = divRowTd2_0Str +'                      <select class="form-control" name="min'+maxRowNum+'" id="min'+maxRowNum+'" onblur="minMaxExperience('+maxRowNum+');">';
+			divRowTd2_0Str = divRowTd2_0Str +'             		  <option value="">Min Years</option>';
+											 <c:forEach var="i" begin="0" end="25" >
+			divRowTd2_0Str = divRowTd2_0Str +'<option value="${i}" '  + (report.minExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
+											</c:forEach>
+			divRowTd2_0Str = divRowTd2_0Str +'             		  </select>';
+			divRowTd2_0Str = divRowTd2_0Str +'                   </div>';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'                  <div class="col-md-6">'; 
+			divRowTd2_0Str = divRowTd2_0Str +'                  <select class="form-control" name="max'+maxRowNum+'" id="max'+maxRowNum+'" onblur="minMaxExperience('+maxRowNum+');">';
+			divRowTd2_0Str = divRowTd2_0Str +'         		  <option value="">Max Years</option>';
+			                                  <c:forEach var="i" begin="0" end="25" >
+				divRowTd2_0Str = divRowTd2_0Str +'<option value="${i}" '  + (report.maxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
+											 </c:forEach>
+			divRowTd2_0Str = divRowTd2_0Str +'         		</select>';
+			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'             </div>';
+			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="expIdREPLACEROWID">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="expValidationREPLACEROWID" id="expValidationREPLACEROWID">';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div> ';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Primary Skills <span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+ report.skills+'" name="primarySkill'+maxRowNum+'" id="primarySkill'+maxRowNum+'" field-name="Primary Skill" data-validation="required validate_Space validate_length length2-200">';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'          <!--  Rate Per div  -->';
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-6">';
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="clearfix">';
+			divRowTd2_0Str = divRowTd2_0Str +'          <label class="pull-left">Bill / Pay Rate</label>';
+			divRowTd2_0Str = divRowTd2_0Str +'         <div class="clearfix"></div>';
+			divRowTd2_0Str = divRowTd2_0Str +'         <div class="input-group payrate_p">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <div class="input-group-btn selp-custom-min selp-customMin">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <select class="" name="currencyCode'+maxRowNum+'" id="currencyCode'+maxRowNum+'">';
+			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "INR" ? "selected" : '') +' >INR</option>';
+			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "AUD" ? "selected" : '') +' >AUD</option>';
+			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "USD" ? "selected" : '') +' >USD</option>';
+			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "GBP" ? "selected" : '') +' >GBP</option>';
+			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "SGD" ? "selected" : '') +' >SGD</option>';
+			divRowTd2_0Str = divRowTd2_0Str +'                 <option '+(report.rateCurrency == "EUR" ? "selected" : '') +' >EUR</option>';
+			divRowTd2_0Str = divRowTd2_0Str +'            </select> ';
+			divRowTd2_0Str = divRowTd2_0Str +'            </div>    ';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'            <div class="pull-left input_minmax">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control"  value="'+billRate+'" name="billRate'+maxRowNum+'" id="billRate'+maxRowNum+'" field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+payRate+'" name="payRate'+maxRowNum+'" id="payRate'+maxRowNum+'"   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
+			divRowTd2_0Str = divRowTd2_0Str +'            </div>';
+			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="rateValidateId">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="rateValidation" id="rateValidation">';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div> ';
+			divRowTd2_0Str = divRowTd2_0Str +'            <div class="input-group-btn selp-custom-min payrate_p">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <select class="ratetype"  name="rateType'+maxRowNum+'" id="rateType'+maxRowNum+'" field-name="Rate Per">';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Hourly" ? "selected" : '') +' >Hourly</option>                  ';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Weekly" ? "selected" : '') +'  >Weekly</option>                  ';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Bi-weekly" ? "selected" : '') +' >Bi-weekly</option>            ';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Semi-Monthly" ? "selected" : '') +' >Semi-Monthly</option>      ';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Monthly" ? "selected" : '') +'  >Monthly</option>               ';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Bi-Monthly" ? "selected" : '') +' >Bi-Monthly</option>          ';
+			divRowTd2_0Str = divRowTd2_0Str +'                <option '+(report.rateType == "Yearly" ? "selected" : '') +'  >Yearly</option>                  ';
+			divRowTd2_0Str = divRowTd2_0Str +'              </select>                                                 ';
+			divRowTd2_0Str = divRowTd2_0Str +'            </div>                                                      ';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>                                                        ';
+			divRowTd2_0Str = divRowTd2_0Str +'        </div>                                                          ';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>                                                        ';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">                                        ';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Start Date</label>                                    ';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control calendar" value="'+startDateStr+'" name="startDate'+maxRowNum+'" id="startDate'+maxRowNum+'" placeholder="Start Date" readonly>';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>End Date</label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control calendar" value="'+endDateStr+'" name="endDate'+maxRowNum+'" id="endDate'+maxRowNum+'" placeholder="End Date" readonly>';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="required validate_length length1-10">';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 currencySymbol">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'              <div class="positionRelative">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="required validate_length length1-10">';
+			divRowTd2_0Str = divRowTd2_0Str +'             <span class="currencyValue" value="'+report.estimatedBudgetCurrency+'" id="budgetCurrency'+maxRowNum+'" name="budgetCurrency">${currencyCode}</span>';
+			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
+			
+			divRowTd2_0Str = divRowTd2_0Str +'           <div class="col-md-3 dropdown-select">'; 
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Consulting <span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="consulting'+maxRowNum+'" id="consulting'+maxRowNum+'" field-name="Consulting" data-validation="required">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <option selected value="">--Select--</option>      ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Offsite" ? "selected" : '') +' >Off Site</option>    ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Onsite" ? "selected" : '') +' >On Site</option>      ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "NearShore" ? "selected" : '') +' >Near Shore</option>   ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffShore" ? "selected" : '') +' >Off Shore</option>    ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Hybrid" ? "selected" : '') +' >Hybrid</option>       ';
+			divRowTd2_0Str = divRowTd2_0Str +'            </select>                                            ';
+			divRowTd2_0Str = divRowTd2_0Str +'          </div>                                                 ';
+			divRowTd2_0Str = divRowTd2_0Str +'        </div>                                                   '; 
+			
+			divRowTd2_0Str = divRowTd2_0Str +'		<div class="col-xs-12 col-sm-12 myForm noPad clearfix">    ';
+			divRowTd2_0Str = divRowTd2_0Str +'			<div class="pull-right mr">                            ';
+			divRowTd2_0Str = divRowTd2_0Str +'				<input type="button" id="addResourceRequestButton'+maxRowNum+'" class="btn btn-primary btn-sm mr10" onclick="addNewResourceRequestTbl('+maxRowNum+');" value="Add"/>'; 
+			divRowTd2_0Str = divRowTd2_0Str +'			    <input type="button" id="cancelResourceRequestButton'+maxRowNum+'" class="btn btn-default btn-sm cancel-btn" onclick="removeRow('+maxRowNum+');" value="Cancel"/>';
+			divRowTd2_0Str = divRowTd2_0Str +'			</div>'; 
+			divRowTd2_0Str = divRowTd2_0Str +'		</div>';
+			divRowTd2_0Str = divRowTd2_0Str +'		<div class="clearfix"></div>';
+			divRowTd2_0Str = divRowTd2_0Str +'		</div>';
+		
+			$("#resourceInfoContent"+maxRowNum).append(divRowTd2_0Str);
+			$("#resourceInfoContent"+maxRowNum).removeAttr('style');
+			$("#resourceInfoContent"+maxRowNum).attr('style','display:none');
+			$('#startDate'+maxRowNum).datepicker({
+				dateFormat : 'dd-mm-yy',
+				changeMonth: true,
+				changeYear: true
+			});
+			$('#endDate'+maxRowNum).datepicker({
+				dateFormat : 'dd-mm-yy',
+				changeMonth: true,
+				changeYear: true
+			});
+			$(".addResource").removeAttr('style');
+			$(".addResource").attr('style','display:block');
+			$('#currencyCode'+maxRowNum+'').selectpicker('refresh');
+			$('#rateType'+maxRowNum+'').selectpicker('refresh');
+		
+	}
+	</script>
+	<script>
+function editChangeRole(e,rowId){
+	var other =  e.value;
+	if(other == "Other"){
+		 document.getElementById("otherRoleDiv"+rowId+"").style.display="block";
+		 $('#customRole'+rowId+'').attr("data-validation","required"); 
+	}else{
+		document.getElementById("otherRoleDiv"+rowId+"").style.display="none";
+		 $('#customRole'+rowId+'').removeAttr("data-validation","required"); 
+	}
+}
 </script>
  <jsp:include page="../masterFooter.jsp" />	
 </html>
