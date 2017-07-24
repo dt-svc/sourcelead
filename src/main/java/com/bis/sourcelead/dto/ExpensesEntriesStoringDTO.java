@@ -22,8 +22,6 @@ public class ExpensesEntriesStoringDTO implements Serializable {
 
     private List<ExpensesCategoryDTO> categoryList;
 	
-	private MultipartFile[] files;
-
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -80,14 +78,5 @@ public class ExpensesEntriesStoringDTO implements Serializable {
 		this.categoryList = categoryList;
 	}
 
-	public MultipartFile[] getFiles() {
-		return files;
-	}
-
-	public void setFiles(MultipartFile[] files) {
-		this.files = files;
-	}
-	
-	
 
 }
