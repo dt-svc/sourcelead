@@ -126,9 +126,9 @@ overflow-x: auto;
 			   	 	 <%--  <sec:authorize access="hasAnyRole('ROLE_VIEW_INTERVIEW')">
 			    	 <jsp:include page="dashboardInterviews.jsp"></jsp:include>
 			    	 </sec:authorize> --%>
-			    
+			    </div>
 		    </c:if>
-		      
+		     <div class="clearfix row mb"> 
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
