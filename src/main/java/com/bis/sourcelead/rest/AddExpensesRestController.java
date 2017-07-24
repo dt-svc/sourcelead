@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -337,15 +338,15 @@ public class AddExpensesRestController {
 //				 globalVarsMap.put("expenseId",sah.getExpenseId().getExpenseId());
 //					 }
 //				 }
-				 
+				 SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				 if(null != sah.getExpenseId()){
 					 if(null != sah.getExpenseId().getStartDate()){
-				 globalVarsMap.put("startDate",Constants.DMY.format(sah.getExpenseId().getStartDate()));
+				 globalVarsMap.put("startDate",dateFormat.format(sah.getExpenseId().getStartDate()));
 					 }
 				 }	 
 				 if(null != sah.getExpenseId()){
 					 if(null != sah.getExpenseId().getEndDate()){
-				 globalVarsMap.put("endDate", Constants.DMY.format(sah.getExpenseId().getEndDate()));
+				 globalVarsMap.put("endDate",dateFormat.format(sah.getExpenseId().getEndDate()));
 					 }
 				 }
 				 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));

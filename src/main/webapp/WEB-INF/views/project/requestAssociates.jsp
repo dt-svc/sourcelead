@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>Request Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="project_Planning_US.html">Planning</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>">Planning</a> &raquo; Request Associates</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -424,10 +424,12 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 			      dateFormat : 'dd-mm-yy',
 			      minDate : 0,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
-						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
-						getEstimatedHours(maxRowNum)
+					  var id = $(this).attr('id');
+					  var rowId = id.split("sdate-input")[0];
+					  var dt = toDate("#"+rowId+"sdate-input");
+					  dt.setDate(dt.getDate() + 1);
+					  $("#"+rowId+"edate-input").datepicker("option", "minDate", dt);
+					  getEstimatedHours(rowId);
 			 	  }
 			    });
 			
@@ -437,10 +439,12 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 			      dateFormat : 'dd-mm-yy',
 			      minDate : 0,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  var id = $(this).attr('id');
+					  var rowId = id.split("edate-input")[0];
+					   var dt = toDate("#"+rowId+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
-						getEstimatedHours(maxRowNum)
+						$("#"+rowId+"sdate-input").datepicker("option", "maxDate", dt);
+						getEstimatedHours(rowId)
 			 	  }
 			    });
 			
@@ -665,6 +669,7 @@ function getOrgLocationRoles(){
 <script>
 function getAssociatesFilter(){
 	
+	var projectUUID = '${projectUUID}';
 	var roles = [];
 	$('input:checkbox[name=roles]:checked').each(function() 
 		    {
@@ -704,7 +709,7 @@ function getAssociatesFilter(){
 	
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates, 
+	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID, 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
@@ -1137,7 +1142,6 @@ function getEstimatedHours(rowId){
 	var startDate = document.getElementById(rowId+"sdate-input").value;
 	var endDate = document.getElementById(rowId+"edate-input").value;
 	if(startDate && endDate){
-		
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({

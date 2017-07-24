@@ -612,10 +612,22 @@ function errRemoveVendorContact(){
 				cell0.innerHTML = text;
 				
 				
+				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				   var finalDateFormatpayableEdit = '';
+				  if(locationDate.match("yyyy-MM-dd")){
+					  finalDateFormatpayableEdit = 'yy-mm-dd';
+				  }if(locationDate.match("dd-MM-yyyy")){
+					  finalDateFormatpayableEdit = 'dd-mm-yy'; 
+				  }if(locationDate.match("MM-dd-yyyy")){
+					  finalDateFormatpayableEdit = 'mm-dd-yy'; 
+				  }if(locationDate.match("yyyy-dd-MM")){
+					  finalDateFormatpayableEdit = 'yy-dd-mm'; 
+				  }
+				
 				$( "#"+maxRowNum+"sdate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatpayableEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }
@@ -624,7 +636,7 @@ function errRemoveVendorContact(){
 				$( "#"+maxRowNum+"edate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatpayableEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }
@@ -781,12 +793,24 @@ function cancel(){
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			   var finalDateFormatInvoiceSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatInvoiceSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatInvoiceSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatInvoiceSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatInvoiceSave = 'yy-dd-mm'; 
+			  } 
+			
 			$( "#"+maxRowNum+"sdate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
+					  var dt = $(this).datepicker('getDate', '+1d');
 						dt.setDate(dt.getDate() + 1);
 						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			 	  }
@@ -795,9 +819,9 @@ function cancel(){
 			$( "#"+maxRowNum+"edate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  var dt = $(this).datepicker('getDate', '-1d');
 						dt.setDate(dt.getDate() - 1);
 						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			 	  }
@@ -1580,12 +1604,23 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->
 <script>
 	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';  
+		var finalDateFormatinvoiceDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatpayableDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatpayableDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatpayableDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatpayableDate = 'yy-dd-mm'; 
+		  }
 		$('#invoiceDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatpayableDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#invoiceDate");
+			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
@@ -1593,11 +1628,11 @@ function calculateTaxDiscount(){
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatpayableDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#dueDate");
+			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#invoiceDate").datepicker("option", "maxDate", dt);
 				errDueDate();
@@ -1925,14 +1960,14 @@ function getSowRate(id){
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
-	
+	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 if(paymentFrequency){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);

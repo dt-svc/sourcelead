@@ -254,7 +254,16 @@ function prepareRequirementData(data){
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
 	 $("#requirementList").empty();
-	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqListDate = 'YYYY-DD-MM'; 
+	  }  
 	var result = "";
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -266,7 +275,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Location</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On</th>";
+    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
     result = result +"    <th>Status</th>"; 
        result = result +"<th>Actions</th>";
 //     result = result +"    <th>Release</th>"; 
@@ -369,9 +378,9 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>----</div></td>";
         }
         if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-          	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
+          	 result = result +"<td><div class='tblminwidth-90'>"+opt.postedDateStr+"</div></td>";
            }else{
-          	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
+          	 result = result +"<td><div class='tblminwidth-90'>----</div></td>";
            }
           result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){

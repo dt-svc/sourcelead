@@ -99,4 +99,32 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		}
 		return projectPlanningRequest;
 	}
+
+	@Override
+	@Transactional
+	public ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningRequest planningRequest left join fetch planningRequest.projectId left join fetch planningRequest.approverUser "
+				+ "where planningRequest.id = :id and planningRequest.status = '1' ";  
+		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		ProjectPlanningRequest projectPlanningRequest = null;
+		if(projectPlanningRequestList != null && !projectPlanningRequestList.isEmpty()){
+			projectPlanningRequest = projectPlanningRequestList.iterator().next();
+		}
+		return projectPlanningRequest;
+	}
+
+	@Override
+	@Transactional
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
+				+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
+				+ " and projectPlanningRequest.requestStatus = :requestStatus and projectPlanningRequest.status = '1' ";
+		List<ProjectPlanningRequest> projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setString("requestStatus", requestStatus).setCacheable(true).list();
+		
+		return projectPlanningRequestList;
+	}
 }

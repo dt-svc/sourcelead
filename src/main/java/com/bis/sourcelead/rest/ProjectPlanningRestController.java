@@ -69,7 +69,8 @@ public class ProjectPlanningRestController {
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody String  getRequestedAssociatesList(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 			 @RequestParam(value="roles", required=false) String roles,@RequestParam(value="resourceType", required=false) String resourceType,
-			 @RequestParam(value="selectedAssociates", required=false) String selectedAssociates) throws Exception{ 
+			 @RequestParam(value="selectedAssociates", required=false) String selectedAssociates,
+			 @RequestParam(value="projectUUID", required=false) String projectUUID) throws Exception{ 
 		 
 		String resultJson;
 		
@@ -91,6 +92,22 @@ public class ProjectPlanningRestController {
 			 for(int i=0; i < associateIdsList.length; i++){
 				 associateIds.add(Long.valueOf(associateIdsList[i]));
 			 }
+		}
+		
+		if(!isNullOrEmpty(projectUUID)){
+			Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+			List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
+		    if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0){
+		    	if(null == associateIds){
+		    		associateIds = new ArrayList<Long>();
+		    	}
+		    	for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
+		    		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = planningRequest.getProjectPlanningResourceRequestList();
+		    		for(ProjectPlanningResourceRequest resourceRequest : projectPlanningResourceRequestList){
+		    			associateIds.add(resourceRequest.getCandidateId().getId());
+		    		}
+		    	}
+		    }
 		}
 		
 		
@@ -249,6 +266,18 @@ public class ProjectPlanningRestController {
 		  
 		  resultJson = commonUtil.toJSON(approversList);
 		  return resultJson;
+	    }
+	  
+	  
+	  @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
+		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByApproverIdAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {
+		    
+		  
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId, requestType);
+		  
+		  return projectPlanningRequestList;
+		  
 	    }
 	  
 	 

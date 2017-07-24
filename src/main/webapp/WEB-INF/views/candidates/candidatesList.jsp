@@ -141,7 +141,18 @@ else{
  <script>
   function prepareCandidateList(data){
 	  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-	 	     $("#candidateList").removeAttr("style");
+		  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  var aa= "";
+		  if(locationList.match("yyyy-MM-dd")){
+			  aa = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  aa = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  aa = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  aa = 'YYYY-DD-MM'; 
+		  }  
+		  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
@@ -156,7 +167,7 @@ else{
 	          result = result +"    <th>Email</th>"; 
 	          result = result +"    <th>Mobile Number</th>"; 
 	          result = result +"    <th>Location</th>"; 
-	          result = result +"    <th>Last Update</th>"; 
+	          result = result +"    <th>Last Update (<small class='custom-small'>"+aa+"</small>) </th>"; 
 	          result = result +"  </tr>"; 
 	          result = result +"</thead>";
 	          result = result +"<tbody>"; 
@@ -271,7 +282,7 @@ else{
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
-	              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
+	              result = result +"  <td><div class='tblminwidth-90'>"+candidateUpdateDateToString+"</div></td>";
 	              result = result +"</tr>"; 
 	          }
 	          result = result +" </tbody>";

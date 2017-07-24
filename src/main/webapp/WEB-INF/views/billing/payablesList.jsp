@@ -483,6 +483,17 @@ function getPayableInvoiceList(){
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
 	
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  orgLocationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  orgLocationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  orgLocationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  orgLocationDate = 'YYYY-DD-MM'; 
+	  } 
+	
 	if(dayWisetype=="custom"){
 		dayWisetype = "";
 	}
@@ -535,10 +546,10 @@ function getPayableInvoiceList(){
 			result = result +'         <th>Vendor Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
 			result = result +'         <th>Project Name</th>          ';
-			result = result +'         <th>Bill Date</th>             ';
+			result = result +'         <th>Bill Date<br>(<small class="custom-small">'+orgLocationDate+'</small>)</th>             ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due Date</th>              ';
+			result = result +'         <th>Due Date<br>(<small class="custom-small">'+orgLocationDate+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>        ';
 			result = result +'         <th>Action</th>                ';

@@ -168,21 +168,27 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				if("Australia".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(298l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("India".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(246l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("dd-MM-yyyy");
 				}else if("France".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(342l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("Singapore".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(272l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("United Kingdom".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(333l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("United States".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(87l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				} 
 			}
 			

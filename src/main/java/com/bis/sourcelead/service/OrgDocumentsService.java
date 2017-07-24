@@ -37,6 +37,8 @@ public interface OrgDocumentsService {
 	 */
 	OrgDocuments getOrgDocumentsById(Long Id) throws Exception;
 	
+	OrgDocuments getOrgDocumentsByDocIdAndLocationId(Long Id,Long locationId) throws Exception;
+	
     /**To update Org Document Using OrgDocuments pojo only
      * @author Prasad Salina
      * @param orgDocument
@@ -47,7 +49,7 @@ public interface OrgDocumentsService {
 	List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long valueOf, Long id,
 			Long spocUserId);
 
-	OrgDocuments getOrgDocumentsByIdAndSpocId(Long parseLong, Long userId);
+	OrgDocuments getOrgDocumentsByIdAndSpocId(Long parseLong, Long userId, OrgLocations orgLocations);
 	
 	Integer getDocumentOwnerCountByUserIdAndOrgLocationIdAndSourceType(Long userId,Long orgLocationId,String sourceType)throws Exception;
 	
