@@ -121,6 +121,14 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
             </div>
+            <div class="form-group">
+							<label class="col-md-3">Account Details</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="2" id="accountDetails"
+									name="accountDetails" placeholder="Account Details"></textarea>
+							</div>
+			</div>
+            
           </div>
         </div>
         <div class="clearfix"></div>
@@ -132,7 +140,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
         <!-- Table Ends here-->
           
           <!-- Adding Content Starts herer -->
-           <div id="bottomGrid" style="display: none;">
+           <div id="bottomGrid" style="display: none;" class="mt">
           <div class="clearfix invoice_other">
           <div class="col-md-5">
            <!--  <div class="clearfix mb">
@@ -339,6 +347,7 @@ function populateInlineItemsGrid(data){
             result = result +' <tr>';
             result = result +' <th>Date</th>';
             result = result +' <th>Associate</th>';
+            result = result +' <th>Description</th>;'
             result = result +' <th>SOW / PO</th>';
             result = result +' <th>Rate</th>';
             result = result +' <th>Total Hours</th>';
@@ -363,6 +372,9 @@ function populateInlineItemsGrid(data){
              result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
              result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
+             result = result +'  <td>';
+             result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
+             result = result +'  </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
              result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
@@ -398,7 +410,7 @@ function populateInlineItemsGrid(data){
         }
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
-        result = result +' <td colspan="4"></td>';
+        result = result +' <td colspan="5"></td>';
         result = result +'<td><strong>Total</strong></td>';
         result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
@@ -479,6 +491,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
 	    result = result +' <th>Associate</th>';
+	    result = result +' <th>Description</th>;'
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate Hourly</th>';
 	    result = result +' <th>Total Hours</th>';
@@ -503,6 +516,14 @@ function populateInlineItemsGrid1(data){
     	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
     	 result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
     	 result = result +' </td>';
+    	 result = result +'  <td>';
+    	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description">'+opt.inlineDescription+'</textarea>';
+    	 }else{
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
+    	 }
+         
+         result = result +'  </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
     	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
@@ -548,7 +569,7 @@ function populateInlineItemsGrid1(data){
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
-    result = result +' <td colspan="4"></td>';
+    result = result +' <td colspan="5"></td>';
     result = result +'<td><strong>Total</strong></td>';
     result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
@@ -1263,7 +1284,9 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	
+		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           		$("#accountDetails").val(json['accountDetails']);
+		           	}	
 		           	/* buildLineItemAndTaxAddRows(); */
 		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/

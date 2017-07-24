@@ -130,7 +130,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 								<textarea class="form-control" rows="2" id="accountDetails"
 									name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
-						</div>
+			</div>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -524,6 +524,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
 	    result = result +' <th>Associate</th>';
+	    result = result +' <th>Description</th>;'
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate</th>';
 	    result = result +' <th>Total Hours</th>';
@@ -601,7 +602,7 @@ function populateInlineItemsGrid1(data){
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
-    result = result +' <td colspan="4"></td>';
+    result = result +' <td colspan="5"></td>';
     result = result +'<td><strong>Total</strong></td>';
     result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
