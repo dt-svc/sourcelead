@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -67,6 +69,26 @@ public class CandidateTimelineActivityRestController {
 			    case "EXPENSES": 
 			    	activity.setActionIconClass(Constants.EXPENSES_ACTION_ICON_CLASS);
 			        break;
+			}
+			
+			long diff = commonUtil.currentDate().getTime() - activity.getCreatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder timeBuilder = new StringBuilder();
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				activity.setActionTimeStr(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+			}else if(diffDays == 0 && diffHours == 0){
+				activity.setActionTimeStr(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+			}else if(diffDays == 0){
+				activity.setActionTimeStr(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+			}else if(diffDays < 7){
+				activity.setActionTimeStr(timeBuilder.append(diffDays).append( " days ").append(diffHours).append(" hours ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(activity.getCreatedDate());
+				activity.setActionTimeStr(commonDateFormat.toString());
 			}
 			
 			
