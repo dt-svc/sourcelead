@@ -55,7 +55,7 @@ function errRemoveVendorContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Based Bill</h2>
+			<h2>Custom Bill</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Custom Based Bill</div>
 	</section>
@@ -189,7 +189,7 @@ function errRemoveVendorContact(){
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot select-field">
 		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="REPLACEROWIDDescription"
-			data-validation="required" field-name="Description"></textarea>
+			data-validation="validate_length length1-100" field-name="Description"></textarea>
 	</div>
 </div>
 
