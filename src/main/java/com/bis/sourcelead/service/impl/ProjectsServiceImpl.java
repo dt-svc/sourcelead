@@ -85,6 +85,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceImpl.class);
 
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -634,7 +636,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 StringBuilder fromNameSB = new StringBuilder();
 		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -2147,7 +2149,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values

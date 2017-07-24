@@ -238,7 +238,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	 }
 }
 
-private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
+@Override
+public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
 	
 	 
 	
