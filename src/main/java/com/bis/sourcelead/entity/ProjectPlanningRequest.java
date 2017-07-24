@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,6 +21,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_REQUREST")
@@ -100,11 +104,21 @@ public class ProjectPlanningRequest implements Serializable{
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
 	private Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "projectPlanningRequestId")
+	private Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList;
+	
 	@Transient
     private String requestedDateStr;
 	
+	@Transient
+	@JsonProperty
+    private Long approverId;
+	
+	@Transient
+	@JsonProperty
+	List<ProjectPlanningResourceRequest> resourceRequestList;
     
-    
+
     
     public Long getId() {
 		return id;
@@ -292,5 +306,36 @@ public class ProjectPlanningRequest implements Serializable{
 		this.requestedDateStr = requestedDateStr;
 	}
 
-	
+
+	public Set<ProjectPlanningNewResourceRequest> getProjectPlanningNewResourceRequestList() {
+		return projectPlanningNewResourceRequestList;
+	}
+
+	public void setProjectPlanningNewResourceRequestList(
+			Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) {
+		this.projectPlanningNewResourceRequestList = projectPlanningNewResourceRequestList;
+	}
+
+	public Long getApproverId() {
+		if(approverUser != null && approverUser.getId() != null){
+			approverId = approverUser.getId();
+		}
+		return approverId;
+	}
+
+	public void setApproverId(Long approverId) {
+		this.approverId = approverId;
+	}
+
+	public List<ProjectPlanningResourceRequest> getResourceRequestList() {
+		resourceRequestList = new ArrayList<>();
+		if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
+			resourceRequestList.addAll(projectPlanningResourceRequestList);
+		}
+		return resourceRequestList;
+	}
+
+	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
+		this.resourceRequestList = resourceRequestList;
+	}
 }

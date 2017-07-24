@@ -11,4 +11,8 @@ public interface ProjectPlanningRequestDao {
 	List<ProjectPlanningRequest> getProjectPlanningRequestByProjectId(Long projectId) throws Exception;
 	
 	Integer getProjectPlanningRequestCountByProjectId(Long projectId) throws Exception;
+	
+	ProjectPlanningRequest getProjectPlanningRequestByRequestUUID(String requestUUID) throws Exception;
+	
+	ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception;
 }

@@ -28,12 +28,16 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
-	@Column(name = "ROLE")
-	private String role;
+	@Column(name = "ROLE_NAME")
+	private String roleName;
 	
 	@Column(name = "OTHER_ROLE")
 	private String otherRole;
     
+	 @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ROLE_ID")
+  	private Roles roleId;
+	 
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
   	private ProjectPlanningRequest projectPlanningRequestId;
@@ -48,13 +52,19 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
   	private Integer maxExperience;
     
     @Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
-    private Double skills;
+    private String skills;
     
     @Column(name = "BILL_RATE")
    	private String billRate;
     
     @Column(name = "PAY_RATE")
    	private String payRate;
+    
+    @Column(name = "RATE_CURRENCY")
+   	private String rateCurrency;
+    
+    @Column(name = "RATE_TYPE")
+   	private String rateType;
     
     @Column(name = "START_DATE")
    	private Date startDate;
@@ -99,12 +109,20 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 		this.id = id;
 	}
 
-	public String getRole() {
-		return role;
+	public String getRoleName() {
+		return roleName;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public Roles getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Roles roleId) {
+		this.roleId = roleId;
 	}
 
 	public String getOtherRole() {
@@ -147,11 +165,11 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 		this.maxExperience = maxExperience;
 	}
 
-	public Double getSkills() {
+	public String getSkills() {
 		return skills;
 	}
 
-	public void setSkills(Double skills) {
+	public void setSkills(String skills) {
 		this.skills = skills;
 	}
 
@@ -169,6 +187,22 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 
 	public void setPayRate(String payRate) {
 		this.payRate = payRate;
+	}
+	
+	public String getRateCurrency() {
+		return rateCurrency;
+	}
+
+	public void setRateCurrency(String rateCurrency) {
+		this.rateCurrency = rateCurrency;
+	}
+
+	public String getRateType() {
+		return rateType;
+	}
+
+	public void setRateType(String rateType) {
+		this.rateType = rateType;
 	}
 
 	public Date getStartDate() {

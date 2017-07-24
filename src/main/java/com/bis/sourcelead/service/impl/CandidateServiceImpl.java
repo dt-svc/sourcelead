@@ -96,8 +96,6 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	CandidateEducationService candidateEducationService;
@@ -150,6 +148,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
 	private ProjectsService projectsService;
+    
+    @Autowired
+    OrgLocationService orgLocationService;
     
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1220,7 +1221,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			StringBuilder sb = new StringBuilder();
 			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 			candidate.setEmail(candidate.getEmail());
+
 			candidate.setCandidateUpdateDateToString(dateFormat.format(candidate.getUpdatedDate()));
+
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());

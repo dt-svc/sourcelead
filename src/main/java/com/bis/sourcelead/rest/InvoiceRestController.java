@@ -996,6 +996,7 @@ public class InvoiceRestController {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+
 		 String createdDate = (dateFormat.format(invoice.getCreatedDate()));
 		 String dueDate = (dateFormat.format(invoice.getDueDate()));
 		 

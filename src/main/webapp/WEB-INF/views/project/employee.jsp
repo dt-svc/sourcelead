@@ -1181,8 +1181,16 @@ function resourceRequestsTab(){
 	    			var report = json[i];
 	    			
 	    			result = result + '	         <tr>';
-	    			result = result + '	         	<td><div><a href="#">'+report.requestId+'</a></div></td>';
-		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
+	    			if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
+						if(report.requestType == 'Associate Request'){
+							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+						}else{
+						
+						}
+	    			}else{
+	    				result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';
+	    			}
+	    			result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';
