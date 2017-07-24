@@ -491,7 +491,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
 	    result = result +' <th>Associate</th>';
-	    result = result +' <th>Description</th>;'
+	    result = result +' <th>Description</th>';
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate Hourly</th>';
 	    result = result +' <th>Total Hours</th>';
