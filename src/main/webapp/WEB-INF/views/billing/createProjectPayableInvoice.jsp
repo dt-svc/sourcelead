@@ -411,7 +411,7 @@ function populateInlineItemsGrid(data){
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
         result = result +' <td colspan="5"></td>';
-        result = result +'<td><strong>Total</strong></td>';
+        result = result +'<td><strong>Sub Total</strong></td>';
         result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
         result = result +' </tfoot> ';
