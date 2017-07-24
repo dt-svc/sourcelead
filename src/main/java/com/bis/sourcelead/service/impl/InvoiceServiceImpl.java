@@ -484,7 +484,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
-		
+		if(invoice.getProjectID() !=null){
+			parentInvoice.setProjectID(invoice.getProjectID());
+		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		parentInvoice.setCreatedDate(invoice.getCreatedDate());
 		parentInvoice.setCreatedBy(invoice.getCreatedBy());
