@@ -6,14 +6,6 @@
 
 <meta name="format-detection" content="telephone=no">
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
-
 <%-- 
      @author : p.sarath kumar
      this script is for candidate Activation

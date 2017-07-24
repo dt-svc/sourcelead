@@ -89,22 +89,10 @@ function candidateCommentsList(candidateId,submissionId){
          
       });
 
-	
-	
-	
-	
-	
-	 
 	/* result  = result + '<div class="project_tabs_inn_head">';
 	result  = result + '              <input class="vendorfild" type="text"><i class="fa fa-search"></i> </div>';
 	result  = result + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 	 */
-	
-	
-	
-
-    
-    
     
 }
 </script>
