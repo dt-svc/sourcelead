@@ -23,6 +23,10 @@
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesList"></div>
+   <div class="modal-footer">
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" >Back to list</button>
+   </div>
+					
  </div>
 
 
@@ -81,6 +85,13 @@ function getRequestedAssociatesList(){
 				result = result +'<label class="col-md-4 control-label">Description :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label><strong>'+json.description+'</strong></label>  ';
+				result = result +' </div>';    
+				result = result +'</div>';
+				
+				result = result +'<div class="col-md-6">'; 
+				result = result +'<label class="col-md-4 control-label">Status :</label>';
+				result = result +'<div class="col-md-8">';
+				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
 				result = result +' </div>';    
 				result = result +'</div>';
 				

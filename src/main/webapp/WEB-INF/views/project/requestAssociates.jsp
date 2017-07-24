@@ -669,6 +669,7 @@ function getOrgLocationRoles(){
 <script>
 function getAssociatesFilter(){
 	
+	var projectUUID = '${projectUUID}';
 	var roles = [];
 	$('input:checkbox[name=roles]:checked').each(function() 
 		    {
@@ -708,7 +709,7 @@ function getAssociatesFilter(){
 	
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates, 
+	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID, 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);
