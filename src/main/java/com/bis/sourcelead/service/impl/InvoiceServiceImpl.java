@@ -1554,8 +1554,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
-				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
+				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
 			}
@@ -1582,9 +1581,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @param loginOrgCurrencyCode
 	 * @param billingRatePer
 	 * @param rateCurrencyType
+	 * @param invoiceLineItems 
 	 * @return float
 	 */
-	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType)
+	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType, InvoiceLineItems invoiceLineItems)
 	{
 		float hourlyRate = conversionUtil.getHourlyRate(billingAmount, billingRatePer);
 		float roundValue = 0;
@@ -1595,6 +1595,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		else {
 			roundValue = (float) (Math.round(hourlyRate * 100.0) / 100.0);
 		}
+		invoiceLineItems.setRate(String.valueOf(roundValue));
 		String[] split = totalHours.split(":");
 		int splitHours = Integer.parseInt(split[0]);
 		int hourminits = splitHours * 60;
