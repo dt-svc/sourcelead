@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+
+
 /**
  * 
  * @author Rajashekar
@@ -699,6 +701,10 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 	
+    public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+    public static final String HOLIDAY = "Holiday";
+    public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
+    public static final String WORK_FROM_HOME = "Work From Home";
     
 
 }
