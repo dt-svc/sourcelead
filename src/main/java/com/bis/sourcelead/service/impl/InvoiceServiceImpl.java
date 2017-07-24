@@ -271,6 +271,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setBillingAddress(null);
 		}
 		
+		if(jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))){
+			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
+		}
+		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
 			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
@@ -639,6 +643,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 						 invoiceLineItems.setAmount(jsonObj.getString(i+"amount"));
 					 }else{
 						 invoiceLineItems.setAmount(null);
+					 }
+					 if(null != jsonObj.getString(i+"Description") && !"".equalsIgnoreCase(jsonObj.getString(i+"Description"))){
+						 invoiceLineItems.setInlineDescription(jsonObj.getString(i+"Description"));
 					 }
 	              // As of Now we are not storing seperateInvoice status
 //					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
