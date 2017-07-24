@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -196,13 +197,13 @@ public class ExpensesController {
 		sessionData.setNav(Constants.MY_EXPENSES);
 		/*String expensesId = addExpensesService.getExpenseId();
 		model.addObject("ExpensesId", expensesId);*/
-		
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		Expenses expenses = null;
 		if(null != expenseId && !expenseId.isEmpty()){
 			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
-			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
+			expenses.setStartDateStr(dateFormat.format(expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
-				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+				expenses.setEndDateStr(dateFormat.format(expenses.getEndDate()));
 			}
 			
 			if(expenses.getCreatedBy()!= null){

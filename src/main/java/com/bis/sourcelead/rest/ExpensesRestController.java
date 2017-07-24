@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,6 +102,7 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus, startDate, endDate);
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		for(Expenses ex:expensesList){
 			if(null != ex.getProjectMembers())
 			{
@@ -108,11 +110,11 @@ public class ExpensesRestController {
 			}
 			if(null != ex.getStartDate())
 			{
-			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+			ex.setStartDateStr(dateFormat.format(ex.getStartDate()));
 			}
 			if(null != ex.getEndDate())
 			{
-				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+				ex.setEndDateStr(dateFormat.format(ex.getEndDate()));
 			}
 		}
 		resultJson = commonUtil.toJSON(expensesList);
@@ -208,13 +210,13 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesEntries> expensesEntriesList = expensesService.getExpensesEntries(expenseId);
-		
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		
 		for(ExpensesEntries exEnt:expensesEntriesList){
 
 			if(null != exEnt.getExpenseDate())
 			{
-				exEnt.setExpenseDateStr(Constants.DF_DMY.format(exEnt.getExpenseDate()));
+				exEnt.setExpenseDateStr(dateFormat.format(exEnt.getExpenseDate()));
 			}
 
 			if(null == exEnt.getExpenseIndList())
@@ -227,11 +229,11 @@ public class ExpensesRestController {
 					}
 					if(null != ex.getStartDate())
 					{
-						ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+						ex.setStartDateStr(dateFormat.format(ex.getStartDate()));
 					}
 					if(null != ex.getEndDate())
 					{
-						ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+						ex.setEndDateStr(dateFormat.format(ex.getEndDate()));
 					}
 				}
 				exEnt.setExpenseIndList(expensesList);
@@ -291,7 +293,7 @@ public class ExpensesRestController {
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus, startDate, endDate);
 		if(expensesList != null && expensesList.size() > 0){
 			for(Expenses ex:expensesList){
@@ -301,11 +303,11 @@ public class ExpensesRestController {
 				}
 				if(null != ex.getStartDate())
 				{
-					ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+					ex.setStartDateStr(dateFormat.format(ex.getStartDate()));
 				}
 				if(null != ex.getEndDate())
 				{
-					ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+					ex.setEndDateStr(dateFormat.format(ex.getEndDate()));
 				}
 			}
 
@@ -340,6 +342,7 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(loginUser.getId(), orgLoc.getId(), expenseStatus);
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		for(Expenses ex:expensesList){
 			if(null != ex.getProjectMembers())
 			{
@@ -347,11 +350,11 @@ public class ExpensesRestController {
 			}
 			if(null != ex.getStartDate())
 			{
-			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+			ex.setStartDateStr(dateFormat.format(ex.getStartDate()));
 			}
 			if(null != ex.getEndDate())
 			{
-				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+				ex.setEndDateStr(dateFormat.format(ex.getEndDate()));
 			}
 		}
 		resultJson = commonUtil.toJSON(expensesList);
@@ -364,13 +367,14 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesService.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(loginUser.getId(), orgLoc.getId(), expenseStatus);
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
-				expensesApproverHierarchy.setExpenseStartDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
-				expensesApproverHierarchy.setExpenseEndDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getEndDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseEndDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getEndDate()));
 			}else{
-				expensesApproverHierarchy.setExpenseStartDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
 			}
 			
 			if (null != expensesApproverHierarchy.getExpenseId()) {

@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -65,6 +66,9 @@ public class ExpensesApprovalRestController {
 	
 	@Autowired
 	private AddExpensesService addExpensesService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
@@ -120,10 +124,14 @@ public class ExpensesApprovalRestController {
 	
 	
 	@RequestMapping(value = "/getExpensesApprovalCategoryByExpenseId")
-	public String getExpensesApprovalCategoryByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId) throws Exception {
+	public String getExpensesApprovalCategoryByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId,@RequestParam(value="locationCode") String locationCode) throws Exception {
 		List<ExpensesEntries> expensesEntries = expensesEntriesService.getExpensesEntriesByExpenseId(Long.parseLong(expenseId));
+		
+		 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	        SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+		
 		for(ExpensesEntries expEntries:expensesEntries){
-			expEntries.setExpenseDateString(Constants.DMY.format(expEntries.getExpenseDate()));
+			expEntries.setExpenseDateString(formatter.format(expEntries.getExpenseDate()));
 		}
 		return commonUtil.toJSON(expensesEntries);
    }

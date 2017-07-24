@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.constants.Constants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -108,6 +109,7 @@ public class ProjectPlanningRequest implements Serializable{
 	private Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList;
 	
 	@Transient
+	@JsonProperty
     private String requestedDateStr;
 	
 	@Transient
@@ -117,6 +119,10 @@ public class ProjectPlanningRequest implements Serializable{
 	@Transient
 	@JsonProperty
 	List<ProjectPlanningResourceRequest> resourceRequestList;
+	
+	@Transient
+	@JsonProperty
+    private String projectName;
     
 
     
@@ -299,6 +305,9 @@ public class ProjectPlanningRequest implements Serializable{
 	}
 
 	public String getRequestedDateStr() {
+		if(createdDate != null){
+			requestedDateStr = Constants.DMY.format(createdDate);	
+		}
 		return requestedDateStr;
 	}
 
@@ -337,5 +346,16 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
 		this.resourceRequestList = resourceRequestList;
+	}
+
+	public String getProjectName() {
+		if(projectId != null && projectId.getId() != null){
+			projectName = projectId.getProjectName();
+		}
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 }

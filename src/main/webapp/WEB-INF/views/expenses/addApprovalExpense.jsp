@@ -504,10 +504,11 @@ function getMembersForSelectedProject(){
 <script>
 function getClientBasedOnSelectedProject(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	var projectId = document.getElementById("projectId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId,       
+	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId+"&locationCode="+locationCode,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);
@@ -537,10 +538,22 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEduUpdate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEduUpdate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+		  }
 		$("#projectStartDateExpensesId").datepicker("destroy");
 		$("#projectEndDateExpensesId").datepicker("destroy");
 		$('#projectStartDateExpensesId').datepicker({
-					dateFormat : 'dd-mm-yy',
+					dateFormat : finalDateFormatEduUpdate,
 					changeMonth : true,
 					changeYear : true,
 					minDate : projectStartDate,
@@ -551,7 +564,7 @@ function getClientBasedOnSelectedProject(){
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
-					dateFormat : 'dd-mm-yy',
+					dateFormat : finalDateFormatEduUpdate,
 					changeMonth : true,
 					changeYear : true,
 					minDate : projectStartDate,
