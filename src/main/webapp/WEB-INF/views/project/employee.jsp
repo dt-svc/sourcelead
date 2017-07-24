@@ -1181,11 +1181,11 @@ function resourceRequestsTab(){
 	    			var report = json[i];
 	    			
 	    			result = result + '	         <tr>';
-	    			if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
-						if(report.requestType == 'Associate Request'){
+	    			if(report.requestType == 'Associate Request'){
+						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
 							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
 						}else{
-						
+							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    			}else{
 	    				result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';

@@ -258,6 +258,22 @@ public class ProjectsController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
     }
+    
+    
+    
+    @RequestMapping(value = "/viewResourceRequest")
+	public ModelAndView viewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    
+	    ModelAndView model = new ModelAndView();
+		model.addObject("projectUUID", projectUUID);
+		model.addObject("requestUUID",requestUUID);
+		
+		model.setViewName("project/viewResourceRequest");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+    }
+
 
 
 }
