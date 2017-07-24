@@ -6146,6 +6146,12 @@ text-decoration:line-through; color:#D84315;
 .textline-updated{
 color:#00a65a;
 }
+.table_custompadding tr td{
+	padding:2px 5px !important;
+}
+.table_custompadding div.inputCustom{
+	width: 205px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

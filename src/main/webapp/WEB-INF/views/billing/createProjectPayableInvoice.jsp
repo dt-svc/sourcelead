@@ -134,7 +134,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
         <div class="clearfix"></div>
         <!-- Drap and Drop Table Row -->
         <!-- Table starts here-->
-          <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">
+          <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">
             <div id="tableBody"></div>
         </div>
         <!-- Table Ends here-->
@@ -349,7 +349,7 @@ function populateInlineItemsGrid(data){
             result = result +' <th>Associate</th>';
             result = result +' <th>Description</th>;'
             result = result +' <th>SOW / PO</th>';
-            result = result +' <th>Rate</th>';
+            result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
             result = result +' <th>Amount</th>';
             result = result +' </tr>';
@@ -373,7 +373,7 @@ function populateInlineItemsGrid(data){
              result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
              result = result +'  <td>';
-             result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
+             result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
              result = result +'  </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -389,7 +389,7 @@ function populateInlineItemsGrid(data){
              result = result +'</div>';
              result = result +'</td>';
              result = result +'<td>';
-             result = result +'<div class="tbldata-dotdot-100">';
+             result = result +'<div class="tbldata-dotdot_80">';
              if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
                  result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required" field-name="Rate" onblur="totalHoursCalculateAmount('+i+');">'; 
              }else{
@@ -518,7 +518,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
-    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description">'+opt.inlineDescription+'</textarea>';
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description">'+opt.inlineDescription+'</textarea>';
     	 }else{
     		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="required" field-name="Description"></textarea>';
     	 }
@@ -542,7 +542,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<div class="tbldata-dotdot-100">';
+    	 result = result +'<div class="tbldata-dotdot_80">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
     		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate"  data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
