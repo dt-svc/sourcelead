@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -13,16 +14,16 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectPlanningRequestDao;
+import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Invoice;
-import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
 import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -39,6 +40,13 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	@Autowired
 	ProjectPlanningRequestDao projectPlanningRequestDao;
 	
+	@Autowired
+	RolesServiceImpl rolesServiceImpl;
+
+	@Autowired
+	ProjectPlanningResourceRequestDao projectPlanningResourceRequestDao;
+
+	
 	protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
@@ -47,7 +55,13 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	public void saveProjectPlanningRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,
 			String projectUUID,String saveType) throws JSONException, Exception {
 		
-		ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
+		ProjectPlanningRequest projectPlanningRequest  = null;
+		if(jsonObj.has("savedPlanningRequestUUID") && !"".equalsIgnoreCase(jsonObj.getString("savedPlanningRequestUUID"))){
+			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(jsonObj.getString("savedPlanningRequestUUID"));
+		}else{
+			projectPlanningRequest = new ProjectPlanningRequest();
+			projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST);
+		}
 		
 		if(jsonObj.has("requestId") && !"".equalsIgnoreCase(jsonObj.getString("requestId"))){
 			projectPlanningRequest.setRequestId(jsonObj.getString("requestId"));
@@ -91,9 +105,82 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		projectPlanningRequest.setCreatedDate(new Date());
 		projectPlanningRequest.setUpdatedDate(new Date());
 		
-		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest);
+		List<Long> resourceRequestIds = null;
+		if(projectPlanningRequest.getId() != null){
+			 resourceRequestIds = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestIdsByRequestId(projectPlanningRequest.getId());
+		}
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size());
+		projectPlanningRequest.setAllocatedResources(0);
+		
+		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
+		}else{
+			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+		}
+		
+		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
+		
+		if(null != resourceRequestIds && resourceRequestIds.size() > 0){
+			for(Long resourceRequestId : resourceRequestIds){
+				ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(resourceRequestId);
+				projectPlanningResourceRequestDao.deleteProjectPlanningResourceRequest(resourceRequest);
+			}
+		}
+		
+	}
+	
+	@Override
+	public void saveProjectNewResourceRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,String projectUUID, String saveType) throws JSONException, Exception {
+		ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
+		
+		if(jsonObj.has("requestId") && !"".equalsIgnoreCase(jsonObj.getString("requestId"))){
+			projectPlanningRequest.setRequestId(jsonObj.getString("requestId"));
+		}
+		
+		if(!isNullOrEmpty(projectUUID)){
+			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
+			projectPlanningRequest.setProjectId(projects);
+		}
+		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
+			projectPlanningRequest.setDescription(jsonObj.getString("description"));
+		}
+		if(jsonObj.has("approver") && !"".equalsIgnoreCase(jsonObj.getString("approver"))){
+			User approverUser = userDao.getUserById(Long.valueOf(jsonObj.getString("approver")));
+			projectPlanningRequest.setApproverUser(approverUser);
+			projectPlanningRequest.setApproverName(approverUser.getFullName());
+			
+		}
+		
+		if(jsonObj.has("totalResourcesValue") && !"".equalsIgnoreCase(jsonObj.getString("totalResourcesValue"))){
+			projectPlanningRequest.setRequestedResources(jsonObj.getInt("totalResourcesValue"));
+		}
+		
+		if(jsonObj.has("totalEstHours") && !"".equalsIgnoreCase(jsonObj.getString("totalEstHours"))){
+			projectPlanningRequest.setEstimatedHours(Double.valueOf(jsonObj.getString("totalEstHours")));
+		}
+		
+		if(jsonObj.has("totalEstBudget") && !"".equalsIgnoreCase(jsonObj.getString("totalEstBudget"))){
+			projectPlanningRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString("totalEstBudget")));
+		}
+		
+		if(jsonObj.has("estimatedBudgetCurrencyType") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudgetCurrencyType"))){
+			projectPlanningRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
+		}
+		
+		projectPlanningRequest.setOrgLocationId(orgLocations);
+		projectPlanningRequest.setRequestedUser(loginUser.getFullName());
+		projectPlanningRequest.setCreatedBy(loginUser);
+		projectPlanningRequest.setUpdatedBy(loginUser);
+		projectPlanningRequest.setStatus(Constants.RECORD_ACTIVE);
+		projectPlanningRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		projectPlanningRequest.setCreatedDate(new Date());
+		projectPlanningRequest.setUpdatedDate(new Date());
+		
+		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest);
+		projectPlanningRequest.setProjectPlanningNewResourceRequestList(projectPlanningNewResourceRequestList);
+//		projectPlanningRequest.setRequestedResources(projectPlanningNewResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
 		
 		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
@@ -106,10 +193,10 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		
 	}
 	
-	
-	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest) throws Exception {
+	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds) throws Exception {
 		
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
+		 List<Long> updatedResourceRequests = new ArrayList<Long>();
 		 
 		 String pattern = "dd-MM-yyyy";
 	     SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -119,6 +206,13 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		 for(int i=1;i<=maxRowCount;i++){
 			 if(jsonObj.has(i+"candidateId") && !isNullOrEmpty(jsonObj.getString(i+"candidateId"))){
 				 ProjectPlanningResourceRequest resourceRequest = new ProjectPlanningResourceRequest();
+				 
+				 if(jsonObj.has(i+"resourceRequestId") &&  null != jsonObj.getString(i+"resourceRequestId") && !"".equalsIgnoreCase(jsonObj.getString(i+"resourceRequestId"))){
+					 resourceRequest.setId(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+					 updatedResourceRequests.add(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+				 }
+				 
+				 
 				 Candidate candidate = new Candidate();
 				 candidate.setId(Long.valueOf(jsonObj.getString(i+"candidateId")));
 				 resourceRequest.setCandidateId(candidate);
@@ -141,6 +235,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 
 				 if(jsonObj.has(i+"billRate") && !isNullOrEmpty(jsonObj.getString(i+"billRate"))){
 					 resourceRequest.setBillRate(Double.valueOf(jsonObj.getString(i+"billRate")));
+				 }else{
+					 resourceRequest.setBillRate(null);
 				 }
 				 
 				 if(jsonObj.has(i+"billRateCurrency") && !isNullOrEmpty(jsonObj.getString(i+"billRateCurrency"))){
@@ -154,19 +250,27 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 if(jsonObj.has(i+"requestStartDate") && !isNullOrEmpty(jsonObj.getString(i+"requestStartDate"))){
 					 Date requestStartDate = format.parse(jsonObj.getString(i+"requestStartDate"));
 					 resourceRequest.setStartDate(requestStartDate);
+				 }else{
+					 resourceRequest.setStartDate(null);
 				 }
 				 
 				 if(jsonObj.has(i+"requestEndDate") && !isNullOrEmpty(jsonObj.getString(i+"requestEndDate"))){
 					 Date requestEndDate = format.parse(jsonObj.getString(i+"requestEndDate"));
 					 resourceRequest.setEndDate(requestEndDate);
+				 }else{
+					 resourceRequest.setEndDate(null);
 				 }
 				 
 				 if(jsonObj.has(i+"consultingType") && !isNullOrEmpty(jsonObj.getString(i+"consultingType"))){
 					 resourceRequest.setConsultingType(jsonObj.getString(i+"consultingType"));
+				 }else{
+					 resourceRequest.setConsultingType(null);
 				 }
 				 
 				 if(jsonObj.has(i+"estHours") && !isNullOrEmpty(jsonObj.getString(i+"estHours"))){
 					 resourceRequest.setEstimatedHours(Double.valueOf(jsonObj.getString(i+"estHours")));
+				 }else{
+					 resourceRequest.setEstimatedHours(null);
 				 }
 				 
 				 if(jsonObj.has("estimatedBudgetCurrencyType") && !isNullOrEmpty(jsonObj.getString("estimatedBudgetCurrencyType"))){
@@ -175,6 +279,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 
 				 if(jsonObj.has(i+"estBudget") && !isNullOrEmpty(jsonObj.getString(i+"estBudget"))){
 					 resourceRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString(i+"estBudget")));
+				 }else{
+					 resourceRequest.setEstimatedBudget(null);
 				 }
 				 
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
@@ -187,9 +293,89 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 }
 		 }
 		 
+		 
+		 if(null != projectPlanningRequest.getId()){
+			 updatedResourceRequests.retainAll(resourceRequestIds);
+			 resourceRequestIds.removeAll(updatedResourceRequests);
+		 }
+		 
 		 return resourceRequestSet;
 	}
 
+	
+	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest) throws Exception {
+		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
+		 String pattern = "dd-MM-yyyy";
+	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
+		 for(int i=1;i<=maxRowCount;i++){
+			 ProjectPlanningNewResourceRequest resourceRequest = new ProjectPlanningNewResourceRequest();
+			 
+			 if(jsonObj.has("noOfResources"+i) && !isNullOrEmpty(jsonObj.getString("noOfResources"+i))){
+				 resourceRequest.setNoOfResource(jsonObj.getInt("noOfResources"+i));
+			
+			 if(jsonObj.has("role"+i) && !isNullOrEmpty(jsonObj.getString("role"+i))){
+				 Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(jsonObj.getString("role"+i)));
+				 resourceRequest.setRoleId(roles);
+				 resourceRequest.setRoleName(roles.getDisplayName());
+			 }
+
+			 if(jsonObj.has("customRole"+i) && !isNullOrEmpty(jsonObj.getString("customRole"+i))){
+				 resourceRequest.setOtherRole(jsonObj.getString("customRole"+i));
+			 }
+			 if(jsonObj.has("min"+i) && !isNullOrEmpty(jsonObj.getString("min"+i))){
+				 resourceRequest.setMinExperience(jsonObj.getInt("min"+i));
+			 }
+			 if(jsonObj.has("max"+i) && !isNullOrEmpty(jsonObj.getString("max"+i))){
+				 resourceRequest.setMaxExperience(jsonObj.getInt("max"+i));
+			 }
+			 if(jsonObj.has("primarySkill"+i) && !isNullOrEmpty(jsonObj.getString("primarySkill"+i))){
+				 resourceRequest.setSkills(jsonObj.getString("primarySkill"+i));
+			 }
+			 
+			 if(jsonObj.has("currencyCode"+i) && !isNullOrEmpty(jsonObj.getString("currencyCode"+i))){
+				 resourceRequest.setRateCurrency(jsonObj.getString("currencyCode"+i));
+			 }
+			 if(jsonObj.has("billRate"+i) && !isNullOrEmpty(jsonObj.getString("billRate"+i))){
+				 resourceRequest.setBillRate(jsonObj.getString("billRate"+i));
+			 }
+			 if(jsonObj.has("payRate"+i) && !isNullOrEmpty(jsonObj.getString("payRate"+i))){
+				 resourceRequest.setPayRate(jsonObj.getString("payRate"+i));
+			 }
+			 if(jsonObj.has("rateType"+i) && !isNullOrEmpty(jsonObj.getString("rateType"+i))){
+				 resourceRequest.setRateType(jsonObj.getString("rateType"+i));
+			 }
+			 if(jsonObj.has("startDate"+i) && !isNullOrEmpty(jsonObj.getString("startDate"+i))){
+				 Date startDate = format.parse(jsonObj.getString("startDate"+i));
+				 resourceRequest.setStartDate(startDate);
+			 }
+			 if(jsonObj.has("endDate"+i) && !isNullOrEmpty(jsonObj.getString("endDate"+i))){
+				 Date endDate = format.parse(jsonObj.getString("endDate"+i));
+				 resourceRequest.setEndDate(endDate);
+			 }
+			 if(jsonObj.has("estimatedHours"+i) && !isNullOrEmpty(jsonObj.getString("estimatedHours"+i))){
+				 resourceRequest.setEstimatedHours(jsonObj.getDouble("estimatedHours"+i));
+			 }
+			 if(jsonObj.has("estimatedBudget"+i) && !isNullOrEmpty(jsonObj.getString("estimatedBudget"+i))){
+				 resourceRequest.setEstimatedBudget(jsonObj.getDouble("estimatedBudget"+i));
+			 }
+			 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
+				 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
+			 }
+			 if(jsonObj.has("consulting"+i) && !isNullOrEmpty(jsonObj.getString("consulting"+i))){
+				 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("consulting"+i));
+			 }
+			 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
+			 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
+			 resourceRequest.setCreatedBy(loginUser);
+			 resourceRequest.setUpdatedBy(loginUser);
+			 resourceRequest.setCreatedDate(new Date());
+			 resourceRequest.setUpdatedDate(new Date());
+			 resourceRequestSet.add(resourceRequest);
+			 }
+		 }
+		 return resourceRequestSet;
+	}
 	@Override
 	public List<ProjectPlanningRequest> getProjectPlanningRequestByProjectId(Long projectId) throws Exception {
 		return projectPlanningRequestDao.getProjectPlanningRequestByProjectId(projectId);
@@ -200,4 +386,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		return projectPlanningRequestDao.getProjectPlanningRequestCountByProjectId(projectId);
 	}
 
+	@Override
+	public ProjectPlanningRequest getProjectPlanningRequestByRequestUUID(String requestUUID) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(requestUUID);
+	}
+
+	@Override
+	public ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

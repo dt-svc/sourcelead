@@ -608,7 +608,7 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
-	public static final String RESOURCE_REQUEST_WAITING_FOR_APPROVAL = "Waithing For Approval";
+	public static final String RESOURCE_REQUEST_WAITING_FOR_APPROVAL = "Waiting For Approval";
 	public static final String RESOURCE_REQUEST_DRAFT = "Draft";
 	public static final String RESOURCE_REQUEST_APPROVED = "Approved";
 	public static final String RESOURCE_REQUEST_REJECTED = "Rejected";

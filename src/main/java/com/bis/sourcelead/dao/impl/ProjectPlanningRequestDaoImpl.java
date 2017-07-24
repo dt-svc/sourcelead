@@ -84,4 +84,33 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 			}
 			return count;
 	}
+
+	@Override
+	@Transactional
+	public ProjectPlanningRequest getProjectPlanningRequestByRequestUUID(String requestUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningRequest planningRequest left join fetch planningRequest.projectId left join fetch planningRequest.approverUser "
+				+ "where planningRequest.requestUUID = :requestUUID and planningRequest.status = '1' ";  
+		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setString("requestUUID", requestUUID).setCacheable(true).list();
+		ProjectPlanningRequest projectPlanningRequest = null;
+		if(projectPlanningRequestList != null && !projectPlanningRequestList.isEmpty()){
+			projectPlanningRequest = projectPlanningRequestList.iterator().next();
+		}
+		return projectPlanningRequest;
+	}
+
+	@Override
+	@Transactional
+	public ProjectPlanningRequest getProjectPlanningRequestById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningRequest planningRequest left join fetch planningRequest.projectId left join fetch planningRequest.approverUser "
+				+ "where planningRequest.id = :id and planningRequest.status = '1' ";  
+		List<ProjectPlanningRequest> projectPlanningRequestList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		ProjectPlanningRequest projectPlanningRequest = null;
+		if(projectPlanningRequestList != null && !projectPlanningRequestList.isEmpty()){
+			projectPlanningRequest = projectPlanningRequestList.iterator().next();
+		}
+		return projectPlanningRequest;
+	}
 }

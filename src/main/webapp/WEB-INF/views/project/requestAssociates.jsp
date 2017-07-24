@@ -10,6 +10,12 @@
     <script type="text/javascript">
 		window.onload = function () {
 			getRequestedAssociateListDiv();
+			var requestUUID = '${requestUUID}';
+			if(requestUUID != null && requestUUID != '' && requestUUID != 'undefined'){
+				loadRequestDetails();
+			}else{
+				getApproversList();
+			}
 		 };
    </script>
 
@@ -41,6 +47,7 @@
 	                </div>
                   </div>            
             </div>
+             <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
             <div class="form-group">
               <label class="col-md-3">Description <span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
@@ -52,10 +59,10 @@
               <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
-                <option selected value=''>--Select Approver--</option>
+                <%-- <option selected value=''>--Select Approver--</option>
 	                <c:forEach var="approver" items="${approversList}">
 	                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
-	                </c:forEach>
+	                </c:forEach> --%>
                 </select>
               </div>
             </div>
@@ -103,9 +110,9 @@
 		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidateId" />
 		
-		<!-- <input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDlineItemId" name="REPLACEROWIDlineItemId">
-		</input> -->
+		<input type="hidden" class="form-control input-sm"
+			id="REPLACEROWIDresourceRequestId" name="REPLACEROWIDresourceRequestId">
+		</input> 
 	</div>
 </div>
 
@@ -125,6 +132,8 @@
 			
 			<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDcandidatePayRateType" name="REPLACEROWIDcandidatePayRateType" />
+			
+			
 </div>
 
 
@@ -267,6 +276,216 @@ function emptyRecordsList(){
 	 
 	 $("#norecordsfound").empty();
      $("#norecordsfound").append(result);
+}
+</script>
+
+
+<script>
+function getApproversList(approverId){
+var sourceleadUrl ='${sourceleadUrl}';
+var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	$.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getResourceRequestApproversList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+	    		success: function(data) {
+	        	var json = JSON.parse(data);
+	     		var output = "";
+	     			output = output + "<option value=''>--Select Approver--</option>";
+	     		for (var i=0; i<json.length; i++)
+	     		{
+		     		var opt = json[i];
+		     		var fullname = '';
+		     		if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		     			fullname = opt.firstName+" "+opt.lastName;
+		     		}else{
+		     			fullname = opt.firstName;
+		     		}
+		     		
+		     		if(approverId != null && approverId != '' && approverId != 'undefined' && approverId == opt.id){
+		     			var selected = 'selected';
+		     			output = output + "<option value='" +opt.id+ "' "+selected+">"+fullname+" ("+opt.userType+")</option>";
+		     		}else{
+		     			output = output + "<option value='" +opt.id+ "'>"+fullname+" ("+opt.userType+")</option>";
+		     		} 
+	     		}
+	     		$("#approver").empty();
+	     		$("#approver").append(output);
+	     		$('#approver').trigger("chosen:updated");
+	     		
+	        	 
+	         }
+	 });
+}
+</script>
+
+<script>
+function loadRequestDetails(){
+	var requestUUID = '${requestUUID}';
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	$.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	         success: function(json) {
+	        	 $("#requestId").val(json.requestId);
+	        	 $("input[name = 'description']").val(json.description);
+	        	 getApproversList(json.approverId);
+	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
+	        	 
+	        	 loadResourceRequestsList(json.resourceRequestList,json.estimatedHours,json.estimatedBudget);
+	        	 
+	        	 
+	         }
+	 });
+	
+}
+</script>
+
+<script>
+function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBudget){
+	 for(var i=0; i<resourceRequestList.length; i++){
+		 var opt = resourceRequestList[i];
+		 
+		    var checkMaxTsRowNum = $("#maxTsRowNum").val();
+			var tbl = document.getElementById("addRequestTbl");
+			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+			
+			var associatesRowsCount = $("#associatesRowsCount").val();
+			var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
+			$("input[name = 'associatesRowsCount']").val(rowsCount + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divTsRow" + maxRowNum);
+			
+			var cell0 = row.insertCell(0);
+			var divTaskTd1Str = document.getElementById("divTaskTd1").innerHTML;
+			divTaskTd1Str = divTaskTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd1Str = divTaskTd1Str.replace(/PRICECALCULATION/g,("")); 
+			cell0.innerHTML = divTaskTd1Str;
+			
+			$('#'+maxRowNum+'candidateId').val(opt.requestedCandidateId);
+			$('#'+maxRowNum+'candidateName').html(opt.candidateName);
+			$('#'+maxRowNum+'candidateFullName').val(opt.candidateName);
+			$('#'+maxRowNum+'resourceRequestId').val(opt.id);
+			
+			
+		    var cell1 = row.insertCell(1);
+			var divTaskTd2Str = document.getElementById("divTaskTd2").innerHTML;
+			divTaskTd2Str = divTaskTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd2Str = divTaskTd2Str.replace(/PRICECALCULATION/g,("")); 
+			cell1.innerHTML = divTaskTd2Str;
+			
+			
+			if(opt.payRate != null && opt.payRate != '' && opt.payRate != 'undefined'){
+				$('#'+maxRowNum+'payRateCurrency').html(opt.payRateCurrency);
+				$('#'+maxRowNum+'payRate').html(opt.payRate);
+				$('#'+maxRowNum+'payRateType').html(opt.payRateType);	
+			}else{
+				$('#'+maxRowNum+'payRate').html("---------");
+			}
+			
+			$('#'+maxRowNum+'candidatePayRateCurrency').val(opt.payRateCurrency);
+			$('#'+maxRowNum+'candidatePayRate').val(opt.payRate);
+			$('#'+maxRowNum+'candidatePayRateType').val(opt.payRateType);
+			
+			var cell2 = row.insertCell(2);
+			var divTaskTd3Str = document.getElementById("divTaskTd3").innerHTML;
+			divTaskTd3Str = divTaskTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd3Str = divTaskTd3Str.replace(/PRICECALCULATION/g,("")); 
+			cell2.innerHTML = divTaskTd3Str;
+			
+			$('#'+maxRowNum+'billRateCurrency').val(opt.billRateCurrency);
+			$('#'+maxRowNum+'billRate').val(opt.billRate);
+			$('#'+maxRowNum+'billRateRateType').val(opt.billRateType);
+			
+			
+			var startDateText = "";
+			var cell3 = row.insertCell(3);
+			startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="'+maxRowNum+'requestStartDate" >';
+			startDateText = startDateText+'</div>';
+			cell3.innerHTML = startDateText;
+			
+			
+			var endDateText = "";
+			var cell4 = row.insertCell(4);
+			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"  name="'+maxRowNum+'requestEndDate" >';
+			endDateText = endDateText+'</div>';
+			cell4.innerHTML = endDateText;
+			
+			
+			
+			$( "#"+maxRowNum+"sdate-input" ).datepicker({
+				  changeMonth: true,
+			      changeYear: true,
+			      dateFormat : 'dd-mm-yy',
+			      minDate : 0,
+				  onSelect : function(selected) {
+					  var id = $(this).attr('id');
+					  var rowId = id.split("sdate-input")[0];
+					  var dt = toDate("#"+rowId+"sdate-input");
+					  dt.setDate(dt.getDate() + 1);
+					  $("#"+rowId+"edate-input").datepicker("option", "minDate", dt);
+					  getEstimatedHours(rowId);
+			 	  }
+			    });
+			
+			$( "#"+maxRowNum+"edate-input" ).datepicker({
+				  changeMonth: true,
+			      changeYear: true,
+			      dateFormat : 'dd-mm-yy',
+			      minDate : 0,
+				  onSelect : function(selected) {
+					  var id = $(this).attr('id');
+					  var rowId = id.split("edate-input")[0];
+					   var dt = toDate("#"+rowId+"edate-input");
+						dt.setDate(dt.getDate() - 1);
+						$("#"+rowId+"sdate-input").datepicker("option", "maxDate", dt);
+						getEstimatedHours(rowId)
+			 	  }
+			    });
+			
+			
+			var cell5 = row.insertCell(5);
+			var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
+			divTaskTd6Str = divTaskTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd6Str = divTaskTd6Str.replace(/PRICECALCULATION/g,("")); 
+			cell5.innerHTML = divTaskTd6Str;
+			
+			$('#'+maxRowNum+'consultingType').val(opt.consultingType);
+			
+			var cell6 = row.insertCell(6);
+			var divTaskTd7Str = document.getElementById("divTaskTd7").innerHTML;
+			divTaskTd7Str = divTaskTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd7Str = divTaskTd7Str.replace(/PRICECALCULATION/g,("")); 
+			cell6.innerHTML = divTaskTd7Str;
+			
+			$('#'+maxRowNum+'estHours').val(opt.estimatedHours);
+			
+			
+			var cell7 = row.insertCell(7);
+			var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
+			divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
+			cell7.innerHTML = divTaskTd8Str;
+			
+			$('#'+maxRowNum+'estBudget').val(opt.estimatedBudget);
+			
+			var cell8 = row.insertCell(8);
+			var divTaskTd9Str = document.getElementById("divTaskTd9").innerHTML;
+			divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
+			cell8.innerHTML = divTaskTd9Str;
+			
+			
+	 }
+	 
+	 $('#estimatedHrs').val(estimatedHours);
+	 $('#estimatedBudget').val(estimatedBudget);
+	 $("#norecordsfound").empty();
 }
 </script>
 
@@ -922,7 +1141,6 @@ function getEstimatedHours(rowId){
 	var startDate = document.getElementById(rowId+"sdate-input").value;
 	var endDate = document.getElementById(rowId+"edate-input").value;
 	if(startDate && endDate){
-		
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
