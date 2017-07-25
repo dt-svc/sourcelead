@@ -416,9 +416,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 <script>
 function prepareCategoryDivForApprovalPopUp(expenseId){
 	 var sourceleadUrl = '${sourceleadUrl}';
+	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId,       
+         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&locationCode="+locationCode,       
          success :function(data) {
         		var jsonList = JSON.parse(data);
         		var result = '';
@@ -596,10 +597,22 @@ function exportToPdf(type){
 
 <script>
 	$(function() {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatexpApprvList = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatexpApprvList = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatexpApprvList = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatexpApprvList = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatexpApprvList = 'yy-dd-mm'; 
+		  }
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatexpApprvList,
 			onSelect : function(selected) {
 				$("#filterEndDate").datepicker("option", "minDate", selected);
 			}
@@ -609,7 +622,7 @@ function exportToPdf(type){
 		$('#filterEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatexpApprvList,
 			onSelect : function(selected) {
 				$("#filterStartDate").datepicker("option", "maxDate", selected);
 			}

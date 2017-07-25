@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto.helper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +21,12 @@ public class ExpensesDTOConverter {
 		expensesDTO.setClientName(expenses.getClientName());
 		expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 		expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
+		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){
-			expensesDTO.setStartDate(Constants.DF_DMY.format(expenses.getStartDate()));	
+			expensesDTO.setStartDate(dateFormat.format(expenses.getStartDate()));	
 		}
 		if(expenses.getEndDate() != null){
-			expensesDTO.setEndDate(Constants.DF_DMY.format(expenses.getEndDate()));	
+			expensesDTO.setEndDate(dateFormat.format(expenses.getEndDate()));	
 		}
 		expensesDTO.setNoOfExpenses(expenses.getNoOfExpenses());
 		List<ExpensesEntriesDTO> eeDTOList = new ArrayList<>();

@@ -7,11 +7,33 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<style>
+.settPop .form-control {
+    height: auto !important; 
+}
+</style>
+
+
 <script type="text/javascript">
 	window.onload = function () {
 		getRequestedAssociatesList();
 	 };
  </script>
+ 
+<script type="text/javascript">
+	$(document).ready(function() {
+	    $(".glyphicon-edit").click(function(){
+			$(".settPop").slideDown(200);
+			$(".vendor_wrap_mask").fadeIn(200);
+		});
+		$(".settPop i, .btn-default").click(function(){
+			$(".settPop").slideUp(200);
+			$(".vendor_wrap_mask").fadeOut(200);
+		});
+	});		
+	
+</script> 
 
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
@@ -23,6 +45,9 @@
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesList"></div>
+   
+   <div class="vendor_wrap_mask"></div>
+   <div id="rejectedReasonDiv"></div>
    <div class="modal-footer">
    <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
    </div>
@@ -155,9 +180,8 @@ function getRequestedAssociatesList(){
 						 estimatedBudget = '-----';
 					 }
 					 
-					
 					 
-					 result = result +'<tr>';
+					    result = result +'<tr>';
 					    
 					    result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateName+'">'+opt.candidateName+'</div>';
@@ -191,12 +215,12 @@ function getRequestedAssociatesList(){
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
 						result = result +'</td>';
 						
-						result = result +'<td>';
-						if(json.requestStatus != 'Approved'){
-			    			result = result + '<i class="fa fa-check text-success" alt="Approve" title="Approved"></i>&nbsp;|&nbsp;';
-				    		result = result + '<i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i>';
+						result = result +'<td id="rejection'+opt.requestUUID+'">';
+						if(opt.resourceStatus == null){
+			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate();"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>&nbsp;|&nbsp;';
+				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></a></i>';
 			    		}else{
-			    			result = result + '<b>'+json.requestStatus+'</b>';
+			    			result = result + ''+opt.resourceStatus+'';
 			    		}
 						result = result +'</td>';
 						
@@ -209,12 +233,141 @@ function getRequestedAssociatesList(){
 					
 				$("#requestedAssociatesList").empty();  
 			    $("#requestedAssociatesList").append(result);
-				
-        	 
-        	
         	 
          }
  });
 	
 }
 </script>
+
+<script>
+function rejectAssociate(requestUUID,candidateName){
+	
+	var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '	<div id="loading"></div>';
+	result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
+	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
+	result = result + '	<h3>Associate Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result + '		<div class="clearfix">  ';
+	result = result + '		<div class="col-md-12">  ';
+	result = result + '		  <label class="col-md-2 noPad" for="Candidate Name">Name :</label> ';
+	result = result + '		  <label class="col-md-8 paddingRight">'+candidateName+'</label> ';
+	result = result + '		</div>  ';
+
+	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+	result = result + '			<span class="hidden"></span> </div>  ';
+	result = result + '		</div>';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="button" value="Save" id="submit_rejectedReason"  onclick="saveRejectAssociate(\''+requestUUID+'\');" class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRejectedReason();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#rejectedReasonDiv").empty();
+    $("#rejectedReasonDiv").append(result);
+    
+    $(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function cancelRejectedReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function acceptAssociate(){
+}
+</script>
+
+<script>
+function saveRejectAssociate(requestUUID){
+	
+	if ($('#rejectedReason_form').validate(false, validationSettings)){ 
+	  	
+		var frm = $('#rejectedReason_form').serializeFormJSON();
+		var jsonData = JSON.stringify(frm);
+		
+	    var form = $('#rejectedReason_form')[0];
+	    var formData = new FormData(form);
+	  	formData.append("json",jsonData)
+	  	
+	  	
+        var sourceleadUrl ='${sourceleadUrl}';
+      
+        $("#submit_rejectedReason").attr("disabled", "disabled");
+		
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 	 $.ajax({
+	 		    type : "POST",
+	    	    data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+		        processData: false,
+		        contentType:false, 
+	    	    dataType : 'json',
+		    	url: sourceleadUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(result) {
+		        	cancelRejectedReason();
+		        	$("#rejection"+requestUUID).html("<span>Rejected</span>")
+		        	$("#loading").removeAttr("style"); 
+		        },
+		    }); 
+      return true; 
+		
+	}else{
+		return false;
+	  }
+	
+	  $('body').on('blur', '#rejectedReason_form', function() {
+	   		$("#rejectedReason_form").showHelpOnFocus();
+	   		$("#rejectedReason_form").validateOnBlur(false, validationSettings);
+	   	});
+	
+}
+</script>
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+
+        
+</script>
+  
