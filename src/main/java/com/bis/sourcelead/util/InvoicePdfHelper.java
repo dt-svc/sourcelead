@@ -49,6 +49,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -97,37 +98,6 @@ public class InvoicePdfHelper {
 		
 		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + ".pdf");
 		if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
-/*		//StringBuilder fileSB = new StringBuilder();
-		Document document = new Document();
-		//File invoiceFile = File.createTempFile(fileSB.append(org.getOrgName()).append(invoice.getInvoiceId()).toString(),".pdf");
-		invoiceFile.setReadable(true);
-		FileOutputStream os = new FileOutputStream(invoiceFile);
-		try {
-			PdfWriter.getInstance(document, os);
-			document.open();
-			// save image file in pdf
-			document = addLogoToPdfFile(document, org,orgLocation);
-			Paragraph p;
-			p= new Paragraph("Bill", font12b);
-		        p.setAlignment(Element.ALIGN_CENTER );
-		        document.add(p);
-			p = new Paragraph("Billing Id :" + invoice.getInvoiceId(), font10);
-			p.setAlignment(Element.ALIGN_RIGHT);
-			document.add(p);
-			String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
-			p = new Paragraph("Billing Date :" + createdDate, font10);
-			p.setAlignment(Element.ALIGN_RIGHT);
-			document.add(p);
-			if(null != invoice.getPaymentFrequency()){
-			p = new Paragraph("Payment Terms :" + invoice.getPaymentFrequency(), font10);
-			p.setAlignment(Element.ALIGN_RIGHT);
-			document.add(p);
-			}
-			String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
-			p = new Paragraph("Due Date :" + dueDate, font10);
-			p.setAlignment(Element.ALIGN_RIGHT);
-			document.add(p);*/
-			
 			Document document = new Document();
 			invoiceFile.setReadable(true);
 			FileOutputStream os = new FileOutputStream(invoiceFile);
@@ -233,35 +203,6 @@ public class InvoicePdfHelper {
 				}
 
 				document.add(tableq);
-				
-//			PdfPTable table = new PdfPTable(2);
-//			table.setWidthPercentage(100);
-//			OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());
-//			StringBuilder address = new StringBuilder();
-//			if (null != orgLocation.getCity()) {
-//				address.append(orgLocation.getCountry()).append(orgLocation.getState()).append(orgLocation.getCity()).toString();
-//			}
-//			else if (null != orgLocation.getState()) {
-//				address.append(orgLocation.getCountry()).append(orgLocation.getState()).toString();
-//			}
-//			else {
-//				address.append(orgLocation.getCountry()).toString();
-//			}
-//			PdfPCell from = getAddress("Billing From:", user.getFullName(), user.getEmail(), user.getMobilePhone(), orgLocation.getOrgLocationName(), address.toString());
-//			table.addCell(from);
-//			StringBuilder clientAddress = new StringBuilder();
-//			if (null != orgRel.getResponderLocationId().getCity()) {
-//				clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(orgRel.getResponderLocationId().getState()).append(orgRel.getResponderLocationId().getCity()).toString();
-//			}
-//			else if (null != orgRel.getResponderLocationId().getState()) {
-//				clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(orgRel.getResponderLocationId().getState()).toString();
-//			}
-//			else {
-//				clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();
-//			}
-//			PdfPCell to = getAddress("Billing To:", invoice.getContactUser().getFullName(), invoice.getContactUser().getEmail(), invoice.getContactUser().getMobilePhone(), orgRel.getResponderLocationId().getOrgLocationName(), clientAddress.toString());
-//			table.addCell(to);
-//			document.add(table);
 			
 				PdfPTable table = new PdfPTable(2);
 				table = new PdfPTable(7);
@@ -380,114 +321,6 @@ public class InvoicePdfHelper {
 
 				document.add(table);
 				document.add(Chunk.NEWLINE);
-			
-			
-			
-		   /* PdfPTable table = new PdfPTable(6);
-			table.setWidthPercentage(100);
-			table.setSpacingBefore(10);
-			table.setSpacingAfter(10);
-			table.setWidths(new int[] { 3, 5, 5, 3, 3, 3 });
-			table.addCell(getHeaderCell("Associate Id", Element.ALIGN_CENTER, font12b));
-			table.addCell(getHeaderCell("Associate Name", Element.ALIGN_CENTER, font12b));
-			table.addCell(getHeaderCell("Date", Element.ALIGN_CENTER, font12b));
-			table.addCell(getHeaderCell("Rate", Element.ALIGN_CENTER, font12b));
-			table.addCell(getHeaderCell("Total Hours", Element.ALIGN_CENTER, font12b));
-			table.addCell(getHeaderCell("Total", Element.ALIGN_CENTER, font12b));
-			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
-
-			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				if(invoiceLineItems.getCandidate() !=null){
-					Employees employee = null;
-						if(invoiceLineItems.getCandidate().getConsultantUser() != null){
-						 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
-						}
-					if(employee != null){
-						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
-							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
-						}else{
-							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-						}
-					}else{
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-					}
-				}else{
-					if(invoiceLineItems.getUser() !=null){
-						table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
-					}
-					else{
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-					}
-				}
-			
-				StringBuffer name = new StringBuffer();
-				
-				if (null != invoiceLineItems.getCandidate()) {
-					if (invoiceLineItems.getCandidate().getFirstName() !=null && invoiceLineItems.getCandidate().getLastName() != null) {
-						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
-					}else {
-						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
-					}
-				}else{
-					if(invoiceLineItems.getUser() !=null){
-						table.addCell(getCell(name.append(invoiceLineItems.getUser().getFirstName()).append(" ").append(invoiceLineItems.getUser().getLastName()).toString(), Element.ALIGN_CENTER, font10));
-					}else{
-						table.addCell(getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
-					}
-				}
-				
-				StringBuffer startAndEndDate = new StringBuffer();
-				if (null != invoiceLineItems.getStartDate()
-						&& null != invoiceLineItems.getEndDate()) {
-					String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-					String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
-					table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_CENTER, font10));
-				}
-				else if (null != invoiceLineItems.getStartDate()) {
-					String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-					table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
-				}
-				else {
-					table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_CENTER, font10));
-				}
-				if (null != invoiceLineItems.getRate()
-						&& !"".equalsIgnoreCase(invoiceLineItems.getRate())) {
-					table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_CENTER, font10));
-				}
-				else {
-					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-				}
-				if (null != invoiceLineItems.getTotalHours()
-						&& !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())) {
-					table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_CENTER, font10));
-				}
-				else {
-					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-				}
-				if (null != invoiceLineItems.getAmount()
-						&& !"".equalsIgnoreCase(invoiceLineItems.getAmount())) {
-					table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_CENTER, font10));
-				}
-				else {
-					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
-				}
-			}
-			
-			 PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
-			 	cell.setBorder(PdfPCell.NO_BORDER);
-				cell.setBorder(PdfPCell.NO_BORDER);
-				cell.setBorder(PdfPCell.NO_BORDER);
-				cell.setBorder(PdfPCell.NO_BORDER);
-	            table.addCell(cell);
-				table.addCell(cell);
-				table.addCell(cell);
-				table.addCell(cell);
-				table.addCell(getCell("Sub Total", Element.ALIGN_CENTER, font10b));
-				table.addCell(getCell(" " + countryCurrency  +invoice.getSubTotal(), Element.ALIGN_CENTER, font10b));
-			
-			document.add(table);*/
-			
-			
 			
 				PdfPTable table2 = new PdfPTable(2);
 				table2.setWidthPercentage(100);
@@ -978,7 +811,7 @@ public class InvoicePdfHelper {
 		Paragraph p = new Paragraph(value, font);
 		p.setAlignment(alignLeft);
 		cell.addElement(p);
-		cell.setBackgroundColor(BaseColor.DARK_GRAY);
+		cell.setBackgroundColor(new BaseColor(30, 144, 255));
 		return cell;
 	}
 	
