@@ -188,7 +188,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 }else{
 			 candidateName = sb2.append(candidate.getFirstName()).toString();
 		 }
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setToEmail(candidate.getEmail());
 		 emailMessage.setFromName(userName);
 		 emailMessage.setFromEmail(user.getEmail());

@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+
+
 /**
  * 
  * @author Rajashekar
@@ -183,6 +185,9 @@ public class Constants {
 	public static final String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
 	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
 	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
+	public static final String MSA_CONTRACT_FINALIZED = "MSAFinalizeEmail";
+	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
+	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -698,6 +703,10 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 	
+    public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+    public static final String HOLIDAY = "Holiday";
+    public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
+    public static final String WORK_FROM_HOME = "Work From Home";
     
 
 }

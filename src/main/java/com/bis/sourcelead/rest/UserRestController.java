@@ -993,7 +993,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.GET)
+		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
 		 }
 		 
@@ -1113,7 +1113,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	                    headers.add("X-Password", jsonObject.getString("password"));
 	                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	                    HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
 	                     int status = response.getStatusCode().value();
 
 					 if(status == HttpServletResponse.SC_OK){

@@ -581,7 +581,7 @@
 	                     <td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td>
 	                     </tr>
                 </c:forEach>
-          <tr id="divTaxTsRow0">
+          <tr id="divTaxRow0">
           </tr>
           </tbody>
           </table>

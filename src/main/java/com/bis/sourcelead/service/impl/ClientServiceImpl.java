@@ -80,6 +80,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class ClientServiceImpl implements ClientService{
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	@Autowired
 	private OrgService orgService;
@@ -1144,7 +1146,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
-			 emailMessage.setFromEmail("qa@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName("Sourcelead");
@@ -1259,7 +1261,7 @@ public class ClientServiceImpl implements ClientService{
 				 emailMessage.setLastName(orgSpoc.getOwnerUser().getLastName());	 
 			 }
 			 emailMessage.setToEmail(orgSpoc.getOwnerUser().getEmail());
-			 emailMessage.setFromEmail("qa@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 StringBuilder emailMsgBuilder = new StringBuilder();
 			 emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());

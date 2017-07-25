@@ -377,11 +377,11 @@ function getOrgName(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	
-	$( "#orgName" ).val( '' );
+	/* $( "#orgName" ).val( '' ); */
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
-	$("#webSite" ).val('');
+	/* $("#webSite" ).val(''); */
 	
 	$("#orgCountry").val('');
 	$("#orgState").val('');
