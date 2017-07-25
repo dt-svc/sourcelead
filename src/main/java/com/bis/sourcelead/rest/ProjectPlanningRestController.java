@@ -380,6 +380,10 @@ public class ProjectPlanningRestController {
 	    		 ProjectPlanningResourceRequest projectPlanningResourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(requestUUID);
 	    		 projectPlanningResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
 	    		 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(projectPlanningResourceRequest);
+	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningResourceRequest.getProjectPlanningRequestId();
+	    		 Integer allocatedResouresCount = projectPlanningRequest.getAllocatedResources()+1;
+	    		 projectPlanningRequest.setAllocatedResources(allocatedResouresCount);
+	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
 	    	 }
 		     return "sucess";
 	    }
@@ -390,11 +394,17 @@ public class ProjectPlanningRestController {
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_APPROVED);
-	    		 Set<ProjectPlanningResourceRequest> resourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
-	    		 for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList){
-	    				 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
-		    			 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
-	    		 }
+	    		
+	    		if(projectPlanningRequest.getRequestType().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST)){
+	    			Set<ProjectPlanningResourceRequest> resourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+		    		 for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList){
+		    				 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
+			    			 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
+		    		 }
+		    		 projectPlanningRequest.setAllocatedResources(resourceRequestList.size());
+	    		}else{
+	    			
+	    		}
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
 	    	 }
 		     return "sucess";

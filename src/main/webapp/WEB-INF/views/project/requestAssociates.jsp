@@ -341,7 +341,7 @@ function loadRequestDetails(){
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
 	        	 
-	        	 loadResourceRequestsList(json.resourceRequestList,json.estimatedHours,json.estimatedBudget);
+	        	 loadResourceRequestsList(json.resourceRequestList);
 	        	 loadApprovedResourceRequestsList(json.resourceRequestList,json.requestStatus);
 	        	 
 	         }
@@ -472,7 +472,10 @@ function loadApprovedResourceRequestsList(resourceRequestList,requestStatus){
 
 <script>
 function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBudget){
-	 for(var i=0; i<resourceRequestList.length; i++){
+	 var estimatedHours = 0;
+	 var estimatedBudget = 0;
+	 
+	for(var i=0; i<resourceRequestList.length; i++){
 		 var opt = resourceRequestList[i];
 		    if(opt.resourceStatus == null || opt.resourceStatus == 'Rejected'){
 			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
@@ -499,7 +502,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				$('#'+maxRowNum+'candidateFullName').val(opt.candidateName);
 				$('#'+maxRowNum+'resourceRequestId').val(opt.id);
 				
-				if(opt.resourceStatus != 'Approved'){
+				if(opt.resourceStatus != 'Approved' && opt.rejectedReason != null){
 					document.getElementById(maxRowNum+"resourceRejection").style.display="";
 					$('#'+maxRowNum+'resourceRejectedReason').html("Rejected "+opt.rejectedReason);
 				}
@@ -613,8 +616,10 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
 				divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
 				cell8.innerHTML = divTaskTd9Str;
+				
+				estimatedHours = estimatedHours+parseInt(opt.estimatedHours);
+				estimatedBudget = estimatedBudget+parseInt(opt.estimatedBudget);
 	  }
-			
 	 }
 	 
 	 $('#estimatedHrs').val(estimatedHours);
