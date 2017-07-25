@@ -5197,3 +5197,15 @@ width: 48%; margin: 0px 0.5%;
 }
 
 /*    Org Chart CSS   */
+
+.timesheetAttachment .Cred, .project_wrap_table .Cred {
+    color: #ef3d3d !important;
+}
+td.tbldata-dotdot_50 {
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px; display: block; margin: 0 auto;
+}
+
+
+
+
+
