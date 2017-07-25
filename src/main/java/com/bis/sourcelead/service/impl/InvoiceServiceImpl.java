@@ -1437,6 +1437,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
   	  		  		        if(savedInvoice !=null){
