@@ -70,18 +70,19 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
 
 <script> 
  window.onload = function() {
-actionHistoryList();
+	 var userId = '${userId}';
+actionHistoryList(userId);
  };
 </script>
 
 <script>
-function actionHistoryList(){  
+function actionHistoryList(userId){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var userLoginLogoutSessionId ='${userLoginLogoutSessionId}';
 	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getRestActionHistoryList?userLoginLogoutSessionId="+userLoginLogoutSessionId,    
+           url: sourceleadUrl+"/getRestActionHistoryList?&userId="+userId,    
             success :function(json) {
             	
 			    	     $("#actionHistoryLoading").removeAttr("style");
@@ -90,7 +91,6 @@ function actionHistoryList(){
 	                	 result = result +"<table id='actionHistoryPagenation' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-// 	                     result = result +"    <th>User Id</th>";
 	                     result = result +"    <th>Action Name</th>";
 	                     result = result +"    <th>Action Performed</th>";
 	                     result = result +"    <th>Action Date</th>"; 
@@ -102,13 +102,7 @@ function actionHistoryList(){
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
-	                    	 
-// 	                    	    if(opt.userId != null && opt.userId !='' && opt.userId !='undefined'){
-// 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.userId+"'>"+opt.userId+"</span></div></td>";
-// 	                    	     }else{
-// 	                    	     result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>---</span></div></td>"; 
-// 	                    	     }
-	                    	    
+	                    	   
 	                    	    if(opt.actionName != null && opt.actionName !='' && opt.actionName !='undefined'){
 	                    		 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.actionName+"'>"+opt.actionName+"</div></td>";
 	                    	    }else{

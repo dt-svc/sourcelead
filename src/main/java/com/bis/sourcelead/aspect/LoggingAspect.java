@@ -15,13 +15,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
@@ -116,13 +114,13 @@ public class LoggingAspect {
 		logger.info("Method name : " + joinPoint.getSignature().getName());
 		logger.info("Method returned value  : " + result);
 
-		request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-				
-		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession)request.getSession().getAttribute("userLoginSession");
+		request = ((ServletRequestAttributes) RequestContextHolder
+				.getRequestAttributes()).getRequest();
+
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String methodName = joinPoint.getSignature().getName();
 		if(user != null)
-			actionHistoryService.saveActionHistory(methodName,userLoginSession);
+			actionHistoryService.saveActionHistory(methodName,user);
 
 	}
 

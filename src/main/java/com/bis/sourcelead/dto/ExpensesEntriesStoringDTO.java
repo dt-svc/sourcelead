@@ -21,6 +21,12 @@ public class ExpensesEntriesStoringDTO implements Serializable {
 	private String endDate;
 
     private List<ExpensesCategoryDTO> categoryList;
+    
+    private String locationsCode;
+    
+    private Long userId; 
+    
+    private String status;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -76,6 +82,36 @@ public class ExpensesEntriesStoringDTO implements Serializable {
 
 	public void setCategoryList(List<ExpensesCategoryDTO> categoryList) {
 		this.categoryList = categoryList;
+	}
+
+	public String getLocationsCode()
+	{
+		return locationsCode;
+	}
+
+	public void setLocationsCode(String locationsCode)
+	{
+		this.locationsCode = locationsCode;
+	}
+
+	public Long getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		this.status = status;
 	}
 
 

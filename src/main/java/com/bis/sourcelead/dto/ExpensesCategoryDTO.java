@@ -25,7 +25,7 @@ public class ExpensesCategoryDTO implements Serializable {
 	
 	private String currencyCode;
 	
-	private Float expenseAmount;
+	private Double expenseAmount;
 	
 	private String description;
 	
@@ -111,11 +111,11 @@ public class ExpensesCategoryDTO implements Serializable {
 		this.currencyCode = currencyCode;
 	}
 
-	public Float getExpenseAmount() {
+	public Double getExpenseAmount() {
 		return expenseAmount;
 	}
 
-	public void setExpenseAmount(Float expenseAmount) {
+	public void setExpenseAmount(Double expenseAmount) {
 		this.expenseAmount = expenseAmount;
 	}
 
