@@ -76,6 +76,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -183,13 +185,18 @@ public class ExpensesRestController {
 		expenseEntryDetailsDTO.setCurrencyCodeList(currencyCodeList);
 		return expenseEntryDetailsDTO;
 	}
-	
 	@RequestMapping(value = "/rest/storeExpenseEntryDetails")
-	public @ResponseBody String storeExpenseEntryDetails(@RequestBody ExpensesEntriesStoringDTO eesDTO, MultipartHttpServletRequest request) throws Exception
+	public @ResponseBody String storeExpenseEntryDetails(@RequestParam("entryForm") String entryForm, 
+			MultipartHttpServletRequest request) throws Exception
 	{
 		String result = "failure";
 		Expenses expenses = null;
 		ProjectMembers projMembers = null;
+		ExpensesEntriesStoringDTO eesDTO = null;
+		if(StringUtils.isNotEmpty(entryForm)){
+			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+	   	    eesDTO =  gson.fromJson(entryForm,ExpensesEntriesStoringDTO.class);
+		}
 		if(eesDTO != null){
 			OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(eesDTO.getLocationsCode());
 			User loginUser = userService.getUserById(eesDTO.getUserId());
@@ -319,22 +326,23 @@ public class ExpensesRestController {
 				if(StringUtils.isNotEmpty(edDTO.getPaymentMode())){
 					entries.setPaymentMode(PaymentModes.getNameByValue(edDTO.getPaymentMode()));
 				}
-				if(StringUtils.isNotEmpty(edDTO.getAmountType()) && edDTO.getExpenseAmount() != null){
+				if(StringUtils.isNotEmpty(edDTO.getCurrencyCode()) && edDTO.getExpenseAmount() != null){
 					Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-					if(!country.getCurrency().equalsIgnoreCase(edDTO.getAmountType())){
-						 Float amount = conversionUtil.convert(edDTO.getAmountType(),country.getCurrency(),edDTO.getExpenseAmount().floatValue());
+					if(!country.getCurrency().equalsIgnoreCase(edDTO.getCurrencyCode())){
+						 Float amount = conversionUtil.convert(edDTO.getCurrencyCode(),country.getCurrency(),edDTO.getExpenseAmount().floatValue());
 						 entries.setCurrencyType(country.getCurrency());
 						 entries.setAmount(amount);
 						}else{
-							entries.setCurrencyType(edDTO.getAmountType());
+							entries.setCurrencyType(edDTO.getCurrencyCode());
 							entries.setAmount(edDTO.getExpenseAmount().floatValue());
 						}
 				}
 				if(edDTO.getFileNames() != null && !edDTO.getFileNames().isEmpty()){
+					HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
 					for(String fileName : edDTO.getFileNames()){
-						HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
 						 ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
 		       		      final Map files = request.getFileMap();
+		       		      
 		       		      eedoc.setExpensesEntriesId(entries);
 		                   MultipartFile  multiFile = (MultipartFile)files.get(fileName);
 		                   if(multiFile != null && !multiFile.isEmpty()){
@@ -351,8 +359,8 @@ public class ExpensesRestController {
 		                       eedoc.setUpdatedBy(entries.getUpdatedBy());
 			                   eeDocList.add(eedoc);
 		                   }
-		                   entries.setExpensesEntryDocuments(eeDocList);
 					}
+					 entries.setExpensesEntryDocuments(eeDocList);
 					
 				}
 				entries.setCreatedDate(CommonUtil.currentDate());
