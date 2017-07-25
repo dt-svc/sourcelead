@@ -197,11 +197,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+startDate+'">'+startDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+endDate+'">'+endDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
