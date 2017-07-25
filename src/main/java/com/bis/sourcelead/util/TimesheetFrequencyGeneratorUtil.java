@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +33,9 @@ public  class TimesheetFrequencyGeneratorUtil {
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 				Date empStartDate = projects.getStartDate();
 				Date empEndDate = CommonUtil.currentDate();
-				DateFormat format = Constants.DF_STD_DMY;
+				//DateFormat format = Constants.DF_STD_DMY;
+				
+				SimpleDateFormat format=projects.getOrgLocationsId().getLocFullFormDateFormatter();
 				 
 				 try {
 					    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){

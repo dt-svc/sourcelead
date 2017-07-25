@@ -98,7 +98,7 @@ public class InvoicePdfHelper {
 	{
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		String countryCurrency  = countries.getCurrency();
-		
+		SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + ".pdf");
 		if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
 		//StringBuilder fileSB = new StringBuilder();
@@ -118,7 +118,7 @@ public class InvoicePdfHelper {
 			p = new Paragraph("Billing Id :" + invoice.getInvoiceId(), font10);
 			p.setAlignment(Element.ALIGN_RIGHT);
 			document.add(p);
-			String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
+			String createdDate = dateFormat.format(invoice.getCreatedDate());
 			p = new Paragraph("Billing Date :" + createdDate, font10);
 			p.setAlignment(Element.ALIGN_RIGHT);
 			document.add(p);
@@ -127,7 +127,7 @@ public class InvoicePdfHelper {
 			p.setAlignment(Element.ALIGN_RIGHT);
 			document.add(p);
 			}
-			String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+			String dueDate = dateFormat.format(invoice.getDueDate());
 			p = new Paragraph("Due Date :" + dueDate, font10);
 			p.setAlignment(Element.ALIGN_RIGHT);
 			document.add(p);
@@ -215,12 +215,12 @@ public class InvoicePdfHelper {
 				StringBuffer startAndEndDate = new StringBuffer();
 				if (null != invoiceLineItems.getStartDate()
 						&& null != invoiceLineItems.getEndDate()) {
-					String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-					String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
+					String StartDate =dateFormat.format(invoiceLineItems.getStartDate());
+					String endDate = dateFormat.format(invoiceLineItems.getEndDate());
 					table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_CENTER, font10));
 				}
 				else if (null != invoiceLineItems.getStartDate()) {
-					String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
+					String StartDate = dateFormat.format(invoiceLineItems.getStartDate());
 					table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 				}
 				else {
@@ -325,7 +325,7 @@ public class InvoicePdfHelper {
 				p = new Paragraph("Invoice Id :" + invoice.getInvoiceId(), font10);
 				p.setAlignment(Element.ALIGN_RIGHT);
 				document.add(p);
-				String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
+				String createdDate = dateFormat.format(invoice.getCreatedDate());
 				p = new Paragraph("Invoice Date :" + createdDate, font10);
 				p.setAlignment(Element.ALIGN_RIGHT);
 				document.add(p);
@@ -334,7 +334,7 @@ public class InvoicePdfHelper {
 				p.setAlignment(Element.ALIGN_RIGHT);
 				document.add(p);
 				}
-				String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+				String dueDate = dateFormat.format(invoice.getDueDate());
 				p = new Paragraph("Due Date :" + dueDate, font10);
 				p.setAlignment(Element.ALIGN_RIGHT);
 				document.add(p);
@@ -426,12 +426,12 @@ public class InvoicePdfHelper {
 					StringBuffer startAndEndDate = new StringBuffer();
 					if (null != invoiceLineItems.getStartDate()
 							&& null != invoiceLineItems.getEndDate()) {
-						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-						String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
+						String StartDate = dateFormat.format(invoiceLineItems.getStartDate());
+						String endDate = dateFormat.format(invoiceLineItems.getEndDate());
 						table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_CENTER, font10));
 					}
 					else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
+						String StartDate = dateFormat.format(invoiceLineItems.getStartDate());
 						table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					}
 					else {
