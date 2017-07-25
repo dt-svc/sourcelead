@@ -370,7 +370,7 @@ public class ProjectPlanningRequest implements Serializable{
         		StringBuilder reason = new StringBuilder();
         		for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList ){
         			if(resourceRequest.getRejectedReason() != null && !resourceRequest.getRejectedReason().isEmpty()){
-        				reason = reason.append("\n").append(resourceRequest.getRejectedReason()).append("\n");
+        				reason = reason.append("<br/>").append(resourceRequest.getRejectedReason()).append("<br/>");
         			}
         			rejectedReason = reason.toString();
         		}
