@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectPlanningNewResourceRequestDao;
 import com.bis.sourcelead.dao.ProjectPlanningRequestDao;
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
 import com.bis.sourcelead.dao.ProjectsDao;
@@ -46,6 +47,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	@Autowired
 	ProjectPlanningResourceRequestDao projectPlanningResourceRequestDao;
 
+	@Autowired
+	ProjectPlanningNewResourceRequestDao projectPlanningNewResourceRequestDao;
 	
 	protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -133,7 +136,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	@Override
 	public void saveProjectNewResourceRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,String projectUUID, String saveType) throws JSONException, Exception {
-		ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
+		
+		ProjectPlanningRequest projectPlanningRequest  = null;
+		if(jsonObj.has("savedPlanningRequestUUID") && !"".equalsIgnoreCase(jsonObj.getString("savedPlanningRequestUUID"))){
+			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(jsonObj.getString("savedPlanningRequestUUID"));
+		}else{
+			projectPlanningRequest = new ProjectPlanningRequest();
+			projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_NEW_REQUEST);
+		}
 		
 		if(jsonObj.has("requestId") && !"".equalsIgnoreCase(jsonObj.getString("requestId"))){
 			projectPlanningRequest.setRequestId(jsonObj.getString("requestId"));
@@ -178,7 +188,12 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		projectPlanningRequest.setCreatedDate(new Date());
 		projectPlanningRequest.setUpdatedDate(new Date());
 		
-		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest);
+		List<Long> resourceRequestIds = null;
+		if(projectPlanningRequest.getId() != null){
+			 resourceRequestIds = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestIdsByRequestId(projectPlanningRequest.getId());
+		}
+		
+		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
 		projectPlanningRequest.setProjectPlanningNewResourceRequestList(projectPlanningNewResourceRequestList);
 //		projectPlanningRequest.setRequestedResources(projectPlanningNewResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -188,8 +203,15 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		}else{
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
 		}
-		projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST);
+		projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_NEW_REQUEST);
 		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
+		
+		if(null != resourceRequestIds && resourceRequestIds.size() > 0){
+			for(Long resourceRequestId : resourceRequestIds){
+				ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(resourceRequestId);
+				projectPlanningResourceRequestDao.deleteProjectPlanningResourceRequest(resourceRequest);
+			}
+		}
 		
 	}
 	
@@ -303,83 +325,92 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	}
 
 	
-	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest) throws Exception {
+	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds) throws Exception {
 		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
+		 List<Long> updatedNewResourceRequests = new ArrayList<Long>();
 		 String pattern = "dd-MM-yyyy";
 	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
 		 for(int i=1;i<=maxRowCount;i++){
-			 ProjectPlanningNewResourceRequest resourceRequest = new ProjectPlanningNewResourceRequest();
-			 
 			 if(jsonObj.has("noOfResources"+i) && !isNullOrEmpty(jsonObj.getString("noOfResources"+i))){
+				 ProjectPlanningNewResourceRequest resourceRequest = new ProjectPlanningNewResourceRequest();
 				 resourceRequest.setNoOfResource(jsonObj.getInt("noOfResources"+i));
-			if(jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
-				resourceRequest.setRoleId(null);
-				 resourceRequest.setRoleName(jsonObj.getString("role"+i));
-				 if(jsonObj.has("customRole"+i) && !isNullOrEmpty(jsonObj.getString("customRole"+i))){
-					 resourceRequest.setOtherRole(jsonObj.getString("customRole"+i));
+				 
+				 if(jsonObj.has("resourceRequestId"+i) &&  null != jsonObj.getString("resourceRequestId"+i) && !"".equalsIgnoreCase(jsonObj.getString("resourceRequestId"+i))){
+					 resourceRequest.setId(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));
+					 updatedNewResourceRequests.add(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));	 
 				 }
 				 
-			}else if(jsonObj.has("role"+i) && !isNullOrEmpty(jsonObj.getString("role"+i))){
-				if(!jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
-					Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(jsonObj.getString("role"+i)));
-					 resourceRequest.setRoleId(roles);
-					 resourceRequest.setRoleName(roles.getDisplayName());	
-				}
-				 
-			 }
-
+				if(jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
+					resourceRequest.setRoleId(null);
+					 resourceRequest.setRoleName(jsonObj.getString("role"+i));
+					 if(jsonObj.has("customRole"+i) && !isNullOrEmpty(jsonObj.getString("customRole"+i))){
+						 resourceRequest.setOtherRole(jsonObj.getString("customRole"+i));
+					 }
+					 
+				}else if(jsonObj.has("role"+i) && !isNullOrEmpty(jsonObj.getString("role"+i))){
+					if(!jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
+						Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(jsonObj.getString("role"+i)));
+						 resourceRequest.setRoleId(roles);
+						 resourceRequest.setRoleName(roles.getDisplayName());	
+					}
+					 
+				 }
 			
-			 if(jsonObj.has("min"+i) && !isNullOrEmpty(jsonObj.getString("min"+i))){
-				 resourceRequest.setMinExperience(jsonObj.getInt("min"+i));
-			 }
-			 if(jsonObj.has("max"+i) && !isNullOrEmpty(jsonObj.getString("max"+i))){
-				 resourceRequest.setMaxExperience(jsonObj.getInt("max"+i));
-			 }
-			 if(jsonObj.has("primarySkill"+i) && !isNullOrEmpty(jsonObj.getString("primarySkill"+i))){
-				 resourceRequest.setSkills(jsonObj.getString("primarySkill"+i));
-			 }
-			 
-			 if(jsonObj.has("currencyCode"+i) && !isNullOrEmpty(jsonObj.getString("currencyCode"+i))){
-				 resourceRequest.setRateCurrency(jsonObj.getString("currencyCode"+i));
-			 }
-			 if(jsonObj.has("billRate"+i) && !isNullOrEmpty(jsonObj.getString("billRate"+i))){
-				 resourceRequest.setBillRate(jsonObj.getString("billRate"+i));
-			 }
-			 if(jsonObj.has("payRate"+i) && !isNullOrEmpty(jsonObj.getString("payRate"+i))){
-				 resourceRequest.setPayRate(jsonObj.getString("payRate"+i));
-			 }
-			 if(jsonObj.has("rateType"+i) && !isNullOrEmpty(jsonObj.getString("rateType"+i))){
-				 resourceRequest.setRateType(jsonObj.getString("rateType"+i));
-			 }
-			 if(jsonObj.has("startDate"+i) && !isNullOrEmpty(jsonObj.getString("startDate"+i))){
-				 Date startDate = format.parse(jsonObj.getString("startDate"+i));
-				 resourceRequest.setStartDate(startDate);
-			 }
-			 if(jsonObj.has("endDate"+i) && !isNullOrEmpty(jsonObj.getString("endDate"+i))){
-				 Date endDate = format.parse(jsonObj.getString("endDate"+i));
-				 resourceRequest.setEndDate(endDate);
-			 }
-			 if(jsonObj.has("estimatedHours"+i) && !isNullOrEmpty(jsonObj.getString("estimatedHours"+i))){
-				 resourceRequest.setEstimatedHours(jsonObj.getDouble("estimatedHours"+i));
-			 }
-			 if(jsonObj.has("estimatedBudget"+i) && !isNullOrEmpty(jsonObj.getString("estimatedBudget"+i))){
-				 resourceRequest.setEstimatedBudget(jsonObj.getDouble("estimatedBudget"+i));
-			 }
-			 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
-				 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
-			 }
-			 if(jsonObj.has("consulting"+i) && !isNullOrEmpty(jsonObj.getString("consulting"+i))){
-				 resourceRequest.setConsultingType(jsonObj.getString("consulting"+i));
-			 }
-			 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
-			 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
-			 resourceRequest.setCreatedBy(loginUser);
-			 resourceRequest.setUpdatedBy(loginUser);
-			 resourceRequest.setCreatedDate(new Date());
-			 resourceRequest.setUpdatedDate(new Date());
-			 resourceRequestSet.add(resourceRequest);
-			 }
+				 if(jsonObj.has("min"+i) && !isNullOrEmpty(jsonObj.getString("min"+i))){
+					 resourceRequest.setMinExperience(jsonObj.getInt("min"+i));
+				 }
+				 if(jsonObj.has("max"+i) && !isNullOrEmpty(jsonObj.getString("max"+i))){
+					 resourceRequest.setMaxExperience(jsonObj.getInt("max"+i));
+				 }
+				 if(jsonObj.has("primarySkill"+i) && !isNullOrEmpty(jsonObj.getString("primarySkill"+i))){
+					 resourceRequest.setSkills(jsonObj.getString("primarySkill"+i));
+				 }
+				 
+				 if(jsonObj.has("currencyCode"+i) && !isNullOrEmpty(jsonObj.getString("currencyCode"+i))){
+					 resourceRequest.setRateCurrency(jsonObj.getString("currencyCode"+i));
+				 }
+				 if(jsonObj.has("billRate"+i) && !isNullOrEmpty(jsonObj.getString("billRate"+i))){
+					 resourceRequest.setBillRate(jsonObj.getString("billRate"+i));
+				 }
+				 if(jsonObj.has("payRate"+i) && !isNullOrEmpty(jsonObj.getString("payRate"+i))){
+					 resourceRequest.setPayRate(jsonObj.getString("payRate"+i));
+				 }
+				 if(jsonObj.has("rateType"+i) && !isNullOrEmpty(jsonObj.getString("rateType"+i))){
+					 resourceRequest.setRateType(jsonObj.getString("rateType"+i));
+				 }
+				 if(jsonObj.has("startDate"+i) && !isNullOrEmpty(jsonObj.getString("startDate"+i))){
+					 Date startDate = format.parse(jsonObj.getString("startDate"+i));
+					 resourceRequest.setStartDate(startDate);
+				 }
+				 if(jsonObj.has("endDate"+i) && !isNullOrEmpty(jsonObj.getString("endDate"+i))){
+					 Date endDate = format.parse(jsonObj.getString("endDate"+i));
+					 resourceRequest.setEndDate(endDate);
+				 }
+				 if(jsonObj.has("estimatedHours"+i) && !isNullOrEmpty(jsonObj.getString("estimatedHours"+i))){
+					 resourceRequest.setEstimatedHours(jsonObj.getDouble("estimatedHours"+i));
+				 }
+				 if(jsonObj.has("estimatedBudget"+i) && !isNullOrEmpty(jsonObj.getString("estimatedBudget"+i))){
+					 resourceRequest.setEstimatedBudget(jsonObj.getDouble("estimatedBudget"+i));
+				 }
+				 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
+					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
+				 }
+				 if(jsonObj.has("consulting"+i) && !isNullOrEmpty(jsonObj.getString("consulting"+i))){
+					 resourceRequest.setConsultingType(jsonObj.getString("consulting"+i));
+				 }
+				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
+				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
+				 resourceRequest.setCreatedBy(loginUser);
+				 resourceRequest.setUpdatedBy(loginUser);
+				 resourceRequest.setCreatedDate(new Date());
+				 resourceRequest.setUpdatedDate(new Date());
+				 resourceRequestSet.add(resourceRequest);
+				 }
+		 }
+		 if(null != projectPlanningRequest.getId()){
+			 updatedNewResourceRequests.retainAll(resourceRequestIds);
+			 resourceRequestIds.removeAll(updatedNewResourceRequests);
 		 }
 		 return resourceRequestSet;
 	}

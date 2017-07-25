@@ -190,8 +190,8 @@
 					     </div>
 			            <div class="form-group">
 			            <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
-			            <div class="col-md-9">
-			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
+			            <div class="col-md-9" id="errApprover">
+			             <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver" onchange="removeValidation();">
 		                <option selected value=''>--Select Approver--</option>
 			                <%-- <c:forEach var="approver" items="${approversList}">
 			                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
@@ -200,6 +200,7 @@
 		                
 		                </div>
 			            </div>
+			            <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
 			            <div class="form-group">
 			              <label class="col-md-3">Description<span class="text-danger paddingLeft">*</span></label>
 			              <div class="col-md-9">
@@ -268,6 +269,7 @@
 
 		<div id="divAddRowTr1Td1" style="display: none; float: left;">
 		    <div id="roleRowREPLACEROWID" class="tbldata-dotdot-100">ROLEVALUES</div>
+		     <input type="hidden" class="form-control input-sm"  id="resourceRequestIdREPLACEROWID" name="resourceRequestIdREPLACEROWID">
 		</div>
 		<div id="divAddRowTr1Td2" style="display: none; float: left;">
 		    <div id="noOfResourcesRowREPLACEROWID" name="noOfResourcesRowREPLACEROWID" class="width90px">RESOURCECOUNTVALUE</div>
@@ -554,8 +556,17 @@
 		var maxEx =  $('#max'+rowId).val();
 		$('#minRow'+rowId).empty();
 		$('#maxRow1'+rowId).empty();
-		$('#minRow'+rowId).html(minEx);
-		$('#maxRow'+rowId).html(maxEx);
+		if(minEx != null && minEx != ''){
+			$('#minRow'+rowId).html(minEx);
+		}else{
+			$('#minRow'+rowId).html('--');				
+		}
+		if(maxEx != null && maxEx != ''){
+			$('#maxRow'+rowId).html(maxEx);
+		}else{
+			$('#maxRow'+rowId).html('--');
+		}
+		
 		
 		//PrimarySkill
 		var primarySkill =  $('#primarySkill'+rowId).val();
@@ -575,18 +586,34 @@
 		$('#rateTypeRow'+rowId).empty();
 		
 		$('#currencyCodeRow'+rowId).html(currencyCode);
-		$('#billRateRow'+rowId).html(billRate);
-		$('#payRateRow'+rowId).html(payRate);
+		if(billRate != null && billRate != ''){
+			$('#billRateRow'+rowId).html(billRate);	
+		}else{
+			$('#billRateRow'+rowId).html('--');
+		}
+		if(payRate != null && payRate != ''){
+			$('#payRateRow'+rowId).html(payRate);	
+		}else{
+			$('#payRateRow'+rowId).html('--');
+		}
 		$('#rateTypeRow'+rowId).html(rateType);
 		
 		//Start date and End Date
 		var startDate =  $('#startDate'+rowId).val();
 		var endDate =  $('#endDate'+rowId).val();
 		$('#startDateRow'+rowId).empty();
-		$('#endDateRow1'+rowId).empty();
+		$('#endDateRow'+rowId).empty();
 		
-		$('#startDateRow'+rowId).html(startDate);
-		$('#endDateRow1'+rowId).html(endDate);
+		if(startDate != null && startDate != ''){
+			$('#startDateRow'+rowId).html(startDate);	
+		}else{
+			$('#startDateRow'+rowId).html('--');
+		}
+		if(endDate != null && endDate !=''){
+			$('#endDateRow'+rowId).html(endDate);	
+		}else{
+			$('#endDateRow'+rowId).html('--');
+		}
 		
 		//consulting Type
 		var consulting =  $('#consulting'+rowId).val();
@@ -853,6 +880,7 @@ function loadRequestDetails(){
 <script>
 function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimatedBudget,requestedResources){
 // 	 $("#maxRecCount").val(newResourceRequestList.length + 1);
+	removeValidation();
 	 for(var i=0; i<newResourceRequestList.length; i++){
 		var report = newResourceRequestList[i];
 		 var maxRowNum = i+1;
@@ -871,6 +899,7 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			$("#cancelResourceRequestButton"+maxRowNum).removeAttr('onclick');
 			$("#cancelResourceRequestButton"+maxRowNum).attr('onclick','hideAndShowDetailsRow('+maxRowNum+',"Hide")');
 			
+			
 			//role
 			var cell0 = row.insertCell(0);
 			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
@@ -883,17 +912,23 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 				divRowTd1Str = divRowTd1Str.replace(/ROLEVALUES/g,role);
 			}
 			cell0.innerHTML = divRowTd1Str;
-			
+			$("#resourceRequestId"+maxRowNum).val(report.id);
 			
 			//No.Resources
 			var cell1 = row.insertCell(1);
 			var divRowTd2Str = document.getElementById("divAddRowTr1Td2").innerHTML;
 			divRowTd2Str = divRowTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
 			var resourceCount =  report.noOfResource;
+			var resourceId = report.id;
 			if(resourceCount == null || resourceCount == '' || resourceCount == 'undefined'){
 				resourceCount = "--";
 			}
 			divRowTd2Str = divRowTd2Str.replace(/RESOURCECOUNTVALUE/g,resourceCount);
+			if(resourceId != null && resourceId != '' && resourceId != 'undefined'){
+				resourceId = report.id;
+				divRowTd2Str = divRowTd2Str.replace(/RESOURCEVALUE/g,resourceId);
+			}
+			
 			cell1.innerHTML = divRowTd2Str;
 			
 			
@@ -1053,6 +1088,7 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 
 <script>
 	function editResourceInfo(maxRowNum,report){
+		
 			$("#maxRecCount").val(parseInt(maxRowNum + 1));
 			$("#resourceInfoDiv").append("<div id='resourceInfoContent"+maxRowNum+"'></div>");
 			var billRate = '';
@@ -1255,6 +1291,13 @@ function editChangeRole(e,rowId){
 		 $('#customRole'+rowId+'').removeAttr("data-validation","required"); 
 	}
 }
+</script>
+<script>
+function removeValidation(){
+	$('#errApprover').find('p.jquery_form_error_message').remove(); 
+}
+
+
 </script>
  <jsp:include page="../masterFooter.jsp" />	
 </html>
