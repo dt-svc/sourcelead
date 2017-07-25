@@ -109,12 +109,19 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		projectPlanningRequest.setUpdatedDate(new Date());
 		
 		List<Long> resourceRequestIds = null;
+		List<Long> approvedResources = new ArrayList<>();
 		if(projectPlanningRequest.getId() != null){
 			 resourceRequestIds = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestIdsByRequestId(projectPlanningRequest.getId());
+			 Set<ProjectPlanningResourceRequest> approvedResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+			 for(ProjectPlanningResourceRequest resourceRequest : approvedResourceRequestList){
+				 if(!isNullOrEmpty(resourceRequest.getResourceStatus()) && resourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+					 approvedResources.add(resourceRequest.getId());
+				 }
+			 }
 		}
 		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
-		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size());
+		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
 		projectPlanningRequest.setAllocatedResources(0);
 		
 		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
@@ -231,10 +238,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 
 				 if(jsonObj.has(i+"resourceRequestId") &&  null != jsonObj.getString(i+"resourceRequestId") && !"".equalsIgnoreCase(jsonObj.getString(i+"resourceRequestId"))){
 					 resourceRequest.setId(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
-					 ProjectPlanningResourceRequest savedRresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
-					 resourceRequest.setRequestUUID(savedRresourceRequest.getRequestUUID());
-					 resourceRequest.setRejectedReason(savedRresourceRequest.getRejectedReason());
-					 resourceRequest.setResourceStatus(savedRresourceRequest.getResourceStatus());
+					 ProjectPlanningResourceRequest savedresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+					 resourceRequest.setRequestUUID(savedresourceRequest.getRequestUUID());
+					 resourceRequest.setRejectedReason(savedresourceRequest.getRejectedReason());
+					 
+					 if(!isNullOrEmpty(savedresourceRequest.getResourceStatus()) && savedresourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						 resourceRequest.setResourceStatus(savedresourceRequest.getResourceStatus());
+					 }
+					 
 					 updatedResourceRequests.add(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
 				 }else{
 					 resourceRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -452,5 +463,11 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	public ProjectPlanningRequest storeProjectPlanningRequest(ProjectPlanningRequest projectPlanningRequest)
 			throws Exception {
 		return projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
+	}
+
+	@Override
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,
+			Long orgLocationId) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
 	}
 }

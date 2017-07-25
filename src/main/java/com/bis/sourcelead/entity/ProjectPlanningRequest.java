@@ -126,6 +126,22 @@ public class ProjectPlanningRequest implements Serializable{
 	@Transient
 	@JsonProperty
     private String projectName;
+	
+	@Transient
+	@JsonProperty
+    private Integer approvedCount;
+	
+	@Transient
+	@JsonProperty
+    private Integer rejectedCount;
+	
+	@Transient
+	@JsonProperty
+    private Integer waitingCount;
+	
+	@Transient
+	@JsonProperty
+    private Integer onholdCount;
     
 	@Transient
 	@JsonProperty
@@ -396,4 +412,42 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setRejectedReason(String rejectedReason) {
 		this.rejectedReason = rejectedReason;
 	}
+
+	
+	public Integer getApprovedCount() {
+		return approvedCount;
+	}
+
+	public void setApprovedCount(Integer approvedCount) {
+		this.approvedCount = approvedCount;
+	}
+
+	public Integer getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(Integer rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getWaitingCount() {
+		return waitingCount;
+	}
+
+	public void setWaitingCount(Integer waitingCount) {
+		this.waitingCount = waitingCount;
+	}
+
+	public Integer getOnholdCount() {
+		return onholdCount;
+	}
+
+	public void setOnholdCount(Integer onholdCount) {
+		this.onholdCount = onholdCount;
+	}
+	
+	
+	
+	
+	
 }
