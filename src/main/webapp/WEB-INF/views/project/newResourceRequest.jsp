@@ -127,12 +127,12 @@
               </div>  
               <div class="col-md-3">
                <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>
-                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="required validate_length length1-10">
+                <input type="text" class="form-control timeicon" name='estimatedHoursREPLACEROWID' id='estimatedHoursREPLACEROWID' field-name="Estimated Hours" data-validation="required validate_length length1-10 validate_int">
               </div>  
               <div class="col-md-3 currencySymbol">
                   <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>
                   <div class="positionRelative">
-                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="required validate_length length1-10">
+                <input type="text" class="form-control" name='estimatedBudgetREPLACEROWID' id='estimatedBudgetREPLACEROWID' field-name="Estimated Budget" data-validation="required validate_length length1-10 validate_int">
                  <span class="currencyValue" value="${currencyCode}" id="budgetCurrencyREPLACEROWID" name="budgetCurrencyREPLACEROWID">${currencyCode}</span>
                       </div>
               </div>
@@ -223,11 +223,11 @@
 			            	<tr id="divResourceTsRow0">
 			                    <th>Role</th>
 			                    <th>No <br> Resources</th>
-			                    <th>Exp.</th>
+			                    <th>Exp</th>
 			                    <th>Primary Skills</th>
 			                    <th>Bill/Pay Rate</th>
 			                    <th>Duration</th>
-			                    <th>On/Offsite</th>
+			                    <th>Consulting Type</th>
 			                    <th>Est Hours</th>
 			                    <th>Est Budget</th>
 			                    <th>Action</th>
@@ -522,10 +522,6 @@
  			return false;
  		}
 	}
-	/* $('body').on('blur', '#add_resource_form', function() {
-		$("#add_resource_form").showHelpOnFocus();
-		$("#add_resource_form").validateOnBlur(false, validationSettings);
-	}); */
 	</script>
 	
 	
@@ -535,7 +531,9 @@
 		hideAndShowDetailsRow(rowId,'Hide');
 		
 		//Role
-		var role =  $('#role'+rowId).val();
+		
+		var roleId =  $('#role'+rowId).val();
+		var role = $("#role"+rowId+" option[value='"+roleId+"']").text()
 		var customeRole = $('#customRole'+rowId).val();
 		if(role == "Other"){
 			$('#roleRow'+rowId).empty();
@@ -1115,7 +1113,7 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'      <div class="col-xs-12 col-sm-12 myForm noPad clearfix request-resources">';
 
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 dropdown-select">';
-			divRowTd2_0Str = divRowTd2_0Str +'           <label>Role 11 <span class="text-danger paddingLeft">*</span></label>';
+			divRowTd2_0Str = divRowTd2_0Str +'           <label>Role <span class="text-danger paddingLeft">*</span></label>';
 			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="role'+maxRowNum+'" id="role'+maxRowNum+'"  field-name="Role" data-validation="required" onchange="changeRole(this,'+maxRowNum+');" >';
 			divRowTd2_0Str = divRowTd2_0Str +'             <option value="">-Select Role-</option>';
 			if(report.roleName == 'Other'){
@@ -1166,8 +1164,8 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'             </div>';
-			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="expIdREPLACEROWID">';
-			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="expValidationREPLACEROWID" id="expValidationREPLACEROWID">';
+			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="expId'+maxRowNum+'">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="expValidation'+maxRowNum+'" id="expValidation'+maxRowNum+'">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div> ';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
 			
@@ -1227,13 +1225,13 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3">';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Estimated Hours<span class="text-danger paddingLeft">*</span></label>';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="required validate_length length1-10">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control timeicon" value="'+report.estimatedHours+'" name="estimatedHours'+maxRowNum+'" id="estimatedHours'+maxRowNum+'" field-name="Estimated Hours" data-validation="required validate_length length1-10 validate_int">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>  ';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'          <div class="col-md-3 currencySymbol">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <label>Estimated Budget<span class="text-danger paddingLeft">*</span></label>';
 			divRowTd2_0Str = divRowTd2_0Str +'              <div class="positionRelative">';
-			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="required validate_length length1-10">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+report.estimatedBudget+'" name="estimatedBudget'+maxRowNum+'" id="estimatedBudget'+maxRowNum+'" field-name="Estimated Budget" data-validation="required validate_length length1-10 validate_int">';
 			divRowTd2_0Str = divRowTd2_0Str +'             <span class="currencyValue" value="'+report.estimatedBudgetCurrency+'" id="budgetCurrency'+maxRowNum+'" name="budgetCurrency">${currencyCode}</span>';
 			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
@@ -1242,11 +1240,11 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Consulting <span class="text-danger paddingLeft">*</span></label>';
 			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="consulting'+maxRowNum+'" id="consulting'+maxRowNum+'" field-name="Consulting" data-validation="required">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <option selected value="">--Select--</option>      ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Offsite" ? "selected" : '') +' >Off Site</option>    ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Onsite" ? "selected" : '') +' >On Site</option>      ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "NearShore" ? "selected" : '') +' >Near Shore</option>   ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffShore" ? "selected" : '') +' >Off Shore</option>    ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Hybrid" ? "selected" : '') +' >Hybrid</option>       ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Offsite" ? "selected" : '') +' value="OffSite">Off Site</option>    ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Onsite" ? "selected" : '') +' value="OnSite">On Site</option>      ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "NearShore" ? "selected" : '') +' value="NearShore">Near Shore</option>   ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffShore" ? "selected" : '') +' value="OffShore" >Off Shore</option>    ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Hybrid" ? "selected" : '') +'  value="Hybrid">Hybrid</option>       ';
 			divRowTd2_0Str = divRowTd2_0Str +'            </select>                                            ';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>                                                 ';
 			divRowTd2_0Str = divRowTd2_0Str +'        </div>                                                   '; 
