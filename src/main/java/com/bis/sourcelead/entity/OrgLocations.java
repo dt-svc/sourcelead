@@ -59,7 +59,12 @@ public class OrgLocations implements Serializable{
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
+	
+	@Column(name = "DATE_FORMAT")
+	private String dateFormat;
 	 
+	@Column(name = "AVERAGE_WORKING_HOURS")
+	private Integer averageWorkingHours;
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -590,6 +595,23 @@ public class OrgLocations implements Serializable{
 	{
 		this.systemGeneratedId = systemGeneratedId;
 	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public Integer getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(Integer averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
+	}
+
 	
 	
 }

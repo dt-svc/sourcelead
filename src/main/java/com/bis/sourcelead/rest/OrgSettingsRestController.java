@@ -501,18 +501,53 @@ public class OrgSettingsRestController {
      * @date 17th July 2017
      *
      */
-    @RequestMapping(value = "/getOrgShortCode")
-	public String getOrgShortCode(@RequestParam("locationCode") String locationCode) throws Exception {
-		
-	 	//String resultJson = null;
-	 	OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-	 	
-	 	
-	 	
-		//orgLocationService.saveOrgLocationsOrgShortCod(orgLocation);
-	 //	resultJson = toJSON(orgLocation);
-		return orgLocation.getGeneratedUserId();
+    @RequestMapping(value = "/saveOrgShortCodeform")
+    @ResponseBody
+	public String saveOrgShortCodeform(@RequestParam(value = "json") String code,
+			@RequestParam("locationCode") String locationCode) throws Exception {
 
+    	JSONObject jsonObj = new JSONObject(code);
+	 	OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	 	OrgLocations systemGenerated = null;
+	 	String genId = null;
+	 	if(code != null){
+	 		String type = "userGenerated";
+	 		systemGenerated = orgLocationService.saveOrgLocationsOrgShortCode(orgLocation,jsonObj,type);
+	 		genId = systemGenerated.getGeneratedUserId();
+	 	}
+	 	/*if(code.equalsIgnoreCase("")){
+	 		String type = "systemGenerated";
+	 		String totalString =orgLocation.getOrg().getOrgName();
+            StringBuilder initials = new StringBuilder();
+	            if(!totalString.contains(" ")){
+	           	 initials.append(totalString.substring(0, 3));
+            }else{
+	            for (String s : totalString.split(" ")) {
+	              initials.append(s.charAt(0));
+	            }
+            }
+            code = initials.toString();
+            systemGenerated = orgLocationService.saveOrgLocationsOrgShortCode(orgLocation,code,type);
+             genId = systemGenerated.getSystemGeneratedId();
+	 	}*/
+		return genId;
+
+	}
+    
+    
+    @RequestMapping(value = "/getDateFormatByOrgLocation")
+    @ResponseBody
+	public String getDateFormatByOrgLocation(@RequestParam("locationCode") String locationCode) throws Exception {
+	 	OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+	 	String systemGenerated = orgLocationService.getDateFormatByOrgLocation(orgLocation);
+	 		return systemGenerated;
+	}
+    
+    @RequestMapping(value = "/validateOrgShortCode")
+    @ResponseBody
+	public boolean validateOrgShortCode(@RequestParam("orgShortId") String orgShortId) throws Exception {
+	 	boolean orgCodeValidation = orgLocationService.validateOrgShortCode(orgShortId);
+	 		return orgCodeValidation;
 	}
     
     

@@ -857,7 +857,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
@@ -2301,10 +2301,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		
+	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
 	}
 	
 }

@@ -156,17 +156,23 @@ public class CandidateServiceImpl implements CandidateService {
 	}
     
     
-    @Override
 	public String getCandidateId(OrgLocations orgLocations) {
-		
+    	String companyShortCode = null;
     	Long number = 000000001L;
 		String candidateId = null;
 		Candidate checkNumber = candidateDao.checkCandidateIdNumberInDatebase(orgLocations.getId());
-		if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+		if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
 			candidateId = number.toString();
 		}else{
 		String canIdNumber = checkNumber.getGeneratedId();
-		String canIdNum = canIdNumber.substring(2, canIdNumber.length());
+		int count =0;
+		for(int i=0;i< canIdNumber.length();i++){
+			char ch = canIdNumber.charAt(i);
+			if(Character.isAlphabetic(ch)){
+				count++;
+			}
+		}
+		String canIdNum = canIdNumber.substring(count, canIdNumber.length());
 		Long canId = Long.parseLong(canIdNum)+1;
 			candidateId = canId.toString();
 		}
@@ -174,7 +180,10 @@ public class CandidateServiceImpl implements CandidateService {
         final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
         String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
         StringBuffer sb = new StringBuffer();
-		return sb.append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidatesId).toString();
+        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+        	 companyShortCode = orgLocations.getGeneratedUserId();
+        }
+		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidatesId).toString();
 		
 	}
 	
