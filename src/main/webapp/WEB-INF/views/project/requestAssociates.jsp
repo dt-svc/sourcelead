@@ -69,10 +69,14 @@
             </div>
           </div>
 
+<div class="clearfix mt"></div>
+<div id="acceptedAssociatesListDiv" class="col-md-12"></div>
+<div class="clearfix mt"></div>
+
 <div class="project_side_wrap_inn_tabs clearfix">
     <div class="project_tabs_inn_head">
-        	<div class="project_tabs_inn_head">
-        	   <a href="javascript:void(0)" class="" title="Search Associates" onclick="getAssociates();" id="addDiv">
+        	<div class="project_tabs_inn_head mt25">
+        	   <a href="javascript:void(0)"  title="Search Associates" onclick="getAssociates();" id="addDiv">
                    <i class="glyphicon glyphicon-plus"></i>
                    Search Associates
                </a>
@@ -218,7 +222,7 @@ function getRequestedAssociateListDiv(){
 	 var result = '';
 	 
 	 
-	 result = result +'<div class="require_wrap_table mt10">';
+	 result = result +'<div class="require_wrap_table">';
 	 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	 result = result +'  <input type="hidden" id="associatesRowsCount" name="associatesRowsCount" value="0" />';
 	 result = result +'  <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${SourceLeadWeb_currencyCode}" />';
@@ -333,7 +337,7 @@ function loadRequestDetails(){
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
 	        	 
 	        	 loadResourceRequestsList(json.resourceRequestList,json.estimatedHours,json.estimatedBudget);
-	        	 
+	        	 loadApprovedResourceRequestsList(json.resourceRequestList,json.requestStatus);
 	        	 
 	         }
 	 });
@@ -342,144 +346,266 @@ function loadRequestDetails(){
 </script>
 
 <script>
+function loadApprovedResourceRequestsList(resourceRequestList,requestStatus){
+	
+			if(requestStatus != 'Draft'){          
+	            var approvedCount = 0;
+				var result = '';
+				result = result +'	     <h4 class="clearfix">Approved Resources</h4>';
+			    result = result +'	     <div class="require_wrap_table invoiceGridview clearfix">';
+				result = result +'         <table width="100%" cellpadding="0" cellspacing="0">';
+				result = result +'             <thead>';
+				result = result +'                 <tr>';
+				result = result +'                     <th>Name</th>';
+				result = result +'                     <th>Pay Rate</th>';
+				result = result +'                     <th>Bill Rate</th>';
+				result = result +'                     <th>Start Date</th>';
+				result = result +'                     <th>End Date</th>';
+				result = result +'                     <th>Consulting</th>';
+				result = result +'                     <th>Est Hours</th>';
+				result = result +'                     <th>Est Budget</th>';
+				result = result +'                 </tr>';
+				result = result +'             </thead>';
+				result = result +'             <tbody>';
+				
+					 
+					  for(var i=0; i<resourceRequestList.length; i++){
+						 var opt = resourceRequestList[i];
+						 if(opt.resourceStatus != null && opt.resourceStatus == 'Approved'){
+							 var startDate = '';
+							 var endDate = '';
+							 var payRate = ''
+							 var estimatedHours = '';
+							 var estimatedBudget = '';
+							
+							 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+								 startDate = opt.startDateStr;
+							 }else{
+								 startDate = '-----';
+							 }
+							 
+							 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+								 endDate = opt.endDateStr;
+							 }else{
+								 endDate = '-----';
+							 }
+							 
+							 if(opt.payRate != null && opt.payRate != '' && opt.payRate != 'undefined'){
+								 payRate = opt.payRateCurrency+" "+opt.payRate+" / "+opt.payRateType;
+							 }else{
+								 payRate = '-----';
+							 }
+							 
+							 var billRate = opt.billRateCurrency+" "+opt.billRate+" / "+opt.billRateType;
+							 
+							 if(opt.estimatedHours != null && opt.estimatedHours != '' && opt.estimatedHours != 'undefined'){
+								 estimatedHours = opt.estimatedHours;
+							 }else{
+								 estimatedHours = '-----';
+							 }
+							 
+							 if(opt.estimatedBudget != null && opt.estimatedBudget != '' && opt.estimatedBudget != 'undefined'){
+								 estimatedBudget = opt.estimatedBudget;
+							 }else{
+								 estimatedBudget = '-----';
+							 }
+							 
+							 
+							    result = result +'<tr>';
+							    
+							    result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateName+'">'+opt.candidateName+'</div>';
+								result = result +'</td>'; 
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot-vsm" title="'+payRate+'">'+payRate+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot-vsm" title="'+billRate+'">'+billRate+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tblminwidth-50" title="'+startDate+'">'+startDate+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tblminwidth-50" title="'+endDate+'">'+endDate+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.consultingType+'">'+opt.consultingType+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedHours+'">'+estimatedHours+'</div>';
+								result = result +'</td>';
+								
+								result = result +'<td>';
+							 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+								result = result +'</td>';
+								
+							    result = result +'</tr>';
+							    
+							    approvedCount = approvedCount+1;
+					 }
+				 } 
+				
+				
+				result = result +'</tbody>';
+				result = result +'</table>';
+				result = result +' </div>';
+				result = result +'<div id="norecordsfound"></div>'; 
+				
+				$("#acceptedAssociatesListDiv").empty();  
+			    $("#acceptedAssociatesListDiv").append(result);
+			    
+			    if(approvedCount == 0){
+			    	emptyRecordsList();
+			    }
+			}  
+}
+</script>
+
+<script>
 function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBudget){
 	 for(var i=0; i<resourceRequestList.length; i++){
 		 var opt = resourceRequestList[i];
-		 
-		    var checkMaxTsRowNum = $("#maxTsRowNum").val();
-			var tbl = document.getElementById("addRequestTbl");
-			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-			
-			var associatesRowsCount = $("#associatesRowsCount").val();
-			var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
-			$("input[name = 'associatesRowsCount']").val(rowsCount + 1);
-			
-			
-			var row = tbl.insertRow(maxRowNum);
-			row.setAttribute("id", "divTsRow" + maxRowNum);
-			
-			var cell0 = row.insertCell(0);
-			var divTaskTd1Str = document.getElementById("divTaskTd1").innerHTML;
-			divTaskTd1Str = divTaskTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd1Str = divTaskTd1Str.replace(/PRICECALCULATION/g,("")); 
-			cell0.innerHTML = divTaskTd1Str;
-			
-			$('#'+maxRowNum+'candidateId').val(opt.requestedCandidateId);
-			$('#'+maxRowNum+'candidateName').html(opt.candidateName);
-			$('#'+maxRowNum+'candidateFullName').val(opt.candidateName);
-			$('#'+maxRowNum+'resourceRequestId').val(opt.id);
-			
-			
-		    var cell1 = row.insertCell(1);
-			var divTaskTd2Str = document.getElementById("divTaskTd2").innerHTML;
-			divTaskTd2Str = divTaskTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd2Str = divTaskTd2Str.replace(/PRICECALCULATION/g,("")); 
-			cell1.innerHTML = divTaskTd2Str;
-			
-			
-			if(opt.payRate != null && opt.payRate != '' && opt.payRate != 'undefined'){
-				$('#'+maxRowNum+'payRateCurrency').html(opt.payRateCurrency);
-				$('#'+maxRowNum+'payRate').html(opt.payRate);
-				$('#'+maxRowNum+'payRateType').html(opt.payRateType);	
-			}else{
-				$('#'+maxRowNum+'payRate').html("---------");
-			}
-			
-			$('#'+maxRowNum+'candidatePayRateCurrency').val(opt.payRateCurrency);
-			$('#'+maxRowNum+'candidatePayRate').val(opt.payRate);
-			$('#'+maxRowNum+'candidatePayRateType').val(opt.payRateType);
-			
-			var cell2 = row.insertCell(2);
-			var divTaskTd3Str = document.getElementById("divTaskTd3").innerHTML;
-			divTaskTd3Str = divTaskTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd3Str = divTaskTd3Str.replace(/PRICECALCULATION/g,("")); 
-			cell2.innerHTML = divTaskTd3Str;
-			
-			$('#'+maxRowNum+'billRateCurrency').val(opt.billRateCurrency);
-			$('#'+maxRowNum+'billRate').val(opt.billRate);
-			$('#'+maxRowNum+'billRateRateType').val(opt.billRateType);
-			
-			
-			var startDateText = "";
-			var cell3 = row.insertCell(3);
-			startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="'+maxRowNum+'requestStartDate" >';
-			startDateText = startDateText+'</div>';
-			cell3.innerHTML = startDateText;
-			
-			
-			var endDateText = "";
-			var cell4 = row.insertCell(4);
-			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"  name="'+maxRowNum+'requestEndDate" >';
-			endDateText = endDateText+'</div>';
-			cell4.innerHTML = endDateText;
-			
-			
-			
-			$( "#"+maxRowNum+"sdate-input" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
-			      minDate : 0,
-				  onSelect : function(selected) {
-					  var id = $(this).attr('id');
-					  var rowId = id.split("sdate-input")[0];
-					  var dt = toDate("#"+rowId+"sdate-input");
-					  dt.setDate(dt.getDate() + 1);
-					  $("#"+rowId+"edate-input").datepicker("option", "minDate", dt);
-					  getEstimatedHours(rowId);
-			 	  }
-			    });
-			
-			$( "#"+maxRowNum+"edate-input" ).datepicker({
-				  changeMonth: true,
-			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
-			      minDate : 0,
-				  onSelect : function(selected) {
-					  var id = $(this).attr('id');
-					  var rowId = id.split("edate-input")[0];
-					   var dt = toDate("#"+rowId+"edate-input");
-						dt.setDate(dt.getDate() - 1);
-						$("#"+rowId+"sdate-input").datepicker("option", "maxDate", dt);
-						getEstimatedHours(rowId)
-			 	  }
-			    });
-			
-			
-			var cell5 = row.insertCell(5);
-			var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
-			divTaskTd6Str = divTaskTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd6Str = divTaskTd6Str.replace(/PRICECALCULATION/g,("")); 
-			cell5.innerHTML = divTaskTd6Str;
-			
-			$('#'+maxRowNum+'consultingType').val(opt.consultingType);
-			
-			var cell6 = row.insertCell(6);
-			var divTaskTd7Str = document.getElementById("divTaskTd7").innerHTML;
-			divTaskTd7Str = divTaskTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd7Str = divTaskTd7Str.replace(/PRICECALCULATION/g,("")); 
-			cell6.innerHTML = divTaskTd7Str;
-			
-			$('#'+maxRowNum+'estHours').val(opt.estimatedHours);
-			
-			
-			var cell7 = row.insertCell(7);
-			var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
-			divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
-			cell7.innerHTML = divTaskTd8Str;
-			
-			$('#'+maxRowNum+'estBudget').val(opt.estimatedBudget);
-			
-			var cell8 = row.insertCell(8);
-			var divTaskTd9Str = document.getElementById("divTaskTd9").innerHTML;
-			divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
-			cell8.innerHTML = divTaskTd9Str;
-			
+		    if(opt.resourceStatus == null || opt.resourceStatus == 'Rejected'){
+			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
+				var tbl = document.getElementById("addRequestTbl");
+				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+				$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+				
+				var associatesRowsCount = $("#associatesRowsCount").val();
+				var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
+				$("input[name = 'associatesRowsCount']").val(rowsCount + 1);
+				
+				
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "divTsRow" + maxRowNum);
+				
+				var cell0 = row.insertCell(0);
+				var divTaskTd1Str = document.getElementById("divTaskTd1").innerHTML;
+				divTaskTd1Str = divTaskTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd1Str = divTaskTd1Str.replace(/PRICECALCULATION/g,("")); 
+				cell0.innerHTML = divTaskTd1Str;
+				
+				$('#'+maxRowNum+'candidateId').val(opt.requestedCandidateId);
+				$('#'+maxRowNum+'candidateName').html(opt.candidateName);
+				$('#'+maxRowNum+'candidateFullName').val(opt.candidateName);
+				$('#'+maxRowNum+'resourceRequestId').val(opt.id);
+				
+				
+			    var cell1 = row.insertCell(1);
+				var divTaskTd2Str = document.getElementById("divTaskTd2").innerHTML;
+				divTaskTd2Str = divTaskTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd2Str = divTaskTd2Str.replace(/PRICECALCULATION/g,("")); 
+				cell1.innerHTML = divTaskTd2Str;
+				
+				
+				if(opt.payRate != null && opt.payRate != '' && opt.payRate != 'undefined'){
+					$('#'+maxRowNum+'payRateCurrency').html(opt.payRateCurrency);
+					$('#'+maxRowNum+'payRate').html(opt.payRate);
+					$('#'+maxRowNum+'payRateType').html(opt.payRateType);	
+				}else{
+					$('#'+maxRowNum+'payRate').html("---------");
+				}
+				
+				$('#'+maxRowNum+'candidatePayRateCurrency').val(opt.payRateCurrency);
+				$('#'+maxRowNum+'candidatePayRate').val(opt.payRate);
+				$('#'+maxRowNum+'candidatePayRateType').val(opt.payRateType);
+				
+				var cell2 = row.insertCell(2);
+				var divTaskTd3Str = document.getElementById("divTaskTd3").innerHTML;
+				divTaskTd3Str = divTaskTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd3Str = divTaskTd3Str.replace(/PRICECALCULATION/g,("")); 
+				cell2.innerHTML = divTaskTd3Str;
+				
+				$('#'+maxRowNum+'billRateCurrency').val(opt.billRateCurrency);
+				$('#'+maxRowNum+'billRate').val(opt.billRate);
+				$('#'+maxRowNum+'billRateRateType').val(opt.billRateType);
+				
+				
+				var startDateText = "";
+				var cell3 = row.insertCell(3);
+				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
+				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input" value="'+opt.startDateStr+'"  name="'+maxRowNum+'requestStartDate" >';
+				startDateText = startDateText+'</div>';
+				cell3.innerHTML = startDateText;
+				
+				
+				var endDateText = "";
+				var cell4 = row.insertCell(4);
+				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
+				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input" value="'+opt.endDateStr+'"  name="'+maxRowNum+'requestEndDate" >';
+				endDateText = endDateText+'</div>';
+				cell4.innerHTML = endDateText;
+				
+				
+				
+				$( "#"+maxRowNum+"sdate-input" ).datepicker({
+					  changeMonth: true,
+				      changeYear: true,
+				      dateFormat : 'dd-mm-yy',
+				      minDate : 0,
+					  onSelect : function(selected) {
+						  var id = $(this).attr('id');
+						  var rowId = id.split("sdate-input")[0];
+						  var dt = toDate("#"+rowId+"sdate-input");
+						  dt.setDate(dt.getDate() + 1);
+						  $("#"+rowId+"edate-input").datepicker("option", "minDate", dt);
+						  getEstimatedHours(rowId);
+				 	  }
+				    });
+				
+				$( "#"+maxRowNum+"edate-input" ).datepicker({
+					  changeMonth: true,
+				      changeYear: true,
+				      dateFormat : 'dd-mm-yy',
+				      minDate : 0,
+					  onSelect : function(selected) {
+						  var id = $(this).attr('id');
+						  var rowId = id.split("edate-input")[0];
+						   var dt = toDate("#"+rowId+"edate-input");
+							dt.setDate(dt.getDate() - 1);
+							$("#"+rowId+"sdate-input").datepicker("option", "maxDate", dt);
+							getEstimatedHours(rowId)
+				 	  }
+				    });
+				
+				
+				var cell5 = row.insertCell(5);
+				var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
+				divTaskTd6Str = divTaskTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd6Str = divTaskTd6Str.replace(/PRICECALCULATION/g,("")); 
+				cell5.innerHTML = divTaskTd6Str;
+				
+				$('#'+maxRowNum+'consultingType').val(opt.consultingType);
+				
+				var cell6 = row.insertCell(6);
+				var divTaskTd7Str = document.getElementById("divTaskTd7").innerHTML;
+				divTaskTd7Str = divTaskTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd7Str = divTaskTd7Str.replace(/PRICECALCULATION/g,("")); 
+				cell6.innerHTML = divTaskTd7Str;
+				
+				$('#'+maxRowNum+'estHours').val(opt.estimatedHours);
+				
+				
+				var cell7 = row.insertCell(7);
+				var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
+				divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
+				cell7.innerHTML = divTaskTd8Str;
+				
+				$('#'+maxRowNum+'estBudget').val(opt.estimatedBudget);
+				
+				var cell8 = row.insertCell(8);
+				var divTaskTd9Str = document.getElementById("divTaskTd9").innerHTML;
+				divTaskTd9Str = divTaskTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTaskTd9Str = divTaskTd9Str.replace(/PRICECALCULATION/g,("")); 
+				cell8.innerHTML = divTaskTd9Str;
+	  }
 			
 	 }
 	 
