@@ -2277,5 +2277,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	{
 		return contractsTemplateDao.getAllContractsHistoryByContractId(contractId);
 	}
+
+	@Override
+	public Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String contractType)
+	{
+		return contractsTemplateDao.getContractByReqSubmissionSowTypeAndOrgLocId(reqSub, loginOrgLocation, contractType);
+	}
 	
 }

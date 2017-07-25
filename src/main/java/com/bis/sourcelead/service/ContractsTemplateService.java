@@ -63,5 +63,7 @@ public interface ContractsTemplateService {
 
 	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
 
+	Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String sowType);
+
 	
 }

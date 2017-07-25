@@ -544,6 +544,23 @@ public class ContractRestController {
 		return commonUtil.toJSON(requirementOffers);
 	}
 	
+	@RequestMapping(value = "/validateRequirementSubmission", method = RequestMethod.GET)
+	public @ResponseBody Boolean validateRequirementSubmission(@RequestParam(value = "reqSubId", required = false) String reqSubId,@RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		Contracts contract = null;
+		Boolean flag= false;
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
+			contract = contractsTemplateService.getContractByReqSubmissionSowTypeAndOrgLocId(Long.parseLong(reqSubId),loginOrgLocation,contractType);
+		}
+		if(contract!=null){
+			flag = true;
+		}
+		return flag;
+	}
+	
+	
+	
+	
 	@RequestMapping(value = "/approveContract", method = RequestMethod.POST)
 	@ResponseBody
 	public String approveContract(@RequestParam(value = "recordId", required = false) String recordId,
