@@ -83,14 +83,14 @@ public class LoggingAspect {
 
 	}
 
-	@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.web.*.*(..))", throwing = "error")
+	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.web.*.*(..))", throwing = "error")
 	public void logAfterThrowingWebService(JoinPoint joinPoint, Throwable error) {
 		logger.info("********** Web Service Layer Method Throwing Error ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
 		logger.error("Method name : " + joinPoint.getSignature().getName());
 		logger.error("Exception : " + error);
 
-	}
+	}*/
 
 	@Before("execution(* com.bis.sourcelead.rest..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage1() ")
 	public void logBeforeRestService(JoinPoint joinPoint) throws Throwable {
@@ -126,16 +126,16 @@ public class LoggingAspect {
 
 	}
 
-	@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
+	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.rest.*.*(..))", throwing = "error")
 	public void logAfterThrowingRestService(JoinPoint joinPoint, Throwable error) {
 		logger.info("********** Rest Service Layer Method Throwing Error ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
 		logger.error("Method name : " + joinPoint.getSignature().getName());
 		logger.error("Exception : " + error);
 
-	}
+	}*/
 
-	@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.dao.*.*(..))", throwing = "error")
+	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.dao.*.*(..))", throwing = "error")
 	public void logAfterThrowingDao(JoinPoint joinPoint, Throwable error) {
 		logger.info("********** Dao Layer Method Throwing Error ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -143,7 +143,7 @@ public class LoggingAspect {
 		logger.error("Exception : " + error);
 
 	}
-
+*/
 	@Around("execution(* com.bis.sourcelead.dao..*.*(..))")
 	public Object logAroundDao(ProceedingJoinPoint joinPoint) throws Throwable {
 		Object result = null;
