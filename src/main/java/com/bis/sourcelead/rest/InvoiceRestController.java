@@ -1589,7 +1589,7 @@ public class InvoiceRestController {
 				if(null != invce.getContactUser()){
 					StringBuilder username = new StringBuilder();
 					if(null != invce.getContactUser().getLastName()){
-						username.append(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
 					}else{
 						username.append(invce.getContactUser().getFirstName());
 					}
