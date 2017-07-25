@@ -263,7 +263,8 @@ function getViewInvoice(){
 					result = result +'             <thead>                                                           ';
 					result = result +'                 <tr>                                                          ';
 					result = result +'                     <th>Id</th>                                               ';
-					result = result +'                     <th>Associates</th>                                        ';
+					result = result +'                     <th>Associates</th>';
+					result = result +'                     <th>Description</th>';
 					result = result +'                     <th>SOW/PO</th>                                          ';
 					result = result +'                     <th>Date</th>                                             ';
 					result = result +'                     <th>Rate Hourly</th>                                             ';
@@ -323,6 +324,9 @@ function getViewInvoice(){
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
 						result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
+						result = result +'                     </td>                                                     ';
+						result = result +'                     <td>                                                     ';
+						result = result +'                         <div class="tbldata-dotdot_80" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
 						result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
