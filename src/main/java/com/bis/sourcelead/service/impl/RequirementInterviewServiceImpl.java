@@ -128,7 +128,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		RequirementInterviewer savedInterviewer = null;
 		List<RequirementInterview> intervieresArrayList = null ;
 		List<RequirementInterviewer> requirementIntervier= null;
-		
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (long c = 1; c < maxCount; c++) {
 				if(jsonObj.has(c+"applicant") && !jsonObj.getString(c+"applicant").isEmpty()){
 						String applicantIds = jsonObj.getString(c+"applicant");
@@ -151,7 +151,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									//requirementInterview.setDateOfInterview(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")));
 									
 									// changed by prasanna vadla .. due to timezone 
-									Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+									Date startTime =  CalendarUtil.getDateFromDateAndTime(dateFormat.parse(jsonObj.getString(c+"dateOfInterview")), 
 										      jsonObj.getString(c+"startTime"));
 									String currentTimeStr = Constants.TZ_DF.format(startTime);  
 									String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -167,7 +167,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								}
 								
 								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
-									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+									  Date startTime =  CalendarUtil.getDateFromDateAndTime(dateFormat.parse(jsonObj.getString(c+"dateOfInterview")), 
 											      jsonObj.getString(c+"startTime"));
 										String currentTimeStr = Constants.TZ_DF.format(startTime);  
 										String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -177,7 +177,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								}
 								
 								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
-									Date endTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+									Date endTime =  CalendarUtil.getDateFromDateAndTime(dateFormat.parse(jsonObj.getString(c+"dateOfInterview")), 
 										      jsonObj.getString(c+"endTime"));
 									String currentTimeStr = Constants.TZ_DF.format(endTime);  
 									String endTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -404,7 +404,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setFromName(interviewStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
+		 SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 		 /*String dateOfInterviewValue ="";
 		 if(requirementInterview.getDateOfInterview()!=null){
 			 dateOfInterviewValue = Constants.DMY.format(requirementInterview.getDateOfInterview());
@@ -425,7 +425,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -709,6 +709,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFromName(timeStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
+		 SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
+		 
 		 String time = "";
 		 String startTime = "";
 		 String endTime = "";
@@ -720,7 +722,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -810,7 +812,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		EmailMessage emailMessage = new EmailMessage();
-		
+		SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 		if(interviewerUser.getFirstName()!=null){
 			 emailMessage.setFirstName(interviewerUser.getFirstName());
 		}
@@ -853,7 +855,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -945,7 +947,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 StringBuilder timeStringBuilder=new StringBuilder();
 		 emailMessage.setFromName(timeStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
+		 SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
 		 String time = "";
 		 String startTime = "";
 		 String endTime = "";
@@ -957,7 +959,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -1171,6 +1173,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations loginOrgLocations)	throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
+		 SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
 		 User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -1191,7 +1194,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -1317,7 +1320,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 Long requirementInterviewerid =interviewer.getId(); 
 		 RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		 EmailMessage emailMessage = new EmailMessage();
-		
+		SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 		if(interviewerUser.getFirstName()!=null){
 			 emailMessage.setFirstName(interviewerUser.getFirstName());
 		}
@@ -1344,7 +1347,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 String dateOfInterviewValue ="";
 		 if(requirementInterview.getDateOfInterview()!=null){
-			 dateOfInterviewValue = Constants.DMY.format(requirementInterview.getDateOfInterview());
+			 dateOfInterviewValue = dateFormat.format(requirementInterview.getDateOfInterview());
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -1493,6 +1496,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		RequirementInterview reqnterview = getRequirementInterviewById(requirementInterviewId);
 		User interviewCreactorUser =  userService.getUserByUserCode(reqnterview.getCreatedBy());
 		RequirementSubmission reqSubmission = requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
+SimpleDateFormat dateFormat=reqSubmission.getOrgLocations().getLocFullFormDateFormatter();
 		EmailMessage emailMessage = new EmailMessage();
 		 OrgSpoc spoc= null;
 		if(null != reqSubmission.getVendorLocationId()){
@@ -1545,7 +1549,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE,
 					reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
 			Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-			interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+			interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 			reqnterview.setDateOfInterviewStr(interviewDateInTimezone);
 			globalVarsMap.put("InterviewDate", reqnterview.getDateOfInterviewStr());
 		} else {
@@ -1677,6 +1681,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	      RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementinterview.getSubmissionId().getId());
 	      List<RequirementInterviewer> requirementInterviewer=requirementInterviewerDao.getInterviwersListByInterviewId(requirementinterview.getId());
 	      User intUser=userService.getUserByUserCode(requirementinterview.getCreatedBy()) ;
+	      SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 	      List<User> interviewrUserList = new ArrayList<>(); 
 	      if(!requirementInterviewer.isEmpty() && requirementInterviewer.size() > 0){
 	    	  for(RequirementInterviewer reqInterviewer : requirementInterviewer){
@@ -1729,7 +1734,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	    					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementinterview.getTimezone().getTimeZoneId(), currentTimeStr);
 	    					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-	    					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+	    					interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 	    					dateOfInterviewStr = interviewDateInTimezone;
 	    			    }
 	    			    

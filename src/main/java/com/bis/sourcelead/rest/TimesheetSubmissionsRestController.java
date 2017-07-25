@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -202,11 +203,11 @@ public class TimesheetSubmissionsRestController {
 		
 			 //Employees emp = employeesService.getEmployee(empId.toString());
 	 	 
-			 
+			 SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 			 ProjectMembers projectMembers = projectMembersService.getProjectMemberById(pmId);
-			 DateFormat format = Constants.DF_DMY;
-			 Date frequencyStartDate = format.parse(startDate.replaceAll("/", "-"));
-			 Date frequencyEndDate = format.parse(endDate.replaceAll("/", "-"));
+			// DateFormat format = Constants.DF_DMY;
+			 Date frequencyStartDate = dateFormat.parse(startDate.replaceAll("/", "-"));
+			 Date frequencyEndDate = dateFormat.parse(endDate.replaceAll("/", "-"));
 		 
 			 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pmId);
 			 Submission_Status submissionStatus = sah.getSubmissionStatus();

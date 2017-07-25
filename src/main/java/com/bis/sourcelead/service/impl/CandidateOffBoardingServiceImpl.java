@@ -250,7 +250,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 	}
 public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, User loginUser,OrgLocations orgLocations) throws Exception{
-        
+        SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
         EmailMessage emailMessage = new EmailMessage();
          emailMessage.setFirstName(loginUser.getFirstName());
          emailMessage.setLastName(loginUser.getLastName());
@@ -263,9 +263,9 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
         //setting the class filed values
          Map<String, String> globalVarsMap = new HashMap<String, String>();
         
-        String effectiveDate=Constants.DMY.format(candidateOffBoarding.getEffectiveDate());
+        String effectiveDate=dateFormat.format(candidateOffBoarding.getEffectiveDate());
          globalVarsMap.put("effectiveDate", effectiveDate);
-         String endDate=Constants.DMY.format(candidateOffBoarding.getEndDate());
+         String endDate=dateFormat.format(candidateOffBoarding.getEndDate());
          globalVarsMap.put("endDate", endDate);
          globalVarsMap.put("offboardReason", candidateOffBoarding.getReason());
          globalVarsMap.put("loginUser", emailMessage.getFromName());

@@ -330,28 +330,38 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	function educationStartDate(){
 	}
-	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatVendorDocSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatVendorDocSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatVendorDocSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatVendorDocSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatVendorDocSave = 'yy-dd-mm'; 
+	  }
 	$('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatVendorDocSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#startDate");
-	           dt.setDate(dt.getDate() + 1);
-	           $("#endDate").datepicker("option", "minDate", dt);
+	    	  var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatVendorDocSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	            var dt = toDate("#endDate");
-	            dt.setDate(dt.getDate() - 1);
-	            $("#startDate").datepicker("option", "maxDate", dt);
+	        	 var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
 	
@@ -569,7 +579,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     			 
     			 $("#update_doc").attr("onclick", "storeClientDocument("+vendorLocationId+","+orgRelationId+","+json.id+");");
     			 
-    			 manageDates(json.startDateStr,json.endDateStr);
+    			 //manageDates(json.startDateStr,json.endDateStr);
 		    }
      });
 }
@@ -577,7 +587,6 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 
 <script>
 function manageDates(startDateStr,endDateStr) {
-	
 	  if($("#endDate").val() == "" ){
 		     
 			  var selected = $("#startDate").val();

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,9 +108,9 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		
+		SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
 		Date currentDate = new Date();
-		String convertedDate = Constants.DMY.format(currentDate);
+		String convertedDate = dateFormatter.format(currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createPayables");
 		model.addObject("sourceleadUrl", sourceleadUrl);
