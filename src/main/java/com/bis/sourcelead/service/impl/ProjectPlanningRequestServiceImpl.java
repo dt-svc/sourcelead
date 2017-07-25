@@ -209,13 +209,21 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 
 				 if(jsonObj.has(i+"resourceRequestId") &&  null != jsonObj.getString(i+"resourceRequestId") && !"".equalsIgnoreCase(jsonObj.getString(i+"resourceRequestId"))){
 					 resourceRequest.setId(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+					 ProjectPlanningResourceRequest savedRresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+					 resourceRequest.setRequestUUID(savedRresourceRequest.getRequestUUID());
+					 resourceRequest.setRejectedReason(savedRresourceRequest.getRejectedReason());
+					 resourceRequest.setResourceStatus(savedRresourceRequest.getResourceStatus());
 					 updatedResourceRequests.add(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+				 }else{
+					 resourceRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 }
 				 
 				 
 				 Candidate candidate = new Candidate();
 				 candidate.setId(Long.valueOf(jsonObj.getString(i+"candidateId")));
 				 resourceRequest.setCandidateId(candidate);
+				 
+				 
 				 
 				 if(jsonObj.has(i+"candidateFullName") && !isNullOrEmpty(jsonObj.getString(i+"candidateFullName"))){
 					 resourceRequest.setCandidateName(jsonObj.getString(i+"candidateFullName"));
@@ -400,5 +408,11 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverId(Long approverUserId, Long orgLocationId,String requestStatus)
 			throws Exception {
 		return projectPlanningRequestDao.getProjectPlanningRequestByApproverId(approverUserId, orgLocationId,requestStatus);
+	}
+
+	@Override
+	public ProjectPlanningRequest storeProjectPlanningRequest(ProjectPlanningRequest projectPlanningRequest)
+			throws Exception {
+		return projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
 	}
 }

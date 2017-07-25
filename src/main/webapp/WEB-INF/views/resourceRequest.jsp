@@ -92,7 +92,7 @@ function resourceRequestList(requestType){
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
 		    		result = result + '<td><div class="tblminwidth-90">';
 		    		 
-		    		if(report.requestStatus != 'Approved'){
+		    		if(report.requestStatus == 'Waiting For Approval'){
 		    			result = result + '<i class="fa fa-check" alt="Approve" title="Approved"></i>|';
 			    		result = result + '<i class="fa fa-times" alt="Rejected" title="Rejected"></i>|';
 			    		result = result + '<i class="fa fa-clock-o" alt="On Hold" title="On Hold"></i>';

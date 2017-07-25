@@ -37,17 +37,21 @@ try {
 			 String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS group by COUNTRY";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs = stmt1.executeQuery(sql2);
-			while(rs.next()){
-				 String country = rs.getString("COUNTRY");
-				  	String query = "update sourcelead.ORG_LOCATIONS orgLoc set DATE_FORMAT = ? where  orgLoc.COUNTRY = '"+country+"' ";
-				  	 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
-				  	 if(country.equalsIgnoreCase("India")){
-				  		pstmt.setString(1, "dd-MM-yyyy");
-				  	 }else{
-				  		pstmt.setString(1, "MM-dd-yyyy"); 
-				  	 } 
-				      pstmt.executeUpdate(); 
+			 System.out.println("Updating Dateformat Starts.....");
+			 while(rs.next()){
+					 String country = rs.getString("COUNTRY");
+					 if(country != null && !country.isEmpty()){
+						 String query = "update sourcelead.ORG_LOCATIONS orgLoc set DATE_FORMAT = ? where  orgLoc.COUNTRY = '"+country+"' ";
+					  	 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
+					  	 if(country.equalsIgnoreCase("India")){
+					  		pstmt.setString(1, "dd-MM-yyyy");
+					  	 }else{
+					  		pstmt.setString(1, "MM-dd-yyyy"); 
+					  	 } 
+					      pstmt.executeUpdate(); 
+					 }
     	           }
+			 System.out.println("Updating Dateformat Ends.....");
 		
 	}catch(Exception e){
 		e.printStackTrace();

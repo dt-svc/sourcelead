@@ -1146,12 +1146,11 @@ function resourceRequestsTab(){
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
 	        	
-	        	var json = JSON.parse(data);
 	        	var result = "";
-	        	 
+	        	
 	    		result = result + '	<div class="project_tabs_inn_head timesheet_head">';
 	    		result = result + '	<ul>';
 	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
@@ -1179,8 +1178,7 @@ function resourceRequestsTab(){
 	    		
 	    		for (var i=0; i<json.length; i++){
 	    			var report = json[i];
-	    			
-	    			result = result + '	         <tr>';
+	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
 							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
@@ -1197,7 +1195,11 @@ function resourceRequestsTab(){
 		    		result = result + '	             <td><i class="pull-left"></i>'+report.estimatedBudgetCurrency+'<div class="pull-right">'+report.estimatedBudget+'</div></td>';
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
 		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
-		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div></td>';
+		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div>';
+		    		if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+		    			 result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+report.rejectedReason+"</p></div></i>";
+		    		}
+		    		result = result + '</td>';
 		    		result = result + '	         </tr>';
 	    		}
 	    		
