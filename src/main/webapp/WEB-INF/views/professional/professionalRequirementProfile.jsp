@@ -142,7 +142,18 @@ function requirementProfile(requirementUUID){
 	    			travelAllowance = "";
 	    		}
 		    	
-				 result = result +'	<div class="timesheet_out">';
+		    	var location = '';
+		    	if(json.location != null && json.location != '' && json.location != 'undefined'){
+		    		location = json.location
+		    	}
+		    	var visaType ='';
+		    	if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined'){
+ 					visaType = json.visaType;
+ 				}else{
+ 					visaType = '--';
+ 				}
+
+		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
 				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
 				
@@ -193,7 +204,7 @@ function requirementProfile(requirementUUID){
 					 }
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 				 result = result +'                      </ul>';
@@ -231,8 +242,14 @@ function requirementProfile(requirementUUID){
 						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Submit</a>';
 					 }
 				 }else{
+					 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';
-				 }
+					 }
+					 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Submit</a>';
+	 
+					 }
+					 }
 				 
 			     result = result +'<a class="refer" onclick="referToJob('+json.id+');getUserContats('+json.id+');" href="javascript:void(0)">Refer</a>';
 			     result = result +'<div class="referWrap" id="refer">';
@@ -303,11 +320,15 @@ function requirementDetails(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewProfessionalRequirementProfile(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 		            }
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+visaType+'">'+visaType+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="clearfix"></div>';
@@ -325,6 +346,16 @@ function requirementDetails(requirementUUID){
 	    });
    }
 </script>
+
+<script>
+function viewProfessionalRequirementProfile(jobId,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(jobId != null && jobId != ""){
+			window.open(sourceleadUrl+'/viewJobSummaryDocumentDocView/'+title+'?jobId='+jobId,title,"height=600,width=600");
+		}  
+}
+</script>
+
 
 <script>
 function getReferalDetails(requirementUUID){
@@ -525,7 +556,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '  <label class="col-md-12">Comment</label>';
 	                    result = result + '  <div class="col-md-12">';
-	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason"></textarea>';
+	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" field-name="Reason"></textarea>';
 	                    result = result + '  </div>';
 	                    result = result + '  </div>';
 	                    
@@ -579,21 +610,21 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    	 }
 		                     result = result + '<tr>';
 		                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
-		                     result = result + '<td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+		                     result = result + '<td><div class="tbldata-dotdot-sm" title="'+report.proposeByName+'">'+report.proposeByName+'</div></td>';
 		                     }
 		                     else{
 		                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
 		                     }
 		                    
 		                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
-		                         result = result + '<td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
+		                         result = result + '<td><div class="tblminwidth-75" title="'+report.rateAndType+'">'+report.rateAndType+'</div></td>';
 		                     } 
 		                     else{
 		                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
 		                     }
 		                     
 		                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
-		                         result = result + '<td><div class="tbldata-dotdot">'+report.rateReason+'</div></td>';
+		                         result = result + '<td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
 		                     }
 		                     else{
 		                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
@@ -673,13 +704,13 @@ function iconFun(el){
 	$(el).find("i").toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
 	$("#rateProposal").val('');
 	$("#rateType option:selected").removeAttr("selected");
-	$("#rateComment").val('');
+	$("#comment").val('');
 }
 
 function clearRatediv(){
 	$("#rateProposal").val('');
 	$("#rateType option:selected").removeAttr("selected");
-	$("#rateComment").val('');
+	$("#comment").val('');
 }
 
 
@@ -709,7 +740,7 @@ function proposeNewRate(submissionId, candidateId) {
 <script type="text/javascript">
 	function acceptRejectRate(submissionId, status, candidateId) {
 			var sourceleadUrl ='${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
@@ -911,7 +942,7 @@ $('body').on('submit', '#referToContacts', function(e){
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	
 	 	  $.ajax({
 		    	type: "POST",
@@ -950,7 +981,7 @@ $('body').on('submit', '#referToJob_form', function(e){
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 

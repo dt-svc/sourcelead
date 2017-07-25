@@ -114,6 +114,26 @@ function editCandidate(candidateId){
 	            			 	}else{
 	            			 		vendorName = "";
 	            			 	}
+	            			 	
+	            			 	var location = '';
+	            			 	if(json.location != null && json.location != '' && json.location != 'undefined'){
+	            			 		location = json.location;            			 		
+	            			 	}
+	            			 	
+	            			 	var zipCode = '';
+	            			 	if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
+	            			 		zipCode = json.zipCode;            			 		
+	            			 	}
+	            			 	
+	            			 	var state = '';
+	            			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+	            			 		state = json.state;            			 		
+	            			 	}
+	            			 	
+	            			 	var city = '';
+	            			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+	            			 		city = json.city;            			 		
+	            			 	}
 								var result ='';
 								result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -168,29 +188,44 @@ function editCandidate(candidateId){
 								result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
 								result = result + '</div>';
 								
+								result = result + '<div class="col-md-6" id="locationField">';
+								result = result + '<input type="text" class="form-control input-sm" name="location"  id="cpLocation"  value="'+location+'" placeholder="Location" field-name="Locatin" data-validation="required">';
+								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'cpLocation\',\'cpCountry\',\'cpState\',\'cpCity\',\'cpZipCode\');"></i>';
+								result = result + '</div>'; 
+								
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix mb10">';
+								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<select class="form-control" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
-								result = result + '</select>';
+								result = result + '<input class="form-control" id="cpCountry" name="country" value="'+json.country+'"  placeholder="Enter your Country" type="text" readonly></input>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow">';
+								result = result + '<input class="form-control" id="cpState" name="state" value="'+state+'" placeholder="Enter your State" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '</div>';
 								
 								result = result + '<div class="clearfix mb10">';
-								result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
-								result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
-								result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
-								
-								result = result + '<div class="col-md-6 custom-fields select-arrow">';
-								result = result + '<select  class="form-control" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
-								result = result + '</select>';
+								result = result + '<div class="col-md-6 custom-fields">';
+								result = result + '<input class="form-control" id="cpCity" name="city" value="'+city+'" placeholder="Enter your City" type="text" readonly></input>';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<select  class="form-control" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
-								result = result + '</select>';
+								result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text"></input>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields hidden">';
+								result = result + '<input class="form-control" id="cpLatitude" name="latitude" value="'+json.latitude+'" type="text"></input>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields hidden">';
+								result = result + '<input class="form-control" id="cpLongitude" name="longitude" value="'+json.longitude+'" type="text"></input>';
 								result = result + '</div>';
 								
 								result = result + '</div>';
+								
 								
 								result = result + '<div class="clearfix mb10">';
 								
@@ -406,21 +441,12 @@ function editCandidate(candidateId){
 								$("#profileEditPopup").empty(); 
 								$("#profileEditPopup").append(result); 
 								/* updateDesignationType(json.designationType); */
-								getAllCandidateCountries();
+								initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
 								getVendorsByOrgLocation();
 								employementType();
-								getAllCandidateStates();
 								$(".edit-details").toggleClass("edit-details-active");
 								$(".collapse-div").removeClass("edit-details-active");
 								
-								  $("#candidateCountry").chosen();
-								  $("#candidateCountry").trigger("chosen:update");
-								  
-								  $("#candidateState").chosen();
-								  $("#candidateState").trigger("chosen:update");
-								  
-								  $("#candidateCity").chosen();
-								  $("#candidateCity").trigger("chosen:update");
 								  
 								  $("#vendorName").chosen();
 								  $("#vendorName").trigger("chosen:update");
@@ -440,14 +466,6 @@ function editCandidate(candidateId){
 										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 										  '.chosen-select-width'     : {width:"95%"}
 										}
-								    $("#candidateCountry").on('change', function (e) {
-								 	   getAllCandidateStates();
-								    });
-								   
-								    $("#candidateState").on('change', function (e) {
-								 	   getCandidateCities();
-								    });
-								   
 								    $('.chosen-select').each(function() {
 											var $this = $(this);
 											$this.next().css({'width': '100%'});
@@ -473,145 +491,9 @@ function editCandidate(candidateId){
 	                   
 	              }); 
 		 }
- getAllCandidateCountries();
 }
 </script> 
 
-
-<!-- Edit Recommended Candidate Script Ends Here -->
-
-
-<!-- Country,State,City Script Starts Here -->
-
- <script type="text/javascript">
-function getAllCandidateCountries(){
-	setTimeout(function(){ 
-	var countryName = $("#updateCountry").val();
-	var loginCountryName = '${loginCountryName}';
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('html #candidateCountry').empty();
-        	$('html #candidateCountry').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == countryName){
-            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}else if(json[i] == '${loginCountryName}' && countryName ==null && countryName ==''){
-            		$('html #candidateCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{ 
-            		$('html #candidateCountry').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	} 
-            	
-            }
-            
-            getAllCandidateStates();
-            $('html #candidateCountry').trigger("chosen:updated");
-           
-        },
-        error: function(e){
-        }
-    });
-	}, 75);
-} 
-</script>
- 
-<script>
-function getAllCandidateStates(){
-	
-var countryName = $("html #candidateCountry").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("html #candidateState").val();
-	
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("updateState").value;
-	}
-	
-	//end state Auto populate
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('html #candidateState').empty();
-	        	$('html #candidateState').append('<option value="">---select state---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('html #candidateState').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('html #candidateState').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            
-	            getCandidateCities();
-	            $('html #candidateState').trigger("chosen:updated");
-	            
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('html #candidateState').empty();
-    	$('html #candidateState').append('<option value="">---select---</option>');
-    	$('html #candidateState').trigger("chosen:updated");
-    	$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
-        $('html #candidateCity').trigger("chosen:updated");
-	}
-}
-</script>  
-
-
-<script>
-function getCandidateCities(){
-	
-	var countryName = $("html #candidateCountry").val();
-	var stateName = $("html #candidateState").val();
-	
-	var cityName = $("html #candidateCity").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("updateCity").value;
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('html #candidateCity').empty();
-	        	$('html #candidateCity').append('<option value="">---select city---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('html #candidateCity').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('html #candidateCity').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('html #candidateCity').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('html #candidateCity').empty();
-    	$('html #candidateCity').append('<option value="">---select---</option>');
-    	$('html #candidateCity').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<!-- Country,State,City Script Ends Here -->
 
 <%-- 
      @author : Venkat Kesav
@@ -783,22 +665,24 @@ function candidateProfile(candidateId){
 							result = result +'<div class="clearfix">';
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
+							// here get lookup data skills and manually enter skills 
+							$.each( json.allAndCandidateSkills, function( i, skill ){
+								  var existed = 0;
 					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 						                var res = [];
 						                res = json.skillsName.split(",");
 						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
+						                	if(skill == item){
 						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
+						                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
 						                	}
 						                });
 					                }
 					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
+					                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
 					                }
-			                </c:forEach>
+								  
+								});
 			                result = result + '</select>';
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
@@ -879,7 +763,7 @@ function candidateProfile(candidateId){
 								
 								$(".btn-addskills").click(function(){
 									$(".add-skills").css({"display":"block","opacity":"1"});
-									$("#skillName").val('');
+// 									$("#skillName").val('');
 									 
 									 $("#skillName").val('').trigger("chosen:updated");
 									 
@@ -1458,29 +1342,76 @@ function updateDesignationType(){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		var select, chosen;
+		  //Adding Customized Skills to the list
+		   var select, chosen;
+	        select = $("#skillName");
+	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.bind(('keydown keyup'), function(e)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 select.append(option);
+	        			 select.find(option).prop('selected', true);
+	 	        		 $("#skillName").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 select.append(option);
+			        		 select.find(option).prop('selected', true);
+				        		$("#skillName").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
+		    
+		    
+		
+       /*  var select, chosen;
 	    select = $("#skillName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
 	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                $("#skillName option").each(function(){
-                      $(this).siblings("[value='"+ this.value+"']").remove();
-                });
-                //end
-        		$("#skillName").trigger("chosen:updated");
-        		
-	        }
-	    });
-		
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#skillName").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#skillName option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#skillName").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	}); */
+	    
+	    
+	    //Adding Customized Skills to the list
 	}
 
 	function saveSkill(candidateId){
@@ -1500,6 +1431,86 @@ function updateDesignationType(){
 	}
 </script>
 
+<!-- <script>
+	function editSkill(candidateId){
+		$("#skillName").prop('disabled', false).trigger("chosen:updated");
+		$("#editSkillBtn").remove();
+		$("#editSkillBtnSpan").hide();
+		window.skillCountBefore = $("#skillName :selected").length;
+		var result = '';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
+		$("#saveSkillBtnSpan").empty();
+		$("#saveSkillBtnSpan").append(result);
+		$("#saveSkillBtnSpan").show();
+		
+		var select, chosen;
+	    select = $("#skillName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.bind(('keydown keyup'), function(e)
+	    {
+			  //Adding Customized Skills to the list	
+    	 var enterSkillsArray = this.value.split(",");
+    	 if(enterSkillsArray.length > 1){
+      		 for (var i=0; i < enterSkillsArray.length; i++) {
+      			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+      			 select.append(option);
+      			 select.find(option).prop('selected', true);
+        		 $("#skillName").trigger("chosen:updated");
+               }
+    	 }else{
+	    	var newSkill = this.value.replace(","," ");
+	    	
+	    	 
+	        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	preventTabkey(e); 
+	        	var par = this.parent;
+	        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+	        		 select.append(option);
+	        		 select.find(option).prop('selected', true);
+		        		$("#skillName").trigger("chosen:updated");
+		        		
+		        		
+	        }
+    	 }
+    	
+    	/* var newSkill = this.value.replace(",","");
+        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+        {
+        	var par = this.parent;
+            var option = $("<option>").val(newSkill).text(newSkill);
+            select.append(option);
+            select.find(option).prop('selected', true);
+          //to doesn't allow duplicates
+               $("#skillName option").each(function(){
+                     $(this).siblings("[value='"+ this.value+"']").remove();
+               });
+               //end
+       		$("#skillName").trigger("chosen:updated");
+       		
+        } */
+	    });
+		
+	}
+
+	function saveSkill(candidateId){
+		$("#skillName").prop('disabled', true).trigger("chosen:updated");
+		window.skillCountAfter = $("#skillName :selected").length;
+		if(skillCountBefore != skillCountAfter){
+			saveSkils(candidateId);
+		}
+		$("#saveSkillBtn").remove();
+		$("#saveSkillBtnSpan").hide();
+		var result = '';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
+		$("#editSkillBtnSpan").empty();
+		$("#editSkillBtnSpan").append(result);
+		$("#editSkillBtnSpan").show();
+		skillCountAfter = skillCountBefore = 0;
+	}
+</script> -->
+
 <%-- 
      @author : sarath kumar.
      @author : venkat kesav (modified on 02/18/2017)
@@ -1508,7 +1519,7 @@ function updateDesignationType(){
      2.parameter : csrf token ,candidateId.
      3.ajax url implementation in CandidateListRestController.
 --%>
-<script>  
+<!-- <script>  
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
@@ -1529,7 +1540,7 @@ function updateDesignationType(){
 	 }
 	 
  }  
-</script>
+</script> -->
 
 
 <!-- Candidate Email validation script starts here -->

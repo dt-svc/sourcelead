@@ -1,7 +1,15 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-
+<style>
+.profilerefresh-icon {
+	position: absolute;
+    right: 0px;
+    top: 24px;
+    height: 28px;
+    line-height: 14px;
+}
+</style>
 <!-- for Vendor edit -->
 <script type="text/javascript">
 	function editVendorDetails(vendorLocationId,orgRelationId) {
@@ -74,7 +82,8 @@
 						 var state = '';
 						 var city = '';
 						 var website = '';
-						
+					 	 var zipCode = '';
+					 	 var location = '';
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -87,7 +96,12 @@
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 							website = json.webSite;
 						}
-						
+						if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
+							zipCode = json.zipCode;
+						}
+						if(json.location != null && json.location !='' && json.location !='undefined'){
+							location = json.location;
+						}
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -100,6 +114,11 @@
 							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" title="'+json.webSite+'" value="'+json.webSite+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="vendorLocation" id="existingLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\');"></i>';
+							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Country</label>';
@@ -115,6 +134,11 @@
 							result = result + '<label>City</label>';
 							result = result + '<input type="text" name="vendorCity" id="existingCity" value="'+city+'" placeholder="City" readonly="readonly" >';
 							result = result + '</div> ';
+							
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Zip Code</label>';
+							result = result + '<input type="text"  class="chosen-select form-control" name="vendorZipCode" id="existingZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '</div> ';
 						}else{
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
 							result = result + '<label>Vendor Name <span	class="text-danger">*</span></label>';
@@ -128,25 +152,32 @@
 							
 							
 							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Location<span class="text-danger">&nbsp; *</span></label>';
+							result = result + ' <input type="text" class="form-control" name="clientLocation" id="clientLocation" value="'+location+'" field-name="Location" placeholde="Location" data-validation="required">';
+							result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'clientLocation\',\'clientCountry\',\'clientState\',\'clientCity\',\'clientZipCode\');"></i>';
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>Country</label>';
-							result = result + ' <select class="chosen-select form-control" name="vendorCountry" id="spocCountry" field-name="Country"  >';
-							result = result + '</select>';
-							result = result + '<input type="hidden"  id="existingCountry" value="'+country+'" >';
+							result = result + ' <input type="text" class="form-control" name="clientCountry" value="'+country+'"  id="clientCountry" field-name="Country" readonly >';
 							result = result + '</div>  ';
 							
 							result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
 							result = result + '<label>State</label>';
-							result = result + '<select  class="chosen-select form-control" name="vendorState" id="spocState" field-name="State"  > ';
-							result = result + ' </select> ';
-							result = result + '<input type="hidden"  id="existingState" value="'+state+'" >';
+							result = result + '<input type="text"  class="form-control" name="clientState" value="'+state+'" id="clientState" field-name="State"  readonly> ';
 							result = result + '</div> ';
 							
 							result = result + '<div class="user_summary_edit_cta">';
 							result = result + '<label>City</label>';
-							result = result + '<select  class="chosen-select form-control" name="vendorCity" id="city" field-name="City"  > ';
-							result = result + ' </select> ';
-							result = result + '<input type="hidden"  id="existingCity" value="'+city+'" >';
+							result = result + '<input type="text"  class="form-control" name="clientCity" id="clientCity" value="'+city+'" field-name="City" readonly > ';
 							result = result + '</div> ';
+							
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Zip Code</label>';
+							result = result + '<input type="text"  class="chosen-select form-control" name="clientZipCode" id="clientZipCode" value="'+zipCode+'" field-name="Zip Code"  > ';
+							result = result + '</div> ';
+							
 						}
 						
 						//level
@@ -201,6 +232,12 @@
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorDetailsDiv").empty();
 				        $("#editVendorDetailsDiv").append(result);
+				        if(json.orgType == 'Company'){
+				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite');
+				        }else{
+				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');				        	
+				        }
+				        
 				        
 				        $(function(){
 				            var config = {
@@ -210,7 +247,7 @@
 				        		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 				        		  '.chosen-select-width'     : {width:"95%"}
 				        		}
-				            $("#spocCountry").chosen();
+				          /*   $("#spocCountry").chosen();
 				            $("#spocState").chosen();
 				            $("#spocCity").chosen();
 				            
@@ -220,7 +257,7 @@
 				           
 				            $("#spocState").on('change', function (e) {
 				         	   getAllCities();
-				            });
+				            }); */
 				           
 				            $('.chosen-select').each(function() {
 				        			var $this = $(this);

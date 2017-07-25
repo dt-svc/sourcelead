@@ -412,8 +412,9 @@ function getResume(candidateId, resumeId){
         			 if(json.title != null && json.title != "undefined" && json.title != ""){
         				 document.getElementById("title").value = json.title;
         			 }
+        			 
         			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 document.getElementById("description").value = json.description;
+        				 $("textarea#description").val(json.description);
         			 }
         			 
         			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");

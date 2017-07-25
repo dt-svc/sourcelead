@@ -828,7 +828,7 @@ public class CommonUtil {
 				actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
 			}
 			else{
-				actualTimeString = String.format("%.0f", (actualHours+actualMinutes));
+				actualTimeString = String.format("%.0f", (actualHours+actualMinutes)).concat(".0");
 			}
 			
 			return actualTimeString;

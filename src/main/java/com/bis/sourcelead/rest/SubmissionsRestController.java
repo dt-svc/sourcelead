@@ -366,10 +366,16 @@ public class SubmissionsRestController {
 			requirementSubmission.setCandidateEmail(requirementSubmissionTemplateFields.getEmailId());
 			RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
 			if(pastRequirementRateSubmissionNegotiation != null){
+				requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+				requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
+				requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+				requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
 				requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 			}else{
 				requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
 			}
+			
+			
 			
 			requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 			requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
@@ -625,8 +631,33 @@ public class SubmissionsRestController {
 		globalVarsMap.put("managerFirstName", emailMessage.getFirstName());
 		globalVarsMap.put("managerLastName", emailMessage.getLastName());
 		globalVarsMap.put("loginUser", emailMessage.getFromName());
-		globalVarsMap.put("requirementName", requirement.getJobTitle());
+		//globalVarsMap.put("requirementName", requirement.getJobTitle());
 
+		
+		 if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
+			 StringBuilder builder=new StringBuilder();
+			 globalVarsMap.put("requirementName", builder.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+		 }else{
+			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+		 }
+		 
+		 
+		 StringBuilder location = new StringBuilder();
+		 if(requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())){
+			 globalVarsMap.put("RequirementLocation", location.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
+		 }else if(requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())){
+			 globalVarsMap.put("RequirementLocation",location.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
+		 }else{
+			 globalVarsMap.put("RequirementLocation", requirement.getCountry());
+		 }
+		 if(Constants.JOB_OTHER.equalsIgnoreCase(requirement.getJobType())) {
+			 globalVarsMap.put("EmploymentType", requirement.getOtherJobType());
+		 }
+		 else if(requirement.getJobType() != null && !"".equalsIgnoreCase(requirement.getJobType())){
+			 globalVarsMap.put("EmploymentType", requirement.getJobType());
+		 }else{
+			 globalVarsMap.put("EmploymentType","--");
+		 }
 		globalVarsMap.put("loginOrgName", loginOrgLocations.getOrgLocationName());
 		globalVarsMap.put("shortListApplicantCount", shotListCount.toString());
 

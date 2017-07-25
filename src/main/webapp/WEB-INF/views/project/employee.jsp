@@ -141,8 +141,8 @@
  
  <script>
  function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
-	 $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 var result = "";
+	   $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+ 	 var result = "";
 	 result = result + '    	<div class="timesheet_head clearfix">';
 	 result = result	+ '<ul>';
 
@@ -152,16 +152,16 @@
  		result = result + '<span data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\');"><i class="paddingRight glyphicon glyphicon-plus"></i>Assign Emp</span>';
  		'</sec:authorize>';
  		result = result +'</li>';
-		}else{
+		}/* else{
 			result = result +'<li>';
  		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
  		result = result + '<a href="javascript:void(0)"  ><i class="glyphicon glyphicon-plus"></i>Assign Emp</a>';
  		'</sec:authorize>';
  		
  		result = result +'</li>';
-		}
+		} */
 		
-	    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
+	    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
 		result = result + '       	<ul>';
 		result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
@@ -176,21 +176,21 @@
 		result = result +'<li>';
 		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
 			result = result +' <a title="Export" id="export-pop" onClick="exportFun()"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';	
-		}else{
+		}/* else{
 			result = result +' <a title="Export"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>';
-		}
+		} */
 		
 		result = result +'<div class="" id="exportPop" style="display:none;">';
 		result = result +'<ul>';
 		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+			result = result +'<li onclick="exportToPdf(\''+projectId+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
 			
-			result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
+			result = result +'<li onclick="exportToExcel(\''+projectId+'\');"><i class="fa fa-file-excel-o">&nbsp;&nbsp;Excel</i></li>';
 
-		}else{
+		}/* else{
 			result = result +'<li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
  		result = result +'<li>Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
-		}
+		} */
 		
 		result = result +'</ul>';
 		result = result +'</div>';
@@ -206,6 +206,7 @@
 		$("#tab-3").empty();  
 		$("#tab-2").empty();  
 	    $("#tab-1").empty();
+	    $("#tab-4").empty();
 	    $("#employeesLoadingImg").empty();
 	    $("#tab-2").append(result);  
 	    
@@ -779,7 +780,11 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        		output = output + "<tr>";
 	        		//output = output + '<td><input type="checkbox"  class="submissionsChecks" name="submissionList[]" ></td>';
 	        		output = output + "<td><input type='hidden' id='projectStartDateStr'  value="+startDateStr+"><input type='hidden' id='projectEndDateStr'  value="+endDateStr+"><input class='myCheckbox' id="+opt.id+" type='checkbox' name='team"+i+"' value="+opt.id+"></td>";
-	        		output = output +"<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"</span></td>";
+	        		if(opt.user.lastName != null && opt.user.lastName !='Undefined' && opt.user.lastName != ''){
+						output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"&nbsp;"+opt.user.lastName+"'>" + opt.user.firstName+ "&nbsp;" + opt.user.lastName+ "</span></td>";	
+					}else{
+						output = output + "<td><span class='tbldata-dotdot-sm' title='"+opt.user.firstName+"'>" + opt.user.firstName+ "</span></td>";
+					}
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+opt.user.email+"'>"+opt.user.email+"</span></td>";
 	        		output = output +"<td><span class='tbldata-dotdot-vsm' title='"+role+"'>"+role+"</span></td>";
 	        		output = output +"<td><div class='input-group'> <span class='input-group-addon'><i class='fa fa-calendar'></i></span>";
@@ -1057,16 +1062,16 @@ function flushEmployee(){
 <!--  -->
 
 <script>
-function exportToPdf(projectId,projectName){
+function exportToPdf(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=pdf";
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=pdf";
 }
 </script>
 
 <script>
-function exportToExcel(projectId,projectName){
+function exportToExcel(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&projectName="+projectName+"&exportType=xls";
+	window.location.href = sourceleadUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&exportType=xls";
 }
 </script>
 

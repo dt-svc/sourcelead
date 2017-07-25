@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
@@ -55,10 +56,21 @@ public interface InvoiceService {
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
 
-	void linkInvoice(Invoice invoice)throws Exception;
+	Invoice linkInvoice(Invoice invoice)throws Exception;
 
-	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId, Date startDateUTC, Date endDateUTC, String invoiceStatus, String paymentStatus, String invoiceType, OrgLocations orgLocations);
+	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId, String invoiceStatus, String paymentStatus, String invoiceType, OrgLocations orgLocations, String dayWisetype, String customStartDate, String customEndDate) throws Exception;
 
 	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
+
+	List<Invoice> getDueDateCompletedInvoicesList() throws Exception;
+
+	void saveInvocePojo(Invoice invoice)throws Exception;
+
+	BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate, String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId)throws Exception;
+
+	void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception;
+
+	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
+	
 
 }

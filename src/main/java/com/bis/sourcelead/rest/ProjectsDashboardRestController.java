@@ -1,9 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,10 +17,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -31,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,20 +49,24 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -67,6 +77,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -78,7 +89,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class ProjectsDashboardRestController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -135,7 +146,12 @@ public class ProjectsDashboardRestController {
 	 @Autowired
 	 SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	 
-			
+	 @Autowired
+	 ProjectDocumentsService projectDocumentsService;
+	 
+	@Autowired
+	private PdfConversionUtil pdfConversionUtil;
+	 
 		/**
 		 * to filter the projects based on client and project status
 		 * @author David Sammeta
@@ -170,7 +186,7 @@ public class ProjectsDashboardRestController {
 	 * @return Json
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT','ROLE_VIEW_PROJECT')") 
 	 @RequestMapping(value = "/getProjectById", method = RequestMethod.POST)
 	 public @ResponseBody String getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
@@ -357,40 +373,7 @@ public class ProjectsDashboardRestController {
 			 
 				return storeAssignEmployee;
 		}
-	 /**
-	  * @author Rajashekar
-	  * 
-	  * Writes Projects Assgined employee data to excel and pdf based on exportType
-	  * @param projectId
-	  * @return
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
-	 @RequestMapping(value = "/exportProjectEmployeeList")
-	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="projectName", required=false) String projectName,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
-		 List<ProjectMembers> list = employeeList.getProjectMembersList();
-		 Projects project = projectsService.getProjectById(projectId);
-		 
-		 File file = clientVendorExport.getexportProjectEmployeeFile(list,projectName,exportType,project); 
-		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-			if (mimeType == null) {
-				mimeType = "application/octet-stream";
-			}
-			response.setContentType(mimeType);
-			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-			response.setContentLength((int) file.length());
-			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-			FileCopyUtils.copy(inputStream, response.getOutputStream());
-			inputStream.close();
-			response.getOutputStream().close();
-			response.getOutputStream().flush();	
-			if(file!=null){
-				file.delete();
-			}
-		
-	  }
+	
 	
 	 
 	 /**
@@ -662,4 +645,155 @@ public class ProjectsDashboardRestController {
 			return resultJson;
 	 }
 	
+	 /**
+	  * @author Laxman
+	  * @param projectId
+	  * @return projectDes
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/getProjectDescriptionById", method = RequestMethod.GET)
+	 public @ResponseBody String getProjectDescriptionById(@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+		 Projects projectDes = null;
+		 if(projectId != null){
+			 projectDes = projectsService.getProjectById(projectId);
+		 }
+				return commonUtil.toJSON(projectDes);
+	  }
+	 
+	 /**
+	  * @author Laxman
+	  * @param projectId
+	  * @return resultJson
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/getProjectDocumentsList")
+		public String getProjectDocumentsList(@RequestParam(value = "projectId", required = false) Long projectId) throws Exception
+		{
+			String resultJson;
+			List<ProjectDocuments> projectDocumentList = projectDocumentsService.getProjectDocumentsListByProjectIdId(projectId);
+			resultJson = commonUtil.toJSON(projectDocumentList);
+			return resultJson;
+		}
+	 /**
+	  * @author Laxman
+	  * @param porjectDocumentId
+	  * @return success
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/terminateProjectDoc", method = RequestMethod.POST)
+		public @ResponseBody String terminateProjectDoc(@RequestParam(value = "porjectDocumentId", required = false) String porjectDocumentId) throws Exception
+		{
+			ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(porjectDocumentId));
+			if(document != null){
+				document.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				projectDocumentsService.updateProjectDocuments(document);
+			}
+			return "success";
+		}
+	 
+	 /**
+	  * @author Laxman
+	  * @param porjectDocumentId
+	  * @param response
+	  * @throws Exception
+	  */
+		@RequestMapping(value = "/downloadProjectDoc", method = RequestMethod.GET)
+		public void downloadProjectDoc(@RequestParam(value = "porjectDocumentId", required = false) String porjectDocumentId, HttpServletResponse response) throws Exception
+		{
+			ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(porjectDocumentId));
+			if (null != document) {
+				response.setContentType("application/octet-stream");
+				StringBuilder fileName = new StringBuilder();
+				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(document.getFileName()).append("\"").toString());
+				InputStream inputStream = new ByteArrayInputStream(document.getFileContents());
+				try {
+					OutputStream outStream = response.getOutputStream();
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+					inputStream.close();
+					outStream.close();
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			}
+		}
+		
+
+		/**
+		 * @author Laxman
+		 * @param documentUUID
+		 * @param title
+		 * @param response
+		 * @throws Exception
+		 */
+		 @RequestMapping(value = "/viewProjectDocument/{title}", method = RequestMethod.GET)
+		    public void viewProjectDocument(@RequestParam(value="documentUUID", required=false) String documentUUID,
+		    		@PathVariable(value="title") String title,
+		    		HttpServletResponse response) throws Exception {
+			 
+			 ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(documentUUID));	
+				    
+			 byte[] pdfBytes = null;
+				if("application/pdf".equalsIgnoreCase(document.getFileType())){
+					pdfBytes = document.getFileContents();
+				}
+				else{
+					 pdfBytes = pdfConversionUtil.convertDocToPdf(document.getFileContents());
+				}
+				 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+			  	    response.setContentType("application/pdf");
+			  	    ServletOutputStream sos = response.getOutputStream();
+			  	    if(null != pdfBytes){
+			  	    	response.setContentLength(pdfBytes.length);
+			  	    	sos.write(pdfBytes);
+			  	    }
+			          sos.flush();
+			          sos.close();
+
+			} 
+		 
+		 /**
+		  * @author Laxman
+		  * @param json
+		  * @param projectId
+		  * @param request
+		  * @return 
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/saveProjectDocument", method = RequestMethod.POST)
+			public @ResponseBody String saveProjectDocument(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "projectId", required = false) Long projectId,@RequestParam(value = "documentId", required = false) Long documentId,  MultipartHttpServletRequest request) throws Exception
+			{
+				String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				MultipartFile multiFile = null;
+				Iterator<String> itrator = request.getFileNames();
+				if (itrator.hasNext()) {
+					multiFile = request.getFile(itrator.next());
+				}
+				if (null != projectId) {
+					projectDocumentsService.storeProjectDocuments(jsonObj, projectId,multiFile,documentId);
+					return "success";
+				}
+				else {
+					return "exception";
+				}
+			}
+		 
+		 /**
+		  * @author Laxman
+		  * @param documentId
+		  * @return json
+		  * @throws Exception
+		  */
+		 @RequestMapping(value = "/getProjectDocument", method = RequestMethod.POST)
+		 public @ResponseBody String getProjectDocument(@RequestParam(value = "documentId", required = false) String documentId) throws Exception
+		 {
+			 ProjectDocuments document = projectDocumentsService.getDocumentById(Long.valueOf(documentId));	
+			 return commonUtil.toJSON(document);
+		 }
+		 
+		 
 }

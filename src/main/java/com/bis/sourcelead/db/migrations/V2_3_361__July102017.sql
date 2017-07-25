@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','REJECTED_REASON','TEXT NULL AFTER `PARENT_CONTRACT_ID`');

@@ -9,6 +9,7 @@
 
 <script>
 	$(document).ready(function() {
+		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite');
 		document.getElementById("createOrg_form").reset();
 		getTimezonesList();
 	});
@@ -20,7 +21,7 @@
     <div class="pull-left">
       <h2>Org Registration</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Enroll Org </div>
+    <div class="pull-right brud-crum"><a href="dashboard">Home</a> &raquo; <a href="enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
   <div class="content-area clearfix">
   <div id="loading"></div>
@@ -44,59 +45,6 @@
 	            <span class="hidden">Website</span>
 	            </div>
             </div>
-            
-            
-             
-             <div class="form-group">
-	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-	            <div class="col-md-9 dropdown-select">
-	              <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" data-validation="required" value="${country}"  >
-	                <option value="" >Select Location</option>
-	                <option value="Australia">Australia</option>
-	                <option value="France">France</option>
-	                <option value="India">India</option>
-	                <option value="Singapore">Singapore</option>
-	                <option value="United Kingdom">United Kingdom</option>
-	                <option value="United States">United States</option>
-	              </select>
-	               <span class="hidden">Country</span>
-	            </div>
-            </div>
-            
-            <div class="form-group">
-				<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-				     <select  class="chosen-select form-control" name="state" id="state" field-name="State" data-validation="required" > </select>
-				</div>
-			 </div>
-							
-			<div class="form-group">
-				<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-				     <select  class="chosen-select form-control" name="city" id="city" field-name="City" data-validation="required" ></select>
-				</div>
-			</div>
-			
-			<div class="form-group">
-			  <label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
-				</div>
-			 </div>
-       
-               <div class="form-group">
-	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
-	            <div class="col-md-9">
-					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="timeZone" name="timeZone">
-                     </select>
-                     <span class="hidden">Time Zone</span>
-				</div>
-				</div>
-          
-          </div>
-          
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            
             
             <div class="form-group">
 	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
@@ -129,8 +77,8 @@
 	             <span class="hidden">Phone Number</span>
 	            </div>
             </div>
-            
-            <div class="form-group">
+             
+             <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkBox">
             <div class="clearfix reMar">
@@ -158,16 +106,104 @@
             <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
             </div>
           </div> 
+             
           
+          </div>
           
-</div>
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            
+            <div class="form-group">
+				<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+				 <div class="col-md-9" id="locationField">
+			          <div class="positionRelative">
+				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
+				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');"></i>
+				        </div>
+		          </div>
+			 </div>
+			 
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgState" name="state" placeholder="State" type="text" field-name="State" data-validation="required" readonly></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgCity" name="city" placeholder="City" field-name="City" type="text" data-validation="required" readonly></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">ZipCode</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgZipCode" name="zipCode" placeholder="Enter your Zip code" type="text"></input>
+	          </div>
+	        </div>
+	        
+            <%-- <div class="form-group">
+	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9 dropdown-select">
+	              <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" data-validation="required" value="${country}"  >
+	                <option value="" >Select Location</option>
+	                <option value="Australia">Australia</option>
+	                <option value="France">France</option>
+	                <option value="India">India</option>
+	                <option value="Singapore">Singapore</option>
+	                <option value="United Kingdom">United Kingdom</option>
+	                <option value="United States">United States</option>
+	              </select>
+	               <span class="hidden">Country</span>
+	            </div>
+            </div>
+            
+            <div class="form-group">
+				<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+				     <select  class="chosen-select form-control" name="state" id="state" field-name="State" data-validation="required" > </select>
+				</div>
+			 </div>
+							
+			<div class="form-group">
+				<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+				     <select  class="chosen-select form-control" name="city" id="city" field-name="City" data-validation="required" ></select>
+				</div>
+			</div> --%>
+			
+			<div class="form-group">
+			  <label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
+				</div>
+			 </div>
+       
+               <div class="form-group">
+	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
+	            <div class="col-md-9">
+					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="timeZone" name="timeZone">
+                     </select>
+                     <span class="hidden">Time Zone</span>
+				</div>
+				</div>
+		</div>
       </div>
       
       <div class="form-footer clearfix row">
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -182,73 +218,6 @@
 <jsp:include page="../masterFooter.jsp" />
 
 
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            getCities();
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-      
-      
   <script type="text/javascript">
 	function moduleCheckValidation(id){
 		
@@ -310,7 +279,7 @@ var validationSettings = {
          			submodulesList[i] = $(this).val();
          		});
          		
-         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+         		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
@@ -581,36 +550,39 @@ function validateCompanyEmail(){
 <script>
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var country = $('#country').val();
-	 $.ajax({
-	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
-	        var output = "";
-	        output = output + "<option value=''>--Select--</option>";
-	        if(country == 'India'){
-    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
-    		}else if(country == 'United States'){
-    			output = output + "<option value='132' selected> America/Chicago </option>";
-    		}else if(country == 'United Kingdom'){
-    			output = output + "<option value='333' selected> Europe/London </option>";
-    		}else if(country == 'Singapore'){
-    			output = output + "<option value='272' selected> Asia/Singapore </option>";
-    		}else if(country == 'France'){
-    			output = output + "<option value='342' selected> Europe/Paris </option>";
-    		}else if(country == 'Australia'){
-    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
-    		}
-	        	for (var i=0; i<json.length; i++){
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
-				}
-	        	$("#timeZone").empty();
-	        	$("#timeZone").append(output);
-	        	$("#timeZone").trigger("chosen:updated");
-	        }
-	 });
+	var country = $('#orgCountry').val();
+	if(country){
+		 $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(data) {
+		        var json = JSON.parse(data);
+		        var output = "";
+		        output = output + "<option value=''>--Select--</option>";
+		        if(country == 'India'){
+	    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+	    		}else if(country == 'United States'){
+	    			output = output + "<option value='132' selected> America/Chicago </option>";
+	    		}else if(country == 'United Kingdom'){
+	    			output = output + "<option value='333' selected> Europe/London </option>";
+	    		}else if(country == 'Singapore'){
+	    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+	    		}else if(country == 'France'){
+	    			output = output + "<option value='342' selected> Europe/Paris </option>";
+	    		}else if(country == 'Australia'){
+	    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+	    		}
+		        	for (var i=0; i<json.length; i++){
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+					}
+		        	$("#timeZone").empty();
+		        	$("#timeZone").append(output);
+		        	$("#timeZone").trigger("chosen:updated");
+		        }
+		 });
+	}
+
 }
 </script>
 
@@ -623,17 +595,6 @@ $(function(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-	       $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	    	   getTimezonesList();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
 	      
 	       $('.chosen-select').each(function() {
 				var $this = $(this);

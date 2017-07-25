@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -130,6 +132,9 @@ public class EMailJobScheduler {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;	
 	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
@@ -228,6 +233,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	JobAlertService jobAlertService;
+	
+	@Autowired
+	InvoiceService invoiceService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -649,9 +657,9 @@ public class EMailJobScheduler {
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");
 												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
 												 }else{
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
 												 }
 												 
 												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -673,9 +681,9 @@ public class EMailJobScheduler {
 													    
 												 }
 											     if(frequency != null && !frequency.isEmpty()){
-												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
-												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
 												 
 												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
 												  StringBuilder projectStringBuilder=new StringBuilder();
@@ -690,7 +698,7 @@ public class EMailJobScheduler {
 												    	}
 												    }
 												    
-												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
+												  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
 												  tempHTML.append("</tr>");
 									          }
 								       }	
@@ -978,7 +986,8 @@ public class EMailJobScheduler {
 		}
 		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("info@sourcelead.com");
+		// emailMessage.setFromEmail("info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("");
 		 emailMessage.setFromName("Sourcelead Team");
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1092,16 +1101,16 @@ public class EMailJobScheduler {
 			    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
 			            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
 			            			contracts.setId(contracts.getId());
-			        				contracts.setTemplateSubmissionStatus("EXPIRED");
+			        				contracts.setTemplateSubmissionStatus(Constants.EXPIRED);
 			        				String fromStage = contracts.getTemplateSubmissionStatus();
 			            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct && null != childContarct.getParentContractId()){
 				        				fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
-				        				childContarct.setTemplateSubmissionStatus("EXPIRED");
+				        				childContarct.setTemplateSubmissionStatus(Constants.EXPIRED);
 				        				contractsTemplateService.saveNewContract(childContarct);
 				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-					        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+					        				if(!(Constants.EXPIRED).equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 						        				ContractsHistory childContractsHistory = new ContractsHistory();
 						            			childContractsHistory.setFromStage(fromStage);
 						        				childContractsHistory.setContractsId(childContarct);
@@ -1116,21 +1125,21 @@ public class EMailJobScheduler {
 			            	}
 			            	
 			            	if(null != contracts.getEnvelopId() ){
-			            	if(!"FINALIZED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"completed".equalsIgnoreCase(contracts.getContractStatus())){
+			            	if(!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"completed".equalsIgnoreCase(contracts.getContractStatus())){
 				            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
-				            	if(evp.getStatus().equalsIgnoreCase("completed")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+				            	if(evp.getStatus().equalsIgnoreCase("completed")&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				            		if(null != childContarct.getParentContractId()){
 				            		String fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
-				        				childContarct.setTemplateSubmissionStatus("SEND_FOR_VERIFICATION");
+				        				childContarct.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
 				        				contracts.setId(contracts.getId());
-				        				contracts.setTemplateSubmissionStatus("WAITING_TO_BE_VERIFY");
+				        				contracts.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
 				        				contracts.setContractStatus(evp.getStatus());
 				        				childContarct.setContractStatus(evp.getStatus());
 				        				contractsTemplateService.saveNewContract(childContarct);
 				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-				        				if(!("SEND_FOR_VERIFICATION").equalsIgnoreCase(fromStage)){
+				        				if(!(Constants.SEND_FOR_VERIFICATION).equalsIgnoreCase(fromStage)){
 					        				ContractsHistory childContractsHistory = new ContractsHistory();
 					            			childContractsHistory.setFromStage(fromStage);
 					        				childContractsHistory.setContractsId(childContarct);
@@ -1140,21 +1149,23 @@ public class EMailJobScheduler {
 					        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 				        				}
 				        				}
+				        				//this method is used to send the email when receiver signed the contract
+				        				contractSignedByReceiver(contracts);
 				        			}
 				            	}
-				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct.getParentContractId()){
 				        				String fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
-				        				childContarct.setTemplateSubmissionStatus("REJECTED");
+				        				childContarct.setTemplateSubmissionStatus(Constants.REJECTED);
 				        				contracts.setId(contracts.getId());
-				        				contracts.setTemplateSubmissionStatus("REJECTED");
+				        				contracts.setTemplateSubmissionStatus(Constants.REJECTED);
 				        				contracts.setContractStatus(evp.getStatus());
 				        				childContarct.setContractStatus(evp.getStatus());
 				        				contractsTemplateService.saveNewContract(childContarct);
 				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-					        				if(!("REJECTED").equalsIgnoreCase(fromStage)){
+					        				if(!(Constants.REJECTED).equalsIgnoreCase(fromStage)){
 						        				ContractsHistory childContractsHistory = new ContractsHistory();
 						            			childContractsHistory.setFromStage(fromStage);
 						        				childContractsHistory.setContractsId(childContarct);
@@ -1166,19 +1177,19 @@ public class EMailJobScheduler {
 				        				}
 				        			}
 				            	}
-				            	if(evp.getStatus().equalsIgnoreCase("deleted")&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+				            	if(evp.getStatus().equalsIgnoreCase("deleted")&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct.getParentContractId()){
 				        				String fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
-				        				childContarct.setTemplateSubmissionStatus("DELETED");
+				        				childContarct.setTemplateSubmissionStatus(Constants.DELETED);
 				        				contracts.setId(contracts.getId());
-				        				contracts.setTemplateSubmissionStatus("DELETED");
+				        				contracts.setTemplateSubmissionStatus(Constants.DELETED);
 				        				contracts.setContractStatus(evp.getStatus());
 				        				childContarct.setContractStatus(evp.getStatus());
 				        				contractsTemplateService.saveNewContract(childContarct);
 				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-				        				if(!("DELETED").equalsIgnoreCase(fromStage)){
+				        				if(!(Constants.DELETED).equalsIgnoreCase(fromStage)){
 					        				ContractsHistory childContractsHistory = new ContractsHistory();
 					            			childContractsHistory.setFromStage(fromStage);
 					        				childContractsHistory.setContractsId(childContarct);
@@ -1213,6 +1224,86 @@ public class EMailJobScheduler {
 		        }
 	}
 	
+	
+	private void contractSignedByReceiver(Contracts contracts) throws Exception
+	{
+			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(owner.getFirstName());
+			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 emailMessage.setLastName(owner.getLastName());
+			 }else{
+				 emailMessage.setLastName("");
+			 }
+			 emailMessage.setToEmail(owner.getEmail());
+			 emailMessage.setFromEmail(receiver.getEmail());
+			 emailMessage.setCreatedBy("sladmin");
+			 if(receiver.getLastName()!= null && !"".equalsIgnoreCase(receiver.getLastName())){
+				 StringBuilder sb = new StringBuilder();
+				 emailMessage.setFromName(sb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+			 }else{
+				 emailMessage.setFromName(receiver.getFirstName());
+			 }
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+				 }else{
+					 globalVarsMap.put("contractTitle","--");
+				 }
+			 
+			 if(owner.getFirstName() != null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName() != null && !"".equalsIgnoreCase(owner.getLastName())){
+				StringBuilder ownersb = new StringBuilder();
+				 globalVarsMap.put("ownerUser", ownersb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("ownerUser",owner.getFirstName());
+				 }
+			 
+			 if(receiver.getFirstName() != null && !"".equalsIgnoreCase(receiver.getFirstName()) && receiver.getLastName() != null && !"".equalsIgnoreCase(receiver.getLastName())){
+					StringBuilder receiversb = new StringBuilder();
+					 globalVarsMap.put("receiverUser", receiversb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+					 }else{
+						 globalVarsMap.put("receiverUser",receiver.getFirstName());
+					 }
+			
+			 if(contracts.getContractOrgLocationId() != null){
+				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
+				 }else{
+					 globalVarsMap.put("receiverOrg","--");
+				 }
+			 
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
+			 
+			 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
+
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 String actionLink="";
+			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario);
+		
+	}
+	
 	/**
 	 * @author : Pavan Jampana
 	 * this cron will used to send the remainder emails to respective owners about expiring of the contract. 
@@ -1242,7 +1333,7 @@ public class EMailJobScheduler {
 		
 		List<Contracts> oneWeekContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(startDateUTC,endDateUTC);
 		for(Contracts contracts : oneWeekContractsList){
-			contractExpiryRemainderMail(contracts);
+			contractExpiryRemainderMail(contracts,7);
 		}
 		
 		//to fire two days before
@@ -1256,10 +1347,10 @@ public class EMailJobScheduler {
 		
 		List<Contracts> twoDaysContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(twoDaysStartDateUTC,twoDaysEndDateUTC);
 		for(Contracts contracts : twoDaysContractsList){
-			contractExpiryRemainderMail(contracts);
+			contractExpiryRemainderMail(contracts,2);
 		}
 		
-		//to fire two days before
+		//to fire one days before
 		DateTime oneDay = zoned;
 		String oneDayStartDate = outputFormatter1.print(oneDay);
 		String oneDayStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayStartDate);
@@ -1270,24 +1361,56 @@ public class EMailJobScheduler {
 		
 		List<Contracts> oneDayContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(oneDayStartDateUTC,oneDayEndDateUTC);
 		for(Contracts contracts : oneDayContractsList){
-			contractExpiryRemainderMail(contracts);
+			contractExpiryRemainderMail(contracts,1);
 		}
+		
+		//this cron is related to invoices to run every day.
+		getDueDateCompletedInvoicesLists();
+
 	}
 
-	private void contractExpiryRemainderMail(Contracts contracts) throws Exception
+	/**
+	 * @author Rajashekar
+	 * changing invoice payment status when due date is over
+	 * @throws Exception
+	 */
+	private void getDueDateCompletedInvoicesLists() throws Exception {
+		List<Invoice> invoiceList = invoiceService.getDueDateCompletedInvoicesList();
+		invoiceList.forEach(invoice -> {
+			if (invoice.getDueDate() != null && !"".equals(invoice.getDueDate())) {
+				if (invoice.getDueDate().after(new Date())) {
+					invoice.setPaymentStatus(Constants.OVER_DUE);
+					try {
+						invoiceService.saveInvocePojo(invoice);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		});
+	}
+	
+
+	private void contractExpiryRemainderMail(Contracts contracts, int days) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 
 				 emailMessage.setLastName(owner.getLastName());
 			 }else{
 				 emailMessage.setLastName("");
 			 }
 			 emailMessage.setToEmail(owner.getEmail());
-			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName("SourceLead Admin"); 
+			 
+			 String endDate = Constants.DMY.format(contracts.getEndDate());
+			 String startDate = Constants.DMY.format(contracts.getStartDate());
+			 String dayCount = String.valueOf(days);
 			 
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1305,13 +1428,13 @@ public class EMailJobScheduler {
 				 }
 			
 			 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
-				 globalVarsMap.put("contractEndDate", contracts.getEndDate().toString());
+				 globalVarsMap.put("contractEndDate", endDate);
 				 }else{
 					 globalVarsMap.put("contractEndDate","--");
 				 }
 			 
 			 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
-				 globalVarsMap.put("contractStartDate", contracts.getStartDate().toString());
+				 globalVarsMap.put("contractStartDate", startDate);
 				 }else{
 					 globalVarsMap.put("contractStartDate","--");
 				 }
@@ -1322,6 +1445,17 @@ public class EMailJobScheduler {
 					 globalVarsMap.put("status","--");
 				 }
 			 
+			 globalVarsMap.put("expiringdays",dayCount);
+			 if(contracts.getContactUser().getLastName() !=null && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
+				 
+				 StringBuilder builder=new StringBuilder();
+				 
+				 globalVarsMap.put("clientContact",builder.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+				 
+			 }
+			 else{
+			 globalVarsMap.put("clientContact",contracts.getContactUser().getFirstName());
+			 }
 			 
 			if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 				StringBuilder creatorSb = new StringBuilder();
@@ -1575,7 +1709,7 @@ public class EMailJobScheduler {
 		 
 		 emailMessage.setToEmail(jobAlert.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1585,7 +1719,7 @@ public class EMailJobScheduler {
 		 globalVarsMap.put("alertTitle", jobAlert.getAlertTitle());
 		 globalVarsMap.put("alertUserName", alertUserName);
 		 
-		 String jobAlertsTable = getJobAlertsTable(requirementList);
+		 String jobAlertsTable = getJobAlertsTable(requirementList,jobAlert.getJobAlertUUID());
 		 
 		 globalVarsMap.put("alertJobs", jobAlertsTable);
 		 
@@ -1614,7 +1748,7 @@ public class EMailJobScheduler {
 	 
 	 
 	 
-	 private String getJobAlertsTable(List<RequirementIndex> requirementList) throws Exception{
+	 private String getJobAlertsTable(List<RequirementIndex> requirementList,String jobAlertUUID) throws Exception{
 		 String tempHTML = null;
 		 
 			 
@@ -1698,7 +1832,7 @@ public class EMailJobScheduler {
 			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
 			 
 			 if(requirementList.size() > 10){
-				 tempHTML = tempHTML+"<a style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
+				 tempHTML = tempHTML+"<a href='"+sourceleadUrl+"/"+"viewAllJobAlerts?jobAlertUUID="+jobAlertUUID+"' style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
 			 }
 			 
 			 tempHTML = tempHTML+"</tr>";

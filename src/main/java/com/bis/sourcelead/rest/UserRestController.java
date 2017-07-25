@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,15 +22,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -46,6 +57,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
@@ -55,13 +67,16 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -69,9 +84,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -143,6 +155,15 @@ public class UserRestController {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	ModulesService modulesService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	TabsService tabsService;
 	
 	
 	/**
@@ -615,89 +636,108 @@ public class UserRestController {
 			}
 			
 		 
-		 private void employeeTerminationMailToProjectManager(User loginUser, ProjectMembersHistory pmh,
-					OrgLocations orgLocations) throws Exception {
-			 
-			 User user=null;
-			 List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
-			 for (ProjectApproverHierarchy projectApproverHierarchy : mangerList) {
-				 if(null != pmh.getProjectMemberId()){
-					 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
-			}
-			 
-			 EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(user.getFirstName());
-			 emailMessage.setLastName(user.getLastName());
-			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail(loginUser.getEmail());
-			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			// StringBuilder msgBuild = new StringBuilder();
-			// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-					 StringBuilder empName = new StringBuilder();
-					 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
+			 private void employeeTerminationMailToProjectManager(User loginUser, ProjectMembersHistory pmh,OrgLocations orgLocations) throws Exception {
+				 
+				 User user=null;
+				 List<ProjectApproverHierarchy>  mangerList = projectApproverHierarchyService.getApproverUsersByProjectId(pmh.getProjectMemberId().getProjects().getId());
+				 for (ProjectApproverHierarchy projectApproverHierarchy : mangerList) {
+					 if(null != pmh.getProjectMemberId()){
+						 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
+				}
+				 
+				 EmailMessage emailMessage = new EmailMessage();
+				 emailMessage.setFirstName(user.getFirstName());
+				 emailMessage.setLastName(user.getLastName());
+				 emailMessage.setToEmail(user.getEmail());
+				 emailMessage.setFromEmail(loginUser.getEmail());
+				 emailMessage.setCreatedBy(loginUser.getUserCode());
+				// StringBuilder msgBuild = new StringBuilder();
+				// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				//setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+				 
+				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
+					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
+						 StringBuilder empName = new StringBuilder();
+						 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
+					 }
+				 else{
+					 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
+					}
 				 }
-			 else{
-				 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-				}
-			 }
-			 
-			 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
-				 StringBuilder mangerName = new StringBuilder();
-				 globalVarsMap.put("Manager", mangerName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-				 } else {
-					 globalVarsMap.put("Manager", user.getFirstName());
-				}
-			
-			 if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
-				 StringBuilder loginName = new StringBuilder();
-				 globalVarsMap.put("LoginUser", loginName.append(loginUser.getFirstName()).append(loginUser.getLastName()).toString());
-				 } else {
-					 globalVarsMap.put("LoginUser", loginUser.getFirstName());
-				}
-			
-			 if (null != pmh.getProjectMemberId().getTerminateReason() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getTerminateReason())) {
-				 globalVarsMap.put("Reason", pmh.getProjectMemberId().getTerminateReason());
-				 } else {
-					 globalVarsMap.put("Reason", "--");
-				}
-			 
-			
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 //using same migration which has been already used in updatedRequirementMailToManager method
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
-			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+				 
+				 
+				 if(null != pmh.getProjectMemberId().getProjects()){
+					 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
+						 globalVarsMap.put("ProjectName", pmh.getProjectMemberId().getProjects().getProjectName());
+					}else{
+						 globalVarsMap.put("ProjectName", "--");
+					 }
+				 }
+				 
+				 
+				 if(null != pmh.getProjectTerminationDate()){
+					 globalVarsMap.put("ProjectEndDate",endDate);
+				 }else{
+					 globalVarsMap.put("ProjectEndDate", "--");
+				 }
+				 
+				 
+				 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
+					 StringBuilder mangerName = new StringBuilder();
+					 globalVarsMap.put("Manager", mangerName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					 } else {
+						 globalVarsMap.put("Manager", user.getFirstName());
+					}
+				
+				 if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+					 StringBuilder loginName = new StringBuilder();
+					 globalVarsMap.put("LoginUser", loginName.append(loginUser.getFirstName()).append(loginUser.getLastName()).toString());
+					 } else {
+						 globalVarsMap.put("LoginUser", loginUser.getFirstName());
+					}
+				
+				 if (null != pmh.getProjectMemberId().getTerminateReason() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getTerminateReason())) {
+					 globalVarsMap.put("Reason", pmh.getProjectMemberId().getTerminateReason());
+					 } else {
+						 globalVarsMap.put("Reason", "--");
+					}
+				 
+				 StringBuilder linkBuild = new StringBuilder();
+			     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			   
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 //using same migration which has been already used in updatedRequirementMailToManager method
+				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
 
-			 
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-			 notificationScenario.setBody(notificationbody);
+				 
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;
+				 
+				 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+				 notificationScenario.setBody(notificationbody);
 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 String actionLink="";
-			 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
-			 }
-			}
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				 
+				 //calling the sendEmail method of emailScenerioUtil
+				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 String actionLink="";
+				 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
+				 }
+				}
 
-		private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh, OrgLocations orgLocations) throws Exception {
+private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh, OrgLocations orgLocations) throws Exception {
 			 
 			 User user=null;
 			 if(null != pmh.getProjectMemberId()){
@@ -715,6 +755,8 @@ public class UserRestController {
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -742,7 +784,7 @@ public class UserRestController {
 			 }
 			 
 			 if(null != pmh.getProjectTerminationDate()){
-				 globalVarsMap.put("Project EndDate",pmh.getProjectTerminationDate().toString());
+				 globalVarsMap.put("Project EndDate",endDate);
 			 }else{
 				 globalVarsMap.put("Project EndDate", "--");
 			 }
@@ -769,6 +811,16 @@ public class UserRestController {
 				}
 			 }
 			 
+			 if(pmh.getProjectMemberId().getProjects().getOrgRelationId() !=null && !equals(pmh.getProjectMemberId().getProjects().getOrgRelationId())){
+				 StringBuilder clientName = new StringBuilder();
+				 globalVarsMap.put("clientName",clientName.append("with").append(" ").append(pmh.getProjectMemberId().getProjects().getOrgRelationId().getResponderLocationId().getOrg().getOrgName()).toString());
+			 }
+			 globalVarsMap.put("reason", pmh.getProjectMemberId().getTerminateReason());
+
+
+			 StringBuilder linkBuild = new StringBuilder();
+		     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		   
 			
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
@@ -941,8 +993,104 @@ public class UserRestController {
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.GET)
+		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
+		 }
+		 
+		 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
+		 public UserProfileDTO getLoginUserProfile() {
+			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			 User  user = userService.findByUserName(auth.getName());
+			 List<UserRole> userRoleList = null;
+			 List<OrgLocationDTO> orgLocationsList = new ArrayList<>();
+			 
+	         UserProfileDTO userProfileDTO = new UserProfileDTO();
+	         userProfileDTO.setFirstName(user.getFirstName());
+     	     userProfileDTO.setLastName(user.getLastName());
+     	     userProfileDTO.setUserId(user.getId());
+     	  
+     	     if(user.getDocFile() != null && user.getFileContentType() != null){
+        	    userProfileDTO.setProfileImageUrl(sourceleadUrl+"/displayUserImage/"+user.getId());
+   			 }else{
+   				userProfileDTO.setProfileImageUrl(sourceleadUrl+"/resources/images/userprofile-img.png");
+   			 }
+     	     
+	         try {
+	        	    if(user != null){
+	        		     userRoleList = userRoleService.getUserSpocsListByUserId(user.getId());
+	        		     if(null != userRoleList && userRoleList.size() > 0){
+	        		    	 for(UserRole userRole : userRoleList){
+	        		    		 
+		        		    		List<SourceleadActions> actionsList = null;
+		        			        List<String> tabNamesList = null;
+		        			        List<String> tabIconsList = new ArrayList<String>();
+		        			        List<String> actionRolesList = new ArrayList<String>();
+		        			        List<Long> actionIdsList = new ArrayList<Long>();
+		        			        List<Long> modulesId = null;
+		        			        
+		        			        
+	        		    		    OrgLocations orgLocations = userRole.getOrgLocations();
+	        		        	    modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+	        		        	    actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+	        		        	    
+	        		        	    for(SourceleadActions actions : actionsList){
+	        		        	    	actionIdsList.add(actions.getId());
+	        		        	    	//actionRolesList.add(actions.getActionRole());
+	        		        	    }
+	        		        	    
+	        		        	    tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+	        		        	    for(String tabName : tabNamesList){
+	        		        	    	
+	        		        	    	tabName = tabName.substring(0, 1).toLowerCase() + tabName.substring(1);
+	        		        	    	StringBuilder name = new StringBuilder();
+	        		        	    	name.append("ic_").append(tabName).toString();
+	        		        	    	tabIconsList.add(name.toString().replaceAll(" ", "_").toLowerCase());
+	        		        	    }
+	        		        	    
+	        		        	    OrgLocationDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
+	        		        	    orgLocationDTO.setMenuList(tabNamesList);
+	        		        	    orgLocationDTO.setMenuIconsList(tabIconsList);
+	        		        	    //orgLocationDTO.setRoleActionsList(actionRolesList);
+	        		        	    orgLocationDTO.setUserType(userRole.getUserType());
+	        		        	    orgLocationsList.add(orgLocationDTO);
+	        		    	 }
+	        		     }
+	        		     
+	        		    
+	        	     }
+	        	    
+	               } catch (Exception e) {
+					e.printStackTrace();
+				 }
+	         
+	         userProfileDTO.setOrgLocationsList(orgLocationsList);
+	         
+			return userProfileDTO;
+	         
+		 }
+		 
+		 
+		 private OrgLocationDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
+			 OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+			 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+			 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
+			 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
+			 if(orgLocations.getOrg().getDocFile() != null && orgLocations.getOrg().getFileContentType() != null){
+				 orgLocationDTO.setOrgImageUrl(sourceleadUrl+"/displayOrgImage/"+orgLocations.getOrg().getOrgCode());
+			 }else{
+				 orgLocationDTO.setOrgImageUrl(sourceleadUrl+"/resources/images/office-image.jpg");
+			 }
+			 orgLocationDTO.setCountry(orgLocations.getCountry());
+			 orgLocationDTO.setState(orgLocations.getState());
+			 orgLocationDTO.setCity(orgLocations.getCity());
+			 orgLocationDTO.setOrgLocationAddress(orgLocations.getOrgLocationAddress());
+			 orgLocationDTO.setWebsite(orgLocations.getWebsite());
+			 if(useRole.getIsPrimary().equals(1)){
+				 orgLocationDTO.setIsPrimaryOrg(Constants.YES);
+			 }else{
+				 orgLocationDTO.setIsPrimaryOrg(Constants.NO);
+			 }
+			 return orgLocationDTO;
 		 }
 		 
 		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
@@ -952,19 +1100,29 @@ public class UserRestController {
 			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 			 if(StringUtils.isNotEmpty(json)){
 				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
+				 //TODO remove this sysout. Just for rest call testing purpose
+				 System.out.println("sourceleadURL =======> "+sourceleadUrl);
 				 JSONObject jsonObject = new JSONObject(json);
 				 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
 				    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))
 				 { 		
-					 Client client = Client.create();
-					 WebResource webResource = client.resource(sourceleadUrl+"/rest/");
-					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
-					 int status = response.getStatus();
+					 final String uri = sourceleadUrl+"/rest/";
+	                    RestTemplate restTemplate = new RestTemplate();
+	                    HttpHeaders headers = new HttpHeaders();
+	                    headers.add("X-Username", jsonObject.getString("username"));
+	                    headers.add("X-Password", jsonObject.getString("password"));
+	                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+	                    HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+	                     int status = response.getStatusCode().value();
+
 					 if(status == HttpServletResponse.SC_OK){
 						 String header = response.getHeaders().get("X-CustomToken").toString();
 						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");
 						 resResponsetUtil.setToken(token);
 						 resResponsetUtil.setLoginResponse("Valid User");
+						 //TODO remove this sysout. Just for rest call testing purpose
+						 System.out.println("##### in ServletRESPONSE OK =======> ");
 						 return resResponsetUtil;
 					 }
 					
@@ -1066,12 +1224,14 @@ public class UserRestController {
 			 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
 			 emailMessage.setFromEmail(loginUser.getEmail());
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 
 			// StringBuilder msgBuild = new StringBuilder();
 			// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();    
+			 String startDate = Constants.DMY.format(pmh.getProjectAssignedDate());
+			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -1093,13 +1253,13 @@ public class UserRestController {
 			 }
 			 
 			 if(null != pmh.getProjectAssignedDate()){
-				 globalVarsMap.put("Project StartDate",pmh.getProjectAssignedDate().toString());
+				 globalVarsMap.put("Project StartDate",startDate);
 			 }else{
 				 globalVarsMap.put("Project StartDate", "--");
 			 }
 			 
 			 if(null != pmh.getProjectTerminationDate()){
-				 globalVarsMap.put("Project EndDate",pmh.getProjectTerminationDate().toString());
+				 globalVarsMap.put("Project EndDate",endDate);
 			 }else{
 				 globalVarsMap.put("Project EndDate", "--");
 			 }
@@ -1117,8 +1277,16 @@ public class UserRestController {
 				 } else {
 					 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 				}
-			
+			 StringBuilder Locations = new StringBuilder();
+			 if(orgLocations.getState() !=null && orgLocations.getState() !="undefined" && orgLocations.getCity() !=null && orgLocations.getCity() !="undefined"){
+			 globalVarsMap.put("location",Locations.append(orgLocations.getCity()).append(",").append(orgLocations.getState()).append(",").append(orgLocations.getCountry()).toString());
+			 }
+			 else{
+				 
+				 globalVarsMap.put("location", orgLocations.getCountry()); 
+			 }
 			 /*if (null != orgLocations.getOrg()) {
+			  * 
 				 globalVarsMap.put("LoginOrg", orgLocations.getOrg().getOrgName());
 				 } else {
 					 globalVarsMap.put("LoginOrg", "--");
@@ -1182,6 +1350,14 @@ public class UserRestController {
 						userRoleService.addUserRole(userRole);
 					}
 
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(Long.parseLong(userID),orgLocations.getId());
+					if(candidate != null){
+						candidate.setIsAssociate("Y");
+						candidateService.saveOrUpdateCandidate(candidate);
+						candidateService.saveOrUpdateCandidateElkDocument(candidate);
+							
+					}
+					
 					/*
     				 * Saving USER DB data as ElasticSearch Documents
     				 */

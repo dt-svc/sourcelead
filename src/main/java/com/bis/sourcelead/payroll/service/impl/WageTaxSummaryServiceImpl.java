@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -131,9 +132,13 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 
 							}
 							if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-								String checkDate = getCellValueAsString(row.getCell(2), fileName);
-								wageTaxSummary.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDate));
-
+								Date checkDate = getCellDate(row.getCell(2), fileName);
+								if(checkDate != null){
+									wageTaxSummary.setCheckDate(checkDate);
+								}else{
+									String checkDateStr = getCellValueAsString(row.getCell(2), fileName);
+									wageTaxSummary.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDateStr));
+								}
 							}
 							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 								String checkNo = getCellValueAsString(row.getCell(3), fileName);
@@ -254,67 +259,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		return getCellValueAsString(cell, fileName);
 	
 }
-	/*private String getCellValueAsString(Cell cell, String fileName) {
-		String cellValue = "";
-		if(fileName.toLowerCase().endsWith("xls")){
-				HSSFCell hssfCell = (HSSFCell) cell;
-				if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-					hssfCell.setCellType(Cell.CELL_TYPE_STRING);
-					String hssfCellValue = hssfCell.getStringCellValue();
-					if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
-						cellValue = hssfCellValue;
-					} 
-				}else{
-					cellValue = cell.getStringCellValue();
-				}
-			}else{
-				XSSFCell xssfCell = (XSSFCell) cell;
-				if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-					xssfCell.setCellType(Cell.CELL_TYPE_STRING);
-					String xssfCellValue = xssfCell.getStringCellValue();
-					if (xssfCellValue != null || !"".equalsIgnoreCase(xssfCellValue)) {
-						cellValue = xssfCellValue;
-					} 
-				}else{
-					cellValue = cell.getStringCellValue();
-				}
-			}
-			return cellValue;
-		}*/
 	
-	private String getCellValueAsString(Cell cell, String fileName) {
-		String cellValue = "";
-		double xssfCellValue = 0;
-		if (fileName.toLowerCase().endsWith("xls")) {
-			HSSFCell hssfCell = (HSSFCell) cell;
-			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-				xssfCellValue = hssfCell.getNumericCellValue();
-				cellValue = String.valueOf(xssfCellValue);
-			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_NUMERIC){
-				cellValue = String.valueOf(hssfCell.getNumericCellValue());
-			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_STRING){
-				cellValue = String.valueOf(hssfCell.getStringCellValue());	
-			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-				cellValue = cell.getStringCellValue();
-			}
-		} else {
-			XSSFCell xssfCell = (XSSFCell) cell;
-			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
-				xssfCellValue = xssfCell.getNumericCellValue();
-				cellValue = String.valueOf(xssfCellValue);
-			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
-					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_NUMERIC) {
-				cellValue = String.valueOf(xssfCell.getNumericCellValue());
-			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
-					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_STRING) {
-				cellValue = String.valueOf(xssfCell.getStringCellValue());
-			} else if(xssfCell.getCellType() == XSSFCell.CELL_TYPE_STRING){
-				cellValue = cell.getStringCellValue();
-			}
-		}
-		return cellValue;
-	}
-
+	
+	
 	@Override
 	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
 	{
@@ -379,10 +326,6 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 							WageTaxSummary  wageTaxSummary = new WageTaxSummary();
 							String ssnNumber = getSsnNumber(row.getCell(1),fileName);
 							if(!StringUtils.containsIgnoreCase(ssnNumber, "Total")){
-								/*if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-									emppID = getCellValueAsString(row.getCell(0), fileName);
-									!StringUtils.containsIgnoreCase(ssnNumber, "SSN:") && 
-								}*/
 								
 								float gross = 0f;
 								float fwt = 0f;
@@ -411,9 +354,13 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 									
 								} 
 								if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-									String checkDate = getCellValueAsString(row.getCell(2), fileName);
-									wageTaxSummary.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDate));
-									
+									Date checkDate = getCellDate(row.getCell(2), fileName);
+									if(checkDate != null){
+										wageTaxSummary.setCheckDate(checkDate);
+									}else{
+										String checkDateStr = getCellValueAsString(row.getCell(2), fileName);
+										wageTaxSummary.setCheckDate(conversionUtil.getDateFromMMDDYYY(checkDateStr));
+									}
 								} 
 								if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 									String checkNo = getCellValueAsString(row.getCell(3), fileName);
@@ -474,14 +421,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								wageTaxSummary.setUpdatedDate(new Date());
 								wageTaxSummary.setOrgLocationId(orgLocation);
 								wageTaxSummaryList.add(wageTaxSummary);
-								}/*else{
-								if(StringUtils.containsIgnoreCase(ssnNumber, "SSN:")) {
-									if(emppID !=null){
-										map.put(emppID, ssnNumber);
-									}
 								}
-							}*/
-							
 						}
 					}
 			for(WageTaxSummary wageTaxSummary:wageTaxSummaryList){
@@ -506,14 +446,65 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 				}
 
 			
-			
 			fis.close();
 		} catch (IOException e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
 		return count;
-	
-	
 	}
+	
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		double xssfCellValue = 0;
+		if (fileName.toLowerCase().endsWith("xls")) {
+			HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+				hssfCell.setCellType(Cell.CELL_TYPE_STRING);
+				String hssfCellValue = hssfCell.getStringCellValue();
+				if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
+					cellValue = hssfCellValue;
+				} 
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_NUMERIC){
+				cellValue = String.valueOf(hssfCell.getNumericCellValue());
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_FORMULA && hssfCell.getCachedFormulaResultType() == HSSFCell.CELL_TYPE_STRING){
+				cellValue = String.valueOf(hssfCell.getStringCellValue());	
+			}else if(hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+				cellValue = cell.getStringCellValue();
+			}
+		} else {
+			XSSFCell xssfCell = (XSSFCell) cell;
+			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				xssfCellValue = xssfCell.getNumericCellValue();
+				cellValue = String.valueOf(xssfCellValue);
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_NUMERIC) {
+				cellValue = String.valueOf(xssfCell.getNumericCellValue());
+			} else if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_FORMULA
+					&& xssfCell.getCachedFormulaResultType() == XSSFCell.CELL_TYPE_STRING) {
+				cellValue = String.valueOf(xssfCell.getStringCellValue());
+			} else if(xssfCell.getCellType() == XSSFCell.CELL_TYPE_STRING){
+				cellValue = cell.getStringCellValue();
+			}
+		}
+		return cellValue;
+	}
+
+	
+	private Date getCellDate(Cell cell, String fileName) {
+		Date date = null;
+	   if(fileName.toLowerCase().endsWith("xls")){
+		   HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) hssfCell)) {
+					date = hssfCell.getDateCellValue();
+			}
+		}else{
+			XSSFCell xssfFCell = (XSSFCell) cell;
+			if (xssfFCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) xssfFCell)) {
+					date = xssfFCell.getDateCellValue();
+			}
+		}
+		return date;
+	}
+	
 }

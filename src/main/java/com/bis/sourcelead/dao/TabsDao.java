@@ -22,5 +22,7 @@ public interface TabsDao {
 	boolean getTabAccessByRoleIdAndTabId(Long roleId,Long orgLocationId,Long tabId) throws Exception;
 	
 	Collection<Tabs> getCrowdSourcingTabsListByRoleId(Long roleId) throws Exception;
+	
+	List<String> getTabsNamesListByActionsIds(List<Long> actionIdsList) throws Exception;
 
 }

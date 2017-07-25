@@ -69,7 +69,6 @@ function alertClose(){
 <script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
 function createAlert(){
-	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var email = '${SourceLeadWeb_user.email}';
 	
@@ -101,18 +100,24 @@ function createAlert(){
 					 result = result +'         </div>';
 
 					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Location</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result + '             <input type="text" class="form-control input-sm" name="location"  id="jobLocation"  placeholder="Location" field-name="Locatin" >';
+					 result = result + '                <i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'jobLocation\',\'jobCountry\',\'jobState\',\'jobCity\',\'jobZipCode\');"></i>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 
+					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">Country</label>';
 					 result = result +'         	<div class="col-md-9">';
-					 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="country" name="country">';
-					 result = result +'         		</select>';
+					 result = result +'         		<input type="text" class="form-control" placeholder="Country" id="jobCountry" name="country" readonly>';
 					 result = result +'         	</div>';
 					 result = result +'         </div>';
 					 
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">State</label>';
 					 result = result +'         	<div class="col-md-9">';
-					 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" id="state" name="state">';
-					 result = result +'         		</select>';
+					 result = result +'         		<input type="text" class="form-control" placeholder="State" id="jobState" name="state" readonly>';
 					 result = result +'         	</div>';
 					 result = result +'         </div>';
 					 
@@ -120,10 +125,18 @@ function createAlert(){
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">City</label>';
 					 result = result +'         	<div class="col-md-9">';
-					 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" id="city" name="city">';
-					 result = result +'         		</select>';
+					 result = result +'         		<input type="text" class="form-control" placeholder="City" id="jobCity" name="city" readonly>';
 					 result = result +'         	</div>';
 					 result = result +'         </div>';
+					 
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Zip Code</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<input type="text" class="form-control" placeholder="Zip Code" id="jobZipCode" name="zipcode">';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+
+					 
 					 
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">Experience</label>';
@@ -211,7 +224,7 @@ function createAlert(){
 					 result = result +'</form>';
 				 $("#createAlertPopUpDiv").empty();
 				 $("#createAlertPopUpDiv").append(result);
-				 getAllCountries();
+				 initLocationAuto('jobLocation','jobCountry','jobState','jobCity','jobZipCode','','','');
 				 var config = {
 							  '.chosen-select'           : {},
 							  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -227,23 +240,7 @@ function createAlert(){
 					    $this.next().css({'width': '100%'});
 					    })
 					    
-					    $("#country").chosen();
-				        $("#state").chosen();
-				        $("#city").chosen();
-				        
-				        $("#country").on('change', function (e) {
-				     	   getStates();
-				        });
-				       
-				        $("#state").on('change', function (e) {
-				     	   getCities();
-				        });
-				        
-				        
-				        
-				        
-				        
-				        var select, chosen;
+					    var select, chosen;
 					    select = $("#skills");
 					    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 					    chosen = select.data('chosen');
@@ -366,138 +363,7 @@ $(document).ready(function(){
 	jobAlertList();
 });
 </script>
-
-<script type="text/javascript">
-function getAllCountries(country){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	
-            	if(country != 'undefined' && country != null && country != '' && json[i] == country){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else if(json[i] == '${SourceLeadWeb_loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-            if(country == "undefined" || country == null){
-            	getStates();
-            }
-            
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-
-<script>
-function getStates(country,state){
-	
-	var countryName = '';
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#country").val();
-	}
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != '' && state != 'undefined' && json[i] == state){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---Select City---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(country,state,city){
-	var countryName = '';
-	var stateName = '';
-	
-	if(country != null && country != '' && country != 'undefined'){
-		countryName = country;
-	}else{
-	   countryName = $("#country").val();
-	}
-	
-	if(state != null && state != '' && state != 'undefined'){
-		stateName = state;
-	}else{
-		stateName = $("#state").val();
-	}
-	
-	if(countryName != null && countryName != "" && countryName != "undefined" && stateName != null && stateName != "" && stateName != "undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(city != null && city != '' && state != 'undefined' && json[i] == city){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            	
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
+ 
 <script>
 function jobAlertList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -527,7 +393,7 @@ function jobAlertList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var report = json[i]; 
 	                    	 if(report.experience != null && report.experience != '' && report.experience != 'undefined'){
-	                    		 experience = report.experience + "&nbsp; Yeras";
+	                    		 experience = report.experience + "&nbsp; Years";
 	                    	 }else{
 	                    		 experience = "--";
 	                    	 }
@@ -594,12 +460,31 @@ function editAlert(jobAlertUUID){
         	  var experience = json['experience'];
         	  var rateCurrency = json['rateCurrency'];
         	  var rate = '';
+        	  var state = '';
+        	  var location ='';
+        	  var country = '';
+        	  var city = '';
+        	  var zipCode ='';
         	  if(json['rate'] != null && json['rate'] != 'undefined' && json['rate'] != ''){
         		  rate = json['rate'];
         	  }
         	  
         	  var rateType = json['rateType'];
-        	  
+        	  if(json['location'] != null && json['location'] != '' && json['location'] != 'undefined'){
+        		  location = json['location'];
+        	  }
+        	  if(json['country'] != null && json['country'] != '' && json['country'] != 'undefined'){
+        		  country = json['country'];
+        	  }
+        	  if(json['state'] != null && json['state'] != '' && json['state'] != 'undefined'){
+        		  state = json['state'];
+        	  }
+        	  if(json['city'] != null && json['city'] != '' && json['city'] != 'undefined'){
+        		  city = json['city'];
+        	  }
+        	  if(json['zipCode'] != null && json['zipCode'] != '' && json['zipCode'] != 'undefined'){
+        		  zipCode = json['zipCode'];
+        	  }
         	     result = "";
         		 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
         		 result = result +' <div class="success_pop" id="jobAlert1" style="display: none;">';
@@ -620,31 +505,44 @@ function editAlert(jobAlertUUID){
         		 result = result +'         </div>';
         		 
         		 result = result +'<input type="hidden" name="savedJobAlertId" value="'+json['id']+'">';
-
-        		 result = result +'         <div class="form-group clearfix">';
-        		 result = result +'         	<label class="col-md-3">Country</label>';
-        		 result = result +'         	<div class="col-md-9">';
-        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="country" name="country">';
-        		 result = result +'         		</select>';
-        		 result = result +'         	</div>';
-        		 result = result +'         </div>';
         		 
         		 result = result +'         <div class="form-group clearfix">';
-        		 result = result +'         	<label class="col-md-3">State</label>';
-        		 result = result +'         	<div class="col-md-9">';
-        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" id="state" name="state">';
-        		 result = result +'         		</select>';
-        		 result = result +'         	</div>';
-        		 result = result +'         </div>';
-        		 
-        		 
-        		 result = result +'         <div class="form-group clearfix">';
-        		 result = result +'         	<label class="col-md-3">City</label>';
-        		 result = result +'         	<div class="col-md-9">';
-        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" id="city" name="city">';
-        		 result = result +'         		</select>';
-        		 result = result +'         	</div>';
-        		 result = result +'         </div>';
+				 result = result +'         	<label class="col-md-3">Location</label>';
+				 result = result +'         	<div class="col-md-9">';
+				 result = result + '             <input type="text" class="form-control input-sm" name="location"  id="jobLocation" value="'+location+'" placeholder="Location" field-name="Locatin" >';
+				 result = result + '                <i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'jobLocation\',\'jobCountry\',\'jobState\',\'jobCity\',\'jobZipCode\');"></i>';
+				 result = result +'         	</div>';
+				 result = result +'         </div>';
+				 
+				 result = result +'         <div class="form-group clearfix">';
+				 result = result +'         	<label class="col-md-3">Country</label>';
+				 result = result +'         	<div class="col-md-9">';
+				 result = result +'         		<input type="text" class="form-control" placeholder="Country" id="jobCountry" name="country" value="'+country+'" readonly>';
+				 result = result +'         	</div>';
+				 result = result +'         </div>';
+				 
+				 result = result +'         <div class="form-group clearfix">';
+				 result = result +'         	<label class="col-md-3">State</label>';
+				 result = result +'         	<div class="col-md-9">'; 
+				 result = result +'         		<input type="text" class="form-control" placeholder="State" id="jobState" name="state" value="'+state+'" readonly>';
+				 result = result +'         	</div>';
+				 result = result +'         </div>';
+				 
+				 
+				 result = result +'         <div class="form-group clearfix">';
+				 result = result +'         	<label class="col-md-3">City</label>';
+				 result = result +'         	<div class="col-md-9">';
+				 result = result +'         		<input type="text" class="form-control" placeholder="City" id="jobCity" name="city" value="'+city+'" readonly>';
+				 result = result +'         	</div>';
+				 result = result +'         </div>';
+				 
+				 result = result +'         <div class="form-group clearfix">';
+				 result = result +'         	<label class="col-md-3">Zip Code</label>';
+				 result = result +'         	<div class="col-md-9">';
+				 result = result +'         		<input type="text" class="form-control" placeholder="Zip Code" id="jobZipCode" name="zipcode" value="'+zipCode+'">';
+				 result = result +'         	</div>';
+				 result = result +'         </div>';
+				 
         		 
         		 result = result +'         <div class="form-group clearfix">';
         		 result = result +'         	<label class="col-md-3">Experience</label>';
@@ -827,16 +725,7 @@ function editAlert(jobAlertUUID){
         		 result = result +'</form>';
         	 $("#createAlertPopUpDiv").empty();
         	 $("#createAlertPopUpDiv").append(result);
-        	 getAllCountries(json['country']);
-        	
-        	 if(json['state'] != null && json['state'] != '' && json['state'] != 'undefined'){
-        		 getStates(json['country'],json['state']);
-        	 }else{
-        		 getStates(json['country']);
-        	 }
-        	 if(json['city'] != null && json['city'] != '' && json['city'] != 'undefined'){
-        		 getCities(json['country'],json['state'],json['city']);
-        	 }
+        	 initLocationAuto('jobLocation','jobCountry','jobState','jobCity','jobZipCode','','','');
         	 
         	 
         	 var config = {
@@ -854,19 +743,6 @@ function editAlert(jobAlertUUID){
         		    $this.next().css({'width': '100%'});
         		    })
         		    
-        		    $("#country").chosen();
-        	        $("#state").chosen();
-        	        $("#city").chosen();
-        	        
-        	        $("#country").on('change', function (e) {
-        	     	   getStates();
-        	        });
-        	       
-        	        $("#state").on('change', function (e) {
-        	     	   getCities();
-        	        });
-        	        
-        	        
         	        
         	        var select, chosen;
         		    select = $("#skills");

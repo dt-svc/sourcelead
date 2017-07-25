@@ -26,17 +26,17 @@ window.onload = function () {
 		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
   </div>
        
-  <div class="pull-right brud-crum">Home &raquo; Payroll</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
 
 <section class="contrHead">
 		<ul id="parentUl">
-			<li title="Employer Payroll Cost"><a class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
-			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
-			<li title="Account Deductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
-			<li title="HR Deductions"><a onclick="hrDeductionsList();">HR Deductions</a></li>
-			<li title="Paylist"><a onclick="runPayrollCycles('main');">Run Payroll</a></li>
+			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
+			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
+			<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
+			<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
+			<li title="Paylist"><a id="paylistLi" onclick="runPayrollCycles('main');">Run Payroll</a></li>
 			<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 		</ul>
 		<div class="clearfix"></div>
@@ -48,10 +48,14 @@ window.onload = function () {
 	
 <div class="timesheet_head clearfix">
 
-<div class="pull-left">
+<div class="pull-left mr">
 
 <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
 
+</div>
+
+<div id="payScale" class="pull-left mt10" style="display:none;">
+<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
 </div>
 
      <ul class="pull-right">
@@ -141,25 +145,25 @@ window.onload = function () {
                         <div class="col-md-12 mt10 dropdown-select" id="payrollCycleDiv">
 							<select class="chosen-select" id="payrollCycle" name="payrollCycle"  field-name="Payroll Cycle"  data-validation="required">
 							<option value="">---Select Payroll Cycle---</option>
-							<option value="2">MAR 15th</option>
-							<option value="3_FIRST">April 1st</option>
-							<option value="3">April 15th</option>
-							<option value="4_FIRST">May 1st</option>
-							<option value="4">May 15th</option>
-							<option value="5_FIRST">June 1st</option>
-							<option value="5">June 15th</option>
-							<option value="6_FIRST">July 1st</option>
-							<option value="6">July 15th</option>
-							<option value="7_FIRST"> Aug 1st</option>
-							<option value="7">Aug 15th</option>
-							<option value="8_FIRST">Sep 1st</option>
-							<option value="8">Sep 15th</option>
-							<option value="9_FIRST">Oct 1st</option>
-							<option value="9">Oct 15th</option>
-							<option value="10_FIRST">Nov 1st</option>
-							<option value="10">Nov 15th</option>
-							<option value="11_FIRST">Dec 1st</option>
-							<option value="11">Dec 15th</option>
+							<option value="2">Mar 1st - Mar 15th</option>
+							<option value="3_FIRST">Mar 15th - April 1st</option>
+							<option value="3">April 1st - April 15th</option>
+							<option value="4_FIRST">April 15th - May 1st</option>
+							<option value="4">May 1st - May 15th</option>
+							<option value="5_FIRST">May 15th - June 1st</option>
+							<option value="5">June 1st - June 15th</option>
+							<option value="6_FIRST">June 15th - July 1st</option>
+							<option value="6">July 1st - July 15th</option>
+							<option value="7_FIRST">July 15th - Aug 1st</option>
+							<option value="7">Aug 1st - Aug 15th</option>
+							<option value="8_FIRST">Aug 15th - Sep 1st</option>
+							<option value="8">Sep 1st - Sep 15th</option>
+							<option value="9_FIRST">Sep 15th - Oct 1st</option>
+							<option value="9">Oct 1st - Oct 15th</option>
+							<option value="10_FIRST">Oct 15th - Nov 1st</option>
+							<option value="10">Nov 1st - Nov 15th</option>
+							<option value="11_FIRST">Nov 15th - Dec 1st</option>
+							<option value="11">Dec 1st - Dec 15th</option>
 							</select>
                         </div>
                       </div>
@@ -209,7 +213,7 @@ function runPayrollCycles(type){
 		var jsonData = encodeURIComponent(con);
 		var form = $('#run_payroll_cycle')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "GET",
@@ -269,6 +273,13 @@ function flushValues(){
 </script>
 
 <script>
+$("ul#parentUl").on("click","li", function(){
+	$(this).find('a').addClass("wVer");
+	$(this).siblings('li').find('a').removeClass("wVer");
+});
+</script>
+
+<script>
 function flush(){
 	$("#uploadBulkBtn").val("");	
 }
@@ -276,7 +287,7 @@ function flush(){
 
 <script>
 function loadEmployeePayrollCost(){
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -343,6 +354,7 @@ function loadEmployeePayrollCost(){
 						$("#finalPayrollReportDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
+						$('#payScale').css('display','none');
 						employeePayrollCostPagination();
 				        	
 				        },
@@ -450,7 +462,7 @@ $(".addcon-pop").click(function() {
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_bulk_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -485,13 +497,14 @@ $(".addcon-pop").click(function() {
 	function uploadPayrollDocument() {
 		if ($('#upload_payroll_form').validate(false, validationSettings)) { 
 			$('#adddocDiv').removeClass("show-div");
+			var payrollType = $("#payrollType").val();
 		var frm = $('#upload_payroll_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
 		var jsonData = encodeURIComponent(con);
 		var form = $('#upload_payroll_form')[0];
 		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax({
@@ -514,12 +527,45 @@ $(".addcon-pop").click(function() {
 			    			$("#selector1").css("display", "block");
 			    			$("#msgDiv").html(result+" Records Imported Successfully.");
 							msgFadein();
-							loadEmployeePayrollCost();
+							listRedirectBasedOnPayrollType(payrollType);
+							
 						}
 					},
 				});
 		
 		} 
+	}
+	
+	function listRedirectBasedOnPayrollType(payrollType){
+		if(payrollType == "EMPLOYEE_PAYROLL"){
+			$("#empPayrollCostLi").addClass('wVer');
+			$("#WageTaxSummaryLi").removeClass('wVer');
+			$("#accountDedLi").removeClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").removeClass('wVer');
+			loadEmployeePayrollCost();
+		}else if(payrollType == "WAGE_TAX"){
+			$("#empPayrollCostLi").removeClass('wVer');
+			$("#WageTaxSummaryLi").addClass('wVer');
+			$("#accountDedLi").removeClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").removeClass('wVer');
+			wagesAndTaxList();
+		}else if(payrollType == "ACCOUNT_DEDUCTIONS"){
+			$("#empPayrollCostLi").removeClass('wVer');
+			$("#WageTaxSummaryLi").removeClass('wVer');
+			$("#accountDedLi").addClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").removeClass('wVer');
+			accountDeductionsList();
+		}else if(payrollType == "HR_DEDUCTIONS"){
+			$("#empPayrollCostLi").removeClass('wVer');
+			$("#WageTaxSummaryLi").removeClass('wVer');
+			$("#accountDedLi").removeClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").addClass('wVer');
+			hrDeductionsList();
+		}
 	}
 	
 </script>
@@ -593,14 +639,6 @@ $(".addcon-pop").click(function() {
 							}
 						}
 					});
-</script>
-
-
-<script>
-$("ul#parentUl").on("click","li", function(){
-	$(this).find('a').addClass("wVer");
-	$(this).siblings('li').find('a').removeClass("wVer");
-});
 </script>
 
 <script>

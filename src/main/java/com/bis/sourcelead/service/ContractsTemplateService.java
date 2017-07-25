@@ -40,7 +40,7 @@ public interface ContractsTemplateService {
 
 	Contracts getChildContractById(Long contractId);
 
-	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org)throws Exception;
+	Contracts approveContracts(long parseLong, String status, OrgLocations orgLocation, User user, Org org, String rejectReason)throws Exception;
 	
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
@@ -62,6 +62,8 @@ public interface ContractsTemplateService {
 	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus, Long orgRelationId)throws Exception;
 
 	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
+
+	void sendFinalisedMailToReceiver(Contracts contracts, OrgLocations orgLocation, User user) throws Exception;
 
 	
 }

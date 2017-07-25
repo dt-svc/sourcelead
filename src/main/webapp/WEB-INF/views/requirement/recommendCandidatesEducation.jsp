@@ -821,7 +821,7 @@ function clearSearchKey() {
 
 <script type="text/javascript">
  function validateEduname(candidateId) {
-	  var name = document.getElementById("name").value; 
+	  var name = document.getElementById("candEdu").value; 
  	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
@@ -834,7 +834,7 @@ function clearSearchKey() {
 						  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
 						   */
 						   $('#chosen-educationMsg').find('p.jquery_form_error_message').remove();
-						   $("#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						   $("#candEdu").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#save_button").attr('disabled','disabled');
 						 // return false;
 		        	}

@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -30,12 +32,18 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +52,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.beans.BillingGraphBean;
+import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
@@ -59,6 +69,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -69,7 +80,9 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -79,6 +92,9 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TabActionsService;
+import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -138,6 +154,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Autowired
 	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 	
+	@Autowired
+	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	private TabsService tabsService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -248,6 +269,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setBillingAddress(jsonObj.getString("billingAddress"));
 		}else{
 			invoice.setBillingAddress(null);
+		}
+		
+		if(jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))){
+			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
 		}
 		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
@@ -459,7 +484,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
-		
+		if(invoice.getProjectID() !=null){
+			parentInvoice.setProjectID(invoice.getProjectID());
+		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		parentInvoice.setCreatedDate(invoice.getCreatedDate());
 		parentInvoice.setCreatedBy(invoice.getCreatedBy());
@@ -619,6 +646,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }else{
 						 invoiceLineItems.setAmount(null);
 					 }
+					 if(null != jsonObj.getString(i+"Description") && !"".equalsIgnoreCase(jsonObj.getString(i+"Description"))){
+						 invoiceLineItems.setInlineDescription(jsonObj.getString(i+"Description"));
+					 }
 	              // As of Now we are not storing seperateInvoice status
 //					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
 //							invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
@@ -749,8 +779,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	
-	
-	
 	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception{
 
 		EmailScenario  emailScenario = null;
@@ -767,6 +795,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		 
+		String invoiceDate= (Constants.DF_DMY.format(invoice.getInvoiceDate()));
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
@@ -774,6 +804,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
+		 globalVarsMap.put("invoiceDate",invoiceDate); 
 		 globalVarsMap.put("orgName",orglocations.getOrgLocationName());
 		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
@@ -835,7 +866,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
@@ -1217,11 +1248,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getInvoiceDate()){
-		 writeRow.createCell(5).setCellValue(invoice.getInvoiceDate().toString());
+		String invoiceDate = Constants.DF_DMY.format(invoice.getInvoiceDate());
+		 writeRow.createCell(5).setCellValue(invoiceDate);
 	}
 	
 	if(null != invoice.getDueDate()){
-		writeRow.createCell(6).setCellValue(invoice.getDueDate().toString());  
+		String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+		writeRow.createCell(6).setCellValue(dueDate);  
 	}
 	
 	if(null != invoice.getTotal() && !"".equalsIgnoreCase(invoice.getTotal())){
@@ -1404,6 +1437,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
   	  		  		        if(savedInvoice !=null){
@@ -1523,8 +1557,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
-				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
+				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
 			}
@@ -1551,9 +1584,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @param loginOrgCurrencyCode
 	 * @param billingRatePer
 	 * @param rateCurrencyType
+	 * @param invoiceLineItems 
 	 * @return float
 	 */
-	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType)
+	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType, InvoiceLineItems invoiceLineItems)
 	{
 		float hourlyRate = conversionUtil.getHourlyRate(billingAmount, billingRatePer);
 		float roundValue = 0;
@@ -1564,6 +1598,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		else {
 			roundValue = (float) (Math.round(hourlyRate * 100.0) / 100.0);
 		}
+		invoiceLineItems.setRate(String.valueOf(roundValue));
 		String[] split = totalHours.split(":");
 		int splitHours = Integer.parseInt(split[0]);
 		int hourminits = splitHours * 60;
@@ -1834,14 +1869,66 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		return invoiceDao.getClientBasedInvoiceLists(orgRelationId,orgLocationId,invoiceType);
 	}
 	@Override
-	public void linkInvoice(Invoice invoice) throws Exception
+	public  Invoice linkInvoice(Invoice invoice) throws Exception
 	{
-      invoiceDao.saveInvoce(invoice);		
+      return invoiceDao.saveInvoce(invoice);		
 	}
 	
 	@Override
-	public List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId,Long clientLocationId,Date startDateUTC, Date endDateUTC,String invoiceStatus, String paymentStatus,String invoiceType,OrgLocations orgLocations)
+	public List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId,Long clientLocationId,String invoiceStatus, String paymentStatus,String invoiceType,OrgLocations orgLocations,String dayWisetype, String customStartDate, String customEndDate) throws Exception
 	{
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date endDateUTC = null;
+		Date startDateUTC = null;
+		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
+			String endDate = outputFormatter1.print(zoned);
+			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
+			endDateUTC = TZ_DF_TS.parse(endDateString);
+		}
+		if (null != dayWisetype && !"".equals(dayWisetype)) {
+			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
+				String startDate = outputFormatter.print(zoned);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				if (Constants.ONE_MONTH.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				}
+				else if (Constants.TWO_MONTHS.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+				}
+				else if (Constants.THREE_MONTHS.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+				}
+				else if (Constants.SIX_MONTHS.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+				}
+				else if (Constants.ONE_YEAR.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+				}
+			}
+		}else {
+			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)
+					&& !"undefined".equalsIgnoreCase(customStartDate)
+					&& !"undefined".equalsIgnoreCase(customEndDate)) {
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				Date startTime = commonUtil.getDateFormat(customStartDate);
+				Date endTime = commonUtil.getDateFormat(customEndDate);
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);
+				String customEndTimeStr = TZ_DF_CED.format(endTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				endDateUTC = TZ_DF_TS.parse(endDateString);
+			}else{
+				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+			}
+		}
 		
 		List<Invoice> invoiceList =  invoiceDao.getInvoiceByOrgRelationId(orgRelationId,clientLocationId,startDateUTC,endDateUTC,invoiceStatus,paymentStatus,invoiceType);
 //      		String currentDate = sdf.format(new Date());
@@ -1930,5 +2017,309 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	{
 		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
 	}
+	@Override
+	public List<Invoice> getDueDateCompletedInvoicesList() throws Exception {
+		return invoiceDao.getDueDateCompletedInvoicesList();
+	}
+	@Override
+	public void saveInvocePojo(Invoice invoice) throws Exception {
+		invoiceDao.saveInvoce(invoice);
+	}
+	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
+	{
+		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
+		String yesterDayDate = outputFormatter.print(yesterDayZoned);
+		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
+		return TZ_DF_TS.parse(startDateString);
+	}
 
+	@Override
+	public BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate,
+			String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId) throws Exception {
+		DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+
+		LocalDate today = LocalDate.now();
+		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
+		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
+		List<Invoice> invoiceList = null;
+		Date startDateUTC = null;
+		Date endDateUTC = null;
+		LocalDate date1 = null;
+		LocalDate date2 = null;
+		List<BillingGraphBean> incomeExpenseList = new ArrayList<>();
+		switch (billingReportType) {
+		case Constants.THIS_MONTH:
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
+			date1 = new LocalDate(startDateUTC);
+			date2 = new LocalDate(endDateUTC);
+			break;
+		case Constants.THIS_QUARTER:
+			LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
+			date1 = dates[0];
+			date2 = dates[1];
+			break;
+		case Constants.THIS_YEAR:
+			LocalDate[] currentYearDates = conversionUtil.getThisYearStartDateEndDate();
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
+			date1 = currentYearDates[0];
+			date2 = currentYearDates[1];
+			break;
+		case Constants.LAST_30DAYS:
+			Date[] last30Days = conversionUtil.getPreviousDates(30, orgLocation, startDateOutputFormatter,
+					endDateOutputFormatter);
+			startDateUTC = last30Days[0];
+			endDateUTC = last30Days[1];
+			date1 = new LocalDate(last30Days[0]);
+			date2 = new LocalDate(last30Days[1]);
+			;
+			break;
+		case Constants.LAST_MONTH:
+			LocalDate firstOfThisMonth = today.withDayOfMonth(1);
+			LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths(1);
+			LocalDate lastMonthEndDate = firstOfThisMonth.minusDays(1);
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
+			date1 = loastMonthStartDate;
+			date2 = lastMonthEndDate;
+			break;
+		case Constants.LAST_QUARTER:
+			LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
+			LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
+			date1 = quarterDates[0];
+			date2 = quarterDates[1];
+			break;
+		case Constants.LAST_YEAR:
+			if (Constants.COUNTRY_INDIA.equalsIgnoreCase(orgLocation.getCountry())) {
+				LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
+				if (null != finStartDate) {
+					LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
+					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
+					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
+					date1 = new LocalDate(startDateUTC);
+					date2 = new LocalDate(endDateUTC);
+					;
+				}
+			} else {
+				LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
+				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
+						startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
+				date1 = financialDates[0];
+				date2 = financialDates[1];
+			}
+			break;
+		case Constants.CUSTOM:
+			LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
+			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
+			date1 = localStartDate;
+			date2 = localEndDate;
+			break;
+		default:
+			logger.info("No Frequency");
+			;
+		}
+		// End Time conversion
+
+		double receivedAmt = 0;
+		double payableAmt = 0;
+		double netAmount = 0;
+		invoiceList = invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocation.getId(), startDateUTC, endDateUTC);
+		BillingReportDTO billingReportDTO = new BillingReportDTO();
+		boolean isReceivableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(),
+				21L);
+		boolean isPayableAccessYes = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocation.getId(),
+				22L);
+
+		for (Invoice invoice : invoiceList) {
+			if ((Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())
+					&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+							|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())))
+					&& isReceivableAccessYes) {
+
+				try {
+					List<InvoicePayment> invoicePaymentList = invoiceDao.getPaymentHistroyByInvoiceId(invoice.getId());
+					if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
+						double recievableAmount = invoicePaymentList.stream()
+								.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+						receivedAmt = receivedAmt + recievableAmount;
+					}
+
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+
+			} else if (isPayableAccessYes) {
+				try {
+					List<InvoicePayment> invoicePaymentList = invoiceDao.getPaymentHistroyByInvoiceId(invoice.getId());
+					if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
+						double payableAmount = invoicePaymentList.stream()
+								.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+						payableAmt = payableAmt + payableAmount;
+					}
+				} catch (Exception e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				}
+			}
+		}
+		List<LocalDate> dates = conversionUtil.getAllDatesBetweenGivenDates(date1, date2);
+		for (LocalDate localStartDate : dates) {
+			BillingGraphBean billingGraphBean = new BillingGraphBean();
+			billingGraphBean.setDate(localStartDate.toString("MMM-yy"));
+			double incomeAmount = 0;
+			double expensesAmount = 0;
+			for (Invoice invoice : invoiceList) {
+				LocalDate invoiceDate = new LocalDate(invoice.getInvoiceDate());
+				if ((Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())
+						&& (Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+								|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())))
+						&& isReceivableAccessYes) {
+					try {
+						LocalDate localEndDate = localStartDate.dayOfMonth().withMaximumValue();
+						if ((invoiceDate.isAfter(localStartDate) && invoiceDate.isBefore(localEndDate))
+								|| (invoiceDate.equals(localStartDate) || invoiceDate.equals(localEndDate))) {
+							List<InvoicePayment> invoicePaymentList = invoiceDao
+									.getPaymentHistroyByInvoiceId(invoice.getId());
+							if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
+								double income = invoicePaymentList.stream()
+										.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+								incomeAmount = incomeAmount + income;
+							}
+						}
+
+					} catch (Exception e) {
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+				} else if (isPayableAccessYes) {
+					try {
+						LocalDate localEndDate = localStartDate.dayOfMonth().withMaximumValue();
+						if (invoiceDate.isAfter(localStartDate) && invoiceDate.isBefore(localEndDate)
+								|| invoiceDate.equals(localStartDate) || invoiceDate.equals(localEndDate)) {
+							List<InvoicePayment> invoicePaymentList = invoiceDao
+									.getPaymentHistroyByInvoiceId(invoice.getId());
+							if (invoicePaymentList != null && invoicePaymentList.size() > 0) {
+								double expenses = invoicePaymentList.stream()
+										.mapToDouble(o -> Double.parseDouble(o.getPaymentAmount())).sum();
+								expensesAmount = expensesAmount + expenses;
+							}
+						}
+					} catch (Exception e) {
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+				}
+			}
+			billingGraphBean.setIncome(Math.round(incomeAmount * 100.0) / 100.0);
+			billingGraphBean.setExpenses(Math.round(expensesAmount * 100.0) / 100.0);
+			incomeExpenseList.add(billingGraphBean);
+		}
+
+		netAmount = receivedAmt - payableAmt;
+		billingReportDTO.setNetAmount(String.valueOf(Math.round(netAmount * 100.0) / 100.0));
+		billingReportDTO.setReceivedAmount(String.valueOf(Math.round(receivedAmt * 100.0) / 100.0));
+		billingReportDTO.setPayableAmount(String.valueOf(Math.round(payableAmt * 100.0) / 100.0));
+		billingReportDTO.setBillingGraphBean(incomeExpenseList);
+		return billingReportDTO;
+	}
+	public void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception
+	{
+		EmailScenario  emailScenario = null;
+		EmailScenario  notificationScenario = null;
+		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(invoice.getContactUser().getEmail());
+		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
+		 globalVarsMap.put("LoginUser",user.getFirstName());
+		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		 globalVarsMap.put("grandTotal",invoice.getTotal());
+		 globalVarsMap.put("dueDate",date); 
+		 globalVarsMap.put("orgName",orgLocation.getOrgLocationName());
+		 //globalVarsMap.put("address",invoice.getBillingAddress());
+		 
+		/* StringBuilder acceptBuilder = new StringBuilder();
+		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+	        
+		StringBuilder  rejectBuilder = new StringBuilder();
+	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("rejectInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+   */
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 if(invoiceType.equalsIgnoreCase("payable")){
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_EMAIL);
+			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }else{
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_EMAIL);
+			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
+		
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+		 EmailAttachment emailAttachment = new EmailAttachment();
+		 emailAttachment.setUUID(UUID);
+		 EmailAttachment attachmentZip = zipFiles(docusList);
+		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+		 for(InvoiceDocument doc:documenetSet){
+			 EmailAttachment docAttachment = new EmailAttachment();
+			 docAttachment.setDocFile(doc.getDocFile());
+			 docAttachment.setName(doc.getFileName());
+			 documentList.add(docAttachment);
+		 }
+		 
+		 }
+		 emailAttachment.setDocFile(invoice.getDocFile());
+		 emailAttachment.setName(invoice.getFileName());
+		 attachmentList.add(emailAttachment);
+
+		 if(attachmentZip !=null){
+			 attachmentList.add(attachmentZip);
+		 }
+		 if(documentList !=null && !documentList.isEmpty() && documentList.size() > 0){
+		 attachmentList.addAll(documentList);
+		 }
+		 //calling the sendEmail method of emailScenerioUtil
+		 
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
+		
+	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
+	}
+	
 }

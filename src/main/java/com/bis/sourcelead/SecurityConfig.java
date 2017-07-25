@@ -143,7 +143,7 @@ public class SecurityConfig  {
     			.antMatchers("/getRequestedCandidates").permitAll() 
     			.antMatchers("/validateCampaignToEmail").permitAll() 
     			.antMatchers("/sendRequestForResume").permitAll() 
-    			.antMatchers("/displayOrgImageInMail").permitAll()
+    			.antMatchers("/displayOrgImageInMail/**").permitAll()
     			.antMatchers("/countryAutoComplete").permitAll() 
     			.antMatchers("/getStatesByCountry").permitAll()
     			.antMatchers("/getCitiesByStateAndCountry").permitAll()
@@ -160,7 +160,11 @@ public class SecurityConfig  {
     			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
     			.antMatchers("/requestedDocuments").permitAll()
     			.antMatchers("/uploadRequestedDocuments").permitAll()
-    			
+    			.antMatchers("/viewAllJobAlerts").permitAll()
+    			.antMatchers("/getAllJobsAlertList").permitAll()
+				
+    			.antMatchers("/viewJobSummaryDocumentDocView").permitAll()
+
     			
     			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
     			.antMatchers("/**").fullyAuthenticated()

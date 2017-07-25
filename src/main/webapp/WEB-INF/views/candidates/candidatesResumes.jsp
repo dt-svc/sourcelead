@@ -34,6 +34,12 @@
 	.removeIcon{
 	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
 	}
+	.tblicons_4 {
+	width:100px;
+	}
+	.tblicons_4 a {
+	margin: 0 2px;
+	}
 </style>
 
 <script>
@@ -371,9 +377,11 @@ function addResume(candidateId) {
 					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
 					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
-					           		
-					           		result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"title="Download"></a>';
+
+									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
+					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"title="Download"></a>';
+					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="getCandiResume(\''+opt.resumeUUID+'\',\''+opt.fileName+'\');"title="preview"></a>';
+		           						          
 					           		if(window.candidateStatusGlobal == 0){
 					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
@@ -419,6 +427,10 @@ function addResume(candidateId) {
   }
 </script>
 
+<div class="ifraMask"></div>
+<div class="framViePop"> <i class="fa fa-times fraClose" onclick="fraclose();"></i>
+<iframe id="myFrame" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+</div>
 
 <%-- 
      @author : Venkat Kesav
@@ -428,6 +440,47 @@ function addResume(candidateId) {
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script type="text/javascript">
+function getCandiResume(uuid,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+//	 $(".ifraMask").fadeIn(200);
+//	$(".framViePop").show();
+	
+/* 	$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/viewResume1?${_csrf.parameterName}=${_csrf.token}&resumeUUID="+uuid,
+			success : function(data) {
+				 var doc = document.getElementById('myFrame').contentWindow.document;
+				doc.open();
+				doc.write('Test'+data);
+				doc.close(); 
+				
+			 },
+		});  */ 
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	if(uuid != null && uuid != ""){
+		window.open(sourceleadUrl+'/viewResume/'+title+'?resumeUUID='+uuid,title,"height=600,width=600");
+	}  
+}
+function getIframeDocument(element)
+{
+	var doc = element.contentDocument;
+        if (doc == undefined || doc == null)
+        {
+         doc = element.contentWindow.document;
+        }
+
+	return doc;
+} 
+function fraclose(){
+	$(".ifraMask").fadeOut(200);
+	$(".framViePop").hide();
+	
+/* var win = window.open();
+win.document.write('<iframe width="560" height="315" src="//www.youtube.com/embed/mTWfqi3-3qU" frameborder="0" allowfullscreen></iframe>') */
+
+}
+
 function deleteResumePopup(){
 	$("#remove_user_pop_resume, .project_inn_mask").fadeOut();
 }
@@ -444,6 +497,7 @@ function removeresumePopUp(candidateId, resumeId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteResumePopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);
 	$("#remove_user_pop_resume").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -452,7 +506,6 @@ function removeresumePopUp(candidateId, resumeId){
 </script>
 <script>
 function deleteResume(candidateId, resumeId){
-
 	var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",

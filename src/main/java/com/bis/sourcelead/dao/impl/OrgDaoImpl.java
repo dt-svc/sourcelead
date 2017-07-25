@@ -183,22 +183,22 @@ public class OrgDaoImpl implements OrgDao {
 		return orgList;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Org getOrgByOrgCode(String orgCode) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Org> orgList = new ArrayList<Org>();
+		List<Org> orgList;
 		logger.debug("getOrgByOrgCode start");
 		orgList = session.createQuery("from Org where orgCode=:orgCode" ).setString( "orgCode", orgCode ).setCacheable(true).list();
 		logger.debug("getOrgByOrgCode end");
-		 return orgList.get(0);
-		 // Below code is Commented to written Exception
-		/*if (orgList.size() > 0) {
+		 
+		if (orgList != null && orgList.size() > 0) {
 			return orgList.get(0);
 		} else {
 			return null;
-		}*/
+		}
    	}
 	
 	private boolean isDuplicateWebsite(String host) {
@@ -261,8 +261,8 @@ public class OrgDaoImpl implements OrgDao {
 		
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
-			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole) "
-					+ " and org.id IN (select userRole.orgLocations.org.id from UserRole userRole where userRole.userState = '" + userState + "')";
+			userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
+					+ " orgLoactions.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + userState + "' ))";
 		}
 		
 		// trim the spaces between words (escape spaces)
@@ -314,14 +314,14 @@ public class OrgDaoImpl implements OrgDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception
+	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean isSuperAdmin = false;
 		List<Org> org = new ArrayList<Org>();
 		try{
-			String query = ("from Org org where org.user.id = :userId");
-			org = session.createQuery(query.toString()).setLong("userId", userId).list();
+			String query = ("from Org org where org.user.id = :userId and org.id = :orgId");
+			org = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgId", orgId).list();
 			if (null != org && !org.isEmpty() && org.size() > 0) {
 				isSuperAdmin = true;
 			} 

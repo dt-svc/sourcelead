@@ -613,6 +613,7 @@ public class RequirementReleaseRestController {
 		requirement.setCountry(parentRequirement.getCountry());
 		requirement.setState(parentRequirement.getState());
 		requirement.setCity(parentRequirement.getCity());
+		requirement.setLocation(parentRequirement.getLocation());
 		requirement.setSkills(parentRequirement.getSkills());
 		requirement.setDescription(parentRequirement.getDescription());
 		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());

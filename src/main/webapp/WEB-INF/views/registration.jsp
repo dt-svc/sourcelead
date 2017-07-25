@@ -119,10 +119,10 @@ window.onload = function () {
 		                     <b></b>
 		                  </span>
 		            </div>
-		            <div class="form-group clearfix">
+		            <div class="form-group clearfix" id="firstNameDivPopUp">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
-		                    <input type="text" class="form-control" name="firstName" field-name="First Name" id="popfirstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+		                    <input type="text" class="form-control" name="firstName" field-name="First Name" id="popfirstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNamePop();">
 		                     <b></b>
 		                  </span>
 		            </div>
@@ -140,10 +140,10 @@ window.onload = function () {
 		                  <b></b>
 		              </span>
 		            </div>
-		            <div class="form-group clearfix">
+		            <div class="form-group clearfix" id="poplocationDiv">
 		              <label class="col-md-4">Location<span class="text-danger">&nbsp;*</span></label>
 		              <div class="col-md-8">
-		                  <select class="form-control chosen-select" name="location" id="poplocation" field-name="Country" data-validation="required">
+		                  <select class="form-control chosen-select" name="location" id="poplocation" field-name="Country" data-validation="required" onchange="removeValidationRecPop();">
 		                       <option disabled selected>Country</option>
 		                       <option value="Australia">Australia</option>
 			                <option value="France">France</option>
@@ -201,10 +201,10 @@ window.onload = function () {
 		                     <b></b>
 		                  </span>
 		            </div>
-		            <div class="form-group clearfix">
+		            <div class="form-group clearfix" id="poprecruiterFirstNameDiv">
 		                  <label  class="col-md-4">First Name <span class="text-danger">*</span></label>
 		                  <span class="col-md-8">
-		                     <input type="text" class="form-control" name="firstName" field-name="First Name" id="poprecruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+		                     <input type="text" class="form-control" name="firstName" field-name="First Name" id="poprecruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameRecPop();">
 		                     <b></b>
 		                  </span>
 		            </div>
@@ -222,10 +222,10 @@ window.onload = function () {
 		                  <b></b>
 		              </span>
 		            </div>
-		            <div class="form-group clearfix">
+		            <div class="form-group clearfix" id="poprecruiterLocationDiv">
 		              <label class="col-md-4">Location<span class="text-danger">&nbsp;*</span></label>
 		              <div class="col-md-8">
-		                  <select class="form-control chosen-select" name="location" id="poprecruiterLocation" field-name="Country" data-validation="required">
+		                  <select class="form-control chosen-select" name="location" id="poprecruiterLocation" field-name="Country" data-validation="required" onchange="removeCountryValidationRecPop();">
 		                       <option disabled selected>Country</option>
 		                       <option value="Australia">Australia</option>
 			                <option value="France">France</option>
@@ -295,13 +295,13 @@ window.onload = function () {
             </div>
             <div class="row mt10">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-12 mb10" id="firstNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="firstName" field-name="First Name" id="firstName" value='${firstName}' data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameDiv();">
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-12 mb10" id="lastNameDiv">
                     <i class="fa fa-user-circle"></i>
                     <label>Last Name</label>
                     <input type="text" name="lastName" field-name="Last Name" id="lastName" value='${lastName}'  data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
@@ -314,9 +314,9 @@ window.onload = function () {
                     <input type="text" name="email" field-name="Email" value='${email}' onblur="validateEmail('Professional');" id="email"  data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 select-field mb10">
+                <div class="col-xs-12 col-md-12 select-field mb10" id="locationCountryDiv">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required">
+                    <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidation();">
                         <option disabled selected>Country</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
@@ -363,10 +363,10 @@ window.onload = function () {
             </div>
             <div class="row mt10">
             <div class="form-group clearfix">
-                <div class="col-xs-12 col-md-12 mb10">
+                <div class="col-xs-12 col-md-12 mb10" id="firstNameDivRec">
                     <i class="fa fa-user-circle"></i>
                     <label>First Name <span class="text-danger">*</span></label>
-                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
+                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" onkeydown="removeValidationNameDivRec();">
                     <b></b>
                 </div>
                 <div class="col-xs-12 col-md-12 mb10">
@@ -382,9 +382,9 @@ window.onload = function () {
                     <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
                     <b></b>
                 </div>
-                <div class="col-xs-12 col-md-12 select-field mb10">
+                <div class="col-xs-12 col-md-12 select-field mb10" id="locationCountryDivRec">
                     <i class="fa fa-map-marker"></i>
-                    <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required">
+                    <select class="form-control chosen-select" name="location" id="location" field-name="Country" data-validation="required" onchange="removeValidationRec();">
                         <option disabled selected>Country</option>
                         <option value="Australia">Australia</option>
 		                <option value="France">France</option>
@@ -490,6 +490,45 @@ window.onload = function () {
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 </body>
+
+<script>
+function removeValidation(){
+	$('#locationCountryDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeValidationNameDiv(){
+	var namediv = document.getElementById("firstName").value;
+	if(namediv.length > 0){
+		$('#firstNameDiv').find('p.jquery_form_error_message').remove(); 
+	}
+}
+function removeValidationRec(){
+	$('#locationCountryDivRec').find('p.jquery_form_error_message').remove(); 
+}
+function removeValidationNameDivRec(){
+	var namediv = document.getElementById("recruiterFirstName").value;
+	if(namediv.length > 0){
+		$('#firstNameDivRec').find('p.jquery_form_error_message').remove(); 
+	}
+}
+function removeValidationRecPop(){
+	$('#poplocationDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeValidationNamePop(){
+	var namediv = document.getElementById("popfirstName").value;
+	if(namediv.length > 0){
+		$('#firstNameDivPopUp').find('p.jquery_form_error_message').remove(); 
+	}
+}
+function removeCountryValidationRecPop(){
+	$('#poprecruiterLocationDiv').find('p.jquery_form_error_message').remove(); 
+}
+function removeValidationNameRecPop(){
+	var namediv = document.getElementById("poprecruiterFirstName").value;
+	if(namediv.length > 0){
+		$('#poprecruiterFirstNameDiv').find('p.jquery_form_error_message').remove(); 
+	}
+}
+</script>
 
 <script>
 function resetCredentials(type){
@@ -877,7 +916,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		$(".logPop").fadeOut(100);
-        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
         	    
             	var frm = $('#popprofessionalRegistration_form').serializeFormJSON();
 			    
@@ -936,7 +975,7 @@ var validationSettings = {
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
         		$(".logPop").fadeOut(100);
-        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
+        	    $("#loadTime").attr('style','position:fixed; width:650px; height:350px; background-color:rgba(255,255,255,0.8); top:20%; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px; background-color: #fff; z-index: 10000; margin: 0px auto; display: block; right: 0px; border-radius: 5px; box-shadow:0px 0px 5px rgba(0,0,0,0.5);');
         	    
             	var frm = $('#poprecruiterRegistration_form').serializeFormJSON();
 			    

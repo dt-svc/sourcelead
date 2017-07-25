@@ -49,6 +49,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "CITY")
 	private String city;
 	
+	@Column(name = "LOCATION")
+	private String location;
+	
+	@Column(name = "ZIPCODE")
+	private String zipCode;
+	
 	@Column(name = "EXPERIENCE")
 	private String experience;
 	
@@ -142,6 +148,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	public String getExperience() {

@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementService;
@@ -65,6 +66,9 @@ public class SourceleadNotesRestController {
 	private UserService userService;
 	
 	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
 	private SourceleadNotesService sourceleadNotesService;
 	
 	@Autowired
@@ -73,12 +77,15 @@ public class SourceleadNotesRestController {
 	
 	
 	@RequestMapping(value = "/storeNotes", method = RequestMethod.POST)
-	public @ResponseBody String storeNotes(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	public @ResponseBody String storeNotes(@RequestParam("json") String json,
+			@RequestParam("userId") Long userId,
+			@RequestParam("locationCode") String locationCode) throws Exception
 	{
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		/*String json = request.getParameter("json");*/
+		//String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+		User user =  userService.getUserById(userId);
+		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		sourceleadNotesService.storeComments(jsonObj, user,orgLocation);
 		return "success";
 	}

@@ -374,8 +374,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			                 
 						 grandTotalHours = grandTotalHours + totalHours;
 						 StringBuilder fileName=new StringBuilder();
-						 String billable = getTotalHours(billableHours.longValue());
-						 String nonBillable = getTotalHours(nonBillableHours.longValue());
+						 String billable = getTotalHours((long) (Math.round(billableHours)));
+						 String nonBillable = getTotalHours( (long) (Math.round(nonBillableHours)));
 						 String grandtotal = getTotalHours(grandTotalHours);
 						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
 						file = new File(fileName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());

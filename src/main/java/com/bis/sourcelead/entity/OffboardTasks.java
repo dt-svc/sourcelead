@@ -91,6 +91,10 @@ private static final long serialVersionUID = 1L;
    	@Column(name = "UPDATED_BY")
    	private String updatedBy;
    	
+   	@Column(name = "IS_TASK_SUBMITTED")
+   	private String isTaskSumbitted;
+	
+   	
    	@Transient
    	private List<String> usersList;
    	
@@ -287,7 +291,14 @@ private static final long serialVersionUID = 1L;
 		this.offboardTaskType = offboardTaskType;
 	}
 
-	
+	public String getIsTaskSumbitted() {
+		return isTaskSumbitted;
+	}
+
+	public void setIsTaskSumbitted(String isTaskSumbitted) {
+		this.isTaskSumbitted = isTaskSumbitted;
+	}
+
    	
 
 }

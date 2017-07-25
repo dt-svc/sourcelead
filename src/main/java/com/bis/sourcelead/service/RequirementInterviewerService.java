@@ -21,4 +21,6 @@ public interface RequirementInterviewerService {
 			List<Long> interviewersList, Date startUTCDate, Date endUTCDate);
 
 	void updatedFeedbackMailFromInterviewerToRequirementOwner(RequirementInterviewer requirementInterviewer, RequirementSubmission requirementSubmission, JSONObject jsonObj, String templateId) throws Exception;
+	
+	Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId,Long userId);
 }

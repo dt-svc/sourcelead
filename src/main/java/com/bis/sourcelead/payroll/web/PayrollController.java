@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
@@ -22,6 +23,7 @@ import com.bis.sourcelead.payroll.entity.File;
 import com.bis.sourcelead.payroll.entity.PayrollFileValidator;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
@@ -62,6 +64,15 @@ public class PayrollController {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   model.setViewName("payroll/payrollList");
+		   
+		   SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAYROLL);
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 	       return model;
 	}
 	
@@ -86,6 +97,29 @@ public class PayrollController {
 		   model.addObject("usersList", usersList);
 		   model.addObject("masterUsersList", masterUserList);
 		   model.setViewName("payroll/userMapping");
+	       return model;
+	}
+	
+	/**
+	 * @author Pavan Jampana
+	 * used to redirect to user pay screen
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/userPay")
+	public ModelAndView getUserPayroll(HttpServletRequest request) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("payroll/userPayroll");
+		   
+		   SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAY);
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 	       return model;
 	}
 }

@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+
+
 /**
  * 
  * @author Rajashekar
@@ -56,12 +58,6 @@ public class Constants {
 	public static final String INVOICE_RECEIVABLE = "Receivable";
 	public static final String INVOICE_PAYABLES = "Payables";
 	
-	public static final String Client_SOW = "Client SOW";
-	public static final String Vendor_SOW = "Vendor SOW";
-	public static final String FULL_TIME_OFFER = "Full time offer";
-	public static final String CLIENT_MSA = "Client MSA";
-	public static final String VENDOR_MSA = "Vendor MSA";
-	public static final String NDA = "NDA";
 	
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
@@ -121,7 +117,9 @@ public class Constants {
 	public static final String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	public static final String CUSTOM_USER_EMAIL = "customUserEmail";
 	public static final String INVOICE_CLIENT_RECEIVABLE_MAIL = "InvoiceClientAcceptEmail";
+	public static final String INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL = "InvoiceClientReceivableReminderEmail";
 	public static final String INVOICE_CLIENT_PAYABLE_MAIL = "InvoiceClientPayableEmail";
+	public static final String INVOICE_CLIENT_PAYABLE_REMINDER_MAIL = "InvoiceClientPayableReminderEmail";
 	public static final String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static final String ADD_OFFER_MAIL = "Forward the Mail";
 	public static final String NOTIFICATION_TO_CLIENT = "Notification To Client";
@@ -131,6 +129,7 @@ public class Constants {
 	public static final String CLIENT_OWNER_UPDATEMAIL = "clientOwnerUpdateMail";
 	public static final String SHORTLIST_APPLICANTS = "ShortList Applicants";
 	public static final String SHORTLIST_NOTIFICATION_MANAGER = "Notification To Manager";
+	public static final String VENDOR_INTERVIEW_RESCHEDULE = "Vendors Interview Reschedule";
 	public static final String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static final String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
@@ -186,6 +185,9 @@ public class Constants {
 	public static final String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
 	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
 	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
+	public static final String MSA_CONTRACT_FINALIZED = "MSAFinalizeEmail";
+	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
+	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -211,6 +213,7 @@ public class Constants {
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
 	public static final String INVOICE_REJECT_MAIL_VENDOR_EMAIL = "InvoiceRejectMailtoVendor";
 	public static final String INVOICE_ACCEPT_MAIL_CLIENT_EMAIL = "InvoiceAcceptMailtoClient";
+	public static final String INVOICE_REJECT_MAIL_CLIENT_EMAIL = "InvoiceRejectMailtoClient";
 	public static final String UPDATED_USER_ROLE_NOTIFICATION = "UserRoleChanged";
 	public static final String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER = "updatedRequirementEmailToManager";
 	public static final String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER = "updatedRequirementNotificationToManager";
@@ -246,6 +249,7 @@ public class Constants {
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_NOTIFICATION ="UserNewActionAssignedNotification";
 	public static final String REQUESTED_DOCUMENTS = "RequestForDocumentsToCandidates";
+	public static final String UPLOADED_REQUESTED_DOCUMENTS = "UploadedRequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
@@ -255,6 +259,7 @@ public class Constants {
 	public static final String EMPLOYEE_TERMINATION_MAIL_TO_MANAGER = "Employee Termination Mail To Manager";
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
+	public static final String CONTRACT_SIGNED = "ContractSigned";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
@@ -314,6 +319,8 @@ public class Constants {
 	public static final String OnAndOffboard = "OnAndOffboard";
 	public static final String Receivable = "Receivable";
 	public static final String Payables = "Payables";
+	public static final String PAYROLL = "Payroll";
+	public static final String PAY = "Pay"; 
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -487,7 +494,7 @@ public class Constants {
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] VENDOR_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
 			"Negotiation", "Contracted" };
-	public static final String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "New", "Active" };
+	public static final String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "Active", "In-Active" };
 	public static final String[] CLIENT_PAYMENT_TERMS = { "10 days", "15 days", "30 days", "45 days",
 			"60 days", "90 days" };
 	public static final int level1 = 1;
@@ -637,10 +644,10 @@ public class Constants {
 	public static final String[] MY_EXPENSES_HEADERS_APPROVER ={"Expense Type","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description","Status"};
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
-			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
+			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
 			"Amount" , "Status"  , "Approved by"};
 	
-	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense","purpose","Project","Client","Start Date","End Date","No of Exp","Amount","Status"};
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
 
     public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
@@ -658,10 +665,48 @@ public class Constants {
     public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
     public static final String PERCENTAGE = "percentage";
-    
+
+
     public static final String[] EMPLOYEE_PAYROLL_HEADERS = {"Employee","Emp ID","SSN","Total Hrs","Gross Wages","Fica","Futa","Sui","Er locals","wc cost","admin fee","total er cost"};
     public static final String[] WAGES_TAX_HEADERS = {"Id","Employee Name","Check Date","Check No","Gross","fwt","ssec","med","swt","sdi/sui","local","deds","net"};
     public static final String[] ACCOUNT_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th","sep 1st","sep 15th","oct 1st","oct 15th","nov 1st","nov 15th","dec 1st","dec 15th"};
     public static final String[] HR_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th"};
     public static final String BIS_USERS = "BIS_USERS";
+    public static final String OVER_DUE = "Overdue";
+    
+    //contracts 
+    public static final String EXPIRED = "EXPIRED";
+    public static final String FINALIZED = "FINALIZED";
+    public static final String SEND_FOR_VERIFICATION = "SEND_FOR_VERIFICATION";
+    public static final String WAITING_TO_BE_VERIFY = "WAITING_TO_BE_VERIFY";
+    public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
+    public static final String DELETED = "DELETED";   
+    public static final String APPROVED = "APPROVED";  
+    
+    public static final String PENDING = "PENDING";
+    
+    public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
+    
+    public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
+    public static final String Client_SOW = "Client SOW";
+	public static final String Vendor_SOW = "Vendor SOW";
+	public static final String FULL_TIME_OFFER = "Full time offer";
+	public static final String CLIENT_MSA = "Client MSA";
+	public static final String VENDOR_MSA = "Vendor MSA";
+	public static final String NDA = "NDA";
+	public static final String NSA = "NSA";
+	public static final String CUSTOM_TYPE = "Custom";
+	public static final String NEW_TYPE = "New";
+	public static final String EXISTING_TYPE =  "Existing";
+	public static final String VENDOR_NDA = "Vendor NDA";
+	public static final String VENDOR_NSA = "Vendor NSA";
+	public static final String CLIENT_NDA = "Client NDA";
+	public static final String CLIENT_NSA = "Client NSA";
+	
+    public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+    public static final String HOLIDAY = "Holiday";
+    public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
+    public static final String WORK_FROM_HOME = "Work From Home";
+    
+
 }

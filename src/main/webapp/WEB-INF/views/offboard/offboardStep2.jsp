@@ -36,6 +36,33 @@
 <section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
+		  <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+			<div class="offOrg">
+	             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+		              <div id="spockLinksList" style="display: none;">
+		              <ul class="list-unstyled">
+		              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+			              <li>
+				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+					                     </div>
+					                   </div>
+					                   <div class="pull-left mt5">
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+					                   </div>
+					                </div>
+				                </a>
+			              </li>
+		              </c:forEach>
+		              </ul>
+		            </div>
+		            </div>
+	          </c:if>
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
 					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
@@ -71,7 +98,7 @@
 		</div>
 			  
 		<div class="welBtns">
-			<input type="button"  value="Previous" onClick="javascript:location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
 			<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOffboardingCheckList();" class="Brig">
 			<div class="clearfix"></div>
 		</div>
@@ -187,7 +214,7 @@ function getOffboardCheckList(offboardingId){
 	        
 	        con = encodeURIComponent(con);
 	        
-	         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	           $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/saveOffboardingCheckList?${_csrf.parameterName}=${_csrf.token}&jsonStringValues="+con+"&offboardId="+offboardId, 
@@ -242,6 +269,34 @@ function getOffboardCheckList(offboardingId){
 
         
 </script>  
+
+<script>
+  function navtoggle(elementRef){
+	  
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
+  
+  $(".offOrg").click(function( event ) {
+	  event.stopPropagation();
+	});
+  </script>
+  
+<script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
+</script>
 
 
 

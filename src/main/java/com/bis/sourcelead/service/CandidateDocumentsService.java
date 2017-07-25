@@ -10,8 +10,6 @@ import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.User;
 
 public interface CandidateDocumentsService {
-
-	
 	/**
 	 * @param jsonObj
 	 * @param candidate
@@ -21,15 +19,17 @@ public interface CandidateDocumentsService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateDocuments storeCandidateDocuments(JSONObject jsonObj,Long candidateId,String documentUUID,Long orgLocationId,User user, MultipartFile multiFile) throws JSONException,Exception;
+	public CandidateDocuments storeCandidateDocuments(JSONObject jsonObj, Long candidateId, String documentUUID, Long orgLocationId, User user, MultipartFile multiFile) throws JSONException, Exception;
 	
-	public List<CandidateDocuments>  getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	public List<CandidateDocuments> getCandidateDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception;
 	
 	public CandidateDocuments updateCandidateDocuments(CandidateDocuments candidateDocuments) throws Exception;
 	
 	public CandidateDocuments getCandidateDocumentByDocumentUUID(String documentUUID) throws Exception;
-
-	public List<CandidateDocuments>  getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception;
+	
+	public List<CandidateDocuments> getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception;
+	
+	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception;
 }

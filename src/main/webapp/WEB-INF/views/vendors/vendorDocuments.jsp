@@ -168,6 +168,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
 	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
+	                    	 result = result+'<a class="fa fa-eye" onclick="viewVendorDocument(\''+opt.id+'\',\''+opt.fileName+'\');"></a>';
 	                    	 '</sec:authorize>'; 
 	                    	  
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
@@ -206,6 +207,13 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
         },
           
      }); 
+}
+</script>
+
+<script>
+function viewVendorDocument(docId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/viewClientDocViewerDocument/'+title+'?docId='+docId,title,"height=600,width=600");
 }
 </script>
 

@@ -723,17 +723,17 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			
 			if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())|| approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()))){
 					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-						sb.append("<div class='commentTime'>");
+						sb.append("<div class='commentTime pull-right'>");
 						sb.append("<textarea  name='weekComment'  id='weekComment' readonly='readonly' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");
 						sb.append("</div>");
 					}else{
-						sb.append("<div class='commentTime'>");
+						sb.append("<div class='commentTime pull-right'>");
 						sb.append("<textarea   name='weekComment' id='weekComment' readonly='readonly' placeholder='comments here...'></textarea>");
 						sb.append("</div>");
 					}
 			}else{
 					if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-						sb.append("<div class='commentTime'>");
+						sb.append("<div class='commentTime pull-right'>");
 						if(isFillMyTimeSheet){
 							sb.append("<textarea  name='weekComment'  id='weekComment' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");
 						}else{
@@ -741,7 +741,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						}
 						sb.append("</div>");
 					}else{
-						sb.append("<div class='commentTime'>");
+						sb.append("<div class='commentTime pull-right'>");
 						sb.append("<textarea   name='weekComment' id='weekComment' placeholder='comments here...'></textarea>");
 						sb.append("</div>");
 					}
@@ -1262,7 +1262,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			sb.append(" 	<div class='timesheet_week_comm'>");
 			TimesheetSubmissions tsFirst = timesheetSubmissionsList.iterator().next();
 			if(tsFirst.getWeekcomments() != null && !tsFirst.getWeekcomments().isEmpty()){
-				sb.append("<div class='commentTime'>");
+				sb.append("<div class='commentTime pull-right'>");
 				if(isFillMemberTimeSheet){ 
 					sb.append("<textarea   name='weekComment' placeholder='comments here...'>").append(tsFirst.getWeekcomments()).append("</textarea>");	
 				}else{
@@ -1271,7 +1271,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				
 				sb.append("</div>");
 			}else{
-				sb.append("<div class='commentTime'>");
+				sb.append("<div class='commentTime pull-right'>");
 				if(isFillMemberTimeSheet){ 
 					sb.append("<textarea   name='weekComment' placeholder='comments here...'></textarea>");
 				}else{
