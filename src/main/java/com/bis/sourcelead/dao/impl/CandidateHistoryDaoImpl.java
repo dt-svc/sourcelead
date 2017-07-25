@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.CandidateDocumentsHistory;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.CandidateHistory;
+import com.bis.sourcelead.entity.CandidateReferencesHistory;
 import com.bis.sourcelead.entity.CandidateResumesHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -253,5 +254,25 @@ public class CandidateHistoryDaoImpl implements CandidateHistoryDao {
 					+ exception.getCause().toString());
 		}
 		return candidateDocumentsHistory;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateReferencesHistory storeCandidateReferencesHistory(CandidateReferencesHistory candidateReferencesHistory) throws Exception
+	{
+		logger.debug("Storing candidateReferencesHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidateReferencesHistory != null) {
+				session.saveOrUpdate(candidateReferencesHistory);
+			}
+			logger.debug("candidateReferencesHistory Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "candidateReferencesHistory"));
+			throw new SourceLeadConstraintViolationException(message.toString()
+					+ exception.getCause().toString());
+		}
+		return candidateReferencesHistory;
 	}
 }

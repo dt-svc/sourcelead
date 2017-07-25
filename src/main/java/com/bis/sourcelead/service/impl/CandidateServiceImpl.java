@@ -190,7 +190,6 @@ public class CandidateServiceImpl implements CandidateService {
 		
 		
 		StringBuffer activitySummary = new StringBuffer();
-		CandidateHistory candidateHistory = new CandidateHistory();
         Candidate candidate = null;
 		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
@@ -486,7 +485,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
-		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, candidateHistory, user);
+		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
 		
 		/*
 		 * this method is for track candidate activity

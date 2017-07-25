@@ -25,14 +25,13 @@
         		 result = result + '<div id="accordion-sl" class="release-jobs"> ';
         	       
         	       result = result + '  <div class="clearfix timeline">';
-        	       result = result + '   <h2>11/07/2017</h2>';
+        	       /* result = result + '   <h2>11/07/2017</h2>'; */
         	       result = result + '  <div class="content content-custom clearfix">';
         	       result = result + '    <div class="timeline_inner">';
         	       result = result + '      <div class="row mt">';
         	       result = result + '        <div class="col-md-12"> ';
         	                 
         	       result = result + '          <ul class="timeline">';
-        	       result = result + '         <li class="time-label hidden"> <span class="bg-red"> 10 Feb. 2014 </span> </li>';
         	  
                if(data != null && data != 'undefined' && data != ""){
                	 var json = JSON.parse(data);

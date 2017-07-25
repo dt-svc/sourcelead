@@ -21,6 +21,8 @@ import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.CandidateHistory;
+import com.bis.sourcelead.entity.CandidateReferences;
+import com.bis.sourcelead.entity.CandidateReferencesHistory;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateResumesHistory;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
@@ -71,8 +73,9 @@ public class CandidateActivityCommonUtil {
 		candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
 	}
 	
-	public void storeCandidateHistory(Candidate candidate, CandidateHistory candidateHistory, User user) throws Exception
+	public void storeCandidateHistory(Candidate candidate, User user) throws Exception
 	{
+		CandidateHistory candidateHistory = new CandidateHistory();
 		candidateHistory.setCandidateId(candidate);
 		candidateHistory.setConsultantUser(candidate.getConsultantUser());
 		candidateHistory.setCandidateType(candidate.getCandidateType());
@@ -319,5 +322,25 @@ public class CandidateActivityCommonUtil {
 		candidateDocumentsHistory.setCreatedBy(user.getUserCode());
 		candidateDocumentsHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateDocumentsHistory(candidateDocumentsHistory);
+	}
+	
+	
+	public void storeCandidateReferencesHistory(CandidateReferences candidateReferences, User user) throws Exception
+	{
+		CandidateReferencesHistory candidateReferencesHistory = new CandidateReferencesHistory();
+		candidateReferencesHistory.setCandidateReferences(candidateReferences);
+		candidateReferencesHistory.setOrgLocationId(candidateReferences.getOrgLocationId());
+		candidateReferencesHistory.setCandidateId(candidateReferences.getCandidateId());
+		candidateReferencesHistory.setName(candidateReferences.getName());
+		candidateReferencesHistory.setEmail(candidateReferences.getEmail());
+		candidateReferencesHistory.setMobilePhone(candidateReferences.getMobilePhone());
+		candidateReferencesHistory.setRelation(candidateReferences.getRelation());
+		candidateReferencesHistory.setDesignation(candidateReferences.getDesignation());
+		candidateReferencesHistory.setComment(candidateReferences.getComment());
+		candidateReferencesHistory.setStatus(candidateReferences.getStatus());
+		candidateReferencesHistory.setCreatedUser(user);
+		candidateReferencesHistory.setCreatedBy(user.getUserCode());
+		candidateReferencesHistory.setCreatedDate(commonUtil.currentDate());
+		candidateHistoryDao.storeCandidateReferencesHistory(candidateReferencesHistory);
 	}
 }

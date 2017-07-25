@@ -93,6 +93,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionXlsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -198,6 +199,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+    CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	@Value("${env}")
 	private String environment;
@@ -414,7 +418,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //						 }
 					 }
 					
-					candidateDao.storeCandidate(candidate);
+					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
@@ -435,6 +439,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 							candidateEducation.setCreatedDate(new Date());
 							candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 							candidateEducationDao.storeCandidateEducation(candidateEducation);
+							candidateActivityCommonUtil.storeCandidateEducationHistory(candidateEducation, user);
 						}
 					 }
 					
@@ -448,10 +453,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateEmployers.setCreatedBy(user.getUserCode());
 						 candidateEmployers.setUpdatedDate(new Date());
 						 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
-						 
+						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
 					 }
 					 
-				
+					 candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+					 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
 					
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
@@ -480,6 +486,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setUpdatedDate(new Date());
 				 candidateResumes.setOrgLocationId(orgLocations);
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
 				 requirementSubmission.setCandidateResumes(candidateResumes);
 				 //insert the currentResumeId in ELK				 
 				 insertResumeIdInELK(candidate);

@@ -8,6 +8,7 @@ import com.bis.sourcelead.entity.CandidateDocumentsHistory;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.CandidateHistory;
+import com.bis.sourcelead.entity.CandidateReferencesHistory;
 import com.bis.sourcelead.entity.CandidateResumesHistory;
 
 public interface CandidateHistoryDao {
@@ -27,4 +28,6 @@ public interface CandidateHistoryDao {
 	public CandidateCertificationsHistory storeCandidateCertificationsHistory(CandidateCertificationsHistory candidateCertificationsHistory) throws Exception;
 	
 	public CandidateDocumentsHistory storeCandidateDocumentsHistory(CandidateDocumentsHistory candidateDocumentsHistory) throws Exception;
+	
+	public CandidateReferencesHistory storeCandidateReferencesHistory(CandidateReferencesHistory candidateReferencesHistory) throws Exception;
 }

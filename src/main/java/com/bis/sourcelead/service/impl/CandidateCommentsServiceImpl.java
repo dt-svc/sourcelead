@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -40,6 +41,9 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+    CandidateActivityCommonUtil candidateActivityCommonUtil; 
 
 	/**
 	 * @author Venkat Kesav
@@ -60,7 +64,9 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	@Override
 	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations, RequirementSubmission submission) throws Exception {
 		CandidateComments candidateComments = new CandidateComments();
+		StringBuffer activitySummary = new StringBuffer();
 			if(jsonObj.has("comment")){
+				activitySummary.append("Comment").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("comment")).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				candidateComments.setComment(jsonObj.getString("comment"));
 			}
 			if(candidate != null){
@@ -78,6 +84,8 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			candidateComments.setCreatedBy(user.getUserCode());
 			candidateComments.setUpdatedDate(commonUtil.currentDate());
 		candidateCommentsDao.storeCandidateComments(candidateComments);
+		
+		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
 		return candidateComments;
 	}
 	

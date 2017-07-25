@@ -878,18 +878,26 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveCandidateProfile", method = RequestMethod.POST)
 	public String saveCandidateProfile(@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			MultipartHttpServletRequest request) throws Exception {
 
 		Iterator<String> itrator = request.getFileNames();
 		MultipartFile multiFile = request.getFile(itrator.next());
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		StringBuffer activitySummary = new StringBuffer();
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(loginUserId);
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		if (null != multiFile.getContentType()
 				&& !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
 			try {
+				if(candidate.getFileName() != null && candidate.getFileName() != "" && !candidate.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
+					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}else{
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidate.setFileContentType(multiFile.getContentType());
 				candidate.setDocFile(multiFile.getBytes());
 				candidate.setFileName(multiFile.getOriginalFilename());
@@ -898,6 +906,10 @@ public class CandidateListRestController {
 			}
 		}
 		candidateService.addCandidate(candidate);
+		
+		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
+		
 		return "success";
 	}
 
@@ -1256,7 +1268,6 @@ public class CandidateListRestController {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 		User user = userService.getUserById(loginUserId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		CandidateHistory candidateHistory = new CandidateHistory();
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
 			String skill = can.getSkillsName();
@@ -1268,7 +1279,7 @@ public class CandidateListRestController {
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, candidateHistory, user);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
@@ -1289,7 +1300,6 @@ public class CandidateListRestController {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 		User user = userService.getUserById(loginUserId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		CandidateHistory candidateHistory = new CandidateHistory();
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(visaName)) {
 			String visa = can.getVisaType();
@@ -1300,7 +1310,7 @@ public class CandidateListRestController {
 			can.setVisaType(visaName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, candidateHistory, user);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {

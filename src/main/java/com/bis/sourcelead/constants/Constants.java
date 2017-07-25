@@ -714,6 +714,7 @@ public class Constants {
 	
 	public static final String CANDIDATE_ADDED_MANUALLY = "has added candidate manually";
 	public static final String CANDIDATE_EDITTED = "has updated profile";
+	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "has uploaded new profile image";
 	public static final String CANDIDATE_SKILL_UPDATED = "has updated candidate skill";
 	public static final String CANDIDATE_VISA_UPDATED = "has updated candidate immigration status";
 	public static final String CANDIDATE_RESUME_UPDATED = "has updated candidate resume";
@@ -721,6 +722,10 @@ public class Constants {
 	public static final String CANDIDATE_EDUCATION_UPDATED = "has updated candidate education";
 	public static final String CANDIDATE_CERTIFICATION_UPDATED = "has updated candidate certification";
 	public static final String CANDIDATE_DOCUMENTS_UPDATED = "has updated candidate documents";
+	public static final String CANDIDATE_REFERENCES_UPDATED = "has updated candidate references";
+	public static final String CANDIDATE_COMMENTS_NEW = "has posted new comment";
+	public static final String CANDIDATE_ADDED_FROM_JOB = "has added candidate through ";
+	
 	
 	
 	
