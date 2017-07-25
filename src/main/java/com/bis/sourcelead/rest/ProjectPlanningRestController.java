@@ -301,7 +301,72 @@ public class ProjectPlanningRestController {
 		     return "sucess";
 		  
 	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/rejectAssociatesRequest", method = RequestMethod.POST)
+		public @ResponseBody String rejectAssociatesRequest(@RequestParam("json") String jsonPayload) throws Exception {
+		  
+	    	 JSONObject jsonObj = new JSONObject(jsonPayload);
+	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
+	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(jsonObj.getString("requestUUID"));
+	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_REJECTED);
+	    		 projectPlanningRequest.setRejectedReason(jsonObj.getString("rejectedReason"));
+	    		 Set<ProjectPlanningResourceRequest> resourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+	    		 for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList){
+	    			 if(isNullOrEmpty(resourceRequest.getResourceStatus())){
+	    				 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
+		    			 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
+	    			 }
+	    		 }
+	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    	 }
+		  
+		     return "sucess";
+		  
+	    }
 	 
+	    
+	    @RequestMapping(value = "/onholdAssociateRequest", method = RequestMethod.POST)
+		public @ResponseBody String onholdAssociateRequest(@RequestParam("requestUUID") String requestUUID) throws Exception {
+		  
+	    	 if(!isNullOrEmpty(requestUUID)){
+	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
+	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    	 }
+		     return "sucess";
+	    }
+	    
+	    @RequestMapping(value = "/acceptRequestedAssociate", method = RequestMethod.POST)
+		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID) throws Exception {
+		  
+	    	 if(!isNullOrEmpty(requestUUID)){
+	    		 ProjectPlanningResourceRequest projectPlanningResourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(requestUUID);
+	    		 projectPlanningResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
+	    		 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(projectPlanningResourceRequest);
+	    	 }
+		     return "sucess";
+	    }
+	    
+	    @RequestMapping(value = "/acceptAssociateRequest", method = RequestMethod.POST)
+		public @ResponseBody String acceptAssociateRequest(@RequestParam("requestUUID") String requestUUID) throws Exception {
+		  
+	    	 if(!isNullOrEmpty(requestUUID)){
+	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
+	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_APPROVED);
+	    		 Set<ProjectPlanningResourceRequest> resourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+	    		 for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList){
+	    				 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
+		    			 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
+	    		 }
+	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    	 }
+		     return "sucess";
+	    }
+	 
+	    
+	    
 
 	 
 	 protected static boolean isNullOrEmpty(String str) {

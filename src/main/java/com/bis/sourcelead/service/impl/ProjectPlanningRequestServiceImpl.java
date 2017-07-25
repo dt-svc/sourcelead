@@ -209,10 +209,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 
 				 if(jsonObj.has(i+"resourceRequestId") &&  null != jsonObj.getString(i+"resourceRequestId") && !"".equalsIgnoreCase(jsonObj.getString(i+"resourceRequestId"))){
 					 resourceRequest.setId(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
-					 ProjectPlanningResourceRequest savedRresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
-					 resourceRequest.setRequestUUID(savedRresourceRequest.getRequestUUID());
-					 resourceRequest.setRejectedReason(savedRresourceRequest.getRejectedReason());
-					 resourceRequest.setResourceStatus(savedRresourceRequest.getResourceStatus());
+					 ProjectPlanningResourceRequest savedresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+					 resourceRequest.setRequestUUID(savedresourceRequest.getRequestUUID());
+					 resourceRequest.setRejectedReason(savedresourceRequest.getRejectedReason());
+					 
+					 if(!isNullOrEmpty(savedresourceRequest.getResourceStatus()) && savedresourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						 resourceRequest.setResourceStatus(savedresourceRequest.getResourceStatus());
+					 }
+					 
 					 updatedResourceRequests.add(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
 				 }else{
 					 resourceRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
