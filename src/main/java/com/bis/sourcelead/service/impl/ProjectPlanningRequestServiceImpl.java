@@ -106,12 +106,19 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		projectPlanningRequest.setUpdatedDate(new Date());
 		
 		List<Long> resourceRequestIds = null;
+		List<Long> approvedResources = new ArrayList<>();
 		if(projectPlanningRequest.getId() != null){
 			 resourceRequestIds = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestIdsByRequestId(projectPlanningRequest.getId());
+			 Set<ProjectPlanningResourceRequest> approvedResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+			 for(ProjectPlanningResourceRequest resourceRequest : approvedResourceRequestList){
+				 if(!isNullOrEmpty(resourceRequest.getResourceStatus()) && resourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+					 approvedResources.add(resourceRequest.getId());
+				 }
+			 }
 		}
 		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
-		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size());
+		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
 		projectPlanningRequest.setAllocatedResources(0);
 		
 		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){

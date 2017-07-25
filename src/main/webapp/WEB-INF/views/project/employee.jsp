@@ -1196,7 +1196,7 @@ function resourceRequestsTab(){
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
 		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
 		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div>';
-		    		if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+		    		if(report.requestStatus == 'Rejected' && report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 		    			 result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+report.rejectedReason+"</p></div></i>";
 		    		}
 		    		result = result + '</td>';

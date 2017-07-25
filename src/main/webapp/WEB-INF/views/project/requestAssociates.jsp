@@ -48,24 +48,22 @@
                   </div>            
             </div>
              <input type="hidden" name="savedPlanningRequestUUID" id="savedPlanningRequestUUID">
-            <div class="form-group">
-              <label class="col-md-3">Description <span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" id="description" name="description" data-validation="required" field-name="Description">
-              </div>
-            </div>
             
             <div class="form-group">
               <label class="col-md-3">Approver <span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-9">
                 <select class="chosen-select form-control" data-validation="required" id="approver" name="approver" field-name="Approver">
-                <%-- <option selected value=''>--Select Approver--</option>
-	                <c:forEach var="approver" items="${approversList}">
-	                    <option value="${approver.id}">${approver.fullName} (${approver.userType})</option>
-	                </c:forEach> --%>
                 </select>
               </div>
             </div>
+            
+            <div class="form-group">
+              <label class="col-md-3">Description <span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-9">
+                  <textarea cols="1" class="form-control" field-name="Description" id="description" name="description" data-validation="required validate_length length2-5000"></textarea>
+              </div>
+            </div>
+            
             </div>
           </div>
 
@@ -332,7 +330,7 @@ function loadRequestDetails(){
 	    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
 	         success: function(json) {
 	        	 $("#requestId").val(json.requestId);
-	        	 $("input[name = 'description']").val(json.description);
+	        	 $("textarea[name = 'description']").val(json.description);
 	        	 getApproversList(json.approverId);
 	        	 $("#savedPlanningRequestUUID").val(json.requestUUID);
 	        	 
@@ -348,7 +346,6 @@ function loadRequestDetails(){
 <script>
 function loadApprovedResourceRequestsList(resourceRequestList,requestStatus){
 	
-			if(requestStatus != 'Draft'){          
 	            var approvedCount = 0;
 				var result = '';
 				result = result +'	     <h4 class="clearfix">Approved Resources</h4>';
@@ -463,7 +460,6 @@ function loadApprovedResourceRequestsList(resourceRequestList,requestStatus){
 			    if(approvedCount == 0){
 			    	emptyRecordsList();
 			    }
-			}  
 }
 </script>
 
