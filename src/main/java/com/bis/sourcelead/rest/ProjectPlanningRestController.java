@@ -268,6 +268,41 @@ public class ProjectPlanningRestController {
 	    }
 	  
 	  
+	  @RequestMapping(value = "/getResourceRequestsCounts", method = RequestMethod.GET)
+		public @ResponseBody ProjectPlanningRequest getResourceRequestsCounts(@RequestParam(value="approverUserId", required=true) Long approverUserId,
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		    
+		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+		 
+		  ProjectPlanningRequest projectPlanningRequest = new ProjectPlanningRequest();
+		  
+		  Integer waitingCount = 0;
+		  Integer approvedCount = 0;
+		  Integer rejectedCount = 0;
+		  Integer onholdCount = 0;
+		  
+		  for(ProjectPlanningRequest planningRequest : projectPlanningRequestList){
+			  if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+				  approvedCount = approvedCount + 1;
+			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+				  waitingCount = waitingCount + 1;
+			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+				  rejectedCount = rejectedCount + 1;
+			  }else if(planningRequest.getRequestStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+				  onholdCount = onholdCount + 1;
+			  }
+		  }
+		  
+		  projectPlanningRequest.setWaitingCount(waitingCount);
+		  projectPlanningRequest.setApprovedCount(approvedCount);
+		  projectPlanningRequest.setRejectedCount(rejectedCount);
+		  projectPlanningRequest.setOnholdCount(onholdCount);
+		  
+		  return projectPlanningRequest;
+		  
+	    }
+	  
+	  
 	    @RequestMapping(value = "/getPlanningRequestListByApproverIdAndOrgLocationId", method = RequestMethod.GET)
 		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByApproverIdAndOrgLocationId(@RequestParam(value="approverUserId", required=true) Long approverUserId,
 				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,@RequestParam(value="requestType", required=true) String requestType) throws Exception {

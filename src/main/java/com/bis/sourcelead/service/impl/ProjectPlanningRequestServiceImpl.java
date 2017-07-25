@@ -426,4 +426,10 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			throws Exception {
 		return projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
 	}
+
+	@Override
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,
+			Long orgLocationId) throws Exception {
+		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
+	}
 }

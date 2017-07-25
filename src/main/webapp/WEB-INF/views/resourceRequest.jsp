@@ -17,6 +17,7 @@
  
  <script> 
 	$(document).ready(function(){
+		getResourceReqestsListCount();
 		resourceRequestList("Waiting For Approval");
 	});
 </script>
@@ -30,10 +31,10 @@
       	    <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
 			    <ul class="project-tabs-menu">
-			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (10)</a></li>
-			        <li id="approved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (10)</a></li>
-			        <li id="rejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (10)</a></li>
-			        <li id="onhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (10)</a></li>
+			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
+			        <li id="approved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
+			        <li id="rejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
+			        <li id="onhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
 			    <div id="resourceRequestList"></div>
@@ -45,7 +46,25 @@
     
  </section>
  
- 
+ <script>
+ function getResourceReqestsListCount(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var approverUserId = '${SourceLeadWeb_user.id}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 alert
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
+	        success: function(json) {
+	        	$("#waitingCount").html(json.waitingCount);
+	        	$("#approvedCount").html(json.approvedCount);
+	        	$("#rejectedCount").html(json.rejectedCount);
+	        	$("#onholdCount").html(json.onholdCount);
+	        }
+	   
+     });
+ }
+ </script>
  
  <script>
 function resourceRequestList(requestType){
