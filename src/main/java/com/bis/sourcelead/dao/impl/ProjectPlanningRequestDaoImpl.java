@@ -127,4 +127,17 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningRequ
 		
 		return projectPlanningRequestList;
 	}
+
+	@Override
+	@Transactional
+	public List<ProjectPlanningRequest> getProjectPlanningRequestByApproverIdAndOrgLocationId(Long approverUserId,Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningRequest projectPlanningRequest left join fetch projectPlanningRequest.projectId left join fetch projectPlanningRequest.approverUser "
+				+ " where projectPlanningRequest.approverUser.id = :approverUserId and projectPlanningRequest.orgLocationId.id = :orgLocationId "
+				+ " and projectPlanningRequest.status = '1' ";
+		List<ProjectPlanningRequest> projectPlanningRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		return projectPlanningRequestList;
+	}
 }

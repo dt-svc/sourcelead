@@ -109,6 +109,7 @@ function getRequestedAssociatesList(){
 				result = result +'                     <th>Consulting</th>';
 				result = result +'                     <th>Est Hours</th>';
 				result = result +'                     <th>Est Budget</th>';
+				result = result +'                     <th>Status</th>';
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
 				result = result +'             <tbody>';
@@ -171,11 +172,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+startDate+'">'+startDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+endDate+'">'+endDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -188,6 +189,15 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
+						if(opt.resourceStatus == null){
+							result = result +'<div class="tbldata-dotdot_vsm text-warning">Pending For Approval</div>';
+						}else{
+							result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><b>'+opt.resourceStatus+'<b></div>';
+						}
+					 	
 						result = result +'</td>';
 						
 					 result = result +'</tr>';
