@@ -1089,7 +1089,7 @@ function preparedContractListWFA(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
+	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Waiting ('+approveCount+')');
 	
 	
     $("#vendorContractsList").empty();
@@ -1891,7 +1891,7 @@ function preparedContractListWTV(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
+	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Counter sign ('+verifyCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -2263,7 +2263,7 @@ function preparedContractListFinalize(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#finalised").html('Finalized ('+finalisedCount+')');
+	$("#finalised").html('Completed ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -3332,16 +3332,16 @@ function getStageCounts(){
     		   $("#draft").html('Draft ('+json.totalDraftCount+')');
     	   }
     	   if(json.totalWTACount != null && json.totalWTACount != "" && json.totalWTACount != 'undefined'){
-    		   $("#approve").html('Approve ('+json.totalWTACount+')');
+    		   $("#approve").html('Waiting ('+json.totalWTACount+')');
     	   }
     	   if(json.totalWTSCount != null && json.totalWTSCount != "" && json.totalWTSCount != 'undefined'){
     		   $("#sign").html('Sign ('+json.totalWTSCount+')');
     	   }
     	   if(json.totalWTVCount != null && json.totalWTVCount != "" && json.totalWTVCount != 'undefined'){
-    		   $("#verify").html('Verify ('+json.totalWTVCount+')');
+    		   $("#verify").html('Counter sign ('+json.totalWTVCount+')');
     	   }
     	   if(json.totalFinalizedCount != null && json.totalFinalizedCount != "" && json.totalFinalizedCount != 'undefined'){
-    		   $("#finalised").html('Finalized ('+json.totalFinalizedCount+')');
+    		   $("#finalised").html('Completed ('+json.totalFinalizedCount+')');
     	   }
     	   if(json.totalExpiredCount != null && json.totalExpiredCount != "" && json.totalExpiredCount != 'undefined'){
     		   $("#expired").html('Expired ('+json.totalExpiredCount+')');

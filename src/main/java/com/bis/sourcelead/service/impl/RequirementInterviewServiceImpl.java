@@ -63,6 +63,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementInterviewServiceImpl.class);
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
+	
 	@Autowired
 	private CommonUtil commonUtil;
 	
@@ -1512,7 +1515,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 emailMessage.setFirstName(interviewCreactorUser.getFirstName());
 		 emailMessage.setLastName(interviewCreactorUser.getLastName());
 		 emailMessage.setToEmail(interviewCreactorUser.getEmail());
-		 emailMessage.setFromEmail("info@sourecelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy(interviewCreactorUser.getUserCode());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		}

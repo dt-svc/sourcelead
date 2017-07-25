@@ -142,9 +142,9 @@
               
                <td><div><span>
 	               <c:if test="${not empty reqSub.submissionId.candidateScore}">
-	            	  ${reqSub.submissionId.candidateScore}
+	            	  ${reqSub.submissionId.candidateScore}%
 	              </c:if>
-	              <c:if test="${empty candidateScore}">
+	              <c:if test="${empty reqSub.submissionId.candidateScore}">
 	             	 --
 	              </c:if>
               </span></div></td> 
