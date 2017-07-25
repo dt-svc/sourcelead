@@ -5202,7 +5202,7 @@ width: 48%; margin: 0px 0.5%;
     color: #ef3d3d !important;
 }
 td.tbldata-dotdot_50 {
-	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px; display: block; margin: 0 auto;
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px !important; display: block; margin: 0 auto;
 }
 
 
