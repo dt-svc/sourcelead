@@ -851,9 +851,23 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function editOne(startDate,endDate){
+	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEditEndDateSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEditEndDateSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEditEndDateSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEditEndDateSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEditEndDateSave = 'yy-dd-mm'; 
+	  }
+	
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateFormatEditEndDateSave,
         changeMonth: true,
           changeYear: true,
           minDate: startDate,

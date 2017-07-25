@@ -922,8 +922,9 @@ public class ContractRestController {
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
 		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
-		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
+		 		Date endTimeStr = dateFormat.parse(endDate);  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
