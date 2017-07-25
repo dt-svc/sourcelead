@@ -193,7 +193,7 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 						if(opt.resourceStatus == null){
-							result = result +'<div class="tbldata-dotdot_vsm text-warning">Pending For Approval</div>';
+							result = result +'<div class="tbldata-dotdot_vsm text-warning">Sent For Approval</div>';
 						}else{
 							result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><b>'+opt.resourceStatus+'<b></div>';
 						}
