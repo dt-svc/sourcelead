@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>Request Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="dashboard_us.html">Home</a> &raquo; <a href="project_Planning_US.html">Planning</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>">Planning</a> &raquo; Request Associates</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -669,6 +669,7 @@ function getOrgLocationRoles(){
 <script>
 function getAssociatesFilter(){
 	
+	var projectUUID = '${projectUUID}';
 	var roles = [];
 	$('input:checkbox[name=roles]:checked').each(function() 
 		    {
@@ -708,7 +709,7 @@ function getAssociatesFilter(){
 	
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates, 
+	        url: sourceleadUrl+"/getRequestedAssociatesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID, 
 	        success: function(data) {
 	        	
 	        	var json = JSON.parse(data);

@@ -1691,7 +1691,6 @@ function getPaymentTerms(){
 </script>
 <script>
 function getDueDateByFrequency(){
-	alert("jjj"); 
 	var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
