@@ -102,8 +102,8 @@
 <jsp:include page="../masterFooter.jsp" />	
 
 <div id="divTaskTd1" style="display: none; float: left;">
-	<div class="tbldata-dotdot-100">
-		<div id="REPLACEROWIDcandidateName">
+	<div class="width215px">
+		<div id="REPLACEROWIDcandidateName" class="tbldata-dotdot pull-left">
 		</div>
 		
 		<input type="hidden" class="form-control input-sm"
@@ -114,7 +114,14 @@
 		
 		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDresourceRequestId" name="REPLACEROWIDresourceRequestId">
-		</input> 
+		</input>
+		
+		<div class="show_Empdetails" id="REPLACEROWIDresourceRejection" style="display: none;">
+		<i class="fa fa-ellipsis-v text-danger"></i>
+		<div class="associate-rejects">
+			<p id="REPLACEROWIDresourceRejectedReason"></p>
+		</div>
+		</div>
 	</div>
 </div>
 
@@ -491,6 +498,11 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				$('#'+maxRowNum+'candidateName').html(opt.candidateName);
 				$('#'+maxRowNum+'candidateFullName').val(opt.candidateName);
 				$('#'+maxRowNum+'resourceRequestId').val(opt.id);
+				
+				if(opt.resourceStatus != 'Approved'){
+					document.getElementById(maxRowNum+"resourceRejection").style.display="";
+					$('#'+maxRowNum+'resourceRejectedReason').html("Rejected "+opt.rejectedReason);
+				}
 				
 				
 			    var cell1 = row.insertCell(1);
