@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.entity.ActionHistory;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 
 @Service
@@ -17,14 +17,14 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	ActionHistoryDao actionHistoryDao;
 	
 	@Override
-	public List<ActionHistory> getAllActionPerformedByUser(Long userId) {
-		return actionHistoryDao.getAllActionHistoryList(userId);
+	public List<ActionHistory> getAllActionPerformedByUser(Long userSessionId) {
+		return actionHistoryDao.getAllActionHistoryList(userSessionId);
 	}
 
 	@Override
-	public void saveActionHistory(String methodName, User user) {
+	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession) {
 		try {
-			actionHistoryDao.saveActionHistory(methodName,user);
+			actionHistoryDao.saveActionHistory(methodName,userLoginLogoutSession);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

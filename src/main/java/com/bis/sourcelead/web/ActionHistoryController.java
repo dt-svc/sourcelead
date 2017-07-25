@@ -22,11 +22,11 @@ public class ActionHistoryController {
 	
 	
 	@RequestMapping(value = "/getActionHistoryList")
-	public ModelAndView getActionHistoryList(@RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception
+	public ModelAndView getActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId, HttpServletRequest request) throws Exception
 	{
 		
 		ModelAndView model = new ModelAndView();
-		model.addObject("userId", userId);
+		model.addObject("userSessionId", userSessionId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/actionHistory");
 		return model;

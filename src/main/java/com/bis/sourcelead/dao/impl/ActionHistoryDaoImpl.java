@@ -17,6 +17,7 @@ import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
@@ -47,18 +48,18 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 	@Override
 	@Transactional
-	public List<ActionHistory> getAllActionHistoryList(Long userId) {
+	public List<ActionHistory> getAllActionHistoryList(Long userSessionId) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ActionHistory ac where ac.userId = :userId ";
-		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		String query = "from ActionHistory ac left join fetch ac.userLoginLogoutSessionId where ac.userLoginLogoutSessionId.id = :userSessionId ";
+		List<ActionHistory> actionHistoryList = session.createQuery(query.toString()).setLong("userSessionId", userSessionId).setCacheable(true).list();
 		return actionHistoryList;
 	}
 
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void saveActionHistory(String methodName,User user) throws Exception {
+	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		ActionNames actionNames = getActionNameUsingMethodName(methodName);
@@ -66,7 +67,8 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		if(actionNames!=null)
 		{
 			ActionHistory actionHistory = new ActionHistory();
-			actionHistory.setUserId(user.getId());
+			actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 			actionHistory.setActionName(actionNames.getActionName());
 			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
 			actionHistory.setActionTime(new Date());

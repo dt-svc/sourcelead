@@ -198,7 +198,7 @@ public class LoginSessionController {
 				}
 				
 			}
-			
+			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);

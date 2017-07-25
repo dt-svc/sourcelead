@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.ActionHistory;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
 
@@ -29,10 +30,13 @@ public class ActionHistoryRestController {
 	@Autowired
 	private ConversionUtil conversionUtil;
 	
+	@Autowired
+	private UserLoginLogoutSessionService userLoginLogoutSessionService;
+	
 	@RequestMapping(value = "/getRestActionHistoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ActionHistory> getActionHistoryList(@RequestParam(value = "userId", required = true) Long userId,HttpServletRequest request) throws Exception {
-		User user = userService.getUserById(userId);
-		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(user.getId());
+	public @ResponseBody List<ActionHistory> getActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
+		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
+		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId());
 		if(actionHistoryList != null){
 			for(ActionHistory actionHistory:actionHistoryList){
 				actionHistory.setActionTimeStr(conversionUtil.getDateAsString(actionHistory.getActionTime()));
