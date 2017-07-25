@@ -161,6 +161,9 @@ public class Invoice {
 	@Column(name = "INVOICE_FREQUENCY")
 	private String invoiceFrequency;
 	
+	@Column(name = "PREVIOUS_INVOICE_STATUS")
+	private String previousInvoiceStatus;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	
 	@Lob private byte[] docFile;
@@ -914,6 +917,16 @@ public class Invoice {
 
 	public void setAccountDetails(String accountDetails) {
 		this.accountDetails = accountDetails;
+	}
+
+	public String getPreviousInvoiceStatus()
+	{
+		return previousInvoiceStatus;
+	}
+
+	public void setPreviousInvoiceStatus(String previousInvoiceStatus)
+	{
+		this.previousInvoiceStatus = previousInvoiceStatus;
 	}
 	
 	

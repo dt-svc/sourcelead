@@ -704,7 +704,11 @@ function getPayableInvoiceList(){
 						}
 							
 					}else{
-						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+						if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+						}else{
+							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+						}
 					}
 					
 					
@@ -1438,6 +1442,21 @@ function generateAutomaticInvoice(){
     });  
 }
 </script>
+
+<script>
+function unLinkBill(invoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId, 
+	            success: function(data) {
+	            	location.replace(sourceleadUrl+"/payablesList");	
+	       },
+	   });  
+}
+</script>
+
 
 <script>
 	function msgFadein() {
