@@ -45,8 +45,8 @@
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesDivLoading"></div>
-   <div id="requestedAssociatesList"></div>
-   
+   <div id="requestedAssociatesList" class="col-md-12"></div>
+   <div class="clearfix"></div>
    <div class="vendor_wrap_mask"></div>
    <div id="rejectedReasonDiv"></div>
    <div class="modal-footer">
@@ -123,7 +123,7 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				result = result +'</div> ';  
 				
-				result = result +'	     <div class="invoiceGridview clearfix">';
+				result = result +'	     <div class="require_wrap_table invoiceGridview clearfix">';
 				result = result +'         <table width="100%" cellpadding="0" cellspacing="0">';
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
@@ -221,7 +221,7 @@ function getRequestedAssociatesList(){
 			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i></a>';
 			    		}else{
-			    			result = result + ''+opt.resourceStatus+'';
+			    			result = result +'<div class="tbldata-dotdot_80 text-success"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
 						result = result +'</td>';
 						
