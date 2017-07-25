@@ -89,6 +89,9 @@ public class Invoice {
 	@Column(name = "BILLING_ADDRESS",columnDefinition = "TEXT default NULL")
 	private String billingAddress;
 	
+	@Column(name = "ACCOUNT_DETAILS",columnDefinition = "TEXT default NULL")
+	private String accountDetails;
+	
 	@Column(name = "DISCOUNT_AMOUNT")
 	private String discountAmount;
 	
@@ -903,6 +906,14 @@ public class Invoice {
 
 	public void setClientCurrency(String clientCurrency) {
 		this.clientCurrency = clientCurrency;
+	}
+
+	public String getAccountDetails() {
+		return accountDetails;
+	}
+
+	public void setAccountDetails(String accountDetails) {
+		this.accountDetails = accountDetails;
 	}
 	
 	

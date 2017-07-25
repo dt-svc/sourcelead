@@ -55,7 +55,7 @@ function errRemoveVendorContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Based Bill</h2>
+			<h2>Custom Bill</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Custom Based Bill</div>
 	</section>
@@ -137,6 +137,14 @@ function errRemoveVendorContact(){
 									name="billingAddress" placeholder="Billing Address"></textarea>
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-md-3">Account Details</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="2" id="accountDetails"
+									name="accountDetails" placeholder="Account Details"></textarea>
+							</div>
+						</div>
+						
 					</div>
 				</div>
 
@@ -179,6 +187,13 @@ function errRemoveVendorContact(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
+	<div class="tbldata-dotdot select-field">
+		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="REPLACEROWIDDescription"
+			data-validation="validate_length length1-100" field-name="Description"></textarea>
+	</div>
+</div>
+
+<div id="divTaskTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 select-field">
 		<select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow"  onchange="getSowRate(REPLACEROWID);">
 			<option value=''>-Select sow-</option>
@@ -186,8 +201,8 @@ function errRemoveVendorContact(){
 	</div>
 </div>
 
-<div id="divTaskTd4" style="display: none; float: left;">
-	<div class="tbldata-dotdot-100">
+<div id="divTaskTd5" style="display: none; float: left;">
+	<div class="tbldata-dotdot_80">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
@@ -195,7 +210,7 @@ function errRemoveVendorContact(){
 	</div>
 </div>
 
-<div id="divTaskTd5" style="display: none; float: left;">
+<div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
 		<input type="text" class="form-control input-sm inline_field"
 			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
@@ -204,14 +219,14 @@ function errRemoveVendorContact(){
 	</div>
 </div>
 
-<div id="divTaskTd6" style="display: none; float: left;">
+<div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm text-right">	
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
 			placeholder="00:00" class="ReadTextFli" readonly="readonly">
 	</div>
 </div>
 
-<div id="divTaskTd7" style="display: none; float: left;">
+<div id="divTaskTd8" style="display: none; float: left;">
 	<a class="text-danger tblminwidth-50" title="Remove row"
 		id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i
 		class="fa fa-remove"></i></a>
@@ -223,13 +238,14 @@ function errRemoveVendorContact(){
 	 	var vendorCurrency = $("#vendorCurrency").val(); 
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
-		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
+		 result = result +'  <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">';
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
 		 result = result +'  <tr id="divTsRow0">';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
+		 result = result +'  <th>Description</th>';
 		 result = result +'  <th>SOW</th>';
 		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
@@ -240,7 +256,7 @@ function errRemoveVendorContact(){
            
 		 result = result +'  <tfoot class="table_footer">';
 		 result = result +'  <tr>';
-		 result = result +'  <td colspan="4"></td>';
+		 result = result +'  <td colspan="5"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
 		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
@@ -250,7 +266,7 @@ function errRemoveVendorContact(){
 		 result = result +'  </table>';
 		 result = result +'  </div>';
          
-         result = result +'  <div class="clearfix invoice_other">';
+         result = result +'  <div class="clearfix invoice_other mt">';
          result = result +'  <div class="col-md-5">';
          result = result +'  <div class="clearfix mb">';
          result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllVendorAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
@@ -410,7 +426,9 @@ function errRemoveVendorContact(){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	
+		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           		$("#accountDetails").val(json['accountDetails']);
+		           	}
 		           	buildLineItemAndTaxAddRows();
 		           	
 		           	editInvoice(json['invoiceLineItemsList']);
@@ -641,28 +659,33 @@ function errRemoveVendorContact(){
 				cell1.innerHTML = divTsTd2Str;
 				
 				var cell1 = row.insertCell(2);
-				var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+				var divTsTd10Str = document.getElementById("divTaskTd3").innerHTML;
+				divTsTd10Str = divTsTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd10Str;
+				
+				var cell1 = row.insertCell(3);
+				var divTsTd3Str = document.getElementById("divTaskTd4").innerHTML;
 				divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd3Str;
 				
-				var cell1 = row.insertCell(3);
-				var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+				var cell1 = row.insertCell(4);
+				var divTsTd4Str = document.getElementById("divTaskTd5").innerHTML;
 				divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd4Str;
 				
-				var cell1 = row.insertCell(4);
-				var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+				var cell1 = row.insertCell(5);
+				var divTsTd5Str = document.getElementById("divTaskTd6").innerHTML;
 				divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd5Str;
 				
 				
-				var cell1 = row.insertCell(5);
-				var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+				var cell1 = row.insertCell(6);
+				var divTsTd6Str = document.getElementById("divTaskTd7").innerHTML;
 				divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd6Str;
 				
-				var cell1 = row.insertCell(6);
-				var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+				var cell1 = row.insertCell(7);
+				var divTsTd7Str = document.getElementById("divTaskTd8").innerHTML;
 				divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd7Str;
 				
@@ -671,6 +694,7 @@ function errRemoveVendorContact(){
 				
 				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
 				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
+				$('#'+maxRowNum+'Description').val(opt.inlineDescription);
 				$('#'+maxRowNum+'lineItemId').val(opt.id);
 				
 				$('#'+maxRowNum+'rate').val(opt.rate);
@@ -811,28 +835,33 @@ function cancel(){
 			cell1.innerHTML = divTsTd2Str;
 			
 			var cell1 = row.insertCell(2);
-			var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+			var divTsTd10Str = document.getElementById("divTaskTd3").innerHTML;
+			divTsTd10Str = divTsTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd10Str;
+			
+			var cell1 = row.insertCell(3);
+			var divTsTd3Str = document.getElementById("divTaskTd4").innerHTML;
 			divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd3Str;
 			
-			var cell1 = row.insertCell(3);
-			var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+			var cell1 = row.insertCell(4);
+			var divTsTd4Str = document.getElementById("divTaskTd5").innerHTML;
 			divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd4Str;
 			
-			var cell1 = row.insertCell(4);
-			var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+			var cell1 = row.insertCell(5);
+			var divTsTd5Str = document.getElementById("divTaskTd6").innerHTML;
 			divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd5Str;
 			
 			
-			var cell1 = row.insertCell(5);
-			var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+			var cell1 = row.insertCell(6);
+			var divTsTd6Str = document.getElementById("divTaskTd7").innerHTML;
 			divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd6Str;
 			
-			var cell1 = row.insertCell(6);
-			var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+			var cell1 = row.insertCell(7);
+			var divTsTd7Str = document.getElementById("divTaskTd8").innerHTML;
 			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd7Str;
 			
@@ -1906,6 +1935,7 @@ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
@@ -1918,6 +1948,10 @@ function getSowRate(id){
         },
         
     });
+	}else{
+		$ ('#'+id+'rate').val(0);
+		totalHoursCalculateAmount(id);
+	}
 }
 </script>
 

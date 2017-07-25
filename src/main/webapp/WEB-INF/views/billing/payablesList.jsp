@@ -24,6 +24,15 @@ border-color: #1ab394;
 cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
 font-size: 13px; width: 75px;
 }
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    z-index: 900000 !important;
+}
+.modal{
+z-index: 15000;
+}
+.remove_user_pop.remove_user_pop_a {
+z-index: 18000;
+}
 </style>
 
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
@@ -1271,7 +1280,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			if(opt.invoiceDateStr !=null && opt.invoiceDateStr !='' && opt.invoiceDateStr !='undefined'){
 				result = result +'<div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';	
 			}else{
-				result = result +'<div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';
+				result = result +'<div class="tblminwidth-75">--</div>';
 			}
 			
 			result = result +'            </td>                                                                                                             ';
