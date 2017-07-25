@@ -71,10 +71,12 @@
                 <th>Job</th>
                 <th>Client</th>
                 <th>Email</th>
-                <th>Phone Number<br>
+                <th>Phone Number</th>
+                <th>Resume</th>
                 <th>Primary Skill</th>
                 <th>Source</th>
-                 <th>Score</th>
+                <th>Score</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -99,6 +101,18 @@
 	              </c:if>
               </span></div>
               </td>
+              
+              <td><div><span>
+	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
+	               <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
+	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
+	              </c:if>
+	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
+	             	 --
+	              </c:if>
+              </span></div>
+              </td>
+              
               
               <td><div><span>
 	               <c:if test="${not empty reqSub.submissionId.candidate.primarySkill}">
@@ -127,7 +141,15 @@
 	             	 --
 	              </c:if>
               </span></div></td> 
-            
+              
+             <td><div><span>
+	               <c:if test="${not empty reqSub.submissionId.submissionStatus}">
+	            	  ${reqSub.submissionId.submissionStatus}
+	              </c:if>
+	              <c:if test="${empty reqSub.submissionId.submissionStatus}">
+	             	 --
+	              </c:if>
+              </span></div></td>
                </tr>
 			  </c:forEach>
             </tbody>
@@ -152,7 +174,8 @@ function pagination1(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    })
+    });
+    $("#appTable").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script type="text/javascript">

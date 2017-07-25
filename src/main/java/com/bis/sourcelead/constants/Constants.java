@@ -117,7 +117,9 @@ public class Constants {
 	public static final String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	public static final String CUSTOM_USER_EMAIL = "customUserEmail";
 	public static final String INVOICE_CLIENT_RECEIVABLE_MAIL = "InvoiceClientAcceptEmail";
+	public static final String INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL = "InvoiceClientReceivableReminderEmail";
 	public static final String INVOICE_CLIENT_PAYABLE_MAIL = "InvoiceClientPayableEmail";
+	public static final String INVOICE_CLIENT_PAYABLE_REMINDER_MAIL = "InvoiceClientPayableReminderEmail";
 	public static final String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static final String ADD_OFFER_MAIL = "Forward the Mail";
 	public static final String NOTIFICATION_TO_CLIENT = "Notification To Client";
@@ -183,6 +185,9 @@ public class Constants {
 	public static final String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
 	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
 	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
+	public static final String MSA_CONTRACT_FINALIZED = "MSAFinalizeEmail";
+	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
+	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
