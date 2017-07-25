@@ -63,5 +63,7 @@ public interface ContractsTemplateService {
 
 	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
 
+	void sendFinalisedMailToReceiver(Contracts contracts, OrgLocations orgLocation, User user) throws Exception;
+
 	
 }

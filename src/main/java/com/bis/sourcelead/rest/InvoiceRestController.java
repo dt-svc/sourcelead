@@ -1620,10 +1620,12 @@ public class InvoiceRestController {
 		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
-		childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
-		childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-		invoiceService.linkInvoice(childInvoice);
+		if(invoice.getId() !=null){
+			Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+			childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+			invoiceService.linkInvoice(childInvoice);	
+		}
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
 
