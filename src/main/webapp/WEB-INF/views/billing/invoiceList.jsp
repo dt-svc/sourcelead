@@ -20,6 +20,12 @@ font-size: 13px; width: 75px;
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
     z-index: 900000 !important;
 }
+.modal{
+z-index: 15000;
+}
+.remove_user_pop.remove_user_pop_a {
+z-index: 18000;
+}
 </style>
 
 <script type="text/javascript">
