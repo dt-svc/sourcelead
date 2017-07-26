@@ -87,14 +87,6 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		}
 		
 		
-		if(jsonObj.has("estimatedHrs") && !"".equalsIgnoreCase(jsonObj.getString("estimatedHrs"))){
-			projectPlanningRequest.setEstimatedHours(Double.valueOf(jsonObj.getString("estimatedHrs")));
-		}
-		
-		if(jsonObj.has("estimatedBudget") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudget"))){
-			projectPlanningRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString("estimatedBudget")));
-		}
-		
 		if(jsonObj.has("estimatedBudgetCurrencyType") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudgetCurrencyType"))){
 			projectPlanningRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
 		}
@@ -110,15 +102,20 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		
 		List<Long> resourceRequestIds = null;
 		List<Long> approvedResources = new ArrayList<>();
+		Double approvedResourcesEstBudget = (double) 0;
+		Double approvedResourcesEstHours = (double) 0;
 		if(projectPlanningRequest.getId() != null){
 			 resourceRequestIds = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestIdsByRequestId(projectPlanningRequest.getId());
 			 Set<ProjectPlanningResourceRequest> approvedResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
 			 for(ProjectPlanningResourceRequest resourceRequest : approvedResourceRequestList){
 				 if(!isNullOrEmpty(resourceRequest.getResourceStatus()) && resourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
 					 approvedResources.add(resourceRequest.getId());
+					 approvedResourcesEstBudget = approvedResourcesEstBudget+resourceRequest.getEstimatedBudget();
+					 approvedResourcesEstHours = approvedResourcesEstHours+resourceRequest.getEstimatedHours();
 				 }
 			 }
 		}
+		
 		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
@@ -128,6 +125,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
 		}else{
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+		}
+		
+		if(jsonObj.has("estimatedHrs") && !"".equalsIgnoreCase(jsonObj.getString("estimatedHrs"))){
+			projectPlanningRequest.setEstimatedHours(Double.valueOf(jsonObj.getString("estimatedHrs"))+approvedResourcesEstHours);
+		}
+		
+		if(jsonObj.has("estimatedBudget") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudget"))){
+			projectPlanningRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString("estimatedBudget"))+approvedResourcesEstBudget);
 		}
 		
 		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
