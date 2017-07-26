@@ -1589,7 +1589,7 @@ public class InvoiceRestController {
 				if(null != invce.getContactUser()){
 					StringBuilder username = new StringBuilder();
 					if(null != invce.getContactUser().getLastName()){
-						username.append(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
 					}else{
 						username.append(invce.getContactUser().getFirstName());
 					}
@@ -1617,10 +1617,12 @@ public class InvoiceRestController {
 		Invoice invoice = invoiceService.getInvoicetById(id);
 		invoice.setLinkInvoiceReferenceId(masterInvoice.getId());
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
 		if(invoice.getId() !=null){
 			Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
 			childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
 			invoiceService.linkInvoice(childInvoice);	
 		}
@@ -1660,5 +1662,31 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(invoiceList);
 	}
 	
+	/**
+	 * Unlinking the Linked Invoice/Bill
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/unLinkInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean unLinkInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setLinkInvoiceReferenceId(null);
+		invoice.setLinkInvoiceRefInvoiceId(null);
+		invoice.setInvoiceStatus(invoice.getPreviousInvoiceStatus());
+		invoice.setPreviousInvoiceStatus(Constants.LINKED_STATUS);
+		invoiceService.linkInvoice(invoice);
+		Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+		childInvoice.setInvoiceStatus(childInvoice.getPreviousInvoiceStatus());
+		childInvoice.setPreviousInvoiceStatus(Constants.LINKED_STATUS);
+		Invoice invoiceData = invoiceService.linkInvoice(childInvoice);
+		if (invoiceData != null) {
+			result = true;
+		}
+		return result;
+	}
 	
 }

@@ -710,7 +710,11 @@ function getPayableInvoiceList(){
 						}
 							
 					}else{
-						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+						if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+						}else{
+							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+						}
 					}
 					
 					
@@ -1376,15 +1380,7 @@ function mergeInvoice(parentTotalAmount){
 	var total = $('#linkedPayableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
 	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
-	showDiffAmountPopup(calculatedAmount,currencyCode);
-	 $.ajax({
-   	 type: "POST",
-	     dataType : 'json',
-	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=payables&masterInvoiceId="+masterInvoiceId, 
-            success: function(data) {
-           	
-       },
-   });  
+	showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId);
 }else{
 	$('span.jquery_form_error_message').show();
 	} 
@@ -1393,13 +1389,13 @@ function mergeInvoice(parentTotalAmount){
 
 
 <script>
-function showDiffAmountPopup(calculatedAmount,currencyCode){
+function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='payable_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMergeBill("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#payable_pop").slideDown(200);
@@ -1407,6 +1403,22 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 	
 }
 
+</script>
+
+<script>
+function proceedToMergeBill(checkVal,masterInvoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=payables&masterInvoiceId="+masterInvoiceId, 
+	            success: function(data) {
+	            	$("#popUp").empty();
+	            	$(".project_inn_mask").fadeOut(200);
+	            	location.replace(sourceleadUrl+"/payablesList");	
+	       },
+	   });  
+}
 </script>
 
 <script type="text/javascript">
@@ -1444,6 +1456,21 @@ function generateAutomaticInvoice(){
     });  
 }
 </script>
+
+<script>
+function unLinkBill(invoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId, 
+	            success: function(data) {
+	            	location.replace(sourceleadUrl+"/payablesList");	
+	       },
+	   });  
+}
+</script>
+
 
 <script>
 	function msgFadein() {
