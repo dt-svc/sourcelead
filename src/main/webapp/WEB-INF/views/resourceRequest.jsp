@@ -115,8 +115,8 @@ function resourceRequestList(requestType){
 		    		result = result + '<td><div class="tblminwidth-100">';
 		    		 
 		    		if(report.requestStatus == 'Waiting For Approval' || report.requestStatus == 'On hold'){
-		    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociateRequest(\''+report.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>|';
-			    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociateRequest(\''+report.requestUUID+'\',\''+report.requestedUser+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i></a>';
+		    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociateRequest(\''+report.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>|';
+			    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociateRequest(\''+report.requestUUID+'\',\''+report.requestedUser+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
 			    		
 			    		if(report.requestStatus == 'Waiting For Approval'){
 			    			result = result + '|<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+report.requestUUID+'\');"><i class="fa fa-clock-o" alt="On hold" title="On hold"></i></a>';
