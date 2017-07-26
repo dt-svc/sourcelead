@@ -706,6 +706,7 @@ function getAssociates(){
 	var result = '';
 	
 	result = result +'<div class="clients_side_wrap">';
+	result = result +'<div id="associatesListLoader"></div>';
 	result = result +'<div class="new_side_wrap_inn">';
 	result = result +'<div class="timesheet_head">';
 	      
@@ -760,8 +761,7 @@ function getAssociates(){
 	result = result +'</ul>';
 	result = result +'<div class="clearfix"></div>';
 	result = result +'</div>';
-	     
-	result = result +'<div id="associatesListLoader"></div>';
+	
 	result = result +'<div id="associatesListFilter"></div>';
 
 	result = result +'</div>';

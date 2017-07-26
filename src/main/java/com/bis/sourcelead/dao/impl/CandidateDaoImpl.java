@@ -1037,16 +1037,23 @@ public class CandidateDaoImpl implements CandidateDao {
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
 			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
 		
+		Session session = this.sessionFactory.getCurrentSession();
+		
 		String subQuery1 = "";
 		String subQuery2 = "";
 		String subQuery3 = "";
 		String subQuery4 = "";
-				
+		
+		if(associatesIds != null && associatesIds.size() == 0){
+			associatesIds = null;
+		}
+		
 		if(roleIds != null){
 			subQuery1 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id IN (:roleIds) )"; 
 		}
@@ -1066,14 +1073,13 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState = 'ACTIVE')";
 		
-		
 		if(associatesIds != null){
 			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
 		}
 		
 		String subQuery5 = " and candidate.consultantUser.id NOT IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' )) and candidate.orgLocationId.id = :orgLocationsId ";
 		
-		Session session = this.sessionFactory.getCurrentSession();
+		
 		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+" ";
         
 		if(roleIds != null && associatesIds == null){
