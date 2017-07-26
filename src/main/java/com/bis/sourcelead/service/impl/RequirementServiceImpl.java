@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,6 +192,61 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	
+	
+	/* @Override
+		public String getRequirementId(OrgLocations orgLocations) {
+			
+	    	Long number = 000000001L;
+			String requirementId = null;
+			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+				requirementId = number.toString();
+			}else{
+			String reqIdNumber = checkNumber.getGeneratedId();
+			String reqIdNum = reqIdNumber.substring(2, reqIdNumber.length());
+			Long reqId = Long.parseLong(reqIdNum)+1;
+			requirementId = reqId.toString();
+			}
+			
+	        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String ConvetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+			return sb.append(Constants.JOB_ENTITY).append(ConvetredRequirementsId).toString();
+			
+		}*/
+	 
+	 public String getRequirementId(OrgLocations orgLocations) {
+	    	String companyShortCode = null;
+	    	Long number = 000000001L;
+			String requirementId = null;
+			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
+				requirementId = number.toString();
+			}else{
+			String reqIdNumber = checkNumber.getGeneratedId();
+			int count =0;
+			for(int i=0;i< reqIdNumber.length();i++){
+				char ch = reqIdNumber.charAt(i);
+				if(Character.isAlphabetic(ch)){
+					count++;
+				}
+			}
+			String reqIdNum = reqIdNumber.substring(count, reqIdNumber.length());
+			Long reqId = Long.parseLong(reqIdNum)+1;
+			requirementId = reqId.toString();
+			}
+			
+			final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+	        	 companyShortCode = orgLocations.getGeneratedUserId();
+	        }
+			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
+			
+		}
+	 
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -786,6 +842,12 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			//storing assigned team END
 			
+			/*
+			 * System Generated Id For Job
+			 */
+			
+		requirement.setGeneratedId(getRequirementId(orgLocations));
+		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
 		if(!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){

@@ -1452,4 +1452,17 @@ public class RequirementDaoImpl implements RequirementDao {
 		Set<RequirementAssignTo> requirementAssignedTo = new HashSet<RequirementAssignTo>(reqAssignedTo);
 		return requirementAssignedTo;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement where requirement.id =(SELECT MAX(req.id) FROM Requirement req where req.orgLocationId.id =:orgLocationId)";  
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(requirement.isEmpty()){
+			return null;
+		}
+		return requirement.iterator().next();	
+	}
 }
