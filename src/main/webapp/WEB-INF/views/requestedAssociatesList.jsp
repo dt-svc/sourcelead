@@ -44,8 +44,9 @@
 </section>
 
  <div class="content-area content-new clearfix">
-   <div id="requestedAssociatesList"></div>
-   
+   <div id="requestedAssociatesDivLoading"></div>
+   <div id="requestedAssociatesList" class="col-md-12"></div>
+   <div class="clearfix"></div>
    <div class="vendor_wrap_mask"></div>
    <div id="rejectedReasonDiv"></div>
    <div class="modal-footer">
@@ -122,7 +123,7 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				result = result +'</div> ';  
 				
-				result = result +'	     <div class="invoiceGridview clearfix">';
+				result = result +'	     <div class="require_wrap_table invoiceGridview clearfix">';
 				result = result +'         <table width="100%" cellpadding="0" cellspacing="0">';
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
@@ -196,11 +197,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+startDate+'">'+startDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+endDate+'">'+endDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -215,12 +216,12 @@ function getRequestedAssociatesList(){
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
 						result = result +'</td>';
 						
-						result = result +'<td id="rejection'+opt.requestUUID+'">';
+						result = result +'<td id="action'+opt.requestUUID+'">';
 						if(opt.resourceStatus == null){
-			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate();"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>&nbsp;|&nbsp;';
-				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></a></i>';
+			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>&nbsp;|&nbsp;';
+				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i></a>';
 			    		}else{
-			    			result = result + ''+opt.resourceStatus+'';
+			    			result = result +'<div class="tbldata-dotdot_80 text-success"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
 						result = result +'</td>';
 						
@@ -289,7 +290,18 @@ function cancelRejectedReason(){
 
 
 <script>
-function acceptAssociate(){
+function acceptAssociate(requestUUID){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 $.ajax({
+		    type : "POST",
+	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	        success: function(result) {
+	        	$("#action"+requestUUID).html("<span>Accepted</span>");
+	        	$("#requestedAssociatesDivLoading").removeAttr("style"); 
+	        },
+	    });
 }
 </script>
 
@@ -321,7 +333,7 @@ function saveRejectAssociate(requestUUID){
 		    	url: sourceleadUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	cancelRejectedReason();
-		        	$("#rejection"+requestUUID).html("<span>Rejected</span>")
+		        	$("#action"+requestUUID).html("<span>Rejected</span>")
 		        	$("#loading").removeAttr("style"); 
 		        },
 		    }); 

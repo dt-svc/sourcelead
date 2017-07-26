@@ -22,7 +22,8 @@
 </section>
 
  <div class="content-area content-new clearfix">
-   <div id="requestedAssociatesList"></div>
+   <div id="requestedAssociatesList" class="col-md-12"></div>
+   <div class="clearfix"></div>
    <div class="modal-footer">
    <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&tabType=resources'/>'" >Back to list</button>
    </div>
@@ -97,7 +98,7 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				result = result +'</div> ';  
 				
-				result = result +'	     <div class="invoiceGridview clearfix">';
+				result = result +'	     <div class="require_wrap_table invoiceGridview clearfix">';
 				result = result +'         <table width="100%" cellpadding="0" cellspacing="0">';
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
@@ -109,6 +110,7 @@ function getRequestedAssociatesList(){
 				result = result +'                     <th>Consulting</th>';
 				result = result +'                     <th>Est Hours</th>';
 				result = result +'                     <th>Est Budget</th>';
+				result = result +'                     <th>Status</th>';
 				result = result +'                 </tr>';
 				result = result +'             </thead>';
 				result = result +'             <tbody>';
@@ -171,11 +173,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+startDate+'">'+startDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-50" title="'+endDate+'">'+endDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -188,6 +190,15 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
+						if(opt.resourceStatus == null){
+							result = result +'<div class="tbldata-dotdot_vsm text-warning">Sent For Approval</div>';
+						}else{
+							result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
+						}
+					 	
 						result = result +'</td>';
 						
 					 result = result +'</tr>';
