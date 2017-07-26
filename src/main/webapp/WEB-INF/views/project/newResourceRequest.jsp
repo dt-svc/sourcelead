@@ -332,13 +332,25 @@
 			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEROWID/g, (maxRowNum));
 			
 			$("#resourceInfoContent"+maxRowNum).append(divRowTd2_0Str);
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatResourceReqSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatResourceReqSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatResourceReqSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatResourceReqSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatResourceReqSave = 'yy-dd-mm'; 
+			  }
+			
 			$('#startDate'+maxRowNum).datepicker({
-				dateFormat : 'dd-mm-yy',
+				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
 				changeYear: true
 			});
 			$('#endDate'+maxRowNum).datepicker({
-				dateFormat : 'dd-mm-yy',
+				dateFormat : finalDateFormatResourceReqSave,
 				changeMonth: true,
 				changeYear: true
 			});
