@@ -327,7 +327,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
-			startDateStr =dateFormat.format(startDate);;	
+			startDateStr = dateFormat.format(startDate);;	
 		}else{
 			startDateStr = "-------";
 		}
