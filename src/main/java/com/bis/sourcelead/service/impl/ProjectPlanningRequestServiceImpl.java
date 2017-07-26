@@ -198,7 +198,11 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
         globalVarsMap.put("resourceTable", resourceTable);
         
         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-       
+        EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+        
+        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        notificationScenario.setBody(notificationbody);
+        
         //covert subject,body and signature
         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -212,6 +216,10 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
         emailMessage.setMessageBody(emailTemplate);
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+        StringBuilder notificationLink = new StringBuilder();
+        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+         
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
 	}
 	
 	
