@@ -215,7 +215,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		}else{
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
 		}
-		projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_NEW_REQUEST);
+
 		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
 		
 		if(null != resourceRequestIds && resourceRequestIds.size() > 0){
@@ -362,7 +362,17 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 				 
 				 if(jsonObj.has("resourceRequestId"+i) &&  null != jsonObj.getString("resourceRequestId"+i) && !"".equalsIgnoreCase(jsonObj.getString("resourceRequestId"+i))){
 					 resourceRequest.setId(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));
+					 
+					 ProjectPlanningNewResourceRequest savedNewResourceRequest = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestById(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));
+					 resourceRequest.setRequestUUID(savedNewResourceRequest.getRequestUUID());
+					 resourceRequest.setRejectedReason(savedNewResourceRequest.getRejectedReason());
+					 
+					 if(!isNullOrEmpty(savedNewResourceRequest.getResourceStatus()) && savedNewResourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+						 resourceRequest.setResourceStatus(savedNewResourceRequest.getResourceStatus());
+					 }
 					 updatedNewResourceRequests.add(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));	 
+				 }else{
+					 resourceRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 }
 				 
 				if(jsonObj.getString("role"+i).equalsIgnoreCase("Other")){

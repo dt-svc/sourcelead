@@ -12,4 +12,7 @@ public interface ProjectPlanningNewResourceRequestDao {
 	
 	void deleteProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningnewResourceRequest) throws Exception;
 	
+	ProjectPlanningNewResourceRequest saveProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest) throws Exception;
+	
+	public ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestByRequestUUID(String requestUUID) throws Exception;
 }

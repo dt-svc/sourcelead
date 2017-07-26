@@ -338,6 +338,26 @@ public class ProjectsController {
    		return model;
        }
 
+    
+    @RequestMapping(value = "/newRequestedAssociatesList")
+   	public ModelAndView newRequestedAssociatesList(@RequestParam(value="requestUUID", required=true) String requestUUID,HttpServletRequest request) throws Exception {
+   	    
+   	    ModelAndView model = new ModelAndView();
+   		
+   	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+	
+		model.addObject("requestUUID",requestUUID);
+   		model.setViewName("project/viewNewResourceRequestDashborad");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
 
 
 

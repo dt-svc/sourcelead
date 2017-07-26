@@ -85,5 +85,36 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 		}
 		return projectPlanningNewResourceRequest;
 	}
- 
+
+	@Override
+	@Transactional
+	public ProjectPlanningNewResourceRequest saveProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			try {
+				if (projectPlanningNewResourceRequest != null) {
+					session.saveOrUpdate(projectPlanningNewResourceRequest);
+				}
+				logger.debug("ProjectPlanningNewResourceRequest Saved Successfully");
+			} catch (Exception exception) {
+				 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_PLANNING_NEW_RESOURCE_REQUEST"));
+					throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			}
+		return projectPlanningNewResourceRequest;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestByRequestUUID(String requestUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningNewResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId  where resourceRequest.requestUUID = :requestUUID and resourceRequest.status = '1' ";  
+		List<ProjectPlanningNewResourceRequest> newResourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).setCacheable(true).list();
+		ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = null;
+		if(newResourceRequestList != null && !newResourceRequestList.isEmpty()){
+			projectPlanningNewResourceRequest = newResourceRequestList.iterator().next();
+		}
+		return projectPlanningNewResourceRequest;
+	}
+
 }

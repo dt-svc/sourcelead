@@ -1,0 +1,10 @@
+package com.bis.sourcelead.service;
+
+import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
+
+public interface ProjectPlanningNewResourceRequestService {
+
+	ProjectPlanningNewResourceRequest saveProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest) throws Exception;
+	
+	ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestByRequestUUID(String requestUUID) throws Exception;
+}

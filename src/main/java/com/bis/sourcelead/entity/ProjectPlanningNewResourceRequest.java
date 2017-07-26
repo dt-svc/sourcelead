@@ -91,6 +91,15 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
     @Column(name = "STATUS")
    	private Integer status;
     
+    @Column(name="REJECTED_REASON", columnDefinition = "LONGTEXT default NULL")
+   	private String rejectedReason;
+    
+    @Column(name = "NEW_RESOURCE_STATUS")
+   	private String resourceStatus;
+    
+    @Column(name = "REQUEST_UUID")
+   	private String requestUUID;
+    
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
     
@@ -271,6 +280,30 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	public String getResourceStatus() {
+		return resourceStatus;
+	}
+
+	public void setResourceStatus(String resourceStatus) {
+		this.resourceStatus = resourceStatus;
+	}
+
+	public String getRequestUUID() {
+		return requestUUID;
+	}
+
+	public void setRequestUUID(String requestUUID) {
+		this.requestUUID = requestUUID;
 	}
 
 	public Date getCreatedDate() {

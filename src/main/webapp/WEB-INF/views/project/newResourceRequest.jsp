@@ -140,8 +140,8 @@
                <label>Consulting <span class="text-danger paddingLeft">*</span></label>
                 <select class="form-control" name='consultingREPLACEROWID' id='consultingREPLACEROWID' field-name="Consulting" data-validation="required">
                   <option selected value="">--Select--</option>
-                        <option value="Offsite">Off Site</option>
-                        <option value="Onsite">On Site</option>
+                        <option value="OffSite">Off Site</option>
+                        <option value="OnSite">On Site</option>
                         <option value="NearShore">Near Shore</option>
                         <option value="OffShore">Off Shore</option>
                         <option value="Hybrid">Hybrid</option>
@@ -1030,11 +1030,17 @@ function loadResourceRequestsList(newResourceRequestList,estimatedHours,estimate
 			divRowTd8Str = divRowTd8Str.replace(/ESTIMATEDBUDGETVALUE/g,estimatedBudget);
 			cell8.innerHTML = divRowTd8Str;
 			
+			if(report.resourceStatus != null && report.resourceStatus == 'Approved'){
+				var cell9 = row.insertCell(9);
+				cell9.innerHTML = "<span class='text-success'><strong>"+report.resourceStatus+"</strong></span>"; 
+			}else{
+				var cell9 = row.insertCell(9);
+				var divRowTd9Str = document.getElementById("divAddRowTr1Td10").innerHTML;
+				divRowTd9Str = divRowTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell9.innerHTML = divRowTd9Str; 
+			}
 			
-			var cell9 = row.insertCell(9);
-			var divRowTd9Str = document.getElementById("divAddRowTr1Td10").innerHTML;
-			divRowTd9Str = divRowTd9Str.replace(/REPLACEROWID/g, (maxRowNum));
-			cell9.innerHTML = divRowTd9Str;
+			
 			totalResoursec(maxRowNum);
 			totalEstimatedHours(maxRowNum);
 			totalEstimatedBudget(maxRowNum);			
@@ -1240,7 +1246,7 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'           <label>Consulting <span class="text-danger paddingLeft">*</span></label>';
 			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="consulting'+maxRowNum+'" id="consulting'+maxRowNum+'" field-name="Consulting" data-validation="required">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <option selected value="">--Select--</option>      ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Offsite" ? "selected" : '') +' value="OffSite">Off Site</option>    ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffSite" ? "selected" : '') +' value="OffSite">Off Site</option>    ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OnSite" ? "selected" : '') +' value="OnSite">On Site</option>      ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "NearShore" ? "selected" : '') +' value="NearShore">Near Shore</option>   ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffShore" ? "selected" : '') +' value="OffShore" >Off Shore</option>    ';
