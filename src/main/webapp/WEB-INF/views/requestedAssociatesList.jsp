@@ -40,7 +40,7 @@
       <div class="pull-left">
         <h2>Requested Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Requested Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Associates</div>
 </section>
 
  <div class="content-area content-new clearfix">
@@ -180,8 +180,8 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td id="action'+opt.requestUUID+'">';
 						if(opt.resourceStatus == null){
-			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>&nbsp;|&nbsp;';
-				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i></a>';
+			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
+				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
 			    		}else{
 			    			result = result +'<div class="tbldata-dotdot_80 text-success"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
