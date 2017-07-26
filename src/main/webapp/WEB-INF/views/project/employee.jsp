@@ -417,32 +417,43 @@ result = result + '<div class="project_tabs mb">';
 	 		             
 	 		             //Main project end date
 	 		             var projectEndDate = jsonData.endDate;
-	 		             var endDate = "";
-	 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+	 		             //var endDate = "";
+	 		             var endDate = jsonData.projectEndDateStr
+	 		            /*  if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
 	 		            	 var fromEnd = projectEndDate.split("-");
 	 		            	 endDate = new Date(fromEnd[2], fromEnd[1] - 1, fromEnd[0]);
 	 	 		             endDate.setDate(endDate.getDate()); 
-	 		             }
-	 		             
-						 $('#endDate'+jsonData.id).datepicker({
-				    		      dateFormat: 'dd-mm-yy',
-				    		      minDate: dt,
-				    		      maxDate: endDate,
-				    		      showOn: 'focus',
-			    	              dateFormat: 'dd-mm-yy',
-			    	              showButtonPanel: true,
-			    	              closeText: 'Clear',
-				    		      onClose: function() {
-				    		        	 var id = $(this).attr('id');
-										 var projectMemberId = $(this).attr('id').split('endDate')[1];
-				    		        	 var event = arguments.callee.caller.caller.arguments[0];
-				    		                // If "Clear" gets clicked, then really clear it
-				    		                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-				    		                    $(this).val('');
-				    		                }
-				    		                inlineEditForEndDate(id,projectMemberId);
-				    		      }
-				    		  }); 
+	 		             } */
+	 		            var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 					  var finalDateFormatResourceListDisplay = '';
+	 					  if(locationDate.match("yyyy-MM-dd")){
+	 						 finalDateFormatResourceListDisplay = 'yy-mm-dd';
+	 					  }if(locationDate.match("dd-MM-yyyy")){
+	 						 finalDateFormatResourceListDisplay = 'dd-mm-yy'; 
+	 					  }if(locationDate.match("MM-dd-yyyy")){
+	 						 finalDateFormatResourceListDisplay = 'mm-dd-yy'; 
+	 					  }if(locationDate.match("yyyy-dd-MM")){
+	 						 finalDateFormatResourceListDisplay = 'yy-dd-mm'; 
+	 					  }
+	 					 $('#endDate'+jsonData.id).datepicker({
+			    		      dateFormat: finalDateFormatResourceListDisplay,
+//			    		      minDate: dt,
+			    		      maxDate: endDate,
+			    		      minDate: selected,
+			    		      showOn: 'focus',
+		    	              showButtonPanel: true,
+		    	              closeText: 'Clear',
+			    		      onClose: function() {
+			    		        	 var id = $(this).attr('id');
+									 var projectMemberId = $(this).attr('id').split('endDate')[1];
+			    		        	 var event = arguments.callee.caller.caller.arguments[0];
+			    		                // If "Clear" gets clicked, then really clear it
+			    		                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+			    		                    $(this).val('');
+			    		                }
+			    		                inlineEditForEndDate(id,projectMemberId);
+			    		      }
+			    		  }); 
 	    			 }
 		   		}
 	        },
