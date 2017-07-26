@@ -6,14 +6,6 @@
 
 <meta name="format-detection" content="telephone=no">
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
-
 <%-- 
      @author : p.sarath kumar
      this script is for candidate Activation
@@ -850,6 +842,19 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Immigration Status</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Skills</label>
@@ -1937,6 +1942,7 @@ function getCities(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -2176,6 +2182,49 @@ function getCities(){
 		    });
 		    
 		    
+		  //Adding Customized Visa to the list
+			var selectten, chosenten;
+			selectten = $("#canVisa");
+			selectten
+					.chosen({
+						no_results_text : 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:'
+					});
+			chosenten = selectten.data('chosen');
+			chosenten.search_field
+					.bind(
+							('keydown keyup'),
+							function(e10) {
+
+								var enterVisaArray = this.value.split(",");
+								if (enterVisaArray.length > 1) {
+									for (var i = 0; i < enterVisaArray.length; i++) {
+										var option = $("<option>").val(
+												enterVisaArray[i].replace(",", ""))
+												.text(
+														enterVisaArray[i].replace(",",
+																""));
+										selectten.append(option);
+										selectten.find(option).prop('selected', true);
+										$("#canVisa").trigger("chosen:updated");
+									}
+								} else {
+									var newVisa = this.value.replace(",", " ");
+
+									if (tagItBykeyForVisa(e10)
+											&& (newVisa != null && newVisa != '' && newVisa != 'undefined')) {
+										preventTabkey(e10);
+										var par = this.parent;
+										var option = $("<option>").val(
+												newVisa.replace(",", "")).text(
+												newVisa.replace(",", ""));
+										selectten.append(option);
+										selectten.find(option).prop('selected', true);
+										$("#canVisa").trigger("chosen:updated");
+
+									}
+								}
+							});
+		    
 		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
@@ -2362,6 +2411,7 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2404,6 +2454,7 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
+	     $("#canVisa").val('');
 	     $("#primarySkill").val('');
 	    
 	}

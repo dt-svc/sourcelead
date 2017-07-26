@@ -271,6 +271,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setBillingAddress(null);
 		}
 		
+		if(jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))){
+			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
+		}
+		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
 			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
@@ -480,7 +484,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
-		
+		if(invoice.getProjectID() !=null){
+			parentInvoice.setProjectID(invoice.getProjectID());
+		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		parentInvoice.setCreatedDate(invoice.getCreatedDate());
 		parentInvoice.setCreatedBy(invoice.getCreatedBy());
@@ -639,6 +645,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 						 invoiceLineItems.setAmount(jsonObj.getString(i+"amount"));
 					 }else{
 						 invoiceLineItems.setAmount(null);
+					 }
+					 if(null != jsonObj.getString(i+"Description") && !"".equalsIgnoreCase(jsonObj.getString(i+"Description"))){
+						 invoiceLineItems.setInlineDescription(jsonObj.getString(i+"Description"));
 					 }
 	              // As of Now we are not storing seperateInvoice status
 //					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
@@ -857,7 +866,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
@@ -1428,6 +1437,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
   	  		  		        if(savedInvoice !=null){
@@ -1547,8 +1557,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
-				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
+				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
 			}
@@ -1575,9 +1584,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @param loginOrgCurrencyCode
 	 * @param billingRatePer
 	 * @param rateCurrencyType
+	 * @param invoiceLineItems 
 	 * @return float
 	 */
-	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType)
+	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType, InvoiceLineItems invoiceLineItems)
 	{
 		float hourlyRate = conversionUtil.getHourlyRate(billingAmount, billingRatePer);
 		float roundValue = 0;
@@ -1588,6 +1598,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		else {
 			roundValue = (float) (Math.round(hourlyRate * 100.0) / 100.0);
 		}
+		invoiceLineItems.setRate(String.valueOf(roundValue));
 		String[] split = totalHours.split(":");
 		int splitHours = Integer.parseInt(split[0]);
 		int hourminits = splitHours * 60;
@@ -2301,10 +2312,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 		
+	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
 	}
 	
 }

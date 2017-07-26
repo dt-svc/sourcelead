@@ -2405,8 +2405,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 String subQuery = "";
 			 if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
-		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType) || Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType) ){
+		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType)  ){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 		}
+		 		else if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType)){
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED')  ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
 			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId "+subQuery+" ORDER BY rs.id DESC";
@@ -2460,14 +2463,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 String subQuery = "";
 			 if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
-		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType) || Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType)){
+		 		}else if(Constants.Vendor_SOW.equalsIgnoreCase(sowType)){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
+		 		else if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(sowType)){
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED')  ";
+		 		}
+			 
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
 			 String query = "from RequirementSubmission rs "+leftJoins+" where rs.orgLocations.id = :loginOrgLocationId "+subQuery+" ORDER BY rs.id DESC";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("loginOrgLocationId", loginOrgLocation.getId()).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;
 		}
+
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
@@ -2528,7 +2536,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    			//params.put("submissionStatus",submissionStatus);
 	    		}
 	    		String whereCondition = subQuery;
-	    		Query query =  session.createQuery(from+" "+whereCondition+" ");
+	    		Query query =  session.createQuery(from+" "+whereCondition+" group by rsh.submissionId");
 	    		
 	    		for (String str : query.getNamedParameters())
 	            {
@@ -2546,28 +2554,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        }else{
 	        	List<RequirementSubmissionHistory> reqSubms = new ArrayList<>();
 	        	String query = "";
-
-	        	if(dateRange != null && "today".equals(dateRange)){
-	                query ="from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.candidateResumes where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
-
 	        	/*if(dateRange != null && "today".equals(dateRange)){
 	                query ="from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
 	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.candidateResumes where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
+	     			query ="from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}*/
 	        	if(dateRange != null && "today".equals(dateRange)){
-	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate group by rsh.submissionId";
 	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
 	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate";
+	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate group by rsh.submissionId";
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}
 	        	
+				return reqSubms;
+	        	
 	        }
-	        	return reqSubms;
 		}
-		
-  }
 }

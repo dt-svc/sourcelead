@@ -3,13 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -254,7 +247,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result  +'<div class="clearfix mb10 col-md-12" id="nameDocIdDiv"> ';
 	
-	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);validateDocName('+candidateId+');"  onkeyup ="validateDocName('+candidateId+');">';
+	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docuName" data-validation="required" onchange="getDocumentType(this);">';
 	                   <c:forEach var="doctype" items="${documentsList}">
     result = result +'<option value="" disabled selected></option>';	
 	result = result + '<option value="${doctype.name}" >${doctype.name}</option>';

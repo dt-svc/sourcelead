@@ -373,13 +373,7 @@ function prepareRequirementData(data){
            }else{
           	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
-          if(opt.isAllowStageAccess != null && opt.isAllowStageAccess != '' && opt.isAllowStageAccess != 'undefined' && opt.isAllowStageAccess != 'false'){
-        	  result = result +"<td><div style='width:75px'><select   name='changeStatusId"+opt.id+"' disabled='disabled'   id='changeStatusId"+opt.id+"'>";
-          }
-          else{
-        	  result = result +"<td><div style='width:75px'><select   name='changeStatusId"+opt.id+"'   onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
-          }
-          
+          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -531,14 +525,10 @@ function prepareRequirementData(data){
     $("#noReq").val('');
     $("#requirementList").append(result); 
     $("#requirementEmptyListMessage").val(json.length);
-    
-    
-  
-    
-    /* for (var i = 0; i < json.length; i++) { 
+    for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
-    } */
+    }
     
     pagination(); 
     msgFadein1(); 
@@ -565,11 +555,11 @@ function pagination(){
     } );
 }
 </script>
-<!-- <script>
+<script>
 function statusvalidating(id){
 	changeStatusAuthorisation(id);
 }
-</script> -->
+</script>
 
 <%-- 
      @author : sarath kumar.
@@ -1575,7 +1565,7 @@ function requirementPipeline(requirementId){
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 
-						<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i
+						<!-- <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span> --><i
 							class="glyphicon glyphicon-play" id="clientsList"></i>
 							<div id="filter1ApprovedPop" class="approved_pop">
 								<ul>
@@ -1879,7 +1869,7 @@ $(".reminder").click(function(){
 
 
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 function changeStatusAuthorisation(requirementId){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1899,7 +1889,7 @@ function changeStatusAuthorisation(requirementId){
           }
 }); 
 }
-</script> -->
+</script>
 
 
 
