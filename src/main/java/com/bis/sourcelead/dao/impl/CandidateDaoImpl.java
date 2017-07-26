@@ -1040,7 +1040,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
-			String resourceType,List<Long> associatesIds) throws Exception {
+			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
 		
 		String subQuery1 = "";
 		String subQuery2 = "";
@@ -1059,7 +1059,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				if(type[0].equalsIgnoreCase("hotlist")){
 				subQuery2 = " and candidate.isFavouriteAssociate = '1' ";
 				}else{
-					subQuery2 = " and candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))";
+					subQuery2 = " and candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))  and candidate.orgLocationId.id = :orgLocationsId ";
 				}
 			}
 		}
@@ -1071,20 +1071,22 @@ public class CandidateDaoImpl implements CandidateDao {
 			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
 		}
 		
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' )) and candidate.orgLocationId.id = :orgLocationsId ";
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ";
+		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+" ";
         
 		if(roleIds != null && associatesIds == null){
-			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setParameterList("roleIds", roleIds).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setCacheable(true).list();
 		}
 		else if(associatesIds != null && roleIds == null){
-			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
 		}
 		else if(associatesIds != null && roleIds != null){
-			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
 		}
 		else{
-			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setCacheable(true).list();
 		}
 	}
 }

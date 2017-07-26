@@ -83,6 +83,7 @@ public class ProjectPlanningRestController {
 		String resultJson;
 		
 		List<Long> roleIds = null; 
+		Projects projects = null;
 		
 		if(!isNullOrEmpty(roles)){
 			roleIds = new ArrayList<Long>();
@@ -103,7 +104,7 @@ public class ProjectPlanningRestController {
 		}
 		
 		if(!isNullOrEmpty(projectUUID)){
-			Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+			projects = projectsService.getProjectByProjectUUID(projectUUID);
 			List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
 		    if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0){
 		    	if(null == associateIds){
@@ -120,7 +121,7 @@ public class ProjectPlanningRestController {
 		
 		
 		List<Candidate> assoicatesList = new ArrayList<Candidate>(); 
-		List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType,associateIds);
+		List<Candidate> candidatesList = candidateService.getRequestedCandidatesList(orgLocationId, roleIds, resourceType,associateIds,projects.getId());
 		 for(Candidate candidate : candidatesList){
 			 Integer projectsCount = projectsService.getUserAssignedProjectsCount(candidate.getConsultantUser().getId(), orgLocationId);
 			 candidate.setAssignedProjectsCount(projectsCount);
