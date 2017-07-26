@@ -1094,8 +1094,10 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	     		$("#approver").empty();
 	     		$("#approver").append(output);
 	     		$('#approver').trigger("chosen:updated");
+	     		if(approverId != null && approverId != '' && approverId != 'undefined'){
+	     			$('#add_newResource_form').validate(false, validationSettings);
+	     		}
 	     		
-	     		$('#add_newResource_form').validate(false, validationSettings);
 	         }
 	 });
 }

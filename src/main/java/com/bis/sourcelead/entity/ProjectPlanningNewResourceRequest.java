@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -114,6 +115,10 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 
+	@ManyToOne
+   	@JoinColumn(name = "ORG_LOCATION_ID")
+  	private OrgLocations orgLocationId;
+	
 	@Transient
 	@JsonProperty
 	private String startDateStr;
@@ -340,7 +345,8 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	}
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr = Constants.DMY.format(startDate);	
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			startDateStr = dateFormat.format(startDate);;	
 		}
 		return startDateStr;
 	}
@@ -351,7 +357,8 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = Constants.DMY.format(endDate);	
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);	
 		}
 		return endDateStr;
 	}
@@ -360,6 +367,11 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 		this.endDateStr = endDateStr;
 	}
 
-	
-	
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
 }
