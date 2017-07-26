@@ -1037,6 +1037,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
@@ -1049,7 +1050,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		String subQuery3 = "";
 		String subQuery4 = "";
 		
-		if(associatesIds.size() == 0){
+		if(associatesIds != null && associatesIds.size() == 0){
 			associatesIds = null;
 		}
 		
