@@ -5897,6 +5897,11 @@ ul.jobs-360{
 .show_Empdetails {
 	position: relative;	float: right;
 }
+.show_Empdetails .associate-rejects {
+    padding:5px 10px; text-align:left; margin-top: 0px; width: 550px; background-color: #e3f2fd; min-height:50px; max-height:100px;
+    overflow-x:auto;border: 1px solid #90caf9; border-radius: 5px; position: absolute; z-index: 99; top:-5px;
+    left: 20px; display: none; box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+}
 .show_Empdetails .emailvalues {
     padding:5px 10px; text-align:left; margin-top: 0px; width: 310px; background-color: #e3f2fd;
     border: 1px solid #90caf9; border-radius: 5px; position: absolute; z-index: 99; top: -15px;
@@ -5907,13 +5912,21 @@ ul.jobs-360{
     pointer-events: none; border-color: rgba(194, 225, 245, 0); border-right-color: #42a5f5;
     border-width: 8px; margin-left: 0px;
 }
- .show_Empdetails .emailvalues p {
+.show_Empdetails .associate-rejects:before {
+    top: 5px; left: 0%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+    pointer-events: none; border-color: rgba(194, 225, 245, 0); border-left-color: #42a5f5;
+    border-width: 8px; margin-left: 0px;
+}
+ .show_Empdetails .emailvalues p, .show_Empdetails .emailvalues p {
  	margin-bottom: 5px;
  }
 .show_Empdetails .emailvalues .fa{
 	padding-right: 5px;
 }
 .show_Empdetails:hover .emailvalues{
+	display: block;
+}
+.show_Empdetails:hover .associate-rejects {
 	display: block;
 }
 .radioAlign {

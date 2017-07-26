@@ -17,6 +17,7 @@
  
  <script> 
 	$(document).ready(function(){
+		getResourceReqestsListCount();
 		resourceRequestList("Waiting For Approval");
 	});
 </script>
@@ -28,21 +29,42 @@
       	    <h4>Resource Requests</h4>
       	    
       	    <div class="project_side_wrap_inn_tabs">
+      	    <div id="resourceRequestsDivLoading"></div>
 			    <ul class="project-tabs-menu">
-			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (10)</a></li>
-			        <li id="approved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (10)</a></li>
-			        <li id="rejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (10)</a></li>
-			        <li id="onhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (10)</a></li>
+			        <li class="current" id="waiting"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Waiting For Approval')">Waiting (<span id="waitingCount"></span>)</a></li>
+			        <li id="approved"><a data-toggle="tab" href="javascript:void(0)"  onclick="resourceRequestList('Approved')">Approved (<span id="approvedCount"></span>)</a></li>
+			        <li id="rejected"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('Rejected')">Rejected (<span id="rejectedCount"></span>)</a></li>
+			        <li id="onhold"><a data-toggle="tab" href="javascript:void(0)" onclick="resourceRequestList('On hold')">On hold (<span id="onholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
 			    <div id="resourceRequestList"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="requestRejectedReasonDiv"></div>
            </div>
       	  </div>
       </div>
     
  </section>
  
- 
+ <script>
+ function getResourceReqestsListCount(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var approverUserId = '${SourceLeadWeb_user.id}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 alert
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
+	        success: function(json) {
+	        	$("#waitingCount").html(json.waitingCount);
+	        	$("#approvedCount").html(json.approvedCount);
+	        	$("#rejectedCount").html(json.rejectedCount);
+	        	$("#onholdCount").html(json.onholdCount);
+	        }
+	   
+     });
+ }
+ </script>
  
  <script>
 function resourceRequestList(requestType){
@@ -90,12 +112,16 @@ function resourceRequestList(requestType){
 		    		result = result + '	             <td><div>'+report.requestType+'</div></td>';
 		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
-		    		result = result + '<td><div class="tblminwidth-90">';
+		    		result = result + '<td><div class="tblminwidth-100">';
 		    		 
-		    		if(report.requestStatus != 'Approved'){
-		    			result = result + '<i class="fa fa-check" alt="Approve" title="Approved"></i>|';
-			    		result = result + '<i class="fa fa-times" alt="Rejected" title="Rejected"></i>|';
-			    		result = result + '<i class="fa fa-clock-o" alt="On Hold" title="On Hold"></i>';
+		    		if(report.requestStatus == 'Waiting For Approval' || report.requestStatus == 'On hold'){
+		    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociateRequest(\''+report.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approved"></i></a>|';
+			    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociateRequest(\''+report.requestUUID+'\',\''+report.requestedUser+'\');"><i class="fa fa-times text-danger" alt="Rejected" title="Rejected"></i></a>';
+			    		
+			    		if(report.requestStatus == 'Waiting For Approval'){
+			    			result = result + '|<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+report.requestUUID+'\');"><i class="fa fa-clock-o" alt="On hold" title="On hold"></i></a>';
+			    		}
+			    		
 		    		}else{
 		    			result = result + '<b>'+report.requestStatus+'</b>';
 		    		}
@@ -165,5 +191,134 @@ function planningRequestsPagination(){
     $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
+
+
+<script>
+function acceptAssociateRequest(requestUUID){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 
+	 $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 $.ajax({
+		    type : "POST",
+	    	url: sourceleadUrl+"/acceptAssociateRequest?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	        success: function(result) {
+	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+	        },
+	    });
+	 
+}
+</script>
+
+<script>
+function onholdAssociateRequest(requestUUID){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 
+	 $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 $.ajax({
+		    type : "POST",
+	    	url: sourceleadUrl+"/onholdAssociateRequest?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	        success: function(result) {
+	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+	        },
+	    });
+	 
+}
+</script>
+
+<script>
+function rejectAssociateRequest(requestUUID,Initiator){
+	
+	var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '	<div id="loading"></div>';
+	result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
+	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
+	result = result + '	<h3>Associate Request Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result + '		<div class="clearfix">  ';
+	result = result + '		<div class="col-md-12">  ';
+	result = result + '		  <label class="col-md-2 noPad" for="Initiator Name">Initiator :</label> ';
+	result = result + '		  <label class="col-md-8 paddingRight">'+Initiator+'</label> ';
+	result = result + '		</div>  ';
+
+	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+	result = result + '			<span class="hidden"></span> </div>  ';
+	result = result + '		</div>';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="button" value="Save" id="submit_rejectedReason"  onclick="saveRejectAssociateRequest(\''+requestUUID+'\');" class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRequestRejectedReason();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#requestRejectedReasonDiv").empty();
+    $("#requestRejectedReasonDiv").append(result);
+    
+    $(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function cancelRequestRejectedReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script>
+
+
+<script>
+function saveRejectAssociateRequest(requestUUID){
+	
+	if ($('#rejectedReason_form').validate(false, validationSettings)){ 
+	  	
+		var frm = $('#rejectedReason_form').serializeFormJSON();
+		var jsonData = JSON.stringify(frm);
+		
+	    var form = $('#rejectedReason_form')[0];
+	    var formData = new FormData(form);
+	  	formData.append("json",jsonData)
+	  	
+	  	
+        var sourceleadUrl ='${sourceleadUrl}';
+      
+        $("#submit_rejectedReason").attr("disabled", "disabled");
+		
+        $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 	 $.ajax({
+	 		    type : "POST",
+	    	    data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+		        processData: false,
+		        contentType:false, 
+	    	    dataType : 'json',
+		    	url: sourceleadUrl+"/rejectAssociatesRequest?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(result) {
+		        	cancelRejectedReason();
+		        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
+		        },
+		    });  
+      return true; 
+		
+	}else{
+		return false;
+	  }
+	
+	  $('body').on('blur', '#rejectedReason_form', function() {
+	   		$("#rejectedReason_form").showHelpOnFocus();
+	   		$("#rejectedReason_form").validateOnBlur(false, validationSettings);
+	   	});
+	
+}
+</script>
+ 
  
  

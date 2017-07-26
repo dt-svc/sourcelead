@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
+import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -46,7 +47,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		logger.debug("In ProjectPlanningResourceRequestDaoImpl class getProjectPlanningResourceRequestIdsByRequestId method");
 		Session session = this.sessionFactory.getCurrentSession();
 			 
-		String query = "select resourceRequest.id from ProjectPlanningResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId ";
+		String query = "select resourceRequest.id from ProjectPlanningResourceRequest resourceRequest where resourceRequest.projectPlanningRequestId.id = :projectPlanningRequestId and (resourceRequest.resourceStatus IS NULL OR resourceRequest.resourceStatus = 'Rejected')";
 		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("projectPlanningRequestId", projectPlanningRequestId)
 									.setCacheable(true).list();
 		
@@ -84,5 +85,40 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		
+	}
+
+	@Override
+	@Transactional
+	public ProjectPlanningResourceRequest getProjectPlanningResourceRequestByRequestUUID(String requestUUID)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId left join fetch resourceRequest.candidateId "
+				+ " where resourceRequest.requestUUID = :requestUUID and resourceRequest.status = '1' ";  
+		List<ProjectPlanningResourceRequest> resourceRequestList = session.createQuery(query).setString("requestUUID", requestUUID).setCacheable(true).list();
+		ProjectPlanningResourceRequest projectPlanningResourceRequest = null;
+		if(resourceRequestList != null && !resourceRequestList.isEmpty()){
+			projectPlanningResourceRequest = resourceRequestList.iterator().next();
+		}
+		return projectPlanningResourceRequest;
+	}
+
+	@Override
+	@Transactional
+	public ProjectPlanningResourceRequest saveProjectPlanningResourceRequest(
+			ProjectPlanningResourceRequest projectPlanningResourceRequest) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (projectPlanningResourceRequest != null) {
+				session.saveOrUpdate(projectPlanningResourceRequest);
+			}
+			logger.debug("ProjectPlanningResourceRequest Saved Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_PLANNING_RESOURCE_REQUEST"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+		return projectPlanningResourceRequest;
 	}
 }

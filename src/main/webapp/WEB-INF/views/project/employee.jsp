@@ -417,32 +417,43 @@ result = result + '<div class="project_tabs mb">';
 	 		             
 	 		             //Main project end date
 	 		             var projectEndDate = jsonData.endDate;
-	 		             var endDate = "";
-	 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+	 		             //var endDate = "";
+	 		             var endDate = jsonData.projectEndDateStr
+	 		            /*  if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
 	 		            	 var fromEnd = projectEndDate.split("-");
 	 		            	 endDate = new Date(fromEnd[2], fromEnd[1] - 1, fromEnd[0]);
 	 	 		             endDate.setDate(endDate.getDate()); 
-	 		             }
-	 		             
-						 $('#endDate'+jsonData.id).datepicker({
-				    		      dateFormat: 'dd-mm-yy',
-				    		      minDate: dt,
-				    		      maxDate: endDate,
-				    		      showOn: 'focus',
-			    	              dateFormat: 'dd-mm-yy',
-			    	              showButtonPanel: true,
-			    	              closeText: 'Clear',
-				    		      onClose: function() {
-				    		        	 var id = $(this).attr('id');
-										 var projectMemberId = $(this).attr('id').split('endDate')[1];
-				    		        	 var event = arguments.callee.caller.caller.arguments[0];
-				    		                // If "Clear" gets clicked, then really clear it
-				    		                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-				    		                    $(this).val('');
-				    		                }
-				    		                inlineEditForEndDate(id,projectMemberId);
-				    		      }
-				    		  }); 
+	 		             } */
+	 		            var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 					  var finalDateFormatResourceListDisplay = '';
+	 					  if(locationDate.match("yyyy-MM-dd")){
+	 						 finalDateFormatResourceListDisplay = 'yy-mm-dd';
+	 					  }if(locationDate.match("dd-MM-yyyy")){
+	 						 finalDateFormatResourceListDisplay = 'dd-mm-yy'; 
+	 					  }if(locationDate.match("MM-dd-yyyy")){
+	 						 finalDateFormatResourceListDisplay = 'mm-dd-yy'; 
+	 					  }if(locationDate.match("yyyy-dd-MM")){
+	 						 finalDateFormatResourceListDisplay = 'yy-dd-mm'; 
+	 					  }
+	 					 $('#endDate'+jsonData.id).datepicker({
+			    		      dateFormat: finalDateFormatResourceListDisplay,
+//			    		      minDate: dt,
+			    		      maxDate: endDate,
+			    		      minDate: selected,
+			    		      showOn: 'focus',
+		    	              showButtonPanel: true,
+		    	              closeText: 'Clear',
+			    		      onClose: function() {
+			    		        	 var id = $(this).attr('id');
+									 var projectMemberId = $(this).attr('id').split('endDate')[1];
+			    		        	 var event = arguments.callee.caller.caller.arguments[0];
+			    		                // If "Clear" gets clicked, then really clear it
+			    		                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+			    		                    $(this).val('');
+			    		                }
+			    		                inlineEditForEndDate(id,projectMemberId);
+			    		      }
+			    		  }); 
 	    			 }
 		   		}
 	        },
@@ -1146,12 +1157,11 @@ function resourceRequestsTab(){
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
 	        	
-	        	var json = JSON.parse(data);
 	        	var result = "";
-	        	 
+	        	
 	    		result = result + '	<div class="project_tabs_inn_head timesheet_head">';
 	    		result = result + '	<ul>';
 	    		result = result + '	      <li><a href="'+sourceleadUrl+'/requestAssociates?projectUUID='+projectUUID+'">';
@@ -1179,8 +1189,7 @@ function resourceRequestsTab(){
 	    		
 	    		for (var i=0; i<json.length; i++){
 	    			var report = json[i];
-	    			
-	    			result = result + '	         <tr>';
+	    			result = result + '<tr>';
 	    			if(report.requestType == 'Associate Request'){
 						if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
 							result = result + '<td><div><a href="'+sourceleadUrl+'/editResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
@@ -1197,7 +1206,11 @@ function resourceRequestsTab(){
 		    		result = result + '	             <td><i class="pull-left"></i>'+report.estimatedBudgetCurrency+'<div class="pull-right">'+report.estimatedBudget+'</div></td>';
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
 		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
-		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div></td>';
+		    		result = result + '	             <td><div><b>'+report.requestStatus+'</b></div>';
+		    		if(report.requestStatus == 'Rejected' && report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+		    			 result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+report.rejectedReason+"</p></div></i>";
+		    		}
+		    		result = result + '</td>';
 		    		result = result + '	         </tr>';
 	    		}
 	    		

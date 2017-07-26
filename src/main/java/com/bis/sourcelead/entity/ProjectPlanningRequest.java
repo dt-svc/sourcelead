@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,6 +83,9 @@ public class ProjectPlanningRequest implements Serializable{
     @Column(name = "STATUS")
    	private Integer status;
     
+    @Column(name="REJECTED_REASON", columnDefinition = "LONGTEXT default NULL")
+	private String rejectedReason;
+    
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
@@ -123,6 +127,22 @@ public class ProjectPlanningRequest implements Serializable{
 	@Transient
 	@JsonProperty
     private String projectName;
+	
+	@Transient
+	@JsonProperty
+    private Integer approvedCount;
+	
+	@Transient
+	@JsonProperty
+    private Integer rejectedCount;
+	
+	@Transient
+	@JsonProperty
+    private Integer waitingCount;
+	
+	@Transient
+	@JsonProperty
+    private Integer onholdCount;
     
 
     
@@ -306,7 +326,8 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public String getRequestedDateStr() {
 		if(createdDate != null){
-			requestedDateStr = Constants.DMY.format(createdDate);	
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			requestedDateStr = dateFormat.format(createdDate);	
 		}
 		return requestedDateStr;
 	}
@@ -358,4 +379,63 @@ public class ProjectPlanningRequest implements Serializable{
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+
+	public String getRejectedReason() {
+        if(rejectedReason == null || rejectedReason.isEmpty()){
+        	resourceRequestList = new ArrayList<>();
+        	if(projectPlanningResourceRequestList != null && !projectPlanningResourceRequestList.isEmpty()){
+        		resourceRequestList.addAll(projectPlanningResourceRequestList);
+        		StringBuilder reason = new StringBuilder();
+        		for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList ){
+        			if(resourceRequest.getRejectedReason() != null && !resourceRequest.getRejectedReason().isEmpty()){
+        				reason = reason.append("<br/>").append(resourceRequest.getRejectedReason()).append("<br/>");
+        			}
+        			rejectedReason = reason.toString();
+        		}
+        	}
+		}
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	
+	public Integer getApprovedCount() {
+		return approvedCount;
+	}
+
+	public void setApprovedCount(Integer approvedCount) {
+		this.approvedCount = approvedCount;
+	}
+
+	public Integer getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(Integer rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getWaitingCount() {
+		return waitingCount;
+	}
+
+	public void setWaitingCount(Integer waitingCount) {
+		this.waitingCount = waitingCount;
+	}
+
+	public Integer getOnholdCount() {
+		return onholdCount;
+	}
+
+	public void setOnholdCount(Integer onholdCount) {
+		this.onholdCount = onholdCount;
+	}
+	
+	
+	
+	
+	
 }
