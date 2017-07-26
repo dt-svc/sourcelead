@@ -874,7 +874,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					SimpleDateFormat sdf = orgLocations.getLocFullFormDateFormatter();
 					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
