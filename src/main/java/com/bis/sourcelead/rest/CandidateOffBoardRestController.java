@@ -183,9 +183,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		
 		List<OffBoardingTemplate> templatesList = offBoardingTemplateService.getOffBoardingTemplatesList(loginOrgLocation.getId());
 		List<OffBoardingTemplate> offboardingTemplatesList = new ArrayList<OffBoardingTemplate>();
-		
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for(OffBoardingTemplate template : templatesList){
-			template.setTemplateCreatedDate(Constants.DMY.format(template.getCreatedDate()));
+			template.setTemplateCreatedDate(dateFormat.format(template.getCreatedDate()));
 			offboardingTemplatesList.add(template);
 		}
 		
