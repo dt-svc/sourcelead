@@ -16,7 +16,13 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+			});
+       </script> 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -80,7 +86,7 @@ function validateTaskName(){
 	var fileCounter = 0;
 	function addFileUpload(){
 		
-		$('<div>').attr('style','display:table-cell').append('<input id="file' +  '" name = "project_files' + '" type="file" />' +
+		$('<div>').attr('style','float:left; width:245px; border:1px solid #ddd; margin:0 5px 5px 0; padding:5px;overflow: hidden').append('<input id="file' +  '" name = "project_files' + '" type="file" />' +
 	            '<input id="Button' + fileCounter + '" type="button" ' +
 	            'value="Remove Document" onclick = "RemoveFileUpload(this)" />').appendTo($('#FileUploadContainer'));
 
@@ -131,7 +137,7 @@ function validateTaskName(){
 									name="selectClient" id="addClientId">
 									<option value=''>-- Select Client --</option>
 									<c:forEach var="option" items="${add_clientList}">
-										<option value="${option.orgid}">${option.orgName}</option>
+										<option value="${option.orgLocationId}">${option.orgName}</option>
 									</c:forEach>
 								</select> <span class="hidden">Enter Project Id</span>
 							</div>
@@ -161,9 +167,8 @@ function validateTaskName(){
 							<label class="col-md-3" for="Project Id">Status<span
 								class="text-danger">*</span></label>
 							<div class="col-md-9 select-field">
-								<select class="form-control" name="Satatus" id="Satatus"
-									onchange="getStatus();">
-									<option>Select Status</option>
+								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();" field-name="Status" data-validation="required">
+									<option value="">Select Status</option>
 									<option>Not Started</option>
 									<option>In-Progress</option>
 									<option>Completed</option>
@@ -193,10 +198,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isAllowFreelanceDevelopers"> Allow Freelance
-										Developers
-									</label>
+									<label> <input type="checkbox" value="Y" name="isAllowFreelanceDevelopers"> Allow Freelance Developers </label>
 								</div>
 							</div>
 						</div>
@@ -205,9 +207,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isAllowRemoteWork"> Allow Remote Work
-									</label>
+									<label> <input type="checkbox" value="Y" name="isAllowRemoteWork"> Allow Remote Work </label>
 								</div>
 							</div>
 						</div>
@@ -216,10 +216,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isAllowOverTime" id="isAllowOverTime"
-										onchange="allowOverTime();"> Allow Over Time
-									</label>
+									<label> <input type="checkbox" value="Y" name="isAllowOverTime" id="isAllowOverTime" onchange="allowOverTime();"> Allow Over Time </label>
 								</div>
 							</div>
 						</div>
@@ -229,11 +226,10 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="input-group">
-									<div class="input-group-btn selp-custom-min"
-										id="flatPercentageId" name="flatPercentageId">
-										<select class="form-control chosen-select">
-											<option value="c2c">FLAT</option>
-											<option value="%">%</option>
+									<div class="input-group-btn selp-custom-min" id="flatPercentageId" >
+										<select class="form-control chosen-select" name="flatPercentageId">
+											<option value="flat">FLAT</option>
+											<option value="percentage">PERCENTAGE</option>
 										</select>
 									</div>
 									<input type="number" min="0" max="100" step="0.5" value="0"
@@ -249,8 +245,7 @@ function validateTaskName(){
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<c:if test="${empty user_List}">
 							<p style="font-size: 11px; color: red;" class="text-muted small">
-								<i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will
-								have access to Edit/Approve/Reject TimeSheet
+								<i class="fa fa-info-circle"></i>&nbsp;All Admin's in Org will have access to Edit/Approve/Reject TimeSheet
 							</p>
 						</c:if>
 
@@ -260,11 +255,8 @@ function validateTaskName(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="ProjectName"
-									data-validation="required validate_Space validate_length length2-100"
-									field-name="Project Name" value=""> <span
-									class="hidden">Project Name</span> <span class="hidden">Enter
-									Project Id</span>
+								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-100"
+									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden">Enter Project Id</span>
 
 							</div>
 						</div>
@@ -375,10 +367,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isTimesheetAttachmentRequired"> Timesheet
-										Attachment Required
-									</label>
+									<label> <input type="checkbox" value="Y" name="isTimesheetAttachmentRequired"> Timesheet Attachment Required </label>
 								</div>
 							</div>
 						</div>
@@ -387,10 +376,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isAllowOffshoreResource"> Allow Offshore
-										Resource
-									</label>
+									<label> <input type="checkbox" value="Y" name="isAllowOffshoreResource"> Allow Offshore Resource </label>
 								</div>
 							</div>
 						</div>
@@ -399,10 +385,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isTimeEntryAfterDeadline"> Time Entry after
-										Deadline
-									</label>
+									<label> <input type="checkbox" value="Y" name="isTimeEntryAfterDeadline"> Time Entry after Deadline </label>
 								</div>
 							</div>
 						</div>
@@ -411,9 +394,7 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y"
-										name="isAllowBidding"> Allow Bidding
-									</label>
+									<label> <input type="checkbox" value="Y" name="isAllowBidding"> Allow Bidding </label>
 								</div>
 							</div>
 						</div>
@@ -427,7 +408,7 @@ function validateTaskName(){
 				<!--  div row end -->
 
 				<!--  div row start -->
-				<div class="row">
+				<!-- <div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<h5>Budget Details</h5>
 						<div class="form-group" id="">
@@ -435,10 +416,10 @@ function validateTaskName(){
 							<div class="col-md-9"></div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 
 				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<%-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
@@ -466,10 +447,10 @@ function validateTaskName(){
 						</div>
 
 
-					</div>
+					</div> --%>
 
 
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<!-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
 						<div class="form-group" id="EstimatedBudgetDiv">
 							<label class="col-md-3">Estimated Budget</label>
@@ -489,19 +470,18 @@ function validateTaskName(){
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> -->
 
 
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-
-						<textarea maxlength="5000" cols="80" rows="10"
-							id="ProjectDescription" name="ProjectDescription"></textarea>
+						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea"></textarea>
+<!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
 
 					</div>
 
 					<!--  Documents Section -->
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<h5>Documents</h5>
 						<input id="Button1" type="button" value="Add Document"
 							onclick="addFileUpload()" /> <br /> <br /> <br />
@@ -865,16 +845,14 @@ function flushProjectTasks(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		
-		var projDesc = $('#ProjectDescription').summernote('code');
-		
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
-			/* var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); */
-			frm.ProjectDescription = projDesc;
+			 
+// 			frm.ProjectDescription = projDesc;
 			var jsonData = JSON.stringify(frm);
-			
 		    var form = $('#project_form')[0];
 		    var formData = new FormData(form);
 		  	formData.append("json",jsonData)
@@ -1233,10 +1211,11 @@ function assignEmployeeCancel(){
 					$('#Satatus').append('<option >Completed</option>');
 				}else{
 					$("#Satatus").empty();
-					$('#Satatus').append('<option >Started</option>');
 					$('#Satatus').append('<option >In-Progress</option>');
+					$('#Satatus').append('<option >Not Started</option>');
 					$('#Satatus').append('<option >Completed</option>');
 					$('#Satatus').append('<option >On-Hold</option>');
+					$('#Satatus').append('<option >Dropped</option>');
 				}
 			}
 		});

@@ -41,8 +41,9 @@ float: left; width: 30%;
 float: left; width: 70%;
 }
 .sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
-	min-width: 50%;
-	max-width: 100%;
+	min-width: 20%;
+	width: 25%;
+	max-width: 50%;
 	position:relative;
 	padding-right: 10px;
 	padding-left: 30px;

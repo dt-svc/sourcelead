@@ -8,7 +8,10 @@ public class ProjectDocumentBO {
 	private String fileName;
 	private String fileType;
 	private byte [] fileContents;
+	private Integer status;
 	
+
+
 	public ProjectDocumentBO(){
 		
 	}
@@ -56,7 +59,13 @@ public class ProjectDocumentBO {
 		this.fileContents = fileContents;
 	}
 	
-	
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 	
 
 }

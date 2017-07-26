@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','PREVIOUS_INVOICE_STATUS','VARCHAR(100) NULL  AFTER `INVOICE_STATUS`');

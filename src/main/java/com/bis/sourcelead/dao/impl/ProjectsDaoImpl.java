@@ -396,16 +396,25 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		String subQuery2 = "";
 		if (Arrays.asList(tokens).contains("All")) {
 			subQuery2 = subQuery2
-					+ "ps.projectStatus = 'STARTED' or ps.projectStatus = 'INPROGRESS' or ps.projectStatus = 'COMPLETED' or ps.projectStatus = 'ONHOLD' or ";
+					+ "ps.projectStatus = 'STARTED' or ps.projectStatus = 'INPROGRESS' or ps.projectStatus = 'COMPLETED' or ps.projectStatus = 'ONHOLD' or ps.projectStatus = 'NOTSTARTED' or ps.projectStatus = 'DROPPED' or  ";
 		}
 
 		if (Arrays.asList(tokens).contains("STARTED")) {
 			subQuery2 = subQuery2 + "ps.projectStatus = 'STARTED' or ";
 		}
-
+		
 		if (Arrays.asList(tokens).contains("INPROGRESS")) {
 			subQuery2 = subQuery2 + "ps.projectStatus = 'INPROGRESS' or ";
 		}
+		
+		if (Arrays.asList(tokens).contains("NOTSTARTED")) {
+			subQuery2 = subQuery2 + "ps.projectStatus = 'NOTSTARTED' or ";
+		}
+
+		if (Arrays.asList(tokens).contains("DROPPED")) {
+			subQuery2 = subQuery2 + "ps.projectStatus = 'DROPPED' or ";
+		}
+		
 		if (Arrays.asList(tokens).contains("COMPLETED")) {
 			subQuery2 = subQuery2 + "ps.projectStatus = 'COMPLETED' or ";
 		}
