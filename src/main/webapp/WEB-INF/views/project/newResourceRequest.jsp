@@ -1077,7 +1077,7 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	     		$("#approver").append(output);
 	     		$('#approver').trigger("chosen:updated");
 	     		
-	        	 
+	     		$('#add_newResource_form').validate(false, validationSettings);
 	         }
 	 });
 }
@@ -1164,8 +1164,8 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'                  </div>';
 			
 			divRowTd2_0Str = divRowTd2_0Str +'             </div>';
-			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="expId'+maxRowNum+'">';
-			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="expValidation'+maxRowNum+'" id="expValidation'+maxRowNum+'">';
+			divRowTd2_0Str = divRowTd2_0Str +'             <div class="row" id="expIdREPLACEROWID">';
+			divRowTd2_0Str = divRowTd2_0Str +'              <input type="hidden" name="expValidationREPLACEROWID" id="expValidationREPLACEROWID">';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div> ';
 			divRowTd2_0Str = divRowTd2_0Str +'          </div>';
 			
@@ -1241,7 +1241,7 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 			divRowTd2_0Str = divRowTd2_0Str +'            <select class="form-control" name="consulting'+maxRowNum+'" id="consulting'+maxRowNum+'" field-name="Consulting" data-validation="required">';
 			divRowTd2_0Str = divRowTd2_0Str +'              <option selected value="">--Select--</option>      ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Offsite" ? "selected" : '') +' value="OffSite">Off Site</option>    ';
-			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Onsite" ? "selected" : '') +' value="OnSite">On Site</option>      ';
+			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OnSite" ? "selected" : '') +' value="OnSite">On Site</option>      ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "NearShore" ? "selected" : '') +' value="NearShore">Near Shore</option>   ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "OffShore" ? "selected" : '') +' value="OffShore" >Off Shore</option>    ';
 			divRowTd2_0Str = divRowTd2_0Str +'                    <option '+(report.consultingType == "Hybrid" ? "selected" : '') +'  value="Hybrid">Hybrid</option>       ';

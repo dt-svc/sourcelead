@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectPlanningNewResourceRequestDao;
+import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
+import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class ProjectPlanningNewResourceRequestDaoImpl implements ProjectPlanningNewResourceRequestDao{
@@ -51,5 +55,35 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
 		return lineItemsIdsList;
 	}
 
+	@Override
+	@Transactional
+	public void deleteProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest) 	throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (projectPlanningNewResourceRequest != null) {
+				session.delete(projectPlanningNewResourceRequest);
+			}
+			logger.debug("ProjectPlanningNewResourceRequest Deleted Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_PLANNING_NEW_RESOURCE_REQUEST"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectPlanningNewResourceRequest resourceRequest left join fetch resourceRequest.projectPlanningRequestId "
+				+ " where resourceRequest.id = :id and resourceRequest.status = '1' ";  
+		List<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = null;
+		if(projectPlanningNewResourceRequestList != null && !projectPlanningNewResourceRequestList.isEmpty()){
+			projectPlanningNewResourceRequest = projectPlanningNewResourceRequestList.iterator().next();
+		}
+		return projectPlanningNewResourceRequest;
+	}
+ 
 }

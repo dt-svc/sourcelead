@@ -2,10 +2,14 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
+import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
 
 public interface ProjectPlanningNewResourceRequestDao {
 
 	public List<Long> getProjectPlanningNewResourceRequestIdsByRequestId(Long projectPlanningRequestId) throws Exception;
+	
+	ProjectPlanningNewResourceRequest getProjectPlanningNewResourceRequestById(Long id) throws Exception;
+	
+	void deleteProjectPlanningNewResourceRequest(ProjectPlanningNewResourceRequest projectPlanningnewResourceRequest) throws Exception;
 	
 }

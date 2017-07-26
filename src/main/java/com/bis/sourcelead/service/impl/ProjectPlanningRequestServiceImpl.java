@@ -215,8 +215,8 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		
 		if(null != resourceRequestIds && resourceRequestIds.size() > 0){
 			for(Long resourceRequestId : resourceRequestIds){
-				ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(resourceRequestId);
-				projectPlanningResourceRequestDao.deleteProjectPlanningResourceRequest(resourceRequest);
+				ProjectPlanningNewResourceRequest newResourceRequest = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestById(resourceRequestId);
+				projectPlanningNewResourceRequestDao.deleteProjectPlanningNewResourceRequest(newResourceRequest);
 			}
 		}
 		
