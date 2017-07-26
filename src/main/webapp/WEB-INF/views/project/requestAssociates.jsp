@@ -706,6 +706,7 @@ function getAssociates(){
 	var result = '';
 	
 	result = result +'<div class="clients_side_wrap">';
+	result = result +'<div id="associatesListLoader"></div>';
 	result = result +'<div class="new_side_wrap_inn">';
 	result = result +'<div class="timesheet_head">';
 	      
@@ -760,8 +761,7 @@ function getAssociates(){
 	result = result +'</ul>';
 	result = result +'<div class="clearfix"></div>';
 	result = result +'</div>';
-	     
-	result = result +'<div id="associatesListLoader"></div>';
+	
 	result = result +'<div id="associatesListFilter"></div>';
 
 	result = result +'</div>';
@@ -1203,15 +1203,26 @@ function cancel(){
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
-			
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatResourceReqSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatResourceReqSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatResourceReqSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatResourceReqSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatResourceReqSave = 'yy-dd-mm'; 
+			  }
 			
 			$( "#"+maxRowNum+"sdate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatResourceReqSave,
 			      minDate : 0,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
+					 // var dt = toDate("#"+maxRowNum+"sdate-input");
+					  var dt = $(this).datepicker('getDate', '+1d');
 						dt.setDate(dt.getDate() + 1);
 						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 						getEstimatedHours(maxRowNum)
@@ -1221,10 +1232,11 @@ function cancel(){
 			$( "#"+maxRowNum+"edate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatResourceReqSave,
 			      minDate : 0,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  //var dt = toDate("#"+maxRowNum+"edate-input");
+					   var dt = $(this).datepicker('getDate', '-1d');
 						dt.setDate(dt.getDate() - 1);
 						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 						getEstimatedHours(maxRowNum)

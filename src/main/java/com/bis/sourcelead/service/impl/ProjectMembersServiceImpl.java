@@ -280,7 +280,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public String storeAssignEmployeeByProjectIdEmployeeIdStartDateEndaDate(Long projectId, Long employeeId,
 			String startDate, String endDate, String mailtoMembers, String loginOrgCode, User user,OrgLocations loginOrgLocation) throws Exception {
 		
-		
 		  if(projectId != null){
 			  
 				Projects projects = projectsService.getProjectById(projectId);
@@ -297,9 +296,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				Employees emp = employeesService.getEmployee(employeeId.toString());
 			 	pm.setEmployee(emp);
 				pm.setProjects(projects);
-				String pattern = "dd-MM-yyyy";
-	            SimpleDateFormat format = new SimpleDateFormat(pattern);
-	            
+				/*String pattern = "dd-MM-yyyy";
+	            SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+				SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
 	            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
 				
 				ProjectMembersHistory pmh = new ProjectMembersHistory();

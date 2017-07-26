@@ -118,45 +118,6 @@ function getRequestedAssociatesList(){
 				
 				 for(var i=0; i<json.resourceRequestList.length; i++){
 					 var opt = json.resourceRequestList[i];
-					 var startDate = '';
-					 var endDate = '';
-					 var payRate = ''
-					 var estimatedHours = '';
-					 var estimatedBudget = '';
-					
-					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-						 startDate = opt.startDateStr;
-					 }else{
-						 startDate = '-----';
-					 }
-					 
-					 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-						 endDate = opt.endDateStr;
-					 }else{
-						 endDate = '-----';
-					 }
-					 
-					 if(opt.payRate != null && opt.payRate != '' && opt.payRate != 'undefined'){
-						 payRate = opt.payRateCurrency+" "+opt.payRate+" / "+opt.payRateType;
-					 }else{
-						 payRate = '-----';
-					 }
-					 
-					 var billRate = opt.billRateCurrency+" "+opt.billRate+" / "+opt.billRateType;
-					 
-					 if(opt.estimatedHours != null && opt.estimatedHours != '' && opt.estimatedHours != 'undefined'){
-						 estimatedHours = opt.estimatedHours;
-					 }else{
-						 estimatedHours = '-----';
-					 }
-					 
-					 if(opt.estimatedBudget != null && opt.estimatedBudget != '' && opt.estimatedBudget != 'undefined'){
-						 estimatedBudget = opt.estimatedBudget;
-					 }else{
-						 estimatedBudget = '-----';
-					 }
-					 
-					
 					 
 					 result = result +'<tr>';
 					    
@@ -165,19 +126,19 @@ function getRequestedAssociatesList(){
 						result = result +'</td>'; 
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+payRate+'">'+payRate+'</div>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.payRateStr+'">'+opt.payRateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+billRate+'">'+billRate+'</div>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.billRateStr+'">'+opt.billRateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+opt.startDateStr+'">'+opt.startDateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+opt.endDateStr+'">'+opt.endDateStr+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -185,11 +146,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedHours+'">'+estimatedHours+'</div>';
+					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.estimatedHours+'">'+opt.estimatedHours+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot_80" title="'+estimatedBudget+'">'+estimatedBudget+'</div>';
+					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.estimatedBudget+'">'+opt.estimatedBudget+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';

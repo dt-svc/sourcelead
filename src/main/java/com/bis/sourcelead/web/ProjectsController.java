@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -130,14 +131,16 @@ public class ProjectsController {
 				HttpServletRequest request) throws Exception {
 				ModelAndView model = new ModelAndView();
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+				SimpleDateFormat dateFormat=locations.getLocFullFormDateFormatter();
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
 					if(projects.getStartDate() != null){
-						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+						model.addObject("projectStartDate", dateFormat.format(projects.getStartDate()));
 					}
 					if(projects.getEndDate() != null){
-						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+						model.addObject("projectEndDate", dateFormat.format(projects.getEndDate()));
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
