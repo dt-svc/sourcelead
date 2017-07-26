@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -325,7 +326,8 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public String getRequestedDateStr() {
 		if(createdDate != null){
-			requestedDateStr = Constants.DMY.format(createdDate);	
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			requestedDateStr = dateFormat.format(createdDate);	
 		}
 		return requestedDateStr;
 	}

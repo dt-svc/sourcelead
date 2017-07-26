@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -91,6 +92,10 @@ public class ProjectPlanningResourceRequest implements Serializable{
     
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ORG_LOCATION_ID")
+  	private OrgLocations orgLocationId;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -117,6 +122,14 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@Transient
 	@JsonProperty
 	private Long requestedCandidateId;
+	
+	@Transient
+	@JsonProperty
+	private String payRateStr;
+	
+	@Transient
+	@JsonProperty
+	private String billRateStr;
 	
 	
 	
@@ -226,6 +239,9 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	}
 
 	public Double getEstimatedHours() {
+		if(estimatedHours == null){
+			estimatedHours = 0d;
+		}
 		return estimatedHours;
 	}
 
@@ -234,6 +250,9 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	}
 
 	public Double getEstimatedBudget() {
+		if(estimatedBudget == null){
+			estimatedBudget = 0d;
+		}
 		return estimatedBudget;
 	}
 
@@ -255,6 +274,14 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public Date getCreatedDate() {
@@ -299,7 +326,10 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr = Constants.DMY.format(startDate);	
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			startDateStr =dateFormat.format(startDate);;	
+		}else{
+			startDateStr = "-------";
 		}
 		return startDateStr;
 	}
@@ -310,7 +340,10 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = Constants.DMY.format(endDate);	
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);	
+		}else{
+			endDateStr = "-------";
 		}
 		return endDateStr;
 	}
@@ -344,6 +377,38 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public void setRequestUUID(String requestUUID) {
 		this.requestUUID = requestUUID;
+	}
+
+	public String getPayRateStr() {
+		
+		if(payRate != null){
+			StringBuilder payRateBuilder = new StringBuilder();
+			payRateStr = payRateBuilder.append(payRateCurrency).append(" ").append(payRate).append(" ").append(payRateType).toString();
+		}else{
+			payRateStr = "-------";
+		}
+		
+		return payRateStr;
+	}
+
+	public void setPayRateStr(String payRateStr) {
+		this.payRateStr = payRateStr;
+	}
+
+	public String getBillRateStr() {
+		
+		if(billRate != null){
+			StringBuilder billRateBuilder = new StringBuilder();
+			billRateStr = billRateBuilder.append(billRateCurrency).append(" ").append(billRate).append(" ").append(billRateType).toString();
+		}else{
+			billRateStr = "-------";
+		}
+		
+		return billRateStr;
+	}
+
+	public void setBillRateStr(String billRateStr) {
+		this.billRateStr = billRateStr;
 	}
 	
 	
