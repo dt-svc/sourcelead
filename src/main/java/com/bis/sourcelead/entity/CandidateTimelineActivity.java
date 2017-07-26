@@ -61,6 +61,8 @@ public class CandidateTimelineActivity implements Serializable {
 	private String actionTimeStr;
 	@Transient
 	private String actionIconClass;
+	@Transient
+	private Long createdUserId;
 	
 	public Long getId()
 	{
@@ -101,17 +103,17 @@ public class CandidateTimelineActivity implements Serializable {
 	{
 		this.actionBy = actionBy;
 	}
-
+	
 	public String getActionOn()
 	{
 		return actionOn;
 	}
-
+	
 	public void setActionOn(String actionOn)
 	{
 		this.actionOn = actionOn;
 	}
-
+	
 	public String getActionDesc()
 	{
 		return actionDesc;
@@ -146,12 +148,12 @@ public class CandidateTimelineActivity implements Serializable {
 	{
 		return actionIcon;
 	}
-
+	
 	public void setActionIcon(String actionIcon)
 	{
 		this.actionIcon = actionIcon;
 	}
-
+	
 	public Integer getStatus()
 	{
 		return status;
@@ -201,34 +203,44 @@ public class CandidateTimelineActivity implements Serializable {
 	{
 		this.updatedBy = updatedBy;
 	}
-
+	
 	public String getActionDateStr()
 	{
 		return actionDateStr;
 	}
-
+	
 	public void setActionDateStr(String actionDateStr)
 	{
 		this.actionDateStr = actionDateStr;
 	}
-
+	
 	public String getActionTimeStr()
 	{
 		return actionTimeStr;
 	}
-
+	
 	public void setActionTimeStr(String actionTimeStr)
 	{
 		this.actionTimeStr = actionTimeStr;
 	}
-
+	
 	public String getActionIconClass()
 	{
 		return actionIconClass;
 	}
-
+	
 	public void setActionIconClass(String actionIconClass)
 	{
 		this.actionIconClass = actionIconClass;
+	}
+	
+	public Long getCreatedUserId()
+	{
+		return createdUserId;
+	}
+	
+	public void setCreatedUserId(Long createdUserId)
+	{
+		this.createdUserId = createdUserId;
 	}
 }

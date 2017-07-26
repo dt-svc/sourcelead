@@ -91,7 +91,7 @@ public class CandidateTimelineActivityRestController {
 				activity.setActionTimeStr(commonDateFormat.toString());
 			}
 			
-			
+			activity.setCreatedUserId(activity.getCreatedUser().getId());
 		}
 		return toJSON(activitiesList);
 	}
