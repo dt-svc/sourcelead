@@ -744,7 +744,7 @@ public class LoginSessionController {
 		try {
 			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
-			setSessionOrgLocationAttributesDateFormat(orgLocations);
+			//setSessionOrgLocationAttributesDateFormat(orgLocations,request);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,orgLocations,request);
 			
@@ -926,14 +926,6 @@ public class LoginSessionController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	
-	
-	public static String DATEFORMAT;
-
-	private static void setSessionOrgLocationAttributesDateFormat(OrgLocations orgLocations) {
-		DATEFORMAT = orgLocations.getDateFormat();
 	}
 	
 	

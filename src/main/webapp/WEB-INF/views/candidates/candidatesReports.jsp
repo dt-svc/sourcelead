@@ -96,6 +96,7 @@ window.onload = function() {
 		            	}else{
 		            		address = "----";
 		            	}
+		            	alert(opt.candidateUpdateDateToString);
 		            	if(opt.candidateUpdateDateToString != null && opt.candidateUpdateDateToString != 'undefined' && opt.candidateUpdateDateToString != ""){
 		            		candidateUpdateDateToString = opt.candidateUpdateDateToString; 
 		            	}else{
