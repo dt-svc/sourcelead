@@ -578,7 +578,6 @@ function getInvoiceList(){
        			
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
@@ -640,11 +639,11 @@ function getInvoiceList(){
 				result = result +'         <td> ';
 				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+				 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.id+'"></div>';
 				} 
-				result = result +'  </div> ';                 
+				result = result +'  </div> ';
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
@@ -654,7 +653,11 @@ function getInvoiceList(){
 						}
 							
 					}else{
-						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+						if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+						}else{
+							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+						}
 					}
 				}else{
 					if(report.invoiceStatus == "Accepted"){
@@ -1014,7 +1017,6 @@ $(document).ready(function() {
     //search script
         function customInvoiceList() {
             var selectVal = $("#dayWiseTypeId").val();
-            alert(selectVal)
             if (selectVal == "custom") {
                 $(".custom_search").show();
                 customDate();
@@ -1417,6 +1419,20 @@ function proceedToMerge(checkVal,masterInvoiceId){
 	            success: function(data) {
 	            	$("#popUp").empty();
 	            	$(".project_inn_mask").fadeOut(200);
+	            	location.replace(sourceleadUrl+"/invoiceList");	
+	       },
+	   });  
+}
+</script>
+
+<script>
+function unLinkInvoice(invoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId, 
+	            success: function(data) {
 	            	location.replace(sourceleadUrl+"/invoiceList");	
 	       },
 	   });  
