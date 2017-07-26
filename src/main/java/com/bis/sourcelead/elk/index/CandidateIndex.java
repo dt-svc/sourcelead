@@ -67,7 +67,6 @@ public class CandidateIndex implements Serializable {
 
 	private String summary;
 	
-	
 	private String[] visaType;
 
 	private String invitationstatus;

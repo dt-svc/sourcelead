@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -125,6 +126,9 @@ public class ContractRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	ContractRequestDocumentsService contractRequestDocumentsService;
@@ -452,6 +456,8 @@ public class ContractRestController {
 			 parentContractsHistory.setCreatedBy(user.getUserCode());
 			 parentContractsHistory.setUpdatedBy(user.getUserCode());
 			contractsTemplateDao.saveContractsHistory(parentContractsHistory);
+			
+			contractsTemplateService.sendFinalisedMailToReceiver(contracts,orgLocation,user);
 		}
 		
 		
@@ -830,12 +836,14 @@ public class ContractRestController {
 			return commonUtil.toJSON(contractRequestDocumentsList);
 		}
 	 @RequestMapping(value = "/saveDocContracts", method = RequestMethod.POST)
-		public @ResponseBody String saveDocContracts(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		public @ResponseBody String saveDocContracts(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, MultipartHttpServletRequest request) throws Exception {
 
 			String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			 final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			final Map files = multiRequest.getFileMap();
 			int maxCount = Integer.parseInt(jsonObj.getString("maxDocCount"));
@@ -852,7 +860,9 @@ public class ContractRestController {
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-						contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
+						if(contractRequestDocuments.getContractId().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
+							contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
+						}
 					}
 				}
 			}
