@@ -89,6 +89,8 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
 
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	@Autowired
 	private OrgService orgService;
@@ -712,7 +714,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setFromName("SourceLead");
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
@@ -753,7 +755,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setFromName("SourceLead");
 		 
 		//setting the class filed values
@@ -1116,7 +1118,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1317,7 +1319,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		//setting the class filed values

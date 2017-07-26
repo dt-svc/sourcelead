@@ -213,6 +213,7 @@ padding: 2px 300px 2px 0px;
 	        var jsonData = encodeURIComponent(con);
 	        var form = $('#contractDoc_form')[0];
  	 	    var formData = new FormData(form); 
+ 	 	 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_Doc").attr("disabled", "disabled");
 			$("#contractDoc_form").attr("disabled", "disabled");
@@ -225,7 +226,7 @@ padding: 2px 300px 2px 0px;
 		         processData: false,
 		         contentType:false,
 			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId,
 						success : function(result) {
 							location.replace(sourceleadUrl+"/contractListbyStatus");
 						},
@@ -1088,7 +1089,7 @@ function preparedContractListWFA(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
+	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Waiting ('+approveCount+')');
 	
 	
     $("#vendorContractsList").empty();
@@ -1890,7 +1891,7 @@ function preparedContractListWTV(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
+	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Counter sign ('+verifyCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -2262,7 +2263,7 @@ function preparedContractListFinalize(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#finalised").html('Finalized ('+finalisedCount+')');
+	$("#finalised").html('Completed ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
