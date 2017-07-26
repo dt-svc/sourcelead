@@ -385,7 +385,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 			StringBuilder payRateBuilder = new StringBuilder();
 			payRateStr = payRateBuilder.append(payRateCurrency).append(" ").append(payRate).append(" ").append(payRateType).toString();
 		}else{
-			payRateStr = "----";
+			payRateStr = "-------";
 		}
 		
 		return payRateStr;
@@ -401,7 +401,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 			StringBuilder billRateBuilder = new StringBuilder();
 			billRateStr = billRateBuilder.append(billRateCurrency).append(" ").append(billRate).append(" ").append(billRateType).toString();
 		}else{
-			billRateStr = "----";
+			billRateStr = "-------";
 		}
 		
 		return billRateStr;
