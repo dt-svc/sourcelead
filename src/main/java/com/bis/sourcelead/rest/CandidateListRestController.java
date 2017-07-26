@@ -1021,6 +1021,7 @@ public class CandidateListRestController {
 		String resultJson;
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 				loginOrgLocation.getId());
+		StringBuffer activitySummary = new StringBuffer();
 		if (candidate != null) {
 
 			if (Constants.Associates.equalsIgnoreCase(candidateType)) {
@@ -1037,6 +1038,9 @@ public class CandidateListRestController {
 			// candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			if (StringUtils.isNotEmpty(reason)) {
 				candidate.setTerminateReason(reason);
+				activitySummary.append("Reason").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(reason).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else{
+				activitySummary.append(" ");
 			}
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
@@ -1044,6 +1048,10 @@ public class CandidateListRestController {
 			candidate.setTeamId(null);
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED, activitySummary.toString(), "CANDIDATE");
+			
 			StringBuilder candidateRemoveMsg = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 					candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());

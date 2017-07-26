@@ -39,8 +39,10 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -76,10 +78,16 @@ public class CandidateResumeRestController {
 	UserService userService;
 	
 	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
 	RequirementOffersService requirementOffersService;
 	
 	@Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+    CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	/**
 	* @author Venkat Kesav 
@@ -170,19 +178,29 @@ public class CandidateResumeRestController {
 	
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_DELETE_ASSOCIATE_RESUMES','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
-	public @ResponseBody String terminateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "resumeId", required = false) String resumeId, 
-			HttpServletRequest request) throws Exception {
+	public @ResponseBody String terminateResume(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "resumeId", required = false) String resumeId) throws Exception {
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		StringBuffer activitySummary = new StringBuffer();
 		CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 		if(candidateResume != null){
 			candidateResume.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			candidateResumesService.updateCandidateResume(candidateResume);
-   
+			if(candidateResume.getTitle() != null && candidateResume.getTitle() != "" && candidateResume.getTitle() != "undefined"){
+				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else{
+				activitySummary.append("Resume").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
+			candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "", Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
+			
 			// update the candidate Resume on ELK
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			if(null != candidate && null != candidate.getId()){

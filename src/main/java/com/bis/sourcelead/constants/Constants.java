@@ -723,6 +723,12 @@ public class Constants {
 	
 	public static final String CANDIDATE_ADDED_MANUALLY = "has added manually";
 	public static final String CANDIDATE_EDITTED = "has updated profile";
+	public static final String CANDIDATE_DELETED = "has deleted profile";
+	public static final String CANDIDATE_DELETED_RESUME = "has deleted resume";
+	public static final String CANDIDATE_DELETED_EMPLOYER = "has deleted employer";
+	public static final String CANDIDATE_DELETED_EDUCATION = "has deleted education";
+	public static final String CANDIDATE_DELETED_CERTIFICATION = "has deleted certification";
+	public static final String CANDIDATE_DELETED_DOCUMENTS = "has deleted document";
 	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "has uploaded new profile image";
 	public static final String CANDIDATE_SKILL_UPDATED = "has updated skills";
 	public static final String CANDIDATE_VISA_UPDATED = "has updated immigration status";

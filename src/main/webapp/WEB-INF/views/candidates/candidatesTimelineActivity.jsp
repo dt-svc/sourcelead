@@ -31,9 +31,8 @@
         	       result = result + '      <div class="row mt">';
         	       result = result + '        <div class="col-md-12"> ';
         	                 
-        	       result = result + '          <ul class="timeline">';
-        	  
-               if(data != null && data != 'undefined' && data != ""){
+               if(data != null && data != 'undefined' && data != "" && data != "[]"){
+            	   result = result + '          <ul class="timeline">';
                	 var json = JSON.parse(data);
                	for (var i = 0; i < json.length; i++) {
    	         	 var opt = json[i];
@@ -46,9 +45,11 @@
 		                result = result + '      </div>';
 		                result = result + '     </li>';
                		}
+               	result = result + '  </ul>';
+               }else{
+            	   result = result + '      <div class="noActivities">';
+            	   result = result + '      </div>';
                }
-               
-               result = result + '  </ul>';
                result = result + '  </div>';
            
            	result = result + ' </div>';
