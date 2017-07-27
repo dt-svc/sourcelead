@@ -190,7 +190,14 @@ public class BillingPayableController {
 			}else{
 			sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
+			StringBuilder clientSb = new StringBuilder();
+			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				}else{
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
+				}
 			
+			orgSpoc.setSpocName(clientSb.toString());
 			orgSpoc.setOwnerName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));
