@@ -15,21 +15,22 @@
 .new_side_wrap {
 	z-index:100000 !important; 
 }
-.side_mask {
-z-index:99999 !important;
-}
-
+/* .side_mask {
+z-index:9999 !important;
+} */
 </style>
 
 <script>
 function compareRecommendedUsers(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getCandidatesToCompare?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&orgLocationId="+locationId,
 	        success: function(data) {
 	        	compareRecommendedUsersdiv(data,requirementId);
+	        	$("#loading").removeAttr('style');
 	        }
 	 });
 	
@@ -116,7 +117,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     }
 	
 	var result = '';
-    result = result +'<div class="comMask" style="display: block;"></div>';
+    result = result +'<div class="comMask" style="display: block; z-index:9999;"></div>';
     result = result +'<div class="compare_resume">';
     result = result +'    <a onclick="closeCompare();" class="close_btn text-danger pull-right btn btn-danger btn-sm">X</a>';
     
@@ -647,5 +648,16 @@ function getCandiResume(uuid,title){
 	if(uuid != null && uuid != ""){
 		window.open(sourceleadUrl+'/viewResume/'+title+'?resumeUUID='+uuid,title,"height=600,width=600");
 	}  
+}
+</script>
+<div class="sideMask" style="z-index:99999 !important;">
+  <div class="proj_close" onClick="removeCompareTab();"></div>
+</div>
+
+<script>
+function removeCompareTab(){
+	$(".project_inn_mask").fadeOut(200);
+	$(".sideMask").fadeOut();
+	$(".new_side_wrap").removeClass("new_side_wrap_active");
 }
 </script>
