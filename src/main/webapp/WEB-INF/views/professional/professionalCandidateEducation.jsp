@@ -3,11 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -703,6 +698,17 @@ function candidateEducationStore(candidateId){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
+				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+				            			 if(data<50){
+				            			   $("#perVal").removeClass('progress-bar-success');
+				            			   $("#perVal").addClass("progress-bar-danger");
+				            			 }
+				            			 if(data>=50){
+				            				 $("#perVal").removeClass("progress-bar-danger");
+				            				 $("#perVal").addClass("progress-bar-success");
+				            			 }
+				            			 $("#disVal").empty();
+				            			$("#disVal").append(data+'%');
 				               		    $("#popUpDiv").removeClass("edit-details-active");
 				            			$("#selector4").removeAttr("style");
 				            			$("#selector4").css({ display: "block" });
@@ -798,6 +804,18 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
+             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+              			 if(data<50){
+              			  /* $("#perVal").removeClass("progress-bar-success"); */
+              			   $("#perVal").removeClass('progress-bar-success')
+              			   $("#perVal").addClass("progress-bar-danger");
+              			 }
+              			 if(data>=50){
+              				 $("#perVal").removeClass('progress-bar-danger');
+              				 $("#perVal").addClass("progress-bar-success");
+              			 }
+              			 $("#disVal").empty();
+              			$("#disVal").append(data+'%');
            			 	 $("#selector4").removeAttr("style");
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");

@@ -213,6 +213,7 @@ padding: 2px 300px 2px 0px;
 	        var jsonData = encodeURIComponent(con);
 	        var form = $('#contractDoc_form')[0];
  	 	    var formData = new FormData(form); 
+ 	 	 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_Doc").attr("disabled", "disabled");
 			$("#contractDoc_form").attr("disabled", "disabled");
@@ -225,7 +226,7 @@ padding: 2px 300px 2px 0px;
 		         processData: false,
 		         contentType:false,
 			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId,
 						success : function(result) {
 							location.replace(sourceleadUrl+"/contractListbyStatus");
 						},

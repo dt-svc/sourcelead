@@ -256,7 +256,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL "+subQuery+"";
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
 		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 		return clientInvoiceList;
 

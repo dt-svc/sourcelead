@@ -104,8 +104,6 @@ public class UserRestController {
 	@Autowired
 	private ProjectsService projectsService;
 	
-	@Autowired
-	private ProjectMembersService projectMembersService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -165,6 +163,8 @@ public class UserRestController {
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	/**
 	 * To get All Approvers
@@ -993,7 +993,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.GET)
+		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
 		 }
 		 
@@ -1113,7 +1113,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	                    headers.add("X-Password", jsonObject.getString("password"));
 	                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	                    HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
 	                     int status = response.getStatusCode().value();
 
 					 if(status == HttpServletResponse.SC_OK){
@@ -1425,4 +1425,22 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
+	 
+	 
+	/**
+	 * To get the assigned projects list for user based on userId and
+	 * OrgLocationId
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return json object
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAssignedProjectsListForUser",
+			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		return projectMembersList;
+	}
 }
