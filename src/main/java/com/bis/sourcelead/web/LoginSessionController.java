@@ -198,7 +198,16 @@ public class LoginSessionController {
 				}
 				
 			}
+
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
+			
+			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
+			}
+			
+
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
@@ -505,6 +514,12 @@ public class LoginSessionController {
 					}
 				}
 				
+			}
+			
+			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);

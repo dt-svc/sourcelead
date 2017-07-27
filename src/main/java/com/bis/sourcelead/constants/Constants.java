@@ -706,13 +706,12 @@ public class Constants {
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
 
-	
-
-	
-    public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
     public static final String HOLIDAY = "Holiday";
     public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
     public static final String WORK_FROM_HOME = "Work From Home";
-    
-
+	public static final String CANDIDATE_ENTITY = "CD";
+	
+	public static final String JOB_ENTITY = "JB";
+	
 }
