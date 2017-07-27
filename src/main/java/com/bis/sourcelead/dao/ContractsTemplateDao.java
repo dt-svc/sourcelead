@@ -50,4 +50,6 @@ public interface ContractsTemplateDao {
 	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
 
 	ContractsHistory getContractsHistoryByContractId(Long contractId);
+
+	Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String contractType);
 }

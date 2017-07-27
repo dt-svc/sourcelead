@@ -71,6 +71,8 @@ public interface InvoiceService {
 	void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception;
 
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
+
+	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
 	
 
 }

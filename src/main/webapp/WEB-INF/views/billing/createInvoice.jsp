@@ -1774,7 +1774,7 @@ function getClientContacts(clientContactId){
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';
 	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	

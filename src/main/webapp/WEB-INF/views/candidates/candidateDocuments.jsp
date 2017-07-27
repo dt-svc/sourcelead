@@ -126,8 +126,7 @@ function candDocumentsList(candidateId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + ' <tr>';
-	                    	 
-	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
+	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
 	                    	 }else{
 	                    		 result = result +"  <td><div>--</div></td>"; 

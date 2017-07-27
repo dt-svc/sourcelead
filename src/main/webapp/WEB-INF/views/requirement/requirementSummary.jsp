@@ -1338,6 +1338,14 @@ function requirementDetails(requirementId,data){
 			               result = result +'</div>';
 	          	           
 				           result = result +'<div class="clearfix"></div>';
+				           
+				           if(json.releaseJobToAllUsers  == 'Y'){
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> YES </span></div>';
+				            }else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> NO </span></div>';
+				            }
+			          	           
+						   result = result +'<div class="clearfix"></div>';
 			           	            
 			            
 			            //  Checking  for approval mechanism type  Parallel or Sequential
@@ -4325,7 +4333,9 @@ function requirementRecommendations(requirementId){
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
 		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Customize score" onClick="openPop('+requirementId+')">Customize Score </a>            ';
-		    result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
+		    if(json.length>0){
+		    	result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
+		    }
 		    result = result +'                   <div id="customizeScoreDiv"></div>';
 		    result = result +'		        </div>';
 
@@ -6288,6 +6298,8 @@ function saveCandidateImage(candidateId){
   		        var jsonData = encodeURIComponent(con);
           		
           		var sourceleadUrl ='${sourceleadUrl}';
+          		var loginUserId = '${SourceLeadWeb_userId}';
+          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];
            		var formData = new FormData(form);
 	            		
@@ -6300,7 +6312,7 @@ function saveCandidateImage(candidateId){
 	            	          contentType:false,
 	                	      dataType : 'json',
 	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  recommendationAlertCancel(candidateId);
 	    			          },  

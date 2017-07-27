@@ -649,7 +649,7 @@ function getInvoiceList(){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
+							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
 						}else{
 							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span>   ';	
 						}
@@ -1474,7 +1474,7 @@ function saveInvoiceRejectedReason(invoiceId){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId+"&reason="+reason,
+				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&invoiceId="+invoiceId+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
