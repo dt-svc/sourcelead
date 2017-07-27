@@ -472,11 +472,10 @@ function getDateFormatByOrgLocation() {
 		    var locationCode ='${SourceLeadWeb_locationCode}';
 			var sourceleadUrl = '${sourceleadUrl}';
            $.ajax({
-       	      type: "GET",
-       	      dataType : 'json',
+       	      type: "POST",
              	url: sourceleadUrl+"/getDateFormatByOrgLocation?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode, 
                	success: function(result) {
-						$("#dateFormatForOrgId").empty();
+						 $("#dateFormatForOrgId").empty();
 						$("#dateFormatForOrgId").append("<option value='' disabled selected>-- Select Date Format --</option>");
 						if(result == 'dd-MM-yyyy'){
 							$("#dateFormatForOrgId").append("<option value='dd-MM-yyyy' selected>dd-MM-yyyy</option>");
@@ -505,7 +504,7 @@ function getDateFormatByOrgLocation() {
 	                        $('#dateFormatForOrgId').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
 						}
 						
-						$('#dateFormatForOrgId').trigger("chosen:updated");
+						$('#dateFormatForOrgId').trigger("chosen:updated"); 
 		        },  
            });
            $(function(){
