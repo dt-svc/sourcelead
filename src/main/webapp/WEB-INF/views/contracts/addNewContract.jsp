@@ -158,7 +158,8 @@
               <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getApplicantSubmission(); getOfferRate(); getVendor();" field-name="Applicant">
+		              		<!-- <select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getApplicantSubmission(); getOfferRate(); getVendor();" field-name="Applicant"> -->
+							<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option selected="selected" value="${element.id}">${element.candidateName}(${element.createdUser})</option>
@@ -170,7 +171,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getApplicantSubmission(); getOfferRate(); getVendor();" field-name="Applicant"></select>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
 					 <p id="errorAppDiv" class="ReError"></p>

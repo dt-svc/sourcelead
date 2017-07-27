@@ -728,11 +728,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
 			 	if(null != orgRelations){
-			 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+			 		if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 					}	
-					else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-						contracts.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						contracts.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
 			}
@@ -816,11 +816,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
 			 	if(null != orgRelations){
-			 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+			 		if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 					}	
-					else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-						contracts.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						contracts.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
 			}
