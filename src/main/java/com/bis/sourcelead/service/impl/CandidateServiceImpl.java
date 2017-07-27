@@ -1034,9 +1034,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
 			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			for(Candidate can :candidateList){
 				if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(simpleDateFormat.format(can.getUpdatedDate()));
 				}
 				User user  = userService.getUserByUserCode(can.getCreatedBy());
 				if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
@@ -1059,10 +1061,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
 			Date startDateUTC, Date endDateUTC,String ownersList) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
 		for(Candidate can : candidateReportsList){
 			if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(simpleDateFormat.format(can.getUpdatedDate()));
 				}
 			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
 			 can.setCandidateRequiementCount(requirementSubmissionCount);
@@ -1284,8 +1288,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 	@Override
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
-			String resourceType,List<Long> associatesIds) throws Exception {
-		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds);
+			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
+		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
 }
