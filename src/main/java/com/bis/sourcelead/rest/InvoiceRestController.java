@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -248,12 +249,13 @@ public class InvoiceRestController {
 		}
 
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org,currencyCode);
+		
 		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
-		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Invoice");
+		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Bill");
 		 
 		}
 		if(invoiceType.equals("payable") && saveType.equals("SENT")){
-			 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Invoice");
+			 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Bill");
 			 
 			}
 		if(invoiceType.equals("Receivable") && saveType.equals("DRAFT"))
@@ -495,6 +497,8 @@ public class InvoiceRestController {
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
 			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
+			
+			
 			billingInvoiceList.add(invoice);
 		}
 		
@@ -1719,17 +1723,11 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/deleteInvoice", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,
-			@RequestParam(value = "reason", required = false) String reason) throws Exception
+			@RequestParam(value = "reason", required = false) String reason,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
 	{
-		boolean result = false;
-		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
-		invoice.setRejectReason(reason);
-		invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
-		Invoice invoiceData = invoiceService.updateInvoice(invoice);
-		if (invoiceData != null) {
-			result = true;
-		}
-		return result;
+		boolean isDeleted = invoiceService.deleteInvoice(invoiceId,reason,invoiceType);
+		return isDeleted;
 	}
 	
 	
