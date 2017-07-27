@@ -184,6 +184,7 @@ public class CandidateResumeRestController {
 			@RequestParam(value = "resumeId", required = false) String resumeId) throws Exception {
 		
 		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		User user = userService.getUserById(loginUserId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
@@ -210,7 +211,7 @@ public class CandidateResumeRestController {
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 			}
 		}
-		Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+		Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		return percentage.toString();
 	}
 	
