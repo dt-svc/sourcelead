@@ -1620,11 +1620,19 @@ public class InvoiceRestController {
 		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		if(invoice.getId() !=null){
+		if(masterInvoice.getId() !=null){
 			Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
-			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
-			childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-			invoiceService.linkInvoice(childInvoice);	
+			if(childInvoice !=null){
+				childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+				childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(childInvoice);		
+			}else{
+				Invoice  parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+				parentInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(parentInvoice);
+			}
+			
 		}
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
@@ -1677,16 +1685,52 @@ public class InvoiceRestController {
 		invoice.setLinkInvoiceReferenceId(null);
 		invoice.setLinkInvoiceRefInvoiceId(null);
 		invoice.setInvoiceStatus(invoice.getPreviousInvoiceStatus());
-		invoice.setPreviousInvoiceStatus(Constants.LINKED_STATUS);
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoiceService.linkInvoice(invoice);
+		
 		Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
-		childInvoice.setInvoiceStatus(childInvoice.getPreviousInvoiceStatus());
-		childInvoice.setPreviousInvoiceStatus(Constants.LINKED_STATUS);
-		Invoice invoiceData = invoiceService.linkInvoice(childInvoice);
+		if(childInvoice !=null){
+			childInvoice.setInvoiceStatus(childInvoice.getPreviousInvoiceStatus());
+			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(childInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}else{
+			Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+			parentInvoice.setInvoiceStatus(parentInvoice.getPreviousInvoiceStatus());
+			parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(parentInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}
+		
+		
+		return result;
+	}
+	
+	/**
+	 * Deleteing Invoice/bill of draft stage
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,
+			@RequestParam(value = "reason", required = false) String reason) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setRejectReason(reason);
+		invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+		Invoice invoiceData = invoiceService.updateInvoice(invoice);
 		if (invoiceData != null) {
 			result = true;
 		}
 		return result;
 	}
+	
 	
 }
