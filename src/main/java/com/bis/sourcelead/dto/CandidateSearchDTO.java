@@ -6,6 +6,7 @@ import java.util.List;
 public class CandidateSearchDTO extends SearchDTO implements Serializable {
 
 	private List<String> candidateSkills;
+	private List<String> candidateVisa;
 	private String primarySkill;
 	private String minRate;
 	private String maxRate;
@@ -32,6 +33,17 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 
 	public void setCandidateSkills(List<String> candidateSkills) {
 		this.candidateSkills = candidateSkills;
+	}
+
+	
+	public List<String> getCandidateVisa()
+	{
+		return candidateVisa;
+	}
+
+	public void setCandidateVisa(List<String> candidateVisa)
+	{
+		this.candidateVisa = candidateVisa;
 	}
 
 	public String getMinRate() {

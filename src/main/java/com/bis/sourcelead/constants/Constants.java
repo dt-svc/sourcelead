@@ -95,6 +95,8 @@ public class Constants {
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
+	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
+	public static final String MODIFY_SOW_CONTRACT_ENDDATE = "ModifySowContractEndDate";
 	public static final String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
 	public static final String ACCEPT_VENDOR_INVITATION = "Accept Vendor Invitation";
 	public static final String ACCEPT_CLIENT = "Accept Client";
@@ -689,7 +691,7 @@ public class Constants {
     public static final String APPROVED = "APPROVED";  
     
     public static final String PENDING = "PENDING";
-    
+
     public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
     public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
@@ -707,6 +709,10 @@ public class Constants {
 	public static final String CLIENT_NSA = "Client NSA";
 
 	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
+	public static final String BIS_CHECKS = "BIS_CHECKS";
+
+
     public static final String HOLIDAY = "Holiday";
     public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
     public static final String WORK_FROM_HOME = "Work From Home";

@@ -215,7 +215,7 @@ function candidateSideBar(candidateId){
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well well-sm text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix nomr">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
@@ -235,6 +235,30 @@ function candidateSideBar(candidateId){
 						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
+						 
+						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">  ';
+						if(json.profilePercentage>=50){ 
+							result = result+'   <div class="progress-bar  progress-bar-success  ';
+						}
+						else{
+							result = result+'   <div class="progress-bar  progress-bar-danger  ';
+						}
+						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+						result = result+'   </div>  ';
+						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> ';
+						/* else{ 
+							result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">                                                                                                                                                       ';
+							result = result+'   <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+							result = result+'    <p id="disVal"> '+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+							result = result+'   </div>                                                                                                                                                                     ';
+							result = result+' </div>                                                                                                                                                                       ';
+							result = result+' </div> ';
+						} */
+						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
@@ -635,6 +659,20 @@ function refreshImageBlock(candidateId){
 						 
 						 
 						 result = result+'  </div>';
+						 
+						 result = result+' <div class="mb mt5 UsProBar">';
+						 result = result+' <div class="progress nomr"> ';
+						 if(json.profilePercentage>=50){
+						 result = result+' <div class="progress-bar progress-bar-success ';
+						 }
+						 else{
+						 result = result+' <div class="progress-bar progress-bar-danger ';
+						 }
+						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+						 result = result+' </div> ';
+						 result = result+' </div> ';
+						 
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
@@ -835,6 +873,19 @@ function cancel(candidateId){
 					  <div class="col-md-12">
 						  <h4>Details:</h4>
 					  </div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8">
+						<label>Immigration Status</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
 					  <div class="clearfix">
 						<div class="col-md-8">
 						<label>Skills</label>
@@ -1676,6 +1727,7 @@ function getCities(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -1915,6 +1967,49 @@ function getCities(){
 		    });
 		    
 		    
+		  //Adding Customized Visa to the list
+			var selectten, chosenten;
+			selectten = $("#canVisa");
+			selectten
+					.chosen({
+						no_results_text : 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:'
+					});
+			chosenten = selectten.data('chosen');
+			chosenten.search_field
+					.bind(
+							('keydown keyup'),
+							function(e10) {
+
+								var enterVisaArray = this.value.split(",");
+								if (enterVisaArray.length > 1) {
+									for (var i = 0; i < enterVisaArray.length; i++) {
+										var option = $("<option>").val(
+												enterVisaArray[i].replace(",", ""))
+												.text(
+														enterVisaArray[i].replace(",",
+																""));
+										selectten.append(option);
+										selectten.find(option).prop('selected', true);
+										$("#canVisa").trigger("chosen:updated");
+									}
+								} else {
+									var newVisa = this.value.replace(",", " ");
+
+									if (tagItBykeyForVisa(e10)
+											&& (newVisa != null && newVisa != '' && newVisa != 'undefined')) {
+										preventTabkey(e10);
+										var par = this.parent;
+										var option = $("<option>").val(
+												newVisa.replace(",", "")).text(
+												newVisa.replace(",", ""));
+										selectten.append(option);
+										selectten.find(option).prop('selected', true);
+										$("#canVisa").trigger("chosen:updated");
+
+									}
+								}
+							});
+		    
 		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
@@ -2101,6 +2196,7 @@ function minMaxExperience(){
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
 	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
@@ -2143,6 +2239,7 @@ function minMaxExperience(){
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
 	     $("#canSkills").val('');
+	     $("#canVisa").val('');
 	     $("#primarySkill").val('');
 	    
 	}

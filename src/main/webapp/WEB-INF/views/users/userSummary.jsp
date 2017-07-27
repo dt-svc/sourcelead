@@ -88,6 +88,8 @@ $(document).ready(function(){
 	 result  = result + '</div>';
 	 result = result + '    <ul class="project-tabs-menu">';
 	 result = result + '       <li class="current"><a href="#tab-1" onClick="userDetails('+userId+');" >Details</a></li>';
+	 
+	 result = result + '       <li><a href="#tab-2" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
 	/*  if(timesheet == 'Y' && (loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN')){
 	     result = result + '        <li><a href="#tab-2" onClick="userProjectDetails('+userId+',\'All\');">Projects</a></li>';
 	 } */
@@ -96,11 +98,13 @@ $(document).ready(function(){
 	 
 	 
 	 result = result + '<div class="project_tabs">';
-	  	result = result + ' <div id="tab-1" class="project_tabs_inn">';
-	  	result = result + '</div>';
+	 result = result + ' <div id="tab-1" class="project_tabs_inn">';
+	 result = result + '</div>';
 	  	
-	  	result = result + '<div id="tab-2" class="project_tabs_inn">';
-	  	 result = result + '<div class="timesheet_head">';
+	 result = result + '<div id="tab-2" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
+	 result = result + '</div>';
+	  	
+	  	/*  result = result + '<div class="timesheet_head">';
 	     result = result + '  	<ul>';
 	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
 		   result = result + '         	<div class="approved_pop" id="radioFilter">';
@@ -120,10 +124,11 @@ $(document).ready(function(){
 	     result = result +'<div id="projectList_User"></div>'; 
 	     result = result + '     </div>';
 	  	
+	  	result = result + '</div>'; */
+	  	
+	  	
 	  	result = result + '</div>';
-	  	
-	  	
-	  	
+	  	result = result + '</div>';
 	  	result = result + '</div>'; 
 	  	$("#projectSideDiv").empty(); 
 	    $("#projectSideDiv").append(result);  	
@@ -894,7 +899,7 @@ function getChangeRole(userId,userRoleId){
 </body>
 
 
-
+<jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="../masterFooter.jsp" />
 
 <script type="text/javascript">
