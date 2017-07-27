@@ -1131,7 +1131,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					  contractsTemplateDao.saveNewContract(upadatedContracts);
 			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
 				contractApproveEmail(contracts,user,org,orgLocation);
-				sendMailToOwner(contracts,user,org,orgLocation);
+				//sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
 
 			contracts.setRejectedReason(rejectReason);
@@ -1620,7 +1620,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 			StringBuilder creatorSb = new StringBuilder();
 			globalVarsMap.put("OwnerUser", creatorSb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
-		}else if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+		}else if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName())){
 			globalVarsMap.put("OwnerUser",owner.getFirstName());
 		}else{
 			globalVarsMap.put("OwnerUser","--");
