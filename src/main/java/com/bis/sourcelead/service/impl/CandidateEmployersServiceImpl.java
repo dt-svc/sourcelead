@@ -77,6 +77,8 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     	    }
         	if(candidateEmployers != null && candidateEmployers.getName() != null && candidateEmployers.getName() != "" && !candidateEmployers.getName().equalsIgnoreCase(jsonObject.getString("name"))){
 				activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if(candidateEmployers.getId() == null){
+				activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
         	candidateEmployers.setName(jsonObject.getString("name"));
         	can.setId(candidateId);

@@ -724,6 +724,7 @@ public class Constants {
 	public static final String CANDIDATE_ADDED_MANUALLY = "has added manually";
 	public static final String CANDIDATE_EDITTED = "has updated profile";
 	public static final String CANDIDATE_DELETED = "has deleted profile";
+	public static final String CANDIDATE_REACTIVATED = "has reactivated profile";
 	public static final String CANDIDATE_DELETED_RESUME = "has deleted resume";
 	public static final String CANDIDATE_DELETED_EMPLOYER = "has deleted employer";
 	public static final String CANDIDATE_DELETED_EDUCATION = "has deleted education";

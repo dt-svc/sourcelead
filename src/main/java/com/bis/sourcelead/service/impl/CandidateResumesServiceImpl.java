@@ -119,7 +119,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			candidateResume.setCreatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			if(multiFile != null){
-				activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				if(candidateResume.getTitle() != null && candidateResume.getTitle() != "" && candidateResume.getTitle() != "undefined"){
+					activitySummary.append("Title").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END);
+				}else{
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END);
+				}
 				 candidateResume.setDocFile(multiFile.getBytes());
 				 candidateResume.setFileName(multiFile.getOriginalFilename());
 				 candidateResume.setFileContentType(multiFile.getContentType());

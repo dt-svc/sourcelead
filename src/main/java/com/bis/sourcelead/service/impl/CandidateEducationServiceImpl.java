@@ -89,6 +89,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("name")){
 			if(candidateEducation != null && candidateEducation.getName() != null && candidateEducation.getName() != "" && !candidateEducation.getName().equalsIgnoreCase(jsonObject.getString("name"))){
 				activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if(candidateEducation.getId() == null){
+				activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
 			candidateEducation.setName(jsonObject.getString("name"));
 			String educationName = jsonObject.getString("name");

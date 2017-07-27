@@ -1127,15 +1127,16 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/reActivateCandidateByCandidateId")
 	public @ResponseBody String reActivateCandidateByCandidateId(
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "reActivate", required = false) String reActivate, HttpServletRequest request)
+			@RequestParam(value = "reActivate", required = false) String reActivate)
 			throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
-				loginOrgLocation.getId());
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user = userService.getUserById(loginUserId);
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId), loginOrgLocation.getId());
 		if (candidate != null) {
 			if (reActivate.equalsIgnoreCase("1")) {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1143,6 +1144,10 @@ public class CandidateListRestController {
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidateService.saveOrUpdateCandidate(candidate);
+			
+			candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_REACTIVATED, "", "CANDIDATE");
+			
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
 		return "success";
