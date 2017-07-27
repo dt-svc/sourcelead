@@ -1565,7 +1565,7 @@ function requirementPipeline(requirementId){
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 
-						<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i
+						<!-- <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span> --><i
 							class="glyphicon glyphicon-play" id="clientsList"></i>
 							<div id="filter1ApprovedPop" class="approved_pop">
 								<ul>

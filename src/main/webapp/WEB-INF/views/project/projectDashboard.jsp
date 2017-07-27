@@ -66,196 +66,6 @@ overflow-x: auto;
 
         
 	   <div class="timesheet_out timesheet_background">
-	   <%-- <c:if test="${empty projectsList}">
-			<div class="project_wrap">
-        <div class="timesheet_head">
-        	<ul>
-				<li><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  id="filter1ApprovePop"></i>|
-                	<div id="filter1ApprovedPop" class="approved_pop">
-                    	<ul>
-                    	  <c:forEach var="report" items="${add_client}">  
-                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="filter();"  type="checkbox"><label for="clientName${report.id}">${report.clientName}</label></li>
-						  </c:forEach>
-                        </ul>
-                    </div>                	
-                </li>
-                <li><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="filter2ApprovePop"></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop">
-                    	<ul>
-                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-                <sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
-	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
-	             </sec:authorize>	
-                
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-        </div>
-			
-		    <div id="projectFilterList"></div>
-		    <div class="project_wrap_table">
-		    				<table id="example" class="display" cellspacing="0" width="100%">
-							</table>
-			</div>	   
-		</div>
-		</c:if> --%>
-		<%-- <c:if test="${!empty projectsList}"> --%>
-		<div class="project_wrap minHeight_225">
-		
-		<%-- <div class="pull-left cand-advsrche">
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
-			  Advanced Search&nbsp;&nbsp;
-			  <i class="fa fa-search"></i>
-			  </a> 
-			    <div class="cand-advsrch-popup" >
-			  <form:form id="projectlist_form" name="projectlist_form" >
-				
-					  <a href="javascript:void(0)" class="close-div" onClick="closePop(); clearKeys();"><i class="fa fa-close"></i></a>
-					  <!-- <div class="row">
-						   <div class="col-md-4">
-			                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
-				                 <div class="clearfix">
-								        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
-				                        </select>
-							    </div>
-			              </div>
-			              <div class="col-md-4">
-			                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
-			                <div class="clearfix">
-			                  <div class="clearfix">
-								  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-				                     </select>
-							 </div>
-			                </div>
-			              </div>
-			              <div class="col-md-4">
-			                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
-			                <div class="clearfix">
-							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
-			                     </select>
-				            </div>
-			              </div>
-			              </div>
-			               -->
-			              <div class="row">
-			              <div class="col-md-12">
-		                	<h4>Project Details:</h4>
-		              	  </div>
-		              	<div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Project ID</label>
-		                  <div class="clearfix">
-		                  <select class="chosen-select form-control input-sm" multiple data-placeholder="Project ID" id="projectIdAdvanced" name="projectIdAdvanced">
-                            </select>
-		                  </div>
-		                </div>
-					  
-		                <div class="col-md-4">
-		                  <label>Project Name</label>
-		                  <div class="clearfix">
-		                  <select class="chosen-select form-control input-sm" multiple data-placeholder="Project Name" id="projectNameAdvanced" name="projectNameAdvanced">
-                            </select>
-		                  </div>
-		                </div>
-					  
-		                <div class="col-md-4">
-		                  <label>Project Manager</label>
-		                  <div class="clearfix">
-		                  		<!-- <input type="text" class="form-control input-sm" placeholder="Project manager" value = "" id="projectManagerAdvanced" name="projectManagerAdvanced"> -->
-						  		<select class="chosen-select form-control input-sm" multiple data-placeholder="Project manager" id="projectManagerAdvanced" name="projectManagerAdvanced">
-                                    <c:forEach var="report" items="${add_projectManagersList}">
-				                    	<option value="${report.fullName}">${report.fullName}</option>
-			                		</c:forEach>
-                                </select>
-		                  </div>
-		                </div>
-					  
-		                <div class="col-md-4">
-							  <label>Invoice frequency</label>
-							  <div class="clearfix">
-								 <select class="chosen-select" id="invoiceFrequencyAdvanced" name="invoiceFrequencyAdvanced" data-placeholder="Invoice Frequency" multiple>
-										 <option value="Weekly">Weekly</option>
-										 <option value="Bi-weekly">Bi-weekly</option>
-										 <option value="Semi-Monthly">Semi-Monthly</option>
-										 <option value="Monthly">Monthly</option>
-				                </select>
-							  </div>
-						  </div>
-		                
-		                <div class="col-md-4">
-			                <label>Clients</label>
-			                  <div class="clearfix">
-									 <select class="chosen-select form-control input-sm" multiple data-placeholder="Clients" id="clientsAdvanced" name="clientsAdvanced">
-                                       <c:forEach var="report" items="${add_client}">
-							                     <option value="${report.clientName}">${report.clientName}</option>
-						                </c:forEach>
-                                    </select>
-							 </div>
-			            </div>
-			              
-			            <div class="col-md-4">
-		                  <label>Status</label>
-		                  <div class="clearfix">
-		                     <select class="chosen-select" id="statusAdvanced" name="statusAdvanced" data-placeholder="Status" multiple>
-										 <option value="STARTED">Started</option>
-										 <option value="INPROGRESS">In-Progress</option>
-										 <option value="COMPLETED">Completed</option>
-										 <option value="ONHOLD">On-Hold</option>
-				             </select>
-		                  </div>
-		                </div>
-		                
-		                <div class="col-md-4">
-		                  <label>Project Start Date</label>
-		                  <div class="clearfix positionRelative">
-		                  	<input type="text" class="form-control input-sm" placeholder="Project Start-Date" id="projectStartDateAdvanced" name="projectStartDateAdvanced">
-		                  	<i class="fa fa-calendar icon-inner"></i>
-		                  </div>
-		                </div>
-		                
-		                <div class="col-md-4">
-		                  <label>Employee Name</label>
-		                  <div class="clearfix">
-		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced"> -->
-		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Name" id="employeeNameAdvanced" name="employeeNameAdvanced">
-                                    <c:forEach var="report" items="${add_projectMembersList}">
-				                    	<option value="${report.empName}">${report.empName}</option>
-			                		</c:forEach>
-                            </select>
-		                  </div>
-		                </div>
-		                
-		                <div class="col-md-4">
-		                  <label>Employee Email</label>
-		                  <div class="clearfix">
-		                  	<!-- <input type="text" class="form-control input-sm" placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced"> -->
-		                  	<select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Email" id="employeeEmailAdvanced" name="employeeEmailAdvanced">
-                                    <c:forEach var="report" items="${add_projectMembersList}">
-				                    	<option value="${report.empEmail}">${report.empEmail}</option>
-			                		</c:forEach>
-                            </select>
-		                  </div>
-		                </div>
-		                </div>
-					  </div>
-					  <div class="row form-footer mt">
-						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_project" onclick="searchProject();" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Clear" onClick="clearKeys();" class="btn btn-sm btn-default ml10"/>
-						  </div>
-					  </div>
-				  
-			  </form:form>
-			  </div>
-      </div> --%>
-		
 		
         <div class="timesheet_head topfilters">
         	<ul>
@@ -272,10 +82,12 @@ overflow-x: auto;
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
+                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
+<!-- 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li> -->
+							<li><input id="c9" type="checkbox" name="projectStatus" value ="NOTSTARTED"  onclick="filter();"><label for="c8">Not Started</label></li>
 							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">Completed</label></li>
                				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">On-Hold</label></li>
+               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="DROPPED"  onclick="filter();"><label for="c8">Dropped</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -312,17 +124,7 @@ overflow-x: auto;
 	   <div id="popUp"></div>
 	  </body>
 <!--   Popup's   -->
-
-
                
-               <!--   Popup's   -->	
-               <jsp:include page="employee.jsp" />
-               <jsp:include page="projectDetails.jsp" />
-               <jsp:include page="projectTasks.jsp" />
-               <jsp:include page="projectDocuments.jsp"/>
-			   <jsp:include page="../masterFooter.jsp" />	
-	
-	
 	
 <script type="text/javascript">
 window.onload = function () {
@@ -434,8 +236,10 @@ $(document).ready(function() {
 			  	'</sec:authorize>';
 		  	'</sec:authorize>';
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		  	   result = result + ' <li class="current"><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
+		  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+',\''+status+'\');" >Documents</a></li>';
 			'</sec:authorize>';
+			
+			
 			
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
@@ -567,7 +371,7 @@ function filter(){
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
-   		    	result = result +'    <th>Name</th>'; 
+   		    	result = result +'    <th>Name111</th>'; 
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Invoice Frequency</th>';
    		    	result = result +'     <th>Date</th>';
@@ -595,7 +399,7 @@ function filter(){
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  result = result +'<td data-title="Name"><div class="proj_show" onclick="projectSideBar('+report.id+',\''+report.projectName+'\',\''+report.employeeStartDateStr+'\',\''+employeeEndDateStr+'\',\''+report.projectStatus+'\');"><span title="'+report.projectName+'">'+report.projectName+'</span><i class="fa fa-binoculars"></i></div></td>';
+   		    		  result = result +'<td data-title="Name"><div><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a></div></td>';
    		    		'</sec:authorize>';
    		    		
    		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
@@ -646,9 +450,6 @@ function filter(){
    		    			result = result +'<td data-title="Client"><div>---</div></td>';  
    		    		}
    		    		result = result +'<td data-title="Status"><div>';
-   		    		if(report.projectStatus == 'STARTED'){
-	    			  result = result +'<b>Started</b>';
-	    			}
    		    		if(report.projectStatus == 'INPROGRESS'){
   	    			  result = result +'<b class="proj_process">In-Progress</b>';
   	    			}
@@ -658,7 +459,12 @@ function filter(){
    		    		if(report.projectStatus == 'ONHOLD'){
   	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
   	    			}
-   		    		
+   		    		if(report.projectStatus == 'NOTSTARTED'){
+   	    			  result = result +'<b class="proj_deactivate">Not-Started</b>';
+   	    			}
+   		    		if(report.projectStatus == 'DROPPED'){
+   	    			  result = result +'<b class="proj_deactivate">Dropped</b>';
+   	    			}
    		    		result = result +'</div></td>';
    		    		
                     result = result +'</tr>';
@@ -1156,19 +962,22 @@ $(document).ready(function() {
 		    			result = result +'<td data-title="Client"><div>---</div></td>';  
 		    		}
 		    		result = result +'<td data-title="Status"><div>';
-		    		if(report.projectStatus == 'STARTED'){
-	   			  result = result +'<b>'+report.projectStatus+'</b>';
-	   			}
+		    		 
 		    		if(report.projectStatus == 'INPROGRESS'){
-	   			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
-	   			}
+		   			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+		   			}
 		    		if(report.projectStatus == 'COMPLETED'){
-	   			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
-	   			}
+		   			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+		   			}
 		    		if(report.projectStatus == 'ONHOLD'){
-	   			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
-	   			}
-		    		
+		   			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+		   			}
+		    		if(report.projectStatus == 'NOTSTARTED'){
+		    			result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+		    		}
+			    	if(report.projectStatus == 'DROPPED'){
+			    		result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+		    		}
 		    		result = result +'</div></td>';
 		    		
 	                result = result +'</tr>';
@@ -1194,3 +1003,5 @@ $(document).ready(function() {
   }
 </script>
 </html>
+
+<jsp:include page="../masterFooter.jsp" />	

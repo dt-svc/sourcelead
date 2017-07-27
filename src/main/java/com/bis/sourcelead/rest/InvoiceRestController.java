@@ -1142,7 +1142,7 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType(),null);
+		invoiceService.sendInvoiceReminderMail(user,orgLocation,invoice,invoice.getInvoiceType(),null);
 		return "success";
 	} 	
 	
@@ -1449,6 +1449,113 @@ public class InvoiceRestController {
 			resultJson = commonUtil.toJSON(invoiceList);	
 		}
 		return resultJson;
+		/*DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+
+		LocalDate today = LocalDate.now();
+		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
+		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
+
+		Date startDateUTC = null;
+		Date endDateUTC = null;
+		switch (billingReportType) {
+		case Constants.THIS_MONTH:
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
+			break;
+		case Constants.THIS_QUARTER:
+			LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
+			break;
+		case Constants.THIS_YEAR:
+			LocalDate[] currentYearDates = conversionUtil.getThisYearStartDateEndDate();
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
+			break;
+		case Constants.LAST_30DAYS:
+			Date[] last30Days = conversionUtil.getPreviousDates(30, orgLocation, startDateOutputFormatter,
+					endDateOutputFormatter);
+			startDateUTC = last30Days[0];
+			endDateUTC = last30Days[1];
+			break;
+		case Constants.LAST_MONTH:
+			LocalDate firstOfThisMonth = today.withDayOfMonth(1);
+			LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths(1);
+			LocalDate lastMonthEndDate = firstOfThisMonth.minusDays(1);
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
+			break;
+		case Constants.LAST_QUARTER:
+			LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
+			LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
+			break;
+		case Constants.LAST_YEAR:
+			if (Constants.COUNTRY_INDIA.equalsIgnoreCase(orgLocation.getCountry())) {
+				LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
+				if (null != finStartDate) {
+					LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
+					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
+					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
+				}
+			} else {
+				LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
+				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0],
+						startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
+			}
+			break;
+		case Constants.CUSTOM:
+			LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
+			LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
+			startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
+			endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
+			break;
+		default:
+			logger.info("No Frequency");
+			;
+		}
+		// End Time conversion
+
+		float recievableAmount = 0;
+		float payableAmount = 0;
+		float netAmount = 0;
+		List<Invoice> invoiceNetIncomeList = invoiceService.getInvoiceByOrgLocationIdNetIncome(orgLocation.getId(),
+				startDateUTC, endDateUTC);
+		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(), startDateUTC,
+				endDateUTC, invoiceType);
+		if (null != invoiceNetIncomeList && invoiceNetIncomeList.size() > 0) {
+			for (Invoice invoice : invoiceNetIncomeList) {
+				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {
+					recievableAmount = recievableAmount + Float.parseFloat(invoice.getTotal());
+				} else {
+					payableAmount = payableAmount + Float.parseFloat(invoice.getTotal());
+				}
+			}
+			netAmount = recievableAmount - payableAmount;
+		}
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+//		logger.info("Final Response time = " + elapsedTime + " Millis");
+		if(invoiceList !=null && invoiceList.size()>0){
+			for(Invoice invoice : invoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				}
+				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId()
+						.longValue()) {
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+				}
+				invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+				invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+				invoice.setNetIncome(netAmount);
+				invoice.setRecievableAmount(recievableAmount);
+				invoice.setPayableAmount(payableAmount);
+			}
+		}*/
+		
 	}
 
 	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
@@ -1482,7 +1589,7 @@ public class InvoiceRestController {
 				if(null != invce.getContactUser()){
 					StringBuilder username = new StringBuilder();
 					if(null != invce.getContactUser().getLastName()){
-						username.append(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
 					}else{
 						username.append(invce.getContactUser().getFirstName());
 					}
@@ -1510,11 +1617,23 @@ public class InvoiceRestController {
 		Invoice invoice = invoiceService.getInvoicetById(id);
 		invoice.setLinkInvoiceReferenceId(masterInvoice.getId());
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		Invoice  childInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getId());
-		childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-		invoiceService.linkInvoice(childInvoice);
+		if(masterInvoice.getId() !=null){
+			Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+			if(childInvoice !=null){
+				childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+				childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(childInvoice);		
+			}else{
+				Invoice  parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+				parentInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(parentInvoice);
+			}
+			
+		}
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
 
@@ -1549,6 +1668,68 @@ public class InvoiceRestController {
 		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgRelationId(orgRelationId, clientLocationId,invoiceStatus, paymentStatus, invoiceType,orgLocations,dayWisetype,customStartDate,customEndDate);
 
 		return commonUtil.toJSON(invoiceList);
+	}
+	
+	/**
+	 * Unlinking the Linked Invoice/Bill
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/unLinkInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean unLinkInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setLinkInvoiceReferenceId(null);
+		invoice.setLinkInvoiceRefInvoiceId(null);
+		invoice.setInvoiceStatus(invoice.getPreviousInvoiceStatus());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
+		invoiceService.linkInvoice(invoice);
+		
+		Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+		if(childInvoice !=null){
+			childInvoice.setInvoiceStatus(childInvoice.getPreviousInvoiceStatus());
+			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(childInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}else{
+			Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+			parentInvoice.setInvoiceStatus(parentInvoice.getPreviousInvoiceStatus());
+			parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(parentInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}
+		
+		
+		return result;
+	}
+	
+	/**
+	 * Deleteing Invoice/bill of draft stage
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,
+			@RequestParam(value = "reason", required = false) String reason) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setRejectReason(reason);
+		invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+		Invoice invoiceData = invoiceService.updateInvoice(invoice);
+		if (invoiceData != null) {
+			result = true;
+		}
+		return result;
 	}
 	
 	

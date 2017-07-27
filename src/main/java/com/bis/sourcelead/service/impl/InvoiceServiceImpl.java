@@ -271,6 +271,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setBillingAddress(null);
 		}
 		
+		if(jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))){
+			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
+		}
+		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
 			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
@@ -480,7 +484,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
-		
+		if(invoice.getProjectID() !=null){
+			parentInvoice.setProjectID(invoice.getProjectID());
+		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		parentInvoice.setCreatedDate(invoice.getCreatedDate());
 		parentInvoice.setCreatedBy(invoice.getCreatedBy());
@@ -640,6 +646,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }else{
 						 invoiceLineItems.setAmount(null);
 					 }
+					 if(null != jsonObj.getString(i+"Description") && !"".equalsIgnoreCase(jsonObj.getString(i+"Description"))){
+						 invoiceLineItems.setInlineDescription(jsonObj.getString(i+"Description"));
+					 }
 	              // As of Now we are not storing seperateInvoice status
 //					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
 //							invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
@@ -770,8 +779,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	
-	
-	
 	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception{
 
 		EmailScenario  emailScenario = null;
@@ -788,6 +795,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		 
+		String invoiceDate= (Constants.DF_DMY.format(invoice.getInvoiceDate()));
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
@@ -795,6 +804,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
+		 globalVarsMap.put("invoiceDate",invoiceDate); 
 		 globalVarsMap.put("orgName",orglocations.getOrgLocationName());
 		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
@@ -856,7 +866,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 }
 		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
 	}
@@ -1427,6 +1437,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
   	  		  		        if(savedInvoice !=null){
@@ -1546,8 +1557,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
-				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
+				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
 			}
@@ -1574,9 +1584,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @param loginOrgCurrencyCode
 	 * @param billingRatePer
 	 * @param rateCurrencyType
+	 * @param invoiceLineItems 
 	 * @return float
 	 */
-	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType)
+	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType, InvoiceLineItems invoiceLineItems)
 	{
 		float hourlyRate = conversionUtil.getHourlyRate(billingAmount, billingRatePer);
 		float roundValue = 0;
@@ -1587,6 +1598,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		else {
 			roundValue = (float) (Math.round(hourlyRate * 100.0) / 100.0);
 		}
+		invoiceLineItems.setRate(String.valueOf(roundValue));
 		String[] split = totalHours.split(":");
 		int splitHours = Integer.parseInt(split[0]);
 		int hourminits = splitHours * 60;
@@ -2216,4 +2228,98 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		billingReportDTO.setBillingGraphBean(incomeExpenseList);
 		return billingReportDTO;
 	}
+	public void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception
+	{
+		EmailScenario  emailScenario = null;
+		EmailScenario  notificationScenario = null;
+		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(invoice.getContactUser().getEmail());
+		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
+		 globalVarsMap.put("LoginUser",user.getFirstName());
+		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		 globalVarsMap.put("grandTotal",invoice.getTotal());
+		 globalVarsMap.put("dueDate",date); 
+		 globalVarsMap.put("orgName",orgLocation.getOrgLocationName());
+		 //globalVarsMap.put("address",invoice.getBillingAddress());
+		 
+		/* StringBuilder acceptBuilder = new StringBuilder();
+		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+	        
+		StringBuilder  rejectBuilder = new StringBuilder();
+	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("rejectInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+   */
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 if(invoiceType.equalsIgnoreCase("payable")){
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_EMAIL);
+			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }else{
+			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_EMAIL);
+			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
+		
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+		 EmailAttachment emailAttachment = new EmailAttachment();
+		 emailAttachment.setUUID(UUID);
+		 EmailAttachment attachmentZip = zipFiles(docusList);
+		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+		 for(InvoiceDocument doc:documenetSet){
+			 EmailAttachment docAttachment = new EmailAttachment();
+			 docAttachment.setDocFile(doc.getDocFile());
+			 docAttachment.setName(doc.getFileName());
+			 documentList.add(docAttachment);
+		 }
+		 
+		 }
+		 emailAttachment.setDocFile(invoice.getDocFile());
+		 emailAttachment.setName(invoice.getFileName());
+		 attachmentList.add(emailAttachment);
+
+		 if(attachmentZip !=null){
+			 attachmentList.add(attachmentZip);
+		 }
+		 if(documentList !=null && !documentList.isEmpty() && documentList.size() > 0){
+		 attachmentList.addAll(documentList);
+		 }
+		 //calling the sendEmail method of emailScenerioUtil
+		 
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario);
+		
+	}
+	@Override
+	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentId(invoiceId);
+	}
+	
 }

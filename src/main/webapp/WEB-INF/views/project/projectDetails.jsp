@@ -8,6 +8,22 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<!-- script for dateformat in datepicker End -->
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor1").Editor();
+			});
+       </script> 
+       
+<style>
+.project_details.project_detailsHei {
+	min-height: 675px;
+}
+</style>
+       
+       
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
 	function projectDetails(projectId) {
@@ -231,6 +247,7 @@
 						result = result + '<span>'+ description +'</span><div class="clearfix"></div>';
 						result = result + '</div>';
 						
+						result = result + '<div class="clearfix"></div>';
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
 						result = result + '</div>';
 						result = result + '</div>';
@@ -262,7 +279,6 @@
 </script>
 <script type="text/javascript">
 	function editProjectDetails(projectId) {
-
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
@@ -277,8 +293,32 @@
 						var projectSequeneNumber = "";
 						
                         var isTimesheetAttachmentRequired = "";
-						
-						
+                        var allowRemote = "";
+                        var allowOvertime = "";
+                        var allowFreeLance = ""
+                        var allowOffShore  = "";
+                        var allowTimeEntryAfterDeadLine = "";
+                        var allowBidding = "";
+                        if(json.allowRemote != "undefined" && 	json.allowRemote == true){
+                        	allowRemote = "checked";
+                        }
+                        if(json.allowOvertime != "undefined" && json.allowOvertime == true){
+                        	allowOvertime = "checked";
+                        }
+                        if(json.allowFreeLance != "undefined" && json.allowFreeLance == true){
+                        	allowFreeLance = "checked";
+                        }
+                        if(json.allowOffShore != "undefined" && json.allowOffShore == true){
+                        	allowOffShore = "checked";
+                        }
+                        if(json.allowTimeEntryAfterDeadLine != "undefined" && 	json.allowTimeEntryAfterDeadLine == true){
+                        	allowTimeEntryAfterDeadLine = "checked";
+                        }
+                        if(json.allowBidding != "undefined" && 	json.allowBidding == true){
+                        	allowBidding = "checked";
+                        }
+                        
+                        
 						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
 								&& json.isTimesheetAttachmentRequired == '1') {
 							isTimesheetAttachmentRequired = "Y";
@@ -292,8 +332,7 @@
 						} else {
 							endDateStr = "";
 						}
-						if (json.description != null && json.description != ''
-								&& json.description != 'undefined') {
+						if (json.description != null && json.description != '' && json.description != 'undefined') {
 							description = json.description;
 						} else {
 							description = "";
@@ -315,12 +354,12 @@
 
 						var result = "";
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
-						result = result	+ '<div class="user_summary_edit_cta" id="ProjectIdDiv">';
+						result = result	+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
 						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
 						result = result + '</div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Status</label>';
 						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();">';
 						if (json.projectStatus == 'STARTED') {
@@ -349,11 +388,11 @@
 
 						result = result + '</select>';
 						result = result + '</div>';
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Project name<span	class="text-danger">*</span></label>';
 						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 						result = result + '<div class="row">';
 						 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
@@ -361,7 +400,7 @@
 								 &&  json.managerLevel1UserType == "Admin")) {  
 							result = result + '<div class="col-md-12" id="levelone-select">';
 						 }else{
-							result = result + '<div class="col-md-9" id="levelone-select">';	
+							result = result + '<div class="col-md-8 paddingRight" id="levelone-select">';	
 						} 
 						result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 						for (var j = 0; j < json.managersList.length; j++) {
@@ -382,12 +421,12 @@
 								result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 								result = result + '</div>';
 								} else{
-									result = result + '<div class="col-md-2" id="level2Toggle" style="display:block">';
+									result = result + '<div class="col-md-4 paddingLeft" id="level2Toggle" style="display:block">';
 									result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 									result = result + '</div>';
 								} 
 						}else{
-							result = result + '<div class="col-md-2" id="level2Toggle" style="display:none">';
+							result = result + '<div class="col-md-4 paddingLeft" id="level2Toggle" style="display:none">';
 							result = result + '<span class="btn btn-default formic1 addLevel" onclick="getLevel2Approvers(); showLevel2Div();">Add Level-II</span>';
 							result = result + '</div>';
 						}
@@ -397,9 +436,9 @@
 						result = result + '</div>';
 
 						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") { 
-							result = result+ '<div class="user_summary_edit_cta" id="demo" >';
+							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="demo" >';
 						}else{
-							result = result+ '<div class="user_summary_edit_cta" style="display:none;" id="demo">';
+							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 						}
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select id="level2Manager" name="level2Manager">';
@@ -417,7 +456,7 @@
 							result = result + '</select>';
 							result = result + '</div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Client</label>';
 
 						if (json.relationId != null) {
@@ -443,32 +482,37 @@
 						result = result + '</select>';
 						result = result + '</div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Team members</label>';
 						result = result
 								+ '<input type="text" value='+json.projectMembersCount+' disabled="disabled">';
 						result = result + '</div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
+						/* if(json.estimatedHours !=null && json.estimatedHours != '' && json.estimatedHours != 'undefined'){
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Estimated Hours</label>';
+							result = result
+									+ '<input type="text" value='+json.estimatedHours+' id="estimatedHours"  name="estimatedHours"  data-validation-optional="true" >';
+							result = result + '</div>';
+								
+						}
+						
+						if(json.estimatedBudget !=null && json.estimatedBudget != '' && json.estimatedBudget != 'undefined'){
+							result = result + '<div class="user_summary_edit_cta">';
+							result = result + '<label>Estimated Budget</label>';
+							result = result
+									+ '<input type="text" value='+json.estimatedBudget+' id="estimatedBudget"  name="estimatedBudget"  data-validation-optional="true" >';
+							result = result + '</div>';
+								
+						} */
+						
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Start date <span class="text-danger">*</span></label>';
 						result = result
 								+ '	<input class="calendar" value='+json.startDateStr+' type="text" disabled="disabled" id="startDateStr1">';
 						result = result + '</div>	';
 						
-						
-						/* result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Invoice Frequency <span class="text-danger">*</span></label>';
-						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control">';
-						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
-						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
-						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
-						result = result  +'	</select>';
-						result = result + '</div>'; */
-						
-						result = result + '<div class="clearfix"></div>';
-
-						result = result + '<div class="user_summary_edit_cta" id="endDateDiv">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result
 								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
@@ -476,26 +520,95 @@
 						result = result + '</div>';
 						
 						
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+						result = result + '<label>Invoice Frequency<span class="text-danger">*</span></label>';
+						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
+						result = result  +' <option '+(json.invoiceFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+						result = result  +'	 <option '+(json.invoiceFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+						result = result  +'	 <option '+(json.invoiceFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+						result = result  +'	<option '+(json.invoiceFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+						result = result  +'	</select>';
+						result = result + '</div>';
 						
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
+						result = result + '<label>Timesheet Frequency<span class="text-danger">*</span></label>';
+						result = result  +'	<select   name="invoiceFrequency" id="invoiceFrequency" class="input-sm form-control" disabled="disabled">';
+						result = result  +' <option '+(json.timesheetFrequency == "Weekly" ? "selected" : '') +'>Weekly</option>';
+						result = result  +'	 <option '+(json.timesheetFrequency == "Bi-Weekly" ? "selected" : '') +'>Bi-Weekly</option>';
+						result = result  +'	 <option '+(json.timesheetFrequency == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+						result = result  +'	<option '+(json.timesheetFrequency == "Monthly" ? "selected" : '') +'>Monthly</option>';
+						result = result  +'	</select>';
+						result = result + '</div>';
+				 
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
+						result = result + '<label>&nbsp;</label>';
+							
+					    result = result + '<div class="checkBox">';
+					    	result = result + '<label> <input type="checkbox" value="Y" '+allowFreeLance+'  name="isAllowFreelanceDevelopers">Allow Freelance Developers</label>';	
+						
+						result = result + '</div>';
 
-						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<label>Description </label>';
-						result = result
-								+ '<textarea class="edit_desc" placeholder="Enter Description" id="description" data-validation-optional="true" data-validation="validate_length length10-5000" name="description">'
-								+ description + '</textarea>';
-						result = result + '</div>       ';
+						result = result + '<div class="checkBox">';
+							 result = result + '<label> <input type="checkbox" value="Y" '+allowRemote+'  name="isAllowRemoteWork">Allow Remote Work</label>';
+						result = result + '</div>';
+					    
+						result = result + '<div class="checkBox">';
+							result = result + '<label><input type="checkbox" value="Y" '+allowOvertime+' id="isAllowOverTime" name="isAllowOverTime" onchange="allowOverTime();">Allow Over Time</label>';	
+						
+							
+						result = result + '<div class="row mt5" id="rateIdDiv" style="display:none;">';
+						result = result + '<div class="col-md-5 paddingRight" id="flatPercentageId" name="flatPercentageId" >';
+						result = result + '<select class="form-control input-sm">';
+						result = result  +' <option '+(json.overtimeRateType == "flat" ? "selected" : '') +'>FLAT</option>';
+						result = result  +' <option '+(json.overtimeRateType == "percentage" ? "selected" : '') +'>PERCENTAGE</option>';
+						
+						result = result + '</select>';
+						result = result + '</div>';
+						
+						result = result + '<div class="col-md-7 paddingLeft">';
+						result = result + '<input type="text" id="flatPercentage" name="flatPercentage" class="form-control input-sm" data-validation-optional="true" value='+json.flatPercent+' >';
+						result = result + '</div>';
+						
+						result = result + '</div>';
+						
+						result = result + '</div>';
+						
+						
+						result = result + '</div>';
+						
+						result = result + '</div>';
+						
+						
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
+						result = result + '<label>&nbsp;</label>';
+							
+					    result = result + '<div class="checkBox">';
+					    result = result + '<label> <input type="checkbox" value="Y" '+(isTimesheetAttachmentRequired == "Y" ? "checked" : '')+'  name="isTimesheetAttachmentRequired"> Timesheet Attachment Required</label>';
+						result = result + '</div>';
+
+						result = result + '<div class="checkBox">';
+						result = result + '<label> <input type="checkbox" value="Y" '+allowOffShore+'   name="isAllowOffshoreResource">Allow Offshore Resource</label>';
+						result = result + '</div>';
+					    
+						result = result + '<div class="checkBox">';
+						result = result + '<label> <input type="checkbox" value="Y" '+allowTimeEntryAfterDeadLine+' name="isTimeEntryAfterDeadline">Time Entry after Deadline</label>';
+						result = result + '</div>';
+
+						result = result + '<div class="checkBox">';
+						result = result + '<label> <input type="checkbox" value="Y" '+allowBidding+'  name="isAllowBidding">Allow Bidding</label>';
+						result = result + '</div>';
+						
+						result = result + '</div>';
+						
 						result = result + '<div class="clearfix"></div>';
+						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';
+						result = result + '<label>Description</label>';
+						result = result + '<textarea id="txtEditor1" name="description" value="'+ description +'" class="form-control newContrtextarea">' + description + '</textarea>';
+						result = result + '</div>       ';
 						
-						result = result + '<div class="form-group">';
-						result = result + '<div class="col-md-9">';
-						result = result + '<div class="checkbox">';
-						result = result + '<label> <input type="checkbox" value="Y" '+(isTimesheetAttachmentRequired == "Y" ? "checked" : '')+'  name="isTimesheetAttachmentRequired"> Timesheet Attachment Required</label>';
-						result = result + '</div>';
-						result = result + '</div>';
-						result = result + '</div>';
-					result = result + '<div class="clearfix"></div>';
+					    result = result + '<div class="clearfix"></div>';
 						
-						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta pull-right">';
 						
 						result = result	+ '	<input class="us-btn" value="Save" onclick = "updateProjectDetails('+projectId+ ');"type="button"> <input id="btnClose" class="us-btn us-btn_a" value="Cancel" onClick="editProjectDetails('+ projectId + ');" type="button">';
 						result = result + '</div>		';
@@ -503,9 +616,12 @@
 						result = result + ' </form>';
 
 						$(".user_summary_edit").slideToggle(100);
+						$(".project_details").toggleClass("project_detailsHei");
 						$("#editProjectDetailsDiv").empty();
 						$("#editProjectDetailsDiv").append(result);
-
+						getEditProjectDesc(projectId);
+						allowOverTime();
+						$("#txtEditor1").Editor();
 						//Assign date of project member
 						var selected = json.startDateStr;
 						var dt = toDate("#startDateStr1");
@@ -532,9 +648,33 @@
 						});
 
 					},
+					
 				});
 
 	}
+</script>
+<script>
+function getEditProjectDesc(projectId){
+	var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getProjectDescriptionById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId,
+			success : function(data) {
+				var json = JSON.parse(data);
+				$(".Editor-container").find('.Editor-editor').html(json['description']);
+			},
+		}); 
+	
+}
+function allowOverTime(){
+	if ($('#isAllowOverTime').is(":checked")){
+		document.getElementById("rateIdDiv").style.display="block";
+	}else{
+		document.getElementById("rateIdDiv").style.display="none";
+		$("#flatPercentage").val('');
+	}
+	
+}
 </script>
 
 <script>
@@ -572,6 +712,8 @@ function projectStatus(){
 
 <script type="text/javascript">
 	function updateProjectDetails(projectId) {
+		var ee = $("#txtEditor1").val($('.Editor-editor').html()); 
+
 		if ($('#editProject_form').validate(false, validationSettings)) {
 			var frm = $('#editProject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -851,4 +993,4 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
-<!-- script for dateformat in datepicker End -->
+

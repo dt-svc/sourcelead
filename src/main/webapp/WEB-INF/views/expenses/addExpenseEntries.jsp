@@ -181,7 +181,7 @@ function addAttachment(entityRowId,from){
 <div id="divAttachmentTd1" style="display: none; float: left;">
 	   <div id='REPLACEROWIDdocFileuploadFileGroupENTITYROWID'>
  			<input type='file' name='REPLACEROWIDdocFileENTITYROWID' id='REPLACEROWIDdocFileENTITYROWID' VALIDATIONCONDITION  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID,ENTITYROWID)'> 
- 			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID,ENTITYROWID);"></i>
+ 			<i class="fa fa-times Cred" onclick="removeAttachmentRow(REPLACEROWID,ENTITYROWID);"></i>
  		</div>
  </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
@@ -205,7 +205,7 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
-			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
+			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
 <div id="divAddRowTr2" style="display: none; float: left;">
@@ -276,7 +276,7 @@ function addAttachment(entityRowId,from){
 						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
 						      </div>
 					      </div>
-						 <div class="clearfix"></div>
+						 <div class="clearfix" style="position: static;"></div>
 		   </div>
 </div>
 

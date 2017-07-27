@@ -1,40 +1,149 @@
-#email to receiver end date edit for msa
+#6.Refer Job[Professional]:
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'supportLink','{{ReferRequirement.supportLink}}');
 
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('ModifyContractEndDate','Email');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'facebookLink','{{ReferRequirement.facebookLink}}');
 
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'contractOwner', '{{ModifyContractEndDate.contractOwner}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'contactUser', '{{ModifyContractEndDate.contactUser}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'contractTitle', '{{ModifyContractEndDate.contractTitle}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'previousEndDate', '{{ModifyContractEndDate.previousEndDate}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'presentEndDate', '{{ModifyContractEndDate.presentEndDate}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'startDate', '{{ModifyContractEndDate.startDate}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'receiverOrg', '{{ModifyContractEndDate.receiverOrg}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginUrl', '{{ModifyContractEndDate.loginUrl}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginOrgName', '{{ModifyContractEndDate.loginOrgName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'linkedInLink','{{ReferRequirement.linkedInLink}}');
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES 
-('ModifyContractEndDate','Email', 'ModifyContractEndDate', 'Used for Email To Receiver About Modify Contract End Date', 'Contract MSA Revised','org', 'Best Regards,\n{{ModifyContractEndDate.contractOwner}}\n{{ModifyContractEndDate.loginOrgName}}', ' Please note that change in the {{ModifyContractEndDate.contractTitle}} end date has been modified {{ModifyContractEndDate.previousEndDate}} to {{ModifyContractEndDate.presentEndDate}}.\n The details of the contracts are following \n Contract Title : {{ModifyContractEndDate.contractTitle}} \n Owner : {{ModifyContractEndDate.contractOwner}} \n Contract Start Date : {{ModifyContractEndDate.startDate}} \n Contract End Date : {{ModifyContractEndDate.presentEndDate}} \n Receiver Org : {{ModifyContractEndDate.receiverOrg}} \n Receiver Contact : {{ModifyContractEndDate.contactUser}} \n To view the details please login into system \n {{ModifyContractEndDate.loginUrl}}','N', 'SLADMIN', 'slead', 'sleadIN');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'twitterLink','{{ReferRequirement.twitterLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'googleLink','{{ReferRequirement.googleLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'googleLink','{{ReferRequirement.googleLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'jobLocation','{{ReferRequirement.jobLocation}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'jobDescription','{{ReferRequirement.jobDescription}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'professionalReg','{{ReferRequirement.professionalReg}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
+'referedProfessionalFirstName','{{ReferRequirement.referedProfessionalFirstName}}');
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`= ' Dear {{ReferRequirement.professinalName}}\n\n I would like you to review the following Job\nJob ID and Title:{{ReferRequirement.requirementTitle}}\nJob Description:{{ReferRequirement.jobDescription}}\nJob Location:{{ReferRequirement.jobLocation}}\nFor more details please click here {{ReferRequirement.registerLink}}\n\nSourceLead is a leading Global Talent harvesting application can help you grow professionaly and also earn by referring your friends and family to the eligible jobs.\nFor more information please find the FAQ\nif you would like to register please click here {{ReferRequirement.professionalReg}}\nMore Technical Questions?\nSee : {{ReferRequirement.supportLink}}\nNeed Support?\nWe have video tutorials , live chat, and a great support site to help if you get stuck.\n\n ', `SUBJECT`='{{ReferRequirement.referedProfessionalFirstName}} refered you to the job {{ReferRequirement.requirementTitle}}',`SIGNATURE`='Team SourceLead\nWelcome aboard, great to have you!\n{{RecruiterInvitation.facebookLink}}\t{{RecruiterInvitation.linkedInLink}}\t{{RecruiterInvitation.twitterLink}}\t{{RecruiterInvitation.googleLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Refer Requirment To Professional' and `ENTITY_TYPE`='Email';
 
 
+#2.Registration[Professional]:
 
-#email to receiver end date edit for sow
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{ProfessionalInvitation.professionalName}}\n\nWelcome to SourceLead a Global Talent Harvesting Platform to Manage Human Resource.\n\nThis email is being sent to you because you have registered with SourceLead.\n\nSourceLead makes it easy for teams to work more efficiently by Automating the process of Human resource management.\nIt has many more benefits for professionals like you.Over 8,000 remote teams uses it daily.\n\nUser Name:{{ProfessionalInvitation.loginUserName}}\nYour Sourcelead URL:{{ProfessionalInvitation.resetLink}}\n\n\nMore Technical Questions?\nSee:{{ProfessionalInvitation.supportLink}}\n\nNeed Support?\nWe have video tutorials, live chat, and a great support site to help if you get stuck.\n\n',`SIGNATURE`='Team SourceLead\nWelcome aboard, great to have you!\n{{ProfessionalInvitation.facebookLink}}\t{{ProfessionalInvitation.linkedInLink}}\t{{ProfessionalInvitation.twitterLink}}\t{{ProfessionalInvitation.googleLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Professional Invitation' and `ENTITY_TYPE`='Email';
 
-INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('ModifySowContractEndDate','Email');
 
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'contractOwner', '{{ModifySowContractEndDate.contractOwner}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'contactUser', '{{ModifySowContractEndDate.contactUser}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'contractTitle', '{{ModifySowContractEndDate.contractTitle}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'jobId', '{{ModifySowContractEndDate.jobId}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'JobTitle', '{{ModifySowContractEndDate.JobTitle}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'InitiatorLocation', '{{ModifySowContractEndDate.InitiatorLocation}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'ProjectId', '{{ModifySowContractEndDate.ProjectId}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'ProjectTitle', '{{ModifySowContractEndDate.ProjectTitle}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'Rate', '{{ModifySowContractEndDate.Rate}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'StartDate', '{{ModifySowContractEndDate.StartDate}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'EndDate', '{{ModifySowContractEndDate.EndDate}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'PartnerOrganisation', '{{ModifySowContractEndDate.PartnerOrganisation}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginUrl', '{{ModifySowContractEndDate.loginUrl}}');
-INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `sourcelead`.`ENTITY_TYPE`), 'loginOrgName', '{{ModifySowContractEndDate.loginOrgName}}');
+#2.Contract for Approve:
 
-INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES 
-('ModifySowContractEndDate','Email', 'ModifySowContractEndDate', 'Used for Email To Receiver About Modify Sow Contract EndDate', 'Contract SOW Revised','org', 'Best Regards,\n{{ModifySowContractEndDate.contractOwner}}\n{{ModifySowContractEndDate.loginOrgName}}', ' Please note that change in the workorder end date for {{ModifySowContractEndDate.contractTitle}} submitted for {{ModifySowContractEndDate.jobId}} and {{ModifySowContractEndDate.JobTitle}}.\n The details of the workorder are as follows \n Contract Title : {{ModifySowContractEndDate.contractTitle}} \n Job Id : {{ModifySowContractEndDate.jobId}} \n Job Title : {{ModifySowContractEndDate.JobTitle}} \n Initiator Location : {{ModifySowContractEndDate.InitiatorLocation}} \n Project Id : {{ModifySowContractEndDate.ProjectId}} \n Project Title : {{ModifySowContractEndDate.ProjectTitle}} \n Rate : {{ModifySowContractEndDate.Rate}} \n Start Date : {{ModifySowContractEndDate.StartDate}} \n End Date : {{ModifySowContractEndDate.EndDate}} \n Partner Organisation : {{ModifySowContractEndDate.PartnerOrganisation}} \n To view the work order details, login into the system \n {{ModifyContractEndDate.loginUrl}}','N', 'SLADMIN', 'slead', 'sleadIN');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approverUpdatedContract' and `ENTITY_TYPE` = 'Email'),
+'loginLink','{{approverUpdatedContract.loginLink}}');
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{approverUpdatedContract.ApproverName}}\n\nYour Approval is required to complete the Contract {{approverUpdatedContract.ContractTitle}}\n\nPlease find the contract details below\nTitle :{{approverUpdatedContract.ContractTitle}}\nOwner : {{approverUpdatedContract.OwnerName}}\nStart Date : {{approverUpdatedContract.StartDate}}\nEnd Date : {{approverUpdatedContract.EndDate}}\n\nPlease login to SourceLead to find more details\n\n{{approverUpdatedContract.loginLink}}' WHERE `UNIQUE_SCENARIO_NAME`='approverUpdatedContract' and `ENTITY_TYPE`='Email';
+
+ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Alert Approval Requested for Contract {{approverUpdatedContract.ContractTitle}}  '  WHERE `UNIQUE_SCENARIO_NAME`='approverUpdatedContract' and `ENTITY_TYPE`='Email';
+ 
+ 
+ 
+ #3.Approved Contract:
+ 
+ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approveContract' and `ENTITY_TYPE` = 'Email'),
+'ApproverUser','{{approveContract.ApproverUser}}');
+				 
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approveContract' and `ENTITY_TYPE` = 'Email'),
+'OwnerName','{{approveContract.OwnerName}}');
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approveContract' and `ENTITY_TYPE` = 'Email'),
+'StartDate','{{approveContract.StartDate}}');
+	INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approveContract' and `ENTITY_TYPE` = 'Email'),
+'EndDate','{{approveContract.EndDate}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approveContract' and `ENTITY_TYPE` = 'Email'),
+'loginLink','{{approveContract.loginLink}}');
+									 
+									 
+			 
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'approveContract' and `ENTITY_TYPE` = 'Email'),
+'clientContact','{{approveContract.clientContact}}');
+									 
+									 
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{approveContract.contractCreator}}\n\nThis is to notify that the Contract {{approveContract.contractTitle}} has been approved by {{approveContract.ApproverUser}}\n\nPlease find the contract details below\nTitle :{{approveContract.ContractTitle}}\nOwner : {{approveContract.OwnerName}}\nStart Date : {{approveContract.StartDate}}\nEnd Date : {{approveContract.EndDate}}\nContact : {{approveContract.clientContact}}\n\nPlease login to SourceLead to find more details\n\n{{approveContract.loginLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Approve Contract' and `ENTITY_TYPE`='Email';	
+									  
+									  
+									  	 
+ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Contract {{approveContract.contractTitle}} has been approved.  '  WHERE `UNIQUE_SCENARIO_NAME`='Approve Contract' and `ENTITY_TYPE`='Email';
+									 
+									 
+									 
+									 
+ #4.Rejected Contract:
+									 
+									 
+ INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'ApproverUser','{{rejectContract.ApproverUser}}');	
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'rejectReason','{{rejectContract.rejectReason}}');	
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'clientContact','{{rejectContract.clientContact}}');	 
+
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'loginLink','{{rejectContract.loginLink}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'OwnerName','{{rejectContract.OwnerName}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'StartDate','{{rejectContract.StartDate}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'rejectContract' and `ENTITY_TYPE` = 'Email'),
+'EndDate','{{rejectContract.EndDate}}');
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{rejectContract.contractCreator}}\n\nThis is to notify that the Contract {{rejectContract.contractTitle}} has been rejected by {{rejectContract.ApproverUser}}\n\nPlease find the contract details below\nTitle :{{rejectContract.ContractTitle}}\nOwner : {{rejectContract.OwnerName}}\nStart Date : {{rejectContract.StartDate}}\nEnd Date : {{rejectContract.EndDate}}\nContact : {{rejectContract.clientContact}} \nReason for denial:{{rejectContract.rejectReason}}\n\nPlease login to SourceLead to find more details\n\n{{rejectContract.loginLink}}' WHERE `UNIQUE_SCENARIO_NAME`='Reject Contract' and `ENTITY_TYPE`='Email';					 
+									 	 
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Contract {{rejectContract.contractTitle}} has been Denied.  '  WHERE `UNIQUE_SCENARIO_NAME`='Reject Contract' and `ENTITY_TYPE`='Email';
+
+
+#5.Contracts Follow-up:
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'contractExpiryRemainder' and `ENTITY_TYPE` = 'Email'),
+'clientContact','{{contractExpiryRemainder.clientContact}}');
+
+INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
+VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'contractExpiryRemainder' and `ENTITY_TYPE` = 'Email'),
+'expiringdays','{{contractExpiryRemainder.expiringdays}}');
+
+
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{contractExpiryRemainder.contractOwner}},\nThis is to notify that the Contract {{contractExpiryRemainder.contractTitle}} contract will be expiring in {{contractExpiryRemainder.expiringdays}} day/days.\n\nPlease find the details below\nTitle :{{contractExpiryRemainder.ContractTitle}}\nOwner : {{contractExpiryRemainder.contractOwner}}\nStart Date : {{contractExpiryRemainder.contractStartDate}}\nEnd Date : {{contractExpiryRemainder.contractEndDate}}\nContact : {{contractExpiryRemainder.clientContact}}\nReceiver Party : {{contractExpiryRemainder.receiverParty}}\nStatus : {{contractExpiryRemainder.status}}\nContract Type : {{contractExpiryRemainder.contractType}}\n\nTo extend the contract and resign please log in to Source Lead to find more details\n\n{{contractExpiryRemainder.loginUrl}}' WHERE `UNIQUE_SCENARIO_NAME`='contractExpiryRemainder' and `ENTITY_TYPE`='Email';	
+			
+			
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Alert Contract expiring in {{contractExpiryRemainder.expiringdays}} days'  WHERE `UNIQUE_SCENARIO_NAME`='contractExpiryRemainder' and `ENTITY_TYPE`='Email';
+

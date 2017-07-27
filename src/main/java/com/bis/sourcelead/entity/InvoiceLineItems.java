@@ -38,6 +38,9 @@ public class InvoiceLineItems {
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidate;
 	
+	@Column(name = "INLINE_DESCRIPTION",columnDefinition = "TEXT default NULL")
+	private String inlineDescription;
+	
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
@@ -386,6 +389,14 @@ public class InvoiceLineItems {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getInlineDescription() {
+		return inlineDescription;
+	}
+
+	public void setInlineDescription(String inlineDescription) {
+		this.inlineDescription = inlineDescription;
 	}
 	
 	

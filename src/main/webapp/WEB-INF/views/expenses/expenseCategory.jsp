@@ -58,7 +58,7 @@ function addExpenseCategory(categoryId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10">'  ;
+	result = result  +'                  <div class="clearfix mb10" id="nameIdDiv">'  ;
 	result = result  +'                    <div class="col-md-12 mt">' ;
 	/* result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 	
@@ -68,7 +68,7 @@ function addExpenseCategory(categoryId) {
 	                	       </c:forEach>  
     result = result + '		</select>'; */
     
-    result = result  +'<input type="text" name="expensesName" field-name="expensesName" placeholder="Expense Category" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();" class="form-control">';
+    result = result  +'<input type="text" name="expensesName" field-name="Expensesname" placeholder="Expense Category" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onkeyup ="validateExpenseCategoryType();" class="form-control">';
     
 	result = result  +'</div>';
 	result = result  +'</div>';
@@ -540,7 +540,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
 								result = result  +'<div class="col-md-12 mt">' ;
 							    
-							    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();" class="form-control">';
+							    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required"  onkeyup ="validateExpenseCategoryType();" class="form-control">';
 							    
 								result = result  +'</div>';
 								result = result  +'</div>';

@@ -1165,7 +1165,7 @@ function getCandidateListForTeam(teamId,teamName){
 		                	 $("#teamSideDiv").empty();
 		                	 var result = "";
 		                	 result = result +"    <div class='clearfix'>";
-		                	 result = result +"    <p><strong>"+teamName+" (Candidate / Consultant)</strong></p>";
+		                	 result = result +"    <p><strong>"+teamName+" (Associate)</strong></p>";
 		                	 result = result +"    </div>";
 		                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 		                     result = result +"<thead>"; 
