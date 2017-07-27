@@ -709,7 +709,6 @@ public class Constants {
 	public static final String CLIENT_NSA = "Client NSA";
 
 	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
-	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
 
