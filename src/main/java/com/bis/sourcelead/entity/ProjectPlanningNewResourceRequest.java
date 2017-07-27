@@ -115,7 +115,7 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
   	private OrgLocations orgLocationId;
 	
@@ -346,7 +346,7 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	public String getStartDateStr() {
 		if(startDate != null){
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
-			startDateStr = dateFormat.format(startDate);;	
+				startDateStr = dateFormat.format(startDate);	
 		}
 		return startDateStr;
 	}

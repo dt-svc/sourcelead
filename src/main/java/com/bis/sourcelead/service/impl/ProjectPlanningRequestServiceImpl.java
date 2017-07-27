@@ -321,7 +321,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 resourceRequestIds = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestIdsByRequestId(projectPlanningRequest.getId());
 		}
 		
-		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds);
+		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
 		projectPlanningRequest.setProjectPlanningNewResourceRequestList(projectPlanningNewResourceRequestList);
 //		projectPlanningRequest.setRequestedResources(projectPlanningNewResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
@@ -402,38 +402,86 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
 	}
 	
 private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) throws Exception{
-	
-	
 	 String tempHTML = null;
-	 
-	 
-	 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
-	 tempHTML = tempHTML+"<tr align='center'>";
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Role Name<span></th>";
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>No Resources<span></th>";
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Primary Sills<span></th>";
-	 
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Start Date<span></th>";
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>End Date<span></th>";
-	 
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Estimated Hours<span></th>";
-	 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Estimated Budget<span></th>";
-	 tempHTML = tempHTML+"</tr>";
-	 
-	 for(ProjectPlanningNewResourceRequest planningResourceRequest : projectPlanningNewResourceRequestList){
+	tempHTML = " <table style='display:table-cell;vertical-align:middle;font-family:arial; font-size:12px;' width='900' cellpadding='5'>";
+	tempHTML = tempHTML+"<thead>";
+	tempHTML = tempHTML+"<tr align='center'>";
+	tempHTML = tempHTML+"<th style='width:150px; background:#375d81; color:#fff;'>Role Name</th>";
+	tempHTML = tempHTML+"<th style='width:50px; background:#375d81; color:#fff;'>No Res.</th>";
+	tempHTML = tempHTML+"<th style='width:100px; background:#375d81; color:#fff;'>Experience</th>";
+	tempHTML = tempHTML+"<th style='width:175px; background:#375d81; color:#fff;'>Primary Sills</th>";
+	tempHTML = tempHTML+"<th style='width:240px; background:#375d81; color:#fff;'>Bill / Pay Rate</th>";
+	tempHTML = tempHTML+"<th style='width:65px; background:#375d81; color:#fff;'>Duration</th>";
+	tempHTML = tempHTML+"<th style='width:50px; background:#375d81; color:#fff;'>Consulting Type</th>";
+	tempHTML = tempHTML+"<th style='width:65px; background:#375d81; color:#fff;'>Estimated Hours</th>";
+	tempHTML = tempHTML+"<th style='width:65px; background:#375d81; color:#fff;'>Estimated Budget</th>";
+	tempHTML = tempHTML+"</tr>";
+	tempHTML = tempHTML+"</thead>";
+	tempHTML = tempHTML+"<tbody>";
 		
-		 tempHTML = tempHTML+"<tr align='center'>";
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getRoleName()+"</td>";
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getNoOfResource()+"</td>";
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getSkills()+"</td>";
-		 
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getStartDateStr()+"</td>";
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEndDateStr()+"</td>";
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEstimatedHours()+"</td>";
-		 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEstimatedBudgetCurrency()+" "+planningResourceRequest.getEstimatedBudget()+"</td>";
-		 tempHTML = tempHTML+"</tr>";
-		 
+	 for(ProjectPlanningNewResourceRequest planningResourceRequest : projectPlanningNewResourceRequestList){
+		 Integer minEx = 0;
+		 Integer MaxEx = 0;
+		 String starDate = "";
+		 String endDate = "";
+		 String billRate = "";
+		 String payRate = "";
+		if(planningResourceRequest.getMinExperience() != null){
+			 minEx = planningResourceRequest.getMinExperience();
+		}
+		if(planningResourceRequest.getMaxExperience() != null){
+			MaxEx = planningResourceRequest.getMaxExperience();
+		}
+		if(planningResourceRequest.getStartDateStr() != null && planningResourceRequest.getStartDateStr() !=""){
+			starDate = planningResourceRequest.getStartDateStr();
+		}else{
+			starDate = "--";
+		}
+		if(planningResourceRequest.getEndDateStr() != null && planningResourceRequest.getEndDateStr() !=""){
+			endDate = planningResourceRequest.getEndDateStr();
+		}else{
+			endDate = "--";
+		}
+		if(planningResourceRequest.getBillRate() != null){
+			billRate = planningResourceRequest.getBillRate();
+		}else{
+			billRate = "--";
+		}
+		if(planningResourceRequest.getPayRate() != null){
+			payRate = planningResourceRequest.getPayRate();
+		}else{
+			payRate = "--";
+		}
+		
+	 tempHTML = tempHTML+" <tr align='center'>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top; vertical-align:top;'>"+planningResourceRequest.getRoleName()+"</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getNoOfResource()+"</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>";
+	 tempHTML = tempHTML+"		<div style='float:left; width:80px;'>";
+	 tempHTML = tempHTML+"			<div style='float:left; width:25px; text-align:center;'>"+minEx+"</div>";
+	 tempHTML = tempHTML+"			<div style='float:left; width:25px; text-align:center;'>"+MaxEx+"</div>";
+	 tempHTML = tempHTML+"			<div style='float:left; width:30px; text-align:center;'>Yr(s)</div>";
+	 tempHTML = tempHTML+"		</div>";
+	 tempHTML = tempHTML+"	</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getSkills()+"</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>";
+	 tempHTML = tempHTML+"		<div style='float:left; width:25px; font-size:12px; margin-top: 8px;'>"+planningResourceRequest.getRateCurrency()+"</div>";
+	 tempHTML = tempHTML+"		<div style='float:left; width:85px;'>";
+	 tempHTML = tempHTML+"			<div style='float:left; width:85px; text-align:center;'>"+billRate+"</div>";
+	 tempHTML = tempHTML+"			<div style='float:left; width:85px; text-align:center;'>"+payRate+"</div>";
+	 tempHTML = tempHTML+"		</div>";
+	 tempHTML = tempHTML+"		<div style='float:left; width:65px; font-size:12px; margin-top: 8px;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;' title='Semi Weekly'>"+planningResourceRequest.getRateType()+"</div>";
+	 tempHTML = tempHTML+"	</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>";
+	 tempHTML = tempHTML+"			<div style='width:65px; text-align:center;'>"+starDate+"</div>";
+	 tempHTML = tempHTML+"			<div style='width:65px; text-align:center;'>"+endDate+"</div>";
+	 tempHTML = tempHTML+"	</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getConsultingType()+"</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getEstimatedHours()+"</td>";
+	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getEstimatedBudget()+"</td>";
+	 tempHTML = tempHTML+"	</tr>";
 	 }
+	 tempHTML = tempHTML+"</tbody>";
 	 tempHTML = tempHTML+"</table>";
 	 
 	 return tempHTML;
@@ -562,11 +610,10 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	}
 
 	
-	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds) throws Exception {
+	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations) throws Exception {
 		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedNewResourceRequests = new ArrayList<Long>();
-		 String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+	     SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
 		 for(int i=1;i<=maxRowCount;i++){
 			 if(jsonObj.has("noOfResources"+i) && !isNullOrEmpty(jsonObj.getString("noOfResources"+i))){
@@ -646,9 +693,14 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 if(jsonObj.has("consulting"+i) && !isNullOrEmpty(jsonObj.getString("consulting"+i))){
 					 resourceRequest.setConsultingType(jsonObj.getString("consulting"+i));
 				 }
+				 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
+					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
+				 }
+				 
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
 				 resourceRequest.setCreatedBy(loginUser);
+				 resourceRequest.setOrgLocationId(orgLocations);
 				 resourceRequest.setUpdatedBy(loginUser);
 				 resourceRequest.setCreatedDate(new Date());
 				 resourceRequest.setUpdatedDate(new Date());
@@ -698,4 +750,5 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 			Long orgLocationId) throws Exception {
 		return projectPlanningRequestDao.getProjectPlanningRequestByApproverIdAndOrgLocationId(approverUserId, orgLocationId);
 	}
+
 }

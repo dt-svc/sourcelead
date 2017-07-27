@@ -330,6 +330,8 @@ public class ProjectPlanningRequest implements Serializable{
 		if(createdDate != null){
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
 			requestedDateStr = dateFormat.format(createdDate);	
+		}else{
+			requestedDateStr = "--";
 		}
 		return requestedDateStr;
 	}

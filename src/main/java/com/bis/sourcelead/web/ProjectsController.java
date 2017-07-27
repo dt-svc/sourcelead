@@ -342,8 +342,8 @@ public class ProjectsController {
        }
 
     
-    @RequestMapping(value = "/newRequestedAssociatesList")
-   	public ModelAndView newRequestedAssociatesList(@RequestParam(value="requestUUID", required=true) String requestUUID,HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/viewNewResourceRequestDashborad")
+   	public ModelAndView viewNewResourceRequestDashborad(@RequestParam(value="requestUUID", required=true) String requestUUID,HttpServletRequest request) throws Exception {
    	    
    	    ModelAndView model = new ModelAndView();
    		

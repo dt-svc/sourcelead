@@ -346,8 +346,9 @@ public class ProjectPlanningRestController {
 	    
 	    
 	    @RequestMapping(value = "/rejectAssociatesRequest", method = RequestMethod.POST)
-		public @ResponseBody String rejectAssociatesRequest(@RequestParam("json") String jsonPayload) throws Exception {
-		  
+		public @ResponseBody String rejectAssociatesRequest(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    	 JSONObject jsonObj = new JSONObject(jsonPayload);
 	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(jsonObj.getString("requestUUID"));
@@ -368,6 +369,7 @@ public class ProjectPlanningRestController {
 			    			 projectPlanningNewResourceRequestService.saveProjectPlanningNewResourceRequest(resourceRequest);
 		    		 }
 		    		 projectPlanningRequest.setAllocatedResources(newresourceRequestList.size());
+		    		 projectPlanningNewResourceRequestService.sendMailToAcceptAndRejectBulkNewResourceRequestApprover(projectPlanningRequest,user,orgLocations);
 	    		 }
 	    		
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
@@ -405,8 +407,9 @@ public class ProjectPlanningRestController {
 	    }
 	    
 	    @RequestMapping(value = "/acceptAssociateRequest", method = RequestMethod.POST)
-		public @ResponseBody String acceptAssociateRequest(@RequestParam("requestUUID") String requestUUID) throws Exception {
-		  
+		public @ResponseBody String acceptAssociateRequest(@RequestParam("requestUUID") String requestUUID,HttpServletRequest request) throws Exception {
+	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_APPROVED);
@@ -425,6 +428,8 @@ public class ProjectPlanningRestController {
 			    			 projectPlanningNewResourceRequestService.saveProjectPlanningNewResourceRequest(resourceRequest);
 		    		 }
 		    		 projectPlanningRequest.setAllocatedResources(newresourceRequestList.size());
+		    		 //Send Email To Approver
+		    		 projectPlanningNewResourceRequestService.sendMailToAcceptAndRejectBulkNewResourceRequestApprover(projectPlanningRequest,user,orgLocations);
 	    		}
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
 	    	 }
@@ -440,8 +445,9 @@ public class ProjectPlanningRestController {
 	     * @throws Exception
 	     */
 	        @RequestMapping(value = "/acceptNewRequestedResource", method = RequestMethod.POST)
-	  		public @ResponseBody String acceptNewRequestedResource(@RequestParam("requestUUID") String requestUUID) throws Exception {
-	  		  
+	  		public @ResponseBody String acceptNewRequestedResource(@RequestParam("requestUUID") String requestUUID,HttpServletRequest request) throws Exception {
+	        	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	  	    	 if(!isNullOrEmpty(requestUUID)){
 	  	    		 
 	  	    		 ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = projectPlanningNewResourceRequestService.getProjectPlanningNewResourceRequestByRequestUUID(requestUUID);
@@ -451,6 +457,8 @@ public class ProjectPlanningRestController {
 	  	    		 Integer allocatedResouresCount = projectPlanningRequest.getAllocatedResources()+1;
 	  	    		 projectPlanningRequest.setAllocatedResources(allocatedResouresCount);
 	  	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	  	    		 //Send Email Accepting for  Approver 
+	  	    		projectPlanningNewResourceRequestService.sendMailToAcceptAndRejectSingleNewResourceRequestApprover(projectPlanningNewResourceRequest, user, orgLocations);
 	  	    	 }
 	  		     return "sucess";
 	  	    }
@@ -464,8 +472,9 @@ public class ProjectPlanningRestController {
 		     * @throws Exception
 		     */
 	        @RequestMapping(value = "/rejectNewRequestedResource", method = RequestMethod.POST)
-			public @ResponseBody String rejectNewRequestedResource(@RequestParam("json") String jsonPayload) throws Exception {
-			  
+			public @ResponseBody String rejectNewRequestedResource(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
+	        	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    	 JSONObject jsonObj = new JSONObject(jsonPayload);
 		    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 		    		 ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = projectPlanningNewResourceRequestService.getProjectPlanningNewResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
@@ -479,6 +488,8 @@ public class ProjectPlanningRestController {
 		    		 
 		    		 projectPlanningNewResourceRequestService.saveProjectPlanningNewResourceRequest(projectPlanningNewResourceRequest);
 		    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+		    		 
+		    		 projectPlanningNewResourceRequestService.sendMailToAcceptAndRejectSingleNewResourceRequestApprover(projectPlanningNewResourceRequest, user, orgLocations);
 		    	 }
 			  
 			     return "sucess";

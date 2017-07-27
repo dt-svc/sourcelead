@@ -104,7 +104,7 @@ function resourceRequestList(requestType){
 	    			if(report.requestType == 'Associate Request'){
 	    				result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/requestedAssociatesList?requestUUID='+report.requestUUID+'">'+report.requestId+'</a></div></td>';
 	    			}else{
-	    				result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/newRequestedAssociatesList?requestUUID='+report.requestUUID+'">'+report.requestId+'</a></div></td>';
+	    				result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'+sourceleadUrl+'/viewNewResourceRequestDashborad?requestUUID='+report.requestUUID+'">'+report.requestId+'</a></div></td>';
 	    			}
 		    		 result = result + '	             <td><div>'+report.projectName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';
