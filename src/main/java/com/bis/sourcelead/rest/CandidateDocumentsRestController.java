@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
@@ -85,11 +86,12 @@ public class CandidateDocumentsRestController {
 		}
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (null != candidateId) {
-			candidateDocumentsService.storeCandidateDocuments(jsonObj, candidateId, documentUUID, orgLocation.getId(), user, multiFile);
-			return "success";
-		}
-		else {
+		if(null !=candidateId){
+			candidateDocumentsService.storeCandidateDocuments(jsonObj, candidateId,documentUUID, orgLocation.getId(), user, multiFile);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			return percentage.toString();
+		}else{
 			return "exception";
 		}
 	}
@@ -202,7 +204,10 @@ public class CandidateDocumentsRestController {
 			candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 			candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
 		}
-		return "success";
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 	
 	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)

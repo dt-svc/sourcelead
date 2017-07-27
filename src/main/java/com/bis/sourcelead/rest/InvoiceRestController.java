@@ -1589,7 +1589,7 @@ public class InvoiceRestController {
 				if(null != invce.getContactUser()){
 					StringBuilder username = new StringBuilder();
 					if(null != invce.getContactUser().getLastName()){
-						username.append(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
 					}else{
 						username.append(invce.getContactUser().getFirstName());
 					}
@@ -1617,11 +1617,23 @@ public class InvoiceRestController {
 		Invoice invoice = invoiceService.getInvoicetById(id);
 		invoice.setLinkInvoiceReferenceId(masterInvoice.getId());
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
-		childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-		invoiceService.linkInvoice(childInvoice);
+		if(masterInvoice.getId() !=null){
+			Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+			if(childInvoice !=null){
+				childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+				childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(childInvoice);		
+			}else{
+				Invoice  parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+				parentInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(parentInvoice);
+			}
+			
+		}
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
 
@@ -1656,6 +1668,68 @@ public class InvoiceRestController {
 		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgRelationId(orgRelationId, clientLocationId,invoiceStatus, paymentStatus, invoiceType,orgLocations,dayWisetype,customStartDate,customEndDate);
 
 		return commonUtil.toJSON(invoiceList);
+	}
+	
+	/**
+	 * Unlinking the Linked Invoice/Bill
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/unLinkInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean unLinkInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setLinkInvoiceReferenceId(null);
+		invoice.setLinkInvoiceRefInvoiceId(null);
+		invoice.setInvoiceStatus(invoice.getPreviousInvoiceStatus());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
+		invoiceService.linkInvoice(invoice);
+		
+		Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+		if(childInvoice !=null){
+			childInvoice.setInvoiceStatus(childInvoice.getPreviousInvoiceStatus());
+			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(childInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}else{
+			Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+			parentInvoice.setInvoiceStatus(parentInvoice.getPreviousInvoiceStatus());
+			parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(parentInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}
+		
+		
+		return result;
+	}
+	
+	/**
+	 * Deleteing Invoice/bill of draft stage
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,
+			@RequestParam(value = "reason", required = false) String reason) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setRejectReason(reason);
+		invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+		Invoice invoiceData = invoiceService.updateInvoice(invoice);
+		if (invoiceData != null) {
+			result = true;
+		}
+		return result;
 	}
 	
 	
