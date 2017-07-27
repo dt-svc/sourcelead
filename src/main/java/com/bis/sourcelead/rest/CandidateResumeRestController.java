@@ -122,9 +122,9 @@ public class CandidateResumeRestController {
 		
 		if(StringUtils.isNotEmpty(candidateId)){
 			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-			
 			candidateResumesService.storeCandidateResume(jsonObj, user, candidate, resumeId, orgLocation, multiFile);
-			return "success";
+			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			return percentage.toString();
 		}else{
 			return "exception";
 		}
@@ -202,7 +202,7 @@ public class CandidateResumeRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "", Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
 			
 			// update the candidate Resume on ELK
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			
 			if(null != candidate && null != candidate.getId()){
 				CandidateIndex candidateIndex = new CandidateIndex();
 				candidateIndex.setCandidateId(candidate.getId());
@@ -210,7 +210,8 @@ public class CandidateResumeRestController {
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 			}
 		}
-		return "success";
+		Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+		return percentage.toString();
 	}
 	
 	

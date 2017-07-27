@@ -1,16 +1,9 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,16 +18,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.beans.CandidateCompareDTO;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -44,6 +43,8 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class RecommendedCustomizeScoreRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RecommendedCustomizeScoreRestController.class);
+
+	private static final String CandidateCompareDTO = null;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -54,16 +55,11 @@ public class RecommendedCustomizeScoreRestController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	 @Autowired
-	 private CandidateResumesService candidateResumeSerivce;
+	@Autowired
+	CommonUtil commonUtil;
 	 
-	 @Autowired
-	 private CandidateService candidateService;
-	 
-	 
-	 
-	 @Autowired
-	 CommonUtil commonUtil;
+	@Autowired
+	OrgLocationService orgLocationService;
 	 
 	 
 	@RequestMapping(value = "/getCustomizeScore")
@@ -257,6 +253,22 @@ public class RecommendedCustomizeScoreRestController {
 		recommendedCustomizeScoreService.updateCustomizeScore(rcs);
 		
 		return "success";
+	}
+	
+	/**
+	 * @author Pavan Jampana used to get job and recommended candidates to
+	 *         compare
+	 * 
+	 * @param requirementId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/getCandidatesToCompare","/rest/getCandidatesToCompare" }, method = RequestMethod.GET)
+	@ResponseBody
+	public CandidateCompareDTO getCandidatesToCompare(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+		CandidateCompareDTO candidateCompare = recommendedCustomizeScoreService.getCandidateListToCompare(requirementId,orgLocationId);
+		return candidateCompare;
 	}
 	
 	

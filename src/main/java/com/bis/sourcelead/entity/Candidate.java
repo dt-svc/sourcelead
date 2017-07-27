@@ -26,6 +26,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
@@ -218,6 +220,9 @@ public class Candidate implements Serializable{
 	@Transient
 	private String candidateLocation;
 	
+	@Transient
+	private String systemGeneratedId;
+	
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
 	private String skillsName ;
 	
@@ -266,6 +271,7 @@ public class Candidate implements Serializable{
 	private String candidateUpdateDateToString;
 	
 	 @Transient
+	 @JsonProperty
 	 private String candidateScore;
 	    
 	 @Transient
@@ -367,7 +373,26 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private List<Contracts> contractsList;
 	 
+	 @Column(name = "GENERATED_ID")
+	 private String generatedId;
+
+	 @Transient
+	 private int profilePercentage;
 	 
+	 @Transient
+	 private String resumeUUID;
+	 
+	public int getProfilePercentage()
+	{
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage)
+	{
+		this.profilePercentage = profilePercentage;
+	}
+
+
 	public Long getId() {
 		return id;
 	}
@@ -1415,6 +1440,37 @@ public class Candidate implements Serializable{
 		this.candidateResumeFileType = candidateResumeFileType;
 	}
 
-	
-	
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public String getResumeUUID()
+	{
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID)
+	{
+		this.resumeUUID = resumeUUID;
+	}
+
 }

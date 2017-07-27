@@ -61,7 +61,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateHistory;
+import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -69,15 +72,17 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateDocumentsService;
+import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateHotListService;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -92,51 +97,58 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class CandidateListRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateListRestController.class);
-
-	@Value("${sourceleadUrl}")
-	private String sourceleadUrl;
-
-	@Autowired
-	CommonUtil commonUtil;
-
-	@Autowired
-	CandidateService candidateService;
-
-	/*
-	 * @Autowired CandidateSkillsService candidateSkillsService;
-	 */
-
-	@Autowired
-	LookUpDataService lookUpDataService;
-
-	@Autowired
-	CandidateHotListService candidateHotListService;
-
-	@Autowired
-	CountriesService countriesService;
-
-	@Autowired
-	TimeZoneService timeZoneService;
-
-	@Autowired
-	UserService userService;
 	
-	@Autowired
-	OrgLocationService orgLocationService;
-
-	@Autowired
-	RequirementSubmissionService requirementSubmissionService;
-
-	@Autowired
-	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 @Value("${sourceleadUrl}")
+	 private String sourceleadUrl;
+		
 	
-	@Autowired
-    CandidateActivityCommonUtil candidateActivityCommonUtil;
+	 @Autowired
+	 CommonUtil commonUtil;
+	 
 
-	protected boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
-	}
-
+	 @Autowired
+	 CandidateService candidateService;
+	 
+	 @Autowired
+	 CandidateResumesService candidateResumesService;
+	 
+	 @Autowired
+	 CandidateEducationService candidateEducationService;
+	 
+	 @Autowired
+	 CandidateEmployersService candidateEmployersService;
+	 
+	 @Autowired
+	 CandidateDocumentsService candidateDocumentsService;
+	 
+	/* @Autowired
+	 CandidateSkillsService candidateSkillsService;*/
+	 
+	 @Autowired	
+	 LookUpDataService lookUpDataService;
+	
+	  @Autowired
+	  CandidateHotListService candidateHotListService;
+	  
+	  @Autowired
+	  CountriesService countriesService;
+	  
+	  @Autowired
+	  TimeZoneService timeZoneService;
+	  
+	  @Autowired
+	  UserService userService;
+	  
+	  @Autowired
+	  RequirementSubmissionService requirementSubmissionService;
+	  
+	  @Autowired
+	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	  
+	  protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	
 	private Date getPreviousDate(DateTime zoned, Timezone timezone) throws ParseException {
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -590,39 +602,38 @@ public class CandidateListRestController {
 
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
-	}
+	 }
+		 
+		 
+	 /**
+	   * This Method is for getting candidate by candidate ID
+	   * @author David Raju
+	   * 
+	   * @param candidateId This is the first parameter to getCandidateById method
+	   * @param request This is the second parameter to getCandidateById method
+	   * 
+	   * @return Candidate This is the third parameter to getCandidateById method
+	   * 
+	   * @throws Exception
+	   */
+	 @RequestMapping(value = "/getCandidateById" , method = RequestMethod.POST)
+	 public @ResponseBody  String getCandidateById(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+			String resultJson ="" ;
+			
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
+			
+			Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+			
+			int percentage = candidateService.getCandidatePercentage(can,loginOrgLocation);
+			
+			LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			for(LookUpData lookUpData :skillsList){
+				lhs.add(lookUpData.getName());
+			}
 
-	/**
-	 * This Method is for getting candidate by candidate ID
-	 * 
-	 * @author David Raju
-	 * 
-	 * @param candidateId
-	 *            This is the first parameter to getCandidateById method
-	 * @param request
-	 *            This is the second parameter to getCandidateById method
-	 * 
-	 * @return Candidate This is the third parameter to getCandidateById method
-	 * 
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getCandidateById", method = RequestMethod.POST)
-	public @ResponseBody String getCandidateById(
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request)
-			throws Exception {
-		String resultJson = "";
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
-
-		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
-		LinkedHashSet<String> lhs = new LinkedHashSet<String>();
-		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		for (LookUpData lookUpData : skillsList) {
-			lhs.add(lookUpData.getName());
-		}
+	
 		if (null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())) {
 			String[] csl = can.getSkillsName().split(",");
 			for (String sl : csl) {
@@ -698,6 +709,7 @@ public class CandidateListRestController {
 			}
 
 		}
+		can.setProfilePercentage(percentage);
 		resultJson = commonUtil.toJSON(can);
 		return resultJson;
 	}
@@ -874,26 +886,18 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveCandidateProfile", method = RequestMethod.POST)
 	public String saveCandidateProfile(@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			MultipartHttpServletRequest request) throws Exception {
 
 		Iterator<String> itrator = request.getFileNames();
 		MultipartFile multiFile = request.getFile(itrator.next());
-		StringBuffer activitySummary = new StringBuffer();
-		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		User user = userService.getUserById(loginUserId);
+
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		if (null != multiFile.getContentType()
 				&& !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
 			try {
-				if(candidate.getFileName() != null && candidate.getFileName() != "" && !candidate.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
-					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-				}else{
-					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-				}
 				candidate.setFileContentType(multiFile.getContentType());
 				candidate.setDocFile(multiFile.getBytes());
 				candidate.setFileName(multiFile.getOriginalFilename());
@@ -902,10 +906,6 @@ public class CandidateListRestController {
 			}
 		}
 		candidateService.addCandidate(candidate);
-		
-		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
-		
 		return "success";
 	}
 
@@ -944,16 +944,48 @@ public class CandidateListRestController {
 				ImageIO.write(bi, "jpg", out);
 				out.close();
 			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-	}
+			} catch (IOException e) {
+					e.printStackTrace();
+				} 
+				
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+		
+     }
+			 
+	
+	  /**
+		*  This Method is for getting CandidatesSkills By candidateID
+		*  
+		* @author sarath kumar
+		* 
+		* @param candidateId  This is the first parameter to getCandidatesSkillsBycandidateID method
+		* @param request      This is the second parameter to getCandidatesSkillsBycandidateID method
+		* 
+		* @return String
+		* 
+		* @throws NullPointerException
+		*/
+	 
+	 
+	 // Skills Save In Candidates table Not In CandidateSkills Table
+	 
+	 
+	 /* @RequestMapping(value = "/getCandidatesSkillsBycandidateID")
+	  public String getCandidatesSkillsBycandidateID(@RequestParam(value="candidateId", required=false) String  candidateId,HttpServletRequest request) throws Exception {
+	
+			String resultJson;
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<CandidateSkills>  candidateSkillsList =  candidateSkillsService.getCandidateSkillsByCandidateId(candidateId);
+			Set<CandidateSkills> candidateSkillsSet = new HashSet<>(candidateSkillsList);
+			resultJson = commonUtil.toJSON(candidateSkillsSet);
+			return resultJson;
+			
+	   }
+		 */
+	  
 
 	/**
 	 * This Method is for update Candidate details
@@ -1021,7 +1053,6 @@ public class CandidateListRestController {
 		String resultJson;
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 				loginOrgLocation.getId());
-		StringBuffer activitySummary = new StringBuffer();
 		if (candidate != null) {
 
 			if (Constants.Associates.equalsIgnoreCase(candidateType)) {
@@ -1038,9 +1069,6 @@ public class CandidateListRestController {
 			// candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			if (StringUtils.isNotEmpty(reason)) {
 				candidate.setTerminateReason(reason);
-				activitySummary.append("Reason").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(reason).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}else{
-				activitySummary.append(" ");
 			}
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
@@ -1048,10 +1076,6 @@ public class CandidateListRestController {
 			candidate.setTeamId(null);
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
-			
-			candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED, activitySummary.toString(), "CANDIDATE");
-			
 			StringBuilder candidateRemoveMsg = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 					candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
@@ -1127,16 +1151,15 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/reActivateCandidateByCandidateId")
 	public @ResponseBody String reActivateCandidateByCandidateId(
-			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "reActivate", required = false) String reActivate)
+			@RequestParam(value = "reActivate", required = false) String reActivate, HttpServletRequest request)
 			throws Exception {
-		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		User user = userService.getUserById(loginUserId);
-		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId), loginOrgLocation.getId());
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
+				loginOrgLocation.getId());
 		if (candidate != null) {
 			if (reActivate.equalsIgnoreCase("1")) {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1144,10 +1167,6 @@ public class CandidateListRestController {
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidateService.saveOrUpdateCandidate(candidate);
-			
-			candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_REACTIVATED, "", "CANDIDATE");
-			
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
 		return "success";
@@ -1269,27 +1288,16 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
 	public String saveOrUpdateOnlySkillBycandidateId(
-			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "skillName", required = false) String skillName)
+			@RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request)
 			throws Exception {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-		User user = userService.getUserById(loginUserId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		StringBuffer activitySummary = new StringBuffer();
+
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
-			String skill = can.getSkillsName();
-			if(can.getSkillsName() == null){
-				skill = "";
-			}
-			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(skill).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
 			can.setSkillsName("");
@@ -1301,26 +1309,15 @@ public class CandidateListRestController {
 
 	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 	public String saveOrUpdateOnlyVisaBycandidateId(
-			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request)
 			throws Exception {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-		User user = userService.getUserById(loginUserId);
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		StringBuffer activitySummary = new StringBuffer();
+
 		if (null != can && StringUtils.isNotEmpty(visaName)) {
-			String visa = can.getVisaType();
-			if(can.getVisaType() == null){
-				visa = "";
-			}
-			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(visa).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			can.setVisaType(visaName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
-			candidateActivityCommonUtil.storeCandidateHistory(can, user);
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
 			candidateService.saveOrUpdateCandidate(can);
@@ -1329,230 +1326,209 @@ public class CandidateListRestController {
 		}
 	}
 
-	@RequestMapping(value = "/getCandidateReportsListByOrgLocationID")
-	public String getCandidateReportsListByOrgLocationID(
-			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request)
-			throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		String resultJson;
-		List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(),
-				candidateType);
-		/*
-		 * List<Candidate> consultantsList =
-		 * candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(),
-		 * "Consultant");
-		 */
+		   @RequestMapping(value = "/getCandidateReportsListByOrgLocationID")
+			 public String getCandidateReportsListByOrgLocationID(@RequestParam(value="candidateType", required=false) String  candidateType,
+					 HttpServletRequest request) throws Exception {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String resultJson;
+				List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
+				/* List<Candidate> consultantsList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), "Consultant");*/
+				
+				resultJson = commonUtil.toJSON(candidatesList);
+				return resultJson;
+			 }
+		   
+		   
+		   @RequestMapping(value = "/getCandidateReports")
+			 public String getCandidateReports(@RequestParam(value="reportType", required=false) String reportType,
+					 @RequestParam(value="startDate", required=false) String customStartDate,
+					 @RequestParam(value="endDate", required=false) String customEndDate,
+					 @RequestParam(value="ownersList", required=false) String ownersList,
+					 HttpServletRequest request,HttpServletResponse response) throws Exception{
 
-		resultJson = commonUtil.toJSON(candidatesList);
-		return resultJson;
-	}
 
-	@RequestMapping(value = "/getCandidateReports")
-	public String getCandidateReports(@RequestParam(value = "reportType", required = false) String reportType,
-			@RequestParam(value = "startDate", required = false) String customStartDate,
-			@RequestParam(value = "endDate", required = false) String customEndDate,
-			@RequestParam(value = "ownersList", required = false) String ownersList, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
-		}
-
-		if (null != reportType && !"".equals(reportType)) {
-			if ("today".equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						startDate);
-				filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if ("yesterday".equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(1);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						yesterDayDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-
-			} else if ("week".equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(7);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						yesterDayDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if ("twoweeks".equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(14);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						yesterDayDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if ("month".equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(30);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						yesterDayDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else if ("twomonths".equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(60);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-						yesterDayDate);
-				startDateUTC = TZ_DF_TS.parse(startDateString);
-			} else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.getDateFormat(customStartDate);
-					Date endTime = commonUtil.getDateFormat(customEndDate);
-					String customStartTimeStr = null;
-					String customEndTimeStr = null;
-					if (null != startTime) {
-						customStartTimeStr = TZ_DF_CSD.format(startTime);
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+				 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 Date endDateUTC =null ;
+				 String filterDate = null;
+				 Date startDateUTC = null;
+				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
+					 String endDate = outputFormatter1.print(zoned);
+					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+					 endDateUTC = TZ_DF_TS.parse(endDateString);
+				 }
+					
+					if(null != reportType && !"".equals(reportType)){
+						if("today".equals(reportType)){
+							String startDate = outputFormatter.print(zoned);
+							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+							filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
+							startDateUTC = TZ_DF_TS.parse(startDateString);
+						}else if("yesterday".equals(reportType)){
+							DateTime yesterDayZoned = zoned.minusDays(1);
+							String yesterDayDate = outputFormatter.print(yesterDayZoned);
+							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(startDateString);
+							
+						}else if("week".equals(reportType)){
+							DateTime yesterDayZoned = zoned.minusDays(7);
+							String yesterDayDate = outputFormatter.print(yesterDayZoned);
+							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(startDateString);
+						}else if("twoweeks".equals(reportType)){
+							DateTime yesterDayZoned = zoned.minusDays(14);
+							String yesterDayDate = outputFormatter.print(yesterDayZoned);
+							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(startDateString);
+						}else if("month".equals(reportType)){
+							DateTime yesterDayZoned = zoned.minusDays(30);
+							String yesterDayDate = outputFormatter.print(yesterDayZoned);
+							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(startDateString);
+						}else if("twomonths".equals(reportType)){
+							DateTime yesterDayZoned = zoned.minusDays(60);
+							String yesterDayDate = outputFormatter.print(yesterDayZoned);
+							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
+							startDateUTC = TZ_DF_TS.parse(startDateString);
+						}else{
+							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
+								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+								Date startTime =  commonUtil.getDateFormat(customStartDate);
+								Date endTime =  commonUtil.getDateFormat(customEndDate);
+								String customStartTimeStr = null;
+								String customEndTimeStr = null;
+								if(null !=startTime){
+								 customStartTimeStr = TZ_DF_CSD.format(startTime);  
+								}
+								
+								if(null != endTime){
+								 customEndTimeStr = TZ_DF_CED.format(endTime);  
+								}
+								String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
+								String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
+								startDateUTC = TZ_DF_TS.parse(startDateString);
+								endDateUTC = TZ_DF_TS.parse(endDateString);
+							 }
+							
+						}
 					}
-
-					if (null != endTime) {
-						customEndTimeStr = TZ_DF_CED.format(endTime);
+					
+					List<Candidate> freshList = new ArrayList<Candidate>();
+//					List<Candidate> candidatesList = candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(), candidateType);
+					
+					List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate, startDateUTC, endDateUTC,ownersList);
+					
+					for(Candidate candidate : canList){
+						 DateFormat standardFormat = new SimpleDateFormat ("yyyy-MM-dd");
+						String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());  
+						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = standardFormat.format(converteDate);
+						candidate.setPostedDateStr(currentDateInTimezone);
+						User user  = userService.getUserByUserCode(candidate.getCreatedBy());
+						if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
+							
+							StringBuilder sb =  new StringBuilder();
+							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+						}else{
+							
+							StringBuilder sb =  new StringBuilder();
+							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+						}
+						
+						if(null != candidate.getUpdatedDate()){
+							candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
+						}
+						 
+						freshList.add(candidate);
 					}
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),
-							Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-							customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
+				    String reportsList = commonUtil.toJSON(freshList);
+				   
+					return reportsList;
+			 }
+		   
+		   
+		   @RequestMapping(value = "/getOwnersByCandidates")
+			 public String getOwnersByCandidates(@RequestParam(value="ownersList", required=false) String ownersList,
+					 @RequestParam(value="reportType", required=false) String reportType,
+					 HttpServletRequest request,HttpServletResponse response) throws Exception{
+
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+				 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 Date endDateUTC =null ;
+				 String filterDate = null;
+				 Date startDateUTC = null;
+				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
+					 String endDate = outputFormatter1.print(zoned);
+					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
+					 endDateUTC = TZ_DF_TS.parse(endDateString);
+				 }
+					
+				List<Candidate> freshList = new ArrayList<Candidate>();
+					
+				List<Candidate> canList = candidateService.getOwnersByCandidates(orgLocation.getId(), null,ownersList);
+					for(Candidate candidate : canList){
+						 DateFormat standardFormat = new SimpleDateFormat ("yyyy-MM-dd");
+						String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());  
+						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = standardFormat.format(converteDate);
+						User user  = userService.getUserByUserCode(candidate.getCreatedBy());
+						if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
+							
+							StringBuilder sb =  new StringBuilder();
+							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+						}else{
+							
+							StringBuilder sb =  new StringBuilder();
+							candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
+						}
+						candidate.setPostedDateStr(currentDateInTimezone);
+						candidate.setCandidateUpdateDateToString(currentTimeStr);
+						freshList.add(candidate);
+					}
+				    String reportsList = commonUtil.toJSON(freshList);
+					return reportsList;
+			 }
+
+		   
+		   
+	   /**
+	    * @author Laxman
+	    * store the Favourite Associate 
+	    * @param candidateId
+	    * @param request
+	    * @return success
+	    * @throws Exception
+	    */
+		   
+		   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
+		   @RequestMapping(value = "/saveAssociateAsFavourite", method = RequestMethod.POST)
+			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				if(null != candidate){
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}
+					candidate.setTeamId(null);
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					
 				}
-
-			}
-		}
-
-		List<Candidate> freshList = new ArrayList<Candidate>();
-		// List<Candidate> candidatesList =
-		// candidateService.getCandidateReportsListByOrgLocationID(orgLocations.getId(),
-		// candidateType);
-
-		List<Candidate> canList = candidateService.getCandidateReports(orgLocation.getId(), null, filterDate,
-				startDateUTC, endDateUTC, ownersList);
-
-		for (Candidate candidate : canList) {
-			DateFormat standardFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());
-			String currentDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(),
-					currentTimeStr);
-			Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-			currentDateInTimezone = standardFormat.format(converteDate);
-			candidate.setPostedDateStr(currentDateInTimezone);
-			User user = userService.getUserByUserCode(candidate.getCreatedBy());
-			if (!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() != null
-					&& !user.getLastName().isEmpty()) {
-
-				StringBuilder sb = new StringBuilder();
-				candidate
-						.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			} else {
-
-				StringBuilder sb = new StringBuilder();
-				candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
-			}
-
-			if (null != candidate.getUpdatedDate()) {
-				candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
-			}
-
-			freshList.add(candidate);
-		}
-		String reportsList = commonUtil.toJSON(freshList);
-
-		return reportsList;
+				
+				return "success";
+			
 	}
 
-	@RequestMapping(value = "/getOwnersByCandidates")
-	public String getOwnersByCandidates(@RequestParam(value = "ownersList", required = false) String ownersList,
-			@RequestParam(value = "reportType", required = false) String reportType, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE,
-					endDate);
-			endDateUTC = TZ_DF_TS.parse(endDateString);
-		}
-
-		List<Candidate> freshList = new ArrayList<Candidate>();
-
-		List<Candidate> canList = candidateService.getOwnersByCandidates(orgLocation.getId(), null, ownersList);
-		for (Candidate candidate : canList) {
-			DateFormat standardFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String currentTimeStr = Constants.TZ_DF.format(candidate.getCreatedDate());
-			String currentDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(),
-					currentTimeStr);
-			Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-			currentDateInTimezone = standardFormat.format(converteDate);
-			User user = userService.getUserByUserCode(candidate.getCreatedBy());
-			if (!"".equalsIgnoreCase(user.getLastName()) && user.getLastName() != null
-					&& !user.getLastName().isEmpty()) {
-
-				StringBuilder sb = new StringBuilder();
-				candidate
-						.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			} else {
-
-				StringBuilder sb = new StringBuilder();
-				candidate.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
-			}
-			candidate.setPostedDateStr(currentDateInTimezone);
-			candidate.setCandidateUpdateDateToString(currentTimeStr);
-			freshList.add(candidate);
-		}
-		String reportsList = commonUtil.toJSON(freshList);
-		return reportsList;
-	}
-
-	/**
-	 * @author Laxman store the Favourite Associate
-	 * @param candidateId
-	 * @param request
-	 * @return success
-	 * @throws Exception
-	 */
-
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/saveAssociateAsFavourite", method = RequestMethod.POST)
-	public @ResponseBody String saveAssociateAsFavourite(
-			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
-			throws Exception {
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		if (null != candidate) {
-			if (null == candidate.getIsFavouriteAssociate()
-					|| candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)) {
-				candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
-			} else {
-				candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
-			}
-			candidate.setTeamId(null);
-			candidateService.saveOrUpdateCandidate(candidate);
-			candidateService.saveOrUpdateCandidateElkDocument(candidate);
-
-		}
-
-		return "success";
-	}
 }

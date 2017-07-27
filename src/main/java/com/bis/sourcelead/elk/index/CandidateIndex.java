@@ -67,6 +67,7 @@ public class CandidateIndex implements Serializable {
 
 	private String summary;
 	
+	
 	private String[] visaType;
 
 	private String invitationstatus;
@@ -176,6 +177,10 @@ public class CandidateIndex implements Serializable {
 	private String candidateUUID;
 		
 	private String isAssociate;
+	
+	private int profilePercentage;
+	
+	private String currentResumeUUID;
 	
 	
 	public String getSearchType() {
@@ -877,9 +882,25 @@ public class CandidateIndex implements Serializable {
 		this.masterCandidateId = masterCandidateId;
 	}
 
-	
+	public int getProfilePercentage()
+	{
+		return profilePercentage;
+	}
 
+	public void setProfilePercentage(int profilePercentage)
+	{
+		this.profilePercentage = profilePercentage;
+	}
+
+	public String getCurrentResumeUUID()
+	{
+		return currentResumeUUID;
+	}
+
+	public void setCurrentResumeUUID(String currentResumeUUID)
+	{
+		this.currentResumeUUID = currentResumeUUID;
+	}
 	
 }
-
 
