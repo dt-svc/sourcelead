@@ -415,19 +415,6 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '<div class="clearfix mb10">';
-							
-							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">--Select Notice Period--</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
-							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
-							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
-							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
-							result = result + ' </select>';
-							result = result + ' </div>';
-							
                             result = result + '<div class="col-md-6 custom-fields">';
 							
                             result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
@@ -447,7 +434,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							 
 							
-							result = result + '<div class="col-md-6 designationTypeDiv mt" id="designationTypeDiv" style="display:none">';
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
 							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
 							result = result + '</div>';
 							
@@ -1139,15 +1126,15 @@ function candidateProfile(candidateId,candidateType){
 	 }else{
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
+            	  var candidateType = "Candidates";
+            	  candidateProfile(candidateId,candidateType);
             	  candidateQuickViewProfile(candidateId);
-              }
+            	  $("#loading").removeAttr('style');
        },
          
     }); 
@@ -1892,15 +1879,15 @@ function  removeValiationVendorContact() {
 	 }else{
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
+            	  var candidateType = "Candidates";
+           	  	  candidateProfile(candidateId,candidateType);
             	  candidateQuickViewProfile(candidateId);
-              }
+            	  $("#loading").removeAttr('style');
        },
          
     }); 

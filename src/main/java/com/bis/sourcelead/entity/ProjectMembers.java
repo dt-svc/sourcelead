@@ -32,6 +32,7 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
@@ -99,21 +100,33 @@ public class ProjectMembers implements Serializable {
 	private String startDate;
 	@Transient
 	private String endDate;
+	
+	@JsonProperty
 	@Transient
 	private String approvedHrs;
+	
+	@JsonProperty
 	@Transient
 	private String rejectedHrs;
 	@Transient
 	private String openHrs;
+	
+	@JsonProperty
 	@Transient
 	private String draftHrs;
+	
+	@JsonProperty
 	@Transient
 	private String submittedHrs;
 	@Transient
+	@JsonProperty
 	private String projectAssignedDateStr;
 	@Transient
+	@JsonProperty
 	private String projectEndDateStr;
+	
 	@Transient
+	@JsonProperty
 	private String projectName;
 	@Transient
 	private String userId;
@@ -305,6 +318,7 @@ public class ProjectMembers implements Serializable {
 	private String employmentTypeVendors;
     //For Expenses 
 
+	@JsonProperty
 	@Transient
 	private String projectStatus;
 
@@ -334,6 +348,10 @@ public class ProjectMembers implements Serializable {
 	
 	@Transient
 	private String clientNameExpenses;
+	
+	@JsonProperty
+	@Transient
+	private Float userExpensesClaimedAmount;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -1191,6 +1209,18 @@ public class ProjectMembers implements Serializable {
 	public void setEmploymentTypeVendors(String employmentTypeVendors) {
 		this.employmentTypeVendors = employmentTypeVendors;
 	}
+
+	public Float getUserExpensesClaimedAmount()
+	{
+		return userExpensesClaimedAmount;
+	}
+
+	public void setUserExpensesClaimedAmount(Float userExpensesClaimedAmount)
+	{
+		this.userExpensesClaimedAmount = userExpensesClaimedAmount;
+	}
+
+	
 
 	
 
