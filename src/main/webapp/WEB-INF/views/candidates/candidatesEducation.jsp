@@ -724,6 +724,31 @@ function candidateEducationStore(candidateId){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
+				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+				            			 if(data<50){
+				            			   $("#perVal").removeClass('progress-bar-success');
+				            			   $("#perVal").addClass("progress-bar-danger");
+				            			 }
+				            			 if(data>=50){
+				            				 $("#perVal").removeClass("progress-bar-danger");
+				            				 $("#perVal").addClass("progress-bar-success");
+				            			 }
+				            			 $("#disVal").empty();
+				            			$("#disVal").append(data+'%');
+				            			// for quick view bar update
+				            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+					          			 if(data<50){
+						          			   $("#quickPerVal").removeClass('progress-bar-success');
+						          			   $("#quickPerVal").addClass("progress-bar-danger");
+						          			 }
+						          			 if(data>=50){
+						          				 $("#quickPerVal").removeClass('progress-bar-danger');
+						          				 $("#quickPerVal").addClass("progress-bar-success");
+						          			 }
+
+				            			$("#quickDisVal").empty();
+				            			$("#quickDisVal").append(data+'%');
+				            			
 				               		    $("#popUpDiv").removeClass("edit-details-active");
 				            			$("#selector4").removeAttr("style");
 				            			$("#selector4").css({ display: "block" });
@@ -819,6 +844,33 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
+             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+           			 if(data<50){
+           			  /* $("#perVal").removeClass("progress-bar-success"); */
+           			   $("#perVal").removeClass('progress-bar-success')
+           			   $("#perVal").addClass("progress-bar-danger");
+           			 }
+           			 if(data>=50){
+           				 $("#perVal").removeClass('progress-bar-danger');
+           				 $("#perVal").addClass("progress-bar-success");
+           			 }
+           			 $("#disVal").empty();
+           			$("#disVal").append(data+'%');
+           			
+           			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+         			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+       				$("#quickDisVal").empty();
+       				$("#quickDisVal").append(data+'%');
+           			
+           			
            			 	 $("#selector4").removeAttr("style");
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
