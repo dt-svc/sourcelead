@@ -367,7 +367,9 @@ function prepareCandidateGrid(data,requirementId){
     	    		opt = opt +'<li class="MultLi">'+skillsName+'</li>';
 	    	    	opt = opt +'</ul>';
 	    	    	opt = opt +'<div class="comBtns mt10">';
-	    	    	opt = opt +'<button type="button" onClick="getCandiResume(\''+report.currentResumeUUID+'\',\''+report.currentResumeName+'\');" class="btn btn-sm btn-primary">View Resume</button>';
+	    	    	if(report.currentResumeUUID != null && report.currentResumeUUID != '' && report.currentResumeUUID != 'undefined'){
+	    	    		opt = opt +'<button type="button" onClick="getCandiResume(\''+report.currentResumeUUID+'\',\''+report.currentResumeName+'\');" class="btn btn-sm btn-primary">View Resume</button>';
+	    	    	}
 	    	    	opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	    	    	opt = opt +'</div>';
 		    	    opt = opt +'</div>';
@@ -584,7 +586,9 @@ function candidateDiv(report,div,requirementId){
 	   opt = opt +'<li class="MultLi">'+skillsName+'</li>';
 	   opt = opt +'</ul>';
 	   opt = opt +'<div class="comBtns mt10">';
-	   opt = opt +'<button type="button" onClick="getCandiResume(\''+report.resumeUUID+'\',\''+report.candidateResumeName+'\');" class="btn btn-sm btn-primary">View Resume</button>';
+	   if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
+		   opt = opt +'<button type="button" onClick="getCandiResume(\''+report.resumeUUID+'\',\''+report.candidateResumeName+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
+	   }
 	   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
 	   opt = opt +'</div>';
 	   opt = opt +'</div>';

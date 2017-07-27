@@ -60,7 +60,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='proj_show' onclick='projectSummaryRedirection();' ><span title='"+opt.projectName+"'>"+opt.projectName+"</span><i class='fa fa-binoculars'></i></div>";
+   		result = result +"<div class='proj_show' ><span title='"+opt.projectName+"'>"+opt.projectName+"</span><i class='fa fa-binoculars'></i></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}

@@ -205,9 +205,11 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 				CandidateIndex candidate = candidateList.get(i);
 				Candidate can = candidateService.getCandidateByCandidateId(candidate.getCandidateId());
 				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
-				candidate.setCurrentResumeId(candidateResume.getId());
-				candidate.setCurrentResumeName(candidateResume.getFileName());
-				candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
+				if(candidateResume != null){
+					candidate.setCurrentResumeId(candidateResume.getId());
+					candidate.setCurrentResumeName(candidateResume.getFileName());
+					candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
+				}
 				int percentage = candidateService.getCandidatePercentage(can,orglocation);
 				candidate.setProfilePercentage(percentage);
 			}
