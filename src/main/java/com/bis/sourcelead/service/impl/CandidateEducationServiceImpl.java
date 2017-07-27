@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -42,6 +43,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
  
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	/**
 	 * @author ajith kumar
@@ -61,23 +65,33 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	@Override
 	public CandidateEducation storeCandidateEducation(JSONObject jsonObject,Long candidateId, Long orgLocationId,User user) throws Exception {
 		
-		CandidateEducation candidateEducation =new CandidateEducation();
+		CandidateEducation candidateEducation = null;
+		Candidate candidate = new Candidate();
+		OrgLocations orgLocations = new OrgLocations();
+		StringBuffer activitySummary = new StringBuffer();
 		if(candidateId!=null){
         	if(jsonObject.has("candidateEduId")){
 	       		 if(jsonObject.getString("candidateEduId")!=null && !jsonObject.getString("candidateEduId").isEmpty()){
-	       			candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
+	       			//candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
+	       			candidateEducation = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, Long.valueOf(jsonObject.getString("candidateEduId")));
 	       	     }
-       	    }
-		Candidate candidate = new Candidate();
+       	    }else{
+       	    	candidateEducation =new CandidateEducation();
+       	     }
+		
 		candidate.setId(candidateId);
 		candidateEducation.setCandidateId(candidate);
 		
-		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationId);
 		candidateEducation.setOrglocationId(orgLocations);
 		
 		
 		if(jsonObject.has("name")){
+			if(candidateEducation != null && candidateEducation.getName() != null && candidateEducation.getName() != "" && !candidateEducation.getName().equalsIgnoreCase(jsonObject.getString("name"))){
+				activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else if(candidateEducation.getId() == null){
+				activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
 			candidateEducation.setName(jsonObject.getString("name"));
 			String educationName = jsonObject.getString("name");
 			String[] educations = educationName.split(",");
@@ -86,6 +100,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			}
 		}
 		if(jsonObject.has("specialization")){
+			if(candidateEducation != null && candidateEducation.getSpecialization() != null && candidateEducation.getSpecialization() != "" && !candidateEducation.getSpecialization().equalsIgnoreCase(jsonObject.getString("specialization"))){
+				activitySummary.append("Specialization").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getSpecialization()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("specialization")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
 			candidateEducation.setSpecialization(jsonObject.getString("specialization"));
 		}
 		if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty()) && !" ".equals(jsonObject.get("startDate"))){
@@ -113,15 +130,27 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		
 		if(jsonObject.has("grade")){
+			if(candidateEducation != null && candidateEducation.getGrade() != null && candidateEducation.getGrade() != "" && !candidateEducation.getGrade().equalsIgnoreCase(jsonObject.getString("grade"))){
+				activitySummary.append("Grade").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGrade()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("grade")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
 			candidateEducation.setGrade(jsonObject.getString("grade"));
 		}
 		if(jsonObject.has("gradeType")){
+			if(candidateEducation != null && candidateEducation.getGradeType() != null && candidateEducation.getGradeType() != "" && !candidateEducation.getGradeType().equalsIgnoreCase(jsonObject.getString("gradeType"))){
+				activitySummary.append("Grade Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getGradeType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("gradeType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
 			candidateEducation.setGradeType(jsonObject.getString("gradeType"));
 		}
 		if(jsonObject.has("institute")){
+			if(candidateEducation != null && candidateEducation.getInstitute() != null && candidateEducation.getInstitute() != "" && !candidateEducation.getInstitute().equalsIgnoreCase(jsonObject.getString("institute"))){
+				activitySummary.append("Institute").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getInstitute()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("institute")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
 			candidateEducation.setInstitute(jsonObject.getString("institute"));
 		}
 		if(jsonObject.has("address")){
+			if(candidateEducation != null && candidateEducation.getAddress() != null && candidateEducation.getAddress() != "" && !candidateEducation.getAddress().equalsIgnoreCase(jsonObject.getString("address"))){
+				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("address")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}
 			candidateEducation.setAddress(jsonObject.getString("address"));
 		}
 		candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -131,6 +160,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		candidateEducation.setUpdatedDate(commonUtil.currentDate());
 		}
 		candidateEducation = candidateEducationDao.storeCandidateEducation(candidateEducation);
+		
+		candidateActivityCommonUtil.storeCandidateEducationHistory(candidateEducation, user);
+		
+		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
 		/*
 		 * updating Candidate Education DB data in existing candidateindex
