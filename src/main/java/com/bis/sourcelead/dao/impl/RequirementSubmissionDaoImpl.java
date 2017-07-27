@@ -2505,7 +2505,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
 	        	Map<String, Object> params = new HashMap<String,Object>();
 	    		
-	        	String from = "select count(*) from RequirementSubmissionHistory rsh  ";
+	        	String from = "from RequirementSubmissionHistory rsh  ";
 	    		
 	    		//login user as created by
 	    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:loginUserCode)";
@@ -2568,7 +2568,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate group by rsh.submissionId";
 	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
 	     		}
-	        	
 				return reqSubms;
 	        	
 	        }
