@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.model.ProjectDocumentBO;
 
 public interface ProjectsService {
 
@@ -84,7 +85,7 @@ public interface ProjectsService {
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
-		String  storeProject(JSONObject jsonObj) throws Exception;
+		String  storeProject(JSONObject jsonObj,List<ProjectDocumentBO> projectDocuments) throws Exception;
 
 //		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 //
@@ -111,6 +112,8 @@ public interface ProjectsService {
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 
-		List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception ;
+		List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId) throws Exception ;
+		
+		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
 }

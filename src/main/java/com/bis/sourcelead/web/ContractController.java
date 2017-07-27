@@ -1,11 +1,14 @@
 package com.bis.sourcelead.web;
 
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +41,8 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.rest.ContractRestController;
+import com.bis.sourcelead.rest.ExpensesRestController;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -49,8 +55,12 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfWriter;
 
 @Controller
 public class ContractController {
@@ -95,6 +105,12 @@ public class ContractController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	PdfConversionUtil pdfConversionUtil;
+	
+	@Autowired
+	ContractRestController contractRestController;
 	
 	/**
 	 * display contract template list page
@@ -220,8 +236,8 @@ public class ContractController {
 						}
 					}
 					
-					//requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType(),orgLocation);
-					 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(contract.getContractType(),orgLocation);
+					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType(),orgLocation);
+					// requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(contract.getContractType(),orgLocation);
 					if(requirementSubmissionsList.size() > 0){
 						for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 							StringBuffer candidateName = new StringBuffer(); 
@@ -417,7 +433,7 @@ public class ContractController {
 				List<Requirement> requirementList = null;
 				List<RequirementSubmission> requirementSubmissionsList = null;
 				RequirementOffers requirementOffer = null;
-				if(contract.getContractType().contains("SOW") || contract.getContractType().contains("Full time offer")){
+				if(contract.getContractType().contains("SOW") || contract.getContractType().contains(Constants.FULL_TIME_OFFER)){
 					requirementList = requirementService.getRequirementsForSOWByOrgLocationId(orgLocation.getId(), contract.getContractType());
 					if(requirementList.size() > 0){
 						for(Requirement requirement : requirementList){
@@ -432,8 +448,8 @@ public class ContractController {
 						}
 					}
 					
-					//requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType(),orgLocation);
-					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(contract.getContractType(),orgLocation);
+					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType(),orgLocation);
+					//requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(contract.getContractType(),orgLocation);
 					if(requirementSubmissionsList.size() > 0){
 						for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 							StringBuffer candidateName = new StringBuffer(); 
@@ -547,5 +563,53 @@ public class ContractController {
 		model.setViewName("contracts/viewContract");
 		return model;
 	}
+	@RequestMapping(value = "/viewReqContractDocPdf/{docId}/{fileName}", method = RequestMethod.GET)
+	public @ResponseBody  void viewReqContractDocPdf(@PathVariable("docId") String docId, @PathVariable("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ContractRequestDocuments contractRequestDocuments =  contractRestController.getContractRequestDocumentsById(Long.parseLong(docId));
 		
+		byte[] pdfBytes = null ;
+		if("application/pdf".equalsIgnoreCase(contractRequestDocuments.getFileType())){
+			pdfBytes = contractRequestDocuments.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(contractRequestDocuments.getDocFile());
+		}
+		
+  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    
+  	    ServletOutputStream sos = response.getOutputStream();
+  	    if(null != pdfBytes){
+  	    	response.setContentLength(pdfBytes.length);
+  	    	sos.write(pdfBytes);
+  	    }
+          sos.flush();
+          sos.close();
+	}
+	
+	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
+	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ContractsTemplate contractsTemplate =  contractRestController.getContractTemplateByTemplateUUID(uuid);
+		
+		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
+		String totalBody = header + contractsTemplate.getTemplateContent();
+    	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+  	    Document document = new Document();
+  	    PdfWriter.getInstance(document, byteArray);
+  	    document.open();
+  	    HTMLWorker htmlWorker = new HTMLWorker(document);
+  	    htmlWorker.parse(new StringReader(totalBody));
+  	    document.close();
+  	    byte[] pdfBytes = byteArray.toByteArray();
+  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    response.setContentLength(pdfBytes.length);
+          ServletOutputStream sos = response.getOutputStream();
+          sos.write(pdfBytes);
+          sos.flush();
+          sos.close();
+	}
+
 }

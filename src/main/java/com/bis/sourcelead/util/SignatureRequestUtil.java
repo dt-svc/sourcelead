@@ -266,7 +266,7 @@ public class SignatureRequestUtil {
 				signHere.setPageNumber(numberOfPages.toString());
 				signHere.setRecipientId("1");
 				signHere.setXPosition("250");
-				signHere.setYPosition("750");
+				signHere.setYPosition("250");
 
 				// can have multiple tabs, so need to add to envelope as a single element list
 				List<SignHere> signHereTabs = new ArrayList<SignHere>();

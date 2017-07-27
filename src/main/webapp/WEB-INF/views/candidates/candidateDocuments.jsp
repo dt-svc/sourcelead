@@ -3,11 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -151,7 +146,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="fa fa-eye ml10" onclick="candidateDocumentView(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -207,6 +202,16 @@ function candDocumentsList(candidateId){
           }
           });     
 }
+</script>
+
+<script>
+function candidateDocumentView(documentUUID,title){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		if(documentUUID != null && documentUUID != ""){
+			window.open(sourceleadUrl+'/viewProfessionalCandidateDocument/'+title+'?documentUUID='+documentUUID,title,"height=600,width=600");
+		}
+}
+
 </script>
 
 <script>
@@ -310,7 +315,7 @@ function cancelDocumentRejectedReason(){
 
 <!-- Show success message after form submission script -->
 <script>
-	function eduMsgFadein() {
+	function docMsgFadein() {
 		$("#selector9").fadeIn(200);
         $('#selector9').delay(2000).fadeOut('slow');
 	}
@@ -425,7 +430,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result  +'   ';
 	
 	result = result  +'<div class="clearfix mb10 col-md-12"> ';
-	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="name" data-validation="required" onchange="getDocumentType(this);">';
+	result = result  +'	<select label=" " class="chosen-select form-control" field-name="Document Type" data-placeholder = "Select Document Type" name="name" id="docName" data-validation="required" onchange="getDocumentType(this);">';
 					   
 	
 	                   <c:forEach var="doctype" items="${documentsList}">
@@ -453,7 +458,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'<div class="col-md-12 mt">';
-	result = result+'<label id="docName" name="docName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_doc" onclick="removeDocNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'<label id="docsName" name="docName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_doc" onclick="removeDocNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'</div>';
 	result = result+'</div>';
 	
@@ -544,7 +549,7 @@ function addDocument(candidateId, documentUUID) {
 
 <script>
 function getDocumentType(documentType){
-	 var existingDocumentType = $('#name').val(); 
+	 var existingDocumentType = $('#docsName').val(); 
 	if(documentType.value == 'Other'){
 		 document.getElementById("documentTypeDiv").style.display="block";
 		  $("#documentOtherType").attr("data-validation-optional", "false");
@@ -603,7 +608,7 @@ function getDocumentType(documentType){
 		            			$("#selector9").css({ display: "block" });
 	            				$("#docMsgDiv").html("Success!! New Candidate Document added");
 		             			candDocumentsList(candidateId);
-						 		resMsgFadein();
+		             			docMsgFadein();
 		            		 
 						},
 					});
@@ -630,6 +635,8 @@ function getDocumentType(documentType){
 <script>
 function getDocument(candidateId, documentId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	 $("#docsName").attr("data-validation-optional", "true");
+	  $("#documentOtherType").attr("data-validation-optional", "true");
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getDocument?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
@@ -638,14 +645,16 @@ function getDocument(candidateId, documentId){
         			 $("#uploadDocDiv").hide();
         			 $("#docAddButton").hide();
         			 $("#uploadFile").removeAttr("data-validation");
+        			 if(json.fileName != null && json.fileName !="undefined" && json.fileName != ""){
         			 $("#docNameDiv").show();
-        			 $("#docName").append(json.fileName);
-        			 $("#docName").prop('title', json.fileName);
+        			 }
+        			 $("#docsName").append(json.fileName);
+        			 $("#docsName").prop('title', json.fileName);
         			 $("#docUpdateButton").show();
         			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
         				
-	                     $("select#name").val(json.documentType);
-	                     $("#name").trigger("chosen:updated");
+	                     $("select#docName").val(json.documentType);
+	                     $("#docName").trigger("chosen:updated");
 	                     
 	                    //here documentType is Other then documentOtherType  also display in Edit.
 	                   
@@ -686,6 +695,7 @@ function removeDocument(candidateId, documentId){
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
+	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
 	$("#remove_user_pop_documents").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -715,7 +725,7 @@ function deleteDocument(candidateId, documentId){
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
         			 candDocumentsList(candidateId);
-        		     resMsgFadein();
+        			 docMsgFadein();
    		    	}
    		    },
 	     });
@@ -738,7 +748,7 @@ function removeDocNameDiv(){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function docMsgFadein() {
 		$("#selector9").fadeIn(200);
         $('#selector9').delay(2000).fadeOut('slow');
 	}
@@ -813,7 +823,7 @@ function createDocsType(candidateId){
 	result = result +'</td>';
 	result = result +'<td width="auto">';
 	result = result +'<div class="">';
-	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description"></textarea>';
+	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description" field-name="Description" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>';
 	result = result +'</div>';
 	result = result +'</td>';
 	result = result +'<td width="150px">';
@@ -901,7 +911,7 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
       
         $("#submit_docs").attr("disabled", "disabled");
 		$("#submit_docs" ).addClass('button').val('Processing..');
-		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	       $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/requestCandidateForDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
@@ -988,7 +998,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e){
 	 	});
 	 	 
        $("#submit_rejectedReason").attr("disabled", "disabled");
-       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
   	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/rejectRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&documentsIds="+documentsIds, 

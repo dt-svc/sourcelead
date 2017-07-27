@@ -7,7 +7,7 @@
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>View Expense ---${submissionStatus}</h2>
+        <h2>View Expense</h2>
       </div>
       
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; View Expense</div>
@@ -68,23 +68,27 @@
 						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Project Name:</strong><span>${expenses.projectMembers.projects.projectName}</span><div class="clearfix"></div>
+						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Start date:</strong><span>${expenses.startDateStr}</span><div class="clearfix"></div>
+						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>End date:</strong><span>${expenses.endDateStr}</span><div class="clearfix"></div>
+						<strong>End date:</strong><span>${expenses.endDate}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
-					</div>	                    			
+					</div>	 
+					<div class="project_details_cta">
+						<strong>Exp Created By:</strong><span>${expenses.expCreatedBy}</span><div class="clearfix"></div>
+					</div>
+					                   			
 					<div class="clearfix"></div>
 				</div>
            
@@ -92,39 +96,39 @@
 	<table id="categoryTable">
 	    <thead>
 			<tr id="divEntityTsRow0">
+			    <th>Date</th>
 				<th>Exp Category</th>
-				<th>Date</th>
-				<th>Payment Mode</th>
-				<th>Currency</th>
-				<th>Amount</th>
 				<th>Description</th>
+				<th>Amount</th>
+				<th>Currency</th>
+				<th>Payment Mode</th>
 			</tr>
 		</thead>	
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryTypeDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expenseDate}</div></td>
+			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
+			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 				        <td colspan="6">
 						<div class="expDetails">
 							<ul>
+							    <li><strong>Date :</strong><span>${entry.expenseDate}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
-								<li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
-								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
-								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amount}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
+								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
+								<li><strong>Amount :</strong><span>${entry.amount}</span><div class="clearfix"></div></li>
+								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
+								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix"></div>
-								<div id='attachmentSection' class='col-md-4 mb10'>
+								<div id='attachmentSection' class='col-md-4 noPad'>
 				                   <div class="uploadFile timesheet_week_comm">
 				                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
@@ -137,6 +141,7 @@
 					                                 <i class='glyphicon glyphicon-save'></i>
 										             <input type='button' value='${entryDoc.fileName}'/>
 										        </a>
+										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
 					                         </strong>
 					                       </c:forEach>
 					                 </div> 
@@ -154,7 +159,13 @@
 </div>
 </div>
     </section>
-    
+
+<script>
+function viewDocument(title,id){
+	var sourceleadUrl ='${sourceleadUrl}';
+		window.open(sourceleadUrl+'/viewExpensesEntryDocument/'+title+'?entryDocumentId='+id,title,"height=600,width=600");
+}
+</script>    
     
 <script>
 function exportMyExpenses(type,Expid,ApproverType){

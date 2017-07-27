@@ -57,6 +57,9 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String address2;
 	
+	@Column(name = "LOCATION")
+	private String location;
+	
 	@Column(name = "COUNTRY")
 	private String country;
 	
@@ -267,6 +270,15 @@ private static final long serialVersionUID = 1L;
 
 	public void setAddress2(String address2) {
 		this.address2 = address2;
+	}
+
+	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public String getCountry() {

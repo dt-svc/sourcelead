@@ -172,7 +172,7 @@ $.ajax({
 	result = result+' <th>Project</th>';
 	result = result+' <th>Start Date</th>';
 	result = result+' <th>End Date</th>';
-	result = result+' <th>No of Exp</th>';
+	result = result+' <th>No of Items</th>';
 	result = result+' <th>Amount</th>';
 	result = result+' <th>Status</th>';
 	result = result+' <th>Action</th>';
@@ -425,41 +425,41 @@ function prepareCategoryDivForApprovalPopUp(expenseId){
         		result = result +'<table>';
         		result = result +'<thead>';
         		result = result +'<tr>';
-        		result = result +'<th>Exp Category</th>';
         		result = result +'<th>Date</th>';
-        		result = result +'<th>Payment Mode</th>';
-        		result = result +'<th>Currency</th>';
+        		result = result +'<th>Exp Category</th>';
         		result = result +'<th>Description</th>';
         		result = result +'<th>Amount</th>';
+        		result = result +'<th>Currency</th>';
+        		result = result +'<th>Payment Mode</th>';
         		result = result +'</tr>';
         		result = result +'</thead>';	
         		result = result +'<tbody>';
         		for(var i=0;i<jsonList.length;i++){
             	var json = jsonList[i];
         		result = result +'<tr>';
-        		result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Category 1</div></td>';
         		if(json.expenseDateString != null && json.expenseDateString !='' && json.expenseDateString !='undefined'){
-        		result = result +'<td><div>'+json.expenseDateString+'</div></td>';
-        		}else{
-        		result = result +'<td><div>--</div></td>';
-        		}
+           		result = result +'<td><div>'+json.expenseDateString+'</div></td>';
+           		}else{
+           		result = result +'<td><div>--</div></td>';
+           		}
+        		result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Category 1</div></td>';
+        		if(json.description != null && json.description !='' && json.description !='undefined'){
+           		result = result +'<td><div class="tbldata-dotdot-me">'+json.description+'</div></td>';
+           		}else{
+           		result = result +'<td><div>--</div></td>';	
+           		}
+           		if(json.amount != null && json.amount !='' && json.amount !='undefined'){
+           		result = result +'<td><div>'+json.amount+'</div></td>';
+           		}else{
+           		result = result +'<td><div>--</div></td>';	
+           		}
+           		if(json.currencyType != null && json.currencyType !='' && json.currencyType !='undefined'){
+           		result = result +'<td><div>'+json.currencyType+'</div></td>';
+           		}else{
+           		result = result +'<td><div>--</div></td>';	
+           		}
         		if(json.paymentMode != null && json.paymentMode !='' && json.paymentMode !='undefined'){
         		result = result +'<td><div>'+json.paymentMode+'</div></td>';
-        		}else{
-        		result = result +'<td><div>--</div></td>';	
-        		}
-        		if(json.currencyType != null && json.currencyType !='' && json.currencyType !='undefined'){
-        		result = result +'<td><div>'+json.currencyType+'</div></td>';
-        		}else{
-        		result = result +'<td><div>--</div></td>';	
-        		}
-        		if(json.description != null && json.description !='' && json.description !='undefined'){
-        		result = result +'<td><div class="tbldata-dotdot-me">'+json.description+'</div></td>';
-        		}else{
-        		result = result +'<td><div>--</div></td>';	
-        		}
-        		if(json.amount != null && json.amount !='' && json.amount !='undefined'){
-        		result = result +'<td><div>'+json.amount+'</div></td>';
         		}else{
         		result = result +'<td><div>--</div></td>';	
         		}
@@ -469,13 +469,13 @@ function prepareCategoryDivForApprovalPopUp(expenseId){
         		result = result +'<td colspan="6">';
         		result = result +'<div class="expDetails">';
         		result = result +'<ul>';
-        		result = result +'<li><strong>Exp Category :</strong><span> Category 1</span><div class="clearfix"></div></li>';
         		result = result +'<li><strong>Date :</strong><span> 20/09/2017</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Payment Mode :</strong><span> Cash</span><div class="clearfix"></div></li>';
-        		result = result +'<li><strong>Currency :</strong><span> USD</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Exp Category :</strong><span> Category 1</span><div class="clearfix"></div></li>';
         		result = result +'<li><strong>Amount :</strong><span> 20,000</span><div class="clearfix"></div></li>';
         		result = result +'<li><strong>Purpose :</strong><span> Purpose text</span><div class="clearfix"></div></li>';
         		result = result +'<li><strong>Description :</strong><p> Description Description Description Description</p>';
+        		result = result +'<li><strong>Currency :</strong><span> USD</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Payment Mode :</strong><span> Cash</span><div class="clearfix"></div></li>';
         		result = result +'<div class="clearfix"></div>';
         		result = result +'</li>';
         		result = result +'<div class="clearfix"></div>';

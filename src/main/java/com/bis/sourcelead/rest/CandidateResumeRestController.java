@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -63,6 +65,9 @@ public class CandidateResumeRestController {
 	
 	@Autowired
 	CandidateResumesService candidateResumesService;
+	
+	@Autowired
+	PdfConversionUtil pdfConversionUtil;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -258,6 +263,28 @@ public class CandidateResumeRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 			}
+		    
+		}
+	@RequestMapping(value = "/viewResume/{title}", method = RequestMethod.GET)
+    public void viewResume(@PathVariable("title") String title,@RequestParam(value="resumeUUID", required=false) String resumeUUID ,HttpServletResponse response) throws Exception {
+		
+			CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
+			byte[] pdfBytes = null;
+			if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
+				pdfBytes = candidateResume.getDocFile();
+			}
+			else{
+				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResume.getDocFile());
+			}
+			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+		  	    response.setContentType("application/pdf");
+		  	    ServletOutputStream sos = response.getOutputStream();
+		  	    if(null != pdfBytes){
+		  	    	response.setContentLength(pdfBytes.length);
+		  	    	sos.write(pdfBytes);
+		  	    }
+		          sos.flush();
+		          sos.close();
 		    
 		}
 	

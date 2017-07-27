@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -25,9 +27,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECTS")
@@ -61,6 +65,37 @@ public class Projects implements Serializable{
     
     @Column(name = "TIMESHEET_FREQUENCY")
     private String timesheetFrequency;
+    
+    @Column(name="ESTIMATED_HOURS")
+    private Double estimatedHours;
+    
+    @Column(name="ESTIMATED_BUDGET")
+    private Double estimatedBudget;
+    
+    @Column(name="ALLOW_FL")
+    private Boolean allowFreeLance;
+    
+    @Column(name="ALLOW_REMOTE")
+    private Boolean allowRemote;
+    
+    @Column(name="AllOW_OT")
+    private Boolean allowOvertime;
+    
+    @Column(name="ALLOW_TIME_DEADLINE")
+    private Boolean allowTimeEntryAfterDeadLine;
+    
+    @Column(name="ALLOW_BID")
+    private Boolean allowBidding;
+    
+    @Column(name="ALLOW_OFFSHORE")
+    private Boolean allowOffShore;
+    
+    @Column(name="FLAT_PCT")
+    private Double flatPercent;
+    
+    @Column(name="OVERTIME_RATE_TYPE")
+    private String overtimeRateType;
+
     
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
@@ -98,7 +133,8 @@ public class Projects implements Serializable{
     @Column(name = "STATUS")
     private String status;
     
-    
+    @Column(name = "PROJECT_UUID")
+	private String projectUUID;
     
     @Column(name = "CREATED_DATE")
     private Date createdDate;
@@ -124,7 +160,21 @@ public class Projects implements Serializable{
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     
-    @Transient
+  
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ProjectDocuments> projectDocuments = new HashSet<>();
+    
+    
+    public Set<ProjectDocuments> getProjectDocuments() {
+		return projectDocuments;
+	}
+
+	public void setProjectDocuments(Set<ProjectDocuments> projectDocuments) {
+		this.projectDocuments = projectDocuments;
+	}
+
+	@Transient
     private String managerLevel1;
     
     @Transient
@@ -143,9 +193,11 @@ public class Projects implements Serializable{
     private String updatedDateStr;
     
     @Transient
+    @JsonProperty
     private String startDateStr;
     
     @Transient
+    @JsonProperty
     private String endDateStr;
     
     @Transient
@@ -326,6 +378,14 @@ public class Projects implements Serializable{
 		this.status = status;
 	}
 
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -416,6 +476,9 @@ public class Projects implements Serializable{
 	}
 
 	public String getStartDateStr() {
+		if(startDate != null){
+			startDateStr = Constants.DMY.format(startDate);
+		}
 		return startDateStr;
 	}
 
@@ -424,6 +487,9 @@ public class Projects implements Serializable{
 	}
 
 	public String getEndDateStr() {
+		if(endDate != null){
+			endDateStr = Constants.DMY.format(endDate);
+		}
 		return endDateStr;
 	}
 
@@ -590,5 +656,87 @@ public class Projects implements Serializable{
 	public void setExpensesClientName(String expensesClientName) {
 		this.expensesClientName = expensesClientName;
 	}
+	
+	public void setEstimatedHours(Double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public void setEstimatedBudget(Double estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public Double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public Double getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public Boolean getAllowFreeLance() {
+		return allowFreeLance;
+	}
+
+	public void setAllowFreeLance(Boolean allowFreeLance) {
+		this.allowFreeLance = allowFreeLance;
+	}
+
+	public Boolean getAllowRemote() {
+		return allowRemote;
+	}
+
+	public void setAllowRemote(Boolean allowRemote) {
+		this.allowRemote = allowRemote;
+	}
+
+	public Boolean getAllowOvertime() {
+		return allowOvertime;
+	}
+
+	public void setAllowOvertime(Boolean allowOvertime) {
+		this.allowOvertime = allowOvertime;
+	}
+
+	public Boolean getAllowTimeEntryAfterDeadLine() {
+		return allowTimeEntryAfterDeadLine;
+	}
+
+	public void setAllowTimeEntryAfterDeadLine(Boolean allowTimeEntryAfterDeadLine) {
+		this.allowTimeEntryAfterDeadLine = allowTimeEntryAfterDeadLine;
+	}
+
+	public Boolean getAllowBidding() {
+		return allowBidding;
+	}
+
+	public void setAllowBidding(Boolean allowBidding) {
+		this.allowBidding = allowBidding;
+	}
+
+	public Boolean getAllowOffShore() {
+		return allowOffShore;
+	}
+
+	public void setAllowOffShore(Boolean allowOffShore) {
+		this.allowOffShore = allowOffShore;
+	}
+
+	public Double getFlatPercent() {
+		return flatPercent;
+	}
+
+	public void setFlatPercent(Double flatPercent) {
+		this.flatPercent = flatPercent;
+	}
+
+	public String getOvertimeRateType() {
+		return overtimeRateType;
+	}
+
+	public void setOvertimeRateType(String overtimeRateType) {
+		this.overtimeRateType = overtimeRateType;
+	}
+
+
 	
 }

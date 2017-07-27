@@ -51,8 +51,8 @@ window.onload = function () {
           </li>
 		   
 		 <li>
-			  <a href="javascript:void(0)">
-			  <i class="fa fa-building"></i></a>
+			  <a href="javascript:void(0)"></a>
+			  
 				<span class="action-search"><input type="text" id="searchByName"></span>
 				<span class="action-search" onclick="getOrgsList();"><i class="fa fa-search"></i></span>
 		  </li> 
@@ -88,7 +88,7 @@ window.onload = function () {
 	    $('#orgListBody').empty();
         $('#orgListEmptyBody').empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		 $.ajax({ 
 	    	type: "POST",
@@ -176,12 +176,12 @@ window.onload = function () {
 function resendInvitation(userId,orgId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  
 			        success: function(result) {
-			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
+			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+", "+orgId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
 			        	$("#mailMsg").fadeIn(200);
 		   		        $('#mailMsg').delay(2000).fadeOut('slow');

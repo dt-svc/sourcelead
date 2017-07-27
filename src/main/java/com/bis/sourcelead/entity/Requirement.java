@@ -94,6 +94,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CITY")
 	private String city;
 	
+	@Column(name = "LOCATION")
+	private String location;
+	
+	@Column(name = "ZIPCODE")
+	private String zipCode;
+	
 	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
@@ -365,6 +371,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String isLoginUserAsManager;
 	
 	@Transient
+	private String isLoginUserAsInitiator;
+	
+	@Transient
 	private String mailBody;
 	
 	@Transient
@@ -406,6 +415,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String orgcode;
 
+	@Transient
+	private String isAllowStageAccess;
+	
 	@Transient
 	private String reqlevel1ApproverStatus;
 	
@@ -630,6 +642,22 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 
 	public String getSkills() {
@@ -1026,6 +1054,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.isLoginUserAsManager = isLoginUserAsManager;
 	}
 
+	public String getIsLoginUserAsInitiator()
+	{
+		return isLoginUserAsInitiator;
+	}
+
+	public void setIsLoginUserAsInitiator(String isLoginUserAsInitiator)
+	{
+		this.isLoginUserAsInitiator = isLoginUserAsInitiator;
+	}
+
 	public REQUIREMENT_SUBMISSION_STATUS getRequirementSubmissionPreviousStatus() {
 		return requirementSubmissionPreviousStatus;
 	}
@@ -1202,6 +1240,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.orgcode = orgcode;
 	}
 	
+	public String getIsAllowStageAccess() {
+		return isAllowStageAccess;
+	}
+
+	public void setIsAllowStageAccess(String isAllowStageAccess) {
+		this.isAllowStageAccess = isAllowStageAccess;
+	}
+
 	public String getReqlevel1ApproverStatus() {
 		return reqlevel1ApproverStatus;
 	}

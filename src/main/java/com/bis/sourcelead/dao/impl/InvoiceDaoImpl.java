@@ -21,6 +21,7 @@ import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgRelations;
 
 @Repository
@@ -57,24 +58,23 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String subQuery = "";
 		String subQuery1 = "";
 		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'DRAFT' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'DRAFT' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("SENT")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'SENT' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'SENT' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("RECEIVED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Received' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Received' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("ACCEPTED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Accepted' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Accepted' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
-			subQuery = subQuery + "invoice.invoiceStatus = 'Rejected' or ";
+			subQuery = subQuery + "invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus = 'Rejected' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
-		}
-		
+		} 
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
 			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
 		} 
@@ -88,10 +88,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(paymentTokens).contains("Paid")) {
 			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
 		}
-		if (Arrays.asList(paymentTokens).contains("OverDue")) {
-			subQuery1 = subQuery1 + "invoice.paymentStatus = 'OverDue' or ";
+		if (Arrays.asList(paymentTokens).contains("Overdue")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Overdue' or ";
 		}
-		
 		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
 			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
 		} 
@@ -364,6 +363,41 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			}
         }
 		return qry.setCacheable(true).list();
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getDueDateCompletedInvoicesList() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' and invoice.invoiceStatus <> 'DRAFT' and invoice.paymentStatus <> 'Paid'";
+		@SuppressWarnings("unchecked")
+		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setCacheable(true).list();
+		return clientInvoiceList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from InvoicePayment invoicePayment left join fetch invoicePayment.invoiceId where invoicePayment.invoiceId = :invoiceId";
+		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		return invoicePaymentList;
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Invoice getInvoicetByParentId(Long parentInvoiceId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		if (parentInvoice.size() > 0) {
+			return parentInvoice.get(0);
+		} else {
+			return null;
+		}
 	}
 	 
 }

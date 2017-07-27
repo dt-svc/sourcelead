@@ -89,8 +89,8 @@ function getOrgDetails()
    	        success: function(data) {
    	        	if(data != null && data != ''){
    	        		var json = JSON.parse(data);
-			      	if(json[3] != null && json[3] != ''){
-			      		$("#webSite").val(json[3]);
+			      	if(json['website'] != null && json['website'] != ''){
+			      		$("#webSite").val(json['website']);
 			      		$("#webSite").attr("disabled", true);
 			      	}
 			      	 
@@ -277,7 +277,7 @@ function getOrgDetails()
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="save_vendor_contact" onclick="saveClientContact();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -325,7 +325,7 @@ function getOrgDetails()
 				con = con.replace(/[{}]/g, "");
 		        var jsonData = encodeURIComponent(con);
 				var sourceleadUrl = '${sourceleadUrl}';
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 							type : "POST",
 							url : sourceleadUrl+ "/saveClinentAndVendorContact?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&orgRelationId="+orgRelationId+"&responderType=Client",
@@ -364,9 +364,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>should not your org users email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -612,7 +612,7 @@ function getRolesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	
 	if(vendorName){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=VMS", 

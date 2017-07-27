@@ -12,15 +12,15 @@ body{
 	transistion:all 0.3s linear;
 }
 .main-header{
-	background: #fff;
     -webkit-box-shadow: 0 0 2px rgba(0,0,0,.3);
     box-shadow: 0 0 2px rgba(0,0,0,.3);
+    background-size: 15%; background-image: url(../images/sl-tp.png); background-repeat: repeat-x; background-position: 30px; background-color: #fff;
 }
 .main-header span.logo {
 	background:#fff;
 }
 .main-header span.logo:hover {
-	background:#ededed;
+	background:#fff;
 }
 .main-header .navbar .fa-bars:hover{
 	background:rgba(0, 0, 0, 0.2);
@@ -173,7 +173,7 @@ ul.timesheet-menu li a:hover{
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
     border-left: 1px solid #bdbdbd;
-    padding: 16.5px 14px;
+    padding: 17.5px 14px;
     margin: 0;
     float: left;
 }

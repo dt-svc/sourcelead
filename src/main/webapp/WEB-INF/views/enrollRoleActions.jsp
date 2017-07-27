@@ -46,7 +46,7 @@ window.onload = function () {
             <div class="col-lg-12">
                 <div class="pull-right">
                  <input type="button" value="Save" id="save_client" onclick="saveActions();" class="btn btn-primary"> 
-			     <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/orgRolesList'/>'" class="btn btn-default ml">
+			     <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/orgRolesList'/>'" class="btn btn-default ml">
                 </div>
             </div>
         </div>
@@ -134,7 +134,7 @@ function cancel(){
 		});
 		 
 		if(actionIds.length > 0){
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
 		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId+"&actionIds="+actionIds,

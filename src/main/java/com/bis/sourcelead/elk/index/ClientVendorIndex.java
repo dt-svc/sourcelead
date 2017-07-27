@@ -63,6 +63,14 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String country;
 	
+	private String location;
+	
+	private String zipCode;
+	
+	private String longitude;
+	
+	private String latitude;
+	
 	private String updatedDate;
 	
 	private String createdDate;
@@ -303,7 +311,38 @@ public class ClientVendorIndex implements Serializable {
 		this.country = country;
 	}
 
-	
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
 
 	public String getUpdateDateToString() {
 		return updateDateToString;

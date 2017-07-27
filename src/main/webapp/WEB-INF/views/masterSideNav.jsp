@@ -1,4 +1,3 @@
-
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
@@ -8,7 +7,7 @@
 
   <aside>
   <div class="side-bar theme_sideMenu">
-    <div class="side-bar-inner mt10">
+    <div class="side-bar-inner">
       <%-- <div class="user-panel">
 	<div class="media">
 		<div class="media-body">
@@ -256,7 +255,7 @@
 	                   <li class="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}">
 														  
 							  <a href="javascript:void(0)" class="expencesLi" title="Expenses">
-								<span><i class="fa fa-money"></i></span>
+								<span><i class="fa fa-calculator"></i></span>
 							  <i class="subMenu">Expenses</i> <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
@@ -279,17 +278,22 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='/expenses'/>" title="My Expenses"><span><i class="fa fa-money"></i></span><i class="subMenu">My Expenses</i></a></li>
+	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='/expenses'/>" title="My Expenses"><span><i class="fa fa-calculator"></i></span><i class="subMenu">My Expenses</i></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
-	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval"><span><i class="fa fa-money"></i></span><i class="subMenu">Expenses Approval</i></a></li>
+	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval"><span><i class="fa fa-calculator"></i></span><i class="subMenu">Expenses Approval</i></a></li>
 	                 </c:if>
 
           </c:forEach>
          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
-          <li class=""><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
+          <li class="${sessionData.nav == 'Payroll' ? 'side-nav-active' : ''}"><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
           	</c:if>	
+          	
+          	<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_USER'}">
+          <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
+          	</c:if>	
+          	
         </ul>
       </div>
     </div>

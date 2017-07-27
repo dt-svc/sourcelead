@@ -49,6 +49,9 @@ text-align: left;
 .container {
 padding-bottom: 55px;
 }
+#campaigncandidatesList .dataTables_info {
+padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
+}
 </style>
 <body>
 <div class="wraper"> 
@@ -69,12 +72,12 @@ padding-bottom: 55px;
 		<div class="row">
 		  		<div id="loading"></div>
 		  			<form id="candidate_form" name="candidate_form" method="post" >
-				          <div class="col-md-8  project_wrap_table" id="candidateDivId">
+				          <div class="col-md-8  project_wrap_table publicpageTop" id="candidateDivId">
 				          
 							  <div class="clearfix">
 							  <h4>Candidates / Consultants</h4>
 							  </div>
-							  <div id="campaigncandidatesList"></div>
+							  <div id="campaigncandidatesList" class="datatable_filter positionRelative"></div>
 							  
 							  <div class="clearfix" id="fromEmailDetails">
 								  <div class="col-md-10 mt col-md-offset-3">
@@ -87,7 +90,7 @@ padding-bottom: 55px;
 								    <div class="clearfix"></div>
 						          <div class="col-md-6 mt">
 						            <div class="input-group">
-						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
+						              <label class="input-group-btn"> <b class="btn btn-default"><i class="fa fa-paperclip"></i>
 						                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
 						                </b> </label>
 						              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="File Attachment">
@@ -164,14 +167,17 @@ function cancel(){
 		    var form = $('#candidate_form')[0];
 	  		var formData = new FormData(form)
 			
-			var candidatesIds = [];
-			 $("input[name='candidatesIds[]']:checked").each( function (i) {
-				 candidatesIds[i] = $(this).val();
+			 var candidatesIds = [];
+			 var oTable = $('#candidateTable').dataTable();
+			 var rowcollection =  oTable.$("input[name='candidatesIds[]']:checked", {"page": "all"});
+			 rowcollection.each(function(index,elem){
+				candidatesIds[index] = $(elem).val();
 			});
+				
 			 
 			if(candidatesIds.length > 0){
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-				  $.ajax({
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				   $.ajax({
 					    type : "POST",
 			    	    data: formData,
 			    	    contentType : 'application/json; charset=utf-8',
@@ -217,7 +223,7 @@ var email = document.getElementById("email").value;
 var sourceleadUrl = '${sourceleadUrl}';
 
 if(email){
-$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
 		type : "POST",
 		url : sourceleadUrl+"/validateCampaignToEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&UUID="+UUID,
@@ -311,7 +317,7 @@ function pagination(){
     $('#candidateTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {

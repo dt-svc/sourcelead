@@ -764,13 +764,21 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setSkillPercentage((float)(skillRoundOff));
 					candidateIndex.setTotalSkillPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore()));
 					
-					double visaTypeRoundOff = Math.round(visaTypePercentage * 100.0) / 100.0;
+					double visaTypeRoundOff = Math.round(visaPer * 100.0) / 100.0;
 					candidateIndex.setVisaTypePercentage((float)(visaTypeRoundOff));
-					candidateIndex.setTotalVisaTypePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore()));
+					if(recommendedCustomizeScore.getCustomizeVisatypecore() != null){
+						candidateIndex.setTotalVisaTypePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore()));	
+					}else{
+						candidateIndex.setTotalVisaTypePercentage(0);
+					}
 					
-					double educationRoundOff = Math.round(educationPercentage * 100.0) / 100.0;
+					double educationRoundOff = Math.round(eduPer * 100.0) / 100.0;
 					candidateIndex.setEducationPercentage((float)(educationRoundOff));
-					candidateIndex.setTotalEducationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore()));
+					if(recommendedCustomizeScore.getCustomizeEducationScore() != null){
+						candidateIndex.setTotalEducationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore()));	
+					}else{
+						candidateIndex.setTotalEducationPercentage(0);
+					}
 					
 					
 					candidateIndex.setExpPercentage(expPercentage);
@@ -846,17 +854,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType) {
+		float visaPer = 0;       
        if(visaType !=null){
     	   if(set != null && set.size() >0){
    			for(String visa : set){
    					if(visaType.contains(visa)){
-   						matchedSkillCount++;
+   						return visaPer = 10;
    					}
    			}
    		}
    
        }
-				return matchedSkillCount*visaTypePercentage;
+	return visaPer;
 		
 	}
 	
@@ -870,14 +879,17 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education) {
-		if(set != null && set.size() >0){
-			for(String edu : set){
-					if(education.contains(edu)){
-						matchedSkillCount++;
+		float eduPer = 0; 
+		if(education !=null){
+				if(set != null && set.size() >0){
+					for(String edu : set){
+							if(education.contains(edu)){
+								return eduPer = 10;
+							}
+						}
 					}
-			}
-		}
-		return matchedSkillCount*educationPercentage;
+		 }
+		return eduPer;
 		
 	}
 	
@@ -1020,7 +1032,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					canTotalDays = 0;
 				}
 			}
-			if(totalDays <= canTotalDays){
+			if(canTotalDays <= totalDays){
 				noticePeriod = Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore());
 			}
 		}else{

@@ -1671,7 +1671,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		List<SubmissionApproverHierarchy> sahList =session.createQuery(query.toString()).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate",sqlEndDate).setLong("projectMemberId", sah.getSubmissionId().getProjectMembers().getId()).setCacheable(true).list(); 
 		if(null != sahList && !sahList.isEmpty()){
 			for(SubmissionApproverHierarchy subSah : sahList){
-				if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
+				if(Constants.PAYABLES.equalsIgnoreCase(invoiceType)){
 					subSah.setBillingStatus(status);
 				}else{
 					subSah.setInvoiceStatus(status);

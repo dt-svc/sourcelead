@@ -16,10 +16,72 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
+<script type="text/javascript" src="resources/js/responsiveCarousel.min.js"></script>
+<script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>
+
 
 <script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+	}
+</script>
+
+
+<script type="text/javascript">
+$(function(){
+  $('.crsl-items').carousel({
+    visible: 3,
+    itemMinWidth: 180,
+    itemEqualHeight: 370,
+    itemMargin: 9,
+  });
+  
+  $("a[href=#]").on('click', function(e) {
+    e.preventDefault();
+  });
+  
+});
+</script>
+
+
+	
+<script>
+	$(document).ready(function() {
+		$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});
+	});
+</script>
+
+<script>
+		function logoutFormSubmit() {
+			document.getElementById("logoutForm").submit();
+		}
+</script>
+
+<script>
+  function navtoggle(elementRef){
+	  
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
+  
+  $(".offOrg").click(function( event ) {
+	  event.stopPropagation();
+	});
+  </script>
+  
+ <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
 </script>
     
@@ -27,6 +89,35 @@
 	<section class="welcoBg">
 		<section class="welcoInn">
 		  <div class="welcoHead">
+				 
+	 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+		<div class="offOrg">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent positionRelative">
+				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     </div>
+				                   </div>
+				                   <div class="pull-left mt5">
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
+	              </ul>
+	            </div>
+	            </div>
+          </c:if>
+				 
 				 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
 					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
@@ -80,22 +171,22 @@
 				</div>
 				
 				
-<c:if test="${SourceLeadWeb_candidateOnBoarding.managerUserId != null}">
-		<h4>Manager</h4>
-        <div class="welMana">
-			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_managerUserId}'/>"></img>
-			<span>
-				<b><u>Name</u>: ${SourceLeadWeb_managerName}</b>
-			</span>
-			<div class="clearfix"></div>
-        </div>
-        <br>
-</c:if>				
+			 <c:if test="${SourceLeadWeb_OnboardingManagerUserId != null}">
+					<h4>Manager</h4>
+			        <div class="welMana">
+						<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_OnboardingManagerUserId}'/>"></img>
+						<span>
+							<b><u>Name</u>: ${SourceLeadWeb_managerName}</b>
+						</span>
+						<div class="clearfix"></div>
+			        </div>
+			        <br>
+			</c:if>	 			
 		
-<c:if test="${SourceLeadWeb_candidateOnBoarding.teamId != null}">
+	<c:if test="${SourceLeadWeb_OnboardingTeamOwnerUserId != null}">
 		<h4>Team Owner</h4>
         <div class="welMana">
-			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_teamOwnerUserId}'/>"></img>
+			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWebSourceLeadWeb_OnboardingTeamOwnerUserId}'/>"></img>
 			<span>
 				<b><u>Name</u>: ${SourceLeadWeb_teamOwnerName}</b>
 				<b><u>Role</u>: ${SourceLeadWeb_teamOwnerRole}</b>
@@ -142,7 +233,7 @@
   </div>		  
 		  
 <div class="welBtns">
-<input type="button"  value="Proceed to next step"  onClick="javascript:location.href = '<c:url value='/onboardingCandidateSetp2'/>'"  class="Brig">
+<input type="button"  value="Proceed to next step"  onClick="javascript:window.location.href = '<c:url value='/onboardingCandidateSetp2'/>'"  class="Brig">
 <div class="clearfix"></div>
 </div>
 		  
@@ -153,30 +244,8 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
- <script type="text/javascript" src="resources/js/responsiveCarousel.min.js"></script>
- <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>
 
 
-<script type="text/javascript">
-$(function(){
-  $('.crsl-items').carousel({
-    visible: 3,
-    itemMinWidth: 180,
-    itemEqualHeight: 370,
-    itemMargin: 9,
-  });
-  
-  $("a[href=#]").on('click', function(e) {
-    e.preventDefault();
-  });
-});
-</script>
-
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
 
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
@@ -186,14 +255,3 @@ $(function(){
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
-
-
-	
-	<script type="text/javascript">
-	
-		$(document).ready(function() {
-			$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});
-		});
-	
-	</script>
-

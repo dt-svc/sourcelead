@@ -174,7 +174,7 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	         var timesheetFrequency = $("[name='timesheetFrequency']").val();
 	         approvalStatus =$("#timesheetSubmissionStatus").val();
 	         $("#timesheetDivByTab").empty();
-	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
@@ -498,7 +498,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		   var submissionIds = $("#submissionId").val();
 		   $("#timesheetDivByTab").empty();
 	       $("#timesheetDivByTab").append('<div class="loadTime" id="loadTime"></div>'); 
-		   $("#loadTime").attr('style','position:absolute; width:100%; height:350px;top:-38px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		   $("#loadTime").attr('style','position:absolute; width:100%; height:350px;top:-38px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 		   $.ajax({
 	          type : "POST",
@@ -629,6 +629,13 @@ function deleteSubmissionDocument(submissionDocumentId){
 }
 </script>
 	
+	
+<script type="text/javascript">
+function viewSubmissionDocument(submissionDocumentId,title){
+	  var sourceleadUrl ='${sourceleadUrl}';
+		window.open(sourceleadUrl+'/viewDocument/'+title+'?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
+}
+</script>
 	
 	<!-- Content Area Ends--> 
 	<div class="time_pop" id="timeSheetErrorMsg"></div>
@@ -1133,7 +1140,7 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 	         var frequencyMonth = $("#frequencyMonth").val();
 	         var timesheetFrequency = $('#timesheetFrequency').val();
 	         $("#timesheetApprovalDivByMonthAndTimesheetFrequency").empty();
-	         $("#timesheetApprovalDivByMonthAndTimesheetFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#timesheetApprovalDivByMonthAndTimesheetFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -1153,7 +1160,7 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 	function timesheetApprovalDivByFrequency(frequency){   
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         $("#timesheetApprovalDivByFrequency").empty();
-	         $("#timesheetApprovalDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#timesheetApprovalDivByFrequency").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -1172,7 +1179,7 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 				
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         $("#timesheetApprovalDivByStatus").empty();
-	         $("#timesheetApprovalDivByStatus").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#timesheetApprovalDivByStatus").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -1395,7 +1402,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 <script>
 function pagination(){ 
     $('#example').DataTable( {
-    	"scrollX": true,    	
+    	//"scrollX": true,    	
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
@@ -1405,7 +1412,8 @@ function pagination(){
     		"sSearch": "",
     		"sZeroRecords": "", "sEmptyTable": ""
     	}
-    } );
+    });
+    $('#example').wrap("<div class='overflow_Auto width100percnt'></div>");
 }
 </script>
 

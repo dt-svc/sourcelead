@@ -138,7 +138,7 @@ public class OrgDocumentsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
-		
+		List<User> ownersList = null;
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),type);
 		for (OrgSpoc orgSpoc : orgSpocsList) {
@@ -150,8 +150,15 @@ public class OrgDocumentsRestController {
 			
 		}
 		
-		//to fetch Owners list
-		List<User> ownersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
+		if(null != type){
+			if("Client".equalsIgnoreCase(type)){
+				ownersList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CLIENT));
+			}else{
+				ownersList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
+			}
+		}
+		
+		
 		
 		if(orgDocument != null){
 			orgDocument.setOrgSpocsList(orgSpocsList);

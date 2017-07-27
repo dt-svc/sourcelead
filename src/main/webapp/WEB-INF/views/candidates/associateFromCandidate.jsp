@@ -15,7 +15,7 @@
 	
 	<script type="text/javascript">
 		window.onload = function () {
-			getAllCountries();
+			initLocationAuto('associateLocation','associateCountry','associateState','associateCity','associateZipCode','associateLatitude','associateLongitude');
 			disableMonths();
 			getUsersByRole();
 			var type = '${type}';
@@ -133,28 +133,58 @@
         </div>
         
         <div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
-                 </select>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<select  class="chosen-select form-control" name="state" id="state" field-name="State"  >
-                 </select>
-				</div>
-		 </div>
+          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9" id="locationField">
+          <div class="positionRelative">
+          <input class="form-control positionRelative" id="associateLocation" name="location" placeholder="Enter your address" type="text" field-name="Locatin" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('associateLocation','associateCountry','associateState','associateCity','associateZipCode');"></i>
+          </div>
+          </div>
+        </div>
+		
 		
 		<div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  >
-                 </select>
-			</div>
-		</div>
+          <label class="col-md-3">Country</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}"  type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateState" name="state" placeholder="Enter your State" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">City</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">ZipCode</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          </div>
+        </div>
+        
+		
+		<div class="form-group hidden">
+          <label class="col-md-3">Lat</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateLatitude" name="latitude" type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group hidden" >
+          <label class="col-md-3">Long</label>
+          <div class="col-md-9">
+          <input class="form-control" id="associateLongitude" name="longitude"  type="text"></input>
+          </div>
+        </div> 
         
         <div class="form-group">
           <label class="col-md-3">Address</label>
@@ -449,7 +479,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/associatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="cancelAssociate();" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -471,7 +501,12 @@
      2.parameter : csrf token,con.
      3.ajax url implementation in CandidateRestController.
     --%>
- 
+ <script>
+ function cancelAssociate(){
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 location.replace(sourceleadUrl+"/associatesList");
+ }
+ </script>
 <script type="text/javascript">
 	function storeCandidate() {
 		
@@ -560,114 +595,6 @@ function validate_fileupload(fileName)
     return false;
 }
 </script>
-<script type="text/javascript">
-function getAllCountries(){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-
-<script>
-function getStates(state){
-	
-	var countryName = $("#country").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != 'undefined' && json[i] == state){
-	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
-	            	}else{
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');	
-	            	}
-	            	
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---Select City---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(city){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	
-	            	 if(city != null && city != 'undefined' && json[i] == city){
-	            		$('#city').append('<option value="'+city+'" selected>'+json[i]+'</option>');
-	            	}else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');	
-	            	 } 
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<!-- Country,State,City Script Ends Here -->
-
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
@@ -679,10 +606,6 @@ function getCities(city){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		   $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       
 	       $("#candidateSkills").val('').trigger("chosen:updated");
 	       $("#candidateEducation").val('').trigger("chosen:updated");
 	       
@@ -734,29 +657,7 @@ function getCities(city){
 						       
 			    	         }
 		    	});
-		    
-		  /*   chosen.search_field.on('keydown keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	preventTabkey(e);
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-		            
-		            //to doesn't allow duplicates
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-		            
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
-		    //Adding Customized Skills to the list
+		 
 		    
 		    //Adding Customized Educations to the list
 	        var selectone, chosenone;
@@ -786,13 +687,7 @@ function getCities(city){
 		    }); 
 		    //Adding Customized Educations to the list
 	       
-	       
-	       $("#country").on('change', function (e) {
-	    	   getStates();
-	       });
-	       $("#state").on('change', function (e) {
-	    	   getCities();
-	       });
+	      
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1349,44 +1244,71 @@ function getCandidateDetails(){
 						});
 		        	  $("#candidateSkills").trigger("chosen:updated");
 		        	 
-		        	 
-		        	 /*  if(json['skillsName'] != null && json['skillsName'] != "" && json['skillsName'] != 'undefined'){
-			        		var skills = json['skillsName'];
-					    	var totalSkills = new Array();
-					    	totalSkills = skills.split(",");
-					        for (var i = 0; i < totalSkills.length; i++) { 
-					        	 var customSkill = totalSkills[i];
-					        	 $('#candidateSkills').append('<option value=\''+customSkill+'\' selected>'+customSkill+'</option>');
-					        }
-	 		        		$("#candidateSkills").trigger("chosen:updated");
-			     
-			        	 }else{
-			        		 $("#candidateSkills").val('').trigger("chosen:updated");
-			        		 $("input[name=candidateSkills]").val(''); 
-			        	 }  */
-		        	 
-		        	 
+		        	  
+		        	  $('#visa').find('option').remove().end();
+		        	   $.each( json.allAndCandidateVisa, function( i, visa ){
+						  var existed = 0;
+			                if(json.visaType != null && json.visaType != 'undefined' && json.visaType != ''){
+				                var res = [];
+				                res = json.visaType.split(",");
+				                res.forEach(function(item) {
+				                	if(visa == item){
+				                		existed = 1;
+				                		$('#visa').append('<option value=\''+visa+'\' selected>'+visa+'</option>');
+				                	}
+				                });
+			                }
+			                if(existed == 0){
+			                	$('#visa').append('<option value=\''+visa+'\'>'+visa+'</option>');
+			                }
+						  
+						});
+		        	  $("#visa").trigger("chosen:updated");
+		        	  
+		        	  
+		        	  
 		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
+		        		 $("#associateCountry").val(json['country']);
 		        	 }else{
-		        		 $("select[name=country]").val('');
+		        		 $("#associateCountry").val('');
 		        	 }
-		        	
+		         
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getStates(json['state']);
+		        		 $("#associateState").val(json['state']);
 		        	 }else{
-		        		 $("#state").val('').trigger("chosen:updated");
-		        		 $("select[name=state]").val('');
+		        		 $("#associateState").val('');
 		        	 }
 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 $("select[name=city]").val(json['city']);
-		        		 getCities(json['city']);
+		        		 $("#associateCity").val(json['city']);
 		        	 }else{
-		        		 $("#city").val('').trigger("chosen:updated");
-		        		 $("select[name=city]").val('');
+		        		 $("#associateCity").val('');
 		        	 }
+		        	 
+		        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+		        		 $("#associateLocation").val(json['location']);
+		        	 }else{
+		        		 $("#associateLocation").val('');
+		        	 }
+		        	 
+		        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+		        		 $("#associateZipCode").val(json['zipCode']);
+		        	 }else{
+		        		 $("#associateZipCode").val('');
+		        	 }
+		        	 
+		        	 if(json['latitude'] != null && json['latitude'] != "" && json['latitude'] != 'undefined'){
+		        		 $("#associateLatitude").val(json['latitude']);
+		        	 }else{
+		        		 $("#associateLatitude").val('');
+		        	 }
+
+		        	 if(json['longitude'] != null && json['longitude'] != "" && json['longitude'] != 'undefined'){
+		        		 $("#associateLongitude").val(json['longitude']);
+		        	 }else{
+		        		 $("#associateLongitude").val('');
+		        	 }
+		        	 
 		        	 
 		        	 if(json['vendorName'] != null && json['vendorName'] != "" && json['vendorName'] != 'undefined'){
 		        		 $("select[name=vendors]").val(json['vendorName']);

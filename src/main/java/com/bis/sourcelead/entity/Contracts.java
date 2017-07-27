@@ -190,6 +190,9 @@ public class Contracts {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
+	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
+	private String rejectedReason;
+	
 	@Transient
 	private String ownerName;
 	
@@ -217,6 +220,9 @@ public class Contracts {
 	@Transient
 	List<Contracts> fullTimeoffercontractsList;
 
+	@Transient
+	List<ContractRequestDocuments>	contractRequestDocumentsList;
+	
 	@Transient
 	private String tempEnvId;
 
@@ -298,6 +304,17 @@ public class Contracts {
 	@Transient
 	private Long ownerUser;
 	
+	
+	public List<ContractRequestDocuments> getContractRequestDocumentsList()
+	{
+		return contractRequestDocumentsList;
+	}
+
+	public void setContractRequestDocumentsList(List<ContractRequestDocuments> contractRequestDocumentsList)
+	{
+		this.contractRequestDocumentsList = contractRequestDocumentsList;
+	}
+
 	public String getTempUUID()
 	{
 		return tempUUID;
@@ -1018,4 +1035,15 @@ public class Contracts {
 		this.candidate = candidate;
 	}
 
+	public String getRejectedReason()
+	{
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason)
+	{
+		this.rejectedReason = rejectedReason;
+	}
+
+	
 }

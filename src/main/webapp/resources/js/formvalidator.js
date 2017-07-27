@@ -377,7 +377,12 @@ jQueryFormUtils.validateEmail = function(email) {
  * @return {Boolean}
  */
 jQueryFormUtils.validatePhoneNumber = function(tele) {
-    var numPlus = tele.match(/\+/g);
+    /**
+     * commented by - pavan kumar
+     * to allow () in the phone number.
+     */
+	
+	/*var numPlus = tele.match(/\+/g);
     var numHifen = tele.match(/-/g);
 
     if ((numPlus !== null && numPlus.length > 1) || (numHifen !== null && numHifen.length > 4)) {
@@ -388,7 +393,25 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
     }
 
     tele = tele.replace(/([-|\+])/g, '');
-    return tele.length > 8 && tele.match(/[^0-9]/g) === null;
+    return tele.length > 8 && tele.match(/[^0-9]/g) === null;*/
+    tele = tele.replace(/([-|\+])/g, '');
+	return tele.length > 8 &&  tele.match(/^(?=.*[0-9])[- +()0-9]+$/);
+};
+
+
+jQueryFormUtils.validateUSPhoneNumber = function(tele) {
+   /* var numPlus = tele.match(/\+/g);
+    var numHifen = tele.match(/-/g);
+
+    if ((numPlus !== null && numPlus.length > 1) || (numHifen !== null && numHifen.length > 4)) {
+        return false;
+    }
+    if (numPlus !== null && tele.indexOf('+') !== 0) {
+        return false;
+    }
+*/
+   /* tele = tele.replace(/([-|\+])/g, '');*/
+    return tele.length > 8 && tele.match(/^(?=.*[0-9])[- +()0-9]+$/) === null;
 };
 
 /**

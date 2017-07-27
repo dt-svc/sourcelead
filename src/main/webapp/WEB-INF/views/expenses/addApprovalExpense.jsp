@@ -7,6 +7,18 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <jsp:include page="addExpenseEntries.jsp"></jsp:include>
+ 
+ <script type="text/javascript">
+		window.onload = function () {
+			var entrySize = '${expenses.expensesEntries.size()}';
+			if(entrySize>0){
+				$('#maxRecCount').val('${2*expenses.expensesEntries.size()+1}');
+			}
+			else{
+				$('#maxRecCount').val('1');
+			}
+		 };
+</script>
 
 <div class="wraper"> 
 <!-- View Content Area Starts-->
@@ -45,13 +57,13 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="expensePurpose" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off" id="expensePurpose" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 							 <c:if test="${fn:length(projectsList) gt 1}">
 								<option value="">Select Project</option>
 							</c:if>
@@ -64,7 +76,7 @@
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" autocomplete="off" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
 				</div>               
 	            <div class="form-group">
@@ -72,10 +84,10 @@
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
@@ -83,7 +95,7 @@
 	             <div class="form-group" id="errEmployeeRemove">
 				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="removeErrProjectEmployee();">
+					<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="removeErrProjectEmployee();">
 					    <c:forEach var="projectMember" items="${projectMembers}">
 							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
 					   </c:forEach>
@@ -103,7 +115,7 @@
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
-	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
@@ -111,24 +123,24 @@
 	<table id="categoryTable">
 	    <thead>
 			<tr id="divEntityTsRow0">
-				<th>Exp Category</th>
 				<th>Date</th>
-				<th>Payment Mode</th>
-				<th>Currency</th>
-				<th>Amount</th>
+				<th>Exp Category</th>
 				<th>Description</th>
+				<th>Amount</th>
+				<th>Currency</th>
+				<th>Payment Mode</th>
 				<th>Action</th>
 			</tr>
 		</thead>	
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
+			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
 			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
@@ -144,7 +156,7 @@
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 								<select id="categoryType${entryCount.count}" name="categoryType${entryCount.count}" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
 								   <option value="">Select Category Type</option>				 							   
-								   <c:forEach var="expCat" items="${expensesCategoryList}">
+								   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
 						                 <option value="${expCat.id},${expCat.allowedAmount}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
 		                	       </c:forEach>
 								</select>
@@ -260,9 +272,12 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var accept = 'accept';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=accept",
+		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
 		success : function(data) {
 			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		},
@@ -294,12 +309,14 @@ function cancelReOpenRejected(){
 function storeReopenRejectedReason(expenseId,reOpenedUserId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var superUserId = '${SourceLeadWeb_superUserId}';
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var reason = document.getElementById("reOpenRejectedReason").value;
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason,	    	   
+		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
 		    success: function(data) {
 		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
 		    }

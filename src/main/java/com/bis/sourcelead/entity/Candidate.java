@@ -91,6 +91,18 @@ public class Candidate implements Serializable{
 	@Column(name = "ADDRESS")
 	private String address;
 	
+	@Column(name = "LOCATION")
+	private String location;
+	
+	@Column(name = "ZIPCODE")
+	private String zipCode;
+	
+	@Column(name = "LATITUDE")
+	private String latitude;
+	
+	@Column(name = "LONGITUDE")
+	private String longitude;
+	
 	@Column(name = "EXPERIENCE_YEARS")
 	private String experienceYears;
 	
@@ -346,6 +358,11 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private LinkedHashSet<String> allAndCandidateVisa;
 	 
+	 @Transient
+	 private String candidateResumeName;
+	 
+	 @Transient
+	 private String candidateResumeFileType;
 	 
 	 @Transient
 	 private List<Contracts> contractsList;
@@ -468,6 +485,46 @@ public class Candidate implements Serializable{
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+
+	public String getLocation() {
+		return location;
+	}
+
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 
@@ -1336,6 +1393,26 @@ public class Candidate implements Serializable{
 
 	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
 		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
+
+	public String getCandidateResumeName() {
+		return candidateResumeName;
+	}
+
+
+	public void setCandidateResumeName(String candidateResumeName) {
+		this.candidateResumeName = candidateResumeName;
+	}
+
+
+	public String getCandidateResumeFileType() {
+		return candidateResumeFileType;
+	}
+
+
+	public void setCandidateResumeFileType(String candidateResumeFileType) {
+		this.candidateResumeFileType = candidateResumeFileType;
 	}
 
 	

@@ -3,11 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -195,7 +190,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 		        		result = result  +'	   <img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+loginUserId+'"/>';
 		        		if(report.toStage == "SUBMISSION"){
 			        		 result = result  +'<span>Added by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			 result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			 result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
 		        		}else if(report.toStage == "OFFERMADE"){
 		        			result = result  +'<span>Issued offer by '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
 		        			result = result  +'<a href=\"'+sourceleadUrl+'/offerDownloadDocument?resumeId='+report.offerResumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
@@ -205,7 +200,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 		        			result = result  +'<span>Shortlisted by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
 		        		} else if(report.toStage == "REQUEST_SENT"){
 		        			result = result  +'<span>Added & Request Sent by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
 		        		} else if(report.toStage == "REJECTED"){
 		        			 result = result  +'<span>Request Rejected By '+report.userName+' <b>'+report.createdDateStr+'</b><h7>Reject Reson : '+report.requirementReson+'</h7></span>';
 		        		} else if(report.toStage == "SUBMISSION_ACCEPT"){
@@ -224,7 +219,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 		        			result = result  +'<span>Feedback by '+report.interviewerName+' <b>'+report.createdDateStr+'</b></span>';
 		        		}else if(report.toStage == "SUBMIT_TO_CLIENT"){
 		        			result = result  +'<span>Submit to Client '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
-		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><div class="clearfix"></div>';
+		        			result = result  +'<a href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeid+'\"><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onclick="getHistoryCandiResume(\''+report.resumeid+'\',\''+report.fileName+'\');"></a><div class="clearfix"></div>';
 		        		}else{
 		        			result = result  +'<div class="clearfix"></div>';
 		        		}
@@ -246,6 +241,16 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
 }
 
 </script>
+
+<script>
+function getHistoryCandiResume(uuid,title){
+	var sourceleadUrl = '${sourceleadUrl}';
+		if (uuid != null && uuid != "") {
+			window.open(sourceleadUrl + '/viewResume/' + title + '?resumeUUID='+ uuid, title, "height=600,width=600");
+		}
+	}
+</script>
+
           
           <script>
 function getRateListDiv(candidateId,submissionId){

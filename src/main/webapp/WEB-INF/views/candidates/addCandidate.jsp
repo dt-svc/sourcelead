@@ -3,24 +3,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
-<script src="resources/js/location.js"></script> 
- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB59YbHoFDIkjVrDVNKBu1DkgYUVdxhMCE&callback=initMap" type="text/javascript"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
-
-
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
+
 	
 	<link href="resources/css/candidate-common.css" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
-			getAllCountries();
+			/* getAllCountries(); */
+			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','');
 			disableMonths();
 		 };
 	</script>
@@ -30,7 +26,6 @@
 			document.getElementById("addcandidate_form").reset();
 		});
 	</script>
-	
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -100,32 +95,59 @@
             <input type="text" class="form-control" id="alternateMobilePhone" name="alternateMobilePhone"   field-name="Alternative Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
         </div>
-        
-        
         <div class="form-group">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
-                 </select>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<select  class="chosen-select form-control" name="state" id="state" field-name="State"  >
-                 </select>
-				</div>
-		 </div>
+          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9" id="locationField">
+          <div class="positionRelative">
+          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter your address"  type="text" field-name="Locatin" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
+          </div>
+          </div>
+        </div>
+		
 		
 		<div class="form-group">
-			<label class="col-md-3">City</label>
-			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  >
-                 </select>
-			</div>
-		</div>
+          <label class="col-md-3">Country</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateCountry" name="country" placeholder="Country" value ="${loginCountryName}" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateState" name="state" placeholder="State" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">City</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateCity" name="city" placeholder="City" type="text" readonly></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">ZipCode</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Zip code" type="text"></input>
+          </div>
+        </div>
+        
 		
+		<div class="form-group hidden">
+          <label class="col-md-3">Lat</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateLatitude" name="latitude" type="text"></input>
+          </div>
+        </div>
+        
+        <div class="form-group hidden" >
+          <label class="col-md-3">Long</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateLongitude" name="longitude"  type="text"></input>
+          </div>
+        </div> 
 		
         
         <div class="form-group">
@@ -388,13 +410,17 @@
         <div class="form-group">
             <label class="col-md-3"></label>
              <div class="col-md-9">
-               <div class="checkbox checkBox">
+              <div class="checkbox checkBox">
                  <label>
-                   <input type="checkbox" value="Y" name="email">
+                   <input type="checkbox" value="Y" name="inviteEmail">
                    Invite to SourceLead</label>
                </div>
                 </div>
          </div>
+           
+           
+         
+        
          
           <div class="clearfix"></div>
           
@@ -402,78 +428,25 @@
           <label class="col-md-3"></label>
         </div> 
         
-        <!--   <div class="form-group">
-          <label class="col-md-3">Location</label>
-          <div class="col-md-9" id="locationField">
-          <input class="form-control" id="autocomplete" placeholder="Enter your address" type="text"></input>
-          </div>
-        </div>
-		
-		
-		<div class="form-group">
-          <label class="col-md-3">Country</label>
-          <div class="col-md-9">
-          <input class="form-control" id="country" placeholder="Enter your Country" type="text"></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-          <input class="form-control" id="administrative_area_level_1" placeholder="Enter your State" type="text"></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">City</label>
-          <div class="col-md-9">
-          <input class="form-control" id="locality" placeholder="Enter your City" type="text"></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">ZipCode</label>
-          <div class="col-md-9">
-          <input class="form-control" id="postal_code" placeholder="Enter your Zip code" type="text"></input>
-          </div>
-        </div>
-        
-		
-		<div class="form-group">
-          <label class="col-md-3">Lat</label>
-          <div class="col-md-9">
-          <input class="form-control" id="latitude"  type="text"></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">Long</label>
-          <div class="col-md-9">
-          <input class="form-control" id="longitude"  type="text"></input>
-          </div>
-        </div> 
-         -->
-        
-        
-        
         
         <div class="clearfix"></div>
-      </div>
-       
+      </div> 
     </div>
+    
+    
     <div class="form-footer clearfix">
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
+    
      </form:form>
      
     </div>
-
-
+    
     <!-- Content Area Ends--> 
   </section>
 	<!-- Footer Area -->
@@ -584,103 +557,6 @@ function validate_fileupload(fileName)
     return false;
 }
 </script>
-<script type="text/javascript">
-function getAllCountries(){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-        success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == '${SourceLeadWeb_loginCountryName}'){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-            getStates();
-        },
-        error: function(e){
-        }
-    });
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select State---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').append('<option value="">---Select City---</option>');
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---Select State---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select City---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select City---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
-
-
-<!-- Country,State,City Script Ends Here -->
 
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
@@ -693,9 +569,9 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			}
 			
-		   $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
+		   /* $("#country").chosen(); */
+	       /* $("#state").chosen();
+	       $("#city").chosen(); */
 	       
 	       
 	       
@@ -778,12 +654,12 @@ function getCities(){
 		    //Adding Customized Educations to the list
 	       
 	       
-	       $("#country").on('change', function (e) {
+	      /*  $("#country").on('change', function (e) {
 	    	   getStates();
 	       });
 	       $("#state").on('change', function (e) {
 	    	   getCities();
-	       });
+	       }); */
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -1037,109 +913,4 @@ function  removeValiationVendorContact() {
 		 }); 
  }
  </script>
-
  
- 
- 
-
-<script>
-// This example displays an address form, using the autocomplete feature
-// of the Google Places API to help users fill in the information.
-
-$("#autocomplete").on('focus', function () {
-    geolocate();
-});
-
-var placeSearch, autocomplete;
-var componentForm = {
-    locality: 'long_name',
-    administrative_area_level_1: 'short_name',
-    country: 'long_name',
-    postal_code: 'short_name'
-};
-
-function initialize() {
-    // Create the autocomplete object, restricting the search
-    // to geographical location types.
-    autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
-        types: ['geocode']
-    });
-    // When the user selects an address from the dropdown,
-    // populate the address fields in the form.
-    google.maps.event.addListener(autocomplete, 'place_changed', function () {
-        fillInAddress();
-    });
-}
-
-// [START region_fillform]
-function fillInAddress() {
-    // Get the place details from the autocomplete object.
-    var place = autocomplete.getPlace();
-	document.getElementById("latitude").value = place.geometry.location.lat();
-    document.getElementById("longitude").value = place.geometry.location.lng();
-	
-    for (var component in componentForm) {
-        document.getElementById(component).value = '';
-        document.getElementById(component).disabled = false;
-    }
-
-    // Get each component of the address from the place details
-    // and fill the corresponding field on the form.
-    for (var i = 0; i < place.address_components.length; i++) {
-        var addressType = place.address_components[i].types[0];
-        if (componentForm[addressType]) {
-            var val = place.address_components[i][componentForm[addressType]];
-            document.getElementById(addressType).value = val;
-        }
-    }
-}
-// [END region_fillform]
-
-
-// [START region_geolocation]
-// Bias the autocomplete object to the user's geographical location,
-// as supplied by the browser's 'navigator.geolocation' object.
-function geolocate() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            document.getElementById("latitude").value = latitude;
-            document.getElementById("longitude").value = longitude;
-            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
-        });
-    }
-
-}
-
-initialize();
-
-</script>
-<script type="text/javascript">
-
-function initialize() {
-
-
- var myLatLng = {lat: 17.385044, lng: 78.486671}; 
-     var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: myLatLng,
-    scrollwheel: false,
-    draggable:true,
-
-
-
-  });
-     var image='logo.png';
-     var marker = new google.maps.Marker({
-    position: myLatLng,
-    map: map,
-    icon:image
-
-  });
-
-
-}
-
-</script>

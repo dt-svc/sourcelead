@@ -180,7 +180,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        BaseColor myColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myColor);
 		        StringBuilder userStyle = new StringBuilder();
-		        userStyle.append("MY EXPENSES").append("-").append(orgLoc.getOrgLocationName()).append(" ");
+		        userStyle.append("EMPLOYEE EXPENSES").append(" ");
 	            PdfPTable table = new PdfPTable(myExpensesHeaders.length);
 		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
@@ -224,13 +224,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        
 			        com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
 			        if(approverType.equalsIgnoreCase("USER")){
-		            StringBuilder reqNameBuilder=new StringBuilder();
+		            StringBuilder expenseId=new StringBuilder();
 		            StringBuilder locBuilder=new StringBuilder();
 		            StringBuilder Client=new StringBuilder();
 		            StringBuilder StDate=new StringBuilder();
 		            StringBuilder edDate=new StringBuilder();
 		            StringBuilder purposeStringBuilder =new StringBuilder();
-			        orderedList.add(new ListItem(reqNameBuilder.append("Expense Id :").append(expenseDetails.getExpenseId()).toString()));
+			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenseDetails.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(expenseDetails.getProjectMembers().getProjects().getProjectName()).toString()));
 			       if(null != expenseDetails.getClientName()){
 			    	   orderedList.add(new ListItem(Client.append("Client :").append(expenseDetails.getClientName()).toString()));
@@ -255,6 +255,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
 			       }else if(approverType.equalsIgnoreCase("APPROVER")){
+			    	   StringBuilder expenseId=new StringBuilder();
 			    	   	StringBuilder nameBuilder=new StringBuilder();
 			    	   	StringBuilder emailBuilder=new StringBuilder();
 			            StringBuilder mobileBuilder=new StringBuilder();
@@ -265,7 +266,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            StringBuilder StDate=new StringBuilder();
 			            StringBuilder edDate=new StringBuilder();
 			            StringBuilder purposeStringBuilder =new StringBuilder();
-			            
+			            orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenseDetails.getExpenseId()).toString()));
 			            if(expenseDetails.getProjectMembers() != null){
 			            	if(expenseDetails.getProjectMembers().getEmployee()!= null){
 			            		if(expenseDetails.getProjectMembers().getEmployee().getUser()!= null){
@@ -425,7 +426,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		
 		for (ExpensesEntries expensesEntries : expenseEntries) {
 			if(approverType.equalsIgnoreCase("APPROVER")){
-				writeRow = createExcelsheet.createRow(column + 12);	
+				writeRow = createExcelsheet.createRow(column + 13);	
 			}else if(approverType.equalsIgnoreCase("USER")){
 				writeRow = createExcelsheet.createRow(column + 8);
 			}
@@ -584,7 +585,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		}
 		if(approverType.equalsIgnoreCase("APPROVER")){
 			 headers  = Constants.MY_EXPENSES_HEADERS_APPROVER;
-			 createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,11);
+			 createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,12);
 		}
 		
 
@@ -592,7 +593,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style) {
-		
+		StringBuilder employeeId=new StringBuilder();
 		StringBuilder nameBuilder=new StringBuilder();
 	   	StringBuilder emailBuilder=new StringBuilder();
         StringBuilder mobileBuilder=new StringBuilder();
@@ -603,6 +604,9 @@ public class ExpensesServiceImpl implements ExpensesService{
         StringBuilder StDate=new StringBuilder();
         StringBuilder edDate=new StringBuilder();
         StringBuilder purposeStringBuilder =new StringBuilder();
+        if(expenseDetails.getExpenseId() != null){
+        employeeId.append(expenseDetails.getExpenseId());
+        }
         if(expenseDetails.getProjectMembers() != null){
         	if(expenseDetails.getProjectMembers().getEmployee()!= null){
         		if(expenseDetails.getProjectMembers().getEmployee().getUser()!= null){
@@ -669,25 +673,23 @@ public class ExpensesServiceImpl implements ExpensesService{
         		purposeStringBuilder.append("--").toString();
         	}
 		
-		
-		
-		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Employee Name :");
+        
+        Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Employee ID :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
-	    cell2.setCellValue(nameBuilder.toString());
+	    cell2.setCellValue(employeeId.toString());
 		cell2.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
-
+        
 		Cell cell3 = writeRow.createCell(0);
-		cell3.setCellValue("Email :");
+		cell3.setCellValue("Employee Name :");
 		cell3.setCellStyle(style);
-
 		Cell cell4 = writeRow.createCell(1);
-		cell4.setCellValue(emailBuilder.toString());
+	    cell4.setCellValue(nameBuilder.toString());
 		cell4.setCellStyle(style);
 
 		writeRow = createExcelsheet.createRow(2);
@@ -695,36 +697,36 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell5 = writeRow.createCell(0);
-		cell5.setCellValue("Phone No : ");
+		cell5.setCellValue("Email :");
 		cell5.setCellStyle(style);
 
 		Cell cell6 = writeRow.createCell(1);
-		cell6.setCellValue(mobileBuilder.toString());
+		cell6.setCellValue(emailBuilder.toString());
 		cell6.setCellStyle(style);
-		
-		
+
 		writeRow = createExcelsheet.createRow(3);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell7 = writeRow.createCell(0);
-		cell7.setCellValue("Employment Type : ");
+		cell7.setCellValue("Phone No : ");
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		cell8.setCellValue(empType.toString());
+		cell8.setCellValue(mobileBuilder.toString());
 		cell8.setCellStyle(style);
+		
 		
 		writeRow = createExcelsheet.createRow(4);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell9 = writeRow.createCell(0);
-		cell9.setCellValue("Vendor : ");
+		cell9.setCellValue("Employment Type : ");
 		cell9.setCellStyle(style);
 
 		Cell cell10 = writeRow.createCell(1);
-		cell10.setCellValue(vendor.toString());
+		cell10.setCellValue(empType.toString());
 		cell10.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(5);
@@ -732,11 +734,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell11 = writeRow.createCell(0);
-		cell11.setCellValue("ProjectName : ");
+		cell11.setCellValue("Vendor : ");
 		cell11.setCellStyle(style);
 
 		Cell cell12 = writeRow.createCell(1);
-		cell12.setCellValue(projectName.toString());
+		cell12.setCellValue(vendor.toString());
 		cell12.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(6);
@@ -744,11 +746,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell13 = writeRow.createCell(0);
-		cell13.setCellValue("Client : ");
+		cell13.setCellValue("ProjectName : ");
 		cell13.setCellStyle(style);
 
 		Cell cell14 = writeRow.createCell(1);
-		cell14.setCellValue(client.toString());
+		cell14.setCellValue(projectName.toString());
 		cell14.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(7);
@@ -756,11 +758,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell15 = writeRow.createCell(0);
-		cell15.setCellValue("StartDate : ");
+		cell15.setCellValue("Client : ");
 		cell15.setCellStyle(style);
 
 		Cell cell16 = writeRow.createCell(1);
-		cell16.setCellValue(StDate.toString());
+		cell16.setCellValue(client.toString());
 		cell16.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(8);
@@ -768,11 +770,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell17 = writeRow.createCell(0);
-		cell17.setCellValue("EndDate : ");
+		cell17.setCellValue("StartDate : ");
 		cell17.setCellStyle(style);
 
 		Cell cell18 = writeRow.createCell(1);
-		cell18.setCellValue(edDate.toString());
+		cell18.setCellValue(StDate.toString());
 		cell18.setCellStyle(style);
 		
 		writeRow = createExcelsheet.createRow(9);
@@ -780,12 +782,24 @@ public class ExpensesServiceImpl implements ExpensesService{
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell19 = writeRow.createCell(0);
-		cell19.setCellValue("Purpose : ");
+		cell19.setCellValue("EndDate : ");
 		cell19.setCellStyle(style);
 
 		Cell cell20 = writeRow.createCell(1);
-		cell20.setCellValue(purposeStringBuilder.toString());
+		cell20.setCellValue(edDate.toString());
 		cell20.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(10);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell21 = writeRow.createCell(0);
+		cell21.setCellValue("Purpose : ");
+		cell21.setCellStyle(style);
+
+		Cell cell22 = writeRow.createCell(1);
+		cell22.setCellValue(purposeStringBuilder.toString());
+		cell22.setCellStyle(style);
 		
 	}
 

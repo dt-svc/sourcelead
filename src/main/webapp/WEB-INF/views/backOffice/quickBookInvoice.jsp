@@ -19,7 +19,7 @@
 function getAllInvoice(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllInvoice?${_csrf.parameterName}=${_csrf.token}",    
@@ -101,7 +101,7 @@ function getAllInvoice(){
 function getAllCustomers(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllCustomers?${_csrf.parameterName}=${_csrf.token}",    
@@ -175,7 +175,7 @@ function customerInvoice(){
 function getAllVendors(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllvendors?${_csrf.parameterName}=${_csrf.token}",    
@@ -244,7 +244,7 @@ function getAllVendors(){
 function getAllEmployees(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllEmoloyees?${_csrf.parameterName}=${_csrf.token}",    

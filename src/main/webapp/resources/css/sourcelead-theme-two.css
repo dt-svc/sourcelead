@@ -10,11 +10,11 @@ body{
 	color:#fff;
 }
 .main-header span.logo{
-	height:50px;
+	height:52px;
 }
 .main-header{
-	background: #629794;
 	box-shadow:none;
+	background-size: 15%; background-image: url(../images/sl-tp.png); background-repeat: repeat-x; background-position: 30px; background-color: #629794;
 }
 /* main-header span.logo {
 	background:none;
@@ -118,16 +118,16 @@ ul.timesheet-menu li a:hover{
 	color:#333;
 }
 .main-header .navbar a{
-	color:#333;
+	color:#fff;
 	text-shadow:none;
     font-size: 13px;
     text-transform: uppercase;
 }
 .custom-navbar-inner .reportsH a .fa-pie-chart {
-	color: #333;
+	color: #fff;
 }
 .bell {
-    color: #333;
+    color: #fff;
 }
 .side-bar .user-panel {
     color: #fff;
@@ -170,7 +170,7 @@ ul.timesheet-menu li a:hover{
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
     border-left: 1px solid #538885;
-    padding: 16.5px 14px;
+    padding: 18.1px 14px;
     margin: 0;
     float: left;
 }

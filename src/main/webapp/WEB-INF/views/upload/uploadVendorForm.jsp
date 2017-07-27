@@ -61,7 +61,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:location.href = '<c:url value='/vendorsList'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'">
 				</div>
 			  </div>
 			</div>
@@ -75,7 +75,7 @@ margin:10px 220px 0;
 			  <button class="btn btn-sm btn-primary" id="upload_button1" type="submit" onclick = "saveBulkImport(); check();uploadSave();checkFile()">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:location.href = '<c:url value='/clientDashboard'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div> --%>
@@ -211,7 +211,7 @@ function saveBulkImport(){
 	var formData = new FormData(form); 
 	var sourceleadUrl = '${sourceleadUrl}';
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -222,7 +222,7 @@ function saveBulkImport(){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Vendor", 	   
  		    success : function(data) {
- 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	if(data == "failure"){
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
@@ -539,7 +539,7 @@ function errorMsgAppend(){
 function uploadSave() {
 	$('#upload_form').submit(function() {
           if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             	return true;  
           }
           else{

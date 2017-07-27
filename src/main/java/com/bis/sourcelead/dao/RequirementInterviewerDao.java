@@ -19,4 +19,5 @@ public interface RequirementInterviewerDao {
 	List<RequirementInterviewer> getinterviewListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
 			List<Long> interviewerIds,Date startUTCDate, Date endUTCDate);
 	
+	public Boolean isInterviwerForByRequirementIdInterviewIdAndUserId(String reqUUID, Long requirementInterviewerId, Long userId);
 }

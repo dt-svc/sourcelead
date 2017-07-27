@@ -712,7 +712,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '</div>';
 		}
 		else{
-			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Import Resume</label>';
+			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();" data-validation="required" field-name="Import Resume" id="importResume">&nbsp;Import Resume</label>';
 			
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
@@ -1190,7 +1190,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#submitCandidateToJob_form')[0];
   		var formData = new FormData(form); 
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -1317,7 +1317,11 @@ function getResumesList(){
 	        	var json = JSON.parse(data);
 	        	if( json.length > 0){
 		        	var output = "";
-		        	output = output + "<option value=''>-- Select Resume --</option>"; 
+		        	if(json.length > 1){
+		        		output = output + "<option value=''>-- Select Resume --</option>";
+		        	}else{
+		        		getCandidateDetails();
+		        	}
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -1359,7 +1363,7 @@ function getRecruiterCandidateDetails(){
 		        	 }else{
 		        		 $("input[name=LastName]").val(''); 
 		        	 }
-		        	 
+		        	
 		        	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] != 'undefined'){
 		        		 $("input[name=PhoneNumber]").val(json['mobilePhone']);
 		        	 }else{
@@ -1384,26 +1388,36 @@ function getRecruiterCandidateDetails(){
 		        		 $("input[name=Education]").val(''); 
 		        	 }
 		        	 
-		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-		        		 $("select[name=country]").val(json['country']);
+		        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+		        		 $("#submissionLocation").val(json['location']);
 		        	 }else{
-		        		 $("select[name=country]").val('');
+		        		 $("#submissionLocation").val('');
+		        	 }
+
+		        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
+		        		 $("#submissionCountry").val(json['country']);
+		        	 }else{
+		        		 $("#submissionCountry").val('');
 		        	 }
 		        	 
 		        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-		        		 $("select[name=state]").val(json['state']);
-		        		 getCandidateStates(json['state']);
+		        		 $("#submissionState").val(json['state']);
 		        	 }else{
-		        		 $("select[name=state]").val('');
+		        		 $("#submissionState").val('');
 		        	 }
 		        	 
+		        	 
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-		        		 $("select[name=city]").val(json['city']);
-		        		 getCandidateCities(json['state'],json['city']);
+		        		 $("#submissionCity").val(json['city']);
 		        	 }else{
-		        		 $("select[name=city]").val('');
+		        		 $("#submissionCity").val('');
 		        	 }
-		        
+		        	 
+		        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+		        		 $("#submissionZipCode").val(json['zipCode']);
+		        	 }else{
+		        		 $("#submissionZipCode").val('');
+		        	 }
 		        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 		        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
 		        	 }else{
@@ -1537,6 +1551,7 @@ function getCandidateDetails(){
 	        		 $("input[name=AlternateNumber]").val(''); 
 	        	 }
 	        	 
+	        	 
 	        	 if(json['designation'] != null && json['designation'] != "" && json['designation'] != 'undefined'){
 	        		 $("input[name=Designation]").val(json['designation']);
 	        	 }else{
@@ -1550,25 +1565,33 @@ function getCandidateDetails(){
 	        	 }
 	        	 
 	        	 if(json['country'] != null && json['country'] != "" && json['country'] != 'undefined'){
-	        		 $("select[name=country]").val(json['country']);
+	        		 $("#submissionCountry").val(json['country']);
 	        	 }else{
-	        		 $("select[name=country]").val('');
+	        		 $("#submissionCountry").val('');
 	        	 }
 	        	 
 	        	 if(json['state'] != null && json['state'] != "" && json['state'] != 'undefined'){
-	        		 $("select[name=state]").val(json['state']);
-	        		 getCandidateStates(json['state']);
+	        		 $("#submissionState").val(json['state']);
 	        	 }else{
-	        		 $("select[name=state]").val('');
+	        		 $("#submissionState").val('');
 	        	 }
 	        	 
 	        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
-	        		 $("select[name=city]").val(json['city']);
-	        		 getCandidateCities(json['state'],json['city']);
+	        		 $("#submissionCity").val(json['city']);
 	        	 }else{
-	        		 $("select[name=city]").val('');
+	        		 $("#submissionCity").val('');
 	        	 }
 	        
+	        	 if(json['location'] != null && json['location'] != "" && json['location'] != 'undefined'){
+	        		 $("#submissionLocation").val(json['location']);
+	        	 }
+
+	        	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != 'undefined'){
+	        		 $("#submissionZipCode").val(json['zipCode']);
+	        	 }else{
+	        		 $("#submissionZipCode").val('');
+	        	 }
+	        	 
 	        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 	        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);
 	        	 }else{
@@ -1796,7 +1819,7 @@ function getCandidateCities(stateName,city){
 	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -1962,7 +1985,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
      
       var requirementUUID = '${requirementUUID}';
 		
-       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	    $.ajax({
 	    	type: "POST",
@@ -2130,7 +2153,7 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
       
       con = encodeURIComponent(con);
       
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       
   	     $.ajax({
 	    	type: "POST",
@@ -2219,7 +2242,7 @@ function setRateTypesByLocation(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#applyToJob_form')[0];
   		var formData = new FormData(form); 
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -2288,15 +2311,18 @@ function setRateTypesByLocation(){
 <script type="text/javascript">
 function init(){
 	getAllSubmissionCandidateCountries();
+	initLocationAuto('submissionLocation','submissionCountry','submissionState','submissionCity','submissionZipCode','','','');
+	var country = '${SourceLeadWeb_country}';
+	$("#submissionCountry").val(country)
 	      
-	       $("#submissionCountry").on('change', function (e) {
+	     /*   $("#submissionCountry").on('change', function (e) {
 	    	   getCandidateStates();
 	      	   getCandidateCities();
 	       });
 	       $("#submissionState").on('change', function (e) {
 	    	   getCandidateCities();
 	       });
-	      
+	       */
 	       $('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
@@ -2318,6 +2344,10 @@ function parseProfessionalResume(){
 	 $("#candidateSkills").val('').trigger("chosen:updated");
 	 document.getElementById("primarySkillDiv").style.display="";
 	 $("#primarySkill").val('');
+	 
+	 $('#importResume').removeAttr('data-validation');
+	 $('#importResume').attr("data-validation-optional","true"); 
+	 $('#importResume').find('p.jquery_form_error_message').remove(); 
 }
 </script>
 <script>
