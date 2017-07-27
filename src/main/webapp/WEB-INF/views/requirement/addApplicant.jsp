@@ -298,7 +298,7 @@ function getAddApplicant(requirementId){
 
 
 <script>
-function submitRecomendedApplicant(requirementId,candidateId){
+function submitRecomendedApplicant(requirementId,candidateId,type){
 	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
@@ -308,6 +308,7 @@ function submitRecomendedApplicant(requirementId,candidateId){
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
+	result = result + '<input type="hidden" id="redirectTo" name="redirectTo" value='+type+'>';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
@@ -818,6 +819,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 
 	  var requirementId = $("#requirementId").val();
 	  var candidateId = $("#candidateId").val();
+	  var redirectTo = $("#redirectTo").val();
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
@@ -948,6 +950,9 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
 	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+	    		if(redirectTo == "compare"){
+	    			compareRecommendedUsers(requirementId);
+	    		}
 	        },
 	    }); 
       return true; 
@@ -1389,10 +1394,11 @@ function getCandidateDetails(){
 <script type="text/javascript">
 function getRecomededCandidateDetails(candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	

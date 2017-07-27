@@ -14,8 +14,8 @@ color:#337ab7 !important;
 .successBtn {
 background-color: #1ab394;
 border-color: #1ab394;
-cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
-font-size: 13px; width: 75px;
+border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+font-size: 13px; width: 60px;
 }
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
     z-index: 900000 !important;
@@ -648,8 +648,10 @@ function getInvoiceList(){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
+						}else if(report.invoiceStatus == "DRAFT"){
+							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
 						}else{
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span>   ';	
 						}
 							
 					}else{
@@ -670,6 +672,8 @@ function getInvoiceList(){
 					}else{
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
+						}else if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}
@@ -1437,6 +1441,54 @@ function unLinkInvoice(invoiceId){
 	       },
 	   });  
 }
+</script>
+
+<script>
+function deleteInvoice(invoiceId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForInvoice' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveInvoiceRejectedReason('+invoiceId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveInvoiceRejectedReason(invoiceId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = $("#reasonForInvoice").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForInvoiceDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/invoiceList");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	
+}
+
 </script>
 
 <script type="text/javascript">
