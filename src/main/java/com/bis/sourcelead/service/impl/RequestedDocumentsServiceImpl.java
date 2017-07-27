@@ -232,7 +232,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setToEmail(requestedDocuments.getUserId().getEmail());
 		 emailMessage.setFromName(requestedDocuments.getCandidateId().getFirstName());
 		 emailMessage.setFromEmail(requestedDocuments.getCandidateId().getEmail());
