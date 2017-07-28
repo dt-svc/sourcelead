@@ -1,3 +1,0 @@
-# 5375
-SET SQL_SAFE_UPDATES=0;
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`=' Dear {{RequirementPosting.Ownername}},\n\nYou have been designated to manage the following Job.\nJob details\nJob Title :{{RequirementPosting.RequirementTitle}}\nJob Location :{{RequirementPosting.RequirementLocation}}\nJob Rate :{{RequirementPosting.RequirementRate}}\nExperience :{{RequirementPosting.Experience}} years\nNo of Positions : {{RequirementPosting.positions}}\nPriority : {{RequirementPosting.priority}}\nSkills : {{RequirementPosting.skills}}\nDescription : {{RequirementPosting.description}}\nFor more details login into the system  {{RequirementPosting.link}}' WHERE `UNIQUE_SCENARIO_NAME`='Requirement Posting' and `ENTITY_TYPE`='Email';
