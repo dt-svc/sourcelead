@@ -28,12 +28,6 @@ public class CandidateEmployersHistory implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_EMPLOYERS", nullable = false)
 	private CandidateEmployers candidateEmployers;
-	@ManyToOne
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
 	@Column(name = "NAME")
 	private String name;
 	@Column(name = "ISCURRENTPOSITION")
@@ -72,26 +66,6 @@ public class CandidateEmployersHistory implements Serializable {
 	public void setId(Long id)
 	{
 		this.id = id;
-	}
-	
-	public OrgLocations getOrgLocationId()
-	{
-		return orgLocationId;
-	}
-	
-	public void setOrgLocationId(OrgLocations orgLocationId)
-	{
-		this.orgLocationId = orgLocationId;
-	}
-	
-	public Candidate getCandidateId()
-	{
-		return candidateId;
-	}
-	
-	public void setCandidateId(Candidate candidateId)
-	{
-		this.candidateId = candidateId;
 	}
 	
 	public String getName()

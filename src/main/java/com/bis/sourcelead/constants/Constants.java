@@ -138,6 +138,11 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+
+	
+	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
+	public static final String MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS = "ReopenRejectExpenseEmailToApprovers";
+	
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -686,8 +691,7 @@ public class Constants {
     public static final String APPROVED = "APPROVED";  
     
     public static final String PENDING = "PENDING";
-    
-    
+
     public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
     public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
@@ -703,18 +707,19 @@ public class Constants {
 	public static final String VENDOR_NSA = "Vendor NSA";
 	public static final String CLIENT_NDA = "Client NDA";
 	public static final String CLIENT_NSA = "Client NSA";
-	public static final String CANDIDATE_ENTITY = "CD";
-	public static final String JOB_ENTITY = "JB";
-	public static final String PROJECT_ENTITY = "PJ";
-	public static final String MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS = "ReopenApprovedExpenseEmailToApprovers";
+
+	public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
-	
-    public static final String[] DEFAULT_TASKS = {"Holiday","Vacation Leave","Sick Leave","Casual Leave","Compensatory Leave","Work From Home"};
+
     public static final String HOLIDAY = "Holiday";
     public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
     public static final String WORK_FROM_HOME = "Work From Home";
-    
+	
+	public static final String CANDIDATE_ENTITY = "CD";
+	public static final String JOB_ENTITY = "JB";
+	public static final String PROJECT_ENTITY = "PJ";
+	  
 	public static final String OLD_VALUE_TAG_INITIATION = "<span class='textline-throughold'>";
 	public static final String OLD_VALUE_TAG_END = "</span>";
 	public static final String NEW_VALUE_TAG_INITIATION = "<span class='textline-updated'>";
@@ -751,5 +756,5 @@ public class Constants {
 	
 	
 	
-	
+
 }
