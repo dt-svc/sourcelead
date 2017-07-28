@@ -322,7 +322,6 @@ result = result + '<div class="project_tabs mb">';
 		        		}else{
 		        			projectEndDateStr = "--"
 		        		}
-		        		
 		        		result = result + '	 <tr>';
 		                
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empName+'"><span title="'+opt.empName+'">'+opt.empName+'</span></div></td>';
