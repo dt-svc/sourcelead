@@ -312,6 +312,17 @@ function addResume(candidateId) {
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var candidateId = candidateId;
 	  var candidateType = '${candidateType}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+ 	  if(locationList.match("yyyy-MM-dd")){
+ 		  canResumeDatePattern = 'YYYY-MM-DD';
+ 	  }if(locationList.match("dd-MM-yyyy")){
+ 		 canResumeDatePattern = 'DD-MM-YYYY'; 
+ 	  }if(locationList.match("MM-dd-yyyy")){
+ 		 canResumeDatePattern = 'MM-DD-YYYY'; 
+ 	  }if(locationList.match("yyyy-dd-MM")){
+ 		 canResumeDatePattern = 'YYYY-DD-MM'; 
+ 	  }
+	  
 	  var result = "";
 	  var resumesCount = 0;
 	  $.ajax({
@@ -338,7 +349,7 @@ function addResume(candidateId) {
 							result = result+'	            <th>Attachment</th>';
 							result = result+'	            <th>Description</th>';
 							result = result+'	            <th>Created By</th>';
-							result = result+'	            <th>Updated Date</th>';
+							result = result+'	            <th>Updated Date <br>(<small class="custom-small">'+canResumeDatePattern+'</small>)</th>';
 							
 							result = result+'	            <th>Action</th>';
 							result = result+'	          </tr>';
