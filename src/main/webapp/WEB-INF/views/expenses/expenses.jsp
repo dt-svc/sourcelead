@@ -139,7 +139,6 @@ function getExpensesList(){
 	obj['userId']='${SourceLeadWeb_user.id}';
 	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
 	var jsonData= JSON.stringify(obj);
-	alert(jsonData);
 	 $.ajax({
 		 type : "POST",
 		  data: jsonData,
@@ -178,7 +177,7 @@ function getExpensesList(){
 			        			  purpose = "--";
 			        		  }
 			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
-			        			  projectName = report.projectMemberId;
+			        			  projectName = report.projectName;
 			        		  }else{
 			        			  projectName = "--";
 			        		  }
@@ -215,7 +214,7 @@ function getExpensesList(){
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 								 '</sec:authorize>';
 								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
-								 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
+								 result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
 								 result = result +"<td><div>"+clientName+"</div></td>";
 								 result = result +"<td><div>"+startDateStr+"</div></td>";
 								 result = result +"<td><div>"+endDateStr+"</div></td>";
