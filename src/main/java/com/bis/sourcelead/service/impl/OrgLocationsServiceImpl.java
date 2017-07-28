@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -90,8 +92,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
-		orgLocationsDao.updateOrgLocations(orgLocations);
+      
+        
 		
+        orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
 	}
@@ -232,5 +236,38 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception
 	{
 		return orgLocationsDao.getPrimaryOrgLocationByOrgId(orgId);
+	}
+
+	@Override
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation,JSONObject jsonObj) throws NumberFormatException, Exception {
+			if(jsonObj.has("generatedUserId") && !"".equalsIgnoreCase(jsonObj.getString("generatedUserId"))){
+				orgLocation.setGeneratedUserId(jsonObj.getString("generatedUserId"));
+			}
+			if(jsonObj.has("timeZone") && !"".equalsIgnoreCase(jsonObj.getString("timeZone"))){
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(jsonObj.getString("timeZone")));
+				orgLocation.setTimezone(timezone);
+			}
+			if(jsonObj.has("dateFormatForOrg") && !"".equalsIgnoreCase(jsonObj.getString("dateFormatForOrg"))){
+				orgLocation.setDateFormat(jsonObj.getString("dateFormatForOrg"));
+			}
+			if(jsonObj.has("averageWorkingHours") && !"".equalsIgnoreCase(jsonObj.getString("averageWorkingHours"))){
+				orgLocation.setAverageWorkingHours(Integer.parseInt(jsonObj.getString("averageWorkingHours")));
+			}
+		return orgLocationsDao.saveOrgLocationsOrgShortCode(orgLocation);
+		
+	}
+
+	@Override
+	public String getDateFormatByOrgLocation(OrgLocations orgLocation) {
+			return orgLocation.getDateFormat();
+	}
+
+	@Override
+	public boolean validateOrgShortCode(String orgShortId) {
+		if(!orgShortId.isEmpty()){
+			return orgLocationsDao.validateOrgShortCode(orgShortId);
+		}else{
+			return false;
+		}
 	}
 }

@@ -64,6 +64,22 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 		}
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserLoginLogoutSession> userLoginLogoutSessionList = new ArrayList<UserLoginLogoutSession>();
+		logger.debug("getLastLoginRecord start");
+		String query = "from UserLoginLogoutSession uls where uls.id =:userSessionId";
+		userLoginLogoutSessionList = session.createQuery(query).setCacheable(true).setLong( "userSessionId", userSessionId ).setCacheable(true).list();
+		logger.debug("getLastLoginRecord end");
+		if (userLoginLogoutSessionList.size() > 0) {
+			return userLoginLogoutSessionList.get(0);
+		} else {
+			return null;
+		}
+	}
+	
 	
 
 }

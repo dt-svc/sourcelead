@@ -43,47 +43,47 @@ function compareRecommendedUsersdiv(data,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	var jobId = "";
-	if(data.jobId != null && data.jobId != '' && data.jobId != 'undefiend'){
+	if(data.jobId != null && data.jobId != '' && data.jobId != 'undefined'){
 		jobId = data.jobId + " - ";
     }
 	var rate = "";
-	if((data.jobRate != null && data.jobRate != '' && data.jobRate != 'undefiend') && (data.jobRatePer != null && data.jobRatePer != '' && data.jobRatePer != 'undefiend')){
+	if((data.jobRate != null && data.jobRate != '' && data.jobRate != 'undefined') && (data.jobRatePer != null && data.jobRatePer != '' && data.jobRatePer != 'undefined')){
 		rate = data.jobRate +' / '+data.jobRatePer;
 	}
 	
 	var minexp = "";
     var maxexp = "";
-    if(data.jobMinExp != null && data.jobMinExp != '' && data.jobMinExp != 'undefiend'){
+    if(data.jobMinExp != null && data.jobMinExp != '' && data.jobMinExp != 'undefined'){
     	minexp = data.jobMinExp;
     }
     
-    if(data.jobMaxExp != null && data.jobMaxExp != '' && data.jobMaxExp != 'undefiend'){
+    if(data.jobMaxExp != null && data.jobMaxExp != '' && data.jobMaxExp != 'undefined'){
     	maxexp = " to "+data.jobMaxExp;
     }
     
     var jobLocation = "";
-    if(data.jobLocation != null && data.jobLocation != '' && data.jobLocation != 'undefiend'){
+    if(data.jobLocation != null && data.jobLocation != '' && data.jobLocation != 'undefined'){
     	jobLocation = data.jobLocation;
     }else{
     	jobLocation = "---";
     }
     
     var jobNoticePeriod = "";
-    if(data.jobNoticePeriod != null && data.jobNoticePeriod != '' && data.jobNoticePeriod != 'undefiend'){
+    if(data.jobNoticePeriod != null && data.jobNoticePeriod != '' && data.jobNoticePeriod != 'undefined'){
     	jobNoticePeriod = data.jobNoticePeriod;
     }else{
     	jobNoticePeriod = "---";
     }
     
     var jobEducation = "";
-    if(data.jobEducation != null && data.jobEducation != '' && data.jobEducation != 'undefiend'){
+    if(data.jobEducation != null && data.jobEducation != '' && data.jobEducation != 'undefined'){
     	jobEducation = data.jobEducation;
     }else{
     	jobEducation = "---";
     }
     
     var jobVisa = "";
-    if(data.jobVisa != null && data.jobVisa != '' && data.jobVisa != 'undefiend'){
+    if(data.jobVisa != null && data.jobVisa != '' && data.jobVisa != 'undefined'){
     	
  		var visa = data.jobVisa;
  		var res = [];
@@ -100,7 +100,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     }
     
     var jobSkills = "";
-    if(data.jobSkills != null && data.jobSkills != '' && data.jobSkills != 'undefiend'){
+    if(data.jobSkills != null && data.jobSkills != '' && data.jobSkills != 'undefined'){
     	
     	var skill = data.jobSkills;
  		var res = [];
@@ -207,11 +207,11 @@ function prepareCompareCandidateList(candidateList){
     		var opt = candidateList[i];
     		if(opt.isCandidateSubmitted == 'N'){
     			var firstName ="";
-    	    	if(opt.firstName != null && opt.firstName != '' && opt.firstName != 'undefiend'){
+    	    	if(opt.firstName != null && opt.firstName != '' && opt.firstName != 'undefined'){
     		    	 firstName = opt.firstName;
     		    } 
     	    	var lastName = "";
-    		    if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefiend'){
+    		    if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
     		    	lastName = opt.lastName;
     		    }
        			output = output + "<option value='" +opt.candidateId+ "'>"+firstName+" "+lastName+"</option>";
@@ -240,53 +240,53 @@ function prepareCandidateGrid(data,requirementId){
 		    	if(report.isCandidateSubmitted == 'N'){
 		    		count++;
 		    		var firstName ="";
-			    	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
+			    	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefined'){
 				    	 firstName = report.firstName;
 				    }else{
 				    	 firstName = "---";
 				    } 
 			    	var lastName = "";
-				    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
+				    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
 				    	lastName = report.lastName;
 				    }else{
 				    	lastName = "---";
 				    } 
 			    	var primarySkill = "";
-				    if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefiend'){
+				    if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefined'){
 				    	primarySkill = report.primarySkill;
 				    }else{
 				    	primarySkill = "---";
 				    }
 			    	var rate ="";
-				    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefiend') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefiend')){
+				    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
 				    	rate = report.expectedRate + ' ' + report.rateType;
-				    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefiend'){
+				    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 				    	rate = report.expectedRate;
 				    }else{
 				    	rate = "---";
 				    }
 				    var totalExp = "";
-				    if((report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefiend') && (report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefiend')){
+				    if((report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefined') && (report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefined')){
 				    	totalExp = report.experienceYears + "." + report.experienceMonths + " Year(s)";
-				    }else if(report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefiend'){
+				    }else if(report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefined'){
 				    	totalExp = report.experienceYears + " Year(s)";
 				    }else{
 				    	totalExp = "---";
 				    }
 			    	var location ="";
-				    if(report.location != null && report.location != '' && report.location != 'undefiend'){
+				    if(report.location != null && report.location != '' && report.location != 'undefined'){
 				    	location = report.location;
 				    }else{
 				    	location = "---";
 				    } 
 			    	var noticePriod ="";
-				    if(report.noticePriod != null && report.noticePriod != '' && report.noticePriod != 'undefiend'){
+				    if(report.noticePriod != null && report.noticePriod != '' && report.noticePriod != 'undefined'){
 				    	noticePriod = report.noticePriod;
 				    }else{
 				    	noticePriod = "---";
 				    }
 			    	var candieducation = "---";
-				    if(report.education != null && report.education != '' && report.education != 'undefiend'){
+				    if(report.education != null && report.education != '' && report.education != 'undefined'){
 				    	var edu = report.education;
 				    	var keyword = edu.toString();
 			    	  	var educ = keyword.split(",");
@@ -294,7 +294,7 @@ function prepareCandidateGrid(data,requirementId){
 			    	  	candieducation = minEdu; 
 				    } 
 			    	var candivisaType = "---";
-				    if(report.visaType != null && report.visaType != '' && report.visaType != 'undefiend'){
+				    if(report.visaType != null && report.visaType != '' && report.visaType != 'undefined'){
 				    	var visa = report.visaType;
 				    	var keyword = visa.toString();
 			    	  	var visaType = keyword.split(",");
@@ -303,7 +303,7 @@ function prepareCandidateGrid(data,requirementId){
 				    }
 			    	
 			    	var skillsName = "";
-				    if(report.skillsName != null && report.skillsName != '' && report.skillsName != 'undefiend'){
+				    if(report.skillsName != null && report.skillsName != '' && report.skillsName != 'undefined'){
 				    	
 				    	var skill = report.skillsName;
 				 		var res = [];
@@ -434,62 +434,62 @@ function getCandidatetoCompare(div,requirementId){
 <script>
 function candidateDiv(report,div,requirementId){
   		var firstName ="";
-	   	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
+	   	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefined'){
 	    	 firstName = report.firstName;
 	    }else{
 	    	 firstName = "NA";
 	    } 
 	   	
 	   	var lastName = "";
-	    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
+	    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
 	    	lastName = report.lastName;
 	    }else{
 	    	lastName = "NA";
 	    } 
 	    
 	   	var primarySkill = "";
-	    if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefiend'){
+	    if(report.primarySkill != null && report.primarySkill != '' && report.primarySkill != 'undefined'){
 	    	primarySkill = report.primarySkill;
 	    }else{
 	    	primarySkill = "NA";
 	    }
 	    
 	   	var rate ="";
-	    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefiend') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefiend')){
+	    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
 	    	rate = report.expectedRate + ' ' + report.rateType;
-	    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefiend'){
+	    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 	    	rate = report.expectedRate;
 	    }else{
 	    	rate = "NA";
 	    }
 	   
 	    var totalExp = "";
-	    if((report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefiend') && (report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefiend')){
+	    if((report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefined') && (report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefined')){
 	    	totalExp = report.experienceYears + "."+report.experienceMonths+ " Year(s)";
-	    }else if(report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefiend'){
+	    }else if(report.experienceYears != null && report.experienceYears != '' && report.experienceYears != 'undefined'){
 	    	totalExp = report.experienceYears + " Year(s)";
-	    }else if(report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefiend'){
+	    }else if(report.experienceMonths != null && report.experienceMonths != '' && report.experienceMonths != 'undefined'){
 	    	totalExp = report.experienceMonths + " Months";
 	    }else{
 	    	totalExp ="NA";
 	    } 
 	    
 	   	var location ="";
-	    if(report.location != null && report.location != '' && report.location != 'undefiend'){
+	    if(report.location != null && report.location != '' && report.location != 'undefined'){
 	    	location = report.location;
 	    }else{
 	    	location = "NA";
 	    } 
 	    
 	   	var noticePriod ="";
-	    if(report.noticePeriod != null && report.noticePeriod != '' && report.noticePeriod != 'undefiend'){
+	    if(report.noticePeriod != null && report.noticePeriod != '' && report.noticePeriod != 'undefined'){
 	    	noticePriod = report.noticePeriod;
 	    }else{
 	    	noticePriod = "NA";
 	    }
 	    
 	   	var candieducation = "";
-	    if(report.candidateEdu != null && report.candidateEdu != '' && report.candidateEdu != 'undefiend'){
+	    if(report.candidateEdu != null && report.candidateEdu != '' && report.candidateEdu != 'undefined'){
 	    	var edu = report.candidateEdu;
 	    	var keyword = edu.toString();
     	  	var educ = keyword.split(",");
@@ -500,7 +500,7 @@ function candidateDiv(report,div,requirementId){
 	    } 
 	    
 	   	var candivisaType = "";
-	    if(report.visaType != null && report.visaType != '' && report.visaType != 'undefiend'){
+	    if(report.visaType != null && report.visaType != '' && report.visaType != 'undefined'){
 	    	var visa = report.visaType;
 	    	var keyword = visa.toString();
     	  	var visaType = keyword.split(",");
@@ -511,7 +511,7 @@ function candidateDiv(report,div,requirementId){
 	    } 
 	    
 	   	var skillsName = "";
-	    if(report.skillsName != null && report.skillsName != '' && report.skillsName != 'undefiend'){
+	    if(report.skillsName != null && report.skillsName != '' && report.skillsName != 'undefined'){
 	    	
 	    	var skill = report.skillsName;
 	 		var res = [];

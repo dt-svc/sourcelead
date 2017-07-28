@@ -38,6 +38,7 @@
 <script src="resources/js/jobs/js/jquery-1.11.3.min.js"></script>
 <script src="resources/js/jobs/js/chosen.jquery.min.js"></script>
 
+
 <script type="text/javascript">
 window.onload = function () {
 	
@@ -1010,13 +1011,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i>--</div>';	
 				}
 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
-				result = result +'	<div class="share">';
-				
-				/* result = result +'	<div class="socialinviter holder break" type="socialpost"></div>'; */ 
-			    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
-				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
-				result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
-				result = result +'  </div>'
+				result = result +'  <div class="addthis_inline_share_toolbox" data-url='+link+' data-title='+title+'></div>';
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
@@ -2537,6 +2532,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 	$("#"+zipCodeId).val('');
 }
 </script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
 <script src="resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />

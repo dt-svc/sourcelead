@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,6 +39,14 @@ public class OrgLocationRestController {
 		OrgLocations orgLocations = new OrgLocations();
 		OrgLocations orgLocations1 = orgLocationService.addOrgLocations(orgLocations);
 		return orgLocations1;
+	}
+	
+	@RequestMapping(value = "/getDateFormatByOrgLocation")
+	public String getDateFormatByOrgLocation(@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception
+	{
+		OrgLocations orgLocations1 = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		String orgLocatDateFormat = orgLocationService.getDateFormatByOrgLocation(orgLocations1);
+		return orgLocatDateFormat;
 	}
 	
 	

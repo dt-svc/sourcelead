@@ -266,6 +266,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
 	
+	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
+	private String releaseJobToAllUsers;
+	
 	@Transient
 	private String closedDateStringFormat;
 	
@@ -439,7 +442,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String requirementOrgName;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 	
+	@Transient
+	private String systemGeneratedId;
 	
 	@Transient
 	private Integer vendorInterviewsCount;
@@ -1353,6 +1360,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
 	}
 
+	public String getReleaseJobToAllUsers()
+	{
+		return releaseJobToAllUsers;
+	}
+
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
+	{
+		this.releaseJobToAllUsers = releaseJobToAllUsers;
+	}
+
 	public String getNoticePeriod() {
 		return noticePeriod;
 	}
@@ -1525,7 +1542,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		return serialVersionUID;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
 
-	
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
 
 }

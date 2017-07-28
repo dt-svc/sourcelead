@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -114,6 +115,7 @@ public interface RequirementDao {
 	
 	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
 
+	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId);
 	
 	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
 	

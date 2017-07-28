@@ -8,6 +8,8 @@ public interface UserLoginLogoutSessionService  {
 	
 	UserLoginLogoutSession getLastLoginRecord(Long userId);
 	
+	UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId);
+	
 	
 	
 }	
