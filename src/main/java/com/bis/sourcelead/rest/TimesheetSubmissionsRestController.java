@@ -51,6 +51,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController 
 public class TimesheetSubmissionsRestController {
@@ -176,8 +177,9 @@ public class TimesheetSubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-        Date sDate  =  Constants.DMY.parse(startDate);
-        Date eDate  =  Constants.DMY.parse(endDate);
+	 	DateFormat  sdf = LoginSessionController.DATEFORMAT;
+        Date sDate  =  sdf.parse(startDate);
+        Date eDate  =  sdf.parse(endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
