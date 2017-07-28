@@ -132,9 +132,9 @@ public class CandidateOnBoardRestController {
 		
 		List<OnBoardingTemplate> templatesList = onBoardingTemplateService.getOnBoardingTemplatesList(loginOrgLocation.getId());
 		List<OnBoardingTemplate> onboardingTemplatesList = new ArrayList<OnBoardingTemplate>();
-		
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for(OnBoardingTemplate template : templatesList){
-			template.setTemplateCreatedDate(Constants.DMY.format(template.getCreatedDate()));
+			template.setTemplateCreatedDate(dateFormat.format(template.getCreatedDate()));
 			onboardingTemplatesList.add(template);
 		}
 		

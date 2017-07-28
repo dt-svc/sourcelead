@@ -96,6 +96,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -3231,10 +3232,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	String convertedStirng = requirementIndex.getCreatedDate();
-     	String convertedStirngArray[]  = convertedStirng.split("-");
+     	
+     	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+     	Date elkDate = elkFormat.parse(convertedStirng);
+     	
+     	/*String convertedStirngArray[]  = convertedStirng.split("-");
      	StringBuilder dateString = new StringBuilder();
      	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
-     	requirement.setPostedDateStr(dateConverted);
+     	*/
+     	
+     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}

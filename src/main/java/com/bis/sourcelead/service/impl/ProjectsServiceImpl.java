@@ -298,9 +298,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	// 	String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 	 	
+        
+        
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
@@ -1540,6 +1542,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
+		SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
@@ -1554,14 +1557,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(dateFormat.format(pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(dateFormat.format(pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(dateFormat.format(pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());

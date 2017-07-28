@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.service.SourceleadSignatureService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.xstream.XStream;
@@ -115,6 +117,7 @@ public class OrgSettingsRestController {
 		   try {
 			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
+			LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());

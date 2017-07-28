@@ -873,7 +873,8 @@ public class PdfUtil {
 			Projects project, String projectManager) throws DocumentException, IOException {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	    SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
+	   // DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbpe = new StringBuilder();
