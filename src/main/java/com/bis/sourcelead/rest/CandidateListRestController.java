@@ -80,9 +80,11 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -138,6 +140,12 @@ public class CandidateListRestController {
 	  
 	  @Autowired
 	  UserService userService;
+	  
+	  @Autowired
+	  OrgLocationService orgLocationService;
+	  
+	  @Autowired
+	  CandidateActivityCommonUtil candidateActivityCommonUtil;
 	  
 	  @Autowired
 	  RequirementSubmissionService requirementSubmissionService;
@@ -886,18 +894,26 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveCandidateProfile", method = RequestMethod.POST)
 	public String saveCandidateProfile(@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			MultipartHttpServletRequest request) throws Exception {
 
 		Iterator<String> itrator = request.getFileNames();
 		MultipartFile multiFile = request.getFile(itrator.next());
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		StringBuffer activitySummary = new StringBuffer();
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(loginUserId);
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		if (null != multiFile.getContentType()
 				&& !multiFile.getContentType().equalsIgnoreCase("application/octet-stream")) {
 			try {
+				if(candidate.getFileName() != null && candidate.getFileName() != "" && !candidate.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
+					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}else{
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidate.setFileContentType(multiFile.getContentType());
 				candidate.setDocFile(multiFile.getBytes());
 				candidate.setFileName(multiFile.getOriginalFilename());
@@ -906,6 +922,10 @@ public class CandidateListRestController {
 			}
 		}
 		candidateService.addCandidate(candidate);
+		
+		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
+		
 		return "success";
 	}
 
@@ -1053,6 +1073,7 @@ public class CandidateListRestController {
 		String resultJson;
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 				loginOrgLocation.getId());
+		StringBuffer activitySummary = new StringBuffer();
 		if (candidate != null) {
 
 			if (Constants.Associates.equalsIgnoreCase(candidateType)) {
@@ -1069,6 +1090,9 @@ public class CandidateListRestController {
 			// candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			if (StringUtils.isNotEmpty(reason)) {
 				candidate.setTerminateReason(reason);
+				activitySummary.append("Reason").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(reason).append(Constants.NEW_VALUE_TAG_END).append(" ");
+			}else{
+				activitySummary.append(" ");
 			}
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
@@ -1076,6 +1100,10 @@ public class CandidateListRestController {
 			candidate.setTeamId(null);
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED, activitySummary.toString(), "CANDIDATE");
+			
 			StringBuilder candidateRemoveMsg = new StringBuilder();
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 					candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed").toString());
@@ -1151,15 +1179,16 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/reActivateCandidateByCandidateId")
 	public @ResponseBody String reActivateCandidateByCandidateId(
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "reActivate", required = false) String reActivate, HttpServletRequest request)
 			throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
-				loginOrgLocation.getId());
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user = userService.getUserById(loginUserId);
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId), loginOrgLocation.getId());
 		if (candidate != null) {
 			if (reActivate.equalsIgnoreCase("1")) {
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1167,6 +1196,10 @@ public class CandidateListRestController {
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidateService.saveOrUpdateCandidate(candidate);
+			
+			candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_REACTIVATED, "", "CANDIDATE");
+			
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		}
 		return "success";
@@ -1288,16 +1321,22 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
 	public String saveOrUpdateOnlySkillBycandidateId(
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request)
 			throws Exception {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
 			can.setSkillsName("");
@@ -1309,15 +1348,21 @@ public class CandidateListRestController {
 
 	@RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
 	public String saveOrUpdateOnlyVisaBycandidateId(
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request)
 			throws Exception {
 		Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(visaName)) {
 			can.setVisaType(visaName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
 			candidateService.saveOrUpdateCandidate(can);

@@ -194,7 +194,7 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	
 	
-	 @Override
+	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
 			
 	    	Long number = 000000001L;
@@ -213,6 +213,37 @@ public class RequirementServiceImpl implements RequirementService {
 	        String ConvetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
 	        StringBuffer sb = new StringBuffer();
 			return sb.append(Constants.JOB_ENTITY).append(ConvetredRequirementsId).toString();
+			
+		}*/
+	 
+	 public String getRequirementId(OrgLocations orgLocations) {
+	    	String companyShortCode = null;
+	    	Long number = 000000001L;
+			String requirementId = null;
+			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
+				requirementId = number.toString();
+			}else{
+			String reqIdNumber = checkNumber.getGeneratedId();
+			int count =0;
+			for(int i=0;i< reqIdNumber.length();i++){
+				char ch = reqIdNumber.charAt(i);
+				if(Character.isAlphabetic(ch)){
+					count++;
+				}
+			}
+			String reqIdNum = reqIdNumber.substring(count, reqIdNumber.length());
+			Long reqId = Long.parseLong(reqIdNum)+1;
+			requirementId = reqId.toString();
+			}
+			
+			final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+	        	 companyShortCode = orgLocations.getGeneratedUserId();
+	        }
+			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
 			
 		}
 	 

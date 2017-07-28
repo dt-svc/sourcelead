@@ -383,11 +383,13 @@ function addResume(candidateId) {
 <script>
 function deleteResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
