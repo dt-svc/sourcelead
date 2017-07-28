@@ -190,8 +190,6 @@ public class ProjectsController {
 			    
 			    List<User> approversList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_PROJECTS));
 				model.addObject("approversList", approversList);
-				
-			    
 			    
 				model.addObject("projectUUID", projectUUID);
 				model.setViewName("project/newResourceRequest");
@@ -232,8 +230,6 @@ public class ProjectsController {
     }
     
     
-    
-    
     @RequestMapping(value = "/editResourceRequest")
 	public ModelAndView editResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -262,6 +258,55 @@ public class ProjectsController {
 		return model;
     }
     
+
+    @RequestMapping(value = "/editNewResourceRequest")
+	public ModelAndView editNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+	    ModelAndView model = new ModelAndView();
+		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		if(projects != null){
+			model.addObject("projectId", projects.getId());
+			model.addObject("projectName", projects.getProjectName());
+			if(projects.getStartDate() != null){
+				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+			}
+			if(projects.getEndDate() != null){
+				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+			}
+			model.addObject("projectStatus", projects.getProjectStatus());
+		}
+		model.addObject("projectUUID", projectUUID);
+		model.addObject("requestUUID",requestUUID);
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		 List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		    model.addObject("rolesList", rolesList);
+		    
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		model.addObject("orgLocationsList", orgLocationsList);
+		
+		model.setViewName("project/newResourceRequest");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+    }
+
+    
+    @RequestMapping(value = "/viewNewResourceRequest")
+   	public ModelAndView viewNewResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
+   	    
+   	    ModelAndView model = new ModelAndView();
+   		model.addObject("projectUUID", projectUUID);
+   		model.addObject("requestUUID",requestUUID);
+   		
+   		model.setViewName("project/viewNewResourceRequest");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
     
     
     @RequestMapping(value = "/viewResourceRequest")
@@ -292,6 +337,27 @@ public class ProjectsController {
 	
 		model.addObject("requestUUID",requestUUID);
    		model.setViewName("requestedAssociatesList");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
+
+    
+    @RequestMapping(value = "/viewNewResourceRequestDashborad")
+   	public ModelAndView viewNewResourceRequestDashborad(@RequestParam(value="requestUUID", required=true) String requestUUID,HttpServletRequest request) throws Exception {
+   	    
+   	    ModelAndView model = new ModelAndView();
+   		
+   	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+	
+		model.addObject("requestUUID",requestUUID);
+   		model.setViewName("project/viewNewResourceRequestDashborad");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
        }

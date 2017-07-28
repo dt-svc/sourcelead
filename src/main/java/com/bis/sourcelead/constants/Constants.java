@@ -204,6 +204,39 @@ public class Constants {
 	public static final String RESOURCE_REQUEST = "Resource Request";
 	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
 	
+	public static final String NEW_RESOURCE_REQUEST = "New Resource Request";
+	public static final String NEW_RESOURCE_REQUEST_NOTIFICATION = "NewResourceRequestNotification";
+	
+	public static final String ACCEPT_SINGLE_NEW_RESOURCE_REQUEST = "Accept Single New Resource Request";
+	public static final String ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleNewResourceRequestNotification";
+	
+	public static final String REJECT_SINGLE_NEW_RESOURCE_REQUEST = "Reject Single New Resource Request";
+	public static final String REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION = "RejectSingleNewResourceRequestNotification";
+	
+	public static final String ACCEPT_BULK_NEW_RESOURCE_REQUEST = "Accept Bulk New Resource Request";
+	public static final String ACCEPT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "AcceptBulkNewResourceRequestNotification";
+	
+	public static final String REJECT_BULK_NEW_RESOURCE_REQUEST = "Reject Bulk New Resource Request";
+	public static final String REJECT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "RejectBulkNewResourceRequesttNotification";
+	
+	public static final String ONHOLD_BULK_NEW_RESOURCE_REQUEST = "OnHold Bulk New Resource Request";
+	public static final String ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "OnHoldBulkNewResourceRequesttNotification";
+	
+	public static final String ACCEPT_BULK_RESOURCE_REQUEST = "Accept Bulk Resource Request";
+	public static final String ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION = "AcceptBulkResourceRequestNotification";
+	
+	public static final String REJECT_BULK_RESOURCE_REQUEST = "Reject Bulk Resource Request";
+	public static final String REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION = "RejectBulkResourceRequestNotification";
+	
+	public static final String ONHOLD_BULK_RESOURCE_REQUEST = "OnHold Bulk Resource Request";
+	public static final String ONHOLD_BULK_RESOURCE_REQUEST_NOTIFICATION = "OnHoldBulkResourceRequestNotification";
+	
+	public static final String REJECT_SINGLE_RESOURCE_REQUEST = "Reject Single Resource Request";
+	public static final String REJECT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "RejectSingleResourceRequestNotification";
+	
+	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST = "Accept Single Resource Request";
+	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleResourceRequestNotification";
+	
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
