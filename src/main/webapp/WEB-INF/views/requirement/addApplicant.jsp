@@ -375,7 +375,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	  
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
-	$(".side_mask").fadeIn(200);
+	$(".sideMask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	
 	var selectedFile = document.getElementById("newUploadBtn");
@@ -433,8 +433,8 @@ function ApplicantNotifyRequiremnent(){
 <script>
 function isCoolingOffAlert(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='project_inn_mask' style='z-index:250000'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='z-index:350000'>";
 	result = result +"		<p>Applicant Cooling-Off period (${requirement.reqCoolingOffPeriod}) not completed</p>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discord' onClick='discordApplicant();'></b>";
@@ -459,6 +459,7 @@ function discordApplicant(){
 	$(".project_inn_mask").fadeOut(200);
 	
 	$(".new_side_wrap").removeClass("new_side_wrap_active");
+	$(".sideMask").fadeOut(200);
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
 }

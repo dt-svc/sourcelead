@@ -1771,7 +1771,7 @@ function getVendorContacts(vendorContactId){
 		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
 			selected = 'selected';
 		}
-		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
 		$("#vendorCurrency").val(opt.vendorCurrency);
 		}
 		$("#vendorContact").empty();

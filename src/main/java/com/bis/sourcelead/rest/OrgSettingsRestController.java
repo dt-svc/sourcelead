@@ -498,6 +498,32 @@ public class OrgSettingsRestController {
 		return resultJson;
 	}
 	
+	
+	@RequestMapping(value = "/saveOrgShortCodeform",method = RequestMethod.POST)
+	public String saveOrgShortCodeform(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception
+	{
+		JSONObject jsonObj = new JSONObject(json);
+		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		orgLocationService.saveOrgLocationsOrgShortCode(orgLocations,jsonObj);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/validateOrgShortCode",method = RequestMethod.POST)
+	public boolean validateOrgShortCode(@RequestParam(value = "orgShortId") String orgShortId) throws Exception
+	{
+		boolean validateCode = orgLocationService.validateOrgShortCode(orgShortId);
+		return validateCode;
+	}
+	
+	
+	@RequestMapping(value = "/getDateFormatByOrgLocation",method = RequestMethod.POST)
+	public String getDateFormatByOrgLocation(@RequestParam(value = "locationCode") String locationCode) throws Exception
+	{
+		OrgLocations orgLocations1 = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		String orgLocatDateFormat = orgLocationService.getDateFormatByOrgLocation(orgLocations1);
+		return orgLocatDateFormat;
+	}
+	
 	private String toJSON(Object obj)
 	{
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
