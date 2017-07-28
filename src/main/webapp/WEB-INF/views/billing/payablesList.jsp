@@ -262,22 +262,22 @@ $(document).ready(function(){
 <!-- Add invoice Popup -->
 <div class="addcandidate-popup">
 	<div class="row">
-		<div class="col-md-offset-2 col-md-10">
+		<div class="col-md-12">
 			<a href="javascript:void(0)" class="close-popdiv"
 				onClick="closeCandidate()">&times;</a>
-			<div class="col-md-5 mt25">
+			<div class="col-md-4 mt25">
 				<div class="small-widget bgGreen">
 					<a href="<c:url value='/createPayables'/>"
 						title="Create custom invoice">
 						<div class="clearfix mb10">
 							<img src="resources/images/invoice_icon.png" class="text-center"
 								alt="create_receivables">
-						</div> <strong class="clearfix">Custom</strong>
+						</div> <strong class="clearfix">Vendor Based</strong>
 					</a>
 				</div>
 			</div>
 
-			<div class="col-md-5 mt25">
+			<div class="col-md-4 mt25">
 				<div class="small-widget bg-yellow">
 					<a href="<c:url value='/createInvoiceProjectPayableBased'/>"
 						title="Create project based invoice">
@@ -290,15 +290,16 @@ $(document).ready(function(){
 				</div>
 			</div>
 
-			<!-- <div class="col-md-4 mt25">
+			 <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
-		 -->
+		 
 
 		</div>
 	</div>
