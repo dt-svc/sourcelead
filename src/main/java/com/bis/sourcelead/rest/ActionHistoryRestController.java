@@ -37,11 +37,6 @@ public class ActionHistoryRestController {
 	public @ResponseBody List<ActionHistory> getActionHistoryList(@RequestParam(value = "userSessionId", required = true) Long userSessionId,HttpServletRequest request) throws Exception {
 		UserLoginLogoutSession userLoginLogoutSession = userLoginLogoutSessionService.getUserLoginLogoutSessionById(userSessionId);
 		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId());
-		if(actionHistoryList != null){
-			for(ActionHistory actionHistory:actionHistoryList){
-				actionHistory.setActionTimeStr(conversionUtil.getDateAsString(actionHistory.getActionTime()));
-			}
-		}
 		return actionHistoryList;
 	}
 	

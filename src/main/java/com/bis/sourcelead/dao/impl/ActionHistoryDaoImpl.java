@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -16,8 +15,8 @@ import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.sun.star.util.DateTime;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
@@ -71,7 +70,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 			actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
 			actionHistory.setActionName(actionNames.getActionName());
 			actionHistory.setActionPerformed("You have performed "+ actionNames.getActionName()+" Action ");
-			actionHistory.setActionTime(new Date());
+			actionHistory.setActionTime(new DateTime());
 
 			try {
 				if (actionHistory != null) {

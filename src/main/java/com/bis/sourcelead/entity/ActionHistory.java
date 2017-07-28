@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.star.util.DateTime;
 
 @Entity
 @Table(name = "ACTION_HISTORY")
@@ -38,11 +39,7 @@ public class ActionHistory implements Serializable{
 	private String actionPerformed;
 	
 	@Column(name = "ACTION_TIME")
-    private Date actionTime;
-	
-	@Transient
-	@JsonProperty
-	private String actionTimeStr;
+    private DateTime actionTime;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_LOGIN_LOGOUT_SESSION_ID", nullable=false)
@@ -81,20 +78,12 @@ public class ActionHistory implements Serializable{
 		this.actionPerformed = actionPerformed;
 	}
 
-	public Date getActionTime() {
+	public DateTime getActionTime() {
 		return actionTime;
 	}
 
-	public void setActionTime(Date actionTime) {
+	public void setActionTime(DateTime actionTime) {
 		this.actionTime = actionTime;
-	}
-
-	public String getActionTimeStr() {
-		return actionTimeStr;
-	}
-
-	public void setActionTimeStr(String actionTimeStr) {
-		this.actionTimeStr = actionTimeStr;
 	}
 
 	public UserLoginLogoutSession getUserLoginLogoutSessionId() {
