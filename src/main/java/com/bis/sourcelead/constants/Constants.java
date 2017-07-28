@@ -715,9 +715,7 @@ public class Constants {
     public static final String HOLIDAY = "Holiday";
     public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
     public static final String WORK_FROM_HOME = "Work From Home";
-	public static final String CANDIDATE_ENTITY = "CD";
 	
-	public static final String JOB_ENTITY = "JB";
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
 	public static final String PROJECT_ENTITY = "PJ";
