@@ -239,8 +239,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	}
 
 	@Override
-	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation,JSONObject jsonObj,String type) throws NumberFormatException, Exception {
-		if(type.equalsIgnoreCase("userGenerated")){
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation,JSONObject jsonObj) throws NumberFormatException, Exception {
 			if(jsonObj.has("generatedUserId") && !"".equalsIgnoreCase(jsonObj.getString("generatedUserId"))){
 				orgLocation.setGeneratedUserId(jsonObj.getString("generatedUserId"));
 			}
@@ -254,7 +253,6 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 			if(jsonObj.has("averageWorkingHours") && !"".equalsIgnoreCase(jsonObj.getString("averageWorkingHours"))){
 				orgLocation.setAverageWorkingHours(Integer.parseInt(jsonObj.getString("averageWorkingHours")));
 			}
-		}
 		return orgLocationsDao.saveOrgLocationsOrgShortCode(orgLocation);
 		
 	}
