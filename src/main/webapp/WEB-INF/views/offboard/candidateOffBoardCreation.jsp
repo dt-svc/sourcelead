@@ -236,7 +236,7 @@
                 
                 
                 <div class="form-group">
-                  <label class="col-md-12"> <strong>Offboard Pack</strong> <br>
+                  <label class="col-md-12"> <strong>Offboard Package</strong> <br>
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">

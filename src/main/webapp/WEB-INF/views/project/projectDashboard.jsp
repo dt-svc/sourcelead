@@ -371,7 +371,7 @@ function filter(){
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Id</th>';
-   		    	result = result +'    <th>Name111</th>'; 
+   		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Invoice Frequency</th>';
    		    	result = result +'     <th>Date</th>';

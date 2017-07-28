@@ -313,7 +313,7 @@ function displyContract(stage){
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
 						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
 						else{
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+'</div>';	
@@ -326,7 +326,7 @@ function displyContract(stage){
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
 						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
 						else{
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: -- </div>';	
@@ -630,9 +630,8 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 
-function editClo(contractId){
+function editClo(contractId,startDate){
 	$('.editNewDat').hide();
-	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#endDate").val();
 	if(endDate != ""){
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -641,7 +640,7 @@ function editClo(contractId){
 	     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
 	     success :function(data) {
 	    	 $("#endVal").empty();
-			  $("#endVal").append(": "+endDate);
+			 $("#endVal").append(": "+endDate+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+startDate+'\',\''+endDate+'\');"></i><div class="editNewDat"><input type="text" class="form-control calendar" value="'+endDate+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+contractId+',\''+startDate+'\');"></i></div>');
 	    },
 	}); 
 	}

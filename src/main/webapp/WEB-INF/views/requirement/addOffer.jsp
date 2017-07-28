@@ -135,6 +135,7 @@ function selectOfferApplicants(){
 	
 	$('.search-choice-close').click(function() {
 		var offerApplicants =  $('#1applicantId_chosen  span').size();
+		$('#1applicantId_chosen').next("p").remove();
 		if(offerApplicants <1){
 			$('#1applicantId_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
 		}
