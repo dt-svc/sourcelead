@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesStoringDTO;
+import com.bis.sourcelead.dto.ExpensesListUtilDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.helper.ExpenseCategoryDTOConverter;
 import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
@@ -119,13 +121,17 @@ public class ExpensesRestController {
 	@Autowired
 	private AddExpensesDao addExpensesDao;
 	
-	@RequestMapping(value = "/getExpensesList")
-	public String getExpensesList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception
+	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
+	public List<Expenses> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
-		String resultJson = "";
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser, expenseStatus, startDate, endDate);
+		
+		OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+		User loginUser = userService.getUserById(elDTO.getUserId());
+		String expenseStatus = "";
+		if(elDTO.getExpenseStatus() != null && !elDTO.getExpenseStatus().isEmpty()){
+			expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
+		}
+		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
 		for (Expenses ex : expensesList) {
 			if (null != ex.getProjectMembers()) {
 				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());
@@ -137,8 +143,7 @@ public class ExpensesRestController {
 				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
 			}
 		}
-		resultJson = commonUtil.toJSON(expensesList);
-		return resultJson;
+		return expensesList;
 	}
 	
 	@RequestMapping(value = "/rest/getExpenseEntryDetails")

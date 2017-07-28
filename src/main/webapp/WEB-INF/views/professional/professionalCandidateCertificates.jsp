@@ -423,9 +423,7 @@ function addCertification(candidateId) {
 			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 			result = result +' </sec:authorize>';
 		}else{
-			result = result +'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
-			result = result +' </sec:authorize>';
 		}
 		
 		result  = result + '                 </div>';

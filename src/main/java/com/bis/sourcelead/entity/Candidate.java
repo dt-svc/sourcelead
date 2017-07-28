@@ -220,6 +220,9 @@ public class Candidate implements Serializable{
 	@Transient
 	private String candidateLocation;
 	
+	@Transient
+	private String systemGeneratedId;
+	
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
 	private String skillsName ;
 	
@@ -236,7 +239,7 @@ public class Candidate implements Serializable{
 	private String twitterUrl;
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
@@ -245,12 +248,12 @@ public class Candidate implements Serializable{
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
@@ -370,6 +373,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private List<Contracts> contractsList;
 	 
+	 @Column(name = "GENERATED_ID")
+	 private String generatedId;
+
 	 @Transient
 	 private int profilePercentage;
 	 
@@ -1434,6 +1440,29 @@ public class Candidate implements Serializable{
 		this.candidateResumeFileType = candidateResumeFileType;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
+
 	public String getResumeUUID()
 	{
 		return resumeUUID;
@@ -1443,4 +1472,5 @@ public class Candidate implements Serializable{
 	{
 		this.resumeUUID = resumeUUID;
 	}
+
 }
