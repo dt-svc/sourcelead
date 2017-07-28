@@ -38,21 +38,6 @@ public class CandidateHistory implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MASTER_CANDIDATE_ID", nullable = false)
-	private MasterCandidate masterCandidateId;
-	@ManyToOne
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CONSULTANT_USER_ID")
-	private User consultantUser;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_ID", nullable = false)
-	private Org orgId;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "RECRUITER_USER_ID")
-	private User recruiterUserId;
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
 	@Column(name = "FIRST_NAME")
@@ -122,9 +107,6 @@ public class CandidateHistory implements Serializable {
 	private String invitationstatus;
 	@Column(name = "STATUS")
 	private Integer status;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "TEAM_ID")
-	private Team teamId;
 	@Column(name = "IS_FAVOURITE")
 	private Integer isFavourite;
 	@Column(name = "IS_FAVOURITE_ASSOCIATE")
@@ -141,12 +123,6 @@ public class CandidateHistory implements Serializable {
 	private String candidateUUID;
 	@Column(name = "IS_ASSOCIATE")
 	private String isAssociate;
-	@ManyToOne
-	@JoinColumn(name = "ORG_RELATION_ID", nullable = false)
-	private OrgRelations orgRelationId;
-	@ManyToOne
-	@JoinColumn(name = "SPOC_ID", nullable = false)
-	private OrgSpoc spocId;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
@@ -262,16 +238,6 @@ public class CandidateHistory implements Serializable {
 	public void setId(Long id)
 	{
 		this.id = id;
-	}
-	
-	public OrgLocations getOrgLocationId()
-	{
-		return orgLocationId;
-	}
-	
-	public void setOrgLocationId(OrgLocations orgLocationId)
-	{
-		this.orgLocationId = orgLocationId;
 	}
 	
 	public String getFirstName()
@@ -603,6 +569,7 @@ public class CandidateHistory implements Serializable {
 	{
 		this.candidateEducation = candidateEducation;
 	}
+	
 	public Set<CandidateResumes> getCandidateResumes()
 	{
 		return candidateResumes;
@@ -773,16 +740,6 @@ public class CandidateHistory implements Serializable {
 		this.currentRateType = currentRateType;
 	}
 	
-	public User getConsultantUser()
-	{
-		return consultantUser;
-	}
-	
-	public void setConsultantUser(User consultantUser)
-	{
-		this.consultantUser = consultantUser;
-	}
-	
 	public String getCandidateType()
 	{
 		return candidateType;
@@ -791,16 +748,6 @@ public class CandidateHistory implements Serializable {
 	public void setCandidateType(String candidateType)
 	{
 		this.candidateType = candidateType;
-	}
-	
-	public Team getTeamId()
-	{
-		return teamId;
-	}
-	
-	public void setTeamId(Team teamId)
-	{
-		this.teamId = teamId;
 	}
 	
 	public Integer getIsFavourite()
@@ -948,26 +895,6 @@ public class CandidateHistory implements Serializable {
 		this.currentResumeId = currentResumeId;
 	}
 	
-	public Org getOrgId()
-	{
-		return orgId;
-	}
-	
-	public void setOrgId(Org orgId)
-	{
-		this.orgId = orgId;
-	}
-	
-	public User getRecruiterUserId()
-	{
-		return recruiterUserId;
-	}
-	
-	public void setRecruiterUserId(User recruiterUserId)
-	{
-		this.recruiterUserId = recruiterUserId;
-	}
-	
 	public String getSkillsName()
 	{
 		return skillsName;
@@ -1078,16 +1005,6 @@ public class CandidateHistory implements Serializable {
 		this.isAssociate = isAssociate;
 	}
 	
-	public OrgRelations getOrgRelationId()
-	{
-		return orgRelationId;
-	}
-	
-	public void setOrgRelationId(OrgRelations orgRelationId)
-	{
-		this.orgRelationId = orgRelationId;
-	}
-	
 	public String getVendorName()
 	{
 		return vendorName;
@@ -1116,16 +1033,6 @@ public class CandidateHistory implements Serializable {
 	public void setAssignedProjectsCount(Integer assignedProjectsCount)
 	{
 		this.assignedProjectsCount = assignedProjectsCount;
-	}
-	
-	public OrgSpoc getSpocId()
-	{
-		return spocId;
-	}
-	
-	public void setSpocId(OrgSpoc spocId)
-	{
-		this.spocId = spocId;
 	}
 	
 	public User getCreatedUser()
@@ -1226,16 +1133,6 @@ public class CandidateHistory implements Serializable {
 	public void setContractsList(List<Contracts> contractsList)
 	{
 		this.contractsList = contractsList;
-	}
-	
-	public MasterCandidate getMasterCandidateId()
-	{
-		return masterCandidateId;
-	}
-	
-	public void setMasterCandidateId(MasterCandidate masterCandidateId)
-	{
-		this.masterCandidateId = masterCandidateId;
 	}
 	
 	public Candidate getCandidateId()
