@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabActionsService;
@@ -105,6 +107,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.itextpdf.text.log.SysoCounter;
 
 
 @Service
@@ -181,6 +184,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
 	
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
@@ -269,6 +275,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setBillingAddress(jsonObj.getString("billingAddress"));
 		}else{
 			invoice.setBillingAddress(null);
+		}
+		
+		if(jsonObj.has("accountDetails") && !"".equalsIgnoreCase(jsonObj.getString("accountDetails"))){
+			invoice.setAccountDetails(jsonObj.getString("accountDetails"));
 		}
 		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
@@ -369,6 +379,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        	file.delete();
 		        }
 		        
+		        if(invoice.getSubmissionApproverHierarchyIds() !=null && invoice.getSubmissionApproverHierarchyIds().size() >0){
+		        	String submissionIds = invoice.getSubmissionApproverHierarchyIds().stream().map(Object::toString).collect(Collectors.joining(","));
+		        	invoice.setSubmissionApproverHierarchyId(submissionIds);
+		        }
+		       
 		invoiceDao.saveInvoce(invoice);
 		if(Constants.SENT.equalsIgnoreCase(saveType)){
 			//mail scenario for client accept or reject
@@ -480,7 +495,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
-		
+		if(invoice.getProjectID() !=null){
+			parentInvoice.setProjectID(invoice.getProjectID());
+		}
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		parentInvoice.setCreatedDate(invoice.getCreatedDate());
 		parentInvoice.setCreatedBy(invoice.getCreatedBy());
@@ -639,6 +656,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 						 invoiceLineItems.setAmount(jsonObj.getString(i+"amount"));
 					 }else{
 						 invoiceLineItems.setAmount(null);
+					 }
+					 if(null != jsonObj.getString(i+"Description") && !"".equalsIgnoreCase(jsonObj.getString(i+"Description"))){
+						 invoiceLineItems.setInlineDescription(jsonObj.getString(i+"Description"));
 					 }
 	              // As of Now we are not storing seperateInvoice status
 //					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
@@ -1428,6 +1448,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
   	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
   	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
   	  		  		        if(savedInvoice !=null){
@@ -1547,8 +1568,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
-				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
+				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType,invoiceLineItems);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
 			}
@@ -1575,9 +1595,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @param loginOrgCurrencyCode
 	 * @param billingRatePer
 	 * @param rateCurrencyType
+	 * @param invoiceLineItems 
 	 * @return float
 	 */
-	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType)
+	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType, InvoiceLineItems invoiceLineItems)
 	{
 		float hourlyRate = conversionUtil.getHourlyRate(billingAmount, billingRatePer);
 		float roundValue = 0;
@@ -1588,6 +1609,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		else {
 			roundValue = (float) (Math.round(hourlyRate * 100.0) / 100.0);
 		}
+		invoiceLineItems.setRate(String.valueOf(roundValue));
 		String[] split = totalHours.split(":");
 		int splitHours = Integer.parseInt(split[0]);
 		int hourminits = splitHours * 60;
@@ -2309,6 +2331,38 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	@Override
 	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
 		return invoiceDao.getInvoicetByParentId(invoiceId);
+	}
+	@Override
+	public boolean deleteInvoice(Long invoiceId,String reason,String invoiceType) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
+		
+		if(invoice.getProjectID() != null){
+				invoice.setRejectReason(reason);
+				invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+				invoiceDao.updateInvoice(invoice);
+						 try {
+							 if(invoice.getSubmissionApproverHierarchyId() !=null){
+								 String[] subIds = invoice.getSubmissionApproverHierarchyId().split(",");
+								 for(String sIds :subIds ){
+									 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(sIds), invoiceType, null); 
+								 }
+								 	 
+							 }
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		}else{
+			invoice.setRejectReason(reason);
+			invoice.setStatus(Constants.MEMBER_IN_ACTIVE);
+			Invoice invoiceData = invoiceDao.updateInvoice(invoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}
+		return result;
 	}
 	
 }

@@ -191,7 +191,6 @@ function employeeExpensesListByStage(expenseStatus){
 	    		 	 result = result+" </div>";
 	    	    }
 	    	    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
-	    	    	alert("data.actionPerformedBy"+data.actionPerformedBy);
 	    	         result = result+" <div class='sm text-center' title='"+data.actionPerformedBy+"'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
 	    	    }
 	    	    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){

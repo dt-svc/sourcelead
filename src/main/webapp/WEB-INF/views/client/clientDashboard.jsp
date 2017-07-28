@@ -765,7 +765,7 @@ function clearSearch(){
 
 
 
-<<script type="text/javascript">
+<script type="text/javascript">
  function preparedClientDetails(data){
 	 
 	 var json = JSON.parse(data);
@@ -2188,6 +2188,14 @@ $(document).ready(function() {
 		
 });
 </script> 
+
+
+<script type="text/javascript">
+function cancelTermination(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script>
  $('#selector').delay(2000).fadeOut('slow');

@@ -2426,6 +2426,13 @@ function exportVendorContactToExcel(){
 }
 </script>
 
+<script type="text/javascript">
+function cancelTermination(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 <!-- Show success message after form submission script -->
 <script>
 	function msgFadein() {

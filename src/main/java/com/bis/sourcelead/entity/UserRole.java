@@ -241,6 +241,12 @@ public class UserRole implements Serializable {
 
 	@Transient
 	private String department;
+	
+	@Transient
+	private String reportingManagerName; 
+	
+	@Transient
+	private String employeMentType; 
 
 	public String getUserName() {
 		return userName;
@@ -761,6 +767,26 @@ public class UserRole implements Serializable {
 
 	public void setVendorDocumentsOwnerList(List<User> vendorDocumentsOwnerList) {
 		this.vendorDocumentsOwnerList = vendorDocumentsOwnerList;
+	}
+
+	public String getReportingManagerName() {
+		return reportingManagerName;
+	}
+
+	public void setReportingManagerName(String reportingManagerName) {
+		this.reportingManagerName = reportingManagerName;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getEmployeMentType() {
+		return employeMentType;
+	}
+
+	public void setEmployeMentType(String employeMentType) {
+		this.employeMentType = employeMentType;
 	}
 
 }

@@ -1,11 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<link rel="icon" type="resources/image/png"
+	href="resources/images/fav.png" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <script src="resources/js/formvalidator.js"></script>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -16,254 +18,294 @@ $(document).ready(function(){
 
 <style type="text/css">
 .invoiceId_Anchor a {
-color:#337ab7 !important;
+	color: #337ab7 !important;
 }
+
 .successBtn {
-background-color: #1ab394;
-border-color: #1ab394;
-cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
-font-size: 13px; width: 75px;
+	background-color: #1ab394;
+	border-color: #1ab394;
+	border: 1px solid;
+	color: #fff;
+	padding: 1px 5px;
+	border-radius: 3px;
+	font-size: 13px;
+	width: 60px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+	z-index: 900000 !important;
+}
+
+.modal {
+	z-index: 15000;
+}
+
+.remove_user_pop.remove_user_pop_a {
+	z-index: 18000;
 }
 </style>
 
-<input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
- <div class="success_pop" id="selector1" style="display: none;">
-		<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
-  </div>
+<input type="hidden" id="emptyPayableInvoiceId"
+	name="emptyPayableInvoiceId" />
+<div class="success_pop" id="selector1" style="display: none;">
+	<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+</div>
 <section class="content-wraper">
-    <section class="content-header clearfix">
-     <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+	<section class="content-header clearfix">
+		<c:if test="${!empty msg}">
+			<div class="success_pop" id="selector" style="display: block;">
+				<i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
-	     </c:if>
-      <div class="pull-left">
-        <h2>Payables</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payables List </div>
-    </section>
-    <div class="content-area content-new clearfix">
-      <div class="billing_dashboard">
-        <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons">
-           <div class="pull-right select-field ml">
-              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getPayableInvoiceList();customInvoiceList();">
-                <option value="month">Last 30 days</option>
-                <option value="twomonths">Last 60 Days</option>
-                <option value="threemonths">Last 90 days</option>
-                <option value="sixmonths">Last 180 days</option>
-                <option value="oneyear">Last 365 days</option>
-                <option value="custom">Custom</option>
-              </select>
-              
-              <div class="custom_search">
-              <div id="customDateDivId"></id>
-            </div>
-          </div>
-            </div>
-          </div>
-          <ul class="nav nav-tabs" id="tab_bar">
-            
-            
-            <li class="active">
-                        <h4>Unbilled</h4>
-                        <a  data-toggle="tab" class="onboardCount billbg_orange" title="Draft Bills">
-                            <div class="pull-left">
-                             <strong>${SourceLeadWeb_currencyCode}</strong>
-                            </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="unbilledAmoumt"></div>
-                                <h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
-                                </div>
-                        </a>
-                    </li>
-                    <li>
-                        <h4>Un Paid</h4>
-                        <a  data-toggle="tab" title="UnPaid Overdue Bills" class="billingbg_red">
-                        <div class="pull-left">
-                             <strong>${SourceLeadWeb_currencyCode}</strong>
-                            </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="dueAfterInvoiceAmount"></div>
-                        <h5>Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
-                            </div>
-                        
-                        </a>
-                    </li>
-                    <li>
-                        <h4>&nbsp;</h4>
-                        <a  data-toggle="tab" title="UnPaid Open Bills" class="billingbgRed">
-                        <div class="pull-left">
-                            <strong> ${SourceLeadWeb_currencyCode}</strong>
-                            </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="dueBeforeInvoiceAmount"></div>
-                        <h5>Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
-                        </div>
-                        </a>
-                    </li>
-                    <li class="billingbg_greens">
-                        <h4>Paid</h4>
-                        <a  data-toggle="tab" title="Paid Bills" class="billbg_green">
-                        <div class="pull-left">
-                            <strong> ${SourceLeadWeb_currencyCode}</strong>
-                            </div>
-                            <div class="pull-right ml10">
-                            <div class="count" id="paidInvoiceAmount"></div>
-                        <h5>Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
-                            </div>
-                        </a>
-                    </li>
-            
-            <div class="pull-right mt40 select-field hidden">
-              <select class="form-control">
-                <option class="disabled" selected="">--Select option--</option>
-                <option>1 Month</option>
-                <option>2 Months</option>
-                <option>3 Months</option>
-                <option>6 months</option>
-                <option>1 Year</option>
-                <option>Custom months</option>
-              </select>
-            </div>
-          </ul>
-          <div class="tab-content"> 
-              <div id="invoiceLoading"></div>
-            <!-- Employee Details -->
-            <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt">
-                <div class="clearfix">
-                  <div class="timesheet_head">
-                    <ul>
-                    
-                    <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
-					        	<div id="exportPop" class="ExpPop">
-					              <ul>
-					                <li onclick="exportToPayablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-					                <li onclick="exportToPayableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-					             </ul>
-					           </div>
-					</li>   
-                    
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                        <div class="approved_pop" id="invoiceTabOne">
-                          <ul>
-                            <li>
-                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getPayableInvoiceList();" >
-                              <label for="onboard1">Draft</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Sent</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="RECEIVED" name="invoiceStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Received</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Accepted</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Rejected</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="LINKED" name="invoiceStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Linked</label>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>
-                      
-                        <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
-                        <div class="approved_pop" id="paymentTabOne">
-                          <ul>
-                             <li>
-                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard3">Paid</label>
-                            </li>
-                             <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Partially Paid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard4">OverDue</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getPayableInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li>
-                       <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
-			               <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+		</c:if>
+		<div class="pull-left">
+			<h2>Payables</h2>
+		</div>
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo; Payables List
+		</div>
+	</section>
+	<div class="content-area content-new clearfix">
+		<div class="billing_dashboard">
+			<div class="tabbable positionRelative">
+				<div class="onboardcreateButtons">
+					<div class="pull-right select-field ml">
+						<select class="form-control input-sm" id="dayWiseTypeId"
+							onchange="getPayableInvoiceList();customInvoiceList();">
+							<option value="month">Last 30 days</option>
+							<option value="twomonths">Last 60 Days</option>
+							<option value="threemonths">Last 90 days</option>
+							<option value="sixmonths">Last 180 days</option>
+							<option value="oneyear">Last 365 days</option>
+							<option value="custom">Custom</option>
+						</select>
+
+						<div class="custom_search">
+							<div id="customDateDivId">
+								</id>
+							</div>
+						</div>
+					</div>
+				</div>
+				<ul class="nav nav-tabs" id="tab_bar">
+
+
+					<li class="active">
+						<h4>Unbilled</h4> <a data-toggle="tab"
+						class="onboardCount billbg_orange" title="Draft Bills">
+							<div class="pull-left">
+								<strong>${SourceLeadWeb_currencyCode}</strong>
+							</div>
+							<div class="pull-right ml10">
+								<div class="count" id="unbilledAmoumt"></div>
+								<h5>
+									Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span>
+								</h5>
+							</div>
+					</a>
+					</li>
+					<li>
+						<h4>Un Paid</h4> <a data-toggle="tab" title="UnPaid Overdue Bills"
+						class="billingbg_red">
+							<div class="pull-left">
+								<strong>${SourceLeadWeb_currencyCode}</strong>
+							</div>
+							<div class="pull-right ml10">
+								<div class="count" id="dueAfterInvoiceAmount"></div>
+								<h5>
+									Overdue Bills<span class="paddingLeft"
+										id="dueAfterInvoiceCount"></span>
+								</h5>
+							</div>
+
+					</a>
+					</li>
+					<li>
+						<h4>&nbsp;</h4> <a data-toggle="tab" title="UnPaid Open Bills"
+						class="billingbgRed">
+							<div class="pull-left">
+								<strong> ${SourceLeadWeb_currencyCode}</strong>
+							</div>
+							<div class="pull-right ml10">
+								<div class="count" id="dueBeforeInvoiceAmount"></div>
+								<h5>
+									Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span>
+								</h5>
+							</div>
+					</a>
+					</li>
+					<li class="billingbg_greens">
+						<h4>Paid</h4> <a data-toggle="tab" title="Paid Bills"
+						class="billbg_green">
+							<div class="pull-left">
+								<strong> ${SourceLeadWeb_currencyCode}</strong>
+							</div>
+							<div class="pull-right ml10">
+								<div class="count" id="paidInvoiceAmount"></div>
+								<h5>
+									Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span>
+								</h5>
+							</div>
+					</a>
+					</li>
+
+					<div class="pull-right mt40 select-field hidden">
+						<select class="form-control">
+							<option class="disabled" selected="">--Select option--</option>
+							<option>1 Month</option>
+							<option>2 Months</option>
+							<option>3 Months</option>
+							<option>6 months</option>
+							<option>1 Year</option>
+							<option>Custom months</option>
+						</select>
+					</div>
+				</ul>
+				<div class="tab-content">
+					<div id="invoiceLoading"></div>
+					<!-- Employee Details -->
+					<div class="tab-pane active" id="unbilled">
+						<div class="timesheet_out mt">
+							<div class="clearfix">
+								<div class="timesheet_head">
+									<ul>
+
+										<li title="Export" class="mrPOP" id="mypop"><i
+											class="glyphicon glyphicon-export"></i>
+											<div id="exportPop" class="ExpPop">
+												<ul>
+													<li onclick="exportToPayablePdf();"><i
+														class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+													<li onclick="exportToPayableExcel();"><i
+														class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+												</ul>
+											</div></li>
+
+										<li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i
+											class="glyphicon glyphicon-play"></i>|
+											<div class="approved_pop" id="invoiceTabOne">
+												<ul>
+													<li><input type="checkbox" value="DRAFT"
+														name="invoiceStatus" id=""
+														onclick="getPayableInvoiceList();"> <label
+														for="onboard1">Draft</label></li>
+													<li><input type="checkbox" id="" value="SENT"
+														name="invoiceStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard2">Sent</label></li>
+													<li><input type="checkbox" id="" value="RECEIVED"
+														name="invoiceStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard2">Received</label></li>
+													<li><input type="checkbox" id="" value="ACCEPTED"
+														name="invoiceStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard2">Accepted</label></li>
+													<li><input type="checkbox" id="" value="REJECTED"
+														name="invoiceStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard2">Rejected</label></li>
+													<li><input type="checkbox" id="" value="LINKED"
+														name="invoiceStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard2">Linked</label></li>
+												</ul>
+											</div></li>
+
+										<li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i
+											class="glyphicon glyphicon-play"></i>|
+											<div class="approved_pop" id="paymentTabOne">
+												<ul>
+													<li><input type="checkbox" id="" value="Paid"
+														name="paymentStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard3">Paid</label></li>
+													<li><input type="checkbox" id="" value="Partial Paid"
+														name="paymentStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard2">Partially Paid</label></li>
+													<li><input type="checkbox" id="" value="OverDue"
+														name="paymentStatus" onclick="getPayableInvoiceList();">
+														<label for="onboard4">OverDue</label></li>
+													<li><input type="checkbox" value="Unpaid"
+														name="paymentStatus" id=""
+														onclick="getPayableInvoiceList();"> <label
+														for="onboard1">Unpaid</label></li>
+												</ul>
+											</div></li>
+										<li><sec:authorize access="hasAnyRole('ROLE_ADD_BILL')">
+												<a href="javascript:void(0)" class="anchorTag"
+													title="Create Bill" onclick="createBill();"> <i
+													class="fa fa-plus paddingRight"></i>Create Bill
+												</a>&nbsp;&nbsp;&nbsp;|
 			          </sec:authorize>
-                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Bill</a>&nbsp;&nbsp;&nbsp;|</li>
-                      </li>  
-                      <div class="clearfix"></div>
-                    </ul>
-                    <div class="clearfix"></div>
-                     
-                  </div>
-                  
-                  
-                  <div class="candidate_wrap_table datatable_filter">
-	                  <div id="invoiceList"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </div>
-          <!-- STYLED IN FORMS.CSS --> 
-        </div>
-      </div>
-    </div>
-  </section>
-  
-   <!-- Add invoice Popup -->
-		   <div class="addcandidate-popup">
-		    <div class="row">
-		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
-		      <div class="col-md-5 mt25">
-		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='/createPayables'/>" title="Create custom invoice">
-		          <div class="clearfix mb10"> 
-		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
-		          </div>
-		          <strong class="clearfix">Custom</strong></a>
-		          </div>
-		      </div>
-		
-		        <div class="col-md-5 mt25">
-		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='/createInvoiceProjectPayableBased'/>" title="Create project based invoice">
-		            <div class="clearfix mb10">
-		                <!--<i class="fa fa-usd fa-3x"></i>-->
-		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		            </div>
-		            <strong class="clearfix">Project Based </strong> </a> </div>
-		        </div>
-		          
-		          <!-- <div class="col-md-4 mt25">
+										<li><a href="javascript:void(0)" class=""
+											title="Generate Automatic Bill"
+											onclick="generateAutomaticInvoice();"> <i
+												class="fa fa-plus paddingRight"></i>Generate Automatic Bill
+										</a>&nbsp;&nbsp;&nbsp;|</li>
+										</li>
+										<div class="clearfix"></div>
+									</ul>
+									<div class="clearfix"></div>
+
+								</div>
+
+
+								<div class="candidate_wrap_table datatable_filter">
+									<div id="invoiceList"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- STYLED IN FORMS.CSS -->
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Add invoice Popup -->
+<div class="addcandidate-popup">
+	<div class="row">
+		<div class="col-md-12">
+			<a href="javascript:void(0)" class="close-popdiv"
+				onClick="closeCandidate()">&times;</a>
+			<div class="col-md-4 mt25">
+				<div class="small-widget bgGreen">
+					<a href="<c:url value='/createPayables'/>"
+						title="Create custom invoice">
+						<div class="clearfix mb10">
+							<img src="resources/images/invoice_icon.png" class="text-center"
+								alt="create_receivables">
+						</div> <strong class="clearfix">Vendor Based</strong>
+					</a>
+				</div>
+			</div>
+
+			<div class="col-md-4 mt25">
+				<div class="small-widget bg-yellow">
+					<a href="<c:url value='/createInvoiceProjectPayableBased'/>"
+						title="Create project based invoice">
+						<div class="clearfix mb10">
+							<!--<i class="fa fa-usd fa-3x"></i>-->
+							<img src="resources/images/invoice_icon.png" class="text-center"
+								alt="Invoice">
+						</div> <strong class="clearfix">Project Based </strong>
+					</a>
+				</div>
+			</div>
+
+			 <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
-		 -->
-		      
-		          </div>
-		    </div>
-		  </div>
-		  <div class="pop_mask"></div>
-		  <script>
+		 
+
+		</div>
+	</div>
+</div>
+<div class="pop_mask"></div>
+<script>
 		    //addcandidate-popup script
 		    function createBill(){
 		        $('.addcandidate-popup').fadeIn(200);
@@ -273,8 +315,8 @@ font-size: 13px; width: 75px;
 		        $('.addcandidate-popup').fadeOut(200);
 		        $('.pop_mask').fadeOut(200);
 		       }
-		    </script> 
-  
+		    </script>
+
 <script>
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -376,7 +418,7 @@ function receivePaymentPop1(invoiceId,total){
 	});
 }
 
-</script>  
+</script>
 <script>
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
@@ -404,17 +446,17 @@ function validMask(){
 		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
 	}
 } */
-</script>  
-  <!-- modal pop -->
+</script>
+<!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpop" class="modal" style="display: none;">
-   <div id="receivePaymentId" ></div>
+	<div id="receivePaymentId"></div>
 </div>
 
- <!-- modal pop -->
+<!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
 <div class="modal modal_invoice datatable_filter" style="display: none;">
-   <div id="linkPayblePopup" class="datatable_filter"></div>
+	<div id="linkPayblePopup" class="datatable_filter"></div>
 </div>
 <!-- modal pop -->
 
@@ -434,7 +476,7 @@ function cancelTermination(){
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 }
 </script>
-<!-- modal pop --> 
+<!-- modal pop -->
 <script>
 function saveReceivePayment(invoiceId){
 	 if ($('#receivePayment-form').validate(false, validationSettings)){  
@@ -670,12 +712,13 @@ function getPayableInvoiceList(){
 						result = result +'  <div id="popupDiv'+report.id+'"></div>';
 				} 
 				result = result +'  </div> ';  
-				
 				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
-						}else if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						}else if(report.invoiceStatus == "DRAFT"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
+						}else if(report.invoiceStatus == "Rejected"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
 						}
 							
@@ -685,6 +728,8 @@ function getPayableInvoiceList(){
 						}else{
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
+							}else if(report.invoiceStatus == "Linked"){
+								result = result +' <a class="text-primary successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
 							}else{
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 							}
@@ -696,12 +741,18 @@ function getPayableInvoiceList(){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+						}else if(report.invoiceStatus == "DRAFT"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Bill" onClick="deleteBill('+report.id+');";></i></td>          ';
 						}else{
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
 						}
 							
 					}else{
-						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+						if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
+						}else{
+							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+						}
 					}
 					
 					
@@ -922,7 +973,7 @@ function cancelbtn(){
 </script>
 
 
-  <script type="text/javascript">
+<script type="text/javascript">
         var config = {
         '.chosen-select'           : {},
         '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -943,7 +994,7 @@ function cancelbtn(){
         });
 
         });
-    </script> 
+    </script>
 <script>
     // Script for tabs next pre button
     var $tabs = $('.tabbable li');
@@ -955,7 +1006,7 @@ function cancelbtn(){
     $('#nexttab').on('click', function() {
         $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
     });
-</script> 
+</script>
 <script>
     function showMenu() {
         $('.menupop').toggle();
@@ -1271,7 +1322,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			if(opt.invoiceDateStr !=null && opt.invoiceDateStr !='' && opt.invoiceDateStr !='undefined'){
 				result = result +'<div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';	
 			}else{
-				result = result +'<div class="tblminwidth-75">'+opt.invoiceDateStr+'</div>';
+				result = result +'<div class="tblminwidth-75">--</div>';
 			}
 			
 			result = result +'            </td>                                                                                                             ';
@@ -1339,8 +1390,8 @@ function linkInvoicePayablePagination(){
 }
 </script>
 
- <!-- Script for Linked Invoice pop -->
-    <script>
+<!-- Script for Linked Invoice pop -->
+<script>
         $(".sendReminder").click(function(){
         $('.modal.modal_invoice').fadeIn(200);
         $('.side_mask').fadeIn(200);
@@ -1355,8 +1406,8 @@ function linkInvoicePayablePagination(){
             $('.side_mask').fadeOut(200);
         }
     </script>
-    <!-- Script for Linked Invoice pop -->
-    
+<!-- Script for Linked Invoice pop -->
+
 <script>
 function mergeInvoice(parentTotalAmount){
 	var masterInvoiceId = $('#masterInvoiceId').val();
@@ -1367,15 +1418,7 @@ function mergeInvoice(parentTotalAmount){
 	var total = $('#linkedPayableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
 	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
-	showDiffAmountPopup(calculatedAmount,currencyCode);
-	 $.ajax({
-   	 type: "POST",
-	     dataType : 'json',
-	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=payables&masterInvoiceId="+masterInvoiceId, 
-            success: function(data) {
-           	
-       },
-   });  
+	showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId);
 }else{
 	$('span.jquery_form_error_message').show();
 	} 
@@ -1384,13 +1427,13 @@ function mergeInvoice(parentTotalAmount){
 
 
 <script>
-function showDiffAmountPopup(calculatedAmount,currencyCode){
+function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoiceId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='payable_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMergeBill("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#payable_pop").slideDown(200);
@@ -1398,6 +1441,22 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 	
 }
 
+</script>
+
+<script>
+function proceedToMergeBill(checkVal,masterInvoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=payables&masterInvoiceId="+masterInvoiceId, 
+	            success: function(data) {
+	            	$("#popUp").empty();
+	            	$(".project_inn_mask").fadeOut(200);
+	            	location.replace(sourceleadUrl+"/payablesList");	
+	       },
+	   });  
+}
 </script>
 
 <script type="text/javascript">
@@ -1437,15 +1496,78 @@ function generateAutomaticInvoice(){
 </script>
 
 <script>
+function unLinkBill(invoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId, 
+	            success: function(data) {
+	            	location.replace(sourceleadUrl+"/payablesList");	
+	       },
+	   });  
+}
+</script>
+
+<script>
+function deleteBill(billId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForBill' name='reasonForBill'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForBillDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveBillRejectedReason('+billId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveBillRejectedReason(billId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = $("#reasonForBill").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForBillDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForBillDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&invoiceId="+billId+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/payablesList");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForBillDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	
+}
+
+</script>
+
+
+<script>
 	function msgFadein() {
 		$("#selector1").fadeIn(200);
         $('#selector1').delay(2000).fadeOut('slow');
 	}
-</script> 
+</script>
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
 	
 	 
-</script> 
- <jsp:include page="../masterFooter.jsp" />	
+</script>
+<jsp:include page="../masterFooter.jsp" />

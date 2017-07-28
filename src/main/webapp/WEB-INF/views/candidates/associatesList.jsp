@@ -4,13 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
 <%-- 
      @author : p.Laxman
      this script is for candidate Activation
@@ -235,6 +228,20 @@ function candidateSideBar(candidateId){
 					     } 
 						 result = result+'  </div>';
 						 result = result+'  </div>';
+						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">  ';
+						if(json.profilePercentage>=50){ 
+							result = result+'   <div class="progress-bar  progress-bar-success  ';
+						}
+						else{
+							result = result+'   <div class="progress-bar  progress-bar-danger  ';
+						}
+						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+						result = result+'   </div>  ';
+						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> ';
+						 
 						 /*  result = result+'  <div class="pull-right" style="position:relative; top:10px; right:-10px;">';
 						 result = result+'  <a href="#" title="Save"><i class="fa fa-check-circle" onClick="saveCandidateImage('+candidateId+');" ></i></a>';
 						 result = result+'  <a href="#" title="Close"><i class="fa fa-close text-danger"></i></a>';
@@ -515,6 +522,8 @@ function saveCandidateImage(candidateId){
   		        var jsonData = encodeURIComponent(con);
           		
           		var sourceleadUrl ='${sourceleadUrl}';
+          		var loginUserId = '${SourceLeadWeb_userId}';
+          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];
            		var formData = new FormData(form);
 	            		
@@ -527,7 +536,7 @@ function saveCandidateImage(candidateId){
 	            	          contentType:false,
 	                	      dataType : 'json',
 	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  cancel(candidateId);
 	    			          },  
@@ -646,6 +655,19 @@ function refreshImageBlock(candidateId){
 						 
 						 
 						 result = result+'  </div>';
+						 
+						 result = result+' <div class="mb mt5 UsProBar">';
+						 result = result+' <div class="progress nomr"> ';
+						 if(json.profilePercentage>=50){
+						 result = result+' <div class="progress-bar progress-bar-success ';
+						 }
+						 else{
+						 result = result+' <div class="progress-bar progress-bar-danger ';
+						 }
+						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+						 result = result+' </div> ';
+						 result = result+' </div> ';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';

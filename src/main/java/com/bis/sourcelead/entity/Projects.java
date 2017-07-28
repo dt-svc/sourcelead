@@ -250,6 +250,9 @@ public class Projects implements Serializable{
     @Transient
     private String expensesClientName;
     
+    @Column(name = "GENERATED_ID")
+	private String generatedId;
+    
 	public Long getId() {
 		return id;
 	}
@@ -737,6 +740,14 @@ public class Projects implements Serializable{
 		this.overtimeRateType = overtimeRateType;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
 
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
 	
 }
