@@ -139,6 +139,7 @@ function getExpensesList(){
 	obj['userId']='${SourceLeadWeb_user.id}';
 	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
 	var jsonData= JSON.stringify(obj);
+	alert(jsonData);
 	 $.ajax({
 		 type : "POST",
 		  data: jsonData,
@@ -176,10 +177,10 @@ function getExpensesList(){
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
-			        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-			        			  projectMemberId = report.projectMemberId;
+			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+			        			  projectName = report.projectMemberId;
 			        		  }else{
-			        			  projectMemberId = "--";
+			        			  projectName = "--";
 			        		  }
 			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
 			        			  clientName = report.clientName;
