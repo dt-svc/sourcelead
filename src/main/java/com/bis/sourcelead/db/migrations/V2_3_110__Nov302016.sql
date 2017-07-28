@@ -1,0 +1,4 @@
+UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Add Employer' WHERE `ID`='126';
+UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View Employer' WHERE `ID`='127';
+UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Edit Employer' WHERE `ID`='128';
+UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Delete Employer' WHERE `ID`='129';

@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE','CANDIDATE_UUID','VARCHAR(20) NULL');
