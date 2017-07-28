@@ -1,8 +1,8 @@
 <!-- Footer Area -->
   <footer class="footer-area clearfix">
   
-  <div class="addthis_inline_share_toolbox" data-url='http://www.google.com' data-title='google' data-desc='google'></div>
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
+  <!-- <div class="addthis_inline_share_toolbox" data-url='http://www.google.com' data-title='google' data-desc='google'></div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script> -->
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
     <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
