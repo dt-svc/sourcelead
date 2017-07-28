@@ -381,6 +381,8 @@ window.onload = function () {
             </div>    
             
 		  <div class="clearfix"></div>
+		  
+		 
 	  </section>
 	   <br/>
 	   <input type="hidden" name="requirementOffset" id="requirementOffset" value="0"/>
@@ -1864,6 +1866,9 @@ function createAlert(requirementUUID){
 					        	  
 					        	 result = "";
 					        	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+					        	 result = result +' 	  <div class="success_pop" id="selector4" style="display: none;">';
+					        	 result = result +'   <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+					        	 result = result +'   </div>';
 					        	 result = result +'	 <div class="modal-dialog modal-lg">';
 					        	 result = result +'     <div class="modal-content">';
 					        	 result = result +'       <div class="modal-header">';
@@ -2080,7 +2085,7 @@ function createAlert(requirementUUID){
 					        	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
 					        	 result = result +'       </div>';
 					        	 result = result +'     </div>';
-					        	 result = result +'   </div>';	
+					        	 result = result +'   </div>';
 					        	 result = result +'</form>';
 					         $("#createAlertPopUpDiv").empty();
 					         $("#createAlertPopUpDiv").append(result);
@@ -2226,7 +2231,13 @@ var validationSettings = {
         					type : "POST",
         					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         					success : function(result) {
+        						alert("hello");
+	        					    $("#selector4").removeAttr("style");
+			            			$("#selector4").css({ display: "block" });
+			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
+			            			alertMsgFadeinFunction();
         							location.replace(sourceleadUrl+"/professionalRequirements");
+        						 
         					},
         				});
                 
@@ -2243,7 +2254,12 @@ var validationSettings = {
         	});
          
 	</script>
-	
+	<script>
+	function alertMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4s').delay(50000).fadeOut('slow');
+	}
+</script>
 	
 	<script type="text/javascript">
 function getAllCountriesJObalert(country){

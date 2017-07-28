@@ -77,13 +77,10 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateHistory candidateHistory = new CandidateHistory();
 		candidateHistory.setCandidateId(candidate);
-		candidateHistory.setConsultantUser(candidate.getConsultantUser());
 		candidateHistory.setCandidateType(candidate.getCandidateType());
 		candidateHistory.setCandidateUUID(candidate.getCandidateUUID());
 		candidateHistory.setIsFavourite(candidate.getIsFavourite());
 		candidateHistory.setIsFavouriteAssociate(candidate.getIsFavouriteAssociate());
-		candidateHistory.setMasterCandidateId(candidate.getMasterCandidateId());
-		candidateHistory.setOrgLocationId(candidate.getOrgLocationId());
 		candidateHistory.setFirstName(candidate.getFirstName());
 		candidateHistory.setLastName(candidate.getLastName());
 		candidateHistory.setCountry(candidate.getCountry());
@@ -110,12 +107,9 @@ public class CandidateActivityCommonUtil {
 		candidateHistory.setExperienceMonths(candidate.getExperienceMonths());
 		candidateHistory.setNoticePeriod(candidate.getNoticePeriod());
 		candidateHistory.setAddress(candidate.getAddress());
-		candidateHistory.setRecruiterUserId(candidate.getRecruiterUserId());
 		candidateHistory.setSkillsName(candidate.getSkillsName());
 		candidateHistory.setVisaType(candidate.getVisaType());
 		candidateHistory.setPrimarySkill(candidate.getPrimarySkill());
-		candidateHistory.setOrgRelationId(candidate.getOrgRelationId());
-		candidateHistory.setSpocId(candidate.getSpocId());
 		/*candidateHistory.setCandidateEducation
 		candidateHistory.setCandidateEmployers
 		candidateHistory.setCandidateResumes*/
@@ -137,8 +131,6 @@ public class CandidateActivityCommonUtil {
 		for(CandidateEducation candidateEducation : candidateEducationList){
 			CandidateEducationHistory candidateEducationHistory = new CandidateEducationHistory();
 			candidateEducationHistory.setCandidateEducation(candidateEducation);
-			candidateEducationHistory.setOrglocationId(candidateEducation.getOrglocationId());
-			candidateEducationHistory.setCandidateId(candidateEducation.getCandidateId());
 			candidateEducationHistory.setName(candidateEducation.getName());
 			candidateEducationHistory.setSpecialization(candidateEducation.getSpecialization());
 			candidateEducationHistory.setStartDate(candidateEducation.getStartDate());
@@ -163,8 +155,6 @@ public class CandidateActivityCommonUtil {
 		for(CandidateEmployers candidateEmployers : candidateEmployersList){
 			CandidateEmployersHistory candidateEmployersHistory = new CandidateEmployersHistory();
 			candidateEmployersHistory.setCandidateEmployers(candidateEmployers);
-			candidateEmployersHistory.setOrgLocationId(candidateEmployers.getOrgLocationId());
-			candidateEmployersHistory.setCandidateId(candidateEmployers.getCandidateId());
 			candidateEmployersHistory.setName(candidateEmployers.getName());
 			candidateEmployersHistory.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
 			candidateEmployersHistory.setDesignation(candidateEmployers.getDesignation());
@@ -191,8 +181,6 @@ public class CandidateActivityCommonUtil {
 		for(CandidateResumes candidateResumes : candidateResumesList){
 			CandidateResumesHistory candidateResumesHistory = new CandidateResumesHistory();
 			candidateResumesHistory.setCandidateResumes(candidateResumes);
-			candidateResumesHistory.setOrgLocationId(candidateResumes.getOrgLocationId());
-			candidateResumesHistory.setCandidateId(candidateResumes.getCandidateId());
 			candidateResumesHistory.setTitle(candidateResumes.getTitle());
 			candidateResumesHistory.setDescription(candidateResumes.getDescription());
 			candidateResumesHistory.setDocFile(candidateResumes.getDocFile());
@@ -215,8 +203,6 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateEducationHistory candidateEducationHistory = new CandidateEducationHistory();
 		candidateEducationHistory.setCandidateEducation(candidateEducation);
-		candidateEducationHistory.setOrglocationId(candidateEducation.getOrglocationId());
-		candidateEducationHistory.setCandidateId(candidateEducation.getCandidateId());
 		candidateEducationHistory.setName(candidateEducation.getName());
 		candidateEducationHistory.setSpecialization(candidateEducation.getSpecialization());
 		candidateEducationHistory.setStartDate(candidateEducation.getStartDate());
@@ -237,8 +223,6 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateEmployersHistory candidateEmployersHistory = new CandidateEmployersHistory();
 		candidateEmployersHistory.setCandidateEmployers(candidateEmployers);
-		candidateEmployersHistory.setOrgLocationId(candidateEmployers.getOrgLocationId());
-		candidateEmployersHistory.setCandidateId(candidateEmployers.getCandidateId());
 		candidateEmployersHistory.setName(candidateEmployers.getName());
 		candidateEmployersHistory.setIsCurrentPosition(candidateEmployers.getIsCurrentPosition());
 		candidateEmployersHistory.setDesignation(candidateEmployers.getDesignation());
@@ -261,8 +245,6 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateResumesHistory candidateResumesHistory = new CandidateResumesHistory();
 		candidateResumesHistory.setCandidateResumes(candidateResumes);
-		candidateResumesHistory.setOrgLocationId(candidateResumes.getOrgLocationId());
-		candidateResumesHistory.setCandidateId(candidateResumes.getCandidateId());
 		candidateResumesHistory.setTitle(candidateResumes.getTitle());
 		candidateResumesHistory.setDescription(candidateResumes.getDescription());
 		candidateResumesHistory.setDocFile(candidateResumes.getDocFile());
@@ -281,8 +263,6 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateCertificationsHistory candidateCertificationsHistory = new CandidateCertificationsHistory();
 		candidateCertificationsHistory.setCandidateCertifications(candidateCertifications);
-		candidateCertificationsHistory.setOrgLocationId(candidateCertifications.getOrgLocationId());
-		candidateCertificationsHistory.setCandidateId(candidateCertifications.getCandidateId());
 		candidateCertificationsHistory.setName(candidateCertifications.getName());
 		candidateCertificationsHistory.setProvider(candidateCertifications.getProvider());
 		candidateCertificationsHistory.setScore(candidateCertifications.getScore());
@@ -302,9 +282,6 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateDocumentsHistory candidateDocumentsHistory = new CandidateDocumentsHistory();
 		candidateDocumentsHistory.setCandidateDocuments(candidateDocuments);
-		candidateDocumentsHistory.setOrgLocationId(candidateDocuments.getOrgLocationId());
-		candidateDocumentsHistory.setCandidateId(candidateDocuments.getCandidateId());
-		candidateDocumentsHistory.setRequestedDocumentsId(candidateDocuments.getRequestedDocumentsId());
 		candidateDocumentsHistory.setIsRequestedDocRequired(candidateDocuments.getIsRequestedDocRequired());
 		candidateDocumentsHistory.setDocUploadStatus(candidateDocuments.getDocUploadStatus());
 		candidateDocumentsHistory.setRequestedDocStatus(candidateDocuments.getRequestedDocStatus());
@@ -329,8 +306,6 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateReferencesHistory candidateReferencesHistory = new CandidateReferencesHistory();
 		candidateReferencesHistory.setCandidateReferences(candidateReferences);
-		candidateReferencesHistory.setOrgLocationId(candidateReferences.getOrgLocationId());
-		candidateReferencesHistory.setCandidateId(candidateReferences.getCandidateId());
 		candidateReferencesHistory.setName(candidateReferences.getName());
 		candidateReferencesHistory.setEmail(candidateReferences.getEmail());
 		candidateReferencesHistory.setMobilePhone(candidateReferences.getMobilePhone());
