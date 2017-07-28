@@ -1122,6 +1122,7 @@ function cancel(candidateId){
 						  </div>
 					  </div>
 				  </div>
+				  </div>
 			  </form:form>
       </div>
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
