@@ -14,8 +14,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.joda.time.DateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.star.util.DateTime;
 
 @Entity
 @Table(name = "ACTION_HISTORY")
@@ -40,6 +41,10 @@ public class ActionHistory implements Serializable{
 	
 	@Column(name = "ACTION_TIME")
     private DateTime actionTime;
+	
+	@Transient
+	@JsonProperty
+	private String actionTimeStr;
 	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_LOGIN_LOGOUT_SESSION_ID", nullable=false)
@@ -84,6 +89,14 @@ public class ActionHistory implements Serializable{
 
 	public void setActionTime(DateTime actionTime) {
 		this.actionTime = actionTime;
+	}
+
+	public String getActionTimeStr() {
+		return actionTimeStr;
+	}
+
+	public void setActionTimeStr(String actionTimeStr) {
+		this.actionTimeStr = actionTimeStr;
 	}
 
 	public UserLoginLogoutSession getUserLoginLogoutSessionId() {
