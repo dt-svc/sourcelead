@@ -45,10 +45,11 @@ public interface OrgLocationService {
 	
 	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception;
 
-	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation, JSONObject jsonObj, String type) throws SourceLeadConstraintViolationException, JSONException, NumberFormatException, Exception;
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation, JSONObject jsonObj) throws SourceLeadConstraintViolationException, JSONException, NumberFormatException, Exception;
 
 	public String getDateFormatByOrgLocation(OrgLocations orgLocation);
 
 	public boolean validateOrgShortCode(String orgShortId);
+
 
 }
