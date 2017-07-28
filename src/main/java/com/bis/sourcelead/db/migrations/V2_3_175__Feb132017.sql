@@ -1,3 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','IS_PUBLIC','VARCHAR(2) DEFAULT NULL AFTER `IS_CLIENT_JOB`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','IS_CROWD_SOURCING','VARCHAR(2) DEFAULT NULL AFTER `IS_PUBLIC`');
-

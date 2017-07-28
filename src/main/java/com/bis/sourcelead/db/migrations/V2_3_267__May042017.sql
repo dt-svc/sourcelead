@@ -1,6 +1,0 @@
-
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_ON_BOARDING','REJECTED_REASON','TEXT NULL AFTER `ONBOARD_SUBMITTED`');
-
-
-UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Schedule Interview' WHERE `ID`='57';
-UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View Interview' WHERE `ID`='58';

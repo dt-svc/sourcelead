@@ -1,1 +1,0 @@
-UPDATE `sourcelead`.`ORG_LOCATIONS` SET `FROM_EMAIL`='donotreply@sourcelead.com', `FROM_EMAIL_PASSWORD`='Welcome1' WHERE `ID`='1';

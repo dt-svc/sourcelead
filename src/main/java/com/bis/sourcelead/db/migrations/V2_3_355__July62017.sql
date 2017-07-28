@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','OFFBOARD_TASKS','IS_TASK_SUBMITTED','VARCHAR(10) NULL');

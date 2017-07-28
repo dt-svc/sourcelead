@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','NOTICEPERIOD','TEXT NULL');

@@ -1,1 +1,0 @@
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{MailToProjectManager.ManagerFirstName}} {{MailToProjectManager.ManagerLastName}},\r  {{MailToProjectManager.LoginUserFirstName}} {{MailToProjectManager.LoginUserLastName}} assigned you as a project manager for the {{MailToProjectManager.ProjectName}}.\r \r {{MailToProjectManager.TeamMembers}}' WHERE `ID`='24';
