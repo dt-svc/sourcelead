@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 
 /**
  * @author Prasad K
- *
+ *		
  */
 @Entity
 @Table(name = "CANDIDATE_DOCUMENTS_HISTORY", catalog = "sourcelead")
@@ -35,12 +35,6 @@ public class CandidateDocumentsHistory implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_DOCUMENTS", nullable = false)
 	private CandidateDocuments candidateDocuments;
-	@ManyToOne
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUESTED_DOC_ID")
-	private RequestedDocuments requestedDocumentsId;
 	@Column(name = "DOC_UPLOAD_STATUS")
 	private String docUploadStatus;
 	@Column(name = "IS_REQUESTED_DOC_REQUIRED")
@@ -50,9 +44,6 @@ public class CandidateDocumentsHistory implements Serializable {
 	@Column(name = "REQUESTED_DOC_REJECTED_REASON")
 	@Type(type = "text")
 	private String requestedDocRejectedReason;
-	@ManyToOne
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
 	@Column(name = "DOCUMENT_TYPE ")
 	private String documentType;
 	@Column(name = "DOCUMENT_OTHER_TYPE ")
@@ -89,26 +80,6 @@ public class CandidateDocumentsHistory implements Serializable {
 	public void setId(Long id)
 	{
 		this.id = id;
-	}
-	
-	public OrgLocations getOrgLocationId()
-	{
-		return orgLocationId;
-	}
-	
-	public void setOrgLocationId(OrgLocations orgLocationId)
-	{
-		this.orgLocationId = orgLocationId;
-	}
-	
-	public Candidate getCandidateId()
-	{
-		return candidateId;
-	}
-	
-	public void setCandidateId(Candidate candidateId)
-	{
-		this.candidateId = candidateId;
 	}
 	
 	public String getDocumentType()
@@ -211,16 +182,6 @@ public class CandidateDocumentsHistory implements Serializable {
 		this.status = status;
 	}
 	
-	public RequestedDocuments getRequestedDocumentsId()
-	{
-		return requestedDocumentsId;
-	}
-	
-	public void setRequestedDocumentsId(RequestedDocuments requestedDocumentsId)
-	{
-		this.requestedDocumentsId = requestedDocumentsId;
-	}
-	
 	public String getIsRequestedDocRequired()
 	{
 		return isRequestedDocRequired;
@@ -270,22 +231,22 @@ public class CandidateDocumentsHistory implements Serializable {
 	{
 		this.isConfidential = isConfidential;
 	}
-
+	
 	public CandidateDocuments getCandidateDocuments()
 	{
 		return candidateDocuments;
 	}
-
+	
 	public void setCandidateDocuments(CandidateDocuments candidateDocuments)
 	{
 		this.candidateDocuments = candidateDocuments;
 	}
-
+	
 	public User getCreatedUser()
 	{
 		return createdUser;
 	}
-
+	
 	public void setCreatedUser(User createdUser)
 	{
 		this.createdUser = createdUser;
