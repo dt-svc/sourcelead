@@ -239,7 +239,7 @@ public class Candidate implements Serializable{
 	private String twitterUrl;
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
@@ -248,12 +248,12 @@ public class Candidate implements Serializable{
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	

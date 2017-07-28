@@ -234,18 +234,18 @@ $(document).ready(function(){
   <!-- Add invoice Popup -->
 		   <div class="addcandidate-popup">
 		    <div class="row">
-		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
-		      <div class="col-md-5 mt25">
+		      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
+		      <div class="col-md-4 mt25">
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
 		          <div class="clearfix mb10"> 
 		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
 		          </div>
-		          <strong class="clearfix">Custom</strong></a>
+		          <strong class="clearfix">Client Based</strong></a>
 		          </div>
 		      </div>
 		
-		        <div class="col-md-5 mt25">
+		        <div class="col-md-4 mt25">
 		          <div class="small-widget bg-yellow"> 
 		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
@@ -255,14 +255,15 @@ $(document).ready(function(){
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
 		          
-		          <!-- <div class="col-md-4 mt25">
+		         <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create custom invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
-		        </div> -->
+		        </div>
 		
 		      
 		          </div>
@@ -649,7 +650,7 @@ function getInvoiceList(){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
+							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
 						}else{
 							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span>   ';	
 						}
@@ -1474,7 +1475,7 @@ function saveInvoiceRejectedReason(invoiceId){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId+"&reason="+reason,
+				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&invoiceId="+invoiceId+"&reason="+reason,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);

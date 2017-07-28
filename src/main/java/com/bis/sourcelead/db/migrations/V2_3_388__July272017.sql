@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','SUBMISSION_APPROVER_HIERARCHY_ID','VARCHAR(200) NULL  AFTER `DOC_FILENAME`');

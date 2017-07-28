@@ -169,6 +169,9 @@ public class Invoice {
 	@Lob private byte[] docFile;
 	@Column(name = "DOC_FILENAME") private String fileName; 
 	
+	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
+	private String submissionApproverHierarchyId;
+	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
@@ -265,7 +268,6 @@ public class Invoice {
 	
 	@Transient
 	private String clientCurrency;
-	
 	
 	public Long getId()
 	{
@@ -927,6 +929,21 @@ public class Invoice {
 	public void setPreviousInvoiceStatus(String previousInvoiceStatus)
 	{
 		this.previousInvoiceStatus = previousInvoiceStatus;
+	}
+
+	public String getSubmissionApproverHierarchyId()
+	{
+		return submissionApproverHierarchyId;
+	}
+
+	public void setSubmissionApproverHierarchyId(String submissionApproverHierarchyId)
+	{
+		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
+	}
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
 	}
 	
 	
