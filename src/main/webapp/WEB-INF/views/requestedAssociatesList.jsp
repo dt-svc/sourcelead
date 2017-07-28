@@ -253,12 +253,13 @@ function cancelRejectedReason(){
 
 <script>
 function acceptAssociate(requestUUID){
-	
+	 var userId = '${SourceLeadWeb_userId}';
+     var orglocationId = '${SourceLeadWeb_orgLocationId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
-	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
 	        success: function(result) {
 	        	$("#action"+requestUUID).html("<span>Accepted</span>");
 	        	$("#requestedAssociatesDivLoading").removeAttr("style"); 
@@ -278,8 +279,8 @@ function saveRejectAssociate(requestUUID){
 	    var form = $('#rejectedReason_form')[0];
 	    var formData = new FormData(form);
 	  	formData.append("json",jsonData)
-	  	
-	  	
+	  	 var userId = '${SourceLeadWeb_userId}';
+        var orglocationId = '${SourceLeadWeb_orgLocationId}';
         var sourceleadUrl ='${sourceleadUrl}';
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
@@ -292,7 +293,7 @@ function saveRejectAssociate(requestUUID){
 		        processData: false,
 		        contentType:false, 
 	    	    dataType : 'json',
-		    	url: sourceleadUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}", 
+		    	url: sourceleadUrl+"/rejectRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orglocationId="+orglocationId, 
 		        success: function(result) {
 		        	cancelRejectedReason();
 		        	$("#action"+requestUUID).html("<span>Rejected</span>")

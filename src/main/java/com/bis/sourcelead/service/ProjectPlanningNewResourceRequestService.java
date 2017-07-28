@@ -14,4 +14,6 @@ public interface ProjectPlanningNewResourceRequestService {
 	void sendMailToAcceptAndRejectSingleNewResourceRequestApprover(ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest, User user,OrgLocations  orgLocations)throws Exception;
 	
 	void sendMailToAcceptAndRejectBulkNewResourceRequestApprover(ProjectPlanningRequest projectPlanningRequest, User user,OrgLocations  orgLocations)throws Exception;
+	
+	void sendMailToOnHoldBulkNewResourceRequestApprover(ProjectPlanningRequest projectPlanningRequest, User user,OrgLocations  orgLocations)throws Exception;
 }

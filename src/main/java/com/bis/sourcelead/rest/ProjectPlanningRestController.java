@@ -322,7 +322,9 @@ public class ProjectPlanningRestController {
 	    
 	   
 	    @RequestMapping(value = "/rejectRequestedAssociate", method = RequestMethod.POST)
-		public @ResponseBody String rejectRequestedAssociate(@RequestParam("json") String jsonPayload) throws Exception {
+		public @ResponseBody String rejectRequestedAssociate(@RequestParam("json") String jsonPayload,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+        	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+	    	User user = userService.getUserById(userId); 
 		  
 	    	 JSONObject jsonObj = new JSONObject(jsonPayload);
 	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
@@ -337,6 +339,9 @@ public class ProjectPlanningRestController {
 	    		 
 	    		 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    		 
+	    		 //Sending emil to Approver
+	    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectSingleResourceRequestApprover(resourceRequest, user, orgLocations);
 	    	 }
 		  
 		     return "sucess";
@@ -346,9 +351,9 @@ public class ProjectPlanningRestController {
 	    
 	    
 	    @RequestMapping(value = "/rejectAssociatesRequest", method = RequestMethod.POST)
-		public @ResponseBody String rejectAssociatesRequest(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
-	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
- 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		public @ResponseBody String rejectAssociatesRequest(@RequestParam("json") String jsonPayload,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+	    	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+	    	User user = userService.getUserById(userId); 
 	    	 JSONObject jsonObj = new JSONObject(jsonPayload);
 	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(jsonObj.getString("requestUUID"));
@@ -362,6 +367,7 @@ public class ProjectPlanningRestController {
 			    			 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
 		    			 }
 		    		 }
+		    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectBulkResourceRequestApprover(projectPlanningRequest, user, orgLocations);
 	    		 }else{
 	    			 Set<ProjectPlanningNewResourceRequest> newresourceRequestList = projectPlanningRequest.getProjectPlanningNewResourceRequestList();
 		    		 for(ProjectPlanningNewResourceRequest resourceRequest : newresourceRequestList){
@@ -381,18 +387,28 @@ public class ProjectPlanningRestController {
 	 
 	    
 	    @RequestMapping(value = "/onholdAssociateRequest", method = RequestMethod.POST)
-		public @ResponseBody String onholdAssociateRequest(@RequestParam("requestUUID") String requestUUID) throws Exception {
-		  
+		public @ResponseBody String onholdAssociateRequest(@RequestParam("requestUUID") String requestUUID,@RequestParam("json") String jsonPayload,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+	    	JSONObject jsonObj = new JSONObject(jsonPayload);
+	    	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+	    	User user = userService.getUserById(userId); 
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_ON_HOLD);
+	    		 projectPlanningRequest.setRejectedReason(jsonObj.getString("rejectedReason"));
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+	    		 if(projectPlanningRequest.getRequestType().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST)){
+	    			 projectPlanningResourceRequestService.sendMailToOnHoldBulkResourceRequestApprover(projectPlanningRequest, user, orgLocations);
+	    		 }else{
+	    			 projectPlanningNewResourceRequestService.sendMailToOnHoldBulkNewResourceRequestApprover(projectPlanningRequest, user, orgLocations);
+	    		 }
 	    	 }
 		     return "sucess";
 	    }
 	    
 	    @RequestMapping(value = "/acceptRequestedAssociate", method = RequestMethod.POST)
-		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID) throws Exception {
+		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+        	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+	    	User user = userService.getUserById(userId); 
 		  
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningResourceRequest projectPlanningResourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(requestUUID);
@@ -402,14 +418,17 @@ public class ProjectPlanningRestController {
 	    		 Integer allocatedResouresCount = projectPlanningRequest.getAllocatedResources()+1;
 	    		 projectPlanningRequest.setAllocatedResources(allocatedResouresCount);
 	    		 projectPlanningRequestService.storeProjectPlanningRequest(projectPlanningRequest);
+
+	    		 //Sending emil To Aprover
+	    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectSingleResourceRequestApprover(projectPlanningResourceRequest, user, orgLocations);
 	    	 }
 		     return "sucess";
 	    }
 	    
 	    @RequestMapping(value = "/acceptAssociateRequest", method = RequestMethod.POST)
-		public @ResponseBody String acceptAssociateRequest(@RequestParam("requestUUID") String requestUUID,HttpServletRequest request) throws Exception {
-	    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
- 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		public @ResponseBody String acceptAssociateRequest(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+	    	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+	    	User user = userService.getUserById(userId); 
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningRequestService.getProjectPlanningRequestByRequestUUID(requestUUID);
 	    		 projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_APPROVED);
@@ -421,6 +440,7 @@ public class ProjectPlanningRestController {
 			    			 projectPlanningResourceRequestService.saveProjectPlanningResourceRequest(resourceRequest);
 		    		 }
 		    		 projectPlanningRequest.setAllocatedResources(resourceRequestList.size());
+		    		 projectPlanningResourceRequestService.sendMailToAcceptAndRejectBulkResourceRequestApprover(projectPlanningRequest, user, orgLocations);
 	    		}else{
 	    			Set<ProjectPlanningNewResourceRequest> newresourceRequestList = projectPlanningRequest.getProjectPlanningNewResourceRequestList();
 		    		 for(ProjectPlanningNewResourceRequest resourceRequest : newresourceRequestList){
@@ -445,13 +465,13 @@ public class ProjectPlanningRestController {
 	     * @throws Exception
 	     */
 	        @RequestMapping(value = "/acceptNewRequestedResource", method = RequestMethod.POST)
-	  		public @ResponseBody String acceptNewRequestedResource(@RequestParam("requestUUID") String requestUUID,HttpServletRequest request) throws Exception {
-	        	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  		public @ResponseBody String acceptNewRequestedResource(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+	        	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
+		    	User user = userService.getUserById(userId); 
 	  	    	 if(!isNullOrEmpty(requestUUID)){
 	  	    		 
 	  	    		 ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = projectPlanningNewResourceRequestService.getProjectPlanningNewResourceRequestByRequestUUID(requestUUID);
-	  	    		projectPlanningNewResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
+	  	    		 projectPlanningNewResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
 	  	    		 projectPlanningNewResourceRequestService.saveProjectPlanningNewResourceRequest(projectPlanningNewResourceRequest);
 	  	    		 ProjectPlanningRequest projectPlanningRequest = projectPlanningNewResourceRequest.getProjectPlanningRequestId();
 	  	    		 Integer allocatedResouresCount = projectPlanningRequest.getAllocatedResources()+1;
@@ -472,9 +492,9 @@ public class ProjectPlanningRestController {
 		     * @throws Exception
 		     */
 	        @RequestMapping(value = "/rejectNewRequestedResource", method = RequestMethod.POST)
-			public @ResponseBody String rejectNewRequestedResource(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
-	        	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			public @ResponseBody String rejectNewRequestedResource(@RequestParam("json") String jsonPayload,@RequestParam("userId") String userId,@RequestParam("orglocationId") String orglocationId) throws Exception {
+	        	OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(orglocationId));
+		    	User user = userService.getUserById(Long.valueOf(userId)); 
 		    	 JSONObject jsonObj = new JSONObject(jsonPayload);
 		    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 		    		 ProjectPlanningNewResourceRequest projectPlanningNewResourceRequest = projectPlanningNewResourceRequestService.getProjectPlanningNewResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
