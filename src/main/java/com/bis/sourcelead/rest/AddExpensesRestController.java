@@ -412,7 +412,7 @@ public class AddExpensesRestController {
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink,loginUser,sah.getExpenseId().getProjectMembers().getEmployee().getUser(), orgLoc, notificationScenario) ;
+				emailScenerioUtil.sendNotification(actionLink,loginUser,ol.getUser(), orgLoc, notificationScenario) ;
 		 	   
 			
 		}
