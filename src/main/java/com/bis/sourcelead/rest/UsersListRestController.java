@@ -226,7 +226,7 @@ public class UsersListRestController {
 			
 			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
 	
-			if(null != rolesList){
+			if(null != rolesList && rolesList.size() >0){
 				for(UserRole role : rolesList){
 					StringBuilder userName = new StringBuilder();
 					role.setUserRoleName(role.getRoles().getDisplayName());
@@ -239,12 +239,28 @@ public class UsersListRestController {
 					}
 					role.setUserEmail(role.getUser().getEmail());
 					role.setUserId(role.getUser().getId());
-					role.setIsMailSent(role.getUser().getIsMailSent().toString());
+					role.setIsMailSent(role.getUser().getIsMailSent().toString());	
+					
+					if(role.getReportingManager() !=null){
+						StringBuilder reportingManagerName = new StringBuilder();
+						if(role.getReportingManager().getLastName() !=null && !"".equalsIgnoreCase(role.getReportingManager().getLastName())){
+							reportingManagerName.append(role.getReportingManager().getFirstName()).append(" ").append(role.getReportingManager().getLastName());
+						}else{
+							reportingManagerName.append(role.getReportingManager().getFirstName());
+						}
+						role.setReportingManagerName(reportingManagerName.toString());
+					}
+					Employees emp = employeesService.getEmployeeByUserId(role.getUser().getId());
+					if(emp !=null){
+						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
+							role.setEmployeMentType(emp.getUserEmploymentType());
+						}
+					}
 					userRolesList.add(role);
 				}
-			
+				 resultJson = toJSON(userRolesList);
 			}	
-		 resultJson = toJSON(userRolesList);
+		
 		 return resultJson;
 
 	}

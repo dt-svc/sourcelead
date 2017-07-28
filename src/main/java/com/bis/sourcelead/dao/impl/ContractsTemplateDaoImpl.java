@@ -226,7 +226,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
 					+"left join fetch contracts.requirementSubmission.candidate "
-					+ "left join fetch contracts.requirementSubmission.candidateResumes "
+					+"left join fetch contracts.requirementSubmission.candidateResumes "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "
@@ -549,5 +549,24 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}
 		return contractsHistory;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String contractType)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contracts = new ArrayList<Contracts>();
+		if(null != reqSub){
+			contracts = session.createQuery("from Contracts contracts where contracts.requirementSubmission.id =:reqSub and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId " )
+			.setString("contractType", contractType).setLong("orgLocationId", loginOrgLocation.getId() ).setLong("reqSub", reqSub ).setCacheable(true).list();
+		}
+		if (contracts.size() > 0) {
+			return contracts.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	
 
 }

@@ -161,10 +161,16 @@ public class Invoice {
 	@Column(name = "INVOICE_FREQUENCY")
 	private String invoiceFrequency;
 	
+	@Column(name = "PREVIOUS_INVOICE_STATUS")
+	private String previousInvoiceStatus;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	
 	@Lob private byte[] docFile;
 	@Column(name = "DOC_FILENAME") private String fileName; 
+	
+	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
+	private String submissionApproverHierarchyId;
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
@@ -262,7 +268,6 @@ public class Invoice {
 	
 	@Transient
 	private String clientCurrency;
-	
 	
 	public Long getId()
 	{
@@ -914,6 +919,31 @@ public class Invoice {
 
 	public void setAccountDetails(String accountDetails) {
 		this.accountDetails = accountDetails;
+	}
+
+	public String getPreviousInvoiceStatus()
+	{
+		return previousInvoiceStatus;
+	}
+
+	public void setPreviousInvoiceStatus(String previousInvoiceStatus)
+	{
+		this.previousInvoiceStatus = previousInvoiceStatus;
+	}
+
+	public String getSubmissionApproverHierarchyId()
+	{
+		return submissionApproverHierarchyId;
+	}
+
+	public void setSubmissionApproverHierarchyId(String submissionApproverHierarchyId)
+	{
+		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
+	}
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
 	}
 	
 	

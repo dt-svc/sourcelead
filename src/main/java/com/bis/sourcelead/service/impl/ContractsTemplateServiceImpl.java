@@ -728,11 +728,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
 			 	if(null != orgRelations){
-			 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+			 		if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 					}	
-					else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-						contracts.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						contracts.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
 			}
@@ -816,11 +816,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
 			 	if(null != orgRelations){
-			 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
-			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+			 		if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrgLocationName());
 					}	
-					else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-						contracts.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					else if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+						contracts.setContractWith(orgRelations.getLocationId().getOrgLocationName());
 					}
 			 	}
 			}
@@ -1131,7 +1131,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					  contractsTemplateDao.saveNewContract(upadatedContracts);
 			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
 				contractApproveEmail(contracts,user,org,orgLocation);
-				sendMailToOwner(contracts,user,org,orgLocation);
+				//sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
 
 			contracts.setRejectedReason(rejectReason);
@@ -1620,7 +1620,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 			StringBuilder creatorSb = new StringBuilder();
 			globalVarsMap.put("OwnerUser", creatorSb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
-		}else if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+		}else if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName())){
 			globalVarsMap.put("OwnerUser",owner.getFirstName());
 		}else{
 			globalVarsMap.put("OwnerUser","--");
@@ -2279,6 +2279,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
+	public Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String contractType)
+	{
+		return contractsTemplateDao.getContractByReqSubmissionSowTypeAndOrgLocId(reqSub, loginOrgLocation, contractType);
+	}
+	
+	@Override
 	public void sendFinalisedMailToReceiver(Contracts contracts, OrgLocations orgLocation, User loginUser) throws Exception
 	{
 		Timezone timezone = null;
@@ -2424,6 +2430,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 //		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
 		
+
 	}
 	
 }

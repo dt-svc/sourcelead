@@ -22,4 +22,6 @@ public interface ProjectMembersHistoryService {
 	 Integer updateEndDateOfProjectMemberId(Date endDate1, Long projectMemberId);
 
 	 ProjectMembersHistory getProjectMembeHistoryForHotlistCandidatesByUsedId(Long projectMemberId) throws Exception;
+
+	ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId)throws Exception;
 }

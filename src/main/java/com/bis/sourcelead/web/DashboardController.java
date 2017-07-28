@@ -153,22 +153,11 @@ public class DashboardController {
 		
 		List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-/*		for (RequirementSubmission requirementSubmission : toDayReqSubmissionsList) {
-			List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndSubId(loginOrgLocations.getId(), requirementSubmission.getId());
-			for (RequirementSubmissionHistory requirementSubmissionHistory2 : requirementSubmissionHistory) {
-				if("SUBMISSION".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmission.setCreatedDateStr(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
-				}
-				if("SUBMIT_TO_CLIENT".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmission.setSubmittedOn(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
-					requirementSubmission.setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
-				}
-			}
-		}*/
 			for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqSubmissionsList) {
-				if("SUBMISSION".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
-				}
+				 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
+					for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
+					      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(rsh.getSubmissionId().getCreatedDate()));
+				    }
 				if("SUBMIT_TO_CLIENT".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
@@ -199,20 +188,9 @@ public class DashboardController {
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
 	   
-		/*for (RequirementSubmission requirementSubmission : toDayReqInterviewscount) {
-			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmission.getRequirement().getId(), "INTERVIEWED");
-			requirementSubmission.setNumOfInterview(interviewedCount);
-			List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndSubId(loginOrgLocations.getId(), requirementSubmission.getId());
-			for (RequirementSubmissionHistory requirementSubmissionHistory2 : requirementSubmissionHistory) {
-				if("SUBMISSION".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmission.setCreatedDateStr(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
-				}
-			}
-		}*/
 		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
 			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 			requirementSubmissionHistory2.getSubmissionId().setNumOfInterview(interviewedCount);
-		   // List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndSubId(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getId());
 			 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
 			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
 			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(rsh.getSubmissionId().getCreatedDate()));
@@ -241,30 +219,6 @@ public class DashboardController {
 		
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
-		
-		/*for (RequirementSubmission requirementSubmission : toDayReqOfferscount) {
-			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(), loginOrgLocations.getId());
-			for (RequirementOffers requirementOffers : offersList) {
-				requirementSubmission.setOfferId(requirementOffers.getId());
-				requirementSubmission.setOfferRate(requirementOffers.getAmount());
-				requirementSubmission.setRateType(requirementOffers.getPaymentType());
-				requirementSubmission.setRatePer(requirementOffers.getPaymentMode());
-				requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
-				if(null != requirementOffers.getPositionType()){
-					requirementSubmission.setPositionType(requirementOffers.getPositionType());
-				}
-				if(null != requirementOffers.getFileName()){
-					requirementSubmission.setAttachment(requirementOffers.getFileName());
-				}
-			}
-			List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(),"OFFERMADE",requirementSubmission.getId());
-			for (RequirementSubmissionHistory requirementSubmissionHistory2 : requirementSubmissionHistory) {
-				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmission.setCreatedDateStr(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
-				}
-			}
-		}*/
-		
 		for (RequirementSubmissionHistory requirementSubmissionHistory : toDayReqOfferscount) {
 			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmissionHistory.getSubmissionId().getId(), loginOrgLocations.getId());
 			for (RequirementOffers requirementOffers : offersList) {

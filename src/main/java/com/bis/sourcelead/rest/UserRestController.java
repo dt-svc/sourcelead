@@ -104,8 +104,6 @@ public class UserRestController {
 	@Autowired
 	private ProjectsService projectsService;
 	
-	@Autowired
-	private ProjectMembersService projectMembersService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -165,6 +163,8 @@ public class UserRestController {
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	/**
 	 * To get All Approvers
@@ -1425,4 +1425,22 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
+	 
+	 
+	/**
+	 * To get the assigned projects list for user based on userId and
+	 * OrgLocationId
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return json object
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAssignedProjectsListForUser",
+			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		return projectMembersList;
+	}
 }

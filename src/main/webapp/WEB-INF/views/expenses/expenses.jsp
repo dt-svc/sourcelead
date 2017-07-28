@@ -132,11 +132,20 @@ function getExpensesList(){
     {
 		expenseStatus.push($(this).val());
     });
-	
+	var obj = {}
+	obj['expenseStatus']=expenseStatus;
+	obj['startDate']=startDate;
+	obj['endDate']=endDate;
+	obj['userId']='${SourceLeadWeb_user.id}';
+	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
+	var jsonData= JSON.stringify(obj);
 	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
+		 type : "POST",
+		  data: jsonData,
+  	      contentType : 'application/json; charset=utf-8',
+  	      dataType : 'json',
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",     
+          success :function(json) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";
 					result = result +"<thead>";
@@ -154,8 +163,7 @@ function getExpensesList(){
 					result = result +"</thead>";
 					result = result +"<tbody>";
 					
-					 if(data !=''){
-						 var json = JSON.parse(data);
+					 if(json !=''){
 			        	  for (var i = 0; i < json.length; i++) { 
 			        		  var report = json[i]; 
 			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
