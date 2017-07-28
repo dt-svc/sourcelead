@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','USER_ROLE','ROLE_CHANGE_REASON','TEXT NULL AFTER `STATUS`');

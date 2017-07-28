@@ -1,0 +1,5 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE','PRIMARY_SKILL','VARCHAR(200) NULL DEFAULT NULL AFTER `SKILLS_NAME`');
+
+
+
+

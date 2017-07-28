@@ -1,0 +1,5 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','TOTAL_APPLICANTS','INT(20) NULL DEFAULT 0 AFTER `APPLIED_PROFESSIONALS`');
+
+
+
+
