@@ -146,4 +146,3 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{contractExpiryRemainder.
 			
 			
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Alert Contract expiring in {{contractExpiryRemainder.expiringdays}} days'  WHERE `UNIQUE_SCENARIO_NAME`='contractExpiryRemainder' and `ENTITY_TYPE`='Email';
-
