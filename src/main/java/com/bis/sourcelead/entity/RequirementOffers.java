@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "REQUIREMENT_OFFERS", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementOffers")
@@ -88,23 +90,30 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
     private String dateOfJoiningStr;
 	
 	@Transient
+	@JsonProperty
     private String clientName;
 	
 	@Transient
     private Boolean requirementReleasedOrNot;
 	
 	@Transient
+	@JsonProperty
     private String jobTitle;
 	
 	@Transient
     private Long candidateId;
 	
 	@Transient
+	@JsonProperty
     private String candidateName;
 	
+	@Transient
+	@JsonProperty
+    private String vendorContact;
 	
 	public Long getId() {
 		return id;
@@ -306,6 +315,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setOfferUUID(String offerUUID) {
 		this.offerUUID = offerUUID;
 	}
-	
-	
+
+	public String getVendorContact()
+	{
+		return vendorContact;
+	}
+
+	public void setVendorContact(String vendorContact)
+	{
+		this.vendorContact = vendorContact;
+	}
 }
