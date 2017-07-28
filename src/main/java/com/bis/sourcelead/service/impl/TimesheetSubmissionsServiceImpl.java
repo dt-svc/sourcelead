@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -25,6 +25,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsService {
@@ -356,8 +357,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			sb.append(" </thead>");
 			sb.append(" <tbody>");	
 			 
-	        String pattern = "dd-MM-yyyy";
-	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	        //String pattern = "dd-MM-yyyy";
+	        		 DateFormat  format = LoginSessionController.DATEFORMAT;
 	        Date currentStartDate = null;
 	        Date currentEndDate = null;
 	        
@@ -439,10 +440,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	               currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
 	               
 	               if(currentStartDate !=null){
-	            	   	ts.setStartDateStr(Constants.DF_DMY.format(currentStartDate));
+	            	   	ts.setStartDateStr(format.format(currentStartDate));
 	               }
 	        	   if(currentEndDate !=null){
-	        		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
+	        		   ts.setEndDateStr(format.format(currentEndDate));
 	        	   }
 	        	   
 	        	   
@@ -528,8 +529,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			  StringBuilder startDateBuilder = new StringBuilder();
 			  StringBuilder endDateBuilder = new StringBuilder();
 			 
-			  String pattern = "dd-MM-yyyy";
-	          SimpleDateFormat format = new SimpleDateFormat(pattern);
+			  //String pattern = "dd-MM-yyyy";
+	          DateFormat  format = LoginSessionController.DATEFORMAT;
 	          Date currentStartDate = null;
 	          Date currentEndDate = null;
 	          Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -550,7 +551,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				      }
 	          }
 			  else{
-	               Date sDate  =  Constants.DMY.parse(startDate);
+	               Date sDate  =  format.parse(startDate);
 	               if(sDate != null && employeeEndDate.before(sDate)){
 	            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				    	  endCal.setLenient(false);
@@ -578,10 +579,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			
 	        
 			if(currentStartDate !=null){
-	      	   	ts.setStartDateStr(Constants.DF_DMY.format(currentStartDate));
+	      	   	ts.setStartDateStr(format.format(currentStartDate));
 	        }
 	  	    if(currentEndDate !=null){
-	  		   ts.setEndDateStr(Constants.DF_DMY.format(currentEndDate));
+	  		   ts.setEndDateStr(format.format(currentEndDate));
 	  	    }
 	  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 	       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
