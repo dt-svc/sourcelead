@@ -1301,6 +1301,24 @@ $(document).ready(function () {
                </select>					
           </div>
         </div>
+        
+        <div class="clearfix"></div>
+         <div class="form-group">
+				<div class="ml">
+					<c:set var="val" value="${requirement.releaseJobToAllUsers}" />
+					<c:choose>
+						<c:when test="${val == 'Y'}">
+							<input disabled="disabled" type="checkbox" checked name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
+						</c:when>
+						<c:otherwise>
+							<input type="checkbox" name="releaseToAllUsers" id="releaseToAllUsers" value="Y">
+						</c:otherwise>
+					</c:choose>
+					<label>&nbsp;&nbsp;<strong>Release to all Users</strong>
+						&nbsp;&nbsp;
+					</label>
+				</div>
+			</div>
       </div>
     </div>
     <!-- Internal Details html Ends -->

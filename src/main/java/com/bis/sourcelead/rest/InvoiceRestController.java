@@ -182,7 +182,7 @@ public class InvoiceRestController {
 		for(OrgSpoc orgSpoc : orgSpocList){
 			StringBuilder sb = new StringBuilder();
 			StringBuilder clientSb = new StringBuilder();
-			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
 			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
 			sb.append(orgSpoc.getVendorUser().getFirstName());

@@ -170,7 +170,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			params.put("userId",user.getId());
 			
 			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (requirement.releaseJobToAllUsers = 'Y') OR ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
 				params.put("orgLocationId",orgLocationId);
 			}
 		}
@@ -1451,5 +1451,18 @@ public class RequirementDaoImpl implements RequirementDao {
 		List<RequirementAssignTo> reqAssignedTo = session.createQuery(query).setLong( "requirementId", id).setCacheable(true).list();
 		Set<RequirementAssignTo> requirementAssignedTo = new HashSet<RequirementAssignTo>(reqAssignedTo);
 		return requirementAssignedTo;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement where requirement.id =(SELECT MAX(req.id) FROM Requirement req where req.orgLocationId.id =:orgLocationId)";  
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(requirement.isEmpty()){
+			return null;
+		}
+		return requirement.iterator().next();	
 	}
 }

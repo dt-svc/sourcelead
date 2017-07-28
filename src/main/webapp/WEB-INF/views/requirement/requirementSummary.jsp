@@ -1338,6 +1338,14 @@ function requirementDetails(requirementId,data){
 			               result = result +'</div>';
 	          	           
 				           result = result +'<div class="clearfix"></div>';
+				           
+				           if(json.releaseJobToAllUsers  == 'Y'){
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> YES </span></div>';
+				            }else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> NO </span></div>';
+				            }
+			          	           
+						   result = result +'<div class="clearfix"></div>';
 			           	            
 			            
 			            //  Checking  for approval mechanism type  Parallel or Sequential
@@ -6290,6 +6298,8 @@ function saveCandidateImage(candidateId){
   		        var jsonData = encodeURIComponent(con);
           		
           		var sourceleadUrl ='${sourceleadUrl}';
+          		var loginUserId = '${SourceLeadWeb_userId}';
+          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];
            		var formData = new FormData(form);
 	            		
@@ -6302,7 +6312,7 @@ function saveCandidateImage(candidateId){
 	            	          contentType:false,
 	                	      dataType : 'json',
 	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  recommendationAlertCancel(candidateId);
 	    			          },  
