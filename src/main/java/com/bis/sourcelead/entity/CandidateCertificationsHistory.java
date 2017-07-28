@@ -30,14 +30,8 @@ public class CandidateCertificationsHistory implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	@ManyToOne
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
-	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_CERTIFICATIONS", nullable = false)
 	private CandidateCertifications candidateCertifications;
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
 	@Column(name = "NAME")
 	private String name;
 	@Column(name = "PROVIDER")
@@ -70,26 +64,6 @@ public class CandidateCertificationsHistory implements Serializable {
 	public void setId(Long id)
 	{
 		this.id = id;
-	}
-	
-	public OrgLocations getOrgLocationId()
-	{
-		return orgLocationId;
-	}
-	
-	public void setOrgLocationId(OrgLocations orgLocationId)
-	{
-		this.orgLocationId = orgLocationId;
-	}
-	
-	public Candidate getCandidateId()
-	{
-		return candidateId;
-	}
-	
-	public void setCandidateId(Candidate candidateId)
-	{
-		this.candidateId = candidateId;
 	}
 	
 	public String getName()
@@ -191,22 +165,22 @@ public class CandidateCertificationsHistory implements Serializable {
 	{
 		this.status = status;
 	}
-
+	
 	public CandidateCertifications getCandidateCertifications()
 	{
 		return candidateCertifications;
 	}
-
+	
 	public void setCandidateCertifications(CandidateCertifications candidateCertifications)
 	{
 		this.candidateCertifications = candidateCertifications;
 	}
-
+	
 	public User getCreatedUser()
 	{
 		return createdUser;
 	}
-
+	
 	public void setCreatedUser(User createdUser)
 	{
 		this.createdUser = createdUser;
