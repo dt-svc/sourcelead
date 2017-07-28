@@ -4,6 +4,15 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+ <style>
+.moveErrorMsgUp{
+    position: absolute !important;
+    right: -30px !important;
+    top: 5px;
+}
+</style>
+ 
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -18,10 +27,10 @@
 				<div class="project_details project_detailsExp">
                 
                 
-					<div class="Expdit pull-right">
+					<div class="Expdit pull-right mr">
 					
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
 					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
@@ -37,7 +46,7 @@
 					     </c:if> 
 					     
 					     <c:if test="${isSahReopened && !isSuperUser && !empty eah.reopenReason}">
-					          <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 						      </i>
 						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
@@ -68,7 +77,7 @@
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						       <b class='proj_closed pull-right'>${submissionStatus}</b>
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
@@ -89,7 +98,7 @@
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
-						<strong>ExpenseId:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
+						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
