@@ -401,7 +401,19 @@ public class RequirementSubmission implements Serializable{
     @Transient
    	private String referUUID;
     
+    @Transient
+	 private int profilePercentage;
     
+	public int getProfilePercentage()
+	{
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage)
+	{
+		this.profilePercentage = profilePercentage;
+	}
+
 	public String getRatePer()
 	{
 		return ratePer;

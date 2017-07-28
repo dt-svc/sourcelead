@@ -132,11 +132,21 @@ function getExpensesList(){
     {
 		expenseStatus.push($(this).val());
     });
-	
+	var obj = {}
+	obj['expenseStatus']=expenseStatus;
+	obj['startDate']=startDate;
+	obj['endDate']=endDate;
+	obj['userId']='${SourceLeadWeb_user.id}';
+	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
+	var jsonData= JSON.stringify(obj);
+	alert(jsonData);
 	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
+		 type : "POST",
+		  data: jsonData,
+  	      contentType : 'application/json; charset=utf-8',
+  	      dataType : 'json',
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",     
+          success :function(json) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";
 					result = result +"<thead>";
@@ -154,8 +164,7 @@ function getExpensesList(){
 					result = result +"</thead>";
 					result = result +"<tbody>";
 					
-					 if(data !=''){
-						 var json = JSON.parse(data);
+					 if(json !=''){
 			        	  for (var i = 0; i < json.length; i++) { 
 			        		  var report = json[i]; 
 			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
@@ -168,10 +177,10 @@ function getExpensesList(){
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
-			        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-			        			  projectMemberId = report.projectMemberId;
+			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+			        			  projectName = report.projectMemberId;
 			        		  }else{
-			        			  projectMemberId = "--";
+			        			  projectName = "--";
 			        		  }
 			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
 			        			  clientName = report.clientName;

@@ -222,6 +222,32 @@ function addResume(candidateId) {
 		            			 location.replace(sourceleadUrl+"/errorPage");
 		            		 }
 		            		 else{
+		            			 $('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+				          			   $("#perVal").removeClass('progress-bar-success');
+				          			   $("#perVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(result>=50){
+				          				 $("#perVal").removeClass('progress-bar-danger');
+				          				 $("#perVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#disVal").empty();
+		            			$("#disVal").append(result+'%');
+		            			// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(result>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(result+'%');
+		            			 
 						 		$("#popUpDivResume").removeClass("edit-details-active");
 						 		candidateResumesList(candidateId);
 		            		 }
@@ -357,11 +383,13 @@ function addResume(candidateId) {
 <script>
 function deleteResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&resumeId="+resumeId, 	   
+		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
    		    	if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
@@ -370,6 +398,34 @@ function deleteResume(candidateId, resumeId){
         			 location.replace(sourceleadUrl+"/errorPage");
         		 }
         		 else{
+        			 $('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+         			 if(data<50){
+	          			  /* $("#perVal").removeClass("progress-bar-success"); */
+	          			   $("#perVal").removeClass('progress-bar-success');
+	          			  $("#perVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#perVal").removeClass('progress-bar-danger');
+	          				 $("#perVal").addClass("progress-bar-success");
+	          			 }
+
+    			 	$("#disVal").empty();
+    				$("#disVal").append(data+'%');
+    				
+    				
+    				// for quick view bar update
+        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+          			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+        			$("#quickDisVal").empty();
+        			$("#quickDisVal").append(data+'%');
         			 candidateResume(candidateId);
         		     candidateResumesList(candidateId);
         		 }

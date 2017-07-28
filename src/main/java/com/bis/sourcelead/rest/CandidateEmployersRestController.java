@@ -83,7 +83,8 @@ public class CandidateEmployersRestController {
 		JSONObject jsonObject = new JSONObject(json1);
 	    candidateEmployersService.storeCandidateEmployers(jsonObject,users,loginOrgLocation,candidateId);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-		return json;
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 	
 	/**
@@ -150,13 +151,11 @@ public class CandidateEmployersRestController {
 	@RequestMapping(value = "/removeCandidateEmployerBycandidateIdandCandidateEmployerID")
 	public String removeCandidateEmployerBycandidateIdandCandidateEmployerID(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateemployerId", required = false) Long candidateemployerId,HttpServletRequest request) throws Exception {
 
-		String resultJson;
-
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CandidateEmployers  candidatesEmployersList = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateemployerId);
-		 resultJson = commonUtil.toJSON(candidatesEmployersList);
-		//SourceLeadSessionManager.setSessionAttribute(request, "deleteExep", "Employer deleted");
-
-		 return resultJson;
+		 Candidate candidate =candidateService.getCandidateById(candidateId);
+		 Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		 return percentage.toString();
 	}
 	
 	

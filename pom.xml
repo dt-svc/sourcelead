@@ -166,11 +166,11 @@
 
 
 		<!-- AspectJ -->
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.aspectj</groupId> -->
+<!-- 			<artifactId>aspectjrt</artifactId> -->
+<!-- 			<version>${aspectj.version}</version> -->
+<!-- 		</dependency> -->
 
 		<!-- JSon Dependencies - convert bean to json and viceversa -->
 		<dependency>
@@ -512,6 +512,31 @@
 	        <version>4.3.1</version>
 	     </dependency>
 	     
+	    <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.1</version>
+        </dependency>
+		
+		
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjtools</artifactId>
+		    <version>${aspectj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>${aspectj.version}</version>
+		</dependency>
+
+	     
 	     <!-- https://mvnrepository.com/artifact/net.sourceforge.javacsv/javacsv -->
 		<dependency>
 		    <groupId>net.sourceforge.javacsv</groupId>
@@ -583,6 +608,12 @@
 	</dependencies>
 	
 	<build>
+	<resources>
+    <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+    </resource>
+</resources>
 
 		<!-- <resources> <resource> <directory>src/main/webapp/resources/images</directory> 
 			<includes> <include>borderpdf.pdf</include> </includes> </resource> </resources> -->
