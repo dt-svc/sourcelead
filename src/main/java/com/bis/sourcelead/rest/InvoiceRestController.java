@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -93,6 +92,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class InvoiceRestController {
@@ -663,7 +663,7 @@ public class InvoiceRestController {
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
-	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
+	     		ip.setPaymentDateStr(LoginSessionController.DATEFORMAT.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());

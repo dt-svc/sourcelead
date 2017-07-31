@@ -156,10 +156,10 @@ public class DashboardController {
 			for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqSubmissionsList) {
 				 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
 					for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
-					      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(rsh.getSubmissionId().getCreatedDate()));
+					      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(LoginSessionController.DATEFORMAT.format(rsh.getSubmissionId().getCreatedDate()));
 				    }
 				if("SUBMIT_TO_CLIENT".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(Constants.DMY.format(requirementSubmissionHistory2.getCreatedDate()));
+					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(LoginSessionController.DATEFORMAT.format(requirementSubmissionHistory2.getCreatedDate()));
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
 				}
 			}
@@ -193,7 +193,7 @@ public class DashboardController {
 			requirementSubmissionHistory2.getSubmissionId().setNumOfInterview(interviewedCount);
 			 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
 			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
-			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(Constants.DMY.format(rsh.getSubmissionId().getCreatedDate()));
+			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(LoginSessionController.DATEFORMAT.format(rsh.getSubmissionId().getCreatedDate()));
 		    }
 		  }
 		model.addObject("tab",tab);
@@ -226,7 +226,7 @@ public class DashboardController {
 				requirementSubmissionHistory.getSubmissionId().setOfferRate(requirementOffers.getAmount());
 				requirementSubmissionHistory.getSubmissionId().setRateType(requirementOffers.getPaymentType());
 				requirementSubmissionHistory.getSubmissionId().setRatePer(requirementOffers.getPaymentMode());
-				requirementSubmissionHistory.getSubmissionId().setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+				requirementSubmissionHistory.getSubmissionId().setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
 				if(null != requirementOffers.getPositionType()){
 					requirementSubmissionHistory.getSubmissionId().setPositionType(requirementOffers.getPositionType());
 				}
@@ -235,7 +235,7 @@ public class DashboardController {
 				}
 			}
 				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory.getToStage())){
-					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(Constants.DMY.format(requirementSubmissionHistory.getCreatedDate()));
+					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(LoginSessionController.DATEFORMAT.format(requirementSubmissionHistory.getCreatedDate()));
 				}
 		}
 		

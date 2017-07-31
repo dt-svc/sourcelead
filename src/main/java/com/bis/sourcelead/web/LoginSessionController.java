@@ -966,14 +966,14 @@ public class LoginSessionController {
 	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations,HttpServletRequest request) throws Exception {
 
 		
-		candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+		candidateOnBoarding.setJoiningDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getStartDate()));
 		
 		if(null != candidateOnBoarding.getEndDate()){
-			candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
+			candidateOnBoarding.setEndDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getEndDate()));
 		}
 		
 		if(null != candidateOnBoarding.getDueDate()){
-			candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+			candidateOnBoarding.setDueDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getDueDate()));
 		}
 		
 		

@@ -24,7 +24,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -50,7 +49,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.SavedJobsDao;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -63,11 +61,9 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
-import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SavedJobs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -87,6 +83,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -1938,7 +1935,7 @@ public class CrowdSourcingRequirementsRestController {
 						}else{
 							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).toString());
 						}
-						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
+						rr.setReferredOn(LoginSessionController.DATEFORMAT.format(rr.getCreatedDate()));
 						
 					}
 					refer.setReferToMeList(referedToMeJobs);
@@ -1965,7 +1962,7 @@ public class CrowdSourcingRequirementsRestController {
 							}else{
 								rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
 							}
-							rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+							rs.setReferredOn(LoginSessionController.DATEFORMAT.format(requirementRefer.getCreatedDate()));
 							refer.setReferUUID(requirementRefer.getReferUUID());
 						}
 						
@@ -2135,11 +2132,11 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementJobId(rr.getRequirementId().getJobId());
 						rr.setRequirementUUID(rr.getRequirementId().getRequirementUUID());
 						rr.setRequirementState(rr.getRequirementId().getRequirementSubmissionStatus().toString());
-						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
+						rr.setReferredOn(LoginSessionController.DATEFORMAT.format(rr.getCreatedDate()));
 						
 						/*RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
 						if(null != requirementRefer){
-							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+							rr.setReferredOn(LoginSessionController.DATEFORMAT.format(requirementRefer.getCreatedDate()));
 						}*/
 					}
 					refer.setReferByMeJobsList(referedByMeJobsList);
@@ -2163,7 +2160,7 @@ public class CrowdSourcingRequirementsRestController {
 					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rs.getRequirement().getId(), user.getId());
 					if(null != requirementRefer){
-						rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						rs.setReferredOn(LoginSessionController.DATEFORMAT.format(requirementRefer.getCreatedDate()));
 					}
 					
 				}
@@ -2245,7 +2242,7 @@ public class CrowdSourcingRequirementsRestController {
 					rs.setRequirementUUID(rs.getRequirement().getRequirementUUID());
 					rs.setRequirementJobType(rs.getRequirement().getJobType());
 					rs.setRequirementSubmissionStatus(rs.getRequirement().getRequirementSubmissionStatus().toString());
-					rs.setCreatedDateStr(Constants.DF_DMY.format(rs.getCreatedDate()));
+					rs.setCreatedDateStr(LoginSessionController.DATEFORMAT.format(rs.getCreatedDate()));
 					rs.setSubmissionStatus(rs.getSubmissionStatus());
 					
 				}

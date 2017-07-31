@@ -162,7 +162,7 @@ public class TimesheetSubmissionListController {
 							}
 							
 				    	  ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
-						 sb.append("<tr id='row").append(projectMember.getId()).append(Constants.DF_DMY.format(actualStartDate)).append("To").append(Constants.DF_DMY.format(actualEndDate)).append("'>");
+						 sb.append("<tr id='row").append(projectMember.getId()).append(LoginSessionController.DATEFORMAT.format(actualStartDate)).append("To").append(LoginSessionController.DATEFORMAT.format(actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
 						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
@@ -177,7 +177,7 @@ public class TimesheetSubmissionListController {
 					     sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName() : "--")).append("</div></td>");
 					     sb.append("	<td><div>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
 					     sb.append("<td><div id='datefrequency"+projectMember.getId()+"'>");
-				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+Constants.DF_DMY.format(actualStartDate)+" To "+Constants.DF_DMY.format(actualEndDate)+"</span>");
+				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+LoginSessionController.DATEFORMAT.format(actualStartDate)+" To "+LoginSessionController.DATEFORMAT.format(actualEndDate)+"</span>");
 				         sb.append("    </div>");
 				     	 sb.append("    </td>");
 					     Float totalHours = 0f;
