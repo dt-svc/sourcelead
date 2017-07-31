@@ -126,11 +126,11 @@ function getProfessionalInfo(){
 		    		 primarySkill = " --- ";
 		    	 }
 		    	 
-		    	 if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
+		    	/*  if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
 		    		 skillsName = json.skillsName;
 		    	 }else{
 		    		 skillsName = " --- ";
-		    	 }
+		    	 } */
 		    	 if(json.facebook != null  && json.facebook != '' && json.facebook != 'undefiend'){
 		    		 facebook = json.facebook;
 		    	 }else{
@@ -213,17 +213,27 @@ function getProfessionalInfo(){
 				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
 				 result = result +'	        </span>';
 				 result = result +'	        </div>';
+				 
+				 result = result+'  <div class="UsProBar progViPro">';                                                                                                                                        
+				 result = result+' <div class="progress nomr">  ';
+					if(json.profilePercentage>=50){ 
+						result = result+'   <div class="progress-bar  progress-bar-success  ';
+					}
+					else{
+						result = result+'   <div class="progress-bar  progress-bar-danger  ';
+					}
+				result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+				result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+				result = result+'   </div>  ';
+				result = result+' </div>                 ';                                                                                                                                                      
+				result = result+' </div> ';
+				
 				 result = result +'	        <ul class="list-unstyled professional-details">';
 				 result = result +'	            <li><i class="fa fa-magnet" title="Designation"></i><strong>'+designation+'</strong></li>';
 				 result = result +'	            <li><i class="fa fa-clock-o" title="Employment Type"></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
 				 result = result +'	            <li><i class="fa fa-briefcase" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
 				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
-				 result = result +'	            <li> <i class="fa fa-rupee" title="Current Rate"></i>';
-				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
-				 result = result +'	            </li>';
-				 result = result +'	            <li> <i class="fa fa-rupee" title="Expected Rate"></i>';
-				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
-				 result = result +'	            </li>';
+				 
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
@@ -251,11 +261,14 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 
 				 result = result +'	    <div class="col-md-4">';
-				 result = result +'	        <h5>Skills</h5>';
+				 result = result +'	        <h5>Rates</h5>';
 				 result = result +'	        <div class="skills mt10">';
-				 result = result +'	            <p><strong>';
-				 result = result +'	        '+skillsName+'</strong>';
-				 result = result +'	        </p>';
+				 result = result +'	            <li> <i class="fa fa-rupee" title="Current Rate"></i>';
+				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
+				 result = result +'	            </li>';
+				 result = result +'	            <li> <i class="fa fa-rupee" title="Expected Rate"></i>';
+				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
+				 result = result +'	            </li>';
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
 				 

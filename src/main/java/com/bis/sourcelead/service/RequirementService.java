@@ -164,6 +164,7 @@ public interface RequirementService {
 	
 	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
 	
+	public String getRequirementId(OrgLocations orgLocations);
 	
 	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
 

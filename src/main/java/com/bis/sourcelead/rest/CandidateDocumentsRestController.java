@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
@@ -33,7 +34,10 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -59,6 +63,12 @@ public class CandidateDocumentsRestController {
 	private CandidateService candidateService;
 	@Autowired
 	RequestedDocumentsService requestedDocumentsService;
+	@Autowired
+	UserService userService;
+	@Autowired
+	OrgLocationService orgLocationService;
+	@Autowired
+	CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 	/**
 	 * @author Prasad K
@@ -85,11 +95,12 @@ public class CandidateDocumentsRestController {
 		}
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if (null != candidateId) {
-			candidateDocumentsService.storeCandidateDocuments(jsonObj, candidateId, documentUUID, orgLocation.getId(), user, multiFile);
-			return "success";
-		}
-		else {
+		if(null !=candidateId){
+			candidateDocumentsService.storeCandidateDocuments(jsonObj, candidateId,documentUUID, orgLocation.getId(), user, multiFile);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			return percentage.toString();
+		}else{
 			return "exception";
 		}
 	}
@@ -192,17 +203,28 @@ public class CandidateDocumentsRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/terminateDoc", method = RequestMethod.POST)
-	public @ResponseBody String terminateDoc(@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentId", required = false) String documentId, HttpServletRequest request) throws Exception
+	public @ResponseBody String terminateDoc(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+											@RequestParam(value = "candidateId", required = false) Long candidateId, @RequestParam(value = "documentId", required = false) String documentId) throws Exception
 	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user = userService.getUserById(loginUserId);
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		CandidateDocuments candidateDocuments = candidateDocumentsService.getCandidateDocumentByDocumentId(Long.parseLong(documentId));
 		if (candidateDocuments != null) {
 			candidateDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 			candidateDocuments.setUpdatedBy(user.getUserCode());
 			candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 			candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
+			StringBuffer activitySummary = new StringBuffer();
+		    activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.NEW_VALUE_TAG_END);
+			candidateActivityCommonUtil.storeCandidateDocumentsHistory(candidateDocuments, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateDocuments.getCandidateId(), "", Constants.CANDIDATE_DELETED_DOCUMENTS, activitySummary.toString(), "CANDIDATE");
+
 		}
-		return "success";
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 	
 	@RequestMapping(value = "/requestCandidateForDocuments", method = RequestMethod.POST)

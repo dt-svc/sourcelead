@@ -95,6 +95,18 @@ function closeCertificatePopup(){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl  + "/errorPage");
 								} else {
+									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+			            			 if(data<50){
+			            			   $("#perVal").removeClass('progress-bar-success');
+			            			   $("#perVal").addClass("progress-bar-danger");
+			            			 }
+			            			 if(data>=50){
+			            				 $("#perVal").removeClass("progress-bar-danger");
+			            				 $("#perVal").addClass("progress-bar-success");
+			            			 }
+			            			 $("#disVal").empty();
+			            			$("#disVal").append(data+'%');
+			            			
 									$("#popUpDivEmp").removeClass("edit-details-active");
 			            			$("#selector3").removeAttr("style");
 			            			$("#selector3").css({ display: "block" });
@@ -550,9 +562,11 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 	function deleteSelectedEmp(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
+		var loginUserId = '${SourceLeadWeb_userId}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -561,6 +575,19 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+		            			 if(data<50){
+		            			  /* $("#perVal").removeClass("progress-bar-success"); */
+		            			   $("#perVal").removeClass('progress-bar-success');
+		            			   $("#perVal").addClass("progress-bar-danger");
+		            			 }
+		            			 if(data>=50){
+		            				 $("#perVal").removeClass('progress-bar-danger');
+		            				 $("#perVal").addClass("progress-bar-success");
+		            			 }
+		            			 $("#disVal").empty();
+		            			$("#disVal").append(data+'%');
+								
 			        			 $("#selector3").removeAttr("style");
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");

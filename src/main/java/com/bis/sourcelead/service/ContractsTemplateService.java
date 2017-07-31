@@ -63,7 +63,13 @@ public interface ContractsTemplateService {
 
 	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
 
+
+	Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String sowType);
+
 	void sendFinalisedMailToReceiver(Contracts contracts, OrgLocations orgLocation, User user) throws Exception;
+
+	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
+
 
 	
 }

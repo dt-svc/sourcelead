@@ -931,5 +931,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("orglocationId", orglocationId).setCacheable(true).list();
 		return allProjectMembersList;
 	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.employee emp where emp.id = :employeeId";
+		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("employeeId", employeeId).setCacheable(true).list();
+		return allProjectMembersList;
+	}
 }
 

@@ -282,11 +282,11 @@
 	width: 285px;
 }
 .refresh {
-	position: absolute; padding: 5px; cursor: pointer; top: 20px; right: 53px; font-size: 13px; z-index: 10; color: #ff6600;
+	position: absolute; padding: 5px; cursor: pointer; top: 20px; right: 103px; font-size: 13px; z-index: 10; color: #ff6600;
 	display: none;
 }
 .OrgSearch input {
-	width: 220px; height: 34px; padding: 6px 25px 6px 10px; font-size: 14px; line-height: 1.42857143; color: #555;
+	width: 170px; height: 34px; padding: 6px 25px 6px 10px; font-size: 14px; line-height: 1.42857143; color: #555;
     background-color: #fff; border: 1px solid #ccc; border-radius: 4px 0px 0px 4px; position: relative; z-index: 3;
 	float: left;
 }
@@ -316,3 +316,4 @@
 .OrgChBtn.OrgChBtnAct:before {
     content: "\f066"; font-family: FontAwesome; color: #454545; font-size: 22px;
 }
+

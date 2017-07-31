@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -42,6 +43,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 
 	
 	/**
@@ -66,25 +70,45 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 @Override
 	 public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 			CandidateCertifications candidatecertificate  = new CandidateCertifications();
+			Candidate can = new Candidate();
+			StringBuffer activitySummary = new StringBuffer();
 			 if(candidateId!= null){
 				 if(jsonObject.has("candidatecertificateID")){
 		       		 if(jsonObject.getString("candidatecertificateID")!=null && !jsonObject.getString("candidatecertificateID").isEmpty()){
-		       			candidatecertificate.setId(Long.valueOf(jsonObject.getString("candidatecertificateID")));
+		       			//candidatecertificate.setId(Long.valueOf(jsonObject.getString("candidatecertificateID")));
+		       			candidatecertificate = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, Long.valueOf(jsonObject.getString("candidatecertificateID")));
 		       	     }
 	       	    }
 			if (jsonObject.has("name")) {
+				if(candidatecertificate != null && candidatecertificate.getName() != null && candidatecertificate.getName() != "" && !candidatecertificate.getName().equalsIgnoreCase(jsonObject.getString("name"))){
+					activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}else if(candidatecertificate != null && candidatecertificate.getId() == null){
+					activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END);
+				}
 				candidatecertificate.setName(jsonObject.getString("name"));
 			}
 			if (jsonObject.has("provider")) {
+				if(candidatecertificate != null && candidatecertificate.getProvider() != null && candidatecertificate.getProvider() != "" && !candidatecertificate.getProvider().equalsIgnoreCase(jsonObject.getString("provider"))){
+					activitySummary.append("Provider").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getProvider()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("provider")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidatecertificate.setProvider(jsonObject.getString("provider"));
 			}
 			if (jsonObject.has("score")) {
+				if(candidatecertificate != null && candidatecertificate.getScore() != null && candidatecertificate.getScore() != "" && !candidatecertificate.getScore().equalsIgnoreCase(jsonObject.getString("score"))){
+					activitySummary.append("Score").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScore()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("score")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidatecertificate.setScore(jsonObject.getString("score"));
 			}
 			if (jsonObject.has("scoreType")) {
+				if(candidatecertificate != null && candidatecertificate.getScoreType() != null && candidatecertificate.getScoreType() != "" && !candidatecertificate.getScoreType().equalsIgnoreCase(jsonObject.getString("scoreType"))){
+					activitySummary.append("Score Type").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getScoreType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("scoreType")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidatecertificate.setScoreType(jsonObject.getString("scoreType"));
 			}
 			if (jsonObject.has("description")) {
+				if(candidatecertificate != null && candidatecertificate.getDescription() != null && candidatecertificate.getDescription() != "" && !candidatecertificate.getDescription().equalsIgnoreCase(jsonObject.getString("description"))){
+					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("description")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidatecertificate.setDescription(jsonObject.getString("description"));
 			}
 				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
@@ -126,13 +150,16 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				candidatecertificate.setUpdatedBy(user.getUserCode());
 				candidatecertificate.setUpdatedDate(commonUtil.currentDate());
 				candidatecertificate.setOrgLocationId(orgLocationId);
-				Candidate can = new Candidate();
 				can.setId(candidateId);
 				candidatecertificate.setCandidateId(can);
 			
 		}
 			logger.debug("In CandidateCertificationsServiceImpl class save method");
 			candidatecertificate = candidateCertificationsDao.storeCandidateCertifications(candidatecertificate);
+			
+			candidateActivityCommonUtil.storeCandidateCertificationsHistory(candidatecertificate, user);
+			
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocationId, can, "", Constants.CANDIDATE_CERTIFICATION_UPDATED, activitySummary.toString(), "CANDIDATE");
 			
 			/*
 			 * updating Candidate Certification DB data in existing candidateindex
@@ -189,12 +216,15 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 */
 	@Override
 	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(
-			Long candidateId, Long candidateCertificateId) throws Exception {
+			Long candidateId, Long candidateCertificateId, User user, OrgLocations orgLocation) throws Exception {
 
 	     CandidateCertifications can = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
 	     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 	     can = candidateCertificationsDao.storeCandidateCertifications(can);
-	     
+	     StringBuffer activitySummary = new StringBuffer();
+	     activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+		 candidateActivityCommonUtil.storeCandidateCertificationsHistory(can, user);
+		 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocation, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_CERTIFICATION, activitySummary.toString(), "CANDIDATE");
 
 	     /*
 		 * updating Candidate Employer DB data in existing candidateindex

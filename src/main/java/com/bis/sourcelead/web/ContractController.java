@@ -174,7 +174,7 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_NEW_CONTRACT')")
 	@RequestMapping(value = "/addNewContract")
-	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID, HttpServletResponse response) throws Exception {
+	public ModelAndView addNewContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="orgRelationId", required=false) Long orgRelationId, HttpServletResponse response) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -319,6 +319,11 @@ public class ContractController {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+			model.addObject("contractType", Constants.VENDOR_MSA);
 		}
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);

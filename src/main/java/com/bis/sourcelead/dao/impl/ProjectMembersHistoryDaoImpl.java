@@ -62,6 +62,24 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 	}
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId) throws Exception {
+		// TODO Auto-generated method stub
+		logger.debug("In ProjectMembersHistory getProjectMembersOpenHistoryByProjectMemberId method");
+        Session session = this.sessionFactory.getCurrentSession();
+        Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user where pm.id = :projectMemberId");
+		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		ProjectMembersHistory pmh = null;
+		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){
+			pmh = projectMembersHistoryList.iterator().next();
+		}
+		
+		return pmh;
+	}
+	
+	
+	
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectMembersHistory updateProjectMembersHistory(ProjectMembersHistory projectMembersHistory) throws Exception {
 		logger.debug("In ProjectMembersHistory Update method");

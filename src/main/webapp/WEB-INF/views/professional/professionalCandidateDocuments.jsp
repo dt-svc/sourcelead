@@ -422,6 +422,17 @@ function getDocumentType(documentType){
 						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
+								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
+			          			 $("#disVal").empty();
+			          			$("#disVal").append(result+'%');
 								$("#popUpDiv").removeClass("edit-details-active");
 		            			$("#selector6").removeAttr("style");
 		            			$("#selector6").css({ display: "block" });
@@ -533,12 +544,26 @@ function removeDocument(candidateId, documentId){
 <script>
 function deleteDocument(candidateId, documentId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+        			  /* $("#perVal").removeClass("progress-bar-success"); */
+        			   $("#perVal").find('progress-bar-success').remove();
+        			   $("#perVal").addClass("progress-bar-danger");
+        			 }
+        			 if(data>=50){
+        				 $("#perVal").find('progress-bar-danger').remove();
+        				 $("#perVal").addClass("progress-bar-success");
+        			 }
+        			 $("#disVal").empty();
+        			$("#disVal").append(data+'%');
         			 $("#selector6").removeAttr("style");
          			 $("#selector6").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");
