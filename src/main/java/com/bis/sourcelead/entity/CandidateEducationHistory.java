@@ -21,7 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * @author Shivayogi
- *
+ *		
  */
 @Entity
 @Table(name = "CANDIDATE_EDUCATION_HISTORY", catalog = "sourcelead")
@@ -35,12 +35,6 @@ public class CandidateEducationHistory implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_EDUCATION", nullable = false)
 	private CandidateEducation candidateEducation;
-	@ManyToOne
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orglocationId;
-	@ManyToOne
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
 	@Column(name = "NAME")
 	private String name;
 	@Column(name = "SPECIALIZATION")
@@ -85,26 +79,6 @@ public class CandidateEducationHistory implements Serializable {
 	public void setCandidateEducation(CandidateEducation candidateEducation)
 	{
 		this.candidateEducation = candidateEducation;
-	}
-	
-	public OrgLocations getOrglocationId()
-	{
-		return orglocationId;
-	}
-	
-	public void setOrglocationId(OrgLocations orglocationId)
-	{
-		this.orglocationId = orglocationId;
-	}
-	
-	public Candidate getCandidateId()
-	{
-		return candidateId;
-	}
-	
-	public void setCandidateId(Candidate candidateId)
-	{
-		this.candidateId = candidateId;
 	}
 	
 	public String getName()
@@ -216,12 +190,12 @@ public class CandidateEducationHistory implements Serializable {
 	{
 		this.status = status;
 	}
-
+	
 	public User getCreatedUser()
 	{
 		return createdUser;
 	}
-
+	
 	public void setCreatedUser(User createdUser)
 	{
 		this.createdUser = createdUser;
