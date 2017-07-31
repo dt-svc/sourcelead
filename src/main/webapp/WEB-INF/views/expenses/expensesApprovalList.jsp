@@ -245,7 +245,7 @@ $.ajax({
     	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
     	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
 	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
-	 	 result = result+" </i><br>By : "+data.actionPerformedBy;
+	 	 result = result+" </i><br><d title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</d>";
 	 	 result = result+" </div>";
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){

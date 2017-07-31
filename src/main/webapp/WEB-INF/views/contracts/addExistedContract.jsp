@@ -399,12 +399,12 @@
           </thead>
           <tbody id="addTaxTbl">
           
-   				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
+   				<tr><td><strong>Name</strong></td><td><strong>Attachment</strong></td><td><strong>Doc Type</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
 		
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
                 </c:forEach>
-          <tr id="divTaxTsRow0">
+          <tr id="divTaxRow0">
           </tr>
           </tbody>
           </table>

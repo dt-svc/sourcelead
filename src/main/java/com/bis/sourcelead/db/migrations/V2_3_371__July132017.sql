@@ -1,4 +1,3 @@
-
 #6.Refer Job[Professional]:
 INSERT INTO `sourcelead`.`CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`)
 VALUES ((SELECT ID FROM `sourcelead`.`ENTITY_TYPE` where `ENTITY_NAME` = 'Professional Invitation' and `ENTITY_TYPE` = 'Email'),
@@ -147,4 +146,3 @@ UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{contractExpiryRemainder.
 			
 			
 UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Alert Contract expiring in {{contractExpiryRemainder.expiringdays}} days'  WHERE `UNIQUE_SCENARIO_NAME`='contractExpiryRemainder' and `ENTITY_TYPE`='Email';
-

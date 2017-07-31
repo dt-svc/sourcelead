@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -183,7 +184,7 @@ public class InvoiceRestController {
 		for(OrgSpoc orgSpoc : orgSpocList){
 			StringBuilder sb = new StringBuilder();
 			StringBuilder clientSb = new StringBuilder();
-			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getVendorUser().getLastName())){
 			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
 			sb.append(orgSpoc.getVendorUser().getFirstName());
@@ -250,12 +251,13 @@ public class InvoiceRestController {
 		}
 
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org,currencyCode);
+		
 		if(invoiceType.equals("payable") && saveType.equals("DRAFT")){
-		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Invoice");
+		 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have created a Bill");
 		 
 		}
 		if(invoiceType.equals("payable") && saveType.equals("SENT")){
-			 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Invoice");
+			 SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg", "Successfully you have sent a Bill");
 			 
 			}
 		if(invoiceType.equals("Receivable") && saveType.equals("DRAFT"))
@@ -497,6 +499,8 @@ public class InvoiceRestController {
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
 			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
+			
+			
 			billingInvoiceList.add(invoice);
 		}
 		
@@ -1145,7 +1149,7 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType(),null);
+		invoiceService.sendInvoiceReminderMail(user,orgLocation,invoice,invoice.getInvoiceType(),null);
 		return "success";
 	} 	
 	
@@ -1541,9 +1545,12 @@ public class InvoiceRestController {
 			}
 			netAmount = recievableAmount - payableAmount;
 		}
-		if (invoiceList != null && invoiceList.size() > 0) {
-			for (Invoice invoice : invoiceList) {
-				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+//		logger.info("Final Response time = " + elapsedTime + " Millis");
+		if(invoiceList !=null && invoiceList.size()>0){
+			for(Invoice invoice : invoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 				}
 				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId()
@@ -1591,7 +1598,7 @@ public class InvoiceRestController {
 				if(null != invce.getContactUser()){
 					StringBuilder username = new StringBuilder();
 					if(null != invce.getContactUser().getLastName()){
-						username.append(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+						username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString();
 					}else{
 						username.append(invce.getContactUser().getFirstName());
 					}
@@ -1619,11 +1626,23 @@ public class InvoiceRestController {
 		Invoice invoice = invoiceService.getInvoicetById(id);
 		invoice.setLinkInvoiceReferenceId(masterInvoice.getId());
 		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoiceService.linkInvoice(invoice);
-		Invoice  childInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getId());
-		childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
-		invoiceService.linkInvoice(childInvoice);
+		if(masterInvoice.getId() !=null){
+			Invoice  childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+			if(childInvoice !=null){
+				childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+				childInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(childInvoice);		
+			}else{
+				Invoice  parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+				parentInvoice.setInvoiceStatus(Constants.LINKED_STATUS);
+				invoiceService.linkInvoice(parentInvoice);
+			}
+			
+		}
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
 
@@ -1658,6 +1677,62 @@ public class InvoiceRestController {
 		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgRelationId(orgRelationId, clientLocationId,invoiceStatus, paymentStatus, invoiceType,orgLocations,dayWisetype,customStartDate,customEndDate);
 
 		return commonUtil.toJSON(invoiceList);
+	}
+	
+	/**
+	 * Unlinking the Linked Invoice/Bill
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/unLinkInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean unLinkInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId) throws Exception
+	{
+		boolean result = false;
+		Invoice invoice = invoiceService.getInvoicetById(invoiceId);
+		invoice.setLinkInvoiceReferenceId(null);
+		invoice.setLinkInvoiceRefInvoiceId(null);
+		invoice.setInvoiceStatus(invoice.getPreviousInvoiceStatus());
+		invoice.setPreviousInvoiceStatus(invoice.getInvoiceStatus());
+		invoiceService.linkInvoice(invoice);
+		
+		Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());
+		if(childInvoice !=null){
+			childInvoice.setInvoiceStatus(childInvoice.getPreviousInvoiceStatus());
+			childInvoice.setPreviousInvoiceStatus(childInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(childInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}else{
+			Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+			parentInvoice.setInvoiceStatus(parentInvoice.getPreviousInvoiceStatus());
+			parentInvoice.setPreviousInvoiceStatus(parentInvoice.getInvoiceStatus());
+			Invoice invoiceData = invoiceService.linkInvoice(parentInvoice);
+			if (invoiceData != null) {
+				result = true;
+			}
+		}
+		
+		
+		return result;
+	}
+	
+	/**
+	 * Deleteing Invoice/bill of draft stage
+	 * @param invoiceId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/deleteInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean deleteInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,
+			@RequestParam(value = "reason", required = false) String reason,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
+	{
+		boolean isDeleted = invoiceService.deleteInvoice(invoiceId,reason,invoiceType);
+		return isDeleted;
 	}
 	
 	

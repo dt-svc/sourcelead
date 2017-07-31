@@ -93,6 +93,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionXlsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -198,6 +199,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+    CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Value("${env}")
+	private String environment;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -411,7 +418,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 //						 }
 					 }
 					
-					candidateDao.storeCandidate(candidate);
+					 candidate = candidateDao.storeCandidate(candidate);
 					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
@@ -432,6 +439,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 							candidateEducation.setCreatedDate(new Date());
 							candidateEducation.setStatus(Constants.CANDIDATE_ACTIVE);
 							candidateEducationDao.storeCandidateEducation(candidateEducation);
+							candidateActivityCommonUtil.storeCandidateEducationHistory(candidateEducation, user);
 						}
 					 }
 					
@@ -445,10 +453,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateEmployers.setCreatedBy(user.getUserCode());
 						 candidateEmployers.setUpdatedDate(new Date());
 						 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
-						 
+						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
 					 }
 					 
-				
+					 candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+					 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
 					
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
@@ -477,6 +486,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 candidateResumes.setUpdatedDate(new Date());
 				 candidateResumes.setOrgLocationId(orgLocations);
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
+				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
 				 requirementSubmission.setCandidateResumes(candidateResumes);
 				 //insert the currentResumeId in ELK				 
 				 insertResumeIdInELK(candidate);
@@ -2038,12 +2048,16 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	 
    	SubmissionXls submissionXls =  saveSubmissionTracker(dateFormat,createExcelworkbook,requirement,user);
     
+   	
+   	
+   	
    	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls,submissionId);
 	
 		
 	}
 /**
  * prepares email template with attachments
+ * don't use this method for email sending 
  * @param jsonObj
  * @param user
  * @param files
@@ -2051,6 +2065,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
  * @param submissionXls
  * @param submissionId 
  * @throws Exception
+ * 
  */
 	private void sendMailTemplateWithAttachment(JSONObject jsonObj, User user, Map files, OrgLocations loginOrgLocation,
 			SubmissionXls submissionXls, String[] submissionId) throws Exception {
@@ -2067,6 +2082,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		emailMessage.setCreatedBy(user.getUserCode());
 		emailMessage.setFromEmail(user.getEmail());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		StringBuilder emailBuild = new StringBuilder();
 		emailMessage.setFromName(emailBuild.append(user.getFirstName()).append("").append(user.getLastName()).toString());
 		InternetAddress[] iAdressArray = null;
@@ -2154,7 +2170,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			
 			User toUser = userService.findByEmail(jsonObj.getString("toMailId"));
-			emailScenerioUtil.sendWithAttachmentEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList,submissionId);
+			emailMessage.setSubmissionId(submissionId);
+			
+			emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray,attachmentList);
 			String actionLink="";
 			emailScenerioUtil.sendNotification(actionLink, user, toUser,reqSub.getRequirement().getSpocId().getClientLocationId(), notificationScenario);
 		}
@@ -3723,8 +3741,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setCreatedBy("sladmin");
-		 emailMessage.setFromEmail("info@sourcelead.com");
-		 
+		 if (environment.equalsIgnoreCase("prod")) {
+			 emailMessage.setFromName("info@sourcelead.com");
+		 }else{
+			 emailMessage.setFromName("qa@sourcelead.com");	 
+		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("professionalName", professionalName);

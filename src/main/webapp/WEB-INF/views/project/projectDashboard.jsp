@@ -82,10 +82,12 @@ overflow-x: auto;
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
+                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
+<!-- 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li> -->
+							<li><input id="c9" type="checkbox" name="projectStatus" value ="NOTSTARTED"  onclick="filter();"><label for="c8">Not Started</label></li>
 							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">Completed</label></li>
                				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">On-Hold</label></li>
+               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="DROPPED"  onclick="filter();"><label for="c8">Dropped</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -234,8 +236,10 @@ $(document).ready(function() {
 			  	'</sec:authorize>';
 		  	'</sec:authorize>';
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-		  	   result = result + ' <li class="current"><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
+		  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+',\''+status+'\');" >Documents</a></li>';
 			'</sec:authorize>';
+			
+			
 			
 		  	result = result + ' <div class="clearfix"></div>';
 		  	result = result + ' </ul>';
@@ -446,9 +450,6 @@ function filter(){
    		    			result = result +'<td data-title="Client"><div>---</div></td>';  
    		    		}
    		    		result = result +'<td data-title="Status"><div>';
-   		    		if(report.projectStatus == 'STARTED'){
-	    			  result = result +'<b>Started</b>';
-	    			}
    		    		if(report.projectStatus == 'INPROGRESS'){
   	    			  result = result +'<b class="proj_process">In-Progress</b>';
   	    			}
@@ -458,7 +459,12 @@ function filter(){
    		    		if(report.projectStatus == 'ONHOLD'){
   	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
   	    			}
-   		    		
+   		    		if(report.projectStatus == 'NOTSTARTED'){
+   	    			  result = result +'<b class="proj_deactivate">Not-Started</b>';
+   	    			}
+   		    		if(report.projectStatus == 'DROPPED'){
+   	    			  result = result +'<b class="proj_deactivate">Dropped</b>';
+   	    			}
    		    		result = result +'</div></td>';
    		    		
                     result = result +'</tr>';
@@ -956,19 +962,22 @@ $(document).ready(function() {
 		    			result = result +'<td data-title="Client"><div>---</div></td>';  
 		    		}
 		    		result = result +'<td data-title="Status"><div>';
-		    		if(report.projectStatus == 'STARTED'){
-	   			  result = result +'<b>'+report.projectStatus+'</b>';
-	   			}
+		    		 
 		    		if(report.projectStatus == 'INPROGRESS'){
-	   			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
-	   			}
+		   			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+		   			}
 		    		if(report.projectStatus == 'COMPLETED'){
-	   			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
-	   			}
+		   			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+		   			}
 		    		if(report.projectStatus == 'ONHOLD'){
-	   			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
-	   			}
-		    		
+		   			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+		   			}
+		    		if(report.projectStatus == 'NOTSTARTED'){
+		    			result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+		    		}
+			    	if(report.projectStatus == 'DROPPED'){
+			    		result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+		    		}
 		    		result = result +'</div></td>';
 		    		
 	                result = result +'</tr>';

@@ -355,7 +355,7 @@ public class TaskServiceImpl implements TaskService{
 			 emailMessage.setMessageBody(emailTemplate);
 			 
 			 //calling the Email 
-			 if(task.getAlertType().equalsIgnoreCase("Email") && null !=task.getAlertType()){
+			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Email")){
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 

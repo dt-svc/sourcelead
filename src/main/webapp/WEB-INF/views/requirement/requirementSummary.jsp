@@ -139,6 +139,7 @@ float: left !important;
 .require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
 color:blue;
 }
+
 </style>
  
 <script>
@@ -1337,6 +1338,14 @@ function requirementDetails(requirementId,data){
 			               result = result +'</div>';
 	          	           
 				           result = result +'<div class="clearfix"></div>';
+				           
+				           if(json.releaseJobToAllUsers  == 'Y'){
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> YES </span></div>';
+				            }else{
+						        result = result +'     <div class="require_wrap_details_cta"> <b>Release to all Users:</b><span> NO </span></div>';
+				            }
+			          	           
+						   result = result +'<div class="clearfix"></div>';
 			           	            
 			            
 			            //  Checking  for approval mechanism type  Parallel or Sequential
@@ -1662,20 +1671,31 @@ function requirementPipeline(requirementId,submissionType){
 			   	        		}else{
 			   	        			candidateSource = "";
 			   	        		}
-
 						           result = result + '       <tr>';
 						           '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div onclick="applicantQuickViewProfile('+report.id+','+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i></div></td>';
-						           '</sec:authorize>';
+						           		result = result + '<td><div onclick="applicantQuickViewProfile('+report.id+','+report.candidateId+'); getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+requirementId+');" class="tbldata-dotdot proj_show positionRelative"><span class="pull-left" title ="'+report.candidateName+'">'+report.candidateName+'</span><i class="fa fa-binoculars"></i>';
+						           		if(report.candidateScore != null && report.candidateScore != '' && report.candidateScore != 'undefined'){
+						  				  if(report.candidateScore >=50){ 
+						  				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
+						  				  }
+						  			  } 
+						  		    result = result +' </div></td>';
+						           	'</sec:authorize>';
 						           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
-						           		result = result + '         <td><div class="tbldata-dotdot proj_show"><span class="pull-left">'+report.candidateName+'</span></div></td>';
-						           '</sec:authorize>';
+						           		result = result + '<td><div class="tbldata-dotdot proj_show positionRelative"><span class="pull-left">'+report.candidateName+'</span>';
+						           		if(report.candidateScore != null && report.candidateScore != '' && report.candidateScore != 'undefined'){
+						  				  if(report.candidateScore >=50){ 
+						  				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
+						  				  }
+						  			  } 
+						  		    result = result +' </div></td>';
+						           	'</sec:authorize>';
 						           
 						           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-						        	   result = result + '         <td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+						        	   result = result + '<td><div><span title ="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
 							           }
 							       else{
-							        	result = result + '         <td><div><span>--</span></div></td>';
+							        	result = result + '<td><div><span>--</span></div></td>';
 						    	     }
 						           
 						           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
@@ -4280,7 +4300,7 @@ function requirementRecommendations(requirementId){
     	    
     	     result = result +' <div class="clients_side_wrap">';
 			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
-
+			 result = result +'<div id="candidateCompare" ></div>';
 			 result = result + '<ul class="nav nav-tabs">';
 			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
 			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
@@ -4313,10 +4333,12 @@ function requirementRecommendations(requirementId){
 
 		    result = result +'		   <div class="pull-left cand-advsrch">																							';
 		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Customize score" onClick="openPop('+requirementId+')">Customize Score </a>            ';
+		    if(json.length>0){
+		    	result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
+		    }
 		    result = result +'                   <div id="customizeScoreDiv"></div>';
 		    result = result +'		        </div>';
 
-		    
 		    
 		    
 		    result = result +'</div>';
@@ -4351,7 +4373,13 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+'); clientSideBar('+report.candidateId+');" class="proj_show"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+');" class="proj_show tbldata-dotdot-me"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
+		    if(report.finalScore != null && report.finalScore != '' && report.finalScore != 'undefined'){
+				  if(report.finalScore >=50){ 
+				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
+				  }
+			  } 
+		    result = result +' </div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.email != null && report.email !='' && report.email !='undefined'){
 		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
@@ -4691,6 +4719,22 @@ function clientSideBar(candidateId){
 						 result = result+'  </div>';
 						 result = result+'  </div>';
 						 result = result+'  </div>';
+						 
+						 
+						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+							result = result+' <div class="progress nomr">  ';
+						if(json.profilePercentage>=50){ 
+							result = result+'   <div class="progress-bar  progress-bar-success  ';
+						}
+						else{
+							result = result+'   <div class="progress-bar  progress-bar-danger  ';
+						}
+						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+						result = result+'   </div>  ';
+						result = result+' </div>                 ';                                                                                                                                                      
+						result = result+' </div> ';
+						
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
@@ -6174,6 +6218,18 @@ function refreshImageBlock(candidateId){
 						 
 						 
 						 result = result+'  </div>';
+						 result = result+' <div class="mb mt5 UsProBar">';
+						 result = result+' <div class="progress nomr"> ';
+						 if(json.profilePercentage>=50){
+						 result = result+' <div class="progress-bar progress-bar-success ';
+						 }
+						 else{
+						 result = result+' <div class="progress-bar progress-bar-danger ';
+						 }
+						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+						 result = result+' </div> ';
+						 result = result+' </div> ';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
@@ -6242,6 +6298,8 @@ function saveCandidateImage(candidateId){
   		        var jsonData = encodeURIComponent(con);
           		
           		var sourceleadUrl ='${sourceleadUrl}';
+          		var loginUserId = '${SourceLeadWeb_userId}';
+          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
           		var form = $('#candidate_form')[0];
            		var formData = new FormData(form);
 	            		
@@ -6254,7 +6312,7 @@ function saveCandidateImage(candidateId){
 	            	          contentType:false,
 	                	      dataType : 'json',
 	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+	                      	  url: sourceleadUrl+"/saveCandidateProfile?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	                          success: function(result) {
 	                        	  recommendationAlertCancel(candidateId);
 	    			          },  
@@ -6333,6 +6391,7 @@ return result;
 <jsp:include page="recommendCandidatesHistory.jsp"></jsp:include>
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
+<jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
 
 
 

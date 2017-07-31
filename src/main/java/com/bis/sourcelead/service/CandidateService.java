@@ -169,4 +169,6 @@ public interface CandidateService {
 	
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
 
+	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
+
 }

@@ -185,7 +185,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {
@@ -256,7 +256,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL "+subQuery+"";
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL and invoice.invoiceStatus <> 'Linked'"+subQuery+"";
 		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 		return clientInvoiceList;
 
@@ -385,6 +385,19 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
 		return invoicePaymentList;
 		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Invoice getInvoicetByParentId(Long parentInvoiceId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		if (parentInvoice.size() > 0) {
+			return parentInvoice.get(0);
+		} else {
+			return null;
+		}
 	}
 	 
 }

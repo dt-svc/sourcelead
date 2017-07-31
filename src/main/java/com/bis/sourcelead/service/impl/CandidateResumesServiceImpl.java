@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +23,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
-import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -48,7 +47,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	
 	@Autowired
-	private CandidateService candidateService;
+    CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
 
 	/**
@@ -72,18 +71,28 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocations, MultipartFile multiFile) throws Exception {
 		CandidateResumes candidateResume = null;
+		StringBuffer activitySummary = new StringBuffer();
 		if(!resumeId.equalsIgnoreCase("null")){
 			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 			if(jsonObj.has("title")){
+				if(candidateResume.getTitle() != null && candidateResume.getTitle() != "" && !candidateResume.getTitle().equalsIgnoreCase(jsonObj.getString("title"))){
+					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("title")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidateResume.setTitle(jsonObj.getString("title"));
 			}
 			if(jsonObj.has("description")){
+				if(candidateResume.getDescription() != null && candidateResume.getDescription() != "" && !candidateResume.getDescription().equalsIgnoreCase(jsonObj.getString("description"))){
+					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("description")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
 				candidateResume.setDescription(jsonObj.getString("description"));
 			}
 			candidateResume.setUpdatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			if(!jsonObj.getString("docFile").equalsIgnoreCase("")){
 				if(multiFile != null){
+					if(candidateResume.getFileName() != null && candidateResume.getFileName() != "" && !candidateResume.getFileName().equalsIgnoreCase(multiFile.getOriginalFilename())){
+						activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+					}
 					 candidateResume.setDocFile(multiFile.getBytes());
 					 candidateResume.setFileName(multiFile.getOriginalFilename());
 					 candidateResume.setFileContentType(multiFile.getContentType());
@@ -110,12 +119,21 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			candidateResume.setCreatedBy(user.getUserCode());
 			candidateResume.setUpdatedDate(commonUtil.currentDate());
 			if(multiFile != null){
+				if(candidateResume.getTitle() != null && candidateResume.getTitle() != "" && candidateResume.getTitle() != "undefined"){
+					activitySummary.append("Title").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END);
+				}else{
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END);
+				}
 				 candidateResume.setDocFile(multiFile.getBytes());
 				 candidateResume.setFileName(multiFile.getOriginalFilename());
 				 candidateResume.setFileContentType(multiFile.getContentType());
 			 }
 		}
 		candidateResumesDao.updateCandidateResume(candidateResume);
+		
+		candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
+		
+		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_RESUME_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
 		/*
 		 * updating Candidate Resume DB data in existing candidateindex
@@ -180,12 +198,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		// return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId); 
-		SimpleDateFormat formatter = candidate.getOrgLocationId().getLocFullFormDateFormatter();
+	
 		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 			for(CandidateResumes canResumes :candidateResumesList){
 				if(canResumes.getUpdatedDate() != null){
-					canResumes.setCandidateResumeUpdateDateToString(formatter.format(canResumes.getUpdatedDate()));
+					canResumes.setCandidateResumeUpdateDateToString(Constants.DF_DMY.format(canResumes.getUpdatedDate()));
 				}
 			}
 			return candidateResumesList;
@@ -287,11 +304,6 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
 		return candidateResumesDao.getCandidateResumesListByCandidateId(candidateId);
 		
-	}
-
-	@Override
-	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception {
-		return candidateResumesDao.getCandidateResumeByCandidateId(candidateId);
 	}
 
 }

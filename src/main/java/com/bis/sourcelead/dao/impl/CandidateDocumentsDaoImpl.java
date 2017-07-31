@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
 import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -155,6 +156,22 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		String query = "from CandidateDocuments cd left join fetch cd.candidateId where cd.requestedDocumentsId.id =:requestedDocumentsId and cd.status = 1 ";
 		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("requestedDocumentsId", requestedDocumentsId).setCacheable(true).list();
 		return candidateDocumentsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from CandidateDocuments cd where cd.documentType = :candidateDocument and cd.candidateId.id = :candidateId and cd.status ='1' ";
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateDocument", candidateDocument).setCacheable(true).list();
+		if(candidateDocumentsList !=null && candidateDocumentsList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
 	}
 
 }

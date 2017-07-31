@@ -158,7 +158,8 @@
               <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
+		              		<!-- <select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getApplicantSubmission(); getOfferRate(); getVendor();" field-name="Applicant"> -->
+							<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option selected="selected" value="${element.id}">${element.candidateName}(${element.createdUser})</option>
@@ -173,6 +174,7 @@
 					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
+					 <p id="errorAppDiv" class="ReError"></p>
               	</div>
             </div>
                      
@@ -581,7 +583,7 @@
 	                     <td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td>
 	                     </tr>
                 </c:forEach>
-          <tr id="divTaxTsRow0">
+          <tr id="divTaxRow0">
           </tr>
           </tbody>
           </table>
@@ -1507,6 +1509,7 @@ function hideCommonSOWFields(){
 
 <script>
 	function getRequirements(sowType){
+		 $('#errorAppDiv').empty();
 		$("#requirementsList").empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
@@ -1537,6 +1540,7 @@ function hideCommonSOWFields(){
 	}
 		
 	function submissionOffers(){
+		 $('#errorAppDiv').empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
@@ -1580,7 +1584,24 @@ function hideCommonSOWFields(){
 	       },
 	    });
 	}
-	
+	function getApplicantSubmission(){
+		$('#errorAppDiv').empty();
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		var contractType = $("#contractType").val();
+		
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/validateRequirementSubmission?reqSubId="+reqSubId+"&contractType="+contractType,    
+	         success :function(data) {
+	        	 if(data == true){
+	        	//	 $("#submissionOffersListDiv").after("<p class='jquery_form_error_message'>Existed applicant</p>");
+	        		 $("#errorAppDiv").empty().append("Existed applicant") ;
+	        	 }
+	         },
+	    });
+
+	}
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();

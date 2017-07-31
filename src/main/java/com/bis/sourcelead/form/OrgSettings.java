@@ -1,5 +1,7 @@
 package com.bis.sourcelead.form;
 
+import javax.persistence.Column;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public class OrgSettings {
@@ -31,7 +33,10 @@ public class OrgSettings {
 	private String timeZone;
 	
 	private String dateFormat1;
-	
+
+    private String generatedUserId;
+
+    private String systemGeneratedId;
 	
 
 	public Integer getId() {
@@ -138,6 +143,7 @@ public class OrgSettings {
 		this.timeZone = timeZone;
 	}
 
+
 	public String getDateFormat1() {
 		return dateFormat1;
 	}
@@ -147,5 +153,24 @@ public class OrgSettings {
 	}
 
 	
+	public String getGeneratedUserId()
+	{
+		return generatedUserId;
+	}
+
+	public void setGeneratedUserId(String generatedUserId)
+	{
+		this.generatedUserId = generatedUserId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
 
 }

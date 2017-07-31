@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ExpensesCategoryDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -13,7 +14,22 @@ public class ExpensesCategoryDTO implements Serializable {
 	
 	private float allowedAmount;
 	
+	//storing fields
+	private String categoryType;
+	
+	private String expenseDate;
+	
+	private String receiptIssuedBy;
+	
+	private String paymentMode;
+	
+	private String currencyCode;
+	
+	private Double expenseAmount;
+	
 	private String description;
+	
+	private List<String> fileNames;
 
 	public Long getId() {
 		return id;
@@ -55,8 +71,60 @@ public class ExpensesCategoryDTO implements Serializable {
 		this.description = description;
 	}
 
-	
-	
+	public String getCategoryType() {
+		return categoryType;
+	}
 
+	public void setCategoryType(String categoryType) {
+		this.categoryType = categoryType;
+	}
+
+	public String getExpenseDate() {
+		return expenseDate;
+	}
+
+	public void setExpenseDate(String expenseDate) {
+		this.expenseDate = expenseDate;
+	}
+
+	public String getReceiptIssuedBy() {
+		return receiptIssuedBy;
+	}
+
+	public void setReceiptIssuedBy(String receiptIssuedBy) {
+		this.receiptIssuedBy = receiptIssuedBy;
+	}
+
+	public String getPaymentMode() {
+		return paymentMode;
+	}
+
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
+	}
+
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public Double getExpenseAmount() {
+		return expenseAmount;
+	}
+
+	public void setExpenseAmount(Double expenseAmount) {
+		this.expenseAmount = expenseAmount;
+	}
+
+	public List<String> getFileNames() {
+		return fileNames;
+	}
+
+	public void setFileNames(List<String> fileNames) {
+		this.fileNames = fileNames;
+	}
 	
 }
