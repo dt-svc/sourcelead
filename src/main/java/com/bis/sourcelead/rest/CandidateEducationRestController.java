@@ -25,6 +25,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -56,6 +58,12 @@ public class CandidateEducationRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 
 
 	 /**
@@ -147,11 +155,14 @@ public class CandidateEducationRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
-	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
-		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
-		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+																				@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId) throws Exception {
+		User user = userService.getUserById(loginUserId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId, user, orgLocations);
+		 //OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-			Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+			Integer percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 			return percentage.toString();
 	}
 

@@ -274,10 +274,15 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 */
 	@Override
 	public CandidateEducation removeCandidateEducationBycandidateIdandcandidateEducationId(Long candidateId,
-			Long candidateEducationId) throws Exception {
+			Long candidateEducationId, User user, OrgLocations orgLocations) throws Exception {
 			CandidateEducation can = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 		     can =  candidateEducationDao.storeCandidateEducation(can);
+		     StringBuffer activitySummary = new StringBuffer();
+		     activitySummary.append("Education").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+			 candidateActivityCommonUtil.storeCandidateEducationHistory(can, user);
+			 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_EDUCATION, activitySummary.toString(), "CANDIDATE");
+				
 		        /*
 				 * updating Candidate Skills DB data in existing candidateindex
 				 */
