@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto.helper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +14,11 @@ import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 public class ExpensesEntriesDTOConverter {
 
 	public static ExpensesEntriesDTO  getExpensesEntriesDTOFromExpensesEntries(ExpensesEntries expensesEntries,ExpensesDTO expensesDTO){
+		SimpleDateFormat dateFormat=expensesEntries.getExpensesId().getOrgLocationId().getLocFullFormDateFormatter();
 		ExpensesEntriesDTO expensesEntriesDTO = new ExpensesEntriesDTO();
 		expensesEntriesDTO.setId(expensesEntries.getId());
 		expensesEntriesDTO.setExpensesId(expensesDTO);
-		expensesEntriesDTO.setExpenseDate(Constants.DF_DMY.format(expensesEntries.getExpenseDate()));
+		expensesEntriesDTO.setExpenseDate(dateFormat.format(expensesEntries.getExpenseDate()));
 		expensesEntriesDTO.setPaymentMode(expensesEntries.getPaymentMode());
 		expensesEntriesDTO.setReceiptIssuedBy(expensesEntries.getReceiptIssuedBy());
 		expensesEntriesDTO.setCurrencyType(expensesEntries.getCurrencyType());

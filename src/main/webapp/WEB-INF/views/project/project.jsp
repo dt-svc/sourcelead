@@ -1006,6 +1006,7 @@ function flushProjectTasks(){
 
 							assignEmployeespagination();	
 						  //StartDate And EndDate Pickers
+						    
 					       if(json.length > 0){
 						    	for (var i = 0; i < json.length; i++) {
 									var opt = json[i];
@@ -1031,11 +1032,11 @@ function flushProjectTasks(){
 									});
 		
 									$('#endDate'+opt.id).datepicker({
-										dateFormat : 'dd-mm-yy',
+										dateFormat : finalDateFormatProjectSave,
 										changeMonth: true,
 										changeYear: true, 
 										maxDate:projectEndDate,
-										minDate: datepickerStartDate,
+										minDate: projectStartDate,
 										onSelect : function(selected) {
 											var actualId = $(this).attr('id').split('endDate')[1];
 											var dt = toDate('#endDate'+actualId);
@@ -1162,14 +1163,25 @@ function assignEmployeeCancel(){
 
 <script>
 	$(function() {
-
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
 		$('#StartDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 				//var dt = new Date(selected);
-				var dt = toDate("#StartDate");
+				//var dt = toDate("#StartDate");
+				 var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -1177,12 +1189,13 @@ function assignEmployeeCancel(){
 		});
 
 		$('#EndDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 				//var dt = new Date(selected);
-				var dt = toDate("#EndDate");
+			//	var dt = toDate("#EndDate");
+				   var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -1344,10 +1357,5 @@ function getChildLevel1Approvers(currentApproverId){
 </script>
 
 <!-- script for converting dateformat in datepicker -->
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
+
 <!-- script for dateformat in datepicker End -->

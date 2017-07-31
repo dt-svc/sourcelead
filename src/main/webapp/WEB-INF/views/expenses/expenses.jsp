@@ -176,10 +176,10 @@ function getExpensesList(){
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
-			        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-			        			  projectMemberId = report.projectMemberId;
+			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+			        			  projectName = report.projectName;
 			        		  }else{
-			        			  projectMemberId = "--";
+			        			  projectName = "--";
 			        		  }
 			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
 			        			  clientName = report.clientName;
@@ -214,7 +214,7 @@ function getExpensesList(){
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 								 '</sec:authorize>';
 								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
-								 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
+								 result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
 								 result = result +"<td><div>"+clientName+"</div></td>";
 								 result = result +"<td><div>"+startDateStr+"</div></td>";
 								 result = result +"<td><div>"+endDateStr+"</div></td>";
@@ -462,10 +462,21 @@ var sourceleadUrl = '${sourceleadUrl}';
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatExpenses = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatExpenses = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatExpenses = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatExpenses = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatExpenses = 'yy-dd-mm'; 
+		  }
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatExpenses,
 			onSelect : function(selected) {
 				$("#filterEndDate").datepicker("option", "minDate", selected);
 			}
@@ -475,7 +486,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		$('#filterEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatExpenses,
 			onSelect : function(selected) {
 				$("#filterStartDate").datepicker("option", "maxDate", selected);
 			}

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
 
 /**
@@ -44,5 +45,7 @@ public interface OrgDao {
 	public Org getOrgByOrgName(String orgName);
 	
 	public Boolean isLoginUserIsSuperAdmin(Long userId,Long orgId) throws Exception;
+
+	public List<UserDTO> getuserListForOrgChart(Long orgLocationId) throws Exception;
 	
 }

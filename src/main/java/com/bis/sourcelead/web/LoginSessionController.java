@@ -159,6 +159,8 @@ public class LoginSessionController {
 	@Autowired
 	OrgService orgService;
 
+	
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -761,6 +763,7 @@ public class LoginSessionController {
 		try {
 			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
+			setSessionOrgLocationAttributesDateFormat(orgLocations);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,orgLocations,request);
 			
@@ -925,6 +928,7 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 		SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+		SourceLeadSessionManager.setSessionAttribute(request, "orgBasedDateFormat", orgLocations.getDateFormat());
 		if(null != orgLocations.getUser() && null != orgLocations.getUser().getId()){
 			SourceLeadSessionManager.setSessionAttribute(request, "superUserId", orgLocations.getUser().getId());
 		}
@@ -941,6 +945,12 @@ public class LoginSessionController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static DateFormat DATEFORMAT;
+	private void setSessionOrgLocationAttributesDateFormat(OrgLocations orgLocations){
+	
+		DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());	
 	}
 	
 	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request)

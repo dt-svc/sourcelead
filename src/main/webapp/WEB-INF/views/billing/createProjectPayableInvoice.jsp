@@ -1222,26 +1222,46 @@ var validationSettings = {
  <!-- Adding Date Pickers -->
   <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectPayableSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectPayableSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectPayableSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectPayableSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectPayableSave = 'yy-dd-mm'; 
+		  }
 		$('#invoiceDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatProjectPayableSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = toDate("#invoiceDate");
+				/* var dt = toDate("#invoiceDate");
 				dt.setDate(dt.getDate() + 1);
-				$("#dueDate").datepicker("option", "minDate", dt);
+				$("#dueDate").datepicker("option", "minDate", dt); */
+				
+				  var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#dueDate").datepicker("option", "minDate", dt);
+				
 						errInvoiceDate();
 						getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatProjectPayableSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = toDate("#dueDate");
+				/* var dt = toDate("#dueDate");
 				dt.setDate(dt.getDate() - 1);
-				$("#invoiceDate").datepicker("option", "maxDate", dt);
+				$("#invoiceDate").datepicker("option", "maxDate", dt); */
+				
+			    var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#invoiceDate").datepicker("option", "maxDate", dt);
 					errDueDate();
 			}
 		});
@@ -1581,14 +1601,14 @@ function getPaymentTerms(){
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
-	
+	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);

@@ -20,8 +20,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author Shivayogi
@@ -38,6 +41,12 @@ public class CandidateCertificationsRestController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	 
 	
 	/**
@@ -125,11 +134,13 @@ public class CandidateCertificationsRestController {
 	   */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS')")
 	   @RequestMapping(value = "/removeCandidateCertificateBycandidateIdandcandidateCertificateId")
-	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,HttpServletRequest request) throws Exception {
+	   public String removeCandidateCertificateBycandidateIdandcandidateCertificateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			   																		@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId) throws Exception {
 
 			String resultJson;
-
-			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId);
+			User user = userService.getUserById(loginUserId);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			 CandidateCertifications  candidatesCertificate = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(candidateId, candidateCertificationId, user, orgLocations);
 			 resultJson = commonUtil.toJSON(candidatesCertificate);
 			 //SourceLeadSessionManager.setSessionAttribute(request, "deleteCertification", "Certfification deleted");
 
@@ -157,10 +168,10 @@ public class CandidateCertificationsRestController {
 			CandidateCertifications  candidateCertificationsList = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
 			
 			if(candidateCertificationsList.getValidFrom() != null){
-				candidateCertificationsList.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidFrom())); 
+				candidateCertificationsList.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertificationsList.getValidFrom())); 
 			 }
 			 if(candidateCertificationsList.getValidTo() != null){
-				 candidateCertificationsList.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidTo())); 
+				 candidateCertificationsList.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertificationsList.getValidTo())); 
 			 }
 			resultJson = commonUtil.toJSON(candidateCertificationsList);
 			 return resultJson;
