@@ -83,6 +83,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -522,7 +523,7 @@ public class CandidateListRestController {
 					CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 					if (candidateIndex.getUpdatedDate() != null) {
 						Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
-						String updatedDate = Constants.DF_DMY.format(date1);
+						String updatedDate = LoginSessionController.DATEFORMAT.format(date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
 					}
 					candidatesList.add(candidateIndex);

@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author Ajith Matta
@@ -202,7 +203,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 			for(CandidateResumes canResumes :candidateResumesList){
 				if(canResumes.getUpdatedDate() != null){
-					canResumes.setCandidateResumeUpdateDateToString(Constants.DF_DMY.format(canResumes.getUpdatedDate()));
+					canResumes.setCandidateResumeUpdateDateToString(LoginSessionController.DATEFORMAT.format(canResumes.getUpdatedDate()));
 				}
 			}
 			return candidateResumesList;

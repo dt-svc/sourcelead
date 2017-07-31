@@ -1174,7 +1174,6 @@ function assignEmployeeCancel(){
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatProjectSave = 'yy-dd-mm'; 
 		  }
-		  alert("locationDate "+locationDate);
 		$('#StartDate').datepicker({
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
