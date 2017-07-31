@@ -1,0 +1,132 @@
+<%-- <meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+ --%>
+<div class="content-dashboard clearfix" id="contractListDiv" style="display: none;"> 
+      <div class="clearfix dashboard-widget mb col-md-12" >
+        <h4 class="clearfix">Contracts</h4>
+        <div class="clearfix require_wrap_table dashboard-data filter_position"> 
+        		 <div id="contractList"></div>
+        </div>
+        
+      </div>
+    </div>
+    
+<script> 
+$(document).ready(function(){
+	contractList();
+});
+</script>
+
+
+<script>
+function contractList(){  
+	
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var locationId = '${SourceLeadWeb_orgLocationId}';
+	  $("#contractList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $.ajax({
+           type : "POST",
+           url: sourceleadUrl+"/getDashboardContracts?${_csrf.parameterName}=${_csrf.token}&locationId="+locationId,    
+            success :function(data) {
+               		
+			    	     $("#contractList").removeAttr("style");
+	                	 $("#contractList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='contractListPagination' class='display' cellspacing='0' width='100%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th>Applicant Name</th>";
+	                     result = result +"    <th>Job</th>";
+	                     result = result +"    <th>Rate</th>"; 
+	                     result = result +"    <th>Join Date</th>"; 
+	                     result = result +"    <th>Vendor</th>"; 
+	                     result = result +"    <th>Contact</th>"; 
+	                     result = result +"    <th>Action</th>"; 
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     
+	                     for (var i = 0; i < data.length; i++) { 
+	                    	 var opt = data[i]; 
+	                    	 result = result +"<tr>";
+	                    	 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
+	                    		 result = result +"<td><div class=''><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></a></div></td>";
+	                    	 }
+	                    	 else{
+	                    		 result = result +"<td><div>---</div></td>";
+	                    	 }
+	                    	 if(opt.jobTitle !=null && opt.jobTitle !='' && opt.jobTitle !='undefined'){
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+	                    	 }else{
+		                    	 result = result +"<td><div class='tbldata-dotdot-sm'>---</div></td>";
+		                     }
+	                    	 if(opt.amount != null && opt.amount != '' && opt.amount != 'undefined' && opt.paymentMode != null && opt.paymentMode != '' && opt.paymentMode != 'undefined'){
+			                     result = result +"<td><div><span  title='"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"&nbsp;"+opt.rateType+"'>"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"</span></div></td>";
+		                     }else if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+			                     result = result +"<td><div>---</div></td>";
+		                     }
+	                    	 if(opt.dateOfJoiningStr != null && opt.dateOfJoiningStr != '' && opt.dateOfJoiningStr != 'undefined'){
+		                    	 result = result +"<td><div><span title='"+opt.dateOfJoiningStr+"'>"+opt.dateOfJoiningStr+"</span></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>---</div></td>";
+		                     }
+		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+		                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>---</div></td>";
+		                     }
+		                     if(opt.vendorContact != null && opt.vendorContact != '' && opt.vendorContact != 'undefined'){
+		                    	 result = result +"<td><div><span title='"+opt.vendorContact+"'>"+opt.vendorContact+"</span></div></td>";
+		                     }else{
+		                    	 result = result +"<td><div>---</div></td>";
+		                     }
+		                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"' title='Create Sow'>SOW</a>";
+		                     if(opt.vendorMsaCreated != true){
+		                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"' title='Create Msa'> / MSA</a>";
+		                     }
+		                     result = result +"</div></td>";
+		                     
+		                     result = result +"</tr>";
+	                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#contractList").append(result); 
+	                     $("#contractListDiv").css("display", "block");
+	                	 contractListPagination(); 
+          },
+            
+       }); 
+  } 
+</script>   
+
+ <script>
+function contractListPagination(){ 
+    $('#contractListPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"bFilter": false,
+    	"bPaginate":false,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
+</script> 

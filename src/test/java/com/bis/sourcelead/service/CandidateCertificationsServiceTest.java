@@ -93,7 +93,11 @@ public class CandidateCertificationsServiceTest {
 	@Test
 	public void removeCandidateCertificateBycandidateIdandcandidateCertificateId() throws Exception{
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
-		candidateCertifications = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(1l, 1l);
+		User user = new  User();
+		user.setId(1l);
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1l);
+		candidateCertifications = candidateCertificationsService.removeCandidateCertificateBycandidateIdandcandidateCertificateId(1l, 1l, user, orgLocations);
 		logger.info("removeCandidateCertificateBycandidateIdandcandidateCertificateId " + candidateCertifications.getName());
 		
 	}

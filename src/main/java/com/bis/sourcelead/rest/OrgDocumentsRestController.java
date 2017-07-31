@@ -135,9 +135,10 @@ public class OrgDocumentsRestController {
 	@RequestMapping(value = "/getOrgDocument", method = RequestMethod.POST)
 	public @ResponseBody String getOrgDocument(String docId, Long orgRelationId, HttpServletRequest request,String type) throws Exception {
 		String resultJson = null;
+
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsById(Long.parseLong(docId));
+		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsByDocIdAndLocationId(Long.parseLong(docId), orgLocations.getId());
 		List<User> ownersList = null;
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),type);
@@ -174,7 +175,7 @@ public class OrgDocumentsRestController {
 		String resultJson = null;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsByIdAndSpocId(Long.parseLong(docId),Long.parseLong(userId));
+		OrgDocuments orgDocument = orgDocumentsService.getOrgDocumentsByIdAndSpocId(Long.parseLong(docId),Long.parseLong(userId),orgLocations);
 		
 		//to fetch client contact list
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelationId, user.getId(),orgLocations.getId(),"Client");

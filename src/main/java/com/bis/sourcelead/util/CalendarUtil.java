@@ -21,6 +21,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.rest.OrgSettingsRestController;
+import com.bis.sourcelead.web.LoginSessionController;
 
 public  class CalendarUtil {
 
@@ -279,7 +281,7 @@ public  class CalendarUtil {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			DateFormat  sdf = LoginSessionController.DATEFORMAT;
 			String nowStr = sdf.format(new Date().getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
@@ -326,7 +328,7 @@ public  class CalendarUtil {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar nowCal = Calendar.getInstance(TimeZone.getDefault());
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			DateFormat  sdf = LoginSessionController.DATEFORMAT;
 			String nowStr = sdf.format(nowCal.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			nowCal.setTime(nowDate);
@@ -348,7 +350,8 @@ public  class CalendarUtil {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		int day_offset = getDayOffset(day_Of_Week);
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			//SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			DateFormat  sdf = LoginSessionController.DATEFORMAT;
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			cal.setTime(nowDate);
@@ -420,9 +423,9 @@ public  class CalendarUtil {
 	public static Calendar getCurrentWeekDayByCalendar(Calendar calendar,String day_Of_Week) {
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		int day_offset = getDayOffset(day_Of_Week);
-
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			//SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			DateFormat  sdf = LoginSessionController.DATEFORMAT;
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			cal.setTime(nowDate);
@@ -446,7 +449,8 @@ public  class CalendarUtil {
 		int day_offset = getDayOffset(day_Of_Week);
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			//SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+			DateFormat  sdf = LoginSessionController.DATEFORMAT;
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
 			cal.setTime(nowDate);
@@ -751,7 +755,7 @@ public  class CalendarUtil {
 	}
 
 	public static String getNextDate(String  curDate) throws ParseException {
-		final DateFormat format =Constants.DF_DMY;
+		final DateFormat format = LoginSessionController.DATEFORMAT;  //Constants.DF_DMY;(old logic)
 		final Date date = format.parse(curDate);
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -767,7 +771,7 @@ public  class CalendarUtil {
 	}
 
 	public static String getPreviousDateByDecrementor(String  curDate,int decrementor) throws ParseException {
-		final DateFormat format =Constants.DF_DMY;
+		final DateFormat format = LoginSessionController.DATEFORMAT;  //Constants.DF_DMY;(old format)
 		final Date date = format.parse(curDate.replaceAll("/", "-"));
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);

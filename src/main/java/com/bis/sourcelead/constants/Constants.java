@@ -215,6 +215,42 @@ public class Constants {
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
 	
+	public static final String RESOURCE_REQUEST = "Resource Request";
+	public static final String RESOURCE_REQUEST_NOTIFICATION = "ResourceRequestNotification";
+	
+	public static final String NEW_RESOURCE_REQUEST = "New Resource Request";
+	public static final String NEW_RESOURCE_REQUEST_NOTIFICATION = "NewResourceRequestNotification";
+	
+	public static final String ACCEPT_SINGLE_NEW_RESOURCE_REQUEST = "Accept Single New Resource Request";
+	public static final String ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleNewResourceRequestNotification";
+	
+	public static final String REJECT_SINGLE_NEW_RESOURCE_REQUEST = "Reject Single New Resource Request";
+	public static final String REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION = "RejectSingleNewResourceRequestNotification";
+	
+	public static final String ACCEPT_BULK_NEW_RESOURCE_REQUEST = "Accept Bulk New Resource Request";
+	public static final String ACCEPT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "AcceptBulkNewResourceRequestNotification";
+	
+	public static final String REJECT_BULK_NEW_RESOURCE_REQUEST = "Reject Bulk New Resource Request";
+	public static final String REJECT_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "RejectBulkNewResourceRequesttNotification";
+	
+	public static final String ONHOLD_BULK_NEW_RESOURCE_REQUEST = "OnHold Bulk New Resource Request";
+	public static final String ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION = "OnHoldBulkNewResourceRequesttNotification";
+	
+	public static final String ACCEPT_BULK_RESOURCE_REQUEST = "Accept Bulk Resource Request";
+	public static final String ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION = "AcceptBulkResourceRequestNotification";
+	
+	public static final String REJECT_BULK_RESOURCE_REQUEST = "Reject Bulk Resource Request";
+	public static final String REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION = "RejectBulkResourceRequestNotification";
+	
+	public static final String ONHOLD_BULK_RESOURCE_REQUEST = "OnHold Bulk Resource Request";
+	public static final String ONHOLD_BULK_RESOURCE_REQUEST_NOTIFICATION = "OnHoldBulkResourceRequestNotification";
+	
+	public static final String REJECT_SINGLE_RESOURCE_REQUEST = "Reject Single Resource Request";
+	public static final String REJECT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "RejectSingleResourceRequestNotification";
+	
+	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST = "Accept Single Resource Request";
+	public static final String ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION = "AcceptSingleResourceRequestNotification";
+	
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
@@ -622,6 +658,20 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
+	public static final String RESOURCE_REQUEST_WAITING_FOR_APPROVAL = "Waiting For Approval";
+	public static final String RESOURCE_REQUEST_DRAFT = "Draft";
+	public static final String RESOURCE_REQUEST_APPROVED = "Approved";
+	public static final String RESOURCE_REQUEST_REJECTED = "Rejected";
+	public static final String RESOURCE_REQUEST_ON_HOLD = "On hold";
+	
+	public static final String RESOURCE_REQUEST_NEW_REQUEST = "New Request";
+	public static final String RESOURCE_REQUEST_ASSOCIATE_REQUEST = "Associate Request";
+	
+	
+	public static final int WORKING_HOURS = 8;
+	
+	
+	
 	public static final String PAYABLES = "payables";
 	public static final String RECEIVABLE ="Receivable";
 	public static final String DRAFT = "DRAFT";
@@ -726,11 +776,11 @@ public class Constants {
 	public static final String NEW_VALUE_TAG_END = "</span>";
 	
 	
-	public static final String JOBS_ACTION_ICON_CLASS = "fa fa-briefcase";
-	public static final String CANDIDATE_ACTION_ICON_CLASS = "fa fa-user";
-	public static final String PROJECTS_ACTION_ICON_CLASS = "fa fa-bar-chart";
-	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o";
-	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator";
+	public static final String JOBS_ACTION_ICON_CLASS = "fa fa-briefcase bgBlue";
+	public static final String CANDIDATE_ACTION_ICON_CLASS = "fa fa-user bg-olive";
+	public static final String PROJECTS_ACTION_ICON_CLASS = "fa fa-bar-chart bgAqua";
+	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o bgYellow";
+	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator bgLime";
 	
 	
 	public static final String CANDIDATE_ADDED_MANUALLY = "has added manually";
@@ -742,6 +792,7 @@ public class Constants {
 	public static final String CANDIDATE_DELETED_EDUCATION = "has deleted education";
 	public static final String CANDIDATE_DELETED_CERTIFICATION = "has deleted certification";
 	public static final String CANDIDATE_DELETED_DOCUMENTS = "has deleted document";
+	public static final String CANDIDATE_DELETED_REFERENCES = "has deleted reference";
 	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "has uploaded new profile image";
 	public static final String CANDIDATE_SKILL_UPDATED = "has updated skills";
 	public static final String CANDIDATE_VISA_UPDATED = "has updated immigration status";

@@ -107,7 +107,14 @@
             </div>
           </div> 
              
-          
+                         <div class="form-group">
+	            <label class="col-md-3">Date Format</label>
+	            <div class="col-md-9 dropdown-select">
+				<select  id="dateFormat" name="dateFormat">
+				
+				</select>
+				</div>
+				</div>
           </div>
           
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -117,7 +124,7 @@
 				 <div class="col-md-9" id="locationField">
 			          <div class="positionRelative">
 				          <input class="form-control positionRelative" id="orgLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
-				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');"></i>
+				          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('orgLocation','orgCountry','orgState','orgCity','orgZipCode');resetdate();"></i>
 				        </div>
 		          </div>
 			 </div>
@@ -187,7 +194,6 @@
 				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
 				</div>
 			 </div>
-       
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -546,12 +552,31 @@ function validateCompanyEmail(){
             };
 
         
+</script>
+<script>
+
+function resetdate() {
+	$("#dateFormat").empty();	
+}
 </script> 
 <script>
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var country = $('#orgCountry').val();
 	if(country){
+		$("#dateFormat").empty();
+		if(country == "India"){
+			$('#dateFormat').append("<option value='dd-MM-yyyy' selected>dd-MM-yyyy</option>");
+			$('#dateFormat').append("<option value='MM-dd-yyyy'>MM-dd-yyyy</option>");
+			$('#dateFormat').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
+			$('#dateFormat').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
+		}else{
+			$('#dateFormat').append("<option value='MM-dd-yyyy' selected>MM-dd-yyyy</option>");
+			$('#dateFormat').append("<option value='dd-MM-yyyy'>dd-MM-yyyy</option>");
+			$('#dateFormat').append("<option value='yyyy-dd-MM'>yyyy-dd-MM</option>");
+			$('#dateFormat').append("<option value='yyyy-MM-dd'>yyyy-MM-dd</option>");
+		}
+		
 		 $.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 

@@ -276,15 +276,28 @@ function addAttachment(entityRowId,from){
 						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
 						      </div>
 					      </div>
-
-						 
+		 
 		 <div class="clearfix" style="position: static;"></div>
+
 		   </div>
 </div>
 
 <script>
 function addExpenseRow(){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateExpenseEntrie = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateExpenseEntrie = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateExpenseEntrie = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateExpenseEntrie = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateExpenseEntrie = 'yy-dd-mm'; 
+		  }
+		
 		   var maxRecCount = $("#maxRecCount").val();
 		   for(var i = 2; i < maxRecCount; i=i+2){
 			   if($("#divEntityTsRow"+i).is(':visible'))
@@ -361,7 +374,7 @@ function addExpenseRow(){
 			if((projectStartDate != null && projectStartDate != '' && projectStartDate != 'undefined') || 
 				(projectEndDate != null && projectEndDate != '' && projectEndDate != 'undefined')){
 					$('#categoryDate'+maxRowNum).datepicker({
-						dateFormat : 'dd-mm-yy',
+						dateFormat : finalDateExpenseEntrie,
 						changeMonth : true,
 						changeYear : true,
 						minDate : projectStartDate,
