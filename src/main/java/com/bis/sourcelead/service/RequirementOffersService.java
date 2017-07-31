@@ -43,5 +43,7 @@ public interface RequirementOffersService {
 	List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	RequirementOffers getRequirementOffersByUUID(String offerUUId) throws Exception;
+
+	List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId) throws Exception;
 }
 
