@@ -107,14 +107,14 @@
                 <div class="form-group" id="FirstNameDiv">
                   <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true" value="">
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
                   </div>
                 </div>
                 
@@ -600,7 +600,7 @@ function getEmployeementType(designationType){
 				        	$('#FirstNameDiv').find('p.jquery_form_error_message').remove();
 		        		}else{
 		        			 $("#FirstName").removeAttr("readonly", "readonly");
-		        			 $("#FirstName").val('');
+		        			 //$("#FirstName").val('');
 		        		}
 		        		
 		        		if(json.lastName != null && json.lastName != ''){
@@ -608,7 +608,7 @@ function getEmployeementType(designationType){
 		        			$("#lastName").val(json.lastName);
 		        		}else{
 		        			 $("#lastName").removeAttr("readonly", "readonly");
-		        			 $("#lastName").val('');
+		        			 //$("#lastName").val('');
 		        		}
 		        		
 		        		if(json.mobilePhone != null && json.mobilePhone != ''){
@@ -616,7 +616,7 @@ function getEmployeementType(designationType){
 				        	$("#phone").attr("readonly", "readonly");
 		        		}else{
 		        			 $("#phone").removeAttr("readonly", "readonly");
-		        			 $("#phone").val('');
+		        			 //$("#phone").val('');
 		        		}
 		        		
 		        	}

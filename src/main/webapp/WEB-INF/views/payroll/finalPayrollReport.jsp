@@ -102,6 +102,8 @@ function generatrPayroll(data,payrollCycle){
 				$("#accountDeductionsListDiv").empty();
 				$("#hrDeductionsListDiv").empty();
 				$("#wagesAndTaxListDiv").empty();
+				$("#checksListDiv").empty();
+				$("#employeeListDiv").empty();
 				$("#finalPayrollReportDiv").empty();
 				$("#finalPayrollReportDiv").append(result);
 				/*  document.getElementById("applicantsContractsList").style.display="block"; 
@@ -134,7 +136,7 @@ function finalPayrollreportPagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#finalPayrollreportTable").wrap("<div class='overflow_Auto'></div>")
+    $("#finalPayrollreportTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
  

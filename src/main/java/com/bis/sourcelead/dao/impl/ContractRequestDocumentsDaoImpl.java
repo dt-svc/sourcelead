@@ -89,7 +89,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		ContractRequestDocuments  contractRequestDocuments =  null;
-		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq where crq.id =:docId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("docId", docId).setCacheable(true).list();
+		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq left join fetch crq.contractId where crq.id =:docId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("docId", docId).setCacheable(true).list();
 		if(null != contractRequestDocumentseList && contractRequestDocumentseList.size() >0){
 			contractRequestDocuments = contractRequestDocumentseList.get(0);
 		}

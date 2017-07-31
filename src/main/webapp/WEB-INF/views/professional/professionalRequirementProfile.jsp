@@ -301,7 +301,6 @@ function requirementDetails(requirementUUID){
 		    	
 		    	var json = JSON.parse(data);
 		    	var result = "";
-		    
 		    	 result = result +'      <div class="project_side_wrap_inn_tabs" id="new-id">';
 				 result = result +'        <div class="timesheetHead">';
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
@@ -319,16 +318,17 @@ function requirementDetails(requirementUUID){
 				 result = result +'                <div class="require_wrap_details_cta"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
+
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewProfessionalRequirementProfile(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 		            }
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+visaType+'">'+visaType+'</span>';
+				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
-				 
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="clearfix"></div>';
@@ -341,7 +341,6 @@ function requirementDetails(requirementUUID){
 				 result = result +'  </div>';
 				 $("#professionalRequirementProfileDiv").empty();
 				 $("#professionalRequirementProfileDiv").append(result); 
-		    	
 		    }
 	    });
    }

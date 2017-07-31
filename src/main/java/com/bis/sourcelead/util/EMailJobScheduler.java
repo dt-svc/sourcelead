@@ -133,6 +133,9 @@ public class EMailJobScheduler {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;	
+	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -654,9 +657,9 @@ public class EMailJobScheduler {
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");
 												 if(projectMembers.getEmployee().getUser().getFirstName()!= null && projectMembers.getEmployee().getUser().getLastName() !=null){
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+" "+projectMembers.getEmployee().getUser().getLastName()+"</td>");
 												 }else{
-													 tempHTML.append("<td>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
+													 tempHTML.append("<td style='text-align: center;'>"+projectMembers.getEmployee().getUser().getFirstName()+"</td>");
 												 }
 												 
 												 for(Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -678,9 +681,9 @@ public class EMailJobScheduler {
 													    
 												 }
 											     if(frequency != null && !frequency.isEmpty()){
-												    tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
+												    tempHTML.append("<td style='text-align: center;'>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");
 											     }
-												  tempHTML.append("<td>"+projectMembers.getProjects().getProjectName()+"</td>");
+												  tempHTML.append("<td style='text-align: center;'>"+projectMembers.getProjects().getProjectName()+"</td>");
 												 
 												  Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getApproverUsersByProjectId(projectMembers.getProjects().getId());
 												  StringBuilder projectStringBuilder=new StringBuilder();
@@ -695,7 +698,7 @@ public class EMailJobScheduler {
 												    	}
 												    }
 												    
-												  tempHTML.append("<td>").append(projectStringBuilder).append("</td>");
+												  tempHTML.append("<td style='text-align: center;'>").append(projectStringBuilder).append("</td>");
 												  tempHTML.append("</tr>");
 									          }
 								       }	
@@ -983,7 +986,8 @@ public class EMailJobScheduler {
 		}
 		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("info@sourcelead.com");
+		// emailMessage.setFromEmail("info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("");
 		 emailMessage.setFromName("Sourcelead Team");
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1146,7 +1150,7 @@ public class EMailJobScheduler {
 				        				}
 				        				}
 				        				//this method is used to send the email when receiver signed the contract
-				        				contractSignedByReceiver(childContarct);
+				        				contractSignedByReceiver(contracts);
 				        			}
 				            	}
 				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
@@ -1266,7 +1270,7 @@ public class EMailJobScheduler {
 					 }
 			
 			 if(contracts.getContractOrgLocationId() != null){
-				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getLocationCode());
+				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
 				 }else{
 					 globalVarsMap.put("receiverOrg","--");
 				 }
@@ -1274,6 +1278,10 @@ public class EMailJobScheduler {
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
+			 
+			 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
 
 			
 			 //covert subject,body and signature
@@ -1291,7 +1299,8 @@ public class EMailJobScheduler {
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 String actionLink="";
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+			 
+		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario);
 		
 	}
 	
@@ -1395,7 +1404,7 @@ public class EMailJobScheduler {
 				 emailMessage.setLastName("");
 			 }
 			 emailMessage.setToEmail(owner.getEmail());
-			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName("SourceLead Admin"); 
 			 
@@ -1700,7 +1709,7 @@ public class EMailJobScheduler {
 		 
 		 emailMessage.setToEmail(jobAlert.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

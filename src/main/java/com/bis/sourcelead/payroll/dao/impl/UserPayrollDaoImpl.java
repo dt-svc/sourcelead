@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
@@ -75,16 +76,37 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<UserPayroll> getPayByUserId(Long userId, Long orgLocationId) throws Exception {
+	public List<UserPayroll> getPayByUserId(Long userId, Long orgLocationId,Date startDay, Date endDay) throws Exception {
+		String subQuery = "";
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserPayroll> userPayrollList = null;
-		String query = "from UserPayroll userPayroll  left join fetch userPayroll.userId where userPayroll.orgLocationId.id =:orgLocationId and userPayroll.userId.id = :userId";
-		userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		if(startDay != null && endDay != null){
+			subQuery = "and userPayroll.payrollStartDate >=  :startDay and userPayroll.payrollEndDate <=  :endDay";
+		}
+		String query = "from UserPayroll userPayroll  left join fetch userPayroll.userId where userPayroll.orgLocationId.id =:orgLocationId and userPayroll.userId.id = :userId "+subQuery+"";
+		if(startDay != null && endDay != null){
+			userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameter("startDay", startDay).setParameter("endDay", endDay).setCacheable(true).list();
+		}else{
+			userPayrollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
+		}
 		if(userPayrollList != null && userPayrollList.size() >0)
 		{
 			return userPayrollList;
 		}
 		return userPayrollList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Checks> getChecksList(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Checks> checkslList = null;
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
+		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if (checkslList != null && checkslList.size() > 0) {
+			return checkslList;
+		}
+		return checkslList;
 	}
 
 	

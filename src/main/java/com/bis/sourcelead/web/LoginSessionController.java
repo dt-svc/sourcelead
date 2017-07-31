@@ -200,7 +200,16 @@ public class LoginSessionController {
 				}
 				
 			}
+
+			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
 			
+			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
+			}
+			
+
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
@@ -297,8 +306,12 @@ public class LoginSessionController {
 				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != candidateOnBoarding){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
-					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
-					SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
+					if(candidateOnBoarding.getManagerUserId()!=null){
+						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+					}
+					if(candidateOnBoarding.getOnBoardTeamId()!=null){
+						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
+					}
 					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
 					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
 					   model.setViewName("onboard/welcomeStep1");
@@ -503,6 +516,12 @@ public class LoginSessionController {
 					}
 				}
 				
+			}
+			
+			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
+			}else{
+				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);

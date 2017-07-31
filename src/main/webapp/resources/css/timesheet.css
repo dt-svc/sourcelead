@@ -1153,14 +1153,12 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summary_edit_cta select.rate_sele:focus {
     width:50%; margin:0px 0px 0px 1%;
 }
-       
-.remove_user_pop  {
-    position:absolute !important; background-color:#f9f9f9; box-shadow:0px 0px 5px rgba(0,0,0,0.3); width:250px; right:20px; top:50px;
+ .remove_user_pop  {
+    position:fixed !important; background-color:#f9f9f9; box-shadow:0px 0px 5px rgba(0,0,0,0.3); width:250px; right:20px; top:50px;
     z-index:100; display:none;
 }
 .remove_user_pop.remove_user_pop_a  {
-    right:0px; top:35%; left:0px; margin:0px auto; z-index:15500; width:300px;
-          
+    right:0px; top:40%; left:0px; margin:0px auto; z-index:15500; width:300px;
 }
 .remove_user_pop  p {
     padding:5px 15px; margin:0px; width:auto; float:none; text-align:left; font-size:13px; color:#666;
@@ -5089,3 +5087,125 @@ padding:5px 0px 0px 0px;
 .payRoDate input.btn-primary {
 	width: 100px;
 }
+.comTextLi {
+    padding: 5px 8px 0px 10px; display: inline-block;
+}
+.noImg {
+	background: none !important;
+}
+.UsProBar {}
+.UsProBar .progress {
+height: 15px; background-color: #e9e9e9; border-radius:2px;
+}
+.UsProBar .progress-bar {
+line-height: 15px;
+}
+.progViPro {
+margin: 5px 0px 10px 80px; width: 180px;
+}
+.progViPro1 {
+margin: 5px 0px 10px 0px; width: 95px;
+}
+.CenBarCom {
+width: 60%; margin: 0px auto 10px;
+}
+.ComClos {
+padding: 2px 7px; margin: 0px 0px 10px 0px; border-radius:5px;
+
+}
+.comBtns {}
+.comBtns button {
+width: 48%; margin: 0px 0.5%;
+}
+
+
+/*   Compare CSS  */
+
+.profilecompareLeft {
+	width: 19%; float: left;
+}
+.compProg {
+	margin: 3px 0px 4px !important; height: 14px; background-color: #d8d8d8;
+}
+.compProg .progress-bar {
+	line-height:14px;
+}
+/*   Compare CSS   */
+
+
+/*    Org Chart CSS   */
+
+.OrgChaOut {
+	width: auto; position: relative;
+}
+.OrgChatLe1 {
+	text-align: center; display: block; width: 100%;
+}
+
+.OrgCta {
+	position: relative; display: inline-block; width: 220px; padding: 10px 10px 10px 85px; background-color: #fff;
+	box-shadow: 0px 0px 2px rgba(0,0,0,0.2); height: 58px; border-radius: 3px; margin: 20px 15px;
+}
+.OrgCtaUser {
+	position:absolute; left: 0px; top: -7px; height: 72px; width: 72px; border: 1px solid #2d3447;
+	background-color: #fff; border-radius: 3px; text-align: center;
+}
+.OrgCtaUser img {
+	width: 100%; height: 70px; max-width: 70px; max-height: 70px; border-radius: 1px;
+}
+.OrgChaDet {
+	text-align: left;
+}
+.OrgChaDet h2 {
+	padding: 0px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #2d3447;
+}
+.OrgChaDet span {
+	display: block; font-size: 13px; font-weight: 400; color: #454545; padding: 4px 0px 0px 0px;
+}
+.chartLine {
+	width:95%; margin: 10px auto 0px; height: 1px; background-color: #2d3447; position: relative;
+}
+.chartLineLeft {
+	position:absolute; left: 0px; top: 0px; width: 1px; height: 30px; background-color: #2d3447;
+}
+.chartLineMid {
+	position:absolute; left: 0px; right: 0px; bottom: 0px; width: 1px; height: 20px; background-color: #2d3447;
+	margin: 0px auto;
+}
+.chartLineRight {
+	position:absolute; right: 0px; top: 0px; width: 1px; height: 30px; background-color: #2d3447;
+}
+.chartLineBot .chartLineLeft { top: auto; bottom: 0px;}
+.chartLineBot .chartLineMid { top: 0px; bottom:auto;}
+.chartLineBot .chartLineRight { top: auto; bottom: 0px;}
+.OrgChatLe2 {
+	text-align: center; display: block; width: 95%; margin: 10px auto 15px;
+}
+.OrgChatLe3 {
+	text-align: center; display: block; width: 95%; margin: 20px auto;
+}
+.OrgCtaAct {}
+.OrgCtaAct .OrgCtaUser {
+	border: 1px solid #a21e23;
+}
+.OrgCtaAct .OrgChaDet h2 {
+	color: #a21e23;
+}
+.OrgCtaAct:after {
+	top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #a21e23; border-width: 12px; margin-left: -12px;
+}
+
+/*    Org Chart CSS   */
+
+.timesheetAttachment .Cred, .project_wrap_table .Cred {
+    color: #ef3d3d !important;
+}
+td.tbldata-dotdot_50 {
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px !important; display: block; margin: 0 auto;
+}
+
+
+
+
+

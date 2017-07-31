@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -108,9 +107,9 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
+		
 		Date currentDate = new Date();
-		String convertedDate = dateFormatter.format(currentDate);
+		String convertedDate = Constants.DMY.format(currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createPayables");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -191,7 +190,14 @@ public class BillingPayableController {
 			}else{
 			sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
+			StringBuilder clientSb = new StringBuilder();
+			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				}else{
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
+				}
 			
+			orgSpoc.setSpocName(clientSb.toString());
 			orgSpoc.setOwnerName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));

@@ -79,8 +79,8 @@ public class OrgSettingsController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
- 			
- 			
+			String generatedUserId = orgLocations.getGeneratedUserId();
+			model.addObject("generatedUserId", generatedUserId);
 			model.addObject("timezoneList", timezoneList);
 			model.addObject("orgLocations", orgLocations);
  			model.setViewName("orgSettings");
