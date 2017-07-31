@@ -646,10 +646,11 @@ function addCertification(candidateId) {
 function removeCertification(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';	
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
+          url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){

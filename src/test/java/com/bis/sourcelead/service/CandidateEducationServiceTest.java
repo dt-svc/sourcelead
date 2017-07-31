@@ -93,7 +93,11 @@ public class CandidateEducationServiceTest {
 	public void removeCandidateEducationBycandidateIdandcandidateEducationId() throws Exception{
 		Long candidateId = 1l;
 		Long candidateEducationId = 1l;
-		CandidateEducation candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
+		User user = new  User();
+		user.setId(1l);
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(1l);
+		CandidateEducation candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId, user, orgLocations);
 		logger.info("removeCandidateEducationBycandidateIdandcandidateEducationId"+candidateEducation);
 	}
 	//@Test

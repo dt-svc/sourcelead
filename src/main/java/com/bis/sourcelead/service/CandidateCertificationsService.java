@@ -47,7 +47,7 @@ public interface CandidateCertificationsService {
 	 * @return
 	 * @throws Exception
 	 */
-	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
+	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(Long candidateId,Long candidateCertificateId, User user, OrgLocations orgLocation)  throws Exception;
 
 	/**
 	 * @param candidateId
