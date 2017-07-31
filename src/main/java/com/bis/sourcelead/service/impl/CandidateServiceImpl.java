@@ -197,7 +197,7 @@ public class CandidateServiceImpl implements CandidateService {
         if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
         	 companyShortCode = orgLocations.getGeneratedUserId();
         }
-		return sb.append(companyShortCode).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidatesId).toString();
+		return sb.append(companyShortCode.toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidatesId).toString();
 		
 	}
 	
