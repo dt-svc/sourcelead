@@ -115,6 +115,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
     private String vendorContact;
 	
+	@Transient
+	@JsonProperty
+    private String contractUUID;
+	
+	@Transient
+	@JsonProperty
+    private boolean vendorMsaCreated;
+	
+	@Transient
+	@JsonProperty
+    private Long orgRelationId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -324,5 +336,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setVendorContact(String vendorContact)
 	{
 		this.vendorContact = vendorContact;
+	}
+
+	public String getContractUUID()
+	{
+		return contractUUID;
+	}
+
+	public void setContractUUID(String contractUUID)
+	{
+		this.contractUUID = contractUUID;
+	}
+
+	public boolean isVendorMsaCreated()
+	{
+		return vendorMsaCreated;
+	}
+
+	public void setVendorMsaCreated(boolean vendorMsaCreated)
+	{
+		this.vendorMsaCreated = vendorMsaCreated;
+	}
+
+	public Long getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
 	}
 }

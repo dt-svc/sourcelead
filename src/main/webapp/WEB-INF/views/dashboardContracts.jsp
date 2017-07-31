@@ -1,4 +1,4 @@
-<meta http-equiv="Pragma" content="private">
+<%-- <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
@@ -14,9 +14,8 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
+ --%>
 <div class="content-dashboard clearfix" id="contractListDiv" style="display: none;"> 
-      <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12" >
         <h4 class="clearfix">Contracts</h4>
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
@@ -26,10 +25,6 @@
       </div>
     </div>
     
-    <div class="side_mask">
-      <div class="proj_close"></div>
-    </div>
-
 <script> 
 $(document).ready(function(){
 	contractList();
@@ -99,7 +94,12 @@ function contractList(){
 		                     }else{
 		                    	 result = result +"<td><div>---</div></td>";
 		                     }
-		                     result = result +"<td><div>SOW / MSA</div></td>";
+		                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"' title='Create Sow'>SOW</a>";
+		                     if(opt.vendorMsaCreated != true){
+		                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"' title='Create Msa'> / MSA</a>";
+		                     }
+		                     result = result +"</div></td>";
+		                     
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
@@ -117,7 +117,7 @@ function contractList(){
 function contractListPagination(){ 
     $('#contractListPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"bFilter": false,

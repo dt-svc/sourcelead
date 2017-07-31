@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -1196,6 +1197,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					offer.setDateOfJoiningStr(time);
 				}
 			}
+			
+			Contracts contracts = contractsTemplateService.getContractByReqSubmissionSowTypeAndOrgLocId(offer.getSubmissionId().getId(), orglocation, Constants.Vendor_SOW);
+			offer.setContractUUID(contracts.getContractUUID());
+			
+			Boolean flag = contractsTemplateService.getVendorMsaCreatedOrNot(offer.getSubmissionId().getVendorLocationId().getId(), orglocation.getId());
+			if(flag == true){
+				offer.setVendorMsaCreated(flag);
+			}
+			offer.setOrgRelationId(offer.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
 		}
 		return offerList;
 	}
