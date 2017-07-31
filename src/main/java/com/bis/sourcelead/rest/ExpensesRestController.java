@@ -132,17 +132,6 @@ public class ExpensesRestController {
 			expenseStatus = elDTO.getExpenseStatus().stream ().map (i -> i.toString ()).collect (Collectors.joining (","));
 		}
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate());
-		for (Expenses ex : expensesList) {
-			if (null != ex.getProjectMembers()) {
-				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());
-			}
-			if (null != ex.getStartDate()) {
-				ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
-			}
-			if (null != ex.getEndDate()) {
-				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
-			}
-		}
 		return expensesList;
 	}
 	
@@ -427,7 +416,7 @@ public class ExpensesRestController {
 				List<Expenses> expensesList = expensesService.getIndividualExpense(orgLoc, loginUser, expenseId);
 				for (Expenses ex : expensesList) {
 					if (null != ex.getProjectMembers()) {
-						ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());
+						ex.setProjectName(ex.getProjectMembers().getProjects().getProjectName());
 					}
 					if (null != ex.getStartDate()) {
 						ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
@@ -487,7 +476,7 @@ public class ExpensesRestController {
 		if (expensesList != null && expensesList.size() > 0) {
 			for (Expenses ex : expensesList) {
 				if (null != ex.getProjectMembers()) {
-					ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());
+					ex.setProjectName(ex.getProjectMembers().getProjects().getProjectName());
 				}
 				if (null != ex.getStartDate()) {
 					ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
@@ -530,7 +519,7 @@ public class ExpensesRestController {
 		List<Expenses> expensesList = expensesService.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(loginUser.getId(), orgLoc.getId(), expenseStatus);
 		for (Expenses ex : expensesList) {
 			if (null != ex.getProjectMembers()) {
-				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());
+				ex.setProjectName(ex.getProjectMembers().getProjects().getProjectName());
 			}
 			if (null != ex.getStartDate()) {
 				ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
