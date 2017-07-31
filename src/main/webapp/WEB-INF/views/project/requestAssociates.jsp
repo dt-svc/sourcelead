@@ -504,7 +504,7 @@ function loadResourceRequestsList(resourceRequestList,estimatedHours,estimatedBu
 				
 				if(opt.resourceStatus != 'Approved' && opt.rejectedReason != null){
 					document.getElementById(maxRowNum+"resourceRejection").style.display="";
-					$('#'+maxRowNum+'resourceRejectedReason').html("Rejected "+opt.rejectedReason);
+					$('#'+maxRowNum+'resourceRejectedReason').html("Rejected Reason : "+opt.rejectedReason);
 				}
 				
 				
