@@ -6,9 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,7 +17,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class CloseRequirementsOneMonthEarlier {
@@ -55,10 +52,14 @@ public void closeRequirements() throws IOException, SQLException {
 			 System.out.println("----Closing One month before Requirements Starts-----");
 			 while(rs1.next()){
 				 Long  requirementId = rs1.getLong("ID");
-				 String  currentStatus = rs1.getString("REQUIREMENT_SUBMISSION_STATUS");
+				 String  currentStatus = "DRAFT";
+				 if(null != rs1.getString("REQUIREMENT_SUBMISSION_STATUS")) {
+					 currentStatus = rs1.getString("REQUIREMENT_SUBMISSION_STATUS");
+				 }
 				 
-				 if(!currentStatus.equalsIgnoreCase("CLOSED")){
-					 String query = " update sourcelead.REQUIREMENT set REQUIREMENT_SUBMISSION_STATUS = 'CLOSED',REQUIREMENT_SUBMISSION_PREVIOUS_STATUS = ?,UPDATED_DATE = ? where ID = ? ";
+				 if(currentStatus.equalsIgnoreCase("OPEN") || currentStatus.equalsIgnoreCase("NEW") 
+						 || currentStatus.equalsIgnoreCase("DRAFT") || currentStatus.equalsIgnoreCase("SUBMITTED") ){
+					 String query = " update sourcelead.REQUIREMENT set REQUIREMENT_SUBMISSION_STATUS = 'CLOSED', REQUIREMENT_SUBMISSION_PREVIOUS_STATUS = ?,UPDATED_DATE = ? where ID = ? ";
 					 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 					 pstmt.setString(1, currentStatus);
 					 pstmt.setString(2, currentDate);

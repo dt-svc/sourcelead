@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
@@ -18,4 +19,5 @@ public interface AddExpensesService {
 
 	public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status) throws JSONException, NumberFormatException, Exception;
 
+	public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception;
 }

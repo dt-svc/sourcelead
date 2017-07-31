@@ -236,7 +236,8 @@ public class TimesheetSubmissionsRestController {
 				 globalVarsMap.put("employeeFirstName",projectMembers.getEmployee().getUser().getFirstName());
 				 globalVarsMap.put("employeeLastName",projectMembers.getEmployee().getUser().getLastName());
 				 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
-				 
+				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
 				 StringBuilder timeFrequencySB = new StringBuilder();
 				 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
 				 

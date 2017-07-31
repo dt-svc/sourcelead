@@ -33,5 +33,11 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
 		return userLoginLogoutSessionDao.getLastLoginRecord(userId);
 	}
 	
+	@Override
+	public UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId) {
+		return userLoginLogoutSessionDao.getUserLoginLogoutSessionById(userSessionId);
+	}
+	
+	
 	
 }

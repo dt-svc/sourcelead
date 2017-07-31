@@ -794,6 +794,12 @@ function scoreAndScoreType(){
 	 if(candidateScore.match(cgpanum)){
 		 $("#scoreType").val('CGPA'); 
 	 }
+	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
+		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+	 }
+	 if(selectedText == '' && candidateScore == ''){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 }
 	 if(candidateScore == ''){
 		 $("#scoreType").val('');
 	 }

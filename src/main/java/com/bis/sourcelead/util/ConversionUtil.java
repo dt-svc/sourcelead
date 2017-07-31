@@ -301,8 +301,8 @@ public class ConversionUtil {
 	{
 		Date date = new Date();
 		int year = getYearFromDate(date);
-		System.out.println("Financial Year : " + year + "-" + (year + 1));
-		System.out.println("current month is " + date.getMonth());
+		logger.info("Financial Year : " + year + "-" + (year + 1));
+		logger.info("current month is " + date.getMonth());
 		// getMonthFromDate(year,date.getMonth());
 		int month = date.getMonth();
 		if (month >= 3) {
@@ -367,21 +367,37 @@ public class ConversionUtil {
 		return dates;
 	}
 
+	/**
+	 * Return all dates between two given dates
+	 * 
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
 	public List<LocalDate> getAllDatesBetweenGivenDates(LocalDate date1, LocalDate date2) {
 		List<LocalDate> datesList = null;
-		if(date1 !=null && date2 !=null){
+		if (date1 != null && date2 != null) {
 			datesList = new ArrayList<>();
-//			LocalDate date1 = new LocalDate(startDateUTC);
-//			LocalDate date2 = new LocalDate(endDateUTC); 
-			 while(date1.isBefore(date2)){
-				 datesList.add(date1);
-				 System.out.println("====================================="+date1);
-//			     System.out.println(date1.toString("MMM/yyyy"));
-			     date1 = date1.plus(Period.months(1));
-			 }
+			// LocalDate date1 = new LocalDate(startDateUTC);
+			// LocalDate date2 = new LocalDate(endDateUTC);
+			while (date1.isBefore(date2)) {
+				datesList.add(date1);
+				// System.out.println(date1.toString("MMM/yyyy"));
+				date1 = date1.plus(Period.months(1));
+			}
 		}
-		return datesList;		
+		return datesList;
 	}
 
+	/**
+	 * return Date in dd-MMM-yyyy(12-Jul-2017) as String format
+	 * 
+	 * @param date
+	 * @return String
+	 */
+	public static String getDateAsddMMMYYYY(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MMMM-yyyy");
+		return formatter.format(date);
+	}
 	
 }

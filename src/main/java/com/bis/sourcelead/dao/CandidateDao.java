@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -101,5 +102,8 @@ public interface CandidateDao {
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
 	
 	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
+
+	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId);
+
 
 }

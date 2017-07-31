@@ -290,9 +290,9 @@ function vendorContractsList(orgRelationId){
 	                	       			if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                	     	     		if(report.typeOfContract == "New"){
-	                	     	     			result = result + '<div class="pull-left ml10" href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+	                	     	     			result = result + '<div class="pull-left ml10"><a href="/sourcelead/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}else if(report.typeOfContract == "Custom"){
-	                	     	     			result = result + '<div class="pull-left" href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="/sourcelead/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}
 	                	       			'</sec:authorize>';
 	                	       			}

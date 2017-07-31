@@ -266,6 +266,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
 	
+	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
+	private String releaseJobToAllUsers;
+	
 	@Transient
 	private String closedDateStringFormat;
 	
@@ -416,6 +419,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String orgcode;
 
 	@Transient
+	private String isAllowStageAccess;
+	
+	@Transient
 	private String reqlevel1ApproverStatus;
 	
 	@Transient
@@ -436,7 +442,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private String requirementOrgName;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
 	
+	@Transient
+	private String systemGeneratedId;
 	
 	@Transient
 	private Integer vendorInterviewsCount;
@@ -1237,6 +1247,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.orgcode = orgcode;
 	}
 	
+	public String getIsAllowStageAccess() {
+		return isAllowStageAccess;
+	}
+
+	public void setIsAllowStageAccess(String isAllowStageAccess) {
+		this.isAllowStageAccess = isAllowStageAccess;
+	}
+
 	public String getReqlevel1ApproverStatus() {
 		return reqlevel1ApproverStatus;
 	}
@@ -1340,6 +1358,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
+	}
+
+	public String getReleaseJobToAllUsers()
+	{
+		return releaseJobToAllUsers;
+	}
+
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
+	{
+		this.releaseJobToAllUsers = releaseJobToAllUsers;
 	}
 
 	public String getNoticePeriod() {
@@ -1514,7 +1542,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		return serialVersionUID;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
 
-	
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
 
 }

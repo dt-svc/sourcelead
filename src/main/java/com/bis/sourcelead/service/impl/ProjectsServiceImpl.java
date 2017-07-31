@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -40,11 +40,11 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -87,6 +87,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceImpl.class);
 
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -159,7 +161,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private UniversalSearchHelper universalSearchHelper;
-
+    
+	 
+	 
+	 @Override
+		public String getProjectId(OrgLocations orgLocations) {
+			
+	    	Long number = 000000001L;
+			String candidateId = null;
+			Projects checkNumber = projectsDao.checkProjectIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+				candidateId = number.toString();
+			}else{
+			String canIdNumber = checkNumber.getGeneratedId();
+			String canIdNum = canIdNumber.substring(2, canIdNumber.length());
+			Long canId = Long.parseLong(canIdNum)+1;
+				candidateId = canId.toString();
+			}
+			
+	        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
+	        StringBuffer sb = new StringBuffer();
+			return sb.append(Constants.PROJECT_ENTITY).append(ConvetredCandidatesId).toString();
+			
+		}
+	 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
@@ -364,7 +390,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
 		}
 		
-		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects)).collect(Collectors.toList());
+		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects,bo.getStatus())).collect(Collectors.toList());
 		
 		projects.getProjectDocuments().addAll(projDocDBList);
 	
@@ -419,10 +445,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/*tasksService.*/
     	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
     	
-		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
+    	//save the default tasks
+		Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
 		projects.setProjectTasks(projectTasksList);
-		//prepare projectmembers list...
 		
+		// generated id for project
+		
+		projects.setGeneratedId(getProjectId(loginOrgLocation));
+		//prepare projectmembers list...
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -531,6 +561,32 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 	
+	/**
+	 * @author Laxman
+	 * setting default tasks for every project
+	 * @param projects
+	 * @return set
+	 */
+	private Set<ProjectTasks> getDefaultTasksForProject(Projects projects) {
+		Set<ProjectTasks> set = new HashSet<>();
+		String[] defaultTasks = Constants.DEFAULT_TASKS;
+		for (String taskName : defaultTasks) {
+			ProjectTasks projectTasks = new ProjectTasks();
+			projectTasks.setTaskName(taskName);
+			projectTasks.setDescription(taskName);
+			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName)) {
+				projectTasks.setBillableType(Constants.TASK_NON_BILLABLE);
+			} else {
+				projectTasks.setBillableType(Constants.TASK_BILLABLE);
+			}
+			projectTasks.setCreatedDate(new Date());
+			projectTasks.setUpdatedDate(new Date());
+			projectTasks.setProjectId(projects);
+			set.add(projectTasks);
+		}
+		return set;
+	}
+
 	@Override
 	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status,Long orgLocationsId) throws Exception {
@@ -613,7 +669,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 StringBuilder fromNameSB = new StringBuilder();
 		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -685,8 +741,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if(user.getId() !=1 && user.getId() !=2){
 			List<Employees> empList = userService.getAllUserOrgCodeAndLocationCodeTimeSheetNotification(user.getId());
 		    Employees emp = empList.get(0);
-		    logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
-			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());
+		   /* logger.info("Employee Location code :"+emp.getOrgLocations().getLocationCode());
+			logger.info("Employee org code :"+emp.getOrgLocations().getOrg().getOrgCode());*/
 		    User toUser = emp.getUser();
 		    User fromUser = null;
 		    if(user.getId() != orgLocations.getUser().getId()){
@@ -1068,6 +1124,52 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	if(jsonObj.getString("description") != null){
 		    		projects.setDescription(jsonObj.getString("description"));
 		    	}
+		    	
+		    	if(jsonObj.has("isAllowFreelanceDevelopers") && StringUtils.isNotEmpty(jsonObj.getString("isAllowFreelanceDevelopers"))){
+					projects.setAllowFreeLance(BooleanUtils.toBoolean(jsonObj.getString("isAllowFreelanceDevelopers"),"Y",""));
+				}else{
+					projects.setAllowFreeLance(null);
+				}
+				if(jsonObj.has("isAllowRemoteWork") && StringUtils.isNotEmpty(jsonObj.getString("isAllowRemoteWork"))){
+					projects.setAllowRemote(BooleanUtils.toBoolean(jsonObj.getString("isAllowRemoteWork"),"Y",""));
+				}else{
+					projects.setAllowRemote(null);
+				}
+				
+				if(jsonObj.has("isAllowOverTime") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOverTime"))){
+					projects.setAllowOvertime(BooleanUtils.toBoolean(jsonObj.getString("isAllowOverTime"),"Y",""));
+				}else{
+					projects.setAllowOvertime(null);
+				}
+				if(jsonObj.has("isAllowOffshoreResource") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOffshoreResource"))){
+					projects.setAllowOffShore(BooleanUtils.toBoolean(jsonObj.getString("isAllowOffshoreResource"),"Y",""));
+				}else{
+					projects.setAllowOffShore(null);
+				}
+				if(jsonObj.has("isTimeEntryAfterDeadline") && StringUtils.isNotEmpty(jsonObj.getString("isTimeEntryAfterDeadline"))){
+					projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(jsonObj.getString("isTimeEntryAfterDeadline"),"Y",""));
+				}else{
+					projects.setAllowTimeEntryAfterDeadLine(null);
+				}
+				if(jsonObj.has("isAllowBidding") && StringUtils.isNotEmpty(jsonObj.getString("isAllowBidding"))){
+					projects.setAllowBidding(BooleanUtils.toBoolean(jsonObj.getString("isAllowBidding"),"Y",""));
+				}else{
+					projects.setAllowBidding(null);
+				}
+				
+				if(jsonObj.has("flatPercentage") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentage"))){
+					projects.setFlatPercent(jsonObj.getDouble("flatPercentage"));
+				}else{
+					projects.setFlatPercent(null);
+				}
+				
+				if(jsonObj.has("flatPercentageId") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentageId"))){
+					projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
+				}else{
+					projects.setOvertimeRateType(null);
+				}
+		    	
+		    	
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
@@ -2085,9 +2187,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("firstName", emailMessage.getFirstName());
@@ -2116,7 +2218,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			sendWeeklyBaseNotiFicationToAdmin(user,orgLocations); 
+			if(orgLocations != null){
+				sendWeeklyBaseNotiFicationToAdmin(user,orgLocations);	
+			}
+			 
 	     }
 	    
 		

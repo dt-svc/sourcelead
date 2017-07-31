@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,9 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.constants.Constants;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_NEW_RESOURCE_REQUEST")
@@ -34,7 +39,7 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	@Column(name = "OTHER_ROLE")
 	private String otherRole;
     
-	 @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
    	@JoinColumn(name = "ROLE_ID")
   	private Roles roleId;
 	 
@@ -87,6 +92,15 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
     @Column(name = "STATUS")
    	private Integer status;
     
+    @Column(name="REJECTED_REASON", columnDefinition = "LONGTEXT default NULL")
+   	private String rejectedReason;
+    
+    @Column(name = "NEW_RESOURCE_STATUS")
+   	private String resourceStatus;
+    
+    @Column(name = "REQUEST_UUID")
+   	private String requestUUID;
+    
 	@Column(name = "CREATED_DATE")
     private Date createdDate;
     
@@ -101,6 +115,18 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "ORG_LOCATION_ID")
+  	private OrgLocations orgLocationId;
+	
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
+	
 	public Long getId() {
 		return id;
 	}
@@ -260,6 +286,30 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+
+	public String getResourceStatus() {
+		return resourceStatus;
+	}
+
+	public void setResourceStatus(String resourceStatus) {
+		this.resourceStatus = resourceStatus;
+	}
+
+	public String getRequestUUID() {
+		return requestUUID;
+	}
+
+	public void setRequestUUID(String requestUUID) {
+		this.requestUUID = requestUUID;
+	}
 
 	public Date getCreatedDate() {
 		return createdDate;
@@ -293,5 +343,35 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
- 
+	public String getStartDateStr() {
+		if(startDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+				startDateStr = dateFormat.format(startDate);	
+		}
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		if(endDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);	
+		}
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
 }

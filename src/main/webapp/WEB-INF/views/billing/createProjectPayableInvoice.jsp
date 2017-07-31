@@ -21,7 +21,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Project Based Bill</h2>
+        <h2>Project Bill</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
     </section>
@@ -121,18 +121,26 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
             </div>
+            <div class="form-group">
+							<label class="col-md-3">Account Details</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="2" id="accountDetails"
+									name="accountDetails" placeholder="Account Details"></textarea>
+							</div>
+			</div>
+            
           </div>
         </div>
         <div class="clearfix"></div>
         <!-- Drap and Drop Table Row -->
         <!-- Table starts here-->
-          <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">
+          <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">
             <div id="tableBody"></div>
         </div>
         <!-- Table Ends here-->
           
           <!-- Adding Content Starts herer -->
-           <div id="bottomGrid" style="display: none;">
+           <div id="bottomGrid" style="display: none;" class="mt">
           <div class="clearfix invoice_other">
           <div class="col-md-5">
            <!--  <div class="clearfix mb">
@@ -339,8 +347,9 @@ function populateInlineItemsGrid(data){
             result = result +' <tr>';
             result = result +' <th>Date</th>';
             result = result +' <th>Associate</th>';
+            result = result +' <th>Description</th>;'
             result = result +' <th>SOW / PO</th>';
-            result = result +' <th>Rate</th>';
+            result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
             result = result +' <th>Amount</th>';
             result = result +' </tr>';
@@ -363,6 +372,9 @@ function populateInlineItemsGrid(data){
              result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
              result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
+             result = result +'  <td class="tblminwidth-150">';
+             result = result +' <textarea type="text" class="form-control input-sm" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
+             result = result +'  </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
              result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
@@ -377,7 +389,7 @@ function populateInlineItemsGrid(data){
              result = result +'</div>';
              result = result +'</td>';
              result = result +'<td>';
-             result = result +'<div class="tbldata-dotdot-100">';
+             result = result +'<div class="tbldata-dotdot_80">';
              if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
                  result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required" field-name="Rate" onblur="totalHoursCalculateAmount('+i+');">'; 
              }else{
@@ -398,8 +410,8 @@ function populateInlineItemsGrid(data){
         }
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
-        result = result +' <td colspan="4"></td>';
-        result = result +'<td><strong>Total</strong></td>';
+        result = result +' <td colspan="5"></td>';
+        result = result +'<td><strong>Sub Total</strong></td>';
         result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -479,6 +491,7 @@ function populateInlineItemsGrid1(data){
 	    result = result +' <tr>';
 	    result = result +' <th>Date</th>';
 	    result = result +' <th>Associate</th>';
+	    result = result +' <th>Description</th>';
 	    result = result +' <th>SOW / PO</th>';
 	    result = result +' <th>Rate Hourly</th>';
 	    result = result +' <th>Total Hours</th>';
@@ -504,6 +517,14 @@ function populateInlineItemsGrid1(data){
     	 result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
     	 result = result +' </td>';
     	 result = result +'  <td>';
+    	 if(opt.inlineDescription !=null && opt.inlineDescription != '' && opt.inlineDescription !='undefined'){
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description">'+opt.inlineDescription+'</textarea>';
+    	 }else{
+    		 result = result +' <textarea type="text" class="form-control input-sm tbldata-dotdot-me" placeholder="Description" id="'+i+'Description" name="'+i+'Description" data-validation="validate_length length1-100" field-name="Description"></textarea>';
+    	 }
+         
+         result = result +'  </td>';
+    	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
     	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option value="">select Sow</option>';
@@ -521,7 +542,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<div class="tbldata-dotdot-100">';
+    	 result = result +'<div class="tbldata-dotdot_80">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
     		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate"  data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
@@ -548,7 +569,7 @@ function populateInlineItemsGrid1(data){
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
-    result = result +' <td colspan="4"></td>';
+    result = result +' <td colspan="5"></td>';
     result = result +'<td><strong>Total</strong></td>';
     result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
@@ -644,6 +665,7 @@ function populateInlineItemsGrid1(data){
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
@@ -656,6 +678,10 @@ function getSowRate(id){
         },
         
     });
+}else{
+	 $ ('#'+id+'rate').val(0);
+	 totalHoursCalculateAmount(id);
+}
 }
 </script>
   
@@ -1196,47 +1222,26 @@ var validationSettings = {
  <!-- Adding Date Pickers -->
   <script>
 	$(function() {
-		
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectPayableSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectPayableSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectPayableSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectPayableSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectPayableSave = 'yy-dd-mm'; 
-		  }
 		$('#invoiceDate').datepicker({
-			dateFormat : finalDateFormatProjectPayableSave,
+			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				/* var dt = toDate("#invoiceDate");
+				var dt = toDate("#invoiceDate");
 				dt.setDate(dt.getDate() + 1);
-				$("#dueDate").datepicker("option", "minDate", dt); */
-				
-				  var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
-		            $("#dueDate").datepicker("option", "minDate", dt);
-				
+				$("#dueDate").datepicker("option", "minDate", dt);
 						errInvoiceDate();
 						getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : finalDateFormatProjectPayableSave,
+			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				/* var dt = toDate("#dueDate");
+				var dt = toDate("#dueDate");
 				dt.setDate(dt.getDate() - 1);
-				$("#invoiceDate").datepicker("option", "maxDate", dt); */
-				
-			    var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
-	            $("#invoiceDate").datepicker("option", "maxDate", dt);
+				$("#invoiceDate").datepicker("option", "maxDate", dt);
 					errDueDate();
 			}
 		});
@@ -1284,7 +1289,9 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	
+		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           		$("#accountDetails").val(json['accountDetails']);
+		           	}	
 		           	/* buildLineItemAndTaxAddRows(); */
 		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
@@ -1574,14 +1581,14 @@ function getPaymentTerms(){
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
-	 var locationCode ='${SourceLeadWeb_locationCode}';
+	
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -1642,7 +1649,7 @@ function getVendorContacts(vendorContactId){
 		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
 			selected = 'selected';
 		}
-		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
 		$("#vendorCurrency").val(opt.vendorCurrency);
 		}
 		$("#vendorContact").empty();
