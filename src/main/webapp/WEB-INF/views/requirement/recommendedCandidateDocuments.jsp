@@ -495,11 +495,13 @@ function getDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
    		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
