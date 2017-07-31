@@ -82,6 +82,8 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			if (jsonObject.has("name")) {
 				if(candidatecertificate != null && candidatecertificate.getName() != null && candidatecertificate.getName() != "" && !candidatecertificate.getName().equalsIgnoreCase(jsonObject.getString("name"))){
 					activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}else if(candidatecertificate != null && candidatecertificate.getId() == null){
+					activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END);
 				}
 				candidatecertificate.setName(jsonObject.getString("name"));
 			}
@@ -214,12 +216,15 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 */
 	@Override
 	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(
-			Long candidateId, Long candidateCertificateId) throws Exception {
+			Long candidateId, Long candidateCertificateId, User user, OrgLocations orgLocation) throws Exception {
 
 	     CandidateCertifications can = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
 	     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 	     can = candidateCertificationsDao.storeCandidateCertifications(can);
-	     
+	     StringBuffer activitySummary = new StringBuffer();
+	     activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+		 candidateActivityCommonUtil.storeCandidateCertificationsHistory(can, user);
+		 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocation, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_CERTIFICATION, activitySummary.toString(), "CANDIDATE");
 
 	     /*
 		 * updating Candidate Employer DB data in existing candidateindex
