@@ -39,7 +39,7 @@ public interface OrgDocumentsDao{
 	 * @throws Exception
 	 */
 	OrgDocuments getOrgDocumentsById(Long Id) throws Exception;
-	
+	OrgDocuments getOrgDocumentsByDocIdAndLocationId(Long Id,Long locationId) throws Exception;
 	 /**To update Org Document Using OrgDocuments pojo only
      * @author Prasad Salina
      * @param orgDocument

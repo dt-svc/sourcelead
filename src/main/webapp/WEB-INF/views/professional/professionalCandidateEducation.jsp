@@ -335,30 +335,43 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
-	$('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat1 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat1 = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat1 = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat1 = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat1 = 'yy-dd-mm'; 
+	  }
+	  
+	  
+	  $('#startDate').datepicker({
+	      dateFormat: finalDateFormat1,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#startDate");
+	            var dt =  $(this).datepicker('getDate', '+1d'); 
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat1,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#endDate");
+	            var dt =  $(this).datepicker('getDate', '-1d'); 
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
-	
+	  
+	  
+ 
 	/* $(".addUser-org").click(function(){
 		 $(".edit-details").toggleClass("edit-details-active");
 	 }); */
@@ -415,9 +428,6 @@ function addEducation(candidateId) {
 		<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
 	}
 </script>
-
-
-
 
 <script>
 function EditEducation(candidateId,candidateEducationId) {
@@ -579,32 +589,40 @@ function EditEducation(candidateId,candidateEducationId) {
 	/* var projectStartDate = $("#startDateEdit").val();
 	var projectEndDate = $("#endDateEdit").val(); */
 	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat3 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat3 = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat3 = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat3 = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat3 = 'yy-dd-mm'; 
+	  }
 	var datepickerStartDate = toDate("#startDateEdit");
 	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 	
 	var datepickerEndDate = toDate("#endDateEdit");
 	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
-	$('#startDateEdit').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	  
+	  $('#startDateEdit').datepicker({
+	      dateFormat: finalDateFormat3,
 	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  maxDate: datepickerEndDate,
+	  	  changeYear: true,
 	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#startDateEdit");
+	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat3,
 	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  minDate: datepickerStartDate,
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#endDateEdit");
+	  	  changeYear: true,
+	        onSelect: function (selected) {
+	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }
@@ -793,9 +811,11 @@ function removeEducation(candidateEducationId, candidateId){
 <script>
 function deleteSelectedEducation(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
+ var loginUserId = '${SourceLeadWeb_userId}';
+ var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){

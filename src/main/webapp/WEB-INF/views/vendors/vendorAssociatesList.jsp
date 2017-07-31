@@ -60,6 +60,16 @@ function vendorAssociatesList(orgRelationId){
 <script type="text/javascript">
 	function getVendorRequirementListTab(orgRelationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 	  if(locationList.match("yyyy-MM-dd")){
+	 		  associatesVendorDatePattern = 'YYYY-MM-DD';
+	 	  }if(locationList.match("dd-MM-yyyy")){
+	 		 associatesVendorDatePattern = 'DD-MM-YYYY'; 
+	 	  }if(locationList.match("MM-dd-yyyy")){
+	 		 associatesVendorDatePattern = 'MM-DD-YYYY'; 
+	 	  }if(locationList.match("yyyy-dd-MM")){
+	 		 associatesVendorDatePattern = 'YYYY-DD-MM'; 
+	 	  }
 		$.ajax({
 	    	type: "POST",
 	    	   url: sourceleadUrl+"/getVendorAssociatesListForVendors?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 	
@@ -80,7 +90,7 @@ function vendorAssociatesList(orgRelationId){
 			            result = result + '	     <th>Resume</th>';
 			            result = result + '	     <th>Vendor Contact</th>';
 			            result = result + '	     <th>Project Count</th>';
-			            result = result + '	     <th>Updated On</th>';
+			            result = result + '	     <th>Updated On <br>(<small class="custom-small">'+associatesVendorDatePattern+'</small>)</th>';
 		            result = result + '	 </tr>';
 		            result = result +'</thead>';
 		            result = result + '<tbody>';
