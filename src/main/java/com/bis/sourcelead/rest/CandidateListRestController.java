@@ -915,15 +915,20 @@ public class CandidateListRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			candidate = candidateService.getCandidateByCandidateId(candidateId);
+			candidate.setFileContentType("image/jpeg");
 			if (candidate != null && candidate.getDocFile() != null) {
-				candidate.setFileContentType("image/jpeg");
 				InputStream in = new ByteArrayInputStream(candidate.getDocFile());
 				BufferedImage bi = ImageIO.read(in);
 				OutputStream out = response.getOutputStream();
 				ImageIO.write(bi, "jpg", out);
 				out.close();
+			} else {
+				InputStream in = new FileInputStream(new File(getClass().getResource("/images/userprofile.jpg").toURI()));
+				BufferedImage bi = ImageIO.read(in);
+				OutputStream out = response.getOutputStream();
+				ImageIO.write(bi, "jpg", out);
+				out.close();
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
