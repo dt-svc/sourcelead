@@ -32,13 +32,6 @@ public class CandidateResumesHistory implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUMES", nullable = false)
 	private CandidateResumes candidateResumes;
-	@ManyToOne
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
-	@ManyToOne
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	@JsonBackReference
-	private Candidate candidateId;
 	@Transient
 	private Long candidateJsonId;
 	@Column(name = "TITLE")
@@ -74,34 +67,6 @@ public class CandidateResumesHistory implements Serializable {
 	public void setId(Long id)
 	{
 		this.id = id;
-	}
-	
-	public OrgLocations getOrgLocationId()
-	{
-		return orgLocationId;
-	}
-	
-	public void setOrgLocationId(OrgLocations orgLocationId)
-	{
-		this.orgLocationId = orgLocationId;
-	}
-	
-	public Candidate getCandidateId()
-	{
-		return candidateId;
-	}
-	
-	public void setCandidateId(Candidate candidateId)
-	{
-		this.candidateId = candidateId;
-	}
-	
-	public Long getCandidateJsonId()
-	{
-		if (candidateId != null && candidateId.getId() != null) {
-			candidateJsonId = candidateId.getId();
-		}
-		return candidateJsonId;
 	}
 	
 	public String getTitle()
