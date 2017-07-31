@@ -178,7 +178,7 @@ public class ProjectPlanningRestController {
 	 
 	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
 		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
 			
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -208,7 +208,7 @@ public class ProjectPlanningRestController {
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
-			    estimatedHours = (workDays*Constants.WORKING_HOURS);
+			    estimatedHours = (workDays*averageWorkingHours);
 
 	        } catch (ParseException e) {
 	            e.printStackTrace();
