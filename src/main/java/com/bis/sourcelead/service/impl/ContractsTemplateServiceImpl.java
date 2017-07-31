@@ -2434,5 +2434,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 
 	}
+
+	@Override
+	public Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId)
+	{
+		return contractsTemplateDao.getVendorMsaCreatedOrNot(vendorLocationId, loginLocatonId);
+	}
 	
 }

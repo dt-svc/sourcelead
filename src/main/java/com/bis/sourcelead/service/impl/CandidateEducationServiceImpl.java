@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +10,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,8 +109,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty()) && !" ".equals(jsonObject.get("startDate"))){
 			try {
 				
-				//String pattern = "dd-MM-yyyy";
-                DateFormat format = LoginSessionController.DATEFORMAT;
+				String pattern = "dd-MM-yyyy";
+                SimpleDateFormat format = new SimpleDateFormat(pattern);
                 Date startDate = format.parse(jsonObject.getString("startDate"));
                 candidateEducation.setStartDate(startDate);
 				
@@ -120,8 +120,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty()) && !" ".equals(jsonObject.get("endDate"))) {
 			try {
-				//String pattern = "dd-MM-yyyy";
-				DateFormat format = LoginSessionController.DATEFORMAT;
+				String pattern = "dd-MM-yyyy";
+                SimpleDateFormat format = new SimpleDateFormat(pattern);
                 Date validTo = format.parse(jsonObject.getString("endDate"));
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
@@ -275,10 +275,15 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 */
 	@Override
 	public CandidateEducation removeCandidateEducationBycandidateIdandcandidateEducationId(Long candidateId,
-			Long candidateEducationId) throws Exception {
+			Long candidateEducationId, User user, OrgLocations orgLocations) throws Exception {
 			CandidateEducation can = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 		     can =  candidateEducationDao.storeCandidateEducation(can);
+		     StringBuffer activitySummary = new StringBuffer();
+		     activitySummary.append("Education").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+			 candidateActivityCommonUtil.storeCandidateEducationHistory(can, user);
+			 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_EDUCATION, activitySummary.toString(), "CANDIDATE");
+				
 		        /*
 				 * updating Candidate Skills DB data in existing candidateindex
 				 */

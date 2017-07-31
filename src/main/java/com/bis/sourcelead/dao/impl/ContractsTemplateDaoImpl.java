@@ -567,6 +567,21 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contracts = null;
+		contracts = session.createQuery("from Contracts contracts where contracts.orgLocationId.id =:loginLocatonId and contracts.contractOrgLocationId.id = :vendorLocationId and contracts.contractType = 'Vendor MSA' and contracts.templateSubmissionStatus <> 'EXPIRED' " )
+				.setLong("loginLocatonId", loginLocatonId).setLong("vendorLocationId", vendorLocationId ).setCacheable(true).list();
+		if (contracts != null && contracts.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	
 
 }

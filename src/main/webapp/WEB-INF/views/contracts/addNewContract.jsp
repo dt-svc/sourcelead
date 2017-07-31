@@ -21,6 +21,10 @@
 <script>
  window.onload = function() {
 	 changeSaveButton();
+	 var relationId = '${orgRelationId}';
+	 if(relationId != null && relationId != ''){
+		 getVendorContacts();
+	 }
 };
 </script>
 
@@ -50,7 +54,20 @@
 				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				    <c:if test = "${!empty contractType}">
+				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option>Client MSA</option>
+		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option>Client SOW</option>
+		                    <option>Vendor SOW</option>
+		                    <option>NDA</option>
+		                    <option>NSA</option>
+		                    <option>Full time offer</option>
+		                 </select>
+				    </c:if>
+				    <c:if test = "${empty contractType}">
+				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -60,6 +77,7 @@
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
 		                 </select>
+				    </c:if>
 				    </c:otherwise>
 				 </c:choose>
             </div>
@@ -138,7 +156,7 @@
 	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();"  field-name="Job">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
-							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
+							         <option selected value="${element.id}">${element.jobTitle}${element.spocName}</option>
 							    </c:if>
 							    <c:if test = "${element.id != contract.requirementSubmission.requirement.id}">
 							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
@@ -214,19 +232,24 @@
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
+         <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
-                    <option value=''>Select Vendor</option>
-                   <c:forEach var="orgrelations" items="${orgRelationsList}">
-                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
-                  </c:forEach>
+                   <option value=''>Select Vendor</option>
+	                   <c:forEach var="orgrelations" items="${orgRelationsList}">
+	                   	<c:if test = "${!empty orgRelationId}">
+	                   		<option value="${orgrelations.id}" ${orgrelations.id  == orgRelationId ? 'selected' : ''}>${orgrelations.orgName}</option>
+	                   	</c:if>
+	                   	<c:if test = "${empty orgRelationId}">
+	                   		<option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
+	                   	</c:if>
+	                   </c:forEach>
                   </select>
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
