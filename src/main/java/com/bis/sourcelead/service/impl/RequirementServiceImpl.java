@@ -97,6 +97,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -367,9 +368,9 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
 				try {
-					
+					  SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 					Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-					Date startTime =  commonUtil.getDateFormat(jsonObj.getString("closedDate"));
+					Date startTime =  formatter.parse(jsonObj.getString("closedDate"));
 					String currentTimeStr = Constants.TZ_DF.format(startTime);  
 
 					String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -1401,9 +1402,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
-		if(requirement.getCreatedDate()!=null){
-			requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
-		}
 		return requirement;
 	}
 
@@ -3300,10 +3298,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	String convertedStirng = requirementIndex.getCreatedDate();
-     	String convertedStirngArray[]  = convertedStirng.split("-");
+     	
+     	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+     	Date elkDate = elkFormat.parse(convertedStirng);
+     	
+     	/*String convertedStirngArray[]  = convertedStirng.split("-");
      	StringBuilder dateString = new StringBuilder();
      	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
-     	requirement.setPostedDateStr(dateConverted);
+     	*/
+     	
+     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}

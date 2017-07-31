@@ -167,6 +167,17 @@ function clientContractsList(orgRelationId){
     });
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  contractClientDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  contractClientDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  contractClientDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  contractClientDate = 'YYYY-DD-MM'; 
+	  } 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
@@ -191,7 +202,7 @@ function clientContractsList(orgRelationId){
 	                		opt = opt + '    <th>Type</th>';
 	                		opt = opt + '    <th>Owner</th>';
 	                		opt = opt + '    <th>Client Contact</th>';
-	                		opt = opt + '    <th>Duration</th>';
+	                		opt = opt + '    <th>Duration <br>(<small class="custom-small">'+contractClientDate+'</small>)</th>';
 	                		opt = opt + '    <th>Req.Docs</th>'; 
 	                		opt = opt + '    <th>Status</th>'; 
 	                		opt = opt + '    <th>Action</th>';
@@ -851,9 +862,23 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function editOne(startDate,endDate){
+	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEditEndDateSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEditEndDateSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEditEndDateSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEditEndDateSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEditEndDateSave = 'yy-dd-mm'; 
+	  }
+	
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateFormatEditEndDateSave,
         changeMonth: true,
           changeYear: true,
           minDate: startDate,

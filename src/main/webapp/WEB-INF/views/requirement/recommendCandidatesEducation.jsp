@@ -711,9 +711,11 @@ $('body').on('blur', '#education_form', function() {
 <script>
 function removeEducation(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
+ var loginUserId = '${SourceLeadWeb_userId}';
+ var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -895,7 +897,6 @@ function clearSearchKey() {
  }
  </script>     
  
-
 
 
 

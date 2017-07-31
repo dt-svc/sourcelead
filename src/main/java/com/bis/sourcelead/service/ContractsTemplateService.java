@@ -68,6 +68,8 @@ public interface ContractsTemplateService {
 
 	void sendFinalisedMailToReceiver(Contracts contracts, OrgLocations orgLocation, User user) throws Exception;
 
+	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
+
 
 	
 }

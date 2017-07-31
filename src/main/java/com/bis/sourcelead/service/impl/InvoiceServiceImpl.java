@@ -107,6 +107,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.log.SysoCounter;
 
 
@@ -202,8 +203,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org org,String loginOrgCurrencyCode) throws Exception {
 		
 		
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
+		//String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         Invoice invoice = null;
         
@@ -586,8 +588,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private Set<InvoiceLineItems> getInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice,List<Long> invoiceLineItemsIdsList, List<String> submissionApproverHierarchyIds,List<TimesheetSubmissionsDocuments> docusList) throws Exception {
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
-		 String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		 //String pattern = "dd-MM-yyyy";
+	     SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 	     
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
@@ -804,10 +806,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
-		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
-		 
-		String invoiceDate= (Constants.DF_DMY.format(invoice.getInvoiceDate()));
+
+		 SimpleDateFormat dateFormat=orglocations.getLocFullFormDateFormatter();
+		 String date = (dateFormat.format(invoice.getDueDate()));
+
+		String invoiceDate= (dateFormat.format(invoice.getInvoiceDate()));
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
@@ -908,8 +912,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType) throws Exception
 	{
 		Invoice invoice = new Invoice();
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         
         //-----------------------------
@@ -1056,8 +1060,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private Set<InvoiceLineItems> getProjectInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice) throws Exception {
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
-		 String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		 //String pattern = "dd-MM-yyyy";
+	     SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 	     
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRowNum"));
 		 for(int i=1;i<maxRowCount;i++){
@@ -1194,7 +1198,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);

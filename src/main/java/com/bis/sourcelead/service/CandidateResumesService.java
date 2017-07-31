@@ -87,4 +87,6 @@ public interface CandidateResumesService {
 
 	public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId);
 	
+	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception;
+	
 }
