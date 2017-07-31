@@ -608,12 +608,12 @@
 	</dependencies>
 	
 	<build>
-	<resources>
+	<!-- <resources>
     <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
     </resource>
-</resources>
+</resources> -->
 
 		<!-- <resources> <resource> <directory>src/main/webapp/resources/images</directory> 
 			<includes> <include>borderpdf.pdf</include> </includes> </resource> </resources> -->
