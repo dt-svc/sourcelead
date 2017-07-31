@@ -156,7 +156,7 @@
 	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();"  field-name="Job">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
-							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
+							         <option selected value="${element.id}">${element.jobTitle}${element.spocName}</option>
 							    </c:if>
 							    <c:if test = "${element.id != contract.requirementSubmission.requirement.id}">
 							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
