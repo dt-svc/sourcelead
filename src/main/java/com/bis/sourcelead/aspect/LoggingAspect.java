@@ -40,7 +40,7 @@ public class LoggingAspect {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
-	@Pointcut("execution(@javax.inject.Inject * com.bis.sourcelead.web..*.*(..))")
+	/*@Pointcut("execution(@javax.inject.Inject * com.bis.sourcelead.web..*.*(..))")
 	public void methodAnnotatedWithInjectAndInDemoPackage() {
 
 	}
@@ -48,9 +48,9 @@ public class LoggingAspect {
 	@Pointcut("execution(@javax.inject.Inject * com.bis.sourcelead.rest..*.*(..))")
 	public void methodAnnotatedWithInjectAndInDemoPackage1() {
 
-	}
+	}*/
 
-	@Before("execution(* com.bis.sourcelead.web..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage() ")
+	@Before("execution(* com.bis.sourcelead.web..*.*(..))")
 	public void logBeforeWebService(JoinPoint joinPoint) throws Throwable {
 		logger.info("**********Web Service Layer Before Method Execution ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -92,7 +92,7 @@ public class LoggingAspect {
 
 	}*/
 
-	@Before("execution(* com.bis.sourcelead.rest..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage1() ")
+	@Before("execution(* com.bis.sourcelead.rest..*.*(..))")
 	public void logBeforeRestService(JoinPoint joinPoint) throws Throwable {
 		logger.info("**********Rest Service Layer Before Method Execution ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());

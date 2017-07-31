@@ -115,8 +115,8 @@ function actionHistoryList(userSessionId){
 	                    	     result = result +"<td><div><span>---</span></div></td>";
 	                    	    }
 	                    	    
-	                    	    if(opt.actionTime != null && opt.actionTime !='' && opt.actionTime !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-vsm' title='"+opt.actionTime+"'>"+opt.actionTime+"</div></td>"; 
+	                    	    if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
+	                    		 result = result +"<td><div class='tbldata-dotdot-vsm' title='"+opt.actionTimeStr+"'>"+opt.actionTimeStr+"</div></td>"; 
 	                    	    }else{
 	                    	     result = result +"<td><div><span>---</span></div></td>"; 
 	                    	    }

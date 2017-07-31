@@ -14,8 +14,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -40,7 +38,7 @@ public class ActionHistory implements Serializable{
 	private String actionPerformed;
 	
 	@Column(name = "ACTION_TIME")
-    private DateTime actionTime;
+    private Date actionTime;
 	
 	@Transient
 	@JsonProperty
@@ -83,11 +81,11 @@ public class ActionHistory implements Serializable{
 		this.actionPerformed = actionPerformed;
 	}
 
-	public DateTime getActionTime() {
+	public Date getActionTime() {
 		return actionTime;
 	}
 
-	public void setActionTime(DateTime actionTime) {
+	public void setActionTime(Date actionTime) {
 		this.actionTime = actionTime;
 	}
 
