@@ -107,6 +107,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.log.SysoCounter;
 
 
@@ -1197,7 +1198,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);

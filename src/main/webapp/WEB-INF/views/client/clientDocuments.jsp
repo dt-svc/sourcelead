@@ -85,6 +85,16 @@ function clientDocuments(orgRelationId,clientLocationId){
 <script>
 function clientDocumentsList(clientLocationId,orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  docListClientDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  docListClientDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  docListClientDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  docListClientDate = 'YYYY-DD-MM'; 
+	  }  
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&sourceType=Client",        
@@ -110,8 +120,8 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                 	 result  = result + '           <th>Type</th>';
 	                 	 result  = result + '           <th>Contact Person</th>';
 	                 	 result  = result + '           <th>Attachment</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+docListClientDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+docListClientDate+'</small>)</th>';
 	                 	 result  = result + '           <th>Owner</th>';
 	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';

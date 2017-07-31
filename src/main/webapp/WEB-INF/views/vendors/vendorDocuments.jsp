@@ -94,6 +94,16 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 <script>
 function vendorDocumentsList(vendorLocationId,orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  docListVendorSpocDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  docListVendorSpocDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  docListVendorSpocDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  docListVendorSpocDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
@@ -108,8 +118,8 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                 	 result  = result + '           <th>Type</th>';
 	                 	 result  = result + '           <th>Contact Person</th>';
 	                 	 result  = result + '           <th>Attachment</th>';
-	                 	 result  = result + '           <th>Start Date</th>';
-	                 	 result  = result + '           <th>End Date</th>';
+	                 	 result  = result + '           <th>Start Date <br>(<small class="custom-small">'+docListVendorSpocDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End Date <br>(<small class="custom-small">'+docListVendorSpocDate+'</small>)</th>';
 	                 	 result  = result + '           <th>Owner</th>';
 	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';

@@ -167,6 +167,17 @@ function clientContractsList(orgRelationId){
     });
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  contractClientDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  contractClientDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  contractClientDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  contractClientDate = 'YYYY-DD-MM'; 
+	  } 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
@@ -191,7 +202,7 @@ function clientContractsList(orgRelationId){
 	                		opt = opt + '    <th>Type</th>';
 	                		opt = opt + '    <th>Owner</th>';
 	                		opt = opt + '    <th>Client Contact</th>';
-	                		opt = opt + '    <th>Duration</th>';
+	                		opt = opt + '    <th>Duration <br>(<small class="custom-small">'+contractClientDate+'</small>)</th>';
 	                		opt = opt + '    <th>Req.Docs</th>'; 
 	                		opt = opt + '    <th>Status</th>'; 
 	                		opt = opt + '    <th>Action</th>';

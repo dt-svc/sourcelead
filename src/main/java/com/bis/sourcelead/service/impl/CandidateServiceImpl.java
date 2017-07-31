@@ -80,6 +80,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -1177,7 +1178,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
 			for(Candidate can :candidateList){
 				if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
 				}
 				User user  = userService.getUserByUserCode(can.getCreatedBy());
 				if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
@@ -1203,7 +1204,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
 		for(Candidate can : candidateReportsList){
 			if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
 				}
 			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
 			 can.setCandidateRequiementCount(requirementSubmissionCount);
@@ -1359,7 +1360,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			StringBuilder sb = new StringBuilder();
 			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 			candidate.setEmail(candidate.getEmail());
-			candidate.setCandidateUpdateDateToString(Constants.DMY.format(candidate.getUpdatedDate()));
+			candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
