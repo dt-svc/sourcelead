@@ -306,4 +306,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		
 	}
 
+	@Override
+	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateResumeByCandidateId(candidateId);
+	}
+
 }

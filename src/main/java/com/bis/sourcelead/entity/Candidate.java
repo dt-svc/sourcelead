@@ -393,10 +393,7 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private int profilePercentage;
 	 
-	 @Transient
-	 private String resumeUUID;
-
-	 
+		 
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1518,15 +1515,6 @@ public class Candidate implements Serializable{
 		this.systemGeneratedId = systemGeneratedId;
 	}
 
-	public String getResumeUUID()
-	{
-		return resumeUUID;
-	}
-
-	public void setResumeUUID(String resumeUUID)
-	{
-		this.resumeUUID = resumeUUID;
-	}
 
 }
 

@@ -108,10 +108,6 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FAX")
 	private String fax;
 	
-	@Column(name = "DATE_FORMAT")
-	private String dateFormat;
-	
-	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	

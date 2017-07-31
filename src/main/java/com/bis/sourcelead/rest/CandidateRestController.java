@@ -554,39 +554,6 @@ public class CandidateRestController {
 	}	
 	
 
-	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception
-	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		List<RequirementSubmission> requirementSubmission = requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-		for (RequirementSubmission req : requirementSubmission) {
-			req.setPositionType(req.getRequirement().getJobTitle());
-			req.setCountry(req.getRequirement().getCountry());
-			req.setState(req.getRequirement().getState());
-			req.setCity(req.getRequirement().getCity());
-			req.setRate(req.getRequirement().getRate());
-			req.setCreatedDateStr(Constants.DMY.format(req.getCreatedDate()));
-			if (req.getRequirement().getManagerUserId().getLastName() != null) {
-				req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() + " "
-						+ req.getRequirement().getManagerUserId().getLastName());
-			}
-			else {
-				req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
-			}
-			if (null != req.getRequirement().getSpocId()) {
-				if (!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName())
-						&& null != req.getRequirement().getSpocId().getClientUser().getLastName()) {
-					req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName()
-							+ "" + req.getRequirement().getSpocId().getClientUser().getLastName());
-				}
-				else {
-					req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
-				}
-			}
-		}
-		resultJson = commonUtil.toJSON(requirementSubmission);
-		return resultJson;
-	}
 
 	
 	/**

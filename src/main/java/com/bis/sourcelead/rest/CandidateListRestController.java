@@ -61,10 +61,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateDocuments;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -298,32 +294,6 @@ public class CandidateListRestController {
 				designationBoolQueryBuilder
 						.should(QueryBuilders.matchPhrasePrefixQuery("designation", "*" + keywd + "*"));
 			}
-
-			
-//			 maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(), candidateStatus.toString());
-			 SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
-			try {
-				
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();
-			    if(null != searchHits && searchHits.length >0){
-			    	ObjectMapper mapper = new ObjectMapper();
-			    	mapper.setDateFormat(df);
-			    	for (SearchHit hit : searchHits) {
-			    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
-			    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
-			    	    if(candidateIndex.getUpdatedDate() != null){
-			    	    	Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
-							String  updatedDate = format.format(date1);
-			    	    	candidateIndex.setCandidateUpdateDateToString(updatedDate);
-			   			}
-			    	    candidatesList.add(candidateIndex);
-			    	}
-			    	
-			    }
-			    
-			} catch (Exception e) {
-				e.printStackTrace();
-
 			boolQueryBuilder.must(designationBoolQueryBuilder);
 		}
 
@@ -365,7 +335,6 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(QueryBuilders.rangeQuery("experienceYears").gte(new Integer(minYears))
 						.lte(new Integer(maxYears)));
 			} catch (NumberFormatException e) {
-
 			}
 		}
 		// minExpYears
@@ -1428,7 +1397,6 @@ public class CandidateListRestController {
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
-				 SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
 					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -1471,8 +1439,8 @@ public class CandidateListRestController {
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  simpleDateFormat.parse(customStartDate);
-								Date endTime =  simpleDateFormat.parse(customEndDate);
+								Date startTime =  commonUtil.getDateFormat(customStartDate);
+								Date endTime =  commonUtil.getDateFormat(customEndDate);
 								String customStartTimeStr = null;
 								String customEndTimeStr = null;
 								if(null !=startTime){
@@ -1515,7 +1483,7 @@ public class CandidateListRestController {
 						}
 						
 						if(null != candidate.getUpdatedDate()){
-							candidate.setCandidateUpdateDateToString(simpleDateFormat.format(candidate.getUpdatedDate()));
+							candidate.setCandidateUpdateDateToString(Constants.DF_DMY.format(candidate.getUpdatedDate()));
 						}
 						 
 						freshList.add(candidate);
