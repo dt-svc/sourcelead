@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
@@ -45,6 +47,7 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -106,6 +109,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	private ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
@@ -1141,6 +1147,67 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Override
 	public RequirementOffers getRequirementOffersByUUID(String offerUUId) throws Exception {
 		return requirementOffersDao.getRequirementOffersByUUID(offerUUId);
+	}
+
+
+	@Override
+	public List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId) throws Exception
+	{
+		OrgLocations orglocation = orgLocationService.getOrgLocations(locationId);
+		Timezone timezone = null;
+		if (null != orglocation.getTimezone()) {
+			timezone = timeZoneService.getTimezone(orglocation.getTimezone().getId());
+		}
+		List<RequirementOffers> offerList = requirementOffersDao.getOfferAcceptedVendorCandidatesByOrgLocationId(locationId);
+		for(RequirementOffers offer : offerList){
+//		offerList.forEach(offer->{
+			StringBuilder sb = new StringBuilder();
+			if(offer.getSubmissionId().getCandidate().getFirstName() != null && "".equalsIgnoreCase(offer.getSubmissionId().getCandidate().getFirstName()) && offer.getSubmissionId().getCandidate().getLastName() != null && "".equalsIgnoreCase(offer.getSubmissionId().getCandidate().getLastName()) ){
+				sb.append(offer.getSubmissionId().getCandidate().getFirstName()).append(" ").append(offer.getSubmissionId().getCandidate().getLastName());
+			}else {
+				sb.append(offer.getSubmissionId().getCandidate().getFirstName());
+			}
+			offer.setCandidateName(sb.toString());
+			offer.setClientName(offer.getSubmissionId().getVendorLocationId().getOrgLocationName());
+			StringBuilder vendorContactSb = new StringBuilder();
+			if(offer.getSubmissionId().getSourceSubmission() != null && offer.getSubmissionId().getSourceSubmission().getRequirement() != null && offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId() != null){
+				if(offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getLastName() != null && "".equalsIgnoreCase(offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getLastName()))
+					vendorContactSb.append(offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getFirstName()).append(" ").append(offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getLastName());
+				else
+					vendorContactSb.append(offer.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getFirstName());
+			}
+			offer.setVendorContact(vendorContactSb.toString());
+			offer.setJobTitle(offer.getSubmissionId().getRequirement().getJobTitle());
+			if (offer.getDateOfJoining() != null) {
+				String currentTimeStr = Constants.TZ_DF.format(offer.getDateOfJoining());
+				if (timezone != null && timezone.getTimeZoneId() != null) {
+					String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date converteDate = null;
+					try {
+						converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					offer.setDateOfJoiningStr(currentDateInTimezone);
+					SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+					String time = localDateFormat.format(converteDate);
+					offer.setDateOfJoiningStr(time);
+				}
+			}
+			
+			Contracts contracts = contractsTemplateService.getContractByReqSubmissionSowTypeAndOrgLocId(offer.getSubmissionId().getId(), orglocation, Constants.Vendor_SOW);
+			offer.setContractUUID(contracts.getContractUUID());
+			
+			Boolean flag = contractsTemplateService.getVendorMsaCreatedOrNot(offer.getSubmissionId().getVendorLocationId().getId(), orglocation.getId());
+			if(flag == true){
+				offer.setVendorMsaCreated(flag);
+			}
+			offer.setOrgRelationId(offer.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
+		}
+		return offerList;
 	}
 
 

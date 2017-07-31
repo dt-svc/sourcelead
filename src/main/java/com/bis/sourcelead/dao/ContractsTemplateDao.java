@@ -52,4 +52,6 @@ public interface ContractsTemplateDao {
 	ContractsHistory getContractsHistoryByContractId(Long contractId);
 
 	Contracts getContractByReqSubmissionSowTypeAndOrgLocId(Long reqSub, OrgLocations loginOrgLocation, String contractType);
+
+	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
 }
