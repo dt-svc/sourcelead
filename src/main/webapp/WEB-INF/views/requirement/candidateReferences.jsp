@@ -422,11 +422,13 @@ function removeReference(candidateId, refId){
 <script>
 function deleteReference(candidateId,refId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the reference");
 	 var userCode = '${SourceLeadWeb_userCode}';
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
+		    url: sourceleadUrl+"/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
         			 $("#selector10").removeAttr("style");

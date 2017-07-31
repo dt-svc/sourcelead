@@ -388,10 +388,22 @@ function validateTimeZone(){
 		
 		//$("#timezoneid").trigger("chosen:updated");
 		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatInterview = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatInterview = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatInterview = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatInterview = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatInterview = 'yy-dd-mm'; 
+		  }
+		
 		cell2.innerHTML = text;
 		//$(".Datepicker").datepicker();
 		$(".Datepicker").datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatInterview,
 			changeMonth: true,
 			 changeYear: true, 
 		      minDate: 0  ,

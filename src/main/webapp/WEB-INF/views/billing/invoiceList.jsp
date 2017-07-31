@@ -457,7 +457,16 @@ function getInvoiceList(){
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
-	
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationdateForList = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationdateForList = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationdateForList = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationdateForList = 'YYYY-DD-MM'; 
+	  } 
 	if(dayWisetype=="custom"){
 		dayWisetype = "";
 	}
@@ -508,10 +517,10 @@ function getInvoiceList(){
 			result = result +'         <th>Client Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
 			result = result +'         <th>Project Name</th>   ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Invoice Date<br>(<small class="custom-small">'+locationdateForList+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due Date</th>              ';
+			result = result +'         <th>Due Date<br>(<small class="custom-small">'+locationdateForList+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';

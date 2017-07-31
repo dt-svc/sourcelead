@@ -644,7 +644,7 @@ public class UserRestController {
 					 if(null != pmh.getProjectMemberId()){
 						 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 				}
-				 
+				 SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 				 EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(user.getFirstName());
 				 emailMessage.setLastName(user.getLastName());
@@ -656,7 +656,7 @@ public class UserRestController {
 				// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+				 String endDate = dateFormat.format(pmh.getProjectTerminationDate());
 				 
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -755,7 +755,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+			 String endDate = dateFormat.format(pmh.getProjectTerminationDate());
+			 
+			 String statrDate = dateFormat.format(pmh.getProjectAssignedDate().toString());
 			 
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
@@ -778,7 +781,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 }
 			 
 			 if(null != pmh.getProjectAssignedDate()){
-				 globalVarsMap.put("Project StartDate",pmh.getProjectAssignedDate().toString());
+				 globalVarsMap.put("Project StartDate",statrDate);
 			 }else{
 				 globalVarsMap.put("Project StartDate", "--");
 			 }
@@ -874,7 +877,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					SimpleDateFormat sdf = orgLocations.getLocFullFormDateFormatter();
 					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
@@ -1229,9 +1232,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
+			SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();    
-			 String startDate = Constants.DMY.format(pmh.getProjectAssignedDate());
-			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 String startDate = dateFormat.format(pmh.getProjectAssignedDate());
+			 String endDate = dateFormat.format(pmh.getProjectTerminationDate());
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
