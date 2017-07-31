@@ -86,7 +86,8 @@ public class CandidateEducationRestController {
 
 		candidateEducationService.storeCandidateEducation(jsonObject,Long.parseLong(candidateId),loginOrgLocation.getId(), user);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-		return "success";
+		Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+		return percentage.toString();
 	}
 	
 	/**
@@ -148,12 +149,11 @@ public class CandidateEducationRestController {
 	@PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
 	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
-		String resultJson;
 		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, candidateEducationId);
-		 resultJson = commonUtil.toJSON(candidateEducation);
-		//SourceLeadSessionManager.setSessionAttribute(request, "deleteEducation", "Education deleted");
-
-		 return resultJson;
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			Integer percentage = candidateService.getCandidatePercentage(candidate,loginOrgLocation);
+			return percentage.toString();
 	}
 
 	

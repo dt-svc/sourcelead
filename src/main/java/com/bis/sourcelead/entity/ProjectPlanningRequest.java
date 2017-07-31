@@ -144,7 +144,9 @@ public class ProjectPlanningRequest implements Serializable{
 	@JsonProperty
     private Integer onholdCount;
     
-
+	@Transient
+	@JsonProperty
+	List<ProjectPlanningNewResourceRequest> newResourceRequestList;
     
     public Long getId() {
 		return id;
@@ -328,6 +330,8 @@ public class ProjectPlanningRequest implements Serializable{
 		if(createdDate != null){
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
 			requestedDateStr = dateFormat.format(createdDate);	
+		}else{
+			requestedDateStr = "--";
 		}
 		return requestedDateStr;
 	}
@@ -367,6 +371,18 @@ public class ProjectPlanningRequest implements Serializable{
 
 	public void setResourceRequestList(List<ProjectPlanningResourceRequest> resourceRequestList) {
 		this.resourceRequestList = resourceRequestList;
+	}
+	
+	public List<ProjectPlanningNewResourceRequest> getNewResourceRequestList() {
+		newResourceRequestList = new ArrayList<>();
+		if(projectPlanningNewResourceRequestList != null && !projectPlanningNewResourceRequestList.isEmpty()){
+			newResourceRequestList.addAll(projectPlanningNewResourceRequestList);
+		}
+		return newResourceRequestList;
+	}
+
+	public void setNewResourceRequestList(List<ProjectPlanningNewResourceRequest> newResourceRequestList) {
+		this.newResourceRequestList = newResourceRequestList;
 	}
 
 	public String getProjectName() {

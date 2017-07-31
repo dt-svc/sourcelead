@@ -1,6 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
 
@@ -13,21 +13,20 @@ window.onload = function () {
 	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
  };
 </script>
- <script>
+<script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
 	});
 </script>
- 
+
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
 }
 
 .ui-front {
-    z-index: 9999999;
+	z-index: 9999999;
 }
-
 </style>
 
 
@@ -39,235 +38,293 @@ window.onload = function () {
 		<div class="pull-left">
 			<h2>Create Vendor</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/vendorsList'/>"> Vendor List</a>
-			&raquo; Create Vendor</div>
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+				href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Create
+			Vendor
+		</div>
 	</section>
-	
+
 	<div class="content-area content-new clearfix">
-	<div id="loading"></div> 
-	<form:form id="client_form" name="client_form" method="post">
-      <div class="clearfix form-horizontal inner-content">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-           <h3>Vendor Details</h3>
-            <div class="form-group" ><label class="col-md-3" for="Project Id">Vendor Name<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName();" field-name="Vendor Name" data-validation="required validate_Space validate_length length2-250" value="">
-					<input type="hidden" id="orgLocationId" />
-					<span class="hidden">Enter Vendor Name</span>
-				</div>
-			</div>
-            
-			<div class="form-group " id="companyWebsiteDiv">
-				<label class="col-md-3">Website</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Vendor Website" onkeyup="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
-				</div>
-			</div>
-						
-			<div class="form-group" id="locationDiv" style="display: block;">
-	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
-	          <div class="col-md-9" id="locationField">
-	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation=""></input>
-	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
-	          </div>
-	          </div>
-	        </div>
-			 <div class="form-group" id="orgLocationDiv" style="display: none;">
-		          <label class="col-md-3">Location</label>
-		          <div class="col-md-9">
-		          <div class="positionRelative">
-		          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your Location"  type="text" field-name="Locatin" readonly></input>
-		          </div>
-		          </div>
-	        </div>
-		
-			<div class="form-group" id="countryDiv" style="display: block;">
-	          <label class="col-md-3">Country</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group" id="orgCountryDiv" style="display: none;">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
-				</div>
-			</div>
-			
-	        <div class="form-group" id="stateDiv" style="display: block;">
-	          <label class="col-md-3">State</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-	         <div class="form-group" id="orgStateDiv" style="display: none;">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
-				</div>
-		    </div>
-	        
-	        <div class="form-group" id="cityDiv" style="display: block;">
-	          <label class="col-md-3">City</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text" readonly></input>
-	          </div>
-	        </div>
-	        
-        	<div class="form-group" id="orgCityDiv" style="display: none;">
-				<label class="col-md-3">City</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
-				</div>
-			 </div>
-	        
-	        <div class="form-group" id="zipCodeDiv" style="display: block;">
-	          <label class="col-md-3">ZipCode</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
-	          </div>
-	        </div>
-	        
-			 <div class="form-group" id="orgZipCodeDiv" style="display: none;">
-	          <label class="col-md-3">ZipCode</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
-	          </div>
-	        </div>	
-	        
-			<div class="form-group hidden">
-	          <label class="col-md-3">Lat</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientLatitude" name="latitude" type="text"></input>
-	          </div>
-	        </div>
-	        
-	        <div class="form-group hidden" >
-	          <label class="col-md-3">Long</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="clientLongitude" name="longitude"  type="text"></input>
-	          </div>
-	        </div> 
-			 
-			 
-				
-         
-            <div class="form-group">
-              <label class="col-md-3">Tier</label>
-              <div class="col-md-9">
-                  <select class="form-control selectpicker" id="level" name="level">
-                    <option value="Tier-1">Tier-1</option>
-                    <option value="Tier-2">Tier-2</option>
-                    <option value="Tier-3">Tier-3</option>
-                    <option value="Tier-4">Tier-4</option>
-                    <option selected="selected" value="Tier-5">Tier-5</option>
-                  </select>
-              </div>
-            </div>
-                  
-            <div class="form-group ">
-				<label class="col-md-3">Address</label>
-				<div class="col-md-9">
-				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-			<div class="form-group ">
-				<label class="col-md-3">Billing Address</label>
-				<div class="col-md-9">
-				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
-				</div>
-			</div>
-			
-            <div class="clearfix mb"></div>
-             <div class="form-group">
-              <label class="col-md-3">Payment Term</label>
-              <div class="col-md-9">
-                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
-                  <option selected="selected" disabled value="">Select Payment Term</option>
-                    <option value="10 days">10 days</option>
-                    <option value="15 days">15 days</option>
-                    <option value="30 days">30 days</option>
-                    <option value="45 days">45 days</option>
-                    <option value="60 days">60 days</option>
-                    <option value="90 days">90 days</option>
-                  </select>
-              </div>
-            </div>
-            
-          </div>
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-            <h3>Contact Details</h3>
-            
-            <div class="form-group" id="EmailIdDiv">
-				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length1-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
-	                            <span class="hidden">Valid Email</span>
-				</div>
-			</div>
-      
-            <div class="form-group">
-              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
-                <input class="form-control error" id="firstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" type="text">
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-md-3">Last Name</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" id="lastName" name="lastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
-              </div>
-            </div>
-			
-            <div class="form-group">
-              <label class="col-md-3">Phone Number</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Status</label>
-              <div class="col-md-9">
-                <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
-                  <option value="Active">Active</option>
-                  <option value="In-Active">In-Active</option>
-                 <!--  <option value="New">New</option>
+		<div id="loading"></div>
+		<form:form id="client_form" name="client_form" method="post">
+			<div class="clearfix form-horizontal inner-content">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+						<h3>Vendor Details</h3>
+						<div class="form-group">
+							<label class="col-md-3" for="Project Id">Vendor Name<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9" id="clientNameDiv">
+								<input type="text" class="form-control" id="orgName"
+									name="orgName" value="${orgName}" onclick="getOrgName();"
+									onblur="getOrgDetails(); validateClientName();"
+									field-name="Vendor Name"
+									data-validation="required validate_Space validate_length length2-250"
+									value=""> <input type="hidden" id="orgLocationId" /> <span
+									class="hidden">Enter Vendor Name</span>
+							</div>
+						</div>
+
+						<div class="form-group " id="companyWebsiteDiv">
+							<label class="col-md-3">Website</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="webSite"
+									name="webSite" value="" field-name="Vendor Website"
+									onkeyup="validateWebsite();"
+									data-validation="validate_Space validate_domain validate_length length2-100"
+									data-validation-optional="true">
+							</div>
+						</div>
+
+						<div class="form-group" id="locationDiv" style="display: block;">
+							<label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9" id="locationField">
+								<div class="positionRelative">
+									<input class="form-control positionRelative"
+										id="clientLocation" name="location"
+										placeholder="Enter your Location" type="text"
+										field-name="Locatin" data-validation=""></input> <i
+										class="fa fa-refresh btn btn-primary refresh-icon"
+										title="Refresh"
+										onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+								</div>
+							</div>
+						</div>
+						<div class="form-group" id="orgLocationDiv" style="display: none;">
+							<label class="col-md-3">Location</label>
+							<div class="col-md-9">
+								<div class="positionRelative">
+									<input class="form-control positionRelative" id="orgLocation"
+										name="orgLocation" placeholder="Enter your Location"
+										type="text" field-name="Locatin" readonly></input>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group" id="countryDiv" style="display: block;">
+							<label class="col-md-3">Country</label>
+							<div class="col-md-9">
+								<input class="form-control" id="clientCountry" name="country"
+									placeholder="Enter your Country" value="${loginCountryName}"
+									type="text" readonly></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgCountryDiv" style="display: none;">
+							<label class="col-md-3">Country</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgCountry"
+									name="orgCountry" value="" readonly="readonly">
+							</div>
+						</div>
+
+						<div class="form-group" id="stateDiv" style="display: block;">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+								<input class="form-control" id="clientState" name="state"
+									placeholder="Enter your State" type="text" readonly></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgStateDiv" style="display: none;">
+							<label class="col-md-3">State</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgState"
+									placeholder="Enter your State" name="orgState" value=""
+									readonly="readonly">
+							</div>
+						</div>
+
+						<div class="form-group" id="cityDiv" style="display: block;">
+							<label class="col-md-3">City</label>
+							<div class="col-md-9">
+								<input class="form-control" id="clientCity" name="city"
+									placeholder="Enter your City" type="text" readonly></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgCityDiv" style="display: none;">
+							<label class="col-md-3">City</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="orgCity"
+									placeholder="Enter your City" name="orgCity" value=""
+									readonly="readonly">
+							</div>
+						</div>
+
+						<div class="form-group" id="zipCodeDiv" style="display: block;">
+							<label class="col-md-3">ZipCode</label>
+							<div class="col-md-9">
+								<input class="form-control" id="clientZipCode" name="zipcode"
+									placeholder="Enter your Zip code" type="text"></input>
+							</div>
+						</div>
+
+						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
+							<label class="col-md-3">ZipCode</label>
+							<div class="col-md-9">
+								<input class="form-control" id="orgZipCode" name="orgZipcode"
+									placeholder="Enter your Zip code" type="text" readonly></input>
+							</div>
+						</div>
+
+						<div class="form-group hidden">
+							<label class="col-md-3">Lat</label>
+							<div class="col-md-9">
+								<input class="form-control" id="clientLatitude" name="latitude"
+									type="text"></input>
+							</div>
+						</div>
+
+						<div class="form-group hidden">
+							<label class="col-md-3">Long</label>
+							<div class="col-md-9">
+								<input class="form-control" id="clientLongitude"
+									name="longitude" type="text"></input>
+							</div>
+						</div>
+
+
+
+
+						<div class="form-group">
+							<label class="col-md-3">Tier</label>
+							<div class="col-md-9">
+								<select class="form-control selectpicker" id="level"
+									name="level">
+									<option value="Tier-1">Tier-1</option>
+									<option value="Tier-2">Tier-2</option>
+									<option value="Tier-3">Tier-3</option>
+									<option value="Tier-4">Tier-4</option>
+									<option selected="selected" value="Tier-5">Tier-5</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group ">
+							<label class="col-md-3">Address</label>
+							<div class="col-md-9">
+								<textarea id="addressId" name="address" rows="4"
+									field-name="Address" class="form-control"
+									data-validation="validate_length length2-250"
+									data-validation-optional="true"></textarea>
+							</div>
+						</div>
+
+						<div class="form-group ">
+							<label class="col-md-3">Billing Address</label>
+							<div class="col-md-9">
+								<textarea id="billingAddressId" rows="4" name="billingAddress"
+									field-name="Billing Address" class="form-control"
+									data-validation="validate_length length2-250"
+									data-validation-optional="true"></textarea>
+							</div>
+						</div>
+
+						<div class="clearfix mb"></div>
+						<div class="form-group">
+							<label class="col-md-3">Payment Term</label>
+							<div class="col-md-9">
+								<select class="form-control selectpicker" id="PaymentTermId"
+									name="PaymentTerm">
+									<option selected="selected" disabled value="">Select
+										Payment Term</option>
+									<option value="10 days">10 days</option>
+									<option value="15 days">15 days</option>
+									<option value="30 days">30 days</option>
+									<option value="45 days">45 days</option>
+									<option value="60 days">60 days</option>
+									<option value="90 days">90 days</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+						<h3>Contact Details</h3>
+
+						<div class="form-group" id="EmailIdDiv">
+							<label class="col-md-3" for="Project Manager">Email<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="email" name="email"
+									value="${emailId}" field-name="Email Id"
+									data-validation="required validate_Space validate_length length1-100 validate_email"
+									onblur="validateEmail();getSpocUserDetails();"> <span
+									class="hidden">Valid Email</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">First Name<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="firstName"
+									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Last Name</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="lastName"
+									name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Phone Number</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="phoneNumber"
+									id="phoneNumber"
+									data-validation="validate_Space validate_length length9-20 validate_phone"
+									data-validation-optional="true">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Status</label>
+							<div class="col-md-9">
+								<select class="form-control selectpicker" id="spocStatus"
+									name="spocStatus">
+									<option value="Active">Active</option>
+									<option value="In-Active">In-Active</option>
+									<!--  <option value="New">New</option>
                   <option value="Negotiation">Negotiation</option>
                   <option value="Contract">Contract</option> -->
-                </select>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 candAdvsrch">
-                <select data-placeholder="select owner" multiple class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
-                <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-            
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-            <div class="form-group">
-              <label class="col-md-3"></label>
-              <div class="col-md-9 checkBox">
-                 <label> <input type="checkbox" value="Y"
-							name="isMailSent" checked="checked"> Send Invitation
-				</label>
-              </div>
-            </div>
-            
-            <!-- These are the default sourelead roles we are providing for spoc in client creation -->
-              <!-- <div class="form-group" id="roleDiv" style="display: block;">
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Owner Name<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9 candAdvsrch">
+								<select data-placeholder="select owner" multiple
+									class="chosen-select form-control" name="owner" id="owner"
+									field-name="Owner" data-validation="required">
+									<c:forEach var="user" items="${userList}">
+										<option value="${user.id}"
+											${user.id  == SourceLeadWeb_userId ? 'selected' : ''}>${user.firstName}
+											${user.lastName}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+						<div class="form-group">
+							<label class="col-md-3"></label>
+							<div class="col-md-9 checkBox">
+								<label> <input type="checkbox" value="Y"
+									name="isMailSent" checked="checked"> Send Invitation
+								</label>
+							</div>
+						</div>
+
+						<!-- These are the default sourelead roles we are providing for spoc in client creation -->
+						<!-- <div class="form-group" id="roleDiv" style="display: block;">
                   <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
                   <div class="col-md-9">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
@@ -275,31 +332,36 @@ window.onload = function () {
 			              </select>
                   </div>
                 </div> -->
-                
-                <div class="form-group" id="userRoleDiv" style="display: none;">
-					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
-					<div class="col-md-9">
-					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
-					<input type="hidden" id="userRole" name="roleTypeId" value="" />
-					
-				   </div>
-		        </div>
-		 
-          </div>
-        </div>
-      </div>
-      <div class="form-footer clearfix">
-        <div class="col-lg-12">
-          <div class="pull-right">
-            <input type="button" value="Save" id="save_client" onclick="saveVendor(); flushSaveClient()" class="btn btn-primary"> 
-			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'" class="btn btn-default ml">
-          </div>
-        </div>
-      </div>
-      </form:form>
-      </div>
-      
-	
+
+						<div class="form-group" id="userRoleDiv" style="display: none;">
+							<label class="col-md-3">Role <span class="text-danger">&nbsp;
+									*</span></label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="userRoleText"
+									readonly="readonly"> <input type="hidden" id="userRole"
+									name="roleTypeId" value="" />
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="form-footer clearfix">
+				<div class="col-lg-12">
+					<div class="pull-right">
+						<input type="button" value="Save" id="save_client"
+							onclick="saveVendor(); flushSaveClient()" class="btn btn-primary">
+						<input type="button" value="Cancel"
+							onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'"
+							class="btn btn-default ml">
+					</div>
+				</div>
+			</div>
+		</form:form>
+	</div>
+
+
 </section>
 <!-- Content Area Ends-->
 
@@ -315,11 +377,11 @@ function getOrgName(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	
-	$( "#orgName" ).val( '' );
+	/* $( "#orgName" ).val( '' ); */
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
-	$("#webSite" ).val('');
+	/* $("#webSite" ).val(''); */
 	
 	$("#orgCountry").val('');
 	$("#orgState").val('');
@@ -571,7 +633,7 @@ function getRolesList(){
 	});
 </script>
 
- 
+
 <script type="text/javascript">
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
@@ -592,7 +654,7 @@ function getSpocUserDetails(){
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
-	        			 $("#firstName").val('');
+	        			 //$("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
@@ -600,7 +662,7 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    $("#lastName").val('');
+	        			    //$("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -608,7 +670,7 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    $("#phoneNumber").val('');
+	        			    //$("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
@@ -649,8 +711,8 @@ function getSpocUserDetails(){
 	
 }
 </script>
- 
-   <script type="text/javascript">
+
+<script type="text/javascript">
 function validateClientName(){
 	
 	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
@@ -698,11 +760,11 @@ function validateClientName(){
 	}
   }
 }
-</script>   
+</script>
 
 
- 
- <script type="text/javascript">
+
+<script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("webSite").value;
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -759,7 +821,7 @@ function validateClientName(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-</script> 
+</script>
 
 <script type="text/javascript">
 function getAllCountries(){
@@ -827,7 +889,7 @@ function getStates(){
         $('#city').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>
 
 
 <script>

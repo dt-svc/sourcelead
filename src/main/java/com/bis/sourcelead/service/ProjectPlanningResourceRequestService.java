@@ -2,7 +2,10 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectPlanningRequest;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
+import com.bis.sourcelead.entity.User;
 
 public interface ProjectPlanningResourceRequestService {
 
@@ -11,4 +14,10 @@ public interface ProjectPlanningResourceRequestService {
 	ProjectPlanningResourceRequest getProjectPlanningResourceRequestByRequestUUID(String requestUUID) throws Exception;
 	
 	ProjectPlanningResourceRequest saveProjectPlanningResourceRequest(ProjectPlanningResourceRequest projectPlanningResourceRequest) throws Exception;
+	
+	void sendMailToAcceptAndRejectBulkResourceRequestApprover(ProjectPlanningRequest projectPlanningRequest,User user,OrgLocations orgLocations)throws Exception;
+	
+	void sendMailToOnHoldBulkResourceRequestApprover(ProjectPlanningRequest projectPlanningRequest,User user,OrgLocations orgLocations)throws Exception;
+	
+	void sendMailToAcceptAndRejectSingleResourceRequestApprover(ProjectPlanningResourceRequest projectPlanningRequest, User user, OrgLocations orgLocations)throws Exception;
 }

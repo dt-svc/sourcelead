@@ -41,6 +41,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.ExportTimesheetEntriesImpl;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -122,7 +123,7 @@ public class TimeSheetPdfUtil {
      */
 	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations) throws Exception {
 
-		DateFormat format = Constants.DF_DMY;
+		DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
 		Map<String,Date> weekDates = new HashMap<>();
 		
@@ -300,8 +301,8 @@ public class TimeSheetPdfUtil {
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
 //					grandTotalHours = getTotalHours(totalHours);
 					grandTotalHours = grandTotalHours + totalHours;
-					String billable = getTotalHours(billableHours.longValue());
-					String nonBillable = getTotalHours(nonBillableHours.longValue());
+					String billable = getTotalHours((long) (Math.round(billableHours)));
+					String nonBillable = getTotalHours((long) (Math.round(nonBillableHours)));
 					String grandtotal = getTotalHours(grandTotalHours);
 					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};

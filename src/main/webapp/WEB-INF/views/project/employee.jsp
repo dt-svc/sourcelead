@@ -1196,7 +1196,12 @@ function resourceRequestsTab(){
 							result = result + '<td><div><a href="'+sourceleadUrl+'/viewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
 						}
 	    			}else{
-	    				result = result + '<td><div><a href="#">'+report.requestId+'</a></div></td>';
+	    				if(report.requestStatus == 'Draft' || report.requestStatus == 'Rejected'){
+	    					result = result + '<td><div><a href="'+sourceleadUrl+'/editNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+						}else{
+							result = result + '<td><div><a href="'+sourceleadUrl+'/viewNewResourceRequest?requestUUID='+report.requestUUID+'&projectUUID='+projectUUID+'">'+report.requestId+'</a></div></td>';
+						}
+	    				
 	    			}
 	    			result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';

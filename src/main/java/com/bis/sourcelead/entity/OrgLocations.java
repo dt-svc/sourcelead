@@ -61,7 +61,12 @@ public class OrgLocations implements Serializable{
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
+	
+	@Column(name = "DATE_FORMAT")
+	private String dateFormat;
 	 
+	@Column(name = "AVERAGE_WORKING_HOURS")
+	private Integer averageWorkingHours;
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -103,10 +108,6 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FAX")
 	private String fax;
 	
-	@Column(name = "DATE_FORMAT")
-	private String dateFormat;
-	
-	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
@@ -145,6 +146,13 @@ public class OrgLocations implements Serializable{
     
     @Column(name = "IS_PRIMARY")
 	private String isPrimary;
+    
+    @Column(name = "GENERATED_USER_ID")
+	private String generatedUserId;
+    
+    
+    @Column(name = "SYSTEM_GENERATED_ID")
+	private String systemGeneratedId;
     
     @Transient
     private String orgName;
@@ -572,6 +580,28 @@ public class OrgLocations implements Serializable{
 		this.orgLocationUserLastName = orgLocationUserLastName;
 	}
 
+
+	public String getGeneratedUserId()
+	{
+		return generatedUserId;
+	}
+
+	public void setGeneratedUserId(String generatedUserId)
+	{
+		this.generatedUserId = generatedUserId;
+	}
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
+
+
 	public String getDateFormat() {
 		return dateFormat;
 	}
@@ -579,6 +609,7 @@ public class OrgLocations implements Serializable{
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
 	}
+
 
 	public SimpleDateFormat getLocFullFormDateFormatter() {
 		if(StringUtils.isNotEmpty(dateFormat)){
@@ -588,6 +619,12 @@ public class OrgLocations implements Serializable{
 	}
 
 
-	
+	public Integer getAverageWorkingHours() {
+		return averageWorkingHours;
+	}
+
+	public void setAverageWorkingHours(Integer averageWorkingHours) {
+		this.averageWorkingHours = averageWorkingHours;
+	}
 	
 }

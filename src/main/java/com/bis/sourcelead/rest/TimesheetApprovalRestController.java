@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
  
 
 @RestController 
@@ -118,7 +120,8 @@ public class TimesheetApprovalRestController {
 			@RequestParam(value="client", required=false) String client,
 			@RequestParam(value="stage", required=false) String stage,
 			HttpServletRequest request) throws Exception {
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = Constants.DF_DMY;
+		DateFormat  format = LoginSessionController.DATEFORMAT;
 		StringBuilder timesheetApprovalDiv = new StringBuilder("");
         StringBuilder selectedDate = new StringBuilder("");
         StringBuilder selectedFrequency = new StringBuilder("");
@@ -210,7 +213,8 @@ public class TimesheetApprovalRestController {
 	}
 	
 	private Map<StringBuilder,Map<String,Date>>  getWeekFrequncyDropDown(String selectedMonth,String selectedFrequency, Map<String,Date> dateList,String selectedStartDate,String selectedEndDate) throws Exception{
-		 DateFormat format = Constants.DF_DMY;
+		 //DateFormat format = Constants.DF_DMY;
+		DateFormat  format = LoginSessionController.DATEFORMAT;
 		 Date startDate = dateList.get("STARTDATE");
 	     Date endDate = dateList.get("ENDDATE");
 	     Date sDate = null;
@@ -446,7 +450,8 @@ public class TimesheetApprovalRestController {
 		    String[] frequency = timesheetFrequency.split("To");
 		    String startDate = frequency[0].trim();
 		    String endDate = frequency[1].trim();
-		    DateFormat format = Constants.DF_DMY;
+		   // DateFormat format = Constants.DF_DMY;
+		    DateFormat  format = LoginSessionController.DATEFORMAT;
 	        DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 	        Date actualStartDate=null;
 		    Date actualEndDate=null;
@@ -595,7 +600,8 @@ public class TimesheetApprovalRestController {
 		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		        DateFormat format = Constants.DF_DMY;
+		        //DateFormat format = Constants.DF_DMY;
+		        DateFormat  format = LoginSessionController.DATEFORMAT;
 		        DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		        Date actualStartDate=null;
 			    Date actualEndDate=null;
@@ -839,7 +845,8 @@ public class TimesheetApprovalRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		DateFormat df = Constants.DMY;
+		//DateFormat df = Constants.DMY;
+		DateFormat df = LoginSessionController.DATEFORMAT;
 		Date stDate = null;
 		Date edDate= null;
 		if(null !=startDate && !("undefined").equalsIgnoreCase(startDate) && null !=endDate && !("undefined").equalsIgnoreCase(endDate)){

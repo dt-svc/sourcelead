@@ -163,20 +163,43 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("superUserName",ol.getUser().getFullName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				 //globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
 				 globalVarsMap.put("managerName",loginUser.getFullName());
-				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				// globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
 				 StringBuilder emailMsgBuilder = new StringBuilder();
 				 globalVarsMap.put("frequencyPeriod",emailMsgBuilder.append(weekStartDate).append(" TO ").append(weekEndDate).toString());
 				 globalVarsMap.put("totalHours",totalHours.toString());
 				 globalVarsMap.put("reason",reason);
 				 
+				 if(projectMembers.getEmployee().getEmployeeId() !=null && !"".equalsIgnoreCase(projectMembers.getEmployee().getEmployeeId())){
+					 
+					 StringBuilder builder=new StringBuilder();
+					 globalVarsMap.put("employeeName",builder.append(projectMembers.getEmployee().getEmployeeId()).append("-").append(projectMembers.getEmployee().getUser().getFullName()).toString());
+				 }
+				
+				 else{
+					 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName()); 
+					 
+				 }
+				 if( projectMembers.getProjects().getProjectSequeneNumber() !=null && !"".equalsIgnoreCase( projectMembers.getProjects().getProjectSequeneNumber())){
+					 StringBuilder builder=new StringBuilder();
+				 globalVarsMap.put("projectName",builder.append(projectMembers.getProjects().getProjectSequeneNumber()).append("-").append(projectMembers.getProjects().getProjectName()).toString());
+				 
+				 }
+				 
+				 else{
+					 
+					 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				 }
+				 
 				 StringBuilder acceptBuilder = new StringBuilder();
 				 StringBuilder rejectBuilder = new StringBuilder();
 				 globalVarsMap.put("acceptURL",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=accept&projectMemberId=").append(projectMemberId).append("&userId=").append(ol.getUser().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 				 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenTimeSheet?type=reject&projectMemberId=").append(projectMemberId).append("&userId=").append(ol.getUser().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-			
+				 StringBuilder stringBuildforLink = new StringBuilder();
+				 
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append( "'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				 
@@ -228,13 +251,38 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("superUserName",loginUser.getFullName());
-				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				// globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
 				 globalVarsMap.put("managerName",reopenedUser.getFullName());
-				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				// globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
 				 globalVarsMap.put("reason",reason);
 				 
 				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
 			
+				 
+
+				 if(projectMembers.getEmployee().getEmployeeId() !=null && !"".equalsIgnoreCase(projectMembers.getEmployee().getEmployeeId())){
+					 
+					 StringBuilder builder=new StringBuilder();
+					 globalVarsMap.put("employeeName",builder.append(projectMembers.getEmployee().getEmployeeId()).append("-").append(projectMembers.getEmployee().getUser().getFullName()).toString());
+				 }
+				
+				 else{
+					 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName()); 
+					 
+				 }
+				 if( projectMembers.getProjects().getProjectSequeneNumber() !=null && !"".equalsIgnoreCase( projectMembers.getProjects().getProjectSequeneNumber())){
+					 StringBuilder builder=new StringBuilder();
+				 globalVarsMap.put("projectName",builder.append(projectMembers.getProjects().getProjectSequeneNumber()).append("-").append(projectMembers.getProjects().getProjectName()).toString());
+				 
+				 }
+				 
+				 else{
+					 
+					 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				 }
+				 
+				 
+				 
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				 

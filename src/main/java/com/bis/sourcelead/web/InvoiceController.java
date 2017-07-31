@@ -286,5 +286,48 @@ public class InvoiceController {
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
-
+	
+	/**
+	 * returns jsp to create expenses based invoice in receivables 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/createReceivableExpensesBill")
+	public ModelAndView createReceivableExpenseBill(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		model.setViewName("billing/createReceivableExpensesBill");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Receivable);
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
+	
+	/**
+	 * returns jsp to create expenses based bill in payables 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/createExpensesPayableBill")
+	public ModelAndView createExpensesPayableBill(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		model.setViewName("billing/createExpensesPayableBill");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Receivable);
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
 }

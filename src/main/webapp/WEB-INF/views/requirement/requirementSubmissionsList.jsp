@@ -105,7 +105,7 @@
                <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	              <a href='<c:url value='/downloadResume?resumeUUID=${reqSub.submissionId.candidateResumes.resumeUUID}'/>'><i class='fa fa-download'></i></a>
-	               <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a>
+	               <%-- <a href="<c:url value='/downloadResumeCandidate/${reqSub.submissionId.candidateResumes.resumeUUID}'/>"><i class="fa fa-download"></i> </a> --%>
 	              </c:if>
 	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
 	             	 --
@@ -114,9 +114,18 @@
               </td>
               
                <td><div><span>
-	              <c:if test="${not empty reqSub.submissionId.candidate.experienceYears}">
+	              <c:if test="${not empty reqSub.submissionId.candidate.experienceYears && not empty reqSub.submissionId.candidate.experienceMonths}">
 	               ${reqSub.submissionId.candidate.experienceYears} Year/s ${reqSub.submissionId.candidate.experienceMonths}  Month/s
 	              </c:if>
+	                <c:if test="${not empty reqSub.submissionId.candidate.experienceYears && empty reqSub.submissionId.candidate.experienceMonths}">
+	             	  ${reqSub.submissionId.candidate.experienceYears} Year/s
+	              </c:if>
+	               <c:if test="${empty reqSub.submissionId.candidate.experienceYears && not empty reqSub.submissionId.candidate.experienceMonths}">
+	               		${reqSub.submissionId.candidate.experienceMonths} Year/s
+	               </c:if>
+	                 <c:if test="${empty reqSub.submissionId.candidate.experienceYears && empty reqSub.submissionId.candidate.experienceMonths}">
+	               		--
+	               </c:if>
               </span></div>
               </td>
               
@@ -142,9 +151,9 @@
               
                <td><div><span>
 	               <c:if test="${not empty reqSub.submissionId.candidateScore}">
-	            	  ${reqSub.submissionId.candidateScore}
+	            	  ${reqSub.submissionId.candidateScore}%
 	              </c:if>
-	              <c:if test="${empty candidateScore}">
+	              <c:if test="${empty reqSub.submissionId.candidateScore}">
 	             	 --
 	              </c:if>
               </span></div></td> 

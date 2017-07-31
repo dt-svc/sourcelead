@@ -132,11 +132,20 @@ function getExpensesList(){
     {
 		expenseStatus.push($(this).val());
     });
-	
+	var obj = {}
+	obj['expenseStatus']=expenseStatus;
+	obj['startDate']=startDate;
+	obj['endDate']=endDate;
+	obj['userId']='${SourceLeadWeb_user.id}';
+	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
+	var jsonData= JSON.stringify(obj);
 	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
+		 type : "POST",
+		  data: jsonData,
+  	      contentType : 'application/json; charset=utf-8',
+  	      dataType : 'json',
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",     
+          success :function(json) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";
 					result = result +"<thead>";
@@ -154,8 +163,7 @@ function getExpensesList(){
 					result = result +"</thead>";
 					result = result +"<tbody>";
 					
-					 if(data !=''){
-						 var json = JSON.parse(data);
+					 if(json !=''){
 			        	  for (var i = 0; i < json.length; i++) { 
 			        		  var report = json[i]; 
 			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
@@ -168,10 +176,10 @@ function getExpensesList(){
 			        		  }else{
 			        			  purpose = "--";
 			        		  }
-			        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-			        			  projectMemberId = report.projectMemberId;
+			        		  if(report.projectName != null && report.projectName != '' && report.projectName != 'undefined'){
+			        			  projectName = report.projectName;
 			        		  }else{
-			        			  projectMemberId = "--";
+			        			  projectName = "--";
 			        		  }
 			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
 			        			  clientName = report.clientName;
@@ -206,7 +214,7 @@ function getExpensesList(){
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 								 '</sec:authorize>';
 								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
-								 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
+								 result = result +"<td><div title="+projectName+">"+projectName+"</div></td>";
 								 result = result +"<td><div>"+clientName+"</div></td>";
 								 result = result +"<td><div>"+startDateStr+"</div></td>";
 								 result = result +"<td><div>"+endDateStr+"</div></td>";
@@ -259,7 +267,7 @@ function expensesPagination(){
 <script>
 
 function expenseView(expenseId){
-	var sourceleadUrl = '${sourceleadUrl}';
+var sourceleadUrl = '${sourceleadUrl}';
 	$(".project_side_wrap").addClass("project_side_wrap_active");
 	        $(".side_mask").fadeIn(200);
 	        $("body").css('overflow-y', 'hidden');

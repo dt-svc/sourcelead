@@ -3,22 +3,26 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.annotations.Check;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +34,10 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.ConversionUtil;
 
 @Service
 public class BisUserMappingServiceImpl implements BisUserMappingService {
@@ -43,6 +49,9 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 
 	@Override
 	public Integer saveBisUserData(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)
@@ -137,14 +146,14 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 							String comments = getCellValueAsString(row.getCell(13), fileName);
 							bisUserMapping.setComments(comments);
 						}
-						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
-							advanceHp = Float.parseFloat(getCellValueAsString(row.getCell(14), fileName));
-							bisUserMapping.setAdvanceHcp(Math.round(advanceHp * 100D) / 100D);
-						}
-						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
-							balance = Float.parseFloat(getCellValueAsString(row.getCell(15), fileName));
-							bisUserMapping.setBalance(Math.round(balance * 100D) / 100D);
-						}
+//						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+//							advanceHp = Float.parseFloat(getCellValueAsString(row.getCell(14), fileName));
+//							bisUserMapping.setAdvanceHcp(Math.round(advanceHp * 100D) / 100D);
+//						}
+//						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+//							balance = Float.parseFloat(getCellValueAsString(row.getCell(15), fileName));
+//							bisUserMapping.setBalance(Math.round(balance * 100D) / 100D);
+//						}
 						bisUserMapping.setCreatedBy(user.getUserCode());
 						bisUserMapping.setCreatedDate(new Date());
 						bisUserMapping.setUpdatedBy(user.getUserCode());
@@ -170,6 +179,130 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 
 	private BisUserMapping saveBisUserMapping(BisUserMapping bisUserMapping) throws Exception {
 		return bisUserMappingDao.saveBisUserMapping(bisUserMapping);
+	}
+	
+	
+	@Override
+	public Integer saveChecksData(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)
+			throws Exception {
+		String fileName = multipartFile.getOriginalFilename();
+		int count = 0;
+		Workbook workbook = null;
+		if (fileName.endsWith("xlsx")) {
+			workbook = new XSSFWorkbook();
+		} else if (fileName.endsWith("xls")) {
+			workbook = (Workbook) new HSSFWorkbook();
+		}
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			multipartFile.transferTo(file);
+			FileInputStream fis = new FileInputStream(file);
+			workbook = WorkbookFactory.create(fis);
+			int numberOfSheets = workbook.getNumberOfSheets();
+			for (int i = 0; i < numberOfSheets; i++) {
+				Sheet sheet = workbook.getSheetAt(i);
+				Iterator<Row> rowIterator = sheet.iterator();
+				while (rowIterator.hasNext()) {
+					Row row = rowIterator.next();
+					if (row.getRowNum() > 0) { // Excluding column names
+						Checks checks = new Checks();
+						double legalFees = 0;
+						double advance = 0;
+						double vendorPayments = 0;
+						double generalExpenses = 0;
+						double payrollChecks = 0;
+						double amount = 0;
+						if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+							String empId = getCellValueAsString(row.getCell(0), fileName);
+							checks.setEmpId(empId.split("\\.")[0]);
+							;
+						}
+						if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+							String empName = getCellValueAsString(row.getCell(1), fileName);
+							checks.setEmpName(empName);
+						}
+						if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+							Date date = getCellDate(row.getCell(2), fileName);
+							if (date != null) {
+								checks.setDate(date);
+							} else {
+								String checkDate = getCellValueAsString(row.getCell(2), fileName);
+								checks.setDate(conversionUtil.getDateFromMMDDYYY(checkDate));
+							}
+						}
+						if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+							String typeOfExpenses = getCellValueAsString(row.getCell(3), fileName);
+							checks.setTypeOfExpense(typeOfExpenses);
+						}
+						if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+							String bankName = getCellValueAsString(row.getCell(4), fileName);
+							checks.setBankName(bankName);
+						}
+						if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+							
+							Date date = getCellDate(row.getCell(5), fileName);
+							SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+							String month_name = month_date.format(date);
+							checks.setMonth(month_name);
+						}
+						if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+							legalFees = Double.parseDouble(getCellValueAsString(row.getCell(6), fileName));
+							checks.setLegalFees(Math.round(legalFees * 100D) / 100D);
+						}
+						if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+							advance = Double.parseDouble(getCellValueAsString(row.getCell(7), fileName));
+							checks.setAdvance(Math.round(advance * 100D) / 100D);
+						}
+						if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+							 generalExpenses = Double.parseDouble(getCellValueAsString(row.getCell(8), fileName));
+							checks.setGeneralExpenses(generalExpenses);
+						}
+						if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+							vendorPayments = Double.parseDouble(getCellValueAsString(row.getCell(9), fileName));
+							checks.setVendorPayments(Math.round(vendorPayments * 100D) / 100D);
+						}
+						if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+//							electronicWithDrawals = Double.parseDouble(getCellValueAsString(row.getCell(10), fileName));
+//							checks.setElectronicWithdrawals(Math.round(electronicWithDrawals * 100D) / 100D);
+							checks.setElectronicWithdrawals(getCellValueAsString(row.getCell(10), fileName));
+						}
+						if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+							payrollChecks = Double.parseDouble(getCellValueAsString(row.getCell(11), fileName));
+							checks.setPayrollChecks(Math.round(payrollChecks * 100D) / 100D);
+						}
+						if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+							amount = Double.parseDouble(getCellValueAsString(row.getCell(12), fileName));
+							checks.setAmount(Math.round(amount * 100D) / 100D);
+							;
+						}
+						if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+							String checkNumber = getCellValueAsString(row.getCell(13), fileName);
+							checks.setCheckNo(checkNumber.split("\\.")[0]);
+						}
+						checks.setCreatedBy(user.getUserCode());
+						checks.setCreatedDate(new Date());
+						checks.setUpdatedBy(user.getUserCode());
+						checks.setUpdatedDate(new Date());
+						checks.setOrgLocationId(orgLocation);
+						Checks savedChecks = saveChecks(checks);
+						if (savedChecks != null) {
+							count++;
+						}
+					}
+				}
+
+			}
+
+			fis.close();
+		} catch (IOException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+		}
+
+		return count;
+	}
+
+	private Checks saveChecks(Checks checks) throws Exception {
+		return bisUserMappingDao.saveChecks(checks);
 	}
 
 	private String getCellValueAsString(Cell cell, String fileName) {
@@ -220,6 +353,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			BisUserMapping bisUser = bisUserMappingDao.getBisUserById(importedUserId);
 			if(slUser != null && bisUser !=null){
 				bisUser.setUserId(slUser);
+				bisUser.setStatus("MAPPED");
 				 bisuser = bisUserMappingDao.saveBisUserMapping(bisUser);
 			}
 		}
@@ -229,6 +363,27 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 	@Override
 	public List<BisUserMapping> getMappedUsersListByOrgLocationId(Long orgLocationId) throws Exception {
 		return bisUserMappingDao.getMappedUsersListByOrgLocationId(orgLocationId);
+	}
+
+	private Date getCellDate(Cell cell, String fileName) {
+		Date date = null;
+	   if(fileName.toLowerCase().endsWith("xls")){
+		   HSSFCell hssfCell = (HSSFCell) cell;
+			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) hssfCell)) {
+					date = hssfCell.getDateCellValue();
+			}
+		}else{
+			XSSFCell xssfFCell = (XSSFCell) cell;
+			if (xssfFCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) xssfFCell)) {
+					date = xssfFCell.getDateCellValue();
+			}
+		}
+		return date;
+	}
+
+	@Override
+	public List<BisUserMapping> getEmployeeList(Long orgLocationId) throws Exception {
+		return bisUserMappingDao.getEmployeeList(orgLocationId);
 	}
 
 }

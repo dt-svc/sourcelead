@@ -30,6 +30,7 @@ import org.hibernate.annotations.FetchMode;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -249,6 +250,9 @@ public class Projects implements Serializable{
 
     @Transient
     private String expensesClientName;
+    
+    @Column(name = "GENERATED_ID")
+	private String generatedId;
     
 	public Long getId() {
 		return id;
@@ -477,7 +481,7 @@ public class Projects implements Serializable{
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr = Constants.DMY.format(startDate);
+			startDateStr = LoginSessionController.DATEFORMAT.format(startDate);
 		}
 		return startDateStr;
 	}
@@ -737,6 +741,14 @@ public class Projects implements Serializable{
 		this.overtimeRateType = overtimeRateType;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
 
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
 	
 }

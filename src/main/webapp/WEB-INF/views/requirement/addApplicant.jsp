@@ -309,7 +309,7 @@ function getAddApplicant(requirementId){
 
 
 <script>
-function submitRecomendedApplicant(requirementId,candidateId){
+function submitRecomendedApplicant(requirementId,candidateId,type){
 	$('.action-pop').slideUp();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -330,6 +330,7 @@ function submitRecomendedApplicant(requirementId,candidateId){
 	result = result + '<div class="form-horizontal clearfix select-field">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
+	result = result + '<input type="hidden" id="redirectTo" name="redirectTo" value='+type+'>';
 	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
@@ -396,7 +397,7 @@ function submitRecomendedApplicant(requirementId,candidateId){
 	  
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
-	$(".side_mask").fadeIn(200);
+	$(".sideMask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	
 	var selectedFile = document.getElementById("newUploadBtn");
@@ -454,8 +455,8 @@ function ApplicantNotifyRequiremnent(){
 <script>
 function isCoolingOffAlert(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='project_inn_mask' style='z-index:250000'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='z-index:350000'>";
 	result = result +"		<p>Applicant Cooling-Off period (${requirement.reqCoolingOffPeriod}) not completed</p>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Proceed' onClick='proceedApplicant();'><input class='u_can_color' type='button' value='Discord' onClick='discordApplicant();'></b>";
@@ -480,6 +481,7 @@ function discordApplicant(){
 	$(".project_inn_mask").fadeOut(200);
 	
 	$(".new_side_wrap").removeClass("new_side_wrap_active");
+	$(".sideMask").fadeOut(200);
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');
 }
@@ -840,6 +842,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 
 	  var requirementId = $("#requirementId").val();
 	  var candidateId = $("#candidateId").val();
+	  var redirectTo = $("#redirectTo").val();
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
       var frm = $('#submitRecomendedApplicant_form').serializeFormJSON();
@@ -970,6 +973,9 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
 	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+	    		if(redirectTo == "compare"){
+	    			compareRecommendedUsers(requirementId);
+	    		}
 	        },
 	    }); 
       return true; 
@@ -1411,10 +1417,11 @@ function getCandidateDetails(){
 <script type="text/javascript">
 function getRecomededCandidateDetails(candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	

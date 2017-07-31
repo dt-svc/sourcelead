@@ -204,6 +204,16 @@ function storeCertificate(candidateId){
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  canCerDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  canCerDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  canCerDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  canCerDatePattern = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -235,8 +245,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+canCerDatePattern+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+canCerDatePattern+"</small>)</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -916,10 +926,15 @@ function scoreAndScoreType(){
 	 if(candidateScore.match(cgpanum)){
 		 $("#scoreType").val('CGPA'); 
 	 }
+	 if((selectedText == '') && (!candidateScore.match(floatNum)) && (!candidateScore.match( cgpanum)) && (!candidateScore.match(grades))){
+		 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter your Valid Score </p>");
+	 }
+	 if(selectedText == '' && candidateScore == ''){
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 }
 	 if(candidateScore == ''){
 		 $("#scoreType").val('');
 	 }
-	 
 }
 </script>
 

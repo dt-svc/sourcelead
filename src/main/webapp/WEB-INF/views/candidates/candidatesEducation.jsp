@@ -3,11 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -109,6 +104,16 @@ function candidateEducation(candidateId){
 function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  canEduDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  canEduDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  canEduDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  canEduDatePattern = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -141,8 +146,8 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
+	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+canEduDatePattern+'</small>)</th>';
 	                 	 result  = result + '           <th>score</th>';
 	                 	 result  = result + '           <th>score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
@@ -755,6 +760,31 @@ function candidateEducationStore(candidateId){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
+				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+				            			 if(data<50){
+				            			   $("#perVal").removeClass('progress-bar-success');
+				            			   $("#perVal").addClass("progress-bar-danger");
+				            			 }
+				            			 if(data>=50){
+				            				 $("#perVal").removeClass("progress-bar-danger");
+				            				 $("#perVal").addClass("progress-bar-success");
+				            			 }
+				            			 $("#disVal").empty();
+				            			$("#disVal").append(data+'%');
+				            			// for quick view bar update
+				            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+					          			 if(data<50){
+						          			   $("#quickPerVal").removeClass('progress-bar-success');
+						          			   $("#quickPerVal").addClass("progress-bar-danger");
+						          			 }
+						          			 if(data>=50){
+						          				 $("#quickPerVal").removeClass('progress-bar-danger');
+						          				 $("#quickPerVal").addClass("progress-bar-success");
+						          			 }
+
+				            			$("#quickDisVal").empty();
+				            			$("#quickDisVal").append(data+'%');
+				            			
 				               		    $("#popUpDiv").removeClass("edit-details-active");
 				            			$("#selector4").removeAttr("style");
 				            			$("#selector4").css({ display: "block" });
@@ -850,6 +880,33 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
+             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+           			 if(data<50){
+           			  /* $("#perVal").removeClass("progress-bar-success"); */
+           			   $("#perVal").removeClass('progress-bar-success')
+           			   $("#perVal").addClass("progress-bar-danger");
+           			 }
+           			 if(data>=50){
+           				 $("#perVal").removeClass('progress-bar-danger');
+           				 $("#perVal").addClass("progress-bar-success");
+           			 }
+           			 $("#disVal").empty();
+           			$("#disVal").append(data+'%');
+           			
+           			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+         			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+       				$("#quickDisVal").empty();
+       				$("#quickDisVal").append(data+'%');
+           			
+           			
            			 	 $("#selector4").removeAttr("style");
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");

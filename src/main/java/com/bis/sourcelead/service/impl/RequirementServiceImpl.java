@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,6 +97,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -191,6 +193,61 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	
+	
+	/* @Override
+		public String getRequirementId(OrgLocations orgLocations) {
+			
+	    	Long number = 000000001L;
+			String requirementId = null;
+			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+				requirementId = number.toString();
+			}else{
+			String reqIdNumber = checkNumber.getGeneratedId();
+			String reqIdNum = reqIdNumber.substring(2, reqIdNumber.length());
+			Long reqId = Long.parseLong(reqIdNum)+1;
+			requirementId = reqId.toString();
+			}
+			
+	        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String ConvetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+			return sb.append(Constants.JOB_ENTITY).append(ConvetredRequirementsId).toString();
+			
+		}*/
+	 
+	 public String getRequirementId(OrgLocations orgLocations) {
+	    	String companyShortCode = null;
+	    	Long number = 000000001L;
+			String requirementId = null;
+			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
+				requirementId = number.toString();
+			}else{
+			String reqIdNumber = checkNumber.getGeneratedId();
+			int count =0;
+			for(int i=0;i< reqIdNumber.length();i++){
+				char ch = reqIdNumber.charAt(i);
+				if(Character.isAlphabetic(ch)){
+					count++;
+				}
+			}
+			String reqIdNum = reqIdNumber.substring(count, reqIdNumber.length());
+			Long reqId = Long.parseLong(reqIdNum)+1;
+			requirementId = reqId.toString();
+			}
+			
+			final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+	        StringBuffer sb = new StringBuffer();
+	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
+	        	 companyShortCode = orgLocations.getGeneratedUserId();
+	        }
+			return sb.append(companyShortCode).append(Constants.JOB_ENTITY).append(convetredRequirementsId).toString();
+			
+		}
+	 
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -498,6 +555,10 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setSubmissionTemplateJsonString(submissionTemplate.getJsonString());
 			}
 			
+			if(jsonObj.has("releaseToAllUsers") && "Y".equalsIgnoreCase(jsonObj.getString("releaseToAllUsers"))){
+				requirement.setReleaseJobToAllUsers(jsonObj.getString("releaseToAllUsers"));
+			}
+			
 			requirement.setStatus(Constants.TEAM_ACTIVE);
 			
 			
@@ -782,6 +843,12 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			//storing assigned team END
 			
+			/*
+			 * System Generated Id For Job
+			 */
+			
+		requirement.setGeneratedId(getRequirementId(orgLocations));
+		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
 		if(!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())){
@@ -3231,10 +3298,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	String convertedStirng = requirementIndex.getCreatedDate();
-     	String convertedStirngArray[]  = convertedStirng.split("-");
+     	
+     	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+     	Date elkDate = elkFormat.parse(convertedStirng);
+     	
+     	/*String convertedStirngArray[]  = convertedStirng.split("-");
      	StringBuilder dateString = new StringBuilder();
      	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
-     	requirement.setPostedDateStr(dateConverted);
+     	*/
+     	
+     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}

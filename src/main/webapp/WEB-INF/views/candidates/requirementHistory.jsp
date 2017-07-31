@@ -3,11 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -40,6 +35,16 @@ function requirementHistory(candidateId){
 function requirementHistoryList(candidateId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  canHisDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  canHisDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  canHisDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  canHisDatePattern = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
          type : "POST",
          url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -57,7 +62,7 @@ function requirementHistoryList(candidateId){
      		result = result  +'	            <th>Rate</th>';
      		result = result  +'	            <th>Owner</th>';
      		result = result  +'	            <th>Client</th>';
-     		result = result  +'	            <th>Submitted On</th>';
+     		result = result  +'	            <th>Submitted On <br>(<small class="custom-small">'+canHisDatePattern+'</small>)</th>';
      		result = result  +'	            <th>Stage</th>';
      		result = result  +'	          </tr>';
      		result = result  +'          </thead>';

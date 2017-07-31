@@ -58,6 +58,9 @@ body{
 .side-bar .side-nav ul li span{
 	text-shadow:none;
 }
+.side-bar .sidenav_inner {
+ overflow-y: inherit;
+}
 .content-wraper{
 	background:#fff;
 }

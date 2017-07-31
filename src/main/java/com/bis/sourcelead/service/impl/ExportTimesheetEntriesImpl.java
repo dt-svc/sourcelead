@@ -62,6 +62,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -133,7 +134,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 
 		File file = null;
 		Workbook wb = new XSSFWorkbook();
-		DateFormat format = Constants.DMY;
+		DateFormat format = LoginSessionController.DATEFORMAT;
 		
 		StringBuilder fName=new StringBuilder();
 		Sheet sheet = wb.createSheet(fName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(format.format(new Date())).toString());
@@ -374,8 +375,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			                 
 						 grandTotalHours = grandTotalHours + totalHours;
 						 StringBuilder fileName=new StringBuilder();
-						 String billable = getTotalHours(billableHours.longValue());
-						 String nonBillable = getTotalHours(nonBillableHours.longValue());
+						 String billable = getTotalHours((long) (Math.round(billableHours)));
+						 String nonBillable = getTotalHours( (long) (Math.round(nonBillableHours)));
 						 String grandtotal = getTotalHours(grandTotalHours);
 						 sheet = getExcelSheetWithHeader(sheet, writeRow, wb,frequencyStartDate,frequencyEndDate,projectMember.getEmployee().getUser(),grandtotal,projectMember.getProjects().getProjectName(),submissionStatusStr,billable,nonBillable);
 						file = new File(fileName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(frequencyStartDate).append(" to ").append(frequencyEndDate).append(".xls").toString());
@@ -638,7 +639,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int flag = 0;
 			StringBuilder StDateAndEndDate = new StringBuilder("");
 			StringBuilder separator = new StringBuilder(",");
-		    DateFormat format = Constants.DF_DMY;
+		    //DateFormat format = Constants.DF_DMY;
+			DateFormat format = LoginSessionController.DATEFORMAT;
 		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		        
 			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
@@ -665,7 +667,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			String[] headersList = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
 			headers = getHeaders(headersList,StDateAndEndDate.toString());
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 
 	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
@@ -945,7 +947,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}
 		//for creating workbook and sheet in excel.
 		Workbook createExcelworkbook = new XSSFWorkbook();
-		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 		StringBuilder excelStringBuilder=new StringBuilder();
 		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrgLocationName()).append("_").append(dateFormat.format(new Date())).toString());
 		Row writeRow = null;

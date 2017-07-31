@@ -40,4 +40,6 @@ public interface InvoiceDao{
 
 	List<InvoicePayment> getPaymentHistroyByInvoiceId(Long invoiceId)throws Exception;
 
+	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
+
 }
