@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -185,10 +186,12 @@ public class RequirementController {
 				
 			}
 			
-			
+	        SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+
+	 
 			if(null !=requirement.getClosedDate()){
 				
-				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
+				requirement.setClosedDateStringFormat(formatter.format(requirement.getClosedDate()));
 			}
 			
 			if(requirement != null && requirement.getId() != null){

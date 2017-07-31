@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -106,7 +108,6 @@ public class OrgLocations implements Serializable{
 	@Column(name = "FAX")
 	private String fax;
 	
-	
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
@@ -191,6 +192,9 @@ public class OrgLocations implements Serializable{
     
     @Transient
     private String orgLocationUserLastName;
+    
+    @Transient
+    private SimpleDateFormat locFullFormDateFormatter;
     
 
 	public Timezone getTimezone() {
@@ -576,6 +580,7 @@ public class OrgLocations implements Serializable{
 		this.orgLocationUserLastName = orgLocationUserLastName;
 	}
 
+
 	public String getGeneratedUserId()
 	{
 		return generatedUserId;
@@ -596,6 +601,7 @@ public class OrgLocations implements Serializable{
 		this.systemGeneratedId = systemGeneratedId;
 	}
 
+
 	public String getDateFormat() {
 		return dateFormat;
 	}
@@ -604,6 +610,15 @@ public class OrgLocations implements Serializable{
 		this.dateFormat = dateFormat;
 	}
 
+
+	public SimpleDateFormat getLocFullFormDateFormatter() {
+		if(StringUtils.isNotEmpty(dateFormat)){
+			locFullFormDateFormatter = new SimpleDateFormat(dateFormat);
+		}
+		return locFullFormDateFormatter;
+	}
+
+
 	public Integer getAverageWorkingHours() {
 		return averageWorkingHours;
 	}
@@ -611,7 +626,5 @@ public class OrgLocations implements Serializable{
 	public void setAverageWorkingHours(Integer averageWorkingHours) {
 		this.averageWorkingHours = averageWorkingHours;
 	}
-
-	
 	
 }

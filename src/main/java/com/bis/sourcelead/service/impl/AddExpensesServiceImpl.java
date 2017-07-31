@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -110,6 +111,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
+	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
 		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
@@ -130,10 +133,10 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
 	}
 	if (jsonObj.has("startDateExpense") && !(jsonObj.getString("startDateExpense").isEmpty())){
-		expenses.setStartDate(Constants.DMY.parse(jsonObj.getString("startDateExpense")));
+		expenses.setStartDate(dateFormat.parse(jsonObj.getString("startDateExpense")));
 	}
 	if (jsonObj.has("endDateExpense") && !(jsonObj.getString("endDateExpense").isEmpty())){
-		expenses.setEndDate(Constants.DMY.parse(jsonObj.getString("endDateExpense")));
+		expenses.setEndDate(dateFormat.parse(jsonObj.getString("endDateExpense")));
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);

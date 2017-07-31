@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class BillingPayableRestController {
 		    String resultJson;
 		 
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		  
+		  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		    if(null != invoice){
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
@@ -124,10 +125,10 @@ public class BillingPayableRestController {
 				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	if(invoice.getInvoiceDate() != null){
-		    		invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));	
+		    		invoice.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
 		    	}
 		    	if(invoice.getDueDate() != null){
-		    		invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));	
+		    		invoice.setDueDateStr(dateFormat.format(invoice.getDueDate()));	
 		    	}
 		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
@@ -171,11 +172,11 @@ public class BillingPayableRestController {
 		    		
 		    		
 		    		if(null != lineItems.getStartDate()){
-		    			lineItems.setStartDateStr(Constants.DMY.format(lineItems.getStartDate()));
+		    			lineItems.setStartDateStr(dateFormat.format(lineItems.getStartDate()));
 		    		}
 		    		
 		    		if(null != lineItems.getEndDate()){
-		    			lineItems.setEndDateStr(Constants.DMY.format(lineItems.getEndDate()));
+		    			lineItems.setEndDateStr(dateFormat.format(lineItems.getEndDate()));
 		    		}
 		    		
 		    		lineItems.setCandidateName(sb.toString());

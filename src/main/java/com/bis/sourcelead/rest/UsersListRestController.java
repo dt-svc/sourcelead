@@ -96,6 +96,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -556,14 +557,14 @@ public class UsersListRestController {
 		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
 
 		userRole.setUserType(userRole.getUserType());
-
+		
 		if (employee != null) {
 			userRole.setEmployeeId(employee.getEmployeeId());
 			userRole.setRate(employee.getRate());
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			if (employee.getHireDate() != null) {
-				userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_DMY.format(employee.getHireDate()));
+				userRole.setHireDateStr(LoginSessionController.DATEFORMAT.format(employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}

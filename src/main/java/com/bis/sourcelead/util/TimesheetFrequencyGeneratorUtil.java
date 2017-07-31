@@ -2,6 +2,7 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Component
 public  class TimesheetFrequencyGeneratorUtil {
@@ -32,7 +34,9 @@ public  class TimesheetFrequencyGeneratorUtil {
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 				Date empStartDate = projects.getStartDate();
 				Date empEndDate = CommonUtil.currentDate();
-				DateFormat format = Constants.DF_STD_DMY;
+				//DateFormat format = Constants.DF_STD_DMY;
+				
+				SimpleDateFormat format=projects.getOrgLocationsId().getLocFullFormDateFormatter();
 				 
 				 try {
 					    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
@@ -329,7 +333,8 @@ public  class TimesheetFrequencyGeneratorUtil {
 				if(dateList != null  && !dateList.isEmpty()){
 					Date empStartDate = dateList.get("STARTDATE");
 					Date empEndDate = dateList.get("ENDDATE");
-					DateFormat format = Constants.DF_STD_DMY;
+					//DateFormat format = Constants.DF_STD_DMY;
+					DateFormat  format = LoginSessionController.DATEFORMAT;
 					 try {
 						    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
 						   
@@ -699,7 +704,8 @@ public  class TimesheetFrequencyGeneratorUtil {
 	public Map<String,String> getTabFrequencyListFromProjectInvoiceFrequency(String startDate,String endDate) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)){
-		 	    DateFormat format = Constants.DF_DMY;
+		 	    //DateFormat format = Constants.DF_DMY;
+			DateFormat  format = LoginSessionController.DATEFORMAT;
 		        try {
 		            Date stDate = format.parse(startDate);
 		            Date enDate = format.parse(endDate);
