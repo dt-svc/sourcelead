@@ -89,6 +89,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -375,7 +376,7 @@ public class RequirementListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		if (requirementId != null && !requirementId.isEmpty()) {
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
-			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+			User intiatorUser = userService.getUserById(requirement.getCreatedBy().getId());
 			 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 			 if(requirement.getCreatedDate()!=null){
 					requirement.setRequirementCreatedDateToString(formatter.format(requirement.getCreatedDate()));
@@ -561,7 +562,8 @@ public class RequirementListRestController {
 		
 		String resultJson = null;
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		
 		/*Timezone timezone = null;
 		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		if (null != loginOrgLocation.getTimezone()) {
@@ -1387,13 +1389,13 @@ public class RequirementListRestController {
 							else {
 								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
-							requirementSubmission.setSubmittedOn(Constants.DMY.format(requirementSubmissionHistory.getCreatedDate()));
+							requirementSubmission.setSubmittedOn(LoginSessionController.DATEFORMAT.format(requirementSubmissionHistory.getCreatedDate()));
 						}
 						if (requirementOffersList.size() > 0) {
 							RequirementOffers requirementOffers = requirementOffersList.get(0);
 							requirementSubmission.setOfferId(requirementOffers.getId());
 							if (requirementOffers.getDateOfJoining() != null) {
-								requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+								requirementSubmission.setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
 							}
 							if (requirementOffers.getPaymentType() != null) {
 								requirementSubmission.setPositionType(requirementOffers.getPaymentType());

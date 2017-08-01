@@ -96,6 +96,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class InvoiceRestController {
@@ -399,8 +400,8 @@ public class InvoiceRestController {
 			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = commonUtil.getDateFormat(customStartDate);
-				Date endTime = commonUtil.getDateFormat(customEndDate);
+				Date startTime = LoginSessionController.DATEFORMAT.parse(customStartDate);
+				Date endTime = LoginSessionController.DATEFORMAT.parse(customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -416,8 +417,6 @@ public class InvoiceRestController {
 		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 		
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		String currentDate = sdf.format(new Date());
 		Date todayDate = new Date();
 		
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -477,8 +476,8 @@ public class InvoiceRestController {
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
-					String dueDate = sdf.format(invoice.getDueDate());
-					Date invoiceDueDate = sdf.parse(dueDate);
+					String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+					Date invoiceDueDate = LoginSessionController.DATEFORMAT.parse(dueDate);
 					
 					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
 					
@@ -669,7 +668,7 @@ public class InvoiceRestController {
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
-	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
+	     		ip.setPaymentDateStr(LoginSessionController.DATEFORMAT.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
