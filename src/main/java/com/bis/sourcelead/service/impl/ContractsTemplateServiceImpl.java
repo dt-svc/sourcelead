@@ -46,6 +46,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -2333,7 +2334,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 					durationSb.append(currentDateInTimezone);
 //					globalVarsMap.put("StartDate",currentDateInTimezone);	
 				}
@@ -2345,7 +2346,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 					durationSb.append(" - ").append(currentDateInTimezone);
 				}
 		    }
