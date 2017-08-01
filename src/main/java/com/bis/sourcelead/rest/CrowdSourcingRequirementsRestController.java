@@ -1041,7 +1041,7 @@ public class CrowdSourcingRequirementsRestController {
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  commonUtil.getDateFormat(dateRange);
+			Date startTime =  LoginSessionController.DATEFORMAT.parse(dateRange);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);
@@ -1127,7 +1127,7 @@ public class CrowdSourcingRequirementsRestController {
 				Date endUTCDate = null;
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-				Date startTime =  commonUtil.getDateFormat(dateRange);
+				Date startTime =  LoginSessionController.DATEFORMAT.parse(dateRange);
 				
 				String startTimeTS = Constants.TZ_DF.format(startTime); 
 				String endTimeTS = END_TZ_DF.format(startTime);
