@@ -805,7 +805,7 @@ public class Constants {
 	public static final String CANDIDATE_COMMENTS_NEW = "has posted new comment";
 	public static final String CANDIDATE_ADDED_FROM_JOB = "has added candidate through ";
 	
-	
+	public static final String EXPENSES = "expenses";
 	
 
 }

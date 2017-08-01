@@ -73,6 +73,9 @@ public interface InvoiceService {
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
 	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
+
+	Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,List<MultipartFile> attachedfileList, String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+
 	
 
 }
