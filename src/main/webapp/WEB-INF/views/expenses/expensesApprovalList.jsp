@@ -113,7 +113,7 @@ margin-top: 3px;
 		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
 		   		</sec:authorize>
 				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
-					<li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
 						   <ul class="ul_padding">
 						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -164,6 +164,7 @@ $.ajax({
      url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
+    
 	result = result+' <table id="example">';
 	result = result+' <thead>';
 	result = result+' <tr>';
@@ -179,8 +180,7 @@ $.ajax({
 	result = result+' </tr>';
 	result = result+' </thead>';
 	result = result+' <tbody>';
-	
-	if(data !=''){
+	if(data !='' && data !=[] && data !='[]'){
 	var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
@@ -262,13 +262,15 @@ $.ajax({
 	 result = result+' </tr>';
 	 }
 	 $("#temp").val("temp");
-	  }else{
-	  }
 	result = result+' </tbody>';
 	result = result+' </table>';
+	}else{ 
+		$('#hideExportIfDataEmptyId').hide();
+	}
 	$("#approverDataExpensesDiv").empty();
 	$("#approverDataExpensesDiv").append(result);
 	pagination();
+	
   }
 });
 }
