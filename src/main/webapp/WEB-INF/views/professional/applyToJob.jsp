@@ -691,7 +691,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 		result = result + '<form id="applyToJob_form" name="applyToJob_form" method="post">';
-		result = result + '<div class="form-horizontal clearfix select-field">';
+		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 		result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
 		if(referId != null && referId != '' && referId != 'undefined'){
@@ -768,7 +768,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	else if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
 		
 		result = result + '<form id="submitCandidateToJob_form" name="submitCandidateToJob_form" enctype="multipart/form-data" method="post">';
-		result = result + '<div class="form-horizontal clearfix select-field">';
+		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 				
 		result = result + '<div class="row">';

@@ -6171,7 +6171,9 @@ color:#00a65a;
 .table_custompadding div.inputCustom{
        width: 205px;
 }
-
+.applicant-label .sjfb-field label {
+	width:28% !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
