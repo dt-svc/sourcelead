@@ -103,6 +103,7 @@ function getRequestedAssociatesList(){
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
 				result = result +'                     <th>Name</th>';
+				result = result +'                     <th>Location</th>';
 				result = result +'                     <th>Pay Rate</th>';
 				result = result +'                     <th>Bill Rate</th>';
 				result = result +'                     <th>Start Date</th>';
@@ -124,6 +125,10 @@ function getRequestedAssociatesList(){
 					    result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateName+'">'+opt.candidateName+'</div>';
 						result = result +'</td>'; 
+						
+						result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateLocation+'">'+opt.candidateLocation+'</div>';
+						result = result +'</td>';
 						
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.payRateStr+'">'+opt.payRateStr+'</div>';

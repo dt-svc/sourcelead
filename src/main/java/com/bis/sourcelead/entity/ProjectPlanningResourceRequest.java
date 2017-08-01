@@ -131,6 +131,10 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@JsonProperty
 	private String billRateStr;
 	
+    @Transient
+    @JsonProperty
+    private String candidateLocation;
+
 	
 	
 
@@ -409,6 +413,24 @@ public class ProjectPlanningResourceRequest implements Serializable{
 
 	public void setBillRateStr(String billRateStr) {
 		this.billRateStr = billRateStr;
+	}
+
+	public String getCandidateLocation() {
+		StringBuilder loc = new StringBuilder();
+		if(candidateId.getCity()!= null && !candidateId.getCity().isEmpty()){
+			candidateLocation = loc.append(candidateId.getOrgLocationId().getOrgLocationName()).append(", ").append(candidateId.getCity()).append(", ").append(candidateId.getState()).append(", ").append(candidateId.getCountry()).toString();
+		}else if(candidateId.getState() != null && !candidateId.getState().isEmpty() && candidateId.getCity() == null){
+			candidateLocation = loc.append(candidateId.getOrgLocationId().getOrgLocationName()).append(", ").append(candidateId.getState()).append(", ").append(candidateId.getCountry()).toString();
+		}else if(candidateId.getCountry() != null && !candidateId.getCountry().isEmpty() && candidateId.getState() == null && candidateId.getCity() == null){
+			candidateLocation = loc.append(candidateId.getOrgLocationId().getOrgLocationName()).append(", ").append(candidateId.getCountry()).toString();
+		}else{
+			candidateLocation = loc.append(candidateId.getOrgLocationId().getOrgLocationName()).toString();
+		}
+		return candidateLocation;
+	}
+
+	public void setCandidateLocation(String candidateLocation) {
+		this.candidateLocation = candidateLocation;
 	}
 	
 	

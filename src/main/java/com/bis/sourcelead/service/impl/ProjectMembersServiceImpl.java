@@ -734,5 +734,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsbyEmployeeId(employeeId);
 	}
 	
+	@Override
+	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId) throws Exception {
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
 
+		projectMemberList.forEach(pm -> {
+			StringBuilder sb = new StringBuilder();
+			if (pm.getEmployee().getUser().getLastName() != null) {
+				sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
+						.append(pm.getEmployee().getUser().getLastName());
+			} else {
+				sb.append(pm.getEmployee().getUser().getFirstName());
+			}
+			pm.setEmpName(sb.toString());
+		});
+		return (List<ProjectMembers>) projectMemberList;
+	}
 }
