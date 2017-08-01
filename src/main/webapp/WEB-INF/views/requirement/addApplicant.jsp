@@ -44,7 +44,7 @@ function getAddApplicant(requirementId){
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
-	result = result + '<div class="form-horizontal clearfix select-field">';
+	result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	
 	result = result + '<div class="row">';
