@@ -93,10 +93,9 @@ public class TaskServiceImpl implements TaskService{
 		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
 		if(null != date && "" != date){
-		
-		
-		Date startTime =  commonUtil.getDateFormat(date);
-		Date endTime =  commonUtil.getDateFormat(date);
+		DateFormat  sdf = LoginSessionController.DATEFORMAT;		
+		Date startTime =  sdf.parse(date);
+		Date endTime =  sdf.parse(date);
 		String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 		String customEndTimeStr = TZ_DF_CED.format(endTime);  
 		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -213,7 +212,7 @@ public class TaskServiceImpl implements TaskService{
 		    	}*/
 				
 				if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty() && jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
-				Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
+				Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
 				String currentTimeStr = Constants.TZ_DF.format(startTime);  
 				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE , currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
