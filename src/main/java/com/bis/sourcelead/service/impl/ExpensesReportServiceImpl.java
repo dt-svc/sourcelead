@@ -36,7 +36,6 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ExpensesReportService;
@@ -44,6 +43,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -116,12 +116,12 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 			    if(count==4)
 			    YearEndDate = Q1EndDate;
 			    
-			    String StartDate = Constants.DMY.format(Q1StartDate.getTime());
-			    String endDate = Constants.DMY.format(Q1EndDate.getTime());
+			    String StartDate = LoginSessionController.DATEFORMAT.format(Q1StartDate.getTime());
+			    String endDate = LoginSessionController.DATEFORMAT.format(Q1EndDate.getTime());
 			    startEndDate.put("Q"+count,StartDate+" TO "+endDate);
 			    count++;
 		   }
-		    startEndDate.put("All",Constants.DMY.format(YearStartDate.getTime())+" TO "+Constants.DMY.format(YearEndDate.getTime()));
+		    startEndDate.put("All",LoginSessionController.DATEFORMAT.format(YearStartDate.getTime())+" TO "+LoginSessionController.DATEFORMAT.format(YearEndDate.getTime()));
 			return startEndDate;
 		
 	}
@@ -169,8 +169,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = Constants.DMY.parse(startDate);
-		Date convertedEndDate = Constants.DMY.parse(endtDate);
+		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
+		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
 		 LinkedHashSet<String> dateformat = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate,convertedEndDate);
 		 	 String[] headersDetails = Constants.EXPENSES_REPORTS_HEADERS;
 		     String[] monthHedders = dateformat.toArray(new String[dateformat.size()]);
@@ -268,8 +268,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = Constants.DMY.parse(startDate);
-		Date convertedEndDate = Constants.DMY.parse(endtDate);
+		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
+		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
 		LinkedHashSet<String> dateList = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate, convertedEndDate);
 		DateFormat format =Constants.Y;
 		String year = format.format(convertedEndDate);
@@ -857,8 +857,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = Constants.DMY.parse(startDate);
-		Date convertedEndDate = Constants.DMY.parse(endtDate);
+		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
+		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
 		LinkedHashSet<String> dateformat = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate,convertedEndDate);
 		String[] headersDetails = Constants.EXPENSES_REPORTS_HEADERS;
 	     String[] monthHedders = dateformat.toArray(new String[dateformat.size()]);
@@ -900,8 +900,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = Constants.DMY.parse(startDate);
-		Date convertedEndDate = Constants.DMY.parse(endtDate);
+		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
+		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
 		LinkedHashSet<String> dateList = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate, convertedEndDate);
 		DateFormat format =Constants.Y;
 		String year = format.format(convertedEndDate);

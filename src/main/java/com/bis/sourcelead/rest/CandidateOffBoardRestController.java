@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class CandidateOffBoardRestController {
@@ -1440,7 +1441,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){

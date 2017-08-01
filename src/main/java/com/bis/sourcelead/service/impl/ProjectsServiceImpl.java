@@ -40,7 +40,6 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -80,6 +79,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -1048,9 +1048,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
 		 
-		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		 projects.setStartDateStr(LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
+		    	 projects.setEndDateStr(LoginSessionController.DATEFORMAT.format(changedEndDate));
 		    }
 			
 		    
@@ -1353,9 +1353,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
-	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
 			    }
 				
 			    
