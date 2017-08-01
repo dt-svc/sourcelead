@@ -192,11 +192,11 @@ public class SubmissionsRestController {
 			candidate.setCandidateResumeName(candidateResume.getFileName());
 		}
 		
-		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocationId);
+		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
 		if(null != currentEmployer){
 			candidate.setEmployer(currentEmployer.getName());
 		}else{
-			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
+			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
 			if(null != lastCompanyEmployer){
 				candidate.setEmployer(lastCompanyEmployer.getName());
 			}
