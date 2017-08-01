@@ -62,45 +62,47 @@ function contractList(){
 	                     
 	                     for (var i = 0; i < data.length; i++) { 
 	                    	 var opt = data[i]; 
-	                    	 result = result +"<tr>";
-	                    	 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-	                    		 result = result +"<td><div class=''><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></a></div></td>";
+	                    	 if(opt.contractUUID != null && opt.contractUUID !='' && opt.contractUUID !='undefined'){
+	                    		 result = result +"<tr>";
+		                    	 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
+		                    		 result = result +"<td><div class=''><span title='"+opt.candidateName+"'>"+opt.candidateName+"</span></a></div></td>";
+		                    	 }
+		                    	 else{
+		                    		 result = result +"<td><div>---</div></td>";
+		                    	 }
+		                    	 if(opt.jobTitle !=null && opt.jobTitle !='' && opt.jobTitle !='undefined'){
+		                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+		                    	 }else{
+			                    	 result = result +"<td><div class='tbldata-dotdot-sm'>---</div></td>";
+			                     }
+		                    	 if(opt.amount != null && opt.amount != '' && opt.amount != 'undefined' && opt.paymentMode != null && opt.paymentMode != '' && opt.paymentMode != 'undefined'){
+				                     result = result +"<td><div><span  title='"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"&nbsp;"+opt.rateType+"'>"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"</span></div></td>";
+			                     }else if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+				                     result = result +"<td><div>---</div></td>";
+			                     }
+		                    	 if(opt.dateOfJoiningStr != null && opt.dateOfJoiningStr != '' && opt.dateOfJoiningStr != 'undefined'){
+			                    	 result = result +"<td><div><span title='"+opt.dateOfJoiningStr+"'>"+opt.dateOfJoiningStr+"</span></div></td>";
+			                     }else{
+			                    	 result = result +"<td><div>---</div></td>";
+			                     }
+			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+			                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
+			                     }else{
+			                    	 result = result +"<td><div>---</div></td>";
+			                     }
+			                     if(opt.vendorContact != null && opt.vendorContact != '' && opt.vendorContact != 'undefined'){
+			                    	 result = result +"<td><div><span title='"+opt.vendorContact+"'>"+opt.vendorContact+"</span></div></td>";
+			                     }else{
+			                    	 result = result +"<td><div>---</div></td>";
+			                     }
+			                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"' title='Create Sow'>SOW</a>";
+			                     if(opt.vendorMsaCreated != true){
+			                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"' title='Create Msa'> / MSA</a>";
+			                     }
+			                     result = result +"</div></td>";
+			                     
+			                     result = result +"</tr>";
 	                    	 }
-	                    	 else{
-	                    		 result = result +"<td><div>---</div></td>";
-	                    	 }
-	                    	 if(opt.jobTitle !=null && opt.jobTitle !='' && opt.jobTitle !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-	                    	 }else{
-		                    	 result = result +"<td><div class='tbldata-dotdot-sm'>---</div></td>";
-		                     }
-	                    	 if(opt.amount != null && opt.amount != '' && opt.amount != 'undefined' && opt.paymentMode != null && opt.paymentMode != '' && opt.paymentMode != 'undefined'){
-			                     result = result +"<td><div><span  title='"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"&nbsp;"+opt.rateType+"'>"+opt.paymentType+"&nbsp;"+opt.amount+"/"+opt.paymentMode+"</span></div></td>";
-		                     }else if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
-			                     result = result +"<td><div>---</div></td>";
-		                     }
-	                    	 if(opt.dateOfJoiningStr != null && opt.dateOfJoiningStr != '' && opt.dateOfJoiningStr != 'undefined'){
-		                    	 result = result +"<td><div><span title='"+opt.dateOfJoiningStr+"'>"+opt.dateOfJoiningStr+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>---</div></td>";
-		                     }
-		                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-		                    	 result = result +"<td><div><span title='"+opt.clientName+"'>"+opt.clientName+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>---</div></td>";
-		                     }
-		                     if(opt.vendorContact != null && opt.vendorContact != '' && opt.vendorContact != 'undefined'){
-		                    	 result = result +"<td><div><span title='"+opt.vendorContact+"'>"+opt.vendorContact+"</span></div></td>";
-		                     }else{
-		                    	 result = result +"<td><div>---</div></td>";
-		                     }
-		                     result = result +"<td><div><a href='/sourcelead/addNewContract?contractUUID="+opt.contractUUID+"' title='Create Sow'>SOW</a>";
-		                     if(opt.vendorMsaCreated != true){
-		                    	 result = result +"<a href='/sourcelead/addNewContract?orgRelationId="+opt.orgRelationId+"' title='Create Msa'> / MSA</a>";
-		                     }
-		                     result = result +"</div></td>";
-		                     
-		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 

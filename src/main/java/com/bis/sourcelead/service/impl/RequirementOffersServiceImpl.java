@@ -1199,6 +1199,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			}
 			
 			Contracts contracts = contractsTemplateService.getContractByReqSubmissionSowTypeAndOrgLocId(offer.getSubmissionId().getId(), orglocation, Constants.Vendor_SOW);
+			if(contracts != null && contracts.getContractUUID() != null)
 			offer.setContractUUID(contracts.getContractUUID());
 			
 			Boolean flag = contractsTemplateService.getVendorMsaCreatedOrNot(offer.getSubmissionId().getVendorLocationId().getId(), orglocation.getId());
