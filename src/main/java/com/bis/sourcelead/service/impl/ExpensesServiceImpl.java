@@ -149,6 +149,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
 		
+		SimpleDateFormat dateFormatter=orgLoc.getLocFullFormDateFormatter();
 		String[] myExpensesHeaders = null;
 		 if(approverType.equalsIgnoreCase("USER")){
 				myExpensesHeaders = Constants.MY_EXPENSES_HEADERS;
@@ -157,12 +158,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 	myExpensesHeaders = Constants.MY_EXPENSES_HEADERS_APPROVER;
 		 }
 		Document document = new Document(PageSize.LETTER.rotate());
-		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    StringBuilder sbExpenses =  new StringBuilder();
 		    StringBuilder hedderLineString =  new StringBuilder();
-		    sbExpenses.append("Expenses_").append(dateFormat.format(new Date()));
+		    sbExpenses.append("Expenses_").append(dateFormatter.format(new Date()));
 		    StringBuilder fileSB = new StringBuilder();
-		    File file = File.createTempFile(fileSB.append("Expenses_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileSB.append("Expenses_").append(dateFormatter.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    
 		    try {
@@ -238,13 +239,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 			    	   orderedList.add(new ListItem(Client.append("Client :").append("--").toString()));  
 			       }
 			        if(null != expenseDetails.getStartDate()){
-			        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+			        	String StartDate = dateFormatter.format(expenseDetails.getStartDate());
 			        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
 			        }else{
 			        	orderedList.add(new ListItem(StDate.append("Start Date :").append("--").toString()));	
 			        }
 			        if(null != expenseDetails.getEndDate()){
-			        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+			        	String EndDate = dateFormatter.format(expenseDetails.getEndDate());
 			        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
 			        }else{
 			        	orderedList.add(new ListItem(edDate.append("End Date :").append("--").toString()));
@@ -318,13 +319,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            	client.append("--").toString();
 			            }
 				        if(null != expenseDetails.getStartDate()){
-				        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+				        	String StartDate = dateFormatter.format(expenseDetails.getStartDate());
 				        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
 				        }else{
 				        	orderedList.add(new ListItem(StDate.append("Start Date :").append("--").toString()));
 				        }
 				        if(null != expenseDetails.getEndDate()){
-				        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+				        	String EndDate = dateFormatter.format(expenseDetails.getEndDate());
 				        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
 				        }else{
 				        	orderedList.add(new ListItem(edDate.append("End Date :").append("--").toString()));
@@ -354,6 +355,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 
 	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
 		String userArray[] = new String[myExpensesHeaders.length];
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				if(null != expEntries.getExpensesCategoryId()){
 					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
 						   userArray[0] = expEntries.getExpensesCategoryId().getExpensesName();
@@ -363,7 +365,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 				}
 			if(null != expEntries.getExpenseDate())
 			{
-				expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+				expEntries.setExpenseDateString(dateFormat.format(expEntries.getExpenseDate()));
 				 userArray[1] = expEntries.getExpenseDateString();
 			}
 			if(expEntries.getReceiptIssuedBy() != null && !"".equalsIgnoreCase(expEntries.getReceiptIssuedBy())){	

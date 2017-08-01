@@ -3,7 +3,6 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -926,5 +927,20 @@ public class DashboardRestController {
 				resultJson = commonUtil.toJSON(expensesCount);
 				return resultJson;
 		   }
+		 
+		 /**
+		  * @author Pavan jampana
+		  * this method is for dashboard contracts List
+		  * @param status
+		  * @param request
+		  * @return contract list
+		  * @throws Exception
+		  */
+	@RequestMapping(value = "/getDashboardContracts", method = RequestMethod.POST)
+	public List<RequirementOffers> getDashboardContracts(@RequestParam(value = "locationId", required = false) Long locationId) throws Exception
+	{
+		List<RequirementOffers> offerList = requirementOffersService.getOfferAcceptedVendorCandidatesByOrgLocationId(locationId);
+		return offerList;
+	}
 		
 }

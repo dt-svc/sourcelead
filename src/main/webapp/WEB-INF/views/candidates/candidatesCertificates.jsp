@@ -204,6 +204,16 @@ function storeCertificate(candidateId){
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  canCerDatePattern = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  canCerDatePattern = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  canCerDatePattern = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  canCerDatePattern = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -235,8 +245,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from <br>(<small class='custom-small'>"+canCerDatePattern+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to <br>(<small class='custom-small'>"+canCerDatePattern+"</small>)</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -466,42 +476,37 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 		 
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatCerSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatCerSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatCerSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatCerSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatCerSave = 'yy-dd-mm'; 
+		  }
 		 
-		 /* $('html').click(function(){
-			$(".edit-details").removeClass("edit-details-active");
-		   });	 */
-		
-		
-		/*  $(".addUser-org").click(function(){
-			 $(".edit-details").toggleClass("edit-details-active");
-		 });  */
-		/* $(".edit-details").toggleClass("edit-details-active");
-		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-			 e.stopPropagation();
-		 }); */
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
-
 	  $('#StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatCerSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#StartDate"); 
+	           var dt = 	  $(this).datepicker('getDate', '+1d'); 
 	           dt.setDate(dt.getDate() + 1);
 	            $("#EndDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatCerSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	        onSelect: function (selected) {
 	            //var dt = new Date(selected);
-	            var dt = toDate("#EndDate");
+	            var dt = 	  $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#StartDate").datepicker("option", "maxDate", dt);
 	        }
@@ -641,53 +646,45 @@ function addCertification(candidateId) {
 								 });
 								 
 								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
-
-							  /*  var certificateStartDate = $("#StartDateEdit").val();
-								var certificateEndDate = $("#EndDateEdit").val(); */
-								
 								var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
 								var datepickerEndDate = toDate("#EndDateEdit");
 								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+								
+								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								  var finalDateFormatCerUpdate = '';
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerUpdate = 'yy-mm-dd';
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerUpdate = 'dd-mm-yy'; 
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerUpdate = 'mm-dd-yy'; 
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerUpdate = 'yy-dd-mm'; 
+								  }
 							   
 							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  maxDate: datepickerEndDate,
+							  	  //maxDate: datepickerEndDate,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
-							            var dt = toDate("#StartDateEdit");
+							            var dt = $(this).datepicker('getDate', '+1d');
 							            dt.setDate(dt.getDate() + 1);
 							            $("#EndDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  minDate: datepickerStartDate,
+							  	  //minDate: datepickerStartDate,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
-							            var dt = toDate("#EndDateEdit");
+							            var dt = $(this).datepicker('getDate', '-1d');
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 							        }
