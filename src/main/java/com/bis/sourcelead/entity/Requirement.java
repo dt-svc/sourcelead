@@ -84,6 +84,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
 	
+	@Column(name = "APPRVER_HIERARCHY")
+	private String approverHierarchy;
+	
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -239,8 +242,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
-	@Column(name = "CREATED_BY")
-	private String createdBy;
+	@ManyToOne
+    @JoinColumn(name="CREATED_BY", nullable=false )        
+    private User createdBy;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -820,11 +824,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy() {
+	
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -1545,6 +1550,14 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public String getGeneratedId()
 	{
 		return generatedId;
+	}
+
+	public String getApproverHierarchy() {
+		return approverHierarchy;
+	}
+
+	public void setApproverHierarchy(String approverHierarchy) {
+		this.approverHierarchy = approverHierarchy;
 	}
 
 	public void setGeneratedId(String generatedId)

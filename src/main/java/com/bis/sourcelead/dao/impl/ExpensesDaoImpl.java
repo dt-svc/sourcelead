@@ -165,4 +165,14 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		}
 		return expense;
 	}
+
+	@Override
+	@Transactional
+	public List getExpensesByProjectMemberId(Long projectMemberId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where pm.id =:projectMemberId").setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		
+		return expensesList;
+	}
+
 }

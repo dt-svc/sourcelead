@@ -140,7 +140,7 @@ public class TimesheetController {
 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMemberId);
 		    
 		    ModelAndView model = new ModelAndView();
-			DateFormat format = Constants.DF_DMY;
+			DateFormat format = LoginSessionController.DATEFORMAT;
 			if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
