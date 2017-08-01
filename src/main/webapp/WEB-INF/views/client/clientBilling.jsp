@@ -252,7 +252,16 @@ result = result  +'    <div class="billingArea"> ';
 <script type="text/javascript">
 	function getInvoiceListBasedonClient(orgRelationId,clientLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
-		
+		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  billingClientDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  billingClientDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  billingClientDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  billingClientDate = 'YYYY-DD-MM'; 
+		  } 
 		var invoice = [];
 		var payment = [];
 		var dayWisetype = $("#dayWiseTypeId").val();
@@ -306,10 +315,10 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'       <tr>                             ';
 			result = result +'         <th>Invoice ID</th>                    ';
 			result = result +'         <th>Client Contact</th>               ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingClientDate+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due date</th>              ';
+			result = result +'         <th>Due date <br>(<small class="custom-small">'+billingClientDate+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';

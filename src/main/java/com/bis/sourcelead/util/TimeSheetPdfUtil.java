@@ -41,6 +41,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.ExportTimesheetEntriesImpl;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -122,7 +123,7 @@ public class TimeSheetPdfUtil {
      */
 	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations) throws Exception {
 
-		DateFormat format = Constants.DF_DMY;
+		DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
 		Map<String,Date> weekDates = new HashMap<>();
 		

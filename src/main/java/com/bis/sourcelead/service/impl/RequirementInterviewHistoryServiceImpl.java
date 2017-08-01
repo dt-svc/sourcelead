@@ -93,6 +93,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		List<RequirementInterviewHistory> ineterviewList = new ArrayList<RequirementInterviewHistory>();
 		List<RequirementInterviewHistory> interviewslist  = requirementInterviewHistoryDao.getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId(submissionId,orgLocation.getId());
+		SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		if (interviewslist != null && !interviewslist.isEmpty() ) {
 			for (RequirementInterviewHistory interviewHistory : interviewslist) {
 				
@@ -114,11 +115,11 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DMY.format(converteDate);
+					currentDateInTimezone = dateFormat.format(converteDate);
 					
 					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+					interviewDateInTimezone = dateFormat.format(interviewConverteDate);
 					interviewHistory.setDateOfInterviewStr(currentDateInTimezone);
 					interviewHistory.setInterviewTimezoneDateStr(interviewDateInTimezone);
 					
