@@ -881,9 +881,19 @@ function getAssociateUserDetails(){
 <!-- start script for datepicker -->
 <script>
   $( function() {
-	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
 	  $('#DateofJoin').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      //minDate: 0  this line for to restrict selection of previous dates

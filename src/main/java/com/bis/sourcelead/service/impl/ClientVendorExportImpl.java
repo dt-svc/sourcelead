@@ -311,10 +311,12 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			 sb.append(ProjectApproverHierarchy.getApproverUserId().getFirstName()).append(",");
 		 }
 		 String projectManager = sb.substring(0, sb.length()-1);
+		 
+		SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
 		if(!"pdf".equalsIgnoreCase(exportType)){
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
-			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			//DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			StringBuilder projName=new StringBuilder();
 			Sheet sheet = wb.createSheet(projName.append(project.getProjectName()).append("_").append(dateFormat.format(new Date())).toString());
 			Row writeRow = null;
@@ -357,7 +359,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 
 	private void setExcelTitle(Sheet sheet, String projectName, Projects project, Workbook wb, Row writeRow, String projectManager) {
 		
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		//DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		
+		SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
 		CellStyle style = wb.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);

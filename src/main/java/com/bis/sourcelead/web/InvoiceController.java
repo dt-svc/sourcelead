@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,10 +83,11 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
+		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		model.setViewName("billing/createInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
-		String convertedDate = Constants.DMY.format(currentDate);
+		String convertedDate = formatter.format(currentDate);
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -187,6 +189,7 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
@@ -226,7 +229,7 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
@@ -243,7 +246,7 @@ public class InvoiceController {
 		}
 		
 		Date currentDate = new Date();
-		String convertedDate = Constants.DMY.format(currentDate);
+		String convertedDate = dateFormat.format(currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -259,7 +262,7 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -275,7 +278,7 @@ public class InvoiceController {
 			sessionData = new SessionMaintainanceData();
 		}
 		Date currentDate = new Date();
-		String convertedDate = Constants.DMY.format(currentDate);
+		String convertedDate = dateFormat.format(currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectPayableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);

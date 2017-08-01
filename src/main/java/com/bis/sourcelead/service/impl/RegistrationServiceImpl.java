@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
-import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -465,6 +464,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setZipCode(registration.getZipCode());
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
+		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
