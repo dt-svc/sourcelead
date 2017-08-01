@@ -140,6 +140,10 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private Map<String,String> monthsStringFormat;
+	
+	@Transient
+	@JsonProperty
+	private String dateFrequency;
     
 	
 	public Long getId() {
@@ -361,6 +365,18 @@ private static final long serialVersionUID = 1L;
 
 	public void setMonthsStringFormat(Map<String, String> monthsStringFormat) {
 		this.monthsStringFormat = monthsStringFormat;
+	}
+
+	public String getDateFrequency() {
+		return dateFrequency;
+	}
+
+	public void setDateFrequency(String dateFrequency) {
+		this.dateFrequency = dateFrequency;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 

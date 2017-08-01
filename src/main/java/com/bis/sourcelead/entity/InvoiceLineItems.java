@@ -87,6 +87,21 @@ public class InvoiceLineItems {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "QUANTITY")
+	private String quantity;
+	
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Transient
 	private String candidateName;
 	
