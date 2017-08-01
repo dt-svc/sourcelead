@@ -134,14 +134,14 @@ function errRemoveVendorContact(){
 							<label class="col-md-3">Billing Address</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Billing Address"></textarea>
+									name="billingAddress" placeholder="Billing Address" data-validation="validate_length length1-100" field-name="Billing Address"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details"></textarea>
+									 name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
 							</div>
 						</div>
 						
