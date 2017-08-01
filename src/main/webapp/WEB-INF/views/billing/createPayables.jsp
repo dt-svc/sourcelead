@@ -630,10 +630,22 @@ function errRemoveVendorContact(){
 				cell0.innerHTML = text;
 				
 				
+				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				   var finalDateFormatpayableEdit = '';
+				  if(locationDate.match("yyyy-MM-dd")){
+					  finalDateFormatpayableEdit = 'yy-mm-dd';
+				  }if(locationDate.match("dd-MM-yyyy")){
+					  finalDateFormatpayableEdit = 'dd-mm-yy'; 
+				  }if(locationDate.match("MM-dd-yyyy")){
+					  finalDateFormatpayableEdit = 'mm-dd-yy'; 
+				  }if(locationDate.match("yyyy-dd-MM")){
+					  finalDateFormatpayableEdit = 'yy-dd-mm'; 
+				  }
+				
 				$( "#"+maxRowNum+"sdate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatpayableEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }
@@ -642,7 +654,7 @@ function errRemoveVendorContact(){
 				$( "#"+maxRowNum+"edate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatpayableEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
 				 	  }

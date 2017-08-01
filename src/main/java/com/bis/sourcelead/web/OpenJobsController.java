@@ -77,7 +77,7 @@ public class OpenJobsController {
 		 //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Requirement requirementDetails =  requirementService.getRequirementByRequirementUUID(requirementUUID);
 		 model.addObject("requirementDetails", requirementDetails);
-		 String requirementCreatedDate = Constants.DMY.format(requirementDetails.getCreatedDate());
+		 String requirementCreatedDate = LoginSessionController.DATEFORMAT.format(requirementDetails.getCreatedDate());
 		 model.addObject("requirementCreatedDate", requirementCreatedDate);
 		 model.setViewName("openJobs/openjobs");
 		 //Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());

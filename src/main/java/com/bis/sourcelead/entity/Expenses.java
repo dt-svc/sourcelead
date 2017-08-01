@@ -29,6 +29,7 @@ import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -139,6 +140,10 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private Map<String,String> monthsStringFormat;
+	
+	@Transient
+	@JsonProperty
+	private String dateFrequency;
     
 	
 	public Long getId() {
@@ -289,7 +294,7 @@ private static final long serialVersionUID = 1L;
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr =	Constants.DF_DMY.format(startDate);
+			startDateStr =	LoginSessionController.DATEFORMAT.format(startDate);
 		}
 		
 		return startDateStr;
@@ -301,7 +306,7 @@ private static final long serialVersionUID = 1L;
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = Constants.DF_DMY.format(endDate);
+			endDateStr = LoginSessionController.DATEFORMAT.format(endDate);
 		}
 		return endDateStr;
 	}
@@ -360,6 +365,18 @@ private static final long serialVersionUID = 1L;
 
 	public void setMonthsStringFormat(Map<String, String> monthsStringFormat) {
 		this.monthsStringFormat = monthsStringFormat;
+	}
+
+	public String getDateFrequency() {
+		return dateFrequency;
+	}
+
+	public void setDateFrequency(String dateFrequency) {
+		this.dateFrequency = dateFrequency;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 

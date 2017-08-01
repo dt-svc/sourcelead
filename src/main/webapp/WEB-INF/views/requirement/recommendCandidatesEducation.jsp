@@ -292,19 +292,31 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecoEduSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecoEduSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecoEduSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecoEduSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecoEduSave = 'yy-dd-mm'; 
+	  }
+	
 	$('#startDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduSave,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	    	  	var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduSave,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	        	var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -529,19 +541,31 @@ function EditEducation(candidateId,candidateEducationId) {
 	function educationStartDate(){
 	}
 	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecoEduEdit = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecoEduEdit = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecoEduEdit = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecoEduEdit = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecoEduEdit = 'yy-dd-mm'; 
+	  }
+	
 	$('#startDateEdit').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduEdit,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	    	  var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduEdit,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	        	var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }

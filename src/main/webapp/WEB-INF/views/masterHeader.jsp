@@ -827,20 +827,32 @@ function notificationStatusAsRead(){
 </script> 
 
 <script type="text/javascript">
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormattask = '';
+if(locationDate.match("yyyy-MM-dd")){
+	finalDateFormattask = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	finalDateFormattask = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	finalDateFormattask = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	finalDateFormattask = 'yy-dd-mm'; 
+}
 $('#taskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,
 	onSelect : function(selected) {
-		var dt = new Date(selected);
+		//var dt = new Date(selected);
+		 var dt = $(this).datepicker('getDate', '+1d');
 		dt.setDate(dt.getDate() + 1);
 		removevalidation();
 	}
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -849,7 +861,7 @@ $('#myTaskDatpicker').datepicker({
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -857,7 +869,7 @@ $('#assignedTaskDatpicker').datepicker({
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
