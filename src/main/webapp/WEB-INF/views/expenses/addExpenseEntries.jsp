@@ -191,7 +191,7 @@ function addAttachment(entityRowId,from){
     <div id="categoryTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
-   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot-me">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
     <div id="expenseAmountDivREPLACEROWID">--</div>
