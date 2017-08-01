@@ -77,6 +77,16 @@ function clientRequirementList(orgRelationId){
 		
 		var orgRelationId =$("#orgRelationId").val();
 		var sourceleadUrl = '${sourceleadUrl}';
+		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  reqListClientDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  reqListClientDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  reqListClientDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  reqListClientDate = 'YYYY-DD-MM'; 
+		  } 
 		var status = [];
 		$('input:checkbox[name=requirementStatusFilter]:checked').each(function() 
 	    {
@@ -109,7 +119,7 @@ function clientRequirementList(orgRelationId){
 	        	result = result + '<th>Title</th>';
 	            result = result + '<th>Location</th>';
 	            result = result + '<th>Type</th>';
-	            result = result + '<th>Posted Date</th>';
+	            result = result + '<th>Posted Date <br>(<small class="custom-small">'+reqListClientDate+'</small>)</th>';
 	            result = result + '<th>Owner</th>';
 	            result = result + '<th>Submissions</th>';
 	            result = result + '<th>Offer</th>';

@@ -629,8 +629,19 @@
 
 						//Main project end date
 						var projectEndDate = json.endDateStr;
+						 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+						  var finalDateFormatEduSave = '';
+						  if(locationDate.match("yyyy-MM-dd")){
+							  finalDateFormatEduSave = 'yy-mm-dd';
+						  }if(locationDate.match("dd-MM-yyyy")){
+							  finalDateFormatEduSave = 'dd-mm-yy'; 
+						  }if(locationDate.match("MM-dd-yyyy")){
+							  finalDateFormatEduSave = 'mm-dd-yy'; 
+						  }if(locationDate.match("yyyy-dd-MM")){
+							  finalDateFormatEduSave = 'yy-dd-mm'; 
+						  }
 						$('#endDateStr1').datepicker({
-							dateFormat : 'dd-mm-yy',
+							dateFormat : finalDateFormatEduSave,
 							showOn: 'focus',
 				            showButtonPanel: true,
 				            closeText: 'Clear', 

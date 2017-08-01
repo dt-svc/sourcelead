@@ -41,6 +41,8 @@ public class Registration {
 	
 	private String longtude;
 	
+	private String dateFormat;
+	
 
 	public String getTimeZone() {
 		return timeZone;
@@ -201,4 +203,14 @@ public class Registration {
 	public void setLongtude(String longtude) {
 		this.longtude = longtude;
 	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+	
+	
 }

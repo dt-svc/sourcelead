@@ -28,6 +28,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -799,7 +800,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
 					if(null != candidateIndex.getUpdatedDate()){
 						Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
-						String  strDate = new SimpleDateFormat("dd-MM-yyyy").format(date1);
+						String  strDate = new SimpleDateFormat(recommendedCustomizeScore.getOrgLocationId().getDateFormat()).format(date1);
 						candidateIndex.setUpdatedDate(strDate);	
 					}
 					
@@ -890,8 +891,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					}
 		 }
 		return eduPer;
-		
-	}
+}
 	
 	
 	/**

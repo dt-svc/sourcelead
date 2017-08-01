@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author shivayogi
@@ -82,6 +83,8 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			if (jsonObject.has("name")) {
 				if(candidatecertificate != null && candidatecertificate.getName() != null && candidatecertificate.getName() != "" && !candidatecertificate.getName().equalsIgnoreCase(jsonObject.getString("name"))){
 					activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidatecertificate.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}else if(candidatecertificate != null && candidatecertificate.getId() == null){
+					activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END);
 				}
 				candidatecertificate.setName(jsonObject.getString("name"));
 			}
@@ -190,10 +193,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;
@@ -214,12 +217,15 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 */
 	@Override
 	public CandidateCertifications removeCandidateCertificateBycandidateIdandcandidateCertificateId(
-			Long candidateId, Long candidateCertificateId) throws Exception {
+			Long candidateId, Long candidateCertificateId, User user, OrgLocations orgLocation) throws Exception {
 
 	     CandidateCertifications can = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
 	     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 	     can = candidateCertificationsDao.storeCandidateCertifications(can);
-	     
+	     StringBuffer activitySummary = new StringBuffer();
+	     activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+		 candidateActivityCommonUtil.storeCandidateCertificationsHistory(can, user);
+		 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocation, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_CERTIFICATION, activitySummary.toString(), "CANDIDATE");
 
 	     /*
 		 * updating Candidate Employer DB data in existing candidateindex

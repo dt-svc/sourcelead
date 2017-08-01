@@ -49,7 +49,7 @@
 	</defaultCache>
 	<!-- Transactions are enabled on a cache-by-cache basis with the transactionalMode 
 		cache attribute. The allowed values are: *xa_strict *xa *local *off The default 
-		value is â€œoff.â€ In the following example, â€œxa_strictâ€ is enabled. timeToIdleSeconds="300" 
+		value is Ã¢â‚¬Å“off.Ã¢â‚¬Â In the following example, Ã¢â‚¬Å“xa_strictÃ¢â‚¬Â is enabled. timeToIdleSeconds="300" 
 		timeToLiveSeconds="600" diskExpiryThreadIntervalSeconds="1" -->
 
 
