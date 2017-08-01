@@ -97,6 +97,7 @@ import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -2986,7 +2987,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 					reqsub.setSubmittedOn(currentDateInTimezone);
 				}
 		    }

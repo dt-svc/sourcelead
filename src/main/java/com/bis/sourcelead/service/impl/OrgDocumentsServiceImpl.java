@@ -21,6 +21,7 @@ import com.bis.sourcelead.service.OrgDocumentsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 
 /**
@@ -207,10 +208,10 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
         logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsById(Id);
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+            documents.setStartDateStr(LoginSessionController.DATEFORMAT.format(documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+           documents.setEndDateStr(LoginSessionController.DATEFORMAT.format(documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());

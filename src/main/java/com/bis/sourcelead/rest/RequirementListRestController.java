@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -87,6 +86,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -1336,13 +1336,13 @@ public class RequirementListRestController {
 							else {
 								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
-							requirementSubmission.setSubmittedOn(Constants.DMY.format(requirementSubmissionHistory.getCreatedDate()));
+							requirementSubmission.setSubmittedOn(LoginSessionController.DATEFORMAT.format(requirementSubmissionHistory.getCreatedDate()));
 						}
 						if (requirementOffersList.size() > 0) {
 							RequirementOffers requirementOffers = requirementOffersList.get(0);
 							requirementSubmission.setOfferId(requirementOffers.getId());
 							if (requirementOffers.getDateOfJoining() != null) {
-								requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+								requirementSubmission.setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
 							}
 							if (requirementOffers.getPaymentType() != null) {
 								requirementSubmission.setPositionType(requirementOffers.getPaymentType());

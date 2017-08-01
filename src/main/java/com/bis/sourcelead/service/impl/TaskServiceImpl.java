@@ -27,7 +27,6 @@ import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
@@ -42,6 +41,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -122,7 +122,7 @@ public class TaskServiceImpl implements TaskService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = Constants.DMY.format(converteDate);
+				currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 				tk.setTaskDateStr(currentDateInTimezone);
 		    }
 			if(tk.getTaskTime() != null){
