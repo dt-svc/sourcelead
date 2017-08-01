@@ -1453,8 +1453,8 @@ public class CandidateListRestController {
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  commonUtil.getDateFormat(customStartDate);
-								Date endTime =  commonUtil.getDateFormat(customEndDate);
+								Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+								Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 								String customStartTimeStr = null;
 								String customEndTimeStr = null;
 								if(null !=startTime){

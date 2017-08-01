@@ -640,7 +640,7 @@ public class CandidateServiceImpl implements CandidateService {
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
-			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+			 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
 			}
 		}
 		return candidateList;

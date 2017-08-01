@@ -492,7 +492,7 @@ public class Projects implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = Constants.DMY.format(endDate);
+			endDateStr = LoginSessionController.DATEFORMAT.format(endDate);
 		}
 		return endDateStr;
 	}
