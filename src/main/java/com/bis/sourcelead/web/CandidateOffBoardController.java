@@ -96,7 +96,7 @@ public class CandidateOffBoardController {
 			List<Tasks> taskList = new ArrayList<Tasks>();
 			if(null != tasksList && tasksList.size() > 0){
 				for(Tasks tasks : tasksList){
-					tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+					tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
 					taskList.add(tasks);
 				}
 				

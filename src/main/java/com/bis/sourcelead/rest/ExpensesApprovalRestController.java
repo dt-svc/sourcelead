@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class ExpensesApprovalRestController {
@@ -115,9 +116,9 @@ public class ExpensesApprovalRestController {
 	@RequestMapping(value = "/getExpensesApprovalDetailsByExpenseId")
 	public String getExpensesApprovalListByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId) throws Exception {
 		Expenses expenses = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
-		expenses.setStartDateStr(Constants.DMY.format(expenses.getStartDate()));
+		expenses.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenses.getStartDate()));
 		if(null != expenses.getEndDate()){
-		expenses.setEndDateStr(Constants.DMY.format(expenses.getEndDate()));
+		expenses.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenses.getEndDate()));
 		}	
 		return commonUtil.toJSON(expenses);
    }

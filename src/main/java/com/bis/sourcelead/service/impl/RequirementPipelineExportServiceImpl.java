@@ -27,7 +27,7 @@ import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementPipelineExportServiceImpl implements RequirementPipelineExportService {
@@ -427,7 +427,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		StringBuilder interviewStringBuilder = new StringBuilder();
 		for(RequirementInterview listInterviews:rquirementInterviews){
 			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
-				writeRow.createCell(4).setCellValue( Constants.DMY.format(listInterviews.getDateOfInterview()));
+				writeRow.createCell(4).setCellValue( LoginSessionController.DATEFORMAT.format(listInterviews.getDateOfInterview()));
 			}
 			if(listInterviews.getStartTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getStartTimeStr()) && listInterviews.getEndTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getEndTimeStr())){
 				writeRow.createCell(5).setCellValue(  interviewStringBuilder.append(listInterviews.getStartTimeStr()).append("-").append(listInterviews.getEndTimeStr()).toString());
