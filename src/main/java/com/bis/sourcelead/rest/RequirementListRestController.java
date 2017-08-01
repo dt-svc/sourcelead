@@ -182,6 +182,7 @@ public class RequirementListRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 		List<Requirement> requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(), status, clients, user, userRoleName);
 		for (Requirement requirement : requirementList) {
 			/*
@@ -194,7 +195,8 @@ public class RequirementListRestController {
 			 * requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.
 			 * toString()); } }
 			 */
-			requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
+			
+			requirement.setPostedDateStr(formatter.format(requirement.getCreatedDate()));
 			/*
 			 * int totalApplicatsCountForRequirement = 0;
 			 * totalApplicatsCountForRequirement = requirementSubmissionService.
@@ -373,8 +375,12 @@ public class RequirementListRestController {
 		if (requirementId != null && !requirementId.isEmpty()) {
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
+			 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+			 if(requirement.getCreatedDate()!=null){
+					requirement.setRequirementCreatedDateToString(formatter.format(requirement.getCreatedDate()));
+				}
 			if (null != requirement.getClosedDate()) {
-				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
+				requirement.setClosedDateStringFormat(formatter.format(requirement.getClosedDate()));
 			}
 			// to get the RequirementApproverHierarchy to set the Status
 			Boolean isLoginUserAsApprover = false;
@@ -546,6 +552,7 @@ public class RequirementListRestController {
 		String resultJson = null;
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Timezone timezone = null;
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		if (null != loginOrgLocation.getTimezone()) {
 			timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
 		}
@@ -587,7 +594,7 @@ public class RequirementListRestController {
 									RequirementOffers requirementOffershis = requirementOfferHistory.getOfferId();
 									requirementSubmission.setOfferId(requirementOffershis.getId());
 									if (requirementOffershis.getDateOfJoining() != null) {
-										requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffershis.getDateOfJoining()));
+										requirementSubmission.setOfferJoinDate(dateFormat.format(requirementOffershis.getDateOfJoining()));
 									}
 									if (requirementOffershis.getPositionType() != null) {
 										requirementSubmission.setPositionType(requirementOffershis.getPositionType());
@@ -604,7 +611,7 @@ public class RequirementListRestController {
 								RequirementOffers requirementOffers = requirementOffersList.get(0);
 								requirementSubmission.setOfferId(requirementOffers.getId());
 								if (requirementOffers.getDateOfJoining() != null) {
-									requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+									requirementSubmission.setOfferJoinDate(dateFormat.format(requirementOffers.getDateOfJoining()));
 								}
 								if (requirementOffers.getPositionType() != null) {
 									requirementSubmission.setPositionType(requirementOffers.getPositionType());
@@ -715,7 +722,7 @@ public class RequirementListRestController {
 								String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 								DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-								currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+								currentDateInTimezone = dateFormat.format(converteDate);
 								requirementSubmission.setCreatedDateStr(currentDateInTimezone);
 								SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 								String time = localDateFormat.format(converteDate);
@@ -728,7 +735,7 @@ public class RequirementListRestController {
 								String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 								DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-								currentDateInTimezone = Constants.DF_STD_DMY.format(converteDate);
+								currentDateInTimezone = dateFormat.format(converteDate);
 								requirementSubmission.setUpDatedStr(currentDateInTimezone);
 							}
 						}

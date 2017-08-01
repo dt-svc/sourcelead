@@ -67,7 +67,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
 		    if(jsonObj.has("maxRecCount")){
 			int maxCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
-
+			SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 			for (int c = 1; c < maxCount; c++) {
 					ExpensesEntries  entries  = new ExpensesEntries();
 					if(jsonObj.has("expenseEntryId"+c)){
@@ -82,7 +82,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					if(jsonObj.has("categoryDate"+c)){
 						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-						Date date = Constants.DF_DMY.parse(jsonObj.getString("categoryDate"+c));
+						Date date = dateFormat.parse(jsonObj.getString("categoryDate"+c));
 						String currentTimeStr = Constants.TZ_DF.format(date);  
 						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);

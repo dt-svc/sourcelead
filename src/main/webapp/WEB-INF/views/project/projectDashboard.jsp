@@ -399,7 +399,7 @@ function filter(){
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  result = result +'<td data-title="Name"><div><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a></div></td>';
+   		    		  result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a><i class="fa fa-binoculars"></i></div></td>';
    		    		'</sec:authorize>';
    		    		
    		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'

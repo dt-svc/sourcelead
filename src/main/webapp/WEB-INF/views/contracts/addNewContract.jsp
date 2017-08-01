@@ -668,12 +668,23 @@
 
 <script>
 	$(function() {
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatContractSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatContractSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatContractSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatContractSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatContractSave = 'yy-dd-mm'; 
+		  }
 		$('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
-                  var dt = toDate("#startDate");
+            	var dt = $(this).datepicker('getDate', '+1d');
                   dt.setDate(dt.getDate() + 1);
                   $("#endDate").datepicker("option", "minDate", dt);
                   removeValid();
@@ -681,17 +692,17 @@
         });
         
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatContractSave,
             changeMonth: true,
               changeYear: true,
               onSelect: function (selected) {
-                  var dt = toDate("#endDate");
+            	  var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
         $('#joinDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {

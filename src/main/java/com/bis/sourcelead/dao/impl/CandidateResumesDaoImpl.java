@@ -249,4 +249,19 @@ public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
 	return candidateResumes;
 }
 
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception {
+	
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ";  
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+	CandidateResumes candidateResumes = null;
+	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
+		candidateResumes = candidateResumesList.iterator().next();
+	}
+	return candidateResumes;
+}
+
 }

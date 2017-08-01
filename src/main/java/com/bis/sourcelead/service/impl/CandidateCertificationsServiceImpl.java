@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author shivayogi
@@ -192,10 +193,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;
