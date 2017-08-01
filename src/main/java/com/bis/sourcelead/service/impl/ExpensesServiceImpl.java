@@ -463,7 +463,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		}
 		
 	if(null != expEntries.getExpenseDate()){
-		expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+		expEntries.setExpenseDateString(LoginSessionController.DATEFORMAT.format(expEntries.getExpenseDate()));
 		writeRow.createCell(1).setCellValue( expEntries.getExpenseDateString());
 		createExcelsheet.autoSizeColumn(1);
 	}
@@ -548,7 +548,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		String StrtDate = Constants.DMY.format(exp.getStartDate());
+		String StrtDate = LoginSessionController.DATEFORMAT.format(exp.getStartDate());
 		cell8.setCellValue(StrtDate);
 		cell8.setCellStyle(style);
 		
@@ -564,7 +564,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		
 		String EndDate = null;
 		if(null != exp.getEndDate() && !"".equalsIgnoreCase(exp.getEndDate().toString())){
-			EndDate = Constants.DMY.format(exp.getEndDate());	
+			EndDate = LoginSessionController.DATEFORMAT.format(exp.getEndDate());	
 		}else{
 			EndDate  = ("--");	
 		}
@@ -662,13 +662,13 @@ public class ExpensesServiceImpl implements ExpensesService{
         	client.append("--").toString();
         }
         if(null != expenseDetails.getStartDate()){
-        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+        	String StartDate = LoginSessionController.DATEFORMAT.format(expenseDetails.getStartDate());
         	StDate.append(StartDate).toString();
         }else{
         	StDate.append("--").toString();
         }
         if(null != expenseDetails.getEndDate()){
-        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+        	String EndDate = LoginSessionController.DATEFORMAT.format(expenseDetails.getEndDate());
         	edDate.append(EndDate).toString();
         }else{
         	edDate.append("--").toString();
@@ -924,14 +924,14 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}
 							
 							if(null != expenseId.getStartDate()){
-								expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+								expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 								expenseArray[4] = expenseId.getStartDateStr();
 							}else{
 								expenseArray[4] = "--";
 							}
 							
 							if(null != expenseId.getEndDate()){
-								expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+								expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 								expenseArray[5] = expenseId.getEndDateStr();
 							}else{
 								expenseArray[5] = "--";
@@ -1032,12 +1032,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 						}
 						
 						if(null != expenseId.getStartDate()){
-							expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+							expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 							writeRow.createCell(4).setCellValue(expenseId.getStartDateStr());
 							createExcelsheet.autoSizeColumn(4);
 						}
 						if(null != expenseId.getEndDate()){
-							expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+							expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 							writeRow.createCell(5).setCellValue(expenseId.getEndDateStr());
 							createExcelsheet.autoSizeColumn(5);
 						}

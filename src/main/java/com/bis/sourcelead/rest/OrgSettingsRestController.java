@@ -442,7 +442,7 @@ public class OrgSettingsRestController {
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
 			orgLocations.setOrgCode(org.getOrgCode());
 			orgLocations.setTimeZoneName(orgLocations.getTimezone().getTimeZoneId());
-			orgLocations.setCreatedDateStr(Constants.DMY.format(orgLocations.getCreatedDate()));
+			orgLocations.setCreatedDateStr(LoginSessionController.DATEFORMAT.format(orgLocations.getCreatedDate()));
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
 			if (null != userRole) {
 				orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());

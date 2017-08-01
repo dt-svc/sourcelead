@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -98,6 +97,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class InvoiceRestController {
@@ -401,8 +401,8 @@ public class InvoiceRestController {
 			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = commonUtil.getDateFormat(customStartDate);
-				Date endTime = commonUtil.getDateFormat(customEndDate);
+				Date startTime = LoginSessionController.DATEFORMAT.parse(customStartDate);
+				Date endTime = LoginSessionController.DATEFORMAT.parse(customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -418,8 +418,6 @@ public class InvoiceRestController {
 		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 		
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		String currentDate = sdf.format(new Date());
 		Date todayDate = new Date();
 		
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -479,8 +477,8 @@ public class InvoiceRestController {
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
-					String dueDate = sdf.format(invoice.getDueDate());
-					Date invoiceDueDate = sdf.parse(dueDate);
+					String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+					Date invoiceDueDate = LoginSessionController.DATEFORMAT.parse(dueDate);
 					
 					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
 					
@@ -671,7 +669,7 @@ public class InvoiceRestController {
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
-	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
+	     		ip.setPaymentDateStr(LoginSessionController.DATEFORMAT.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
@@ -1743,6 +1741,42 @@ public class InvoiceRestController {
 		return isDeleted;
 	}
 	
+	@RequestMapping(value = "/getTotalHosursForBilling", method = RequestMethod.GET)
+	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+			
+			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			StringBuilder sb = new StringBuilder();
+			String estimatedHours = null;
+			try {
+				Date requestStartDate =  formatter.parse(startDate);
+				Calendar startCal = Calendar.getInstance();
+				startCal.setTime(requestStartDate); 
+				
+				Date requestEndDate =  formatter.parse(endDate);
+				Calendar endCal = Calendar.getInstance();
+				endCal.setTime(requestEndDate); 
+				
+				int workDays = 0;
+			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			        startCal.setTime(requestEndDate);
+			        endCal.setTime(requestStartDate);
+			    }
+			    do {
+//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			            ++workDays;
+//			        }
+			        startCal.add(Calendar.DATE, 1);
+			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
+
+			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+			
+			return sb.append(estimatedHours).append(":00").toString();
+		} 
+	 
 	
 	/**
 	 * to save invoice/bill based on expenses

@@ -113,7 +113,7 @@ public class AddElkRequirement {
 				requirementIndex.setLocation(rs.getString("LOCATION"));
 				requirementIndex.setLocation(rs.getString("LOCATION"));
 				requirementIndex.setZipCode(rs.getString("ZIPCODE"));
-				requirementIndex.setReqCreatedBy(rs.getString("CREATED_BY"));
+				requirementIndex.setReqCreatedBy(rs.getLong("CREATED_BY"));
 				requirementIndex.setReqUpdatedBy(rs.getString("UPDATED_BY"));
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				requirementIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));

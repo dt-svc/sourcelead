@@ -39,6 +39,7 @@ import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Repository
 public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHierarchyDao {
@@ -1061,7 +1062,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    else{
 	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
 	    	submissionApproverHierarchy.setTotalHours(0f);
-	    	 DateFormat format = Constants.DF_DMY;
+	    	 DateFormat format = LoginSessionController.DATEFORMAT;
 	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
 	    	
              if(tabFrequencyDates != null && !tabFrequencyDates.isEmpty()){
@@ -1362,7 +1363,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    else{
 	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
 	    	submissionApproverHierarchy.setTotalHours(0f);
-	    	 DateFormat format = Constants.DF_DMY;
+	    	 DateFormat format = LoginSessionController.DATEFORMAT;
 	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
 	    	
              if(tabFrequencyDates != null && !tabFrequencyDates.isEmpty()){
