@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.web.LoginSessionController;
+import com.ibm.icu.text.SimpleDateFormat;
 
 @Component
 public  class TimesheetApprovalFrequencyGeneratorUtil {
@@ -58,7 +60,8 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 				
 					Date empStartDate = project.getStartDate();
 					Date empEndDate = project.getEndDate();
-					DateFormat format = Constants.DF_STD_DMY;
+					//DateFormat format = Constants.DF_STD_DMY;
+					java.text.SimpleDateFormat format = project.getOrgLocationsId().getLocFullFormDateFormatter();
 					 try {
 						    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
 						   
@@ -371,7 +374,8 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	public Map<String,String> getTabFrequencyListFromProjectInvoiceFrequency(String startDate,String endDate) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
 		if(StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)){
-		 	    DateFormat format = Constants.DF_DMY;
+		 	    //DateFormat format = Constants.DF_DMY;
+			DateFormat  format = LoginSessionController.DATEFORMAT;
 		        try {
 		            Date stDate = format.parse(startDate);
 		            Date enDate = format.parse(endDate);
@@ -438,8 +442,8 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 	
 	public Map<String,String> getTabFrequencyListForTsReports(Date startDate,Date endDate) throws Exception{
 		Map<String,String> timesheetFrequencyList = new LinkedHashMap<String,String>();
-		 	    DateFormat format = Constants.DF_DMY;
-		            
+		 	    //DateFormat format = Constants.DF_DMY;
+		              DateFormat  format = LoginSessionController.DATEFORMAT;
 					  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
 					  tsCal.setTime(startDate);
 					  

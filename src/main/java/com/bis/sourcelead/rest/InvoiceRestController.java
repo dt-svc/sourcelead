@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,6 +79,7 @@ import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -121,6 +120,9 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	private InvoiceService invoiceService;
@@ -412,7 +414,7 @@ public class InvoiceRestController {
 //		String currentDate = sdf.format(new Date());
 		Date todayDate = new Date();
 		
-		
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Invoice invoice :invoiceList){
 			Integer draftCount = 0;
 			Integer paidCount = 0;
@@ -439,10 +441,10 @@ public class InvoiceRestController {
 				}
 			}
 			if(null != invoice.getDueDate()){
-				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));	
+				invoice.setDueDateStr(dateFormat.format(invoice.getDueDate()));	
 			}
 			if(null != invoice.getInvoiceDate()){
-				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));	
+				invoice.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
 			}
 			
 			invoice.setTotal(invoice.getTotal());
@@ -549,7 +551,7 @@ public class InvoiceRestController {
 	     		Id = invoiceId.getId();
 	     		orgLocations = orgLocations;
 	     	}
-	     	
+	     	SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 	     	List<Invoice> viewinvoiceList= invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 	     	for(Invoice invoice :viewinvoiceList){
 	     		OrgLocations  LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -586,8 +588,8 @@ public class InvoiceRestController {
 				invoice.setConvertCurrencyCode(invoice.getConvertCurrencyCode());
 				invoice.setCurrencyCode(invoice.getCurrencyCode());
 				
-				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
-				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
+				invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
+				invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
 				
 				
 				//get the Invoice Items List
@@ -608,10 +610,10 @@ public class InvoiceRestController {
 					inviceLine.setTotalHours(inviceLine.getTotalHours());
 					inviceLine.setAmount(inviceLine.getAmount());
 					if(null != inviceLine.getStartDate()){
-						inviceLine.setStartDateStr(Constants.DF_DMY.format(inviceLine.getStartDate()));	
+						inviceLine.setStartDateStr(formatter.format(inviceLine.getStartDate()));	
 					}
 					if(null !=inviceLine.getEndDate()){
-						inviceLine.setEndDtaeStr(Constants.DF_DMY.format(inviceLine.getEndDate()));	
+						inviceLine.setEndDtaeStr(formatter.format(inviceLine.getEndDate()));	
 					}
 					
 					if(null != inviceLine.getCandidate()){
@@ -738,8 +740,8 @@ public class InvoiceRestController {
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
@@ -838,8 +840,8 @@ public class InvoiceRestController {
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
@@ -997,9 +999,10 @@ public class InvoiceRestController {
 		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 
-		 String createdDate = (Constants.DF_DMY.format(invoice.getCreatedDate()));
-		 String dueDate = (Constants.DF_DMY.format(invoice.getDueDate()));
+		 SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+
+		 String createdDate = (dateFormat.format(invoice.getCreatedDate()));
+		 String dueDate = (dateFormat.format(invoice.getDueDate()));
 		 
 		 StringBuilder stringBuildername = new StringBuilder();
 			globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
@@ -1223,11 +1226,13 @@ public class InvoiceRestController {
 
 	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
-			@RequestParam(value = "invoiceDate", required = false) String invoiceDate,HttpServletRequest request) throws Exception {
+			@RequestParam(value = "invoiceDate", required = false) String invoiceDate,
+			@RequestParam("locationCode") String locationCode) throws Exception {
 		
-		
+		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 		String[] frequency = paymentFrequency.split(" ");
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		//SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		String dueDateStr = null;
 		
 		try {

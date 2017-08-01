@@ -57,6 +57,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementInterviewServiceImpl implements RequirementInterviewService{
@@ -428,7 +429,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -723,7 +724,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -856,7 +857,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -960,7 +961,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    

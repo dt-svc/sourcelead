@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController 
 public class TimesheetSubmissionsRestController {
@@ -175,8 +177,9 @@ public class TimesheetSubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-        Date sDate  =  Constants.DMY.parse(startDate);
-        Date eDate  =  Constants.DMY.parse(endDate);
+	 	DateFormat  sdf = LoginSessionController.DATEFORMAT;
+        Date sDate  =  sdf.parse(startDate);
+        Date eDate  =  sdf.parse(endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
@@ -202,11 +205,11 @@ public class TimesheetSubmissionsRestController {
 		
 			 //Employees emp = employeesService.getEmployee(empId.toString());
 	 	 
-			 
+			 SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 			 ProjectMembers projectMembers = projectMembersService.getProjectMemberById(pmId);
-			 DateFormat format = Constants.DF_DMY;
-			 Date frequencyStartDate = format.parse(startDate.replaceAll("/", "-"));
-			 Date frequencyEndDate = format.parse(endDate.replaceAll("/", "-"));
+			// DateFormat format = Constants.DF_DMY;
+			 Date frequencyStartDate = dateFormat.parse(startDate.replaceAll("/", "-"));
+			 Date frequencyEndDate = dateFormat.parse(endDate.replaceAll("/", "-"));
 		 
 			 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pmId);
 			 Submission_Status submissionStatus = sah.getSubmissionStatus();

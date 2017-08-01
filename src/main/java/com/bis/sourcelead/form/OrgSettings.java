@@ -32,10 +32,11 @@ public class OrgSettings {
 	
 	private String timeZone;
 	
+	private String dateFormat1;
+
     private String generatedUserId;
 
     private String systemGeneratedId;
-	
 	
 
 	public Integer getId() {
@@ -142,6 +143,16 @@ public class OrgSettings {
 		this.timeZone = timeZone;
 	}
 
+
+	public String getDateFormat1() {
+		return dateFormat1;
+	}
+
+	public void setDateFormat1(String dateFormat1) {
+		this.dateFormat1 = dateFormat1;
+	}
+
+	
 	public String getGeneratedUserId()
 	{
 		return generatedUserId;

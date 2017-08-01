@@ -77,6 +77,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
  
@@ -228,7 +229,8 @@ public class TimesheetRestController {
 				 tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,actualEndDate,approvalStatus,from);
 				 result.put("TabDiv",tabDiv.toString());
 				 
-				 DateFormat format = Constants.DF_DMY;
+				 //DateFormat format = Constants.DF_DMY;
+				 DateFormat  format = LoginSessionController.DATEFORMAT;
 				 Date frequencyStartDate = format.parse(actualStartDate.replaceAll("/", "-"));
 				 Date frequencyEndDate = format.parse(actualEndDate.replaceAll("/", "-"));
 				  
@@ -359,7 +361,8 @@ public class TimesheetRestController {
 				StringBuilder selectedStartDate = new StringBuilder("");
 				StringBuilder selectedEndDate =  new StringBuilder("");
 				int count = 1;
-				 DateFormat format = Constants.DF_DMY;
+				 //DateFormat format = Constants.DF_DMY;
+				DateFormat  format = LoginSessionController.DATEFORMAT;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 					    String key = entry.getKey();
 					    String value =entry.getValue();
@@ -407,7 +410,8 @@ public class TimesheetRestController {
 	public @ResponseBody void withDrawTimesheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
 			
-			DateFormat format = Constants.DF_DMY;
+			//DateFormat format = Constants.DF_DMY;
+		DateFormat  format = LoginSessionController.DATEFORMAT;
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
@@ -424,7 +428,8 @@ public class TimesheetRestController {
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = Constants.DF_DMY;
+		DateFormat  format = LoginSessionController.DATEFORMAT;
 		if(!isNullOrEmpty(weekStartDate) && !isNullOrEmpty(weekEndDate)){
 			
 		
@@ -595,7 +600,8 @@ public class TimesheetRestController {
 		   Submission_Status submissionStatus = sah.getSubmissionStatus();
 		   String submissionStatusStr = submissionStatus.getValue();
 		   StringBuilder timesheetEntriesDiv = new StringBuilder();
-		   DateFormat format = Constants.DF_DMY;
+		  // DateFormat format = Constants.DF_DMY;
+		   DateFormat  format = LoginSessionController.DATEFORMAT;
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		   String acSubmissionStatusStr = null;
 		   if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -709,7 +715,8 @@ public class TimesheetRestController {
 		StringBuilder disbleCondition7 = new StringBuilder("");
 		
 		
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = Constants.DF_DMY;
+		DateFormat  format = LoginSessionController.DATEFORMAT;
 		Date actualStartDate = format.parse(startDate.replaceAll("/", "-"));
 	    Date actualEndDate = format.parse(endDate.replaceAll("/", "-"));
 		int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(startDate));
@@ -1369,8 +1376,8 @@ public class TimesheetRestController {
 			json = "{"+json+"}";
 			JSONObject jsonObj = new JSONObject(json);
 	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-	    	DateFormat format = Constants.DF_DMY;
-				
+	    	//DateFormat format = Constants.DF_DMY;
+	    	DateFormat  format = LoginSessionController.DATEFORMAT;	
 	    	ProjectMembers projectMember = null;
 			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
 				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
@@ -2070,7 +2077,8 @@ public class TimesheetRestController {
 			    	isSuperUser = Constants.YES;
 			    }
 			    
-				DateFormat format = Constants.DF_DMY;
+				//DateFormat format = Constants.DF_DMY;
+			    DateFormat  format = LoginSessionController.DATEFORMAT;
 				if(StringUtils.isNotEmpty(timesheetFrequency)){
 				 	 String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();
@@ -2099,7 +2107,8 @@ public class TimesheetRestController {
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    User reopenedUser = userService.getUserById(reopenedUserId);
-				DateFormat format = Constants.DF_DMY;
+				//DateFormat format = Constants.DF_DMY;
+			    DateFormat  format = LoginSessionController.DATEFORMAT;
 				if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
 				 	 String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();

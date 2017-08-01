@@ -49,6 +49,7 @@ import com.bis.sourcelead.service.TimesheetReportService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -242,7 +243,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	
 	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
-		 DateFormat format = Constants.DF_DMY;
+		 //DateFormat format = Constants.DF_DMY;
+		 DateFormat format= LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
 		  Date startDate = dateList.get("STARTDATE");
@@ -524,7 +526,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	public File prepareTimeSheetExport(String frequencyYear, String frequencyMonth, User loginUser,OrgLocations orgLocations) throws Exception {
 		File file = null;
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = Constants.DF_DMY;
+		 DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
 		  Date startDate = dateList.get("STARTDATE");
@@ -821,7 +824,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		File file = null;
 		
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = Constants.DF_DMY;
+		 DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
 		  Date startDate = dateList.get("STARTDATE");

@@ -388,10 +388,23 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormataddExpense= '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormataddExpense = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormataddExpense = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormataddExpense = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormataddExpense = 'yy-dd-mm'; 
+		  }
+		
 		$("#projectStartDateExpensesId").datepicker("destroy");
 		$("#projectEndDateExpensesId").datepicker("destroy");
 		$('#projectStartDateExpensesId').datepicker({
-					dateFormat : 'dd-mm-yy',
+					dateFormat : finalDateFormataddExpense,
 					changeMonth : true,
 					changeYear : true,
 					minDate : projectStartDate,
@@ -402,7 +415,7 @@ function getClientBasedOnSelectedProject(){
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
-					dateFormat : 'dd-mm-yy',
+					dateFormat : finalDateFormataddExpense,
 					changeMonth : true,
 					changeYear : true,
 					minDate : projectStartDate,

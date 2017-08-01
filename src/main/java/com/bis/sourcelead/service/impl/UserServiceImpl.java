@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -72,6 +74,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 
 /**
@@ -152,6 +155,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	MasterCandidateService masterCandidateService;
+	
+	@Autowired
+	private OrgLocationService orgLocationsService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -512,8 +518,11 @@ public class UserServiceImpl implements UserService {
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
-				   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-				   employees.setHireDate(sdf.parse(jsonObj.getString("dateofJoin")));
+				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					 OrgLocations orgLoc = orgLocationsService.getOrgLocations(orgLocationsId);
+						 SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
+						 employees.setHireDate(formatter.parse(jsonObj.getString("dateofJoin")));
+				  
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}
