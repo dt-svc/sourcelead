@@ -22,6 +22,9 @@ margin-bottom: 0;
 .timesheet_week_comm.invoiceDocs_add span .fa-times {
     margin: 6px;
 }
+.project_wrap_table table i{
+    font-size: 13px;
+}    
 </style>
 
 
@@ -205,10 +208,10 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field"
-			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
-			name="REPLACEROWIDtotalHours"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
+<!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
+			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
 	</div>
 </div>
 
@@ -637,6 +640,7 @@ function errRemoveClientContact(){
 				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
@@ -646,6 +650,7 @@ function errRemoveClientContact(){
 				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
@@ -699,7 +704,7 @@ function errRemoveClientContact(){
 				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
-				
+				editHoursValidations(opt.startDateStr,opt.endDateStr,maxRowNum);
 	 			getSow(opt.candidateId,maxRowNum,opt.contractId);
 				maskme();  
 		 }
@@ -823,7 +828,7 @@ function cancel(){
 					  var dt = $(this).datepicker('getDate', '+1d');
 			            dt.setDate(dt.getDate() + 1);
 			            $("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
-			            
+			            getEstimatedHours(maxRowNum);
 			            
 					  /* var dt = toDate("#"+maxRowNum+"sdate-input");
 						dt.setDate(dt.getDate() + 1);
@@ -840,7 +845,7 @@ function cancel(){
 					  var dt = $(this).datepicker('getDate', '-1d');
 			            dt.setDate(dt.getDate() - 1);
 			            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
-			            
+			            getEstimatedHours(maxRowNum);
 					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
 						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
@@ -1912,9 +1917,7 @@ function saveInvoice(saveType){
 				  }
 			  }
 		  }
-         
-         
-         if ($('#invoice_form').validate(false, validationSettings)){  
+		  if ($('#invoice_form').validate(false, validationSettings)){  
  		    var frm = $('#invoice_form').serializeFormJSON();
  	        var con = JSON.stringify(frm);
  	        con = con.replace(/[{}]/g, "");
@@ -2021,5 +2024,75 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
+<script>
+function getEstimatedHours(rowId){
+	var startDate = document.getElementById(rowId+"sdate-input").value;
+	var endDate = document.getElementById(rowId+"edate-input").value;
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours,
+		        success: function(estimatedHours) {
+		        	$('#'+rowId+'totalHours').val(estimatedHours);
+		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
+		        	totalHoursCalculateAmount(rowId);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+function editHoursValidations(startDate,endDate,rowId){
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours,
+		        success: function(estimatedHours) {
+		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
+		        	totalHoursCalculateAmount(rowId);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+</script>
+<script>
+function validationHours(rowId){
+	 var hiddenHours = $('#'+rowId+'hiddenHours').val();
+	  var split1 = hiddenHours.split(':');
+	  var splitHours1 = split1[0];
+	  var minute1 = split1[1];
+	  var hourminits1 = splitHours1 * 60;
+	  var hiddenFinalmin1 = parseInt(hourminits1) + parseInt(minute1);
+	    
+	  var totalHours = $("#"+rowId+"totalHours").val();
+	  var split2 = totalHours.split(':');
+	  var splitHours2 = split2[0];
+	  var minute2 = split2[1];
+	  var hourminits2 = splitHours2 * 60;
+	  var totalHoursFinalmin2 = parseInt(hourminits2) + parseInt(minute2);
+	 
+	 if(hiddenHours != null && hiddenHours != ""){
+		 if(hiddenFinalmin1 < totalHoursFinalmin2){
+			 document.getElementById(""+rowId+"errMsg").style.display="block";
+		 }else{
+			 document.getElementById(""+rowId+"errMsg").style.display="none";
+		 }
+	 }
+	 
+	
+}
 
+
+
+</script>
 <jsp:include page="../masterFooter.jsp" />
