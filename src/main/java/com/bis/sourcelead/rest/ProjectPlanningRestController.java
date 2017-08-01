@@ -330,7 +330,7 @@ public class ProjectPlanningRestController {
 	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 	    		 ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
 	    		 StringBuilder rejectReason = new StringBuilder();
-	    		 rejectReason = rejectReason.append("Reason for ").append(resourceRequest.getCandidateName()).append(" : ").append(jsonObj.getString("rejectedReason"));
+	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
 	    		 
