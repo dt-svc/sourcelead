@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -802,7 +802,7 @@ public class PdfUtilPipelineHelper  {
 		StringBuilder interviewStringBuilder = new StringBuilder();
 		for(RequirementInterview listInterviews:rquirementInterviews){
 			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
-				requirementArray[4] = Constants.DMY.format(listInterviews.getDateOfInterview());
+				requirementArray[4] = LoginSessionController.DATEFORMAT.format(listInterviews.getDateOfInterview());
 			}else{
 				requirementArray[4] = "--";
 			}

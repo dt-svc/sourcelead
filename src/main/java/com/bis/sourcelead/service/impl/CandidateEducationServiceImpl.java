@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,8 +110,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty()) && !" ".equals(jsonObject.get("startDate"))){
 			try {
 				
-				String pattern = "dd-MM-yyyy";
-                SimpleDateFormat format = new SimpleDateFormat(pattern);
+				//String pattern = "dd-MM-yyyy";
+				DateFormat format = LoginSessionController.DATEFORMAT;
                 Date startDate = format.parse(jsonObject.getString("startDate"));
                 candidateEducation.setStartDate(startDate);
 				
@@ -120,8 +121,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty()) && !" ".equals(jsonObject.get("endDate"))) {
 			try {
-				String pattern = "dd-MM-yyyy";
-                SimpleDateFormat format = new SimpleDateFormat(pattern);
+				//String pattern = "dd-MM-yyyy";
+				DateFormat format = LoginSessionController.DATEFORMAT;
                 Date validTo = format.parse(jsonObject.getString("endDate"));
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
