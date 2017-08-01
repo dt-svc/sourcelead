@@ -26,8 +26,6 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OffboardTasks;
-import com.bis.sourcelead.entity.OnboardTasks;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
@@ -38,6 +36,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingService{
@@ -407,7 +406,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+		 task.setTaskDateStr(LoginSessionController.DATEFORMAT.format(task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

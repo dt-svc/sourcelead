@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Prasanna Vadla
@@ -333,7 +334,7 @@ public class RequirementInterviewRestController {
 		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
 		 for(ProposeTime pst:proposeTimeList){
 			if(null != pst.getProposeDate()){
-				pst.setProposeDateStr(Constants.DMY.format(pst.getProposeDate()));	
+				pst.setProposeDateStr(LoginSessionController.DATEFORMAT.format(pst.getProposeDate()));	
 				pst.setProposeTime(pst.getProposeTime());
 			}
 		 }
@@ -475,7 +476,7 @@ public class RequirementInterviewRestController {
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  commonUtil.getDateFormat(date);
+			Date startTime =  LoginSessionController.DATEFORMAT.parse(date);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);

@@ -1,7 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectPlanningNewResourceRequest;
 import com.bis.sourcelead.entity.ProjectPlanningRequest;
@@ -42,6 +41,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class ProjectPlanningRestController {
@@ -178,10 +178,10 @@ public class ProjectPlanningRestController {
 	 
 	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
 		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
 			
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+			DateFormat formatter = LoginSessionController.DATEFORMAT;
 			int estimatedHours = 0;
 			
 			try {
@@ -208,7 +208,7 @@ public class ProjectPlanningRestController {
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
-			    estimatedHours = (workDays*Constants.WORKING_HOURS);
+			    estimatedHours = (workDays*averageWorkingHours);
 
 	        } catch (ParseException e) {
 	            e.printStackTrace();
@@ -246,7 +246,6 @@ public class ProjectPlanningRestController {
 	  @RequestMapping(value = "/getPlanningRequestListByProjectUUID")
 		public @ResponseBody List<ProjectPlanningRequest> getPlanningRequestListByProjectUUID(@RequestParam(value="projectUUID", required=true) String projectUUID) throws Exception {
 		    
-		  String resultJson;
 		  Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 		  List<ProjectPlanningRequest> projectPlanningRequestList = projectPlanningRequestService.getProjectPlanningRequestByProjectId(projects.getId());
 		  return projectPlanningRequestList;
@@ -330,7 +329,7 @@ public class ProjectPlanningRestController {
 	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 	    		 ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
 	    		 StringBuilder rejectReason = new StringBuilder();
-	    		 rejectReason = rejectReason.append("Reason for ").append(resourceRequest.getCandidateName()).append(" : ").append(jsonObj.getString("rejectedReason"));
+	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
 	    		 

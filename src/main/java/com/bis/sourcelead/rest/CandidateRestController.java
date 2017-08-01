@@ -16,7 +16,6 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -73,6 +72,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -651,7 +651,7 @@ public class CandidateRestController {
 				rh = (RequirementInterviewHistory) object;
 				if (null != rh.getInterviewId()) {
 					if (null != rh.getInterviewId().getDateOfInterview()) {
-						rh.setDateOfInterviewStr(Constants.DMY.format(rh.getInterviewId().getDateOfInterview()));
+						rh.setDateOfInterviewStr(LoginSessionController.DATEFORMAT.format(rh.getInterviewId().getDateOfInterview()));
 					}
 					if (null != rh.getInterviewId().getStartTime()) {
 						StringBuilder startTime = new StringBuilder();
@@ -676,7 +676,7 @@ public class CandidateRestController {
 			List<RequirementInterview> RequirementInterview = requirementInterviewService.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
 			for (RequirementInterview requirementInterview : RequirementInterview) {
 				if (null != requirementInterview.getDateOfInterview()) {
-					rsh.setInterviewDateStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+					rsh.setInterviewDateStr(LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview()));
 				}
 				if (null != requirementInterview.getStartTime()) {
 					StringBuilder startTime = new StringBuilder();

@@ -393,6 +393,10 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private int profilePercentage;
 	 
+	 @Transient
+	 @JsonProperty
+	 private String candLocation;
+ 
 		 
 	public int getProfilePercentage()
 	{
@@ -1513,6 +1517,22 @@ public class Candidate implements Serializable{
 	public void setSystemGeneratedId(String systemGeneratedId)
 	{
 		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public String getCandLocation() {
+		StringBuilder loc = new StringBuilder();
+		if(city != null && !city.isEmpty()){
+			candLocation = loc.append(city).append(", ").append(state).append(", ").append(country).toString();
+		}else if(state != null && !state.isEmpty() && city == null){
+			candLocation = loc.append(state).append(", ").append(country).toString();
+		}else{
+			candLocation = loc.append(country).toString();
+		}
+		return candLocation;
+	}
+
+	public void setCandLocation(String candLocation) {
+		this.candLocation = candLocation;
 	}
 
 

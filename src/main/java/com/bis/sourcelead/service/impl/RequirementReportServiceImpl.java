@@ -16,7 +16,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
-import org.opengis.referencing.operation.ConcatenatedOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementReportServiceImpl implements RequirementReportService {
@@ -266,8 +265,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -388,8 +387,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -494,8 +493,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -572,8 +571,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -673,8 +672,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -792,8 +791,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -945,8 +944,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 						 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 							DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-							Date startTime =  commonUtil.getDateFormat(customStartDate);
-							Date endTime =  commonUtil.getDateFormat(customEndDate);
+							Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+							Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 							String customEndTimeStr = TZ_DF_CED.format(endTime);  
 							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1168,8 +1167,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
