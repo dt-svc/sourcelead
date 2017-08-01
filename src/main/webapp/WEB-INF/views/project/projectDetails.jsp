@@ -142,14 +142,16 @@
 						}
 						
 						var proStatus ='';
-						if(json.projectStatus == 'STARTED'){
-							proStatus = 'Started';
+						if(json.projectStatus == 'NOTSTARTED'){
+							proStatus = 'Not Started';
 						}else if(json.projectStatus == 'INPROGRESS'){
 							proStatus = 'In-Progress';
 						}else if(json.projectStatus == 'ONHOLD'){
 							proStatus = 'On-Hold';
 						}else if(json.projectStatus == 'COMPLETED'){
 							proStatus = 'Completed';
+						}else if(json.projectStatus == 'DROPPED'){
+							proStatus = 'Dropped';
 						}
 						
 						
@@ -366,10 +368,10 @@
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Status</label>';
 						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();">';
-						if (json.projectStatus == 'STARTED') {
-							result = result	+ '<option selected >Started</option>';
+						if (json.projectStatus == 'NOTSTARTED') {
+							result = result	+ '<option selected >Not Started</option>';
 						} else {
-							result = result + '<option>Started</option>';
+							result = result + '<option>Not Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
@@ -389,6 +391,12 @@
 						} else {
 							result = result + '<option>On-Hold</option>';
 						}
+						if (json.projectStatus == 'DROPPED') {
+							result = result	+ '<option selected>Dropped</option>';
+						} else {
+							result = result + '<option>Dropped</option>';
+						}
+						
 
 						result = result + '</select>';
 						result = result + '</div>';
