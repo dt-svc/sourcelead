@@ -202,7 +202,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 * startDate comes from ui screen when << or >> links clicked
 		   */
 		  else{
-			  Date sDate  =  Constants.DMY.parse(startDate);
+			  Date sDate  =  LoginSessionController.DATEFORMAT.parse(startDate);
               if(sDate != null && employeeEndDate.before(sDate)){
            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);

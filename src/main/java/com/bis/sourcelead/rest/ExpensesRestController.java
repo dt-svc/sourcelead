@@ -122,6 +122,9 @@ public class ExpensesRestController {
 	@Autowired
 	private AddExpensesDao addExpensesDao;
 	
+	@Autowired
+	private LoginSessionController loginSessionController;
+	
 	@RequestMapping(value = {"/getExpensesList","/rest/getExpensesList"})
 	public List<Expenses> getExpensesList( @RequestBody ExpensesListUtilDTO elDTO) throws Exception
 	{
@@ -139,8 +142,10 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/rest/getExpenseEntryDetails")
 	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody ExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
+		
 		ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLocations.getId(), eedDTO.getUserId());
 		if (projectMembersList != null && !projectMembersList.isEmpty()) {
 			ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
@@ -194,6 +199,7 @@ public class ExpensesRestController {
 		}
 		if(eesDTO != null){
 			OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(eesDTO.getLocationsCode());
+			loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLoc.getDateFormat());
 			User loginUser = userService.getUserById(eesDTO.getUserId());
 			String status = eesDTO.getStatus();
 			expenses = new Expenses();
@@ -376,6 +382,7 @@ public class ExpensesRestController {
 		ExpensesDTO expensesDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		Expenses expenses = expensesService.getExpenseByExpenseUniqueId(expenseId, orgLocations.getId());
+		loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 		if (expenses != null) {
 			expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
 			ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
