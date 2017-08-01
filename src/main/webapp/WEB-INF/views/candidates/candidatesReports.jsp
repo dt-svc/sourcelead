@@ -206,7 +206,7 @@ function cpagination(SourceLeadWeb_loginOrg){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				//var dt = toDate("#ExportStartDate");
-				var dt = $(this).datepicker('getDate', '+1d');
+				//var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -224,7 +224,7 @@ function cpagination(SourceLeadWeb_loginOrg){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				//var dt = toDate("#ExportEndDate");
-				var dt = $(this).datepicker('getDate', '-1d');
+				//var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
