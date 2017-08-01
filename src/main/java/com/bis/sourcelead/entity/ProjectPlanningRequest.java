@@ -404,7 +404,7 @@ public class ProjectPlanningRequest implements Serializable{
         		StringBuilder reason = new StringBuilder();
         		for(ProjectPlanningResourceRequest resourceRequest : resourceRequestList ){
         			if(resourceRequest.getRejectedReason() != null && !resourceRequest.getRejectedReason().isEmpty()){
-        				reason = reason.append("<br/>").append(resourceRequest.getRejectedReason()).append("<br/>");
+        				reason = reason.append("<br/>").append("Reason for ").append(resourceRequest.getCandidateName()).append(" : ").append(resourceRequest.getRejectedReason()).append("<br/>");
         			}
         			rejectedReason = reason.toString();
         		}

@@ -178,7 +178,7 @@ public class ProjectPlanningRestController {
 	 
 	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
 		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
 			
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -208,7 +208,7 @@ public class ProjectPlanningRestController {
 			        startCal.add(Calendar.DATE, 1);
 			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
 
-			    estimatedHours = (workDays*Constants.WORKING_HOURS);
+			    estimatedHours = (workDays*averageWorkingHours);
 
 	        } catch (ParseException e) {
 	            e.printStackTrace();
@@ -330,7 +330,7 @@ public class ProjectPlanningRestController {
 	    	 if(jsonObj.has("requestUUID") && !isNullOrEmpty(jsonObj.getString("requestUUID"))){
 	    		 ProjectPlanningResourceRequest resourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(jsonObj.getString("requestUUID"));
 	    		 StringBuilder rejectReason = new StringBuilder();
-	    		 rejectReason = rejectReason.append("Reason for ").append(resourceRequest.getCandidateName()).append(" : ").append(jsonObj.getString("rejectedReason"));
+	    		 rejectReason = rejectReason.append(jsonObj.getString("rejectedReason"));
 	    		 resourceRequest.setRejectedReason(rejectReason.toString());
 	    		 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_REJECTED);
 	    		 

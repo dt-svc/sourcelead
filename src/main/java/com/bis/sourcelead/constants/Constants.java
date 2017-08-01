@@ -776,11 +776,11 @@ public class Constants {
 	public static final String NEW_VALUE_TAG_END = "</span>";
 	
 	
-	public static final String JOBS_ACTION_ICON_CLASS = "fa fa-briefcase";
-	public static final String CANDIDATE_ACTION_ICON_CLASS = "fa fa-user";
-	public static final String PROJECTS_ACTION_ICON_CLASS = "fa fa-bar-chart";
-	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o";
-	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator";
+	public static final String JOBS_ACTION_ICON_CLASS = "fa fa-briefcase bgBlue";
+	public static final String CANDIDATE_ACTION_ICON_CLASS = "fa fa-user bg-olive";
+	public static final String PROJECTS_ACTION_ICON_CLASS = "fa fa-bar-chart bgAqua";
+	public static final String TIMESHEETS_ACTION_ICON_CLASS = "fa fa-clock-o bgYellow";
+	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator bgLime";
 	
 	
 	public static final String CANDIDATE_ADDED_MANUALLY = "has added manually";
@@ -792,6 +792,7 @@ public class Constants {
 	public static final String CANDIDATE_DELETED_EDUCATION = "has deleted education";
 	public static final String CANDIDATE_DELETED_CERTIFICATION = "has deleted certification";
 	public static final String CANDIDATE_DELETED_DOCUMENTS = "has deleted document";
+	public static final String CANDIDATE_DELETED_REFERENCES = "has deleted reference";
 	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "has uploaded new profile image";
 	public static final String CANDIDATE_SKILL_UPDATED = "has updated skills";
 	public static final String CANDIDATE_VISA_UPDATED = "has updated immigration status";

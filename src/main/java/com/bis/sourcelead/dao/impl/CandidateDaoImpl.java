@@ -1081,8 +1081,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		String subQuery5 = " and candidate.consultantUser.id NOT IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' )) and candidate.orgLocationId.id = :orgLocationsId ";
 		
+		String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
 		
-		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+" ";
+		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" ";
         
 		if(roleIds != null && associatesIds == null){
 			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setCacheable(true).list();

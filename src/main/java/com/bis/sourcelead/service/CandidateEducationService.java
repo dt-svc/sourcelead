@@ -50,7 +50,7 @@ public interface CandidateEducationService {
 	 * @return CandidateEducation
 	 * @throws Exception
 	 */
-	public CandidateEducation removeCandidateEducationBycandidateIdandcandidateEducationId(Long candidateId, Long candidateEducationId) throws Exception;
+	public CandidateEducation removeCandidateEducationBycandidateIdandcandidateEducationId(Long candidateId, Long candidateEducationId, User user, OrgLocations orgLocations) throws Exception;
 
 	/**
 	 * @author Prasad Salina
