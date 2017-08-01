@@ -678,7 +678,6 @@ public class DashboardRestController {
 					
 				
 			// requirement created user
-			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
 			// to get RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
@@ -709,9 +708,9 @@ public class DashboardRestController {
 							}
 						// this is for sending email to requirement initiator
 						if (status.equalsIgnoreCase("APPROVED")) {
-							requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,location, orgLocation);
+							requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement,location, orgLocation);
 						} else if (status.equalsIgnoreCase("REJECTED")) {
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 						}
 						
 						
@@ -743,7 +742,7 @@ public class DashboardRestController {
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 							requirementApproverHierarchy.setRejectedReason(reason);
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							
 							// This is  to update  the level2 Approver Record For RejectedS

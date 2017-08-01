@@ -3,7 +3,9 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -404,6 +407,23 @@ public class RequirementSubmission implements Serializable{
     @Transient
 	 private int profilePercentage;
     
+	
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
+	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementInterviewHistory> requirementInterviewHistory;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementOffers> requirementOffersList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
+   	private Set<RequirementOfferHistory> requirementOfferHistoryList;
+    
+
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -413,7 +433,7 @@ public class RequirementSubmission implements Serializable{
 	{
 		this.profilePercentage = profilePercentage;
 	}
-
+	
 	public String getRatePer()
 	{
 		return ratePer;
@@ -1355,5 +1375,46 @@ public class RequirementSubmission implements Serializable{
 
 	public void setReferUUID(String referUUID) {
 		this.referUUID = referUUID;
+	}
+
+	public Set<RequirementSubmissionTemplateFields> getRequirementSubmissionTemplateFieldsList() {
+		return requirementSubmissionTemplateFieldsList;
+	}
+
+	public void setRequirementSubmissionTemplateFieldsList(
+			Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList) {
+		this.requirementSubmissionTemplateFieldsList = requirementSubmissionTemplateFieldsList;
+	}
+
+	public Set<RequirementSubmissionHistory> getRequirementSubmissionHistoryList() {
+		return requirementSubmissionHistoryList;
+	}
+
+	public void setRequirementSubmissionHistoryList(Set<RequirementSubmissionHistory> requirementSubmissionHistoryList) {
+		this.requirementSubmissionHistoryList = requirementSubmissionHistoryList;
+	}
+
+	public Set<RequirementInterviewHistory> getRequirementInterviewHistory() {
+		return requirementInterviewHistory;
+	}
+
+	public void setRequirementInterviewHistory(Set<RequirementInterviewHistory> requirementInterviewHistory) {
+		this.requirementInterviewHistory = requirementInterviewHistory;
+	}
+
+	public Set<RequirementOffers> getRequirementOffersList() {
+		return requirementOffersList;
+	}
+
+	public void setRequirementOffersList(Set<RequirementOffers> requirementOffersList) {
+		this.requirementOffersList = requirementOffersList;
+	}
+
+	public Set<RequirementOfferHistory> getRequirementOfferHistoryList() {
+		return requirementOfferHistoryList;
+	}
+
+	public void setRequirementOfferHistoryList(Set<RequirementOfferHistory> requirementOfferHistoryList) {
+		this.requirementOfferHistoryList = requirementOfferHistoryList;
 	}
 }
