@@ -39,7 +39,7 @@ public class ActionHistoryRestController {
 		List<ActionHistory> actionHistoryList = actionHistoryService.getAllActionPerformedByUser(userLoginLogoutSession.getId());
 		if(actionHistoryList != null){
 			for(ActionHistory actionHistory:actionHistoryList){
-				actionHistory.setActionTimeStr(conversionUtil.getDateAsString(actionHistory.getActionTime()));
+				actionHistory.setActionTimeStr(conversionUtil.getDateAsddMMMYYYYHHMMSS(actionHistory.getActionTime()));
 			}
 		}
 		return actionHistoryList;

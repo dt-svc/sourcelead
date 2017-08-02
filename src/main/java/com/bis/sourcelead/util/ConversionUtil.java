@@ -400,4 +400,9 @@ public class ConversionUtil {
 		return formatter.format(date);
 	}
 	
+	public static String getDateAsddMMMYYYYHHMMSS(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
+		return formatter.format(date);
+	}
+	
 }
