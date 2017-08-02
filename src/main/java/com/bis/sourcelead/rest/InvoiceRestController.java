@@ -14,12 +14,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -56,6 +56,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
@@ -75,6 +76,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -93,6 +95,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class InvoiceRestController {
@@ -169,6 +172,9 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private ExpensesService expensesService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -393,8 +399,8 @@ public class InvoiceRestController {
 			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = commonUtil.getDateFormat(customStartDate);
-				Date endTime = commonUtil.getDateFormat(customEndDate);
+				Date startTime = LoginSessionController.DATEFORMAT.parse(customStartDate);
+				Date endTime = LoginSessionController.DATEFORMAT.parse(customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -410,8 +416,6 @@ public class InvoiceRestController {
 		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 		
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		String currentDate = sdf.format(new Date());
 		Date todayDate = new Date();
 		
 		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -471,8 +475,8 @@ public class InvoiceRestController {
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
-					String dueDate = sdf.format(invoice.getDueDate());
-					Date invoiceDueDate = sdf.parse(dueDate);
+					String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+					Date invoiceDueDate = LoginSessionController.DATEFORMAT.parse(dueDate);
 					
 					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
 					
@@ -663,7 +667,7 @@ public class InvoiceRestController {
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
-	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
+	     		ip.setPaymentDateStr(LoginSessionController.DATEFORMAT.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
@@ -1735,5 +1739,159 @@ public class InvoiceRestController {
 		return isDeleted;
 	}
 	
+	@RequestMapping(value = "/getTotalHosursForBilling", method = RequestMethod.GET)
+	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+			
+			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			StringBuilder sb = new StringBuilder();
+			String estimatedHours = null;
+			try {
+				Date requestStartDate =  formatter.parse(startDate);
+				Calendar startCal = Calendar.getInstance();
+				startCal.setTime(requestStartDate); 
+				
+				Date requestEndDate =  formatter.parse(endDate);
+				Calendar endCal = Calendar.getInstance();
+				endCal.setTime(requestEndDate); 
+				
+				int workDays = 0;
+			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			        startCal.setTime(requestEndDate);
+			        endCal.setTime(requestStartDate);
+			    }
+			    do {
+//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			            ++workDays;
+//			        }
+			        startCal.add(Calendar.DATE, 1);
+			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
+
+			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+			
+			return sb.append(estimatedHours).append(":00").toString();
+		} 
+	 
+	
+	/**
+	 * to save invoice/bill based on expenses
+	 * 
+	 * @param json
+	 * @param saveType
+	 * @param invoiceType
+	 * @param request
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveExpensesInvoice", method = RequestMethod.POST)
+	public @ResponseBody String saveExpensesInvoice(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "userId", required = false) String userId,
+			@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+			@RequestParam(value = "saveType", required = false) String saveType,
+			@RequestParam(value = "currencyCode", required = false) String currencyCode,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "type", required = false) String invoiceCategory, MultipartHttpServletRequest request)
+					throws Exception {
+
+		String invoiceSaved = "failed";
+
+		String json1 = "{" + json + "}";
+
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = userService.getUserById(Long.parseLong(userId));
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
+		Org org = orgLocation.getOrg();
+		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
+		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
+		final Map files = request.getFileMap();
+		for (int i = 0; i < attcahmentMaxRowNumber; i++) {
+			MultipartFile multiFile = (MultipartFile) files.get(i + "invoicedocFile");
+			if (multiFile != null && !multiFile.isEmpty()) {
+				attachedfileList.add(multiFile);
+			}
+		}
+
+		Invoice invoice = invoiceService.saveExpenseInvoice(jsonObj, user, orgLocation, saveType, attachedfileList,invoiceType, org, currencyCode,invoiceCategory);
+
+		if (Constants.PAYABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
+			SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg",
+					"Successfully you have created a Bill");
+
+		}
+		if (Constants.PAYABLE.equals(invoiceType) && Constants.INVOICE_SENT.equals(saveType)) {
+			SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg",
+					"Successfully you have sent a Bill");
+
+		}
+		if (Constants.RECEIVABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
+
+			SourceLeadSessionManager.setSessionAttribute(request, "invoiceCreateMsg",
+					"Successfully you have created a Invoice");
+		}
+
+		if (Constants.RECEIVABLE.equals(invoiceType) && Constants.INVOICE_SENT.equals(saveType)) {
+			SourceLeadSessionManager.setSessionAttribute(request, "invoiceCreateMsg",
+					"Successfully you have sent a Invoice");
+
+		}
+		if (null != invoice) {
+			if (null != invoice.getProjectID()) {
+				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),
+						invoice.getInvoiceFrequency(), invoiceType);
+			}
+			invoiceSaved = "success";
+		}
+		return invoiceSaved;
+	}
+	
+
+/**
+	 * To get project assigned members based on project id
+	 * 
+	 * @param projectId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getProjectAssignMembers", method = RequestMethod.GET)
+	@ResponseBody
+	public Collection<ProjectMembers> getProjectAssignMembers(
+			@RequestParam(value = "projectId", required = false) Long projectId) throws Exception {
+
+		List<ProjectMembers> associatesList = projectMembersService.getProjectsAssignedMembersForExpenses(projectId);
+		return associatesList;
+
+	}
+	
+	/**
+	 * Gte Expenses Frequencies by Expense Id
+	 * @param projectMemberId
+	 * @return 
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getExpensesByProjectMemberId", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Expenses> getExpensesByProjectMemberId(
+			@RequestParam(value = "memberId", required = false) Long projectMemberId) throws Exception {
+
+		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId);
+		return expensesList;
+
+	}
+	
+	/**
+	 * Get Expenses Details By expense id
+	 * @param expenseId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getExpensesEntries", method = RequestMethod.GET)
+	@ResponseBody
+	public  Expenses getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
+		Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+		return expense;
+	}
 	
 }

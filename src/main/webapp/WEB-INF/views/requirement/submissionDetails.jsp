@@ -2150,8 +2150,22 @@ $('.chosen-container').css({'width': '100%'});
 $("#rescheduleTimeZone").chosen();
 $("#rescheduleTimeZone").trigger('chosen:update');
 
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatRescheduleDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	finalDateFormatRescheduleDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	finalDateFormatRescheduleDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	finalDateFormatRescheduleDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	finalDateFormatRescheduleDate = 'yy-dd-mm'; 
+}
+
+
+
 $('#rescheduleDate').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormatRescheduleDate,
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,
@@ -2484,8 +2498,22 @@ function proposeTime(interviewId,submissionId){
 		'disableTextInput': true
 	})
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatInterviewDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatInterviewDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatInterviewDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatInterviewDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatInterviewDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 $('#interviewDate0').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormatInterviewDate,
 	changeMonth: true,
 	changeYear: true, 
 	minDate:0,

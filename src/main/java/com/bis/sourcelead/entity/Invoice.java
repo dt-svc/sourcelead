@@ -35,8 +35,6 @@ public class Invoice {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	
-	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
 	private OrgRelations orgRelationID;
@@ -172,6 +170,11 @@ public class Invoice {
 	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
 	private String submissionApproverHierarchyId;
 	
+	@Column(name = "INVOICE_CATEGORY")
+	private String invoiceCategory;
+	
+	@Column(name = "EXPENSES_INVOICES")
+	private String expensesInvoices;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
@@ -944,6 +947,22 @@ public class Invoice {
 	public static long getSerialversionuid()
 	{
 		return serialVersionUID;
+	}
+
+	public String getInvoiceCategory() {
+		return invoiceCategory;
+	}
+
+	public void setInvoiceCategory(String invoiceCategory) {
+		this.invoiceCategory = invoiceCategory;
+	}
+
+	public String getExpensesInvoices() {
+		return expensesInvoices;
+	}
+
+	public void setExpensesInvoices(String expensesInvoices) {
+		this.expensesInvoices = expensesInvoices;
 	}
 	
 	

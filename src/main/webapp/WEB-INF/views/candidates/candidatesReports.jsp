@@ -186,13 +186,27 @@ function cpagination(SourceLeadWeb_loginOrg){
 
 <script>
 	$(function() {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatreports = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatreports = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatreports = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatreports = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatreports = 'yy-dd-mm'; 
+		  }
+		
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatreports,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportStartDate");
+				//var dt = toDate("#ExportStartDate");
+				//var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -203,13 +217,14 @@ function cpagination(SourceLeadWeb_loginOrg){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatreports,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportEndDate");
+				//var dt = toDate("#ExportEndDate");
+				//var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();

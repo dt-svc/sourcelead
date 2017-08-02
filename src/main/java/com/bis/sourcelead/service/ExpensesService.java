@@ -32,4 +32,8 @@ public interface ExpensesService {
 	public  List<ExpensesApproverHierarchy>  getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
 	
 	public List<Expenses>  getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
+
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId)throws Exception;
+
+	
 }
