@@ -449,7 +449,7 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript)
 	var result = "";
 	result = result + '<form id="editSubmittedApplicant_form" name="editSubmittedApplicant_form" enctype="multipart/form-data" method="post">';
-	result = result + '<h3>Add Applicant</h3>';
+	result = result + '<h3>Edit Submission</h3>';
 	result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
