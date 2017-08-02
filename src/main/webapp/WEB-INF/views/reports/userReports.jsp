@@ -439,13 +439,24 @@ function reportpagination(){
 <!-- Filter scripts start here -->
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRepo = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatRepo = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatRepo = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatRepo = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatRepo = 'yy-dd-mm'; 
+		  }
 		$('#billingReportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#billingReportStartDate");
+				//var dt = toDate("#billingReportStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#billingReportEndDate").datepicker("option", "minDate", dt);
 				addBillingValidClass();
@@ -456,13 +467,13 @@ function reportpagination(){
 		$('#billingReportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#billingReportEndDate");
+				//var dt = toDate("#billingReportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#billingReportStartDate").datepicker("option", "maxDate", dt);
 				 $( "#billingReportStartDate" ).datepicker({  maxDate: new Date() });
@@ -489,13 +500,24 @@ function reportpagination(){
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRepo = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatRepo = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatRepo = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatRepo = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatRepo = 'yy-dd-mm'; 
+		  }
 		$('#ReportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ReportStartDate");
+				//var dt = toDate("#ReportStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#ReportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -506,13 +528,13 @@ function reportpagination(){
 		$('#ReportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ReportEndDate");
+				//var dt = toDate("#ReportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ReportStartDate").datepicker("option", "maxDate", dt);
 				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() });
