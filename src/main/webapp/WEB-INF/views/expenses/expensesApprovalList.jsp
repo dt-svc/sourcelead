@@ -159,6 +159,20 @@ $('input:checkbox[name=expenseStatus]:checked').each(function()
 {
 	expenseStatus.push($(this).val());
 });
+
+
+var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+if(locationList.match("yyyy-MM-dd")){
+	expensesApprvListDate = 'YYYY-MM-DD';
+}if(locationList.match("dd-MM-yyyy")){
+	expensesApprvListDate = 'DD-MM-YYYY'; 
+}if(locationList.match("MM-dd-yyyy")){
+	expensesApprvListDate = 'MM-DD-YYYY'; 
+}if(locationList.match("yyyy-dd-MM")){
+	  expensesApprvListDate = 'YYYY-DD-MM'; 
+}
+
+
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
@@ -170,8 +184,8 @@ $.ajax({
 	result = result+' <th>Employee</th>';
 	result = result+' <th>EmploymentType</th>';
 	result = result+' <th>Project</th>';
-	result = result+' <th>Start Date</th>';
-	result = result+' <th>End Date</th>';
+	result = result+' <th>Start Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
+	result = result+' <th>End Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
 	result = result+' <th>No of Items</th>';
 	result = result+' <th>Amount</th>';
 	result = result+' <th>Status</th>';

@@ -181,6 +181,17 @@ function storeCertificate(candidateId){
 function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
 	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candidateCertificateListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candidateCertificateListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candidateCertificateListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candidateCertificateListDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -212,8 +223,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid from<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
+	                 	result  = result + "           <th>Valid to<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
