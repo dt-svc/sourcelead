@@ -24,11 +24,26 @@ $(document).ready(function(){
 </script>
 <script>
 function checkBox(){
-	var invoiceforexpenses = $("#invoiceforexpenses").val();
-	if(invoiceforexpenses == "N"){
-		$("#invoiceforexpenses").val('Y');
+	var invoiceforexpenses = $("#invoiceforexpenses").is(":checked");
+	if(invoiceforexpenses == false){
+		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
+		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectId').removeAttr('data-validation');
+		$('#projectMemberId').removeAttr('data-validation');
+		$('#expensesId').removeAttr('data-validation');
+		$('#projectId').attr('data-validation-optional',"true");
+		$('#projectMemberId').attr('data-validation-optional',"true");
+		$('#expensesId').attr('data-validation-optional',"true");
+		populateExpensesDetailsGrid();
 	}else{
-		$("#invoiceforexpenses").val('N');
+		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
+		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectId').attr("data-validation","required");
+		$('#projectMemberId').attr("data-validation","required");
+		$('#expensesId').attr("data-validation","required");
+		populateInlineItemsGrid();
 	}
 }
 
@@ -119,7 +134,7 @@ function checkBox(){
 			<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
               <div class="col-md-9 checkBox">
-                  <input type="checkbox"  name="invoiceforexpenses" class="paddingRight" value="N" id="invoiceforexpenses" onclick="checkBox()">
+                  <input type="checkbox"  name="invoiceforexpenses" class="paddingRight" id="invoiceforexpenses" onclick="checkBox()">
                   Invoice for Expenses
               </div>
             </div>
@@ -127,22 +142,22 @@ function checkBox(){
               <div id="associate-expenses" style="display: none">
                <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field"> 
+              <div class="col-md-9 select-field" id="projectIdDiv"> 
                 <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectAssignMembers();" field-name="Project Name"> 
                   </select>
               </div>
             </div>
                   <div class="form-group">
               <label class="col-md-3">Associate<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
+              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
                 </select>
               </div>
             </div>
                   <div class="form-group">
               <label class="col-md-3">Expenses<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="expensesId" name="expensesId" onchange="getExpensesDetails();"  field-name="Expense Name">
+              <div class="col-md-9 select-field" id="expensesIdDiv">
+                <select class="chosen-select form-control" id="expensesId" name="expensesId" onchange="getExpensesDetails();"  field-name="Expense Name">
                 </select> 
               </div>
             </div>
