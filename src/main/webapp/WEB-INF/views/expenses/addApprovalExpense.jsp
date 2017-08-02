@@ -17,6 +17,7 @@
 			else{
 				$('#maxRecCount').val('1');
 			}
+			calculateTotalamount();
 		 };
 </script>
 
