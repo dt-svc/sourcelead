@@ -147,7 +147,7 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expenseDateStr}</div></td>
+			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"><i class="fa fa-plus-square-o" aria-hidden="true"></i>${entry.expenseDateStr}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}"> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></div></td>
@@ -160,7 +160,7 @@
 							<ul>
 							    <li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
+								<li><strong>Description :</strong><span title="${entry.description}">${entry.description}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Amount :</strong><span> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
@@ -179,7 +179,7 @@
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
 					                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
 					                                 <i class='glyphicon glyphicon-save'></i>
-										             <input type='button' value='${entryDoc.fileName}'/>
+										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
 										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
 					                         </strong>

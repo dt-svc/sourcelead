@@ -18,6 +18,8 @@
 				$('#maxRecCount').val('1');
 			}
 			calculateTotalamount();
+			getMembersForSelectedProject();
+			getClientBasedOnSelectedProject();
 		 };
 </script>
 
@@ -65,7 +67,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
-							 <c:if test="${fn:length(projectsList) gt 1}">
+							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projects" items="${projectsList}">
@@ -109,9 +111,9 @@
 	</div>
 </div>
 <div class="expensHead">
-<div class="form-group">
-<span class="col-md-3">Expenses Amount Total:</span>
-<div class="col-md-9">
+<div class="form-group col-md-6 mt5 mb5 noPad">
+<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>

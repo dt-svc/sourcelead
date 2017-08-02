@@ -109,9 +109,9 @@
 	</div>
 </div>
 <div class="expensHead">
-<div class="form-group">
-<span class="col-md-3">Expenses Amount Total:</span>
-<div class="col-md-9">
+<div class="form-group col-md-6 mt5 mb5 noPad">
+<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>

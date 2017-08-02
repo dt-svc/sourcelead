@@ -35,8 +35,10 @@
  position: relative !important;
  }
  </style>
+ 
 <script>
 function hideAndShowDetailsRow(rowId,type){
+	$(".fa-plus-square-o").toggleClass("closExp");
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		var validation_required = "true";
 		var entityId = parseInt(rowId-1);
