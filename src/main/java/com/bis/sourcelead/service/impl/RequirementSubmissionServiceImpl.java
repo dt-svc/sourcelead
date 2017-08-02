@@ -3794,9 +3794,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(initiatorUser.getFirstName());
-		 emailMessage.setLastName(initiatorUser.getLastName());
-		 emailMessage.setToEmail(initiatorUser.getEmail());
+		/*
+		 * when professional apply for job, submission createdBy user is Same.
+		 * in this scenario mail is forwarded to same user(professional). 
+		 * to avoid this we took requirement manager (@venkat Kesav)
+		 */
+		 if(initiatorUser.getEmail().equalsIgnoreCase(requirementSubmissionTemplateFields.getEmailId())){
+			 emailMessage.setToEmail(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getManagerUserId().getEmail());
+			 emailMessage.setFirstName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getManagerUserId().getFirstName());
+			 emailMessage.setLastName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getManagerUserId().getLastName());
+		 }else{
+			 emailMessage.setToEmail(initiatorUser.getEmail());
+			 emailMessage.setFirstName(initiatorUser.getFirstName());
+			 emailMessage.setLastName(initiatorUser.getLastName());
+		 }
 		 emailMessage.setFromEmail(requirementSubmissionTemplateFields.getEmailId());
 		 emailMessage.setCreatedBy(initiatorUser.getUserCode());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -3810,11 +3821,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 
-		 if(initiatorUser.getLastName()!= null && !"".equalsIgnoreCase(initiatorUser.getLastName())){
+		 if(emailMessage.getLastName()!= null && !"".equalsIgnoreCase(emailMessage.getLastName())){
 			 StringBuilder sb = new StringBuilder();
-			 globalVarsMap.put("userName", sb.append(initiatorUser.getFirstName()).append(" ").append(initiatorUser.getLastName()).toString());
+			 globalVarsMap.put("userName", sb.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 			 }else{
-				 globalVarsMap.put("userName",initiatorUser.getFirstName());
+				 globalVarsMap.put("userName",emailMessage.getFirstName());
 			 }
 		 
 		 if(requirement.getJobTitle()!= null && !"".equalsIgnoreCase(requirement.getJobTitle())){
