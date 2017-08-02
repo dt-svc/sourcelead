@@ -1,17 +1,10 @@
 package com.bis.sourcelead.aspect;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.DashboardController;
 /**
  *
  * @author Pradeep kumar Reddy
@@ -36,6 +28,9 @@ public class LoggingAspect {
 
 	@Autowired(required=true)
 	private HttpServletRequest request;
+	
+	@Autowired
+	private DashboardController dashboardController;
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -50,22 +45,30 @@ public class LoggingAspect {
 
 	}*/
 
-	@Before("execution(* com.bis.sourcelead.web..*.*(..))")
+	/*@Before("execution(* com.bis.sourcelead.web..*.*(..))")
 	public void logBeforeWebService(JoinPoint joinPoint) throws Throwable {
 		logger.info("**********Web Service Layer Before Method Execution ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
 		logger.info("Method name : " + joinPoint.getSignature().getName());
-		logger.info("Parameters name : " + Arrays.toString(joinPoint.getArgs()));
+		
+		ArrayList<String> excludeMethodName = new ArrayList<>();
+		excludeMethodName.add("loginPage");
+		excludeMethodName.add("loginSession");
+		
+		String currentMethodName = joinPoint.getSignature().getName();
+		//logger.info("Parameters name : " + Arrays.toString(joinPoint.getArgs()));loginSession
 
-		System.out.print("Executed the @Injected method: "
-				+ joinPoint.getSignature() + " with value(s): ");
+		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+ 		 if(auth != null && auth.getPrincipal() != null && !excludeMethodName.contains(currentMethodName)){
+ 			String settingsConfigured =  (String)SourceLeadSessionManager.getSessionAttribute(request, "settingsConfigured");
+ 			if(StringUtils.isNotEmpty(settingsConfigured) && settingsConfigured.equalsIgnoreCase("N")){
+ 				//dashboardController.projects();
+ 			}
+		 }
+		
+	}*/
 
-		for (Object object : joinPoint.getArgs()) {
-			System.out.print(object);
-		}
-	}
-
-
+/*
 	@AfterReturning(pointcut = "@annotation(org.springframework.security.access.prepost.PreAuthorize) && execution(* com.bis.sourcelead.web..*.*(..))", returning = "result")
 	public void logAfterReturningWebService(JoinPoint joinPoint, Object result) throws Exception {
 		logger.info("********** Web Service Layer After Method Execution ************");
@@ -74,14 +77,14 @@ public class LoggingAspect {
 		logger.info("Method returned value  : " + result);
 
 		request = ((ServletRequestAttributes) RequestContextHolder
-				.getRequestAttributes()).getRequest();
+				.getRequestAttributes()).getRequest();*/
 
 //		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 //		String methodName = joinPoint.getSignature().getName();
 //		if(user != null)
 //			actionHistoryService.saveActionHistory(methodName,user);
 
-	}
+	/*}*/
 
 	/*@AfterThrowing(pointcut = "execution(* com.bis.sourcelead.web.*.*(..))", throwing = "error")
 	public void logAfterThrowingWebService(JoinPoint joinPoint, Throwable error) {
@@ -92,7 +95,7 @@ public class LoggingAspect {
 
 	}*/
 
-	@Before("execution(* com.bis.sourcelead.rest..*.*(..))")
+	/*@Before("execution(* com.bis.sourcelead.rest..*.*(..)) && methodAnnotatedWithInjectAndInDemoPackage1() ")
 	public void logBeforeRestService(JoinPoint joinPoint) throws Throwable {
 		logger.info("**********Rest Service Layer Before Method Execution ************");
 		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
@@ -105,15 +108,15 @@ public class LoggingAspect {
 		for (Object object : joinPoint.getArgs()) {
 			System.out.print(object);
 		}
-	}
+	}*/
 
 
 	@AfterReturning(pointcut = "@annotation(org.springframework.security.access.prepost.PreAuthorize) && execution(* com.bis.sourcelead.rest..*.*(..))", returning = "result")
 	public void logAfterReturningRestService(JoinPoint joinPoint, Object result) throws Exception {
-		logger.info("********** Rest Service Layer After Method Exectution ************");
-		logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
-		logger.info("Method name : " + joinPoint.getSignature().getName());
-		logger.info("Method returned value  : " + result);
+		//logger.info("********** Rest Service Layer After Method Exectution ************");
+		//logger.info("Class name : " + joinPoint.getTarget().getClass().getSimpleName());
+		//logger.info("Method name : " + joinPoint.getSignature().getName());
+		//logger.info("Method returned value  : " + result);
 
 		request = ((ServletRequestAttributes) RequestContextHolder
 				.getRequestAttributes()).getRequest();
@@ -144,7 +147,7 @@ public class LoggingAspect {
 
 	}
 */
-	@Around("execution(* com.bis.sourcelead.dao..*.*(..))")
+	/*@Around("execution(* com.bis.sourcelead.dao..*.*(..))")
 	public Object logAroundDao(ProceedingJoinPoint joinPoint) throws Throwable {
 		Object result = null;
 		logger.info("********** Dao Layer Before Method Execution ************");
@@ -159,6 +162,6 @@ public class LoggingAspect {
 		logger.info("Method execution time: " + elapsedTime + " milliseconds.");
 
 		return result;
-	}
+	}*/
 
 }
