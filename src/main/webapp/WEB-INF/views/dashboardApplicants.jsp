@@ -35,7 +35,19 @@ $(document).ready(function(){
 function ApplicantAuthorization(status){
 	var sourceleadUrl = '${sourceleadUrl}';
 	//$("#accepted").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+		
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  dashBoardDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  dashBoardDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  dashBoardDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  dashBoardDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	$.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/getApplicantsByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 			success : function(data) {
@@ -55,11 +67,11 @@ function ApplicantAuthorization(status){
 	            				resultToday = resultToday+'	    <th>Team Member</th>';
 	            				if(status == 'accepted'){
 	            					resultToday = resultToday+'	    <th>Accepted By</th>';
-		            				resultToday = resultToday+'	    <th>Accepted On</th>';
+		            				resultToday = resultToday+'	    <th>Accepted On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
 	            				}
 	            				if(status == 'REJECTED'){
 	            					resultToday = resultToday+'	    <th>Rejected By</th>';
-		            				resultToday = resultToday+'	    <th>Rejected On</th>';
+		            				resultToday = resultToday+'	    <th>Rejected On<br>(<small class="custom-small">'+dashBoardDate+'</small>)</th>';
 	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';

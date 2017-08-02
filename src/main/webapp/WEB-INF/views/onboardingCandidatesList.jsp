@@ -46,6 +46,17 @@ $(document).ready(function(){
 function onboardingCandidatesList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  onBoardListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  onBoardListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  onBoardListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  onBoardListDate = 'YYYY-DD-MM'; 
+	  }  
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getOnboardingCandidatesList?${_csrf.parameterName}=${_csrf.token}",    
@@ -60,7 +71,7 @@ function onboardingCandidatesList(){
 	                     result = result +"    <th>Candidate Name</th>";
 	                     result = result +"    <th>Email</th>";
 	                     result = result +"    <th>Title</th>";
-	                     result = result +"    <th>DOJ</th>"; 
+	                     result = result +"    <th>DOJ<br>(<small class='custom-small'>"+onBoardListDate+"</small>)</th>"; 
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Position Type</th>";
 	                     result = result +"    <th>Onboard Status</th>";

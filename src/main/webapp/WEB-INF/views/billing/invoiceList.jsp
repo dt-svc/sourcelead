@@ -1074,10 +1074,24 @@ function customDate(){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatClientInvoiceDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatClientInvoiceDate,
 		onSelect : function(selected) {
 			var dt = new Date(selected);
 			var dt = toDate("#billingStartDate");
@@ -1091,7 +1105,7 @@ function customDate(){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatClientInvoiceDate,
 		beforeShow: function(){
 	           this.value='';
 	     },

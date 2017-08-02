@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -75,7 +76,7 @@ public class PdfUtil {
 			String userState, String orgName) throws Exception{
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    DateFormat dateFormat =LoginSessionController.DATEFORMAT;
 
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
@@ -196,7 +197,7 @@ public class PdfUtil {
 				 userArray[0] = "--";
 			 }
 			 if(empl.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
+				 String dateOfJoin = LoginSessionController.DATEFORMAT.format(empl.getHireDate());
 				 userArray[5] = dateOfJoin;
 			 }else{
 				 userArray[5] = "--";
