@@ -316,6 +316,25 @@ public class SubmissionsRestController {
 		return "success";
 
 	}
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/editSubmisionDetails", method = RequestMethod.POST)
+	public String editSubmisionDetails(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request)
+			throws Exception {
+		
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.editRequirementSubmission(jsonObj, user, orgLocations, con);
+		return "success";
+		
+	}
 
 	@RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody
@@ -597,6 +616,7 @@ public class SubmissionsRestController {
 		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
 		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
 		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
+		submission.setResumeId(submission.getCandidateResumes().getId());
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
@@ -605,6 +625,19 @@ public class SubmissionsRestController {
 		return resultJson;
 
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
+	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
+		return requirementSubmissionTemplateFields;
+	}
+	
+	
 
 	/**
 	 * 
