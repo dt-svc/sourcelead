@@ -60,6 +60,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementOffersServiceImpl implements RequirementOffersService{
@@ -146,7 +147,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"joiningDate") && jsonObj.getString(c+"joiningDate") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"joiningDate"))){
-									requirementOffers.setDateOfJoining(commonUtil.getDateFormat(jsonObj.getString(c+"joiningDate")));
+									requirementOffers.setDateOfJoining(LoginSessionController.DATEFORMAT.parse(jsonObj.getString(c+"joiningDate")));
 								}
 								
 								if(jsonObj.has(c+"PaymentType") && !jsonObj.getString(c+"PaymentType").isEmpty()){
@@ -452,7 +453,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
                             
             if (requirementOffers.getDateOfJoining() != null) {
-                    requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));
+                    requirementOffers.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format((requirementOffers.getDateOfJoining())));
                     globalVarsMap.put("dateofJoin",requirementOffers.getDateOfJoiningStr());
             } else {
                     globalVarsMap.put("dateofJoin", "--");
@@ -555,7 +556,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 			}
 			if(null != requirementOffers.getDateOfJoining() ){
-			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
+			requirementOffers.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format((requirementOffers.getDateOfJoining())));	
 			globalVarsMap.put("JoinDate", requirementOffers.getDateOfJoiningStr());
 			}
 			else{
@@ -639,7 +640,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 		}
 		if(null != requirementOffers.getDateOfJoining() ){
-		requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format((requirementOffers.getDateOfJoining())));	
+		requirementOffers.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format((requirementOffers.getDateOfJoining())));	
 		globalVarsMap.put("joinDate", requirementOffers.getDateOfJoiningStr());
 		}
 		else{
@@ -957,7 +958,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		//Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
-		String currentTimeStr = Constants.DF_DMY.format(requirementOffers.getDateOfJoining());  
+		String currentTimeStr = LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining());  
 		
 		jsonObj.put("startDate", currentTimeStr);
 		}
@@ -1190,7 +1191,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 					offer.setDateOfJoiningStr(currentDateInTimezone);
 					SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 					String time = localDateFormat.format(converteDate);

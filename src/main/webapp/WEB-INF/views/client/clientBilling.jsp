@@ -252,7 +252,16 @@ result = result  +'    <div class="billingArea"> ';
 <script type="text/javascript">
 	function getInvoiceListBasedonClient(orgRelationId,clientLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
-		
+		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  billingClientDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  billingClientDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  billingClientDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  billingClientDate = 'YYYY-DD-MM'; 
+		  } 
 		var invoice = [];
 		var payment = [];
 		var dayWisetype = $("#dayWiseTypeId").val();
@@ -306,10 +315,10 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'       <tr>                             ';
 			result = result +'         <th>Invoice ID</th>                    ';
 			result = result +'         <th>Client Contact</th>               ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingClientDate+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due date</th>              ';
+			result = result +'         <th>Due date <br>(<small class="custom-small">'+billingClientDate+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';
@@ -508,10 +517,24 @@ function customDate(orgRelationId,clientLocationId){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatbillingStartDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatbillingStartDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatbillingStartDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatbillingStartDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatbillingStartDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatbillingStartDate,
 		onSelect : function(selected) {
 			var dt = new Date(selected);
 			var dt = toDate("#billingStartDate");
@@ -525,7 +548,7 @@ function customDate(orgRelationId,clientLocationId){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatbillingStartDate,
 		beforeShow: function(){
 	           this.value='';
 	     },

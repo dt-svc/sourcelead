@@ -97,6 +97,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -285,7 +286,7 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement = new Requirement();
 				requirement.setCreatedDate(commonUtil.currentDate());
 				requirement.setTotalApplicants(0);
-				requirement.setCreatedBy(user.getUserCode());
+				requirement.setCreatedBy(user);
 				requirement.setUpdatedBy(user.getUserCode());
 				requirement.setUpdatedDate(commonUtil.currentDate());
 				requirement.setRequirementUUID(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -367,9 +368,9 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
 				try {
-					
+					  SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 					Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-					Date startTime =  commonUtil.getDateFormat(jsonObj.getString("closedDate"));
+					Date startTime =  formatter.parse(jsonObj.getString("closedDate"));
 					String currentTimeStr = Constants.TZ_DF.format(startTime);  
 
 					String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -659,6 +660,7 @@ public class RequirementServiceImpl implements RequirementService {
 					    }
 						  requirementApproverHierarchyList.add(rah);
 				  }
+			     
 				 
 			} 
 			//approval saving for parallel
@@ -718,8 +720,16 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  requirementApproverHierarchyList.add(rah);
 				  }
+				  
 				 
-			} 
+			}
+			
+			if(jsonObj.has("parallelApprover") || (jsonObj.has("sequentialApprover1") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover1")))){
+				requirement.setApproverHierarchy(Constants.YES);
+			}else{
+				requirement.setApproverHierarchy(Constants.NO);
+			}
+			
 			if(!jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 			requirement.setRequirementApprover(requirementApproverHierarchyList);
 			}
@@ -1401,9 +1411,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
-		if(requirement.getCreatedDate()!=null){
-			requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
-		}
 		return requirement;
 	}
 
@@ -2824,13 +2831,12 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		List<Requirement>  list = requirementDao.getAllRequirementTeplateJobsByOrgLocationId(orgLocationId, user);
 		
 		for(Requirement req :list){
-			User createdUser = userService.getUserByUserCode(req.getCreatedBy());
-			if(createdUser != null){
+			if(req.getCreatedBy() != null){
 				String lastName = "";
-				if(StringUtils.isNotEmpty(createdUser.getLastName())){
-					lastName = " "+createdUser.getLastName();
+				if(StringUtils.isNotEmpty(req.getCreatedBy().getLastName())){
+					lastName = " "+req.getCreatedBy().getLastName();
 				}
-				req.setCreatedByName(createdUser.getFirstName()+lastName);
+				req.setCreatedByName(req.getCreatedBy().getFirstName()+lastName);
 			}
 			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
 		}
@@ -2974,7 +2980,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				 }
 				reqTemplate.setStatus(Constants.MEMBER_ACTIVE);
 				reqTemplate.setCreatedDate(commonUtil.currentDate());
-				reqTemplate.setCreatedBy(user.getUserCode());
+				reqTemplate.setCreatedBy(user);
 				reqTemplate.setUpdatedBy(user.getUserCode());
 				reqTemplate.setUpdatedDate(commonUtil.currentDate());
 				
@@ -3251,7 +3257,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
 		            		requirement = getData(requirementIndex,user);
 		            	}
@@ -3300,10 +3306,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
      	String convertedStirng = requirementIndex.getCreatedDate();
-     	String convertedStirngArray[]  = convertedStirng.split("-");
+     	
+     	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
+     	Date elkDate = elkFormat.parse(convertedStirng);
+     	
+     	/*String convertedStirngArray[]  = convertedStirng.split("-");
      	StringBuilder dateString = new StringBuilder();
      	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
-     	requirement.setPostedDateStr(dateConverted);
+     	*/
+     	
+     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
@@ -3516,7 +3528,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 		            		requirement = getData(requirementIndex,user);
 		            	}
-		            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+		            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 		            	{
 		            		requirement = getData(requirementIndex,user);
 		            	}

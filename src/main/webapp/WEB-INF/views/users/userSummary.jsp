@@ -60,10 +60,21 @@ min-height: 65px;
 <script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
 	 getUserSummaryDetails(userId);
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
-			 dateFormat: 'dd-mm-yy',
+			 dateFormat: finalDateFormat,
 			 changeMonth: true,
 			 changeYear: true, 
 			});
@@ -2182,6 +2193,7 @@ function getStartandEndDate(){
 
 <script>
 function date() {
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	
 	  if($("#EndDate").val()==""){
 		  var selected = $("#StartDate").val();
@@ -2236,8 +2248,9 @@ function date() {
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	   */
+	   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $('#StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -2246,7 +2259,7 @@ function date() {
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -2437,12 +2450,12 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
    var reStatertDate = $('#Re-StartDate').val();
    
 		  
-   
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
+
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
-	
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 		  minDate:endDate,
 		  maxDate:projectEndDateStr,
 	      onSelect: function (selected) {
@@ -2453,7 +2466,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	      minDate:endDate,
 	      maxDate:projectEndDateStr,
 	        onSelect: function (selected) {
@@ -2466,7 +2479,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
   else{
 	  
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 		  minDate:endDate,
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -2478,7 +2491,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	  
 	
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	      minDate:endDate,
 	      maxDate:reStatertDate,
 	        onSelect: function (selected) {

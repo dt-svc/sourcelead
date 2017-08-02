@@ -41,6 +41,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -102,14 +103,14 @@ public class ExpensesServiceImpl implements ExpensesService{
 			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
 			if(StringUtils.isNotEmpty(startDate)){
-				Date startTime = commonUtil.getDateFormat(startDate);
+				Date startTime = LoginSessionController.DATEFORMAT.parse(startDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
 			}
 			
 			if(StringUtils.isNotEmpty(endDate)){
-				Date endTime = commonUtil.getDateFormat(endDate);
+				Date endTime = LoginSessionController.DATEFORMAT.parse(endDate);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 				endDateUTC = TZ_DF_TS.parse(endDateString);
@@ -149,6 +150,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
 		
+		SimpleDateFormat dateFormatter=orgLoc.getLocFullFormDateFormatter();
 		String[] myExpensesHeaders = null;
 		 if(approverType.equalsIgnoreCase("USER")){
 				myExpensesHeaders = Constants.MY_EXPENSES_HEADERS;
@@ -157,12 +159,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 	myExpensesHeaders = Constants.MY_EXPENSES_HEADERS_APPROVER;
 		 }
 		Document document = new Document(PageSize.LETTER.rotate());
-		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    StringBuilder sbExpenses =  new StringBuilder();
 		    StringBuilder hedderLineString =  new StringBuilder();
-		    sbExpenses.append("Expenses_").append(dateFormat.format(new Date()));
+		    sbExpenses.append("Expenses_").append(dateFormatter.format(new Date()));
 		    StringBuilder fileSB = new StringBuilder();
-		    File file = File.createTempFile(fileSB.append("Expenses_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileSB.append("Expenses_").append(dateFormatter.format(new Date())).toString(),".pdf");
 		    file.setReadable(true);
 		    
 		    try {
@@ -238,13 +240,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 			    	   orderedList.add(new ListItem(Client.append("Client :").append("--").toString()));  
 			       }
 			        if(null != expenseDetails.getStartDate()){
-			        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+			        	String StartDate = dateFormatter.format(expenseDetails.getStartDate());
 			        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
 			        }else{
 			        	orderedList.add(new ListItem(StDate.append("Start Date :").append("--").toString()));	
 			        }
 			        if(null != expenseDetails.getEndDate()){
-			        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+			        	String EndDate = dateFormatter.format(expenseDetails.getEndDate());
 			        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
 			        }else{
 			        	orderedList.add(new ListItem(edDate.append("End Date :").append("--").toString()));
@@ -318,13 +320,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            	client.append("--").toString();
 			            }
 				        if(null != expenseDetails.getStartDate()){
-				        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+				        	String StartDate = dateFormatter.format(expenseDetails.getStartDate());
 				        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
 				        }else{
 				        	orderedList.add(new ListItem(StDate.append("Start Date :").append("--").toString()));
 				        }
 				        if(null != expenseDetails.getEndDate()){
-				        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+				        	String EndDate = dateFormatter.format(expenseDetails.getEndDate());
 				        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
 				        }else{
 				        	orderedList.add(new ListItem(edDate.append("End Date :").append("--").toString()));
@@ -354,6 +356,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 
 	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
 		String userArray[] = new String[myExpensesHeaders.length];
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				if(null != expEntries.getExpensesCategoryId()){
 					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
 						   userArray[0] = expEntries.getExpensesCategoryId().getExpensesName();
@@ -363,7 +366,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 				}
 			if(null != expEntries.getExpenseDate())
 			{
-				expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+				expEntries.setExpenseDateString(dateFormat.format(expEntries.getExpenseDate()));
 				 userArray[1] = expEntries.getExpenseDateString();
 			}
 			if(expEntries.getReceiptIssuedBy() != null && !"".equalsIgnoreCase(expEntries.getReceiptIssuedBy())){	
@@ -457,7 +460,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		}
 		
 	if(null != expEntries.getExpenseDate()){
-		expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+		expEntries.setExpenseDateString(LoginSessionController.DATEFORMAT.format(expEntries.getExpenseDate()));
 		writeRow.createCell(1).setCellValue( expEntries.getExpenseDateString());
 		createExcelsheet.autoSizeColumn(1);
 	}
@@ -542,7 +545,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		String StrtDate = Constants.DMY.format(exp.getStartDate());
+		String StrtDate = LoginSessionController.DATEFORMAT.format(exp.getStartDate());
 		cell8.setCellValue(StrtDate);
 		cell8.setCellStyle(style);
 		
@@ -558,7 +561,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		
 		String EndDate = null;
 		if(null != exp.getEndDate() && !"".equalsIgnoreCase(exp.getEndDate().toString())){
-			EndDate = Constants.DMY.format(exp.getEndDate());	
+			EndDate = LoginSessionController.DATEFORMAT.format(exp.getEndDate());	
 		}else{
 			EndDate  = ("--");	
 		}
@@ -656,13 +659,13 @@ public class ExpensesServiceImpl implements ExpensesService{
         	client.append("--").toString();
         }
         if(null != expenseDetails.getStartDate()){
-        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+        	String StartDate = LoginSessionController.DATEFORMAT.format(expenseDetails.getStartDate());
         	StDate.append(StartDate).toString();
         }else{
         	StDate.append("--").toString();
         }
         if(null != expenseDetails.getEndDate()){
-        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+        	String EndDate = LoginSessionController.DATEFORMAT.format(expenseDetails.getEndDate());
         	edDate.append(EndDate).toString();
         }else{
         	edDate.append("--").toString();
@@ -918,14 +921,14 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}
 							
 							if(null != expenseId.getStartDate()){
-								expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+								expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 								expenseArray[4] = expenseId.getStartDateStr();
 							}else{
 								expenseArray[4] = "--";
 							}
 							
 							if(null != expenseId.getEndDate()){
-								expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+								expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 								expenseArray[5] = expenseId.getEndDateStr();
 							}else{
 								expenseArray[5] = "--";
@@ -1026,12 +1029,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 						}
 						
 						if(null != expenseId.getStartDate()){
-							expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+							expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 							writeRow.createCell(4).setCellValue(expenseId.getStartDateStr());
 							createExcelsheet.autoSizeColumn(4);
 						}
 						if(null != expenseId.getEndDate()){
-							expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+							expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 							writeRow.createCell(5).setCellValue(expenseId.getEndDateStr());
 							createExcelsheet.autoSizeColumn(5);
 						}
@@ -1092,5 +1095,18 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, submissionStatus);
 	}
 	
-		
+	@SuppressWarnings("static-access")
+	@Override
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId) throws Exception {
+		List<Expenses> expensesList = expensesDao.getExpensesByProjectMemberId(projectMemberId);
+		expensesList.forEach(expense->{
+			StringBuilder sb = new StringBuilder();
+			String startDate  = conversionUtil.getDateAsString(expense.getStartDate());
+			String endDate  = conversionUtil.getDateAsString(expense.getEndDate());
+			sb.append(startDate).append(" / ").append(endDate);
+			expense.setDateFrequency(sb.toString());
+		});
+		return expensesList;
+	}
+	
 }

@@ -43,14 +43,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
-import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
-import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,7 +56,6 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -73,8 +68,8 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
-import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -544,7 +539,7 @@ public class ContractRestController {
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
 			if(requirementOffers != null){
-				requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+				requirementOffers.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
 			}
 		}
 		return commonUtil.toJSON(requirementOffers);
@@ -757,19 +752,19 @@ public class ContractRestController {
 		 	
 		 	DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+			 SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 			if(null != contract && null != contract.getStartDate()){
 				String currentTimeStr = Constants.TZ_DF.format(contract.getStartDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
+				currentDateInTimezone = formatter.format(converteDate);
 				contract.setStartDateStr(currentDateInTimezone);
 			}
 			if(null != contract && null != contract.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = formatter.format(endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
 			
@@ -777,7 +772,7 @@ public class ContractRestController {
 				String endTimeStr = Constants.TZ_DF.format(contract.getJoinDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = formatter.format(endconverteDate);
 				contract.setJoinedDateStr(endDateInTimezone);
 			}
 			
@@ -785,14 +780,14 @@ public class ContractRestController {
 				String currentTimeStr = Constants.TZ_DF.format(contract.getCreatedDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
+				currentDateInTimezone = formatter.format(converteDate);
 				contract.setCreatedDateStr(currentDateInTimezone);
 			}
 			if(null != contract && null != contract.getUpdatedDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getUpdatedDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = formatter.format(endconverteDate);
 				contract.setUpdatedDateStr(endDateInTimezone);
 			}
 			
@@ -949,8 +944,9 @@ public class ContractRestController {
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
 		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 	SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
-		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
+		 		Date endTimeStr = dateFormat.parse(endDate);  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");

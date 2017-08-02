@@ -215,6 +215,9 @@ public class Candidate implements Serializable{
 	private String rate;
 	
 	@Transient
+	private String userRole;
+	
+	@Transient
 	private String candidateName;
 	
 	@Transient
@@ -373,6 +376,17 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private List<Contracts> contractsList;
 	 
+
+	 @Transient
+	 private String reportingManager;
+	 
+	 @Transient
+	 private String resumeUUID;
+	 
+	 @Transient
+	 private String isResumeExists;
+	 
+
 	 @Column(name = "GENERATED_ID")
 	 private String generatedId;
 
@@ -380,8 +394,10 @@ public class Candidate implements Serializable{
 	 private int profilePercentage;
 	 
 	 @Transient
-	 private String resumeUUID;
-	 
+	 @JsonProperty
+	 private String candLocation;
+ 
+		 
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1440,6 +1456,46 @@ public class Candidate implements Serializable{
 		this.candidateResumeFileType = candidateResumeFileType;
 	}
 
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
+	}
+
+
+	public String getIsResumeExists() {
+		return isResumeExists;
+	}
+
+
+	public void setIsResumeExists(String isResumeExists) {
+		this.isResumeExists = isResumeExists;
+	}
+
 	public String getGeneratedId()
 	{
 		return generatedId;
@@ -1463,14 +1519,22 @@ public class Candidate implements Serializable{
 		this.systemGeneratedId = systemGeneratedId;
 	}
 
-	public String getResumeUUID()
-	{
-		return resumeUUID;
+	public String getCandLocation() {
+		StringBuilder loc = new StringBuilder();
+		if(city != null && !city.isEmpty()){
+			candLocation = loc.append(city).append(", ").append(state).append(", ").append(country).toString();
+		}else if(state != null && !state.isEmpty() && city == null){
+			candLocation = loc.append(state).append(", ").append(country).toString();
+		}else{
+			candLocation = loc.append(country).toString();
+		}
+		return candLocation;
 	}
 
-	public void setResumeUUID(String resumeUUID)
-	{
-		this.resumeUUID = resumeUUID;
+	public void setCandLocation(String candLocation) {
+		this.candLocation = candLocation;
 	}
+
 
 }
+

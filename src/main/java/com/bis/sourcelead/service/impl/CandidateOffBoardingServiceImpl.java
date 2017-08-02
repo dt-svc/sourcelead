@@ -26,8 +26,6 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OffboardTasks;
-import com.bis.sourcelead.entity.OnboardTasks;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
@@ -38,6 +36,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingService{
@@ -86,6 +85,9 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 		CandidateOffBoarding candidateOffBoarding = null;
 		
+		// date format
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		
 		if(jsonObj.has("savedoffboardId") && !isNullOrEmpty(jsonObj.getString("savedoffboardId"))){
 			candidateOffBoarding = candidateOffBoardingDao.getCandidateOffBoardingById(Long.valueOf(jsonObj.getString("savedoffboardId")));
 		}else{
@@ -115,7 +117,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		if(jsonObj.has("dateOfJoin") && !isNullOrEmpty(jsonObj.getString("dateOfJoin"))){
-			candidateOffBoarding.setDateOfJoin(commonUtil.getDateFormat(jsonObj.getString("dateOfJoin")));
+			candidateOffBoarding.setDateOfJoin(dateFormat.parse(jsonObj.getString("dateOfJoin")));
 		}
 		
 		if(jsonObj.has("role") && !isNullOrEmpty(jsonObj.getString("role"))){
@@ -128,7 +130,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOffBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));
+			candidateOffBoarding.setEndDate(dateFormat.parse(jsonObj.getString("endDate")));
 		}
 		
 		if(jsonObj.has("reason") && !isNullOrEmpty(jsonObj.getString("reason"))){
@@ -150,7 +152,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		if(jsonObj.has("effectiveDate") && !isNullOrEmpty(jsonObj.getString("effectiveDate"))){
-			candidateOffBoarding.setEffectiveDate(commonUtil.getDateFormat(jsonObj.getString("effectiveDate")));
+			candidateOffBoarding.setEffectiveDate(dateFormat.parse(jsonObj.getString("effectiveDate")));
 		}
 		
 		if(jsonObj.has("offboardingTemplate") && !isNullOrEmpty(jsonObj.getString("offboardingTemplate"))){
@@ -247,7 +249,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 	}
 public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, User loginUser,OrgLocations orgLocations) throws Exception{
-        
+        SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
         EmailMessage emailMessage = new EmailMessage();
          emailMessage.setFirstName(loginUser.getFirstName());
          emailMessage.setLastName(loginUser.getLastName());
@@ -260,9 +262,9 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
         //setting the class filed values
          Map<String, String> globalVarsMap = new HashMap<String, String>();
         
-        String effectiveDate=Constants.DMY.format(candidateOffBoarding.getEffectiveDate());
+        String effectiveDate=dateFormat.format(candidateOffBoarding.getEffectiveDate());
          globalVarsMap.put("effectiveDate", effectiveDate);
-         String endDate=Constants.DMY.format(candidateOffBoarding.getEndDate());
+         String endDate=dateFormat.format(candidateOffBoarding.getEndDate());
          globalVarsMap.put("endDate", endDate);
          globalVarsMap.put("offboardReason", candidateOffBoarding.getReason());
          globalVarsMap.put("loginUser", emailMessage.getFromName());
@@ -404,7 +406,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+		 task.setTaskDateStr(LoginSessionController.DATEFORMAT.format(task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

@@ -24,6 +24,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author Shivayogi
@@ -167,10 +168,10 @@ public class CandidateCertificationsRestController {
 			CandidateCertifications  candidateCertificationsList = candidateCertificationsService.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
 			
 			if(candidateCertificationsList.getValidFrom() != null){
-				candidateCertificationsList.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidFrom())); 
+				candidateCertificationsList.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertificationsList.getValidFrom())); 
 			 }
 			 if(candidateCertificationsList.getValidTo() != null){
-				 candidateCertificationsList.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertificationsList.getValidTo())); 
+				 candidateCertificationsList.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertificationsList.getValidTo())); 
 			 }
 			resultJson = commonUtil.toJSON(candidateCertificationsList);
 			 return resultJson;

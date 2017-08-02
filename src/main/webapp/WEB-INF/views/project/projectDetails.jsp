@@ -22,11 +22,14 @@
 	min-height: 675px;
 }
 </style>
+
+<div id="projectDetailsLoading"></div>
        
        
 <!-- this script is for Project Details functionality at Projects screen -->
 <script>
 	function projectDetails(projectId) {
+		$("#projectDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
 					type : "POST",
@@ -139,14 +142,16 @@
 						}
 						
 						var proStatus ='';
-						if(json.projectStatus == 'STARTED'){
-							proStatus = 'Started';
+						if(json.projectStatus == 'NOTSTARTED'){
+							proStatus = 'Not Started';
 						}else if(json.projectStatus == 'INPROGRESS'){
 							proStatus = 'In-Progress';
 						}else if(json.projectStatus == 'ONHOLD'){
 							proStatus = 'On-Hold';
 						}else if(json.projectStatus == 'COMPLETED'){
 							proStatus = 'Completed';
+						}else if(json.projectStatus == 'DROPPED'){
+							proStatus = 'Dropped';
 						}
 						
 						
@@ -260,6 +265,7 @@
 						$("#tab-4").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
+						$("#projectDetailsLoading").removeAttr("style"); 
 						
 						$(".project-tabs-menu a").click(
 								function(event) {
@@ -362,10 +368,10 @@
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Status</label>';
 						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();">';
-						if (json.projectStatus == 'STARTED') {
-							result = result	+ '<option selected >Started</option>';
+						if (json.projectStatus == 'NOTSTARTED') {
+							result = result	+ '<option selected >Not Started</option>';
 						} else {
-							result = result + '<option>Started</option>';
+							result = result + '<option>Not Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
@@ -385,6 +391,12 @@
 						} else {
 							result = result + '<option>On-Hold</option>';
 						}
+						if (json.projectStatus == 'DROPPED') {
+							result = result	+ '<option selected>Dropped</option>';
+						} else {
+							result = result + '<option>Dropped</option>';
+						}
+						
 
 						result = result + '</select>';
 						result = result + '</div>';
@@ -629,8 +641,19 @@
 
 						//Main project end date
 						var projectEndDate = json.endDateStr;
+						 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+						  var finalDateFormatEduSave = '';
+						  if(locationDate.match("yyyy-MM-dd")){
+							  finalDateFormatEduSave = 'yy-mm-dd';
+						  }if(locationDate.match("dd-MM-yyyy")){
+							  finalDateFormatEduSave = 'dd-mm-yy'; 
+						  }if(locationDate.match("MM-dd-yyyy")){
+							  finalDateFormatEduSave = 'mm-dd-yy'; 
+						  }if(locationDate.match("yyyy-dd-MM")){
+							  finalDateFormatEduSave = 'yy-dd-mm'; 
+						  }
 						$('#endDateStr1').datepicker({
-							dateFormat : 'dd-mm-yy',
+							dateFormat : finalDateFormatEduSave,
 							showOn: 'focus',
 				            showButtonPanel: true,
 				            closeText: 'Clear', 

@@ -614,8 +614,6 @@ function sideBar(requirementId,type){
               			var jobType = '';
               			if(json.jobType != null && json.jobType != '' && json.jobType != 'undefined'){
               				jobType = '-'+json.jobType;
-             			 	}else{
-             			 		jobType = '';
              			 	}
               			
               			
@@ -736,9 +734,9 @@ function sideBar(requirementId,type){
 			        	 result = result+'<li> <i class="fa fa-user" title="Manager"></i><span id="canName"> --- </span></li>';	
 			        }
 			        var mydate = json.requirementCreatedDateToString;
-			        var str = mydate.split("-");
-			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]);
-			        result = result+'<li><i class="fa fa-clock-o" title="Job Posted Date"></i><span>'+strFormatedDate+'</span></li>';
+			        /* var str = mydate.split("-");
+			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]); */
+			        result = result+'<li><i class="fa fa-clock-o" title="Job Posted Date"></i><span>'+mydate+'</span></li>';
 			        
 			        if(json.closedDateStringFormat != null && json.closedDateStringFormat != '' && json.closedDateStringFormat != 'undefined'){
 				        result = result+'<li><i class="fa fa-clock-o" title="Job Closed Date"></i><span>'+json.closedDateStringFormat+'</span>';
@@ -762,12 +760,6 @@ function sideBar(requirementId,type){
 				        else{
 					    result = result+'<li><i class="fa fa-clock-o" title="ProjectDuration"></i><span> --- </span>';
 				        }
-			        
-			        
-			       
-				        
-
-			        
 			        
 				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
 				        result = result+'<li><i class="fa fa-flag" title="Priority"></i><span>'+json.priority+'</span>';
@@ -931,20 +923,6 @@ function sideBar(requirementId,type){
 				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
-				            /* result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>'; */
-				           
 				            
 				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
 				            result = result +'<div class="action-pop">';
@@ -1870,6 +1848,7 @@ function requirementPipeline(requirementId,submissionType){
 							 });
 							
 							prepareAllCounts(requirementId);
+							tabEnable('','applicantli');
 							return true;
 							
               }else{
@@ -1885,7 +1864,8 @@ function requirementPipeline(requirementId,submissionType){
       					 result = result+"	</div>"; 
       					 result = result+"  </div> "; 
       					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
+      				    $("#requirementSideDiv").append(result);
+      				  tabEnable('','applicantli');
       				  return true;
                       }
                },

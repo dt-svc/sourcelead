@@ -6,15 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +26,12 @@ import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -49,7 +45,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -125,8 +120,8 @@ public class InvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
-				String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
+				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -270,13 +265,13 @@ public class InvoicePdfHelper {
 
 					StringBuilder startAndEndDate = new StringBuilder();
 					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-						String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
+						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
+						String endDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getEndDate());
 						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
 								.append(System.getProperty("line.separator")).append(endDate);
 						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
 					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
+						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
 						table.addCell(
 								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					} else {
@@ -455,8 +450,8 @@ public class InvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
-				String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
+				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -598,13 +593,13 @@ public class InvoicePdfHelper {
 
 					StringBuilder startAndEndDate = new StringBuilder();
 					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-						String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
+						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
+						String endDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getEndDate());
 						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
 								.append(System.getProperty("line.separator")).append(endDate);
 						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
 					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
+						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
 						table.addCell(
 								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					} else {
@@ -848,7 +843,7 @@ public class InvoicePdfHelper {
 			headers = Constants.BILLING_HEADERS;
 		}
 		Document document = new Document(PageSize.LETTER.rotate());
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 
 		StringBuilder sbReq = new StringBuilder();
 		sbReq.append(orgName).append(Constants.BILLING).append(dateFormat.format(new Date()));
@@ -1023,14 +1018,14 @@ public class InvoicePdfHelper {
 		}
 
 		if (null != invoice.getInvoiceDate()) {
-			String invoiceDate = Constants.DF_DMY.format(invoice.getInvoiceDate());
+			String invoiceDate = LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate());
 			billingArray[5] = invoiceDate;
 		} else {
 			billingArray[5] = "--";
 		}
 
 		if (null != invoice.getDueDate()) {
-			String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+			String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
 			billingArray[6] = dueDate;
 		} else {
 			billingArray[6] = "--";

@@ -192,26 +192,26 @@ public class ContractController {
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+			SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 			if(null != contract && null != contract.getStartDate()){
 				String currentTimeStr = Constants.TZ_DF.format(contract.getStartDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
+				currentDateInTimezone = formatter.format(converteDate);
 				contract.setStartDateStr(currentDateInTimezone);
 			}
 			if(null != contract && null != contract.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = formatter.format(endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
 			if(null != contract && null != contract.getJoinDate()){
 				String joinDateStr = Constants.TZ_DF.format(contract.getJoinDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), joinDateStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = formatter.format(endconverteDate);
 				contract.setJoinedDateStr(endDateInTimezone);
 			}
 			if(null != contract){
@@ -416,19 +416,21 @@ public class ContractController {
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+		        SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
+
+		 
 			if(null != contract && null != contract.getStartDate()){
 				String currentTimeStr = Constants.TZ_DF.format(contract.getStartDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
+				currentDateInTimezone = formatter.format(converteDate);
 				contract.setStartDateStr(currentDateInTimezone);
 			}
 			if(null != contract && null != contract.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = formatter.format(endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
 			if(null != contract){

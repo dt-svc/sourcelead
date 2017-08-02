@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,11 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
@@ -51,6 +50,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
@@ -61,6 +61,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class CandidateOnBoardRestController {
@@ -112,6 +113,9 @@ public class CandidateOnBoardRestController {
 	@Autowired
 	TaskService taskService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -127,9 +131,9 @@ public class CandidateOnBoardRestController {
 		
 		List<OnBoardingTemplate> templatesList = onBoardingTemplateService.getOnBoardingTemplatesList(loginOrgLocation.getId());
 		List<OnBoardingTemplate> onboardingTemplatesList = new ArrayList<OnBoardingTemplate>();
-		
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for(OnBoardingTemplate template : templatesList){
-			template.setTemplateCreatedDate(Constants.DMY.format(template.getCreatedDate()));
+			template.setTemplateCreatedDate(dateFormat.format(template.getCreatedDate()));
 			onboardingTemplatesList.add(template);
 		}
 		
@@ -706,11 +710,13 @@ public class CandidateOnBoardRestController {
 	 
 	 @RequestMapping(value = "/getOnBoardingCandidateOfferDetails")
 		public String getOnBoardingCandidateOfferDetails(@RequestParam(value = "offerId", required = false) Long offerId,
-				HttpServletRequest request) throws Exception {
-
+				@RequestParam(value = "locationCode") String locationCode) throws Exception {
+		 
+		 	OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		 	SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
 			RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
 			if(null != offer.getDateOfJoining()){
-				offer.setDateOfJoiningStr(Constants.DMY.format(offer.getDateOfJoining()));
+				offer.setDateOfJoiningStr(dateFormat.format(offer.getDateOfJoining()));
 			}
 			
 			
@@ -774,18 +780,19 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/getOnboardCandidateList")
-	 public String getOnboardCandidateList(HttpServletRequest request) throws Exception {
+	 public String getOnboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
 
 		String resultJson;
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 		List<CandidateOnBoarding> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingListByOrgLocationId(loginOrgLocation.getId());
 		List<CandidateOnBoarding> onBoardingList = new ArrayList<CandidateOnBoarding>();
 		
 		if(null != candidateOnBoardingList && candidateOnBoardingList.size() > 0){
 			for(CandidateOnBoarding candidateOnBoarding : candidateOnBoardingList){
 				if(null != candidateOnBoarding.getStartDate()){
-					candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+					candidateOnBoarding.setJoiningDateStr(format.format(candidateOnBoarding.getStartDate()));
 				}
 				
 				StringBuilder candidateName = new StringBuilder();
@@ -821,11 +828,13 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/loadOnboardingCandidateDetails")
-	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception {
+	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+			 @RequestParam(value="locationCode") String locationCode) throws Exception {
 
 		String resultJson;
 		StringBuilder candidateName = new StringBuilder();
-		
+		OrgLocations orglocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		SimpleDateFormat formatter = orglocations.getLocFullFormDateFormatter();
 		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
 		if(null != candidateOnBoarding){
 			candidateOnBoarding.setOnBoardCandidateId(candidateOnBoarding.getCandidateId().getId());
@@ -856,14 +865,14 @@ public class CandidateOnBoardRestController {
 				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
 			}
 			
-			candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+			candidateOnBoarding.setJoiningDateStr(formatter.format(candidateOnBoarding.getStartDate()));
 			
 			if(null != candidateOnBoarding.getEndDate()){
-				candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
+				candidateOnBoarding.setEndDateStr(formatter.format(candidateOnBoarding.getEndDate()));
 			}
 			
 			if(null != candidateOnBoarding.getDueDate()){
-				candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+				candidateOnBoarding.setDueDateStr(formatter.format(candidateOnBoarding.getDueDate()));
 			}
 			
 			
@@ -1864,7 +1873,7 @@ public class CandidateOnBoardRestController {
 					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
 					
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
-					submission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+					submission.setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
@@ -2012,7 +2021,7 @@ public class CandidateOnBoardRestController {
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){

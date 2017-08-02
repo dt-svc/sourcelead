@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -512,6 +513,8 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
 	                     </sec:authorize>
 	                     
+	                     <li><a href="<c:url value="/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
+	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
@@ -824,20 +827,32 @@ function notificationStatusAsRead(){
 </script> 
 
 <script type="text/javascript">
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormattask = '';
+if(locationDate.match("yyyy-MM-dd")){
+	finalDateFormattask = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	finalDateFormattask = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	finalDateFormattask = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	finalDateFormattask = 'yy-dd-mm'; 
+}
 $('#taskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,
 	onSelect : function(selected) {
-		var dt = new Date(selected);
+		//var dt = new Date(selected);
+		 var dt = $(this).datepicker('getDate', '+1d');
 		dt.setDate(dt.getDate() + 1);
 		removevalidation();
 	}
 	});
 	
 $('#myTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -846,7 +861,7 @@ $('#myTaskDatpicker').datepicker({
 	});
 	
 $('#assignedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {
@@ -854,7 +869,7 @@ $('#assignedTaskDatpicker').datepicker({
 	   }
 	});
 $('#closedTaskDatpicker').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormattask,
 	changeMonth: true,
 	changeYear: true, 
 	onSelect : function(selected) {

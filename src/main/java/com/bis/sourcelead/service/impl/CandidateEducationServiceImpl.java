@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class CandidateEducationServiceImpl implements CandidateEducationService {
@@ -108,8 +110,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(jsonObject.has("startDate") && !(jsonObject.getString("startDate").isEmpty()) && !" ".equals(jsonObject.get("startDate"))){
 			try {
 				
-				String pattern = "dd-MM-yyyy";
-                SimpleDateFormat format = new SimpleDateFormat(pattern);
+				//String pattern = "dd-MM-yyyy";
+				DateFormat format = LoginSessionController.DATEFORMAT;
                 Date startDate = format.parse(jsonObject.getString("startDate"));
                 candidateEducation.setStartDate(startDate);
 				
@@ -119,8 +121,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		}
 		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty()) && !" ".equals(jsonObject.get("endDate"))) {
 			try {
-				String pattern = "dd-MM-yyyy";
-                SimpleDateFormat format = new SimpleDateFormat(pattern);
+				//String pattern = "dd-MM-yyyy";
+				DateFormat format = LoginSessionController.DATEFORMAT;
                 Date validTo = format.parse(jsonObject.getString("endDate"));
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
@@ -192,10 +194,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		for(CandidateEducation education :edulist){
 			if(education.getStartDate() != null){
-			education.setStartDateStr(Constants.DF_DMY.format(education.getStartDate()));
+			education.setStartDateStr(LoginSessionController.DATEFORMAT.format(education.getStartDate()));
 			}
 			if(education.getEndDate() != null){
-			education.setEndDateStr(Constants.DF_DMY.format(education.getEndDate()));
+			education.setEndDateStr(LoginSessionController.DATEFORMAT.format(education.getEndDate()));
 			}
 		}
 		return edulist;

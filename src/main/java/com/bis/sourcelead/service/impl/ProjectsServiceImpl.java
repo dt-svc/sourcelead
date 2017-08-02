@@ -40,7 +40,6 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -80,6 +79,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -324,9 +324,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	// 	String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 	 	
+        
+        
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
@@ -590,12 +592,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			String status,Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
     	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
-		 for (Projects projects :projectList ){
-	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-	    	    projects.setEmployeeStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+    	 OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationsId);
+         SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+    	for (Projects projects :projectList ){
+	    	    projects.setStartDateStr(formatter.format(projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(formatter.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
-			    	 projects.setEmployeeEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(formatter.format(projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(formatter.format(projects.getEndDate()));
 			    }
 			    
 			    if(null != projects.getOrgRelationId()){
@@ -820,15 +824,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		String resultJson =null;
 		
+		SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
+		
 		if(projects.getCreatedDate() != null){
-			projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
+			projects.setCreatedDateStr(dateFormat.format(projects.getCreatedDate()));	
 		}
-	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    projects.setStartDateStr(dateFormat.format(projects.getStartDate()));
 	    if(projects.getEndDate() != null){
-	    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+	    	 projects.setEndDateStr(dateFormat.format(projects.getEndDate()));
 	    }
 	    if(projects.getUpdatedDate() != null){
-	    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+	    	projects.setUpdatedDateStr(dateFormat.format(projects.getUpdatedDate()));
 	    }
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
@@ -968,11 +974,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 		 
-		 
-		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		 projects.setStartDateStr(dateFormat.format(projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
+		    	 projects.setEndDateStr(dateFormat.format(changedEndDate));
 		    }
 			
 		    
@@ -1042,9 +1048,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
 		 
-		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		 projects.setStartDateStr(LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
+		    	 projects.setEndDateStr(LoginSessionController.DATEFORMAT.format(changedEndDate));
 		    }
 			
 		    
@@ -1167,8 +1173,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
-			    		String pattern = "dd-MM-yyyy";
-			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    			 SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
+//			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
 					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
@@ -1347,9 +1353,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
-	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
 			    }
 				
 			    
@@ -1638,6 +1644,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
+		SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
@@ -1652,14 +1659,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(dateFormat.format(pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(dateFormat.format(pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(dateFormat.format(pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
@@ -1717,6 +1724,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
+		SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
+		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
@@ -1733,14 +1742,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(dateFormat.format(pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(dateFormat.format(pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(dateFormat.format(pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());

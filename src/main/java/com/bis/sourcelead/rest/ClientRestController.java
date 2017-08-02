@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -739,8 +740,9 @@ public class ClientRestController {
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		String resultJson;
 		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
+		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		for (Requirement req : reqList) {
-			req.setPostedDateStr(Constants.DF_DMY.format(req.getCreatedDate()));
+			req.setPostedDateStr(formatter.format(req.getCreatedDate()));
 			int interviewsSum = 0;
 			int offeredSum = 0;
 			int submitToClient = 0;
@@ -756,7 +758,7 @@ public class ClientRestController {
 				StringBuilder name = new StringBuilder();
 				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				
-				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations);
+				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations,userRoleName);
 				for(RequirementSubmission reqsub : subList){
 					RequirementSubmission sourceSub = requirementSubmissionService.getClientRequierementSubmission(reqsub.getId());
 					int vendorInterviewsCount = 0;

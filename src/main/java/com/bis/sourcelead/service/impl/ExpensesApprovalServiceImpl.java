@@ -39,7 +39,6 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -50,6 +49,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -102,21 +102,21 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception {
 		Date endDateUTC = null;
 		Date startDateUTC = null;
-		
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
 		if(StringUtils.isNotEmpty(startDate)){
-			Date startTime = commonUtil.getDateFormat(startDate);
+			Date startTime = dateFormat.parse(startDate);
 			String customStartTimeStr = TZ_DF_CSD.format(startTime);
 			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 			startDateUTC = TZ_DF_TS.parse(startDateString);
 		}
 		
 		if(StringUtils.isNotEmpty(endDate)){
-			Date endTime = commonUtil.getDateFormat(endDate);
+			Date endTime =  dateFormat.parse(endDate);
 			String customEndTimeStr = TZ_DF_CED.format(endTime);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
@@ -125,10 +125,10 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
-				expensesApproverHierarchy.setExpenseStartDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
-				expensesApproverHierarchy.setExpenseEndDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getEndDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseEndDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getEndDate()));
 			}else{
-				expensesApproverHierarchy.setExpenseStartDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
 			}
 			
 			if (null != expensesApproverHierarchy.getExpenseId()) {
@@ -331,14 +331,14 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}
 			
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 				expenseArray[8] = expenseId.getStartDateStr();
 			}else{
 				expenseArray[8] = "--";
 			}
 			
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 				expenseArray[9] = expenseId.getEndDateStr();
 			}else{
 				expenseArray[9] = "--";
@@ -488,12 +488,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				createExcelsheet.autoSizeColumn(7);
 			}
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}

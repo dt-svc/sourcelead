@@ -5,13 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class AddExpensesRestController {
@@ -65,6 +67,9 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -112,9 +117,9 @@ public class AddExpensesRestController {
 					 }
 
 					}
-					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
+					 project.setStartDateStr(LoginSessionController.DATEFORMAT.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
+					 project.setEndDateStr(LoginSessionController.DATEFORMAT.format(project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
@@ -168,7 +173,7 @@ public class AddExpensesRestController {
 		    	isSuperUser = Constants.YES;
 		    }
 		    
-			DateFormat format = Constants.DF_DMY;
+			DateFormat format = LoginSessionController.DATEFORMAT;
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
@@ -183,7 +188,11 @@ public class AddExpensesRestController {
 	}
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
-	public @ResponseBody String getClientByProjectId(@RequestParam(value = "projectId", required = false) String projectId) throws Exception {
+	public @ResponseBody String getClientByProjectId(@RequestParam(value = "projectId", required = false) String projectId,
+			@RequestParam(value = "locationCode") String locationCode) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		//date formats
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != projectId && !"".equalsIgnoreCase(projectId)){
 			Projects project =	projectsService.getProjectById(Long.parseLong(projectId));
 			if(null != project){
@@ -199,9 +208,9 @@ public class AddExpensesRestController {
 					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
 					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					}*/
-					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
+					 project.setStartDateStr(dateFormat.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
+					 project.setEndDateStr(dateFormat.format(project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
@@ -337,21 +346,21 @@ public class AddExpensesRestController {
 //				 globalVarsMap.put("expenseId",sah.getExpenseId().getExpenseId());
 //					 }
 //				 }
-				 
+				 SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				 if(null != sah.getExpenseId()){
 					 if(null != sah.getExpenseId().getStartDate()){
-				 globalVarsMap.put("startDate",Constants.DMY.format(sah.getExpenseId().getStartDate()));
+				 globalVarsMap.put("startDate",dateFormat.format(sah.getExpenseId().getStartDate()));
 					 }
 				 }	 
 				 if(null != sah.getExpenseId()){
 					 if(null != sah.getExpenseId().getEndDate()){
-				 globalVarsMap.put("endDate", Constants.DMY.format(sah.getExpenseId().getEndDate()));
+				 globalVarsMap.put("endDate",dateFormat.format(sah.getExpenseId().getEndDate()));
 					 }
 				 }
 				 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));
 				 
 //				Date todayDate = new Date();
-//				 globalVarsMap.put("submitForApprovalDate",Constants.DMY.format(todayDate));
+//				 globalVarsMap.put("submitForApprovalDate",LoginSessionController.DATEFORMAT.format(todayDate));
 				
 				// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 				// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());

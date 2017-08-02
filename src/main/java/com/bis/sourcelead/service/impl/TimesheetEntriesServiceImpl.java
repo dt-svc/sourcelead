@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +28,6 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -53,6 +53,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -173,8 +174,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  StringBuilder startDateBuilder = new StringBuilder();
 		  StringBuilder endDateBuilder = new StringBuilder();
 		 
-		  String pattern = "dd-MM-yyyy";
-          SimpleDateFormat format = new SimpleDateFormat(pattern);
+		  //String pattern = "dd-MM-yyyy";
+          DateFormat format = LoginSessionController.DATEFORMAT;
           Date currentStartDate = null;
           Date currentEndDate = null;
           Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -201,7 +202,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 * startDate comes from ui screen when << or >> links clicked
 		   */
 		  else{
-			  Date sDate  =  Constants.DMY.parse(startDate);
+			  Date sDate  =  LoginSessionController.DATEFORMAT.parse(startDate);
               if(sDate != null && employeeEndDate.before(sDate)){
            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
@@ -855,9 +856,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		
 		Boolean isFillMemberTimeSheet = commonUtil.hasRole("ROLE_FILL_MEMBER_TIMESHEETS");
 		
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date sDate  =  Constants.DMY.parse(startDate);
+		//String pattern = "dd-MM-yyyy";
+        DateFormat format = LoginSessionController.DATEFORMAT;
+        Date sDate  =  format.parse(startDate);
         Long employeeUserId = null;
         Long projectMemberId = null;
 		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(),sDate);
@@ -1318,7 +1319,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								documentBuffer.append("</a>");
 								
 
-								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+								DateFormat sdf = LoginSessionController.DATEFORMAT;
 							    String startDate1  =  sdf.format(tsFirst.getStartDate());
 							    String endDate1  =  sdf.format(tsFirst.getEndDate());
 							    if( (!isFillMemberTimeSheet ) ||  (!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) )){ 
@@ -1702,9 +1703,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
     	
 		/*result =  "success";*/
 		/*resultJson = toJSON(startDateResult);*/
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        String startDateStr = format.format(startDate);
+		//String pattern = "dd-MM-yyyy";
+        String startDateStr = LoginSessionController.DATEFORMAT.format(startDate);
 		return startDateStr;
 		
 	}
@@ -1882,8 +1882,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			 String pattern = "dd-MM-yyyy";
-	         SimpleDateFormat format = new SimpleDateFormat(pattern);
+			 //String pattern = "dd-MM-yyyy";
+	         DateFormat format = LoginSessionController.DATEFORMAT;
 	         String startDateStr = format.format(timesheetSubmissions.getStartDate());
 	         String endDateStr = format.format(timesheetSubmissions.getEndDate());
 

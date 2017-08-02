@@ -68,6 +68,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -191,11 +192,11 @@ public class SubmissionsRestController {
 			candidate.setCandidateResumeName(candidateResume.getFileName());
 		}
 		
-		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocationId);
+		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
 		if(null != currentEmployer){
 			candidate.setEmployer(currentEmployer.getName());
 		}else{
-			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
+			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
 			if(null != lastCompanyEmployer){
 				candidate.setEmployer(lastCompanyEmployer.getName());
 			}
@@ -378,7 +379,7 @@ public class SubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		
+		java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
 		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
@@ -416,7 +417,7 @@ public class SubmissionsRestController {
 			
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -453,7 +454,7 @@ public class SubmissionsRestController {
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
 				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-
+		java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
@@ -488,7 +489,7 @@ public class SubmissionsRestController {
 	
 			if (requirementSubmission.getCreatedDate() != null) {
 				requirementSubmission
-						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
+						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}

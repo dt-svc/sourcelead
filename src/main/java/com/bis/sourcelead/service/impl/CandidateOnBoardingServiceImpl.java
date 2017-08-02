@@ -53,6 +53,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingService{
@@ -122,6 +123,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			throws Exception {
 		
 		CandidateOnBoarding candidateOnBoarding = null;
+		
+		//date format code
+		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if(jsonObj.has("savedonboardId") && !isNullOrEmpty(jsonObj.getString("savedonboardId"))){
 			candidateOnBoarding = candidateOnBoardingDao.getCandidateOnBoardingById(Long.valueOf(jsonObj.getString("savedonboardId")));
@@ -206,11 +210,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(jsonObj.has("startDate") && !isNullOrEmpty(jsonObj.getString("startDate"))){
-			candidateOnBoarding.setStartDate(commonUtil.getDateFormat(jsonObj.getString("startDate")));
+			candidateOnBoarding.setStartDate(dateFormat.parse(jsonObj.getString("startDate")));
 		}
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOnBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));
+			candidateOnBoarding.setEndDate(dateFormat.parse(jsonObj.getString("endDate")));
 		}else{
 			candidateOnBoarding.setEndDate(null);
 		}
@@ -266,7 +270,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		if(jsonObj.has("dueDate") && !isNullOrEmpty(jsonObj.getString("dueDate"))){
-			candidateOnBoarding.setDueDate(commonUtil.getDateFormat(jsonObj.getString("dueDate")));
+			candidateOnBoarding.setDueDate(dateFormat.parse(jsonObj.getString("dueDate")));
 		}else{
 			candidateOnBoarding.setDueDate(null);
 		}
@@ -698,7 +702,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+		 task.setTaskDateStr(LoginSessionController.DATEFORMAT.format(task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

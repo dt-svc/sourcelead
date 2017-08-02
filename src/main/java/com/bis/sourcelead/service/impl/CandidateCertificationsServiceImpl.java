@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,12 +20,12 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * @author shivayogi
@@ -114,8 +115,8 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
 					try {
 						
-						String pattern = "dd-MM-yyyy";
-                        SimpleDateFormat format = new SimpleDateFormat(pattern);
+						//String pattern = "dd-MM-yyyy";
+                        DateFormat format = LoginSessionController.DATEFORMAT;
                         
                         Date validFrom = format.parse(jsonObject.getString("validFrom"));
                         candidatecertificate.setValidFrom(validFrom);
@@ -130,8 +131,8 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				}
 				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
 					try {
-						String pattern = "dd-MM-yyyy";
-                        SimpleDateFormat format = new SimpleDateFormat(pattern);
+						//String pattern = "dd-MM-yyyy";
+						DateFormat format = LoginSessionController.DATEFORMAT;
                         
                         Date validTo = format.parse(jsonObject.getString("validTo"));
                         candidatecertificate.setValidTo(validTo);
@@ -192,10 +193,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(Constants.DF_DMY.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(Constants.DF_DMY.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;

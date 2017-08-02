@@ -441,46 +441,40 @@ function addCertification(candidateId) {
 			 e.stopPropagation();
 		 });
 		 
-		 
-		 /* $('html').click(function(){
-			$(".edit-details").removeClass("edit-details-active");
-		   });	 */
-		
-		
-		/*  $(".addUser-org").click(function(){
-			 $(".edit-details").toggleClass("edit-details-active");
-		 });  */
-		/* $(".edit-details").toggleClass("edit-details-active");
-		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-			 e.stopPropagation();
-		 }); */
-	 /* $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   });	 */
 
-	  $('#StartDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	      onSelect: function (selected) {
-	           // var dt = new Date(selected);
-	           var dt = toDate("#StartDate"); 
-	           dt.setDate(dt.getDate() + 1);
-	            $("#EndDate").datepicker("option", "minDate", dt);
-	        }
-	  });
-	  
-	  $('#EndDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	        onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = toDate("#EndDate");
-	            dt.setDate(dt.getDate() - 1);
-	            $("#StartDate").datepicker("option", "maxDate", dt);
-	        }
-	  });
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatCerAdd = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatCerAdd = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatCerAdd = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatCerAdd = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatCerAdd = 'yy-dd-mm'; 
+		  }
+		  $('#StartDate').datepicker({
+		      dateFormat: finalDateFormatCerAdd,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      onSelect: function (selected) {
+		            var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+		            $("#EndDate").datepicker("option", "minDate", dt);
+		        }
+		  });
+		  
+		  $('#EndDate').datepicker({
+		      dateFormat: finalDateFormatCerAdd,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		        onSelect: function (selected) {
+		            var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#StartDate").datepicker("option", "maxDate", dt);
+		        }
+		  });
+	 	
 	}
 </script>
 
@@ -636,6 +630,18 @@ function addCertification(candidateId) {
 							  /*  var certificateStartDate = $("#StartDateEdit").val();
 								var certificateEndDate = $("#EndDateEdit").val(); */
 								
+								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								  var finalDateFormatCerEdit = '';
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEdit = 'yy-mm-dd';
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEdit = 'dd-mm-yy'; 
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEdit = 'mm-dd-yy'; 
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEdit = 'yy-dd-mm'; 
+								  }
+								 
 								var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
@@ -643,26 +649,24 @@ function addCertification(candidateId) {
 								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
 							   
 							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  maxDate: datepickerEndDate,
 							      onSelect: function (selected) {
-							            //var dt = new Date(selected);
-							            var dt = toDate("#StartDateEdit");
+							            var dt = $(this).datepicker('getDate', '+1d');
+							            //var dt = toDate("#StartDateEdit");
 							            dt.setDate(dt.getDate() + 1);
 							            $("#EndDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'dd-mm-yy',
+							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  minDate: datepickerStartDate,
 							      onSelect: function (selected) {
-							            //var dt = new Date(selected);
-							            var dt = toDate("#EndDateEdit");
+							            var dt = $(this).datepicker('getDate', '-1d');
+							            //var dt = toDate("#EndDateEdit");
 							            dt.setDate(dt.getDate() - 1);
 							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
 							        }
