@@ -1961,10 +1961,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       					}
       				}
       				if (null != invoice.getInvoiceDate()) {
-      					invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+      					invoice.setInvoiceDateStr(LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate()));
       				}
       				if (null != invoice.getDueDate()) {
-      					invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+      					invoice.setDueDateStr(LoginSessionController.DATEFORMAT.format(invoice.getDueDate()));
       				}
       				invoice.setTotal(invoice.getTotal());
       				invoice.setInvoiceStatus(invoice.getInvoiceStatus());
