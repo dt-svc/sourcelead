@@ -1774,6 +1774,42 @@ public class InvoiceRestController {
 			
 			return sb.append(estimatedHours).append(":00").toString();
 		} 
+	
+	@RequestMapping(value = "/getTotalHosursForPayable", method = RequestMethod.GET)
+	public @ResponseBody String getTotalHosursForPayable(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+			
+			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			StringBuilder sb = new StringBuilder();
+			String estimatedHours = null;
+			try {
+				Date requestStartDate =  formatter.parse(startDate);
+				Calendar startCal = Calendar.getInstance();
+				startCal.setTime(requestStartDate); 
+				
+				Date requestEndDate =  formatter.parse(endDate);
+				Calendar endCal = Calendar.getInstance();
+				endCal.setTime(requestEndDate); 
+				
+				int workDays = 0;
+			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			        startCal.setTime(requestEndDate);
+			        endCal.setTime(requestStartDate);
+			    }
+			    do {
+//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			            ++workDays;
+//			        }
+			        startCal.add(Calendar.DATE, 1);
+			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
+
+			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+			
+			return sb.append(estimatedHours).append(":00").toString();
+		} 
 	 
 	
 	/**
