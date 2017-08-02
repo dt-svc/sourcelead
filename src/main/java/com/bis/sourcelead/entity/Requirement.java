@@ -29,7 +29,9 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
@@ -463,6 +465,11 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private Long referId;
+	
+	 @Transient
+     @JsonProperty
+     private String isRequirementRelesedToPublic;
+
 	
 	
 	public String getRequirementOrgName() {
@@ -1573,6 +1580,20 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setSystemGeneratedId(String systemGeneratedId)
 	{
 		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public String getIsRequirementRelesedToPublic() {
+		
+		if(isPublic == null   && isCrowdSourcing == null ){
+			isRequirementRelesedToPublic = Constants.NO;
+		}else{
+			isRequirementRelesedToPublic = Constants.YES;
+		}
+		return isRequirementRelesedToPublic;
+	}
+
+	public void setIsRequirementRelesedToPublic(String isRequirementRelesedToPublic) {
+		this.isRequirementRelesedToPublic = isRequirementRelesedToPublic;
 	}
 
 }
