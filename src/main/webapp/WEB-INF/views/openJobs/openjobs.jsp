@@ -47,8 +47,14 @@ window.onload = function () {
 	}, 1000);
 	
 	if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
-		getOpenJobsRequirementSummary('${requirementUUID}');
-		getDropDownCount();
+		
+		if('${requirementReleaseStatus}' == 'Y'){
+			getOpenJobsRequirementSummary('${requirementUUID}');
+			getDropDownCount();
+		}else{
+			$("#noResultsDiv").css("display", "block");
+		}
+		
 	}else{
 		getOpenJobsELKList();
 		getDropDownCount();
