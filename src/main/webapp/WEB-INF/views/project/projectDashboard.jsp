@@ -383,6 +383,7 @@ function filter(){
    		    	for (var i=0; i<json.length; i++)
    				{   
    		    		var report = json[i];
+   		    		
    		    		var projectSequeneNumber;
    		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
    		    				projectSequeneNumber = report.projectSequeneNumber;

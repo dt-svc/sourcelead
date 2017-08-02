@@ -6171,7 +6171,15 @@ color:#00a65a;
 .table_custompadding div.inputCustom{
        width: 205px;
 }
-
+.bootstrap_dropdownMenu.dropdownPadding ul {
+	padding:0px 10px;
+}
+.modal.modalAssignTeam {
+z-index: 99999!important;	
+}
+.btn-sm.btn-sm2 {
+	padding:3px 6px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
