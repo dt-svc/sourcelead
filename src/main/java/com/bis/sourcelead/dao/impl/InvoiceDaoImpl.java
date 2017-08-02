@@ -103,8 +103,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			subQuery2 = " and invoice.invoiceType = 'Receivable' ";
 		}
 		
+		String subQuery3 = "";
+		if("".equalsIgnoreCase(invoiceStatus) || invoiceStatus == null || invoiceStatus.equalsIgnoreCase("undefined")){
+			subQuery3 = " and invoice.invoiceStatus <> 'Linked' ";
+		}
+		
 		String query =null;
-		 query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
+		 query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
 		 List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return invoiceList;
 	}
