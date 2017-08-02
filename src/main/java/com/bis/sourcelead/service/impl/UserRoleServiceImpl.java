@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class UserRoleServiceImpl implements UserRoleService{
@@ -287,7 +288,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(0).setCellValue(empl.getEmployeeId()); 
 			 }
 			 if(empl.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
+				 String dateOfJoin = LoginSessionController.DATEFORMAT.format(empl.getHireDate());
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){

@@ -72,7 +72,17 @@ function resourceRequestList(requestType){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
-	 
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  resListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  resListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  resListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  resListDate = 'YYYY-DD-MM'; 
+	  }  
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPlanningRequestListByApproverIdAndOrgLocationId?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
@@ -91,7 +101,7 @@ function resourceRequestList(requestType){
 	    		result = result + '	             <th>Est Budget</th>';
 	    		result = result + '	             <th>Type</th>';
 	    		result = result + '	             <th>Initiator</th>';
-	    		result = result + '	             <th>Date</th>';
+	    		result = result + '	             <th>Date<br>(<small class="custom-small">'+resListDate+'</small>)</th>';
 	    		result = result + '	             <th>Action</th>';
 	    		result = result + '	         </tr>';
 	    		result = result + '	    </thead>';
