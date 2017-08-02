@@ -139,6 +139,18 @@ function getExpensesList(){
 	obj['userId']='${SourceLeadWeb_user.id}';
 	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
 	var jsonData= JSON.stringify(obj);
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  expensesReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  expensesReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  expensesReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  expensesReqListDate = 'YYYY-DD-MM'; 
+	  }
+	
 	 $.ajax({
 		 type : "POST",
 		  data: jsonData,
@@ -154,8 +166,8 @@ function getExpensesList(){
 					result = result +"<th>Purpose</th>";
 					result = result +"<th>Project</th>";
 					result = result +"<th>Client</th>";
-					result = result +"<th>Start Date</th>";
-					result = result +"<th>End Date</th>";
+					result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
+					result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
 					result = result +"<th>No of Items</th>";
 					result = result +"<th>Amount</th>";
 					result = result +"<th>Status</th>";

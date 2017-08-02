@@ -360,7 +360,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-			
+			setSessionOrgLocationAttributesDateFormat(orgLocations);
 			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
 			if(userSpocRolesList.size() > 1){
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
@@ -388,7 +388,6 @@ public class LoginSessionController {
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 				StringBuilder redirectUrl = new StringBuilder();
-				
 				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				}
@@ -412,7 +411,6 @@ public class LoginSessionController {
 				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
-				
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
