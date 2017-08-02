@@ -28,7 +28,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -46,7 +45,6 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -64,6 +62,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * This class is used for...
@@ -678,7 +677,6 @@ public class DashboardRestController {
 					
 				
 			// requirement created user
-			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
 			// to get RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
@@ -709,9 +707,9 @@ public class DashboardRestController {
 							}
 						// this is for sending email to requirement initiator
 						if (status.equalsIgnoreCase("APPROVED")) {
-							requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,location, orgLocation);
+							requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement,location, orgLocation);
 						} else if (status.equalsIgnoreCase("REJECTED")) {
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 						}
 						
 						
@@ -743,7 +741,7 @@ public class DashboardRestController {
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 							requirementApproverHierarchy.setRejectedReason(reason);
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							
 							// This is  to update  the level2 Approver Record For RejectedS
@@ -830,7 +828,7 @@ public class DashboardRestController {
 				taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 				taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
 				converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
-				taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
+				taskCurrentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 			}
 			
 			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,dateRange,converteDate,timezone);

@@ -43,14 +43,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
-import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
-import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,7 +56,6 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -73,8 +68,8 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
-import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -544,7 +539,7 @@ public class ContractRestController {
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
 			if(requirementOffers != null){
-				requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+				requirementOffers.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
 			}
 		}
 		return commonUtil.toJSON(requirementOffers);

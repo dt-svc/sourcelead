@@ -39,7 +39,6 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -50,6 +49,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -331,14 +331,14 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}
 			
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 				expenseArray[8] = expenseId.getStartDateStr();
 			}else{
 				expenseArray[8] = "--";
 			}
 			
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 				expenseArray[9] = expenseId.getEndDateStr();
 			}else{
 				expenseArray[9] = "--";
@@ -488,12 +488,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				createExcelsheet.autoSizeColumn(7);
 			}
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}

@@ -54,6 +54,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class AddExpensesRestController {
@@ -116,9 +117,9 @@ public class AddExpensesRestController {
 					 }
 
 					}
-					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
+					 project.setStartDateStr(LoginSessionController.DATEFORMAT.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
+					 project.setEndDateStr(LoginSessionController.DATEFORMAT.format(project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
@@ -172,7 +173,7 @@ public class AddExpensesRestController {
 		    	isSuperUser = Constants.YES;
 		    }
 		    
-			DateFormat format = Constants.DF_DMY;
+			DateFormat format = LoginSessionController.DATEFORMAT;
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
@@ -359,7 +360,7 @@ public class AddExpensesRestController {
 				 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));
 				 
 //				Date todayDate = new Date();
-//				 globalVarsMap.put("submitForApprovalDate",Constants.DMY.format(todayDate));
+//				 globalVarsMap.put("submitForApprovalDate",LoginSessionController.DATEFORMAT.format(todayDate));
 				
 				// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 				// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());

@@ -93,7 +93,9 @@ public class ProjectMembers implements Serializable {
 	private String updatedBy;
 
 	@Transient
+	@JsonProperty
 	private String empName;
+	
 	@Transient
 	private String empEmail;
 	@Transient
@@ -129,6 +131,7 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String projectName;
 	@Transient
+	@JsonProperty
 	private String userId;
 	@Transient
 	@Enumerated(EnumType.STRING)

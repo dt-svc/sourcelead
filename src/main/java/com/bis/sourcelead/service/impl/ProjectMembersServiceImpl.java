@@ -52,6 +52,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class ProjectMembersServiceImpl implements ProjectMembersService{
@@ -205,10 +206,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 projectMembers.setStartDate(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+				 projectMembers.setStartDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectAssignedDate()));
              }
         	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-        		 projectMembers.setEndDate(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+        		 projectMembers.setEndDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectTerminationDate()));
         	 }
         	 
         	 /*projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -216,7 +217,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
 			}*/
 			if (projectMembers.getProjects().getEndDate() != null) {
-				projectMembers.setProjectEndDateStr(com.bis.sourcelead.constants.Constants.DF_DMY.format(projectMembers.getProjects().getEndDate()));
+				projectMembers.setProjectEndDateStr(LoginSessionController.DATEFORMAT.format(projectMembers.getProjects().getEndDate()));
 			}
 	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
@@ -733,5 +734,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getAllProjectsbyEmployeeId(employeeId);
 	}
 	
+	@Override
+	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId) throws Exception {
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
 
+		projectMemberList.forEach(pm -> {
+			StringBuilder sb = new StringBuilder();
+			if (pm.getEmployee().getUser().getLastName() != null) {
+				sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
+						.append(pm.getEmployee().getUser().getLastName());
+			} else {
+				sb.append(pm.getEmployee().getUser().getFirstName());
+			}
+			pm.setEmpName(sb.toString());
+		});
+		return (List<ProjectMembers>) projectMemberList;
+	}
 }
