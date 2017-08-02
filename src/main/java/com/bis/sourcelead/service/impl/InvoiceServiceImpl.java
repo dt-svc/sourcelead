@@ -2634,12 +2634,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			// status;
 			if (jsonObj.has(i + "description")) {
 
-				if (null != jsonObj.getString(i + "quantity") || null != jsonObj.getString(i + "rate")
-						|| !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))
-						|| !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
+//				if (null != jsonObj.getString(i + "quantity") || null != jsonObj.getString(i + "rate") || !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))
+//		|| !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
 
 					InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
-
 					/*
 					 * if(jsonObj.has(i+"lineItemId") && null !=
 					 * jsonObj.getString(i+"lineItemId") &&
@@ -2656,12 +2654,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 							invoiceLineItems.setStartDate(expenseDate);
 						}	
 					}
-
-					if (null != jsonObj.getString(i + "description")
-							&& !"".equalsIgnoreCase(jsonObj.getString(i + "description"))) {
-						String description = jsonObj.getString(i + "description");
-						invoiceLineItems.setInlineDescription(description);;
+					if(jsonObj.has(i + "description")){
+						if (null != jsonObj.getString(i + "description")
+								&& !"".equalsIgnoreCase(jsonObj.getString(i + "description"))) {
+							String description = jsonObj.getString(i + "description");
+							invoiceLineItems.setInlineDescription(description);;
+						}	
 					}
+					
 					
 					if(jsonObj.has(i + "quantity")){
 						if (null != jsonObj.getString(i + "quantity")
@@ -2694,7 +2694,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					invoiceLineItems.setCreatedDate(commonUtil.currentDate());
 					invoiceLineItems.setInvoice(invoice);
 					expensesinvoicelineitemsSet.add(invoiceLineItems);
-				}
+//				}
 			}
 
 		}

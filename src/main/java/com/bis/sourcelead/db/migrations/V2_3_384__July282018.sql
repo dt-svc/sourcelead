@@ -4,7 +4,7 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE_LINE_ITEMS','QUANTITY
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE_LINE_ITEMS','EXPENSE_CATEGORY','VARCHAR(250) NULL AFTER `QUANTITY`');
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','EXPENSES_ID','BIGINT NULL AFTER `EXPENSE_CATEGORY`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','EXPENSES_ID','BIGINT NULL AFTER `EXPENSES_INVOICES`');
 ALTER TABLE `sourcelead`.`INVOICE` ADD FOREIGN KEY FK1_EXPENSES (EXPENSES_ID) REFERENCES `sourcelead`.EXPENSES(ID);
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','PROJECT_MEMBER_ID','BIGINT NULL AFTER `EXPENSES_ID`');
