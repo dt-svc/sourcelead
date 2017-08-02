@@ -188,13 +188,25 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 </script>
 <script>
 	$(function() {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEduUpdate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEduUpdate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+		  }
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEduUpdate,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportStartDate");
+				//var dt = toDate("#ExportStartDate");/
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -205,13 +217,13 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEduUpdate,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportEndDate");
+				//var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();

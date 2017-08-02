@@ -289,6 +289,19 @@ function addResume(candidateId) {
 	  var candidateId = candidateId;
 	  var result = "";
 	  var resumesCount = 0;
+	  
+	  
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+	  	profCandResumeListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  profCandResumeListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  profCandResumeListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  profCandResumeListDate = 'YYYY-DD-MM'; 
+	  }
+	  
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
@@ -313,7 +326,7 @@ function addResume(candidateId) {
 							result = result+'	            <th>Attachment</th>';
 							result = result+'	            <th>Description</th>';
 							result = result+'	            <th>Created By</th>'; 
-							result = result+'	            <th>Updated Date</th>';
+							result = result+'	            <th>Updated Date<br>(<small class="custom-small">'+profCandResumeListDate+'</small>)</th>'; 
 							result = result+'	            <th>Action</th>';
 							result = result+'	          </tr>';
 							
