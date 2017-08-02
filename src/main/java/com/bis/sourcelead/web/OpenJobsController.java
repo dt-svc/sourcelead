@@ -76,6 +76,7 @@ public class OpenJobsController {
 		 ModelAndView model = new ModelAndView();
 		 //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Requirement requirementDetails =  requirementService.getRequirementByRequirementUUID(requirementUUID);
+		 model.addObject("requirementReleaseStatus", requirementDetails.getIsRequirementRelesedToPublic());
 		 model.addObject("requirementDetails", requirementDetails);
 		 String requirementCreatedDate = LoginSessionController.DATEFORMAT.format(requirementDetails.getCreatedDate());
 		 model.addObject("requirementCreatedDate", requirementCreatedDate);

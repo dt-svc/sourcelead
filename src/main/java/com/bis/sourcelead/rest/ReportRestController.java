@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -32,9 +31,6 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -56,6 +52,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -192,8 +189,8 @@ public class ReportRestController {
 					 if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = null;
 						String customEndTimeStr = null;
 						if(null !=startTime){
@@ -304,8 +301,8 @@ public class ReportRestController {
 					 if(customStartDate  != null && !"".equalsIgnoreCase(customStartDate) && customStartDate  != "undefined" && customEndDate != null && !"".equalsIgnoreCase(customEndDate) && customEndDate  != "undefined"){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -437,8 +434,8 @@ public class ReportRestController {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
+						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);

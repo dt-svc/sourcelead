@@ -106,14 +106,14 @@ public class ExpensesServiceImpl implements ExpensesService{
 			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
 			if(StringUtils.isNotEmpty(startDate)){
-				Date startTime = commonUtil.getDateFormat(startDate);
+				Date startTime = LoginSessionController.DATEFORMAT.parse(startDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
 			}
 			
 			if(StringUtils.isNotEmpty(endDate)){
-				Date endTime = commonUtil.getDateFormat(endDate);
+				Date endTime = LoginSessionController.DATEFORMAT.parse(endDate);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 				endDateUTC = TZ_DF_TS.parse(endDateString);
