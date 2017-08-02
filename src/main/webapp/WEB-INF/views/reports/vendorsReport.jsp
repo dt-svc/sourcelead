@@ -337,13 +337,24 @@ function vendorSpocReportPagination(){
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatrepoVendor = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatrepoVendor = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatrepoVendor = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatrepoVendor = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatrepoVendor = 'yy-dd-mm'; 
+		  }
 		$('#vendorStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatrepoVendor,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#vendorStartDate");
+				//var dt = toDate("#vendorStartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#vendorEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -354,13 +365,13 @@ function vendorSpocReportPagination(){
 		$('#vendorEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatrepoVendor,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#vendorEndDate");
+				//var dt = toDate("#vendorEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#vendorStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
