@@ -114,7 +114,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId  ORDER BY rah.level ASC";
+		String query = "from RequirementApproverHierarchy rah left join fetch rah.approverUserId where rah.requirementId.id =:requirementId  ORDER BY rah.level ASC";
 		List<RequirementApproverHierarchy> list =  session.createQuery(query)
 													      .setLong("requirementId", requirementId)
 													      .setCacheable(true)

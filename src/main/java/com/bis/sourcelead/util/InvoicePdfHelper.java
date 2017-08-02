@@ -120,8 +120,8 @@ public class InvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
-				String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
+				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -450,8 +450,8 @@ public class InvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
-				String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
+				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -1018,14 +1018,14 @@ public class InvoicePdfHelper {
 		}
 
 		if (null != invoice.getInvoiceDate()) {
-			String invoiceDate = Constants.DF_DMY.format(invoice.getInvoiceDate());
+			String invoiceDate = LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate());
 			billingArray[5] = invoiceDate;
 		} else {
 			billingArray[5] = "--";
 		}
 
 		if (null != invoice.getDueDate()) {
-			String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+			String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
 			billingArray[6] = dueDate;
 		} else {
 			billingArray[6] = "--";

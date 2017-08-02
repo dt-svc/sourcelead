@@ -113,7 +113,7 @@ public class RequirementInterviewController {
 				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 				for(ProposeTime pst:proposeTime){
 					if(null != pst.getProposeDate()){
-						pst.setProposeDateStr(Constants.DMY.format(pst.getProposeDate()));	
+						pst.setProposeDateStr(LoginSessionController.DATEFORMAT.format(pst.getProposeDate()));	
 					}
 				}
 				model.addObject("proposeTime",proposeTime);
@@ -143,7 +143,7 @@ public class RequirementInterviewController {
 				model.addObject("interviewStatus",interviewStatus);
 				model.addObject("requirementInterviewId",requirementInterviewId);
 				model.addObject("requirementInterview",requirementInterview);
-				model.addObject("requirementInterviewDate",Constants.DMY.format(requirementInterview.getDateOfInterview()));
+				model.addObject("requirementInterviewDate",LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview()));
 				model.addObject("interviewEndTime",requirementInterview.getEndTimeStr());
 				model.addObject("interviewStartTime",requirementInterview.getStartTimeStr());
 				model.addObject("sourceleadUrl", sourceleadUrl);
@@ -162,7 +162,7 @@ public class RequirementInterviewController {
 				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 				for(ProposeTime pst:proposeTime){
 					if(null != pst.getProposeDate()){
-						pst.setProposeDateStr(Constants.DMY.format(pst.getProposeDate()));	
+						pst.setProposeDateStr(LoginSessionController.DATEFORMAT.format(pst.getProposeDate()));	
 					}
 				}
 				model.addObject("proposeTime",proposeTime);
@@ -205,7 +205,7 @@ public class RequirementInterviewController {
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+					interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 					dateOfInterviewStr = interviewDateInTimezone;
 			    }
 				model.setViewName("requirement/proposeTime");

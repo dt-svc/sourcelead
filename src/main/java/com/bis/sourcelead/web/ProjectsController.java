@@ -172,10 +172,10 @@ public class ProjectsController {
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
 					if(projects.getStartDate() != null){
-						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+						model.addObject("projectStartDate", LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 					}
 					if(projects.getEndDate() != null){
-						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+						model.addObject("projectEndDate", LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
@@ -209,10 +209,10 @@ public class ProjectsController {
 			model.addObject("projectId", projects.getId());
 			model.addObject("projectName", projects.getProjectName());
 			if(projects.getStartDate() != null){
-				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+				model.addObject("projectStartDate", LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 			}
 			if(projects.getEndDate() != null){
-				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+				model.addObject("projectEndDate", LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}
@@ -240,10 +240,10 @@ public class ProjectsController {
 			model.addObject("projectId", projects.getId());
 			model.addObject("projectName", projects.getProjectName());
 			if(projects.getStartDate() != null){
-				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+				model.addObject("projectStartDate", LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 			}
 			if(projects.getEndDate() != null){
-				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+				model.addObject("projectEndDate", LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}
@@ -270,10 +270,10 @@ public class ProjectsController {
 			model.addObject("projectId", projects.getId());
 			model.addObject("projectName", projects.getProjectName());
 			if(projects.getStartDate() != null){
-				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+				model.addObject("projectStartDate", LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
 			}
 			if(projects.getEndDate() != null){
-				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+				model.addObject("projectEndDate", LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}
