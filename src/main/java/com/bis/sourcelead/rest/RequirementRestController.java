@@ -292,7 +292,6 @@ public class RequirementRestController {
 		
 		
 		// requirement created user
-					User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
 					// to get RequirementApproverHierarchy with maximum Level
 					Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
@@ -354,11 +353,11 @@ public class RequirementRestController {
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
-									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, location ,orgLocation);
+									requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location ,orgLocation);
 									}
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
-									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 									}
 									}
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
@@ -390,7 +389,7 @@ public class RequirementRestController {
 									requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 									requirementApproverHierarchy.setRejectedReason(reason);
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
-									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 									}
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 									

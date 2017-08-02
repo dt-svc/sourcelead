@@ -6,13 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +18,8 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
-import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmissionHistoryService {
@@ -136,7 +128,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 						String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+						currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
 						requirementSubmissionHistory1.setCoolingOffPeriodEndDateStr(currentDateInTimezone);
 						
 						/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");

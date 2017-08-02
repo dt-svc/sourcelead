@@ -73,7 +73,7 @@ public class RequirementIndex {
 
     private String createdDate;
 
-	private String reqCreatedBy;
+	private Long reqCreatedBy;
 	
 	private String reqCreatedDate;
 	
@@ -232,15 +232,14 @@ public class RequirementIndex {
 		this.reqUpdatedDate = reqUpdatedDate;
 	}
 
-	public String getReqCreatedBy() {
+	public Long getReqCreatedBy() {
 		return reqCreatedBy;
 	}
 
-	public void setReqCreatedBy(String reqCreatedBy) {
+	public void setReqCreatedBy(Long reqCreatedBy) {
 		this.reqCreatedBy = reqCreatedBy;
 	}
 
-	
 	public String getReqUpdatedBy() {
 		return reqUpdatedBy;
 	}

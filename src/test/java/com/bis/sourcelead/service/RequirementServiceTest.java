@@ -154,7 +154,9 @@ public class RequirementServiceTest {
 			clientSubmissionTemplateId.setId(1l);
 			requirement.setClientSubmissionTemplateId(clientSubmissionTemplateId);
 			requirement.setCountry("INDIA");
-			requirement.setCreatedBy("shivayogi");
+			User user = new User();
+			user.setId(1L);
+			requirement.setCreatedBy(user);
 			requirement.setCreatedDate(new Date());
 			requirement.setCurrencyCode("IND");
 			requirement.setDescription("HI HELLO WHATS UP");
