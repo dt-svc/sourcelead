@@ -35,8 +35,10 @@
  position: relative !important;
  }
  </style>
+ 
 <script>
 function hideAndShowDetailsRow(rowId,type){
+	$(".fa-plus-square-o").toggleClass("closExp");
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		var validation_required = "true";
 		var entityId = parseInt(rowId-1);
@@ -191,7 +193,7 @@ function addAttachment(entityRowId,from){
     <div id="categoryTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
-   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot-me">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
     <div id="expenseAmountDivREPLACEROWID">--</div>

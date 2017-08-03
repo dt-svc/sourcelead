@@ -486,8 +486,8 @@
 
 <script>
 	function refMsgFadein() {
-		$("#selector7").fadeIn(200);
-		$('#selector7').delay(2000).fadeOut('slow');
+		$("#selector10").fadeIn(200);
+		$('#selector10').delay(2000).fadeOut('slow');
 	}
 </script>
 <!-- End -->
