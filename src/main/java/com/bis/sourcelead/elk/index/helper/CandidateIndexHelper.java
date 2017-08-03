@@ -45,7 +45,8 @@ public class CandidateIndexHelper {
 			candidateIndex.setLocation(candidate.getLocation());
 			candidateIndex.setZipCode(candidate.getZipCode());
 			candidateIndex.setLatitude(candidate.getLatitude());
-			candidateIndex.setLongitude(candidate.getLongitude());			
+			candidateIndex.setLongitude(candidate.getLongitude());		
+			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());

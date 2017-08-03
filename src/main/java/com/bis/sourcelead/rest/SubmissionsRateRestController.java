@@ -45,6 +45,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -312,7 +313,7 @@ public class SubmissionsRateRestController {
 				}else{
 					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
 				}
-				DateFormat date = new SimpleDateFormat( "dd-MM-yyyy");
+				DateFormat date = LoginSessionController.DATEFORMAT;
 				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
 				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
 				requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
