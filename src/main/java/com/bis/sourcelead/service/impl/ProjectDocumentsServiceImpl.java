@@ -73,9 +73,7 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 			 projectDocuments = new ProjectDocuments();	
 		}
 		
-		if (jsonObj.has("name")) {
-			projectDocuments.setFileName(jsonObj.getString("name"));
-		}
+		
 		if (jsonObj.has("description")) {
 			projectDocuments.setDescription(jsonObj.getString("description"));
 		}
@@ -85,7 +83,12 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		projectDocuments.setStatus(Constants.CANDIDATE_ACTIVE);
 		if (multiFile != null) {
 			projectDocuments.setFileContents(multiFile.getBytes());
-			projectDocuments.setFileName(multiFile.getOriginalFilename());
+			if(documentId != null){
+				projectDocuments.setFileName(projectDocuments.getFileName());
+			}else{
+				projectDocuments.setFileName(multiFile.getOriginalFilename());
+			}
+			
 			projectDocuments.setFileType(multiFile.getContentType());
 		}
 		 genericDao.updateProjectDocuments(projectDocuments);
