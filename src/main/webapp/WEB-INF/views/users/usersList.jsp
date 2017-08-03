@@ -221,8 +221,8 @@ function getUsersSearchResult(searchValue){
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
          <li><div class="gridFil">
-					<i class="fa fa-th-large" onclick="showList();" id="ShowGrid"></i>
-					<i class="fa fa-th-list" onclick="showGrid ();" id="ShowList"></i>
+					<i class="fa fa-th-large" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
+					<i class="fa fa-th-list" onclick="showGrid();" id="ShowList"></i>
 			</div></li>	
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getUsersView('manual');">
@@ -1024,10 +1024,10 @@ function showGrid(){
 	
 }
 
-function showList(){
+function showList(viewType){
 	var val = $("#listView").val("LISTVIEW");
 	$("#usersListBody").hide();
-	getUsersListView('manual');
+	getUsersListView('manual',viewType);
 	$("#userListViewDiv").show();
 	
 }
@@ -1035,7 +1035,7 @@ function showList(){
 
 
 <script type="text/javascript">
-	function getUsersListView(type){
+	function getUsersListView(type,viewType){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	    var userRole = document.getElementById("userRole").value;
@@ -1058,7 +1058,7 @@ function showList(){
     	}
 		 $.ajax({ 
 	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
+	    	url: sourceleadUrl+"/getUsersList?${_csrf.parameterName}=${_csrf.token}&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
 	    			 
             success: function(data) {
             	 var json = JSON.parse(data);
