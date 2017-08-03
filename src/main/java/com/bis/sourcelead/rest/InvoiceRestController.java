@@ -50,6 +50,8 @@ import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -1889,9 +1891,9 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/getExpensesEntries", method = RequestMethod.GET)
 	@ResponseBody
-	public  Expenses getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
-		Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
-		return expense;
+	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
+		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId);
+		return expensesEntriesDTOList;
 	}
 	
 }
