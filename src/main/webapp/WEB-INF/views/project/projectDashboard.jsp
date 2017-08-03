@@ -361,7 +361,16 @@ function filter(){
 		clients.push($(this).val());
 		    });
 	
-	
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  projectListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  projectListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  projectListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  projectListDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getProjectsByStatusAndClient?${_csrf.parameterName}=${_csrf.token}&values="+values+"&clients="+clients, 	   
@@ -374,7 +383,7 @@ function filter(){
    		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Invoice Frequency</th>';
-   		    	result = result +'     <th>Date</th>';
+   		    	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
    		    	result = result +'      <th>Client</th>';
    		    	result = result +'       <th>Status</th>';
    		    	result = result +'    </tr>';
