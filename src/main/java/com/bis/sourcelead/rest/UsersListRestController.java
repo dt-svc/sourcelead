@@ -555,7 +555,7 @@ public class UsersListRestController {
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
 		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		userRole.setUserType(userRole.getUserType());
 		
 		if (employee != null) {
@@ -564,7 +564,7 @@ public class UsersListRestController {
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			if (employee.getHireDate() != null) {
-				userRole.setHireDateStr(LoginSessionController.DATEFORMAT.format(employee.getHireDate()));
+				userRole.setHireDateStr(simpleDateFormat.format(employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}

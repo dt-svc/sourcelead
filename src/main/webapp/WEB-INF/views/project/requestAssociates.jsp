@@ -224,6 +224,18 @@ function getRequestedAssociateListDiv(){
 	
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqAssociateDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqAssociateDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqAssociateDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqAssociateDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	 var result = '';
 	 
 	 
@@ -237,8 +249,8 @@ function getRequestedAssociateListDiv(){
 	 result = result +'<th>Name</th>';
 	 result = result +'<th>Pay Rate</th>';
 	 result = result +'<th>Bill Rate</th>';
-	 result = result +'<th>Start Date</th>';
-	 result = result +'<th>End Date</th>';
+	 result = result +'<th>Start Date <br>(<small class="custom-small">'+reqAssociateDate+'</small>)</th>';
+	 result = result +'<th>End Date <br>(<small class="custom-small">'+reqAssociateDate+'</small>)</th>';
 	 result = result +'<th>Consulting</th>';
 	 result = result +'<th>Est Hours</th>';
 	 result = result +'<th>Est Budget</th>';

@@ -109,6 +109,16 @@ function getViewInvoice(){
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
 	  var currencyCode = '${SourceLeadWeb_currencyCode}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  viewInvoiceDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  viewInvoiceDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  viewInvoiceDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  viewInvoiceDate = 'YYYY-DD-MM'; 
+		  }
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
@@ -275,7 +285,7 @@ function getViewInvoice(){
                         result = result +'                     <th>Associates</th>';
                         result = result +'                     <th>Description</th>';
                         result = result +'                     <th>SOW/PO</th>                                          ';
-                        result = result +'                     <th>Date</th>                                             ';
+					    result = result +'                     <th>Date<br>(<small class="custom-small">'+viewInvoiceDate+'</small>)</th>';
                         result = result +'                     <th>Rate Hourly</th>                                             ';
                         result = result +'                     <th>Total Hours</th>                                      ';
                         result = result +'                     <th>Total Amount</th>                                     ';
