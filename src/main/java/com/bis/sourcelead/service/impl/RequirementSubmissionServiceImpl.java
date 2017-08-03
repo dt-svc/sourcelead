@@ -611,11 +611,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 			 templateFields.setCurrentCTC(jsonObj.getString("CurrentCTC"));
+		 }
+		 
+		 if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 			 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
 		 }
 		 
 		 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 			 templateFields.setExpectedCTC(jsonObj.getString("ExpectedCTC"));
+		 }
+		 
+		 if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 			 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
 		 }
 		 
@@ -4569,11 +4575,17 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 				 if(jsonObj.has("CurrentCTC") && !isNullOrEmpty(jsonObj.getString("CurrentCTC"))){
 					 templateFields.setCurrentCTC(jsonObj.getString("CurrentCTC"));
+				 }
+				 
+				 if(jsonObj.has("currentCTCRateType") && !isNullOrEmpty(jsonObj.getString("currentCTCRateType"))){
 					 templateFields.setCurrentRateType(jsonObj.getString("currentCTCRateType"));
 				 }
 				 
 				 if(jsonObj.has("ExpectedCTC") && !isNullOrEmpty(jsonObj.getString("ExpectedCTC"))){
 					 templateFields.setExpectedCTC(jsonObj.getString("ExpectedCTC"));
+				 }
+				 
+				 if(jsonObj.has("expectedCTCRateType") && !isNullOrEmpty(jsonObj.getString("expectedCTCRateType"))){
 					 templateFields.setExpectedRateType(jsonObj.getString("expectedCTCRateType"));
 				 }
 				 

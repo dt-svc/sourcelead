@@ -1221,6 +1221,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
 	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+	    		$(".sideMask").fadeOut(200);
 	    		if(redirectTo == "compare"){
 	    			compareRecommendedUsers(requirementId);
 	    		}
@@ -1839,7 +1840,7 @@ function getSubmittedCandidateDetails(submissionId){
 		        	 if(json.candidateWorkExperienceMonths != null && json.candidateWorkExperienceMonths != "" && json.candidateWorkExperienceMonths != 'undefined'){
 		        		 $("select[name=monthExp]").val(json.candidateWorkExperienceMonths);
 		        	 }else{
-		        		 $("select[name=monthExp]").val(''); 
+		        		 $("select[name=monthExp]").val(0); 
 		        	 } 
 		        	 
 		        	 if(json.expectedRateType != null && json.expectedRateType != "" && json.expectedRateType != 'undefined'){
