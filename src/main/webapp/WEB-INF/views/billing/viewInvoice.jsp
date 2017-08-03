@@ -109,6 +109,16 @@ function getViewInvoice(){
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
 	  var currencyCode = '${SourceLeadWeb_currencyCode}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  viewInvoiceDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  viewInvoiceDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  viewInvoiceDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  viewInvoiceDate = 'YYYY-DD-MM'; 
+		  }
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
@@ -171,23 +181,23 @@ function getViewInvoice(){
 	        		}
 	        		
 	        		
-					result = result +'		<div class="invoiceview_area clearfix">                                      ';
-					result = result +'          <div class="form-horizontal row">                                        ';
-					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'<div class="invoiceview_area clearfix">';
+					result = result +'<div class="form-horizontal row">';
+					result = result +'<div class="col-md-6"> ';
 					if(report.invoiceType == "Receivable"){
-						result = result +'              <label class="col-md-4 control-label">Client :</label>                ';
+						result = result +' <label class="col-md-4 control-label">Client :</label>';
 					}
 					if(report.invoiceType == "Payables"){
-						result = result +'              <label class="col-md-4 control-label">Vendor :</label>                ';
+						result = result +'<label class="col-md-4 control-label">Vendor :</label>                ';
 					}
-					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                  <label><strong>'+report.clientName+'</strong></label>  ';
-					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Contact Name :</label>         ';
-					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                <label>'+report.clientContactName+'</label>';
+					result = result +'<div class="col-md-8">                                               ';
+					result = result +'<label><strong>'+report.clientName+'</strong></label>  ';
+					result = result +'</div>                                                               ';
+					result = result +'</div>                                                                 ';
+					result = result +'<div class="col-md-6">                                                 ';
+					result = result +'<label class="col-md-4 control-label">Contact Name :</label>         ';
+					result = result +'<div class="col-md-8">                                               ';
+					result = result +'<label>'+report.clientContactName+'</label>';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
@@ -262,14 +272,24 @@ function getViewInvoice(){
 					result = result +'         <table width="100%" cellpadding="0" cellspacing="0">                  ';
 					result = result +'             <thead>                                                           ';
 					result = result +'                 <tr>                                                          ';
-					result = result +'                     <th>Id</th>                                               ';
-					result = result +'                     <th>Associates</th>';
-					result = result +'                     <th>Description</th>';
-					result = result +'                     <th>SOW/PO</th>                                          ';
-					result = result +'                     <th>Date</th>                                             ';
-					result = result +'                     <th>Rate Hourly</th>                                             ';
-					result = result +'                     <th>Total Hours</th>                                      ';
-					result = result +'                     <th>Total Amount</th>                                     ';
+					
+					if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
+                        result = result +'<th>Date</th>';
+                        result = result +'<th>Category</th>';
+                        result = result +'<th>Description</th>';
+                        result = result +'<th>Quantity</th>';
+                        result = result +'<th>Rate</th>';
+                        result = result +'<th>Amount</th>';
+                    }else{
+                        result = result +'<th>Id</th> ';
+                        result = result +'                     <th>Associates</th>';
+                        result = result +'                     <th>Description</th>';
+                        result = result +'                     <th>SOW/PO</th>                                          ';
+					    result = result +'                     <th>Date<br>(<small class="custom-small">'+viewInvoiceDate+'</small>)</th>';
+                        result = result +'                     <th>Rate Hourly</th>                                             ';
+                        result = result +'                     <th>Total Hours</th>                                      ';
+                        result = result +'                     <th>Total Amount</th>                                     ';
+                    }
 					result = result +'                 </tr>                                                         ';
 					result = result +'             </thead>                                                          ';
 					result = result +'             <tbody>                                                           ';
@@ -318,32 +338,75 @@ function getViewInvoice(){
 						}else{
 							employeeId = "--";
 						}
-						result = result +'                 <tr>                                                          ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_50" title="'+employeeId+'">'+employeeId+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                     ';
-						result = result +'                         <div class="tbldata-dotdot_80" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80">'+totalHours+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
-						result = result +'                     </td>                                                     ';
-						result = result +'                 </tr>                                                         ';
+						
+						if(items.expenseCategory != null && items.expenseCategory != '' && items.expenseCategory != 'undefined'){
+                            expenseCategory = items.expenseCategory;
+                        }else{
+                            expenseCategory = "--";
+                        }
+                        
+                        if(items.quantity != null && items.quantity != '' && items.quantity != 'undefined'){
+                            quantity = items.quantity;
+                        }else{
+                            quantity = "--";
+                        }
+                        
+                        result = result +'                 <tr>                                                          ';
+                        
+                        if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
+                            result = result +'<td>';
+                            result = result +'<div title="'+startDateStr+'">'+startDateStr+'</div>';
+                            result = result +'</td>';
+                            
+                            result = result +'<td>';
+                            result = result +'<div class="tbldata-dotdot_50" title="'+expenseCategory+'">'+expenseCategory+'</div>';
+                            result = result +'</td>';
+                            
+                            result = result +'<td>';
+                            result = result +'<div class="tbldata-dotdot_50" title="'+quantity+'">'+quantity+'</div>';
+                            result = result +'</td>';
+                        }else{
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_50" title="'+employeeId+'">'+employeeId+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                        }
+                        
+                        result = result +'                     <td>                                                     ';
+                        result = result +'                         <div class="tbldata-dotdot_80" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>       ';
+                        result = result +'                     </td>                                                     ';
+                        
+                        if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                        }else{
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80">'+totalHours+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                            result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
+                            result = result +'                     </td>                                                     ';
+                        }
+                        result = result +'                 </tr>                                                         ';
+						
+						
+						
 	    		}
 				result = result +'</tbody>';
 				result = result +'</table>';
