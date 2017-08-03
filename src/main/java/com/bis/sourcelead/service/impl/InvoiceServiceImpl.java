@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
@@ -82,6 +83,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -154,6 +156,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private TabsService tabsService;
+	
+	@Autowired
+	private ExpensesService expensesService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2506,6 +2511,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))) {
 			invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
 		}
+		
+		if (jsonObj.has("projectMemberId") && !"".equalsIgnoreCase(jsonObj.getString("projectMemberId"))) {
+			ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
+			invoice.setProjectMemberId(pm);
+		}
+		if (jsonObj.has("expensesId") && !"".equalsIgnoreCase(jsonObj.getString("expensesId"))) {
+			Expenses expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expensesId")));
+			invoice.setExpensesId(expenses);;
+		}
+		
 
 		invoice.setCurrencyCode(loginOrgCurrencyCode);
 		invoice.setCreatedBy(user.getUserCode());
@@ -2619,12 +2634,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			// status;
 			if (jsonObj.has(i + "description")) {
 
-				if (null != jsonObj.getString(i + "quantity") || null != jsonObj.getString(i + "rate")
-						|| !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))
-						|| !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
+//				if (null != jsonObj.getString(i + "quantity") || null != jsonObj.getString(i + "rate") || !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))
+//		|| !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
 
 					InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
-
 					/*
 					 * if(jsonObj.has(i+"lineItemId") && null !=
 					 * jsonObj.getString(i+"lineItemId") &&
@@ -2634,40 +2647,54 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					 * updatedInvoiceLineItems.add(Long.valueOf(jsonObj.
 					 * getString(i+"lineItemId"))); }
 					 */
-					if(jsonObj.has(i + "expensesDate")){
-						if (null != jsonObj.getString(i + "expensesDate")
-								&& !"".equalsIgnoreCase(jsonObj.getString(i + "expensesDate"))) {
-							Date expenseDate = format.parse(jsonObj.getString(i + "expensesDate"));
+					if(jsonObj.has(i + "edate")){
+						if (null != jsonObj.getString(i + "edate")
+								&& !"".equalsIgnoreCase(jsonObj.getString(i + "edate"))) {
+							Date expenseDate = format.parse(jsonObj.getString(i + "edate"));
 							invoiceLineItems.setStartDate(expenseDate);
 						}	
 					}
-
-					if (null != jsonObj.getString(i + "description")
-							&& !"".equalsIgnoreCase(jsonObj.getString(i + "description"))) {
-						String description = jsonObj.getString(i + "description");
-						invoiceLineItems.setInlineDescription(description);;
+					if(jsonObj.has(i + "description")){
+						if (null != jsonObj.getString(i + "description")
+								&& !"".equalsIgnoreCase(jsonObj.getString(i + "description"))) {
+							String description = jsonObj.getString(i + "description");
+							invoiceLineItems.setInlineDescription(description);;
+						}	
 					}
-
-					if (null != jsonObj.getString(i + "quantity")
-							&& !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))) {
-						String quantity = jsonObj.getString(i + "quantity");
-						invoiceLineItems.setQuantity(quantity);
+					
+					
+					if(jsonObj.has(i + "quantity")){
+						if (null != jsonObj.getString(i + "quantity")
+								&& !"".equalsIgnoreCase(jsonObj.getString(i + "quantity"))) {
+							String quantity = jsonObj.getString(i + "quantity");
+							invoiceLineItems.setQuantity(quantity);
+						}
 					}
-					if (null != jsonObj.getString(i + "rate") && !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
-						invoiceLineItems.setRate(jsonObj.getString(i + "rate"));
+					
+					if(jsonObj.has(i + "rate")){
+						if (null != jsonObj.getString(i + "rate") && !"".equalsIgnoreCase(jsonObj.getString(i + "rate"))) {
+							invoiceLineItems.setRate(jsonObj.getString(i + "rate"));
+						}	
 					}
+					
 					if (null != jsonObj.getString(i + "total")
 							&& !"".equalsIgnoreCase(jsonObj.getString(i + "total"))) {
 						invoiceLineItems.setAmount(jsonObj.getString(i + "total"));
 					}
-
+					if(jsonObj.has(i + "category")){
+						if (null != jsonObj.getString(i + "category")
+								&& !"".equalsIgnoreCase(jsonObj.getString(i + "category"))) {
+							invoiceLineItems.setAmount(jsonObj.getString(i + "category"));
+						}
+					}
+					
 					invoiceLineItems.setOrgLocation(orgLocation);
 					invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 					invoiceLineItems.setCreatedBy(user.getUserCode());
 					invoiceLineItems.setCreatedDate(commonUtil.currentDate());
 					invoiceLineItems.setInvoice(invoice);
 					expensesinvoicelineitemsSet.add(invoiceLineItems);
-				}
+//				}
 			}
 
 		}
