@@ -121,7 +121,7 @@ public class ProjectsRestController {
 	public @ResponseBody String storeProject(@RequestParam("project_files") MultipartFile[] files,
 			@RequestParam("json") String jsonPayload) throws Exception {
 		JSONObject jsonObj = new JSONObject(jsonPayload);
-		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().map(file -> {
+		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().filter(p->!p.isEmpty()).map(file -> {
 			try {
 				return new ProjectDocumentBO(file.getOriginalFilename(), file.getContentType(), file.getBytes());
 			} catch (IOException e) {
