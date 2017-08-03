@@ -1575,6 +1575,19 @@ function requirementPipeline(requirementId,submissionType){
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  requirementPipelineListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  requirementPipelineListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  requirementPipelineListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  requirementPipelineListDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1609,7 +1622,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Email</th>';
 				           result = result + '<th>Ph. No</th>';
 				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
+				           result = result + '<th>Applied on  <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 					       result = result + '<th>Rate</th>';
 					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 					           result = result + '<th>Sub. Rate</th>';
@@ -4270,6 +4283,19 @@ function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  requirementRecommendationsDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  requirementRecommendationsDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  requirementRecommendationsDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  requirementRecommendationsDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	$.ajax({
     type : "POST",
      //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
@@ -4333,7 +4359,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>Phone</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number Of Jobs</th>';
-		    result = result +'<th>Updated Date</th>';
+		    result = result +'<th>Updated Date <br>(<small class="custom-small">'+requirementRecommendationsDate+'</small>)</th>';
 		    result = result +'<th>Score</th>';
 		    result = result +'<th>Action</th>';
 		    result = result +'</tr>';
