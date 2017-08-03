@@ -327,7 +327,7 @@ function toDate(selector) {
                 </select>
           </div>
           
-          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getDayWiseReports();"/>
+          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getDayWiseReports();getCandidatesByOwners();"/>
 			<div class="clearfix"></div>		
 		</div>
     
@@ -394,7 +394,7 @@ function toDate(selector) {
 </script> 
 <script type="text/javascript">
 function getCandidatesByOwners(){
-	
+
 	    var sourceleadUrl = '${sourceleadUrl}';
 		var ownersList = $("#user").val();
 		var reportType = "Candidate";

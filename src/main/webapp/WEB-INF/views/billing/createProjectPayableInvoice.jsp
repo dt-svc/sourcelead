@@ -118,14 +118,15 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" 
+                     name="billingAddress" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
               </div>
             </div>
             <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details"></textarea>
+									name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
 							</div>
 			</div>
             
