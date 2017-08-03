@@ -155,7 +155,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 									//requirementInterview.setDateOfInterview(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")));
 									
 									// changed by prasanna vadla .. due to timezone 
-									Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+									Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString(c+"dateOfInterview")), 
 										      jsonObj.getString(c+"startTime"));
 									String currentTimeStr = Constants.TZ_DF.format(startTime);  
 									String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -171,7 +171,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								}
 								
 								if(jsonObj.has(c+"startTime") && !jsonObj.getString(c+"startTime").isEmpty()){
-									  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+									  Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString(c+"dateOfInterview")), 
 											      jsonObj.getString(c+"startTime"));
 										String currentTimeStr = Constants.TZ_DF.format(startTime);  
 										String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -181,7 +181,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 								}
 								
 								if(jsonObj.has(c+"endTime") && !jsonObj.getString(c+"endTime").isEmpty()){
-									Date endTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString(c+"dateOfInterview")), 
+									Date endTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString(c+"dateOfInterview")), 
 										      jsonObj.getString(c+"endTime"));
 									String currentTimeStr = Constants.TZ_DF.format(endTime);  
 									String endTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -580,7 +580,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		if(jsonObj.has("rescheduleDate") && jsonObj.getString("rescheduleDate") != null && !"".equalsIgnoreCase(jsonObj.getString("rescheduleDate"))){
 			// changed by prasanna vadla .. due to timezone 
-			Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("rescheduleDate")), 
+			Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString("rescheduleDate")), 
 				      jsonObj.getString("startTime"));
 			String currentTimeStr = Constants.TZ_DF.format(startTime);  
 			String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -589,7 +589,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		
 		if(jsonObj.has("startTime") && !jsonObj.getString("startTime").isEmpty()){
-			  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("rescheduleDate")), 
+			  Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString("rescheduleDate")), 
 					      jsonObj.getString("startTime"));
 				String currentTimeStr = Constants.TZ_DF.format(startTime);  
 				String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -599,7 +599,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		
 		if(jsonObj.has("endTime") && !jsonObj.getString("endTime").isEmpty()){
-			Date endTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(jsonObj.getString("rescheduleDate")), 
+			Date endTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(jsonObj.getString("rescheduleDate")), 
 				      jsonObj.getString("endTime"));
 			String currentTimeStr = Constants.TZ_DF.format(endTime);  
 			String endTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -668,7 +668,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		if(proposeDate != null && proposeDate != ""){
 			// changed by prasanna vadla .. due to timezone 
-			Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(proposeDate),  proposeTime);
+			Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(proposeDate),  proposeTime);
 			String currentTimeStr = Constants.TZ_DF.format(startTime);  
 			String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
 			Date converteDate = Constants.DF_YMD.parse(startTimeUTC);
@@ -676,7 +676,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		
 		if(proposeTime != ""){
-			  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.getDateFormat(proposeDate),  proposeTime);
+			  Date startTime =  CalendarUtil.getDateFromDateAndTime(LoginSessionController.DATEFORMAT.parse(proposeDate),  proposeTime);
 				String currentTimeStr = Constants.TZ_DF.format(startTime);  
 				String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -1069,7 +1069,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
-			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    	requirementInterview.setDateOfInterviewStr(LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview()));
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
@@ -1123,7 +1123,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				}
 				
 			    if(requirementInterview.getDateOfInterview() != null){
-			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    	requirementInterview.setDateOfInterviewStr(LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview()));
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
@@ -1195,7 +1195,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 				dateOfInterviewStr = interviewDateInTimezone;
 		    }
 		    
@@ -1348,7 +1348,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 
 		 String dateOfInterviewValue ="";
 		 if(requirementInterview.getDateOfInterview()!=null){
-			 dateOfInterviewValue = Constants.DMY.format(requirementInterview.getDateOfInterview());
+			 dateOfInterviewValue = LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview());
 		 }
 		 String interviewTypeValue="--";
 		 if(requirementInterview.getInterviewType() !=null){
@@ -1442,7 +1442,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			for (RequirementInterview requirementInterview : customerInterviewList) {
 								
 			    if(requirementInterview.getDateOfInterview() != null){
-			    	requirementInterview.setDateOfInterviewStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+			    	requirementInterview.setDateOfInterviewStr(LoginSessionController.DATEFORMAT.format(requirementInterview.getDateOfInterview()));
 			    }
 			    
 			    if(requirementInterview.getStartTime() != null){
@@ -1549,7 +1549,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE,
 					reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
 			Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-			interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+			interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 			reqnterview.setDateOfInterviewStr(interviewDateInTimezone);
 			globalVarsMap.put("InterviewDate", reqnterview.getDateOfInterviewStr());
 		} else {
@@ -1733,7 +1733,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	    					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	    					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementinterview.getTimezone().getTimeZoneId(), currentTimeStr);
 	    					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-	    					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+	    					interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
 	    					dateOfInterviewStr = interviewDateInTimezone;
 	    			    }
 	    			    
@@ -1836,7 +1836,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				tempHTML.append("<tr>");
 				tempHTML.append("<td>");
 						tempHTML.append("<div>");
-							tempHTML.append("<input type='text' style='width:125px; padding:3px 10px;'  value='"+Constants.DMY.format(pt.getProposeDate())+"' readonly>");
+							tempHTML.append("<input type='text' style='width:125px; padding:3px 10px;'  value='"+LoginSessionController.DATEFORMAT.format(pt.getProposeDate())+"' readonly>");
 						tempHTML.append("</div>");
 			  tempHTML.append("</td>");
 			

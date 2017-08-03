@@ -614,8 +614,6 @@ function sideBar(requirementId,type){
               			var jobType = '';
               			if(json.jobType != null && json.jobType != '' && json.jobType != 'undefined'){
               				jobType = '-'+json.jobType;
-             			 	}else{
-             			 		jobType = '';
              			 	}
               			
               			
@@ -762,12 +760,6 @@ function sideBar(requirementId,type){
 				        else{
 					    result = result+'<li><i class="fa fa-clock-o" title="ProjectDuration"></i><span> --- </span>';
 				        }
-			        
-			        
-			       
-				        
-
-			        
 			        
 				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
 				        result = result+'<li><i class="fa fa-flag" title="Priority"></i><span>'+json.priority+'</span>';
@@ -931,20 +923,6 @@ function sideBar(requirementId,type){
 				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
-				            /* result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>'; */
-				           
 				            
 				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
 				            result = result +'<div class="action-pop">';
@@ -1597,6 +1575,19 @@ function requirementPipeline(requirementId,submissionType){
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#pipelineLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  requirementPipelineListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  requirementPipelineListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  requirementPipelineListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  requirementPipelineListDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionType="+submissionType,        
@@ -1631,7 +1622,7 @@ function requirementPipeline(requirementId,submissionType){
 				           result = result + '<th>Email</th>';
 				           result = result + '<th>Ph. No</th>';
 				           result = result + '<th>Resume</th>';
-				           result = result + '<th>Applied on</th>';
+				           result = result + '<th>Applied on  <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 					       result = result + '<th>Rate</th>';
 					         if(clientSubmissions == 'Y' && submissionType == 'SUBMIT_TO_CLIENT'){
 					           result = result + '<th>Sub. Rate</th>';
@@ -1870,6 +1861,7 @@ function requirementPipeline(requirementId,submissionType){
 							 });
 							
 							prepareAllCounts(requirementId);
+							tabEnable('','applicantli');
 							return true;
 							
               }else{
@@ -1885,7 +1877,8 @@ function requirementPipeline(requirementId,submissionType){
       					 result = result+"	</div>"; 
       					 result = result+"  </div> "; 
       					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
+      				    $("#requirementSideDiv").append(result);
+      				  tabEnable('','applicantli');
       				  return true;
                       }
                },
@@ -4290,6 +4283,19 @@ function requirementRecommendations(requirementId){
 	$("#actionsDiv" ).hide();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  requirementRecommendationsDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  requirementRecommendationsDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  requirementRecommendationsDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  requirementRecommendationsDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	$.ajax({
     type : "POST",
      //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&count="+count,        
@@ -4353,7 +4359,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>Phone</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number Of Jobs</th>';
-		    result = result +'<th>Updated Date</th>';
+		    result = result +'<th>Updated Date <br>(<small class="custom-small">'+requirementRecommendationsDate+'</small>)</th>';
 		    result = result +'<th>Score</th>';
 		    result = result +'<th>Action</th>';
 		    result = result +'</tr>';

@@ -423,6 +423,18 @@ function closeCertificatePopup(){
 	function candidateEmployersList(candidateId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		
+		
+		  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  candidateEmployersListDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  candidateEmployersListDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  candidateEmployersListDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  candidateEmployersListDate = 'YYYY-DD-MM'; 
+		  }
+		
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -438,8 +450,8 @@ function closeCertificatePopup(){
 								result = result	+ '           <th>Employer</th>';
 								result = result	+ '           <th>Designation</th>';
 								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start Date</th>';
-								result = result	+ '           <th>End Date</th>';
+								result = result	+ '           <th>Start Date<br>(<small class="custom-small">'+candidateEmployersListDate+'</small>)</th>';
+								result = result	+ '           <th>End Date<br>(<small class="custom-small">'+candidateEmployersListDate+'</small>)</th>';
 								result = result + '           <th>Action</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";

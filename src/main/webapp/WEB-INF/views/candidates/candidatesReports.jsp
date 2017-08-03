@@ -61,6 +61,17 @@ window.onload = function() {
 	  var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';	     
 	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
+	    	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	   	  if(locationList.match("yyyy-MM-dd")){
+	   		  reqListDate = 'YYYY-MM-DD';
+	   	  }if(locationList.match("dd-MM-yyyy")){
+	   		  reqListDate = 'DD-MM-YYYY'; 
+	   	  }if(locationList.match("MM-dd-yyyy")){
+	   		  reqListDate = 'MM-DD-YYYY'; 
+	   	  }if(locationList.match("yyyy-dd-MM")){
+	   		  reqListDate = 'YYYY-DD-MM'; 
+	   	  }  
+	   	
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	          result = result +"<thead>"; 
@@ -71,7 +82,7 @@ window.onload = function() {
 	          result = result +"    <th>Experience</th>"; 
 	          result = result +"    <th>No of Jobss</th>"; 
 	          result = result +"    <th>Owner</th>"; 
-	          result = result +"    <th>Last Update</th>"; 
+	          result = result +"    <th>Last Update <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
 	          result = result +"  </tr>"; 
 	          result = result +"</thead>";
 	          result = result +"<tbody>"; 
@@ -186,13 +197,27 @@ function cpagination(SourceLeadWeb_loginOrg){
 
 <script>
 	$(function() {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatreports = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatreports = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatreports = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatreports = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatreports = 'yy-dd-mm'; 
+		  }
+		
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatreports,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportStartDate");
+				//var dt = toDate("#ExportStartDate");
+				//var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -203,13 +228,14 @@ function cpagination(SourceLeadWeb_loginOrg){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatreports,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportEndDate");
+				//var dt = toDate("#ExportEndDate");
+				//var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -301,7 +327,7 @@ function toDate(selector) {
                 </select>
           </div>
           
-          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getDayWiseReports();"/>
+          <input type="button" value="Submit" class="btn btn-primary rePBT"  id="owner"  onclick="getDayWiseReports();getCandidatesByOwners();"/>
 			<div class="clearfix"></div>		
 		</div>
     
@@ -368,7 +394,7 @@ function toDate(selector) {
 </script> 
 <script type="text/javascript">
 function getCandidatesByOwners(){
-	
+
 	    var sourceleadUrl = '${sourceleadUrl}';
 		var ownersList = $("#user").val();
 		var reportType = "Candidate";

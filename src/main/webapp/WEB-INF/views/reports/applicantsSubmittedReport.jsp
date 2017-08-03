@@ -47,6 +47,17 @@ function getApplicantSubmittedReports(){
 <script>
 function prepareReportDataDiv(data){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqListDate = 'YYYY-DD-MM'; 
+	  }  
+	
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -54,7 +65,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Client</th>';
 	result = result + '    <th>Submitted By</th>';
-	result = result + '    <th>Submitted on</th>';
+	result = result + '    <th>Submitted on <br>(<small class="custom-small">'+reqListDate+'</small>)</th>';
 	result = result + '    <th>Job Title</th>';
 	result = result + '    <th>Applicant Status</th>';
 	result = result + '   </tr>';
@@ -152,8 +163,20 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 </script>
 <script>
 	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatApplicant = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatApplicant = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatApplicant = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatApplicant = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatApplicant = 'yy-dd-mm'; 
+		  }
+		  
 		$('#ExportStartDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatApplicant,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -166,7 +189,7 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 		});
 		
 		$('#ExportEndDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatApplicant,
 			changeMonth: true,
 			changeYear: true, 
 			beforeShow: function(){

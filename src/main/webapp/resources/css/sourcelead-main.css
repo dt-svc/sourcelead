@@ -1,4 +1,4 @@
-@harset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -976,7 +976,7 @@ white-space: nowrap; word-wrap: break-word;
 	padding-right: 5px;
 }
 .user-profile .col-sm-8 {
-	padding-left: 5px;
+	padding-left: 15px;
 }
 .user-profile h4 {
     text-overflow: ellipsis; white-space: nowrap; overflow: hidden; margin-bottom: 5px; font-size: 16px; margin-top: 0px;
@@ -1264,7 +1264,7 @@ padding: 10px; margin: 0; margin-bottom: 15px; font-size: 18px; color: #ff8f00;
 	color: #ff8f00;
 }
 .side-bar .side-nav ul li ul li a {
-	margin-left: 35px;
+	padding-left: 35px;
 }
 .side-bar .side-nav ul li .fa-fw {
 float: right; position: relative; top: 10px; right: 10px;
@@ -2871,7 +2871,7 @@ border: 1px solid #ccc; border-radius: 5px; padding: 15px; box-sizing: border-bo
     color: #d3394c; font-size: 18px; font-weight: 900;
 }
 .inputfile + label {
-    max-width: 1-0%; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; display: inline-block;
+    /*max-width: 1-0%;*/ max-width: 10%; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; display: inline-block;
     overflow: hidden; padding: 0.625rem 1.25rem;
 }
 .inputfile {
@@ -4907,7 +4907,7 @@ margin:0 0 15px 0;
   position: absolute; left: 2px; bottom: 2px; font-size: 12px; background-color: #fff; padding: 1px 2px; border-radius: 2px;
 }
 .valid-profile.validProfile {
-right: 20px; top: 2px;
+right: 20px; top: 2px; left:inherit; background: none; width:20px; 
 }
 .profile-progress .progress {
     margin-bottom: 5px; height: 12px;
@@ -5902,14 +5902,16 @@ text-align: center; font-size: 16px; min-width: 150px; min-width: 15%; padding:0
 }
 /* Project Dashbaord styels */
 .projectDashboad {
-    min-height: 150px; width: 100%;
+background: #fff; border-radius: 5px; min-height:100px;
+-webkit-box-shadow: 0px 0px 3px #707070; -moz-box-shadow: 0px 0px 3px #707070;
+box-shadow: 0px 0px 3px #707070;  padding: 10px 15px; position: relative; box-sizing: border-box; width: 100%;
 }
 .projectDashboad-widget {
 background: #f5f5f5; border-radius: 5px; min-height:100px; height: 275px;
 -webkit-box-shadow: 0px 0px 3px #707070; -moz-box-shadow: 0px 0px 3px #707070;
 box-shadow: 0px 0px 3px #707070;  padding: 10px 15px; position: relative; box-sizing: border-box; width: 100%;
 }
-.projectDashboad-widget .amcharts-main-div a {
+.projectDashboad-widget .amcharts-main-div a, .projectDashboad .amcharts-main-div a  {
     display: none !important;
 }
 .projectDashboad-header {
@@ -5920,6 +5922,12 @@ box-shadow: 0px 0px 3px #707070;  padding: 10px 15px; position: relative; box-si
 }
 .projectDashboad-header p {
     font-size: 12px; margin-bottom: 5px; color: #616161;
+}
+.payrollCost {
+    position: absolute; top:30px; left: 15px;
+}
+.payrollCost h2{
+    font-weight: 200;
 }
 .workitem {
     width: 68%; float: left;
@@ -6164,6 +6172,35 @@ text-decoration:line-through; color:#D84315;
 }
 .textline-updated{
 color:#00a65a;
+}
+.table_custompadding tr td{
+       padding:2px 5px !important;
+}
+.table_custompadding div.inputCustom{
+       width: 205px;
+}
+.noActivities {
+min-height: 75px; background-image: url(../images/norecords.jpg); background-repeat: no-repeat;
+background-position: center; background-size: 200px; position: relative;top:-8px;
+}
+.timesheet-list {
+    position: absolute;
+    right: 20px; bottom: 75px;
+}
+.backgroundWhite{
+    background: #fff;
+}
+.applicant-label .sjfb-field label {
+    width:28% !important;
+}
+.bootstrap_dropdownMenu.dropdownPadding ul {
+	padding:0px 10px;
+}
+.modal.modalAssignTeam {
+    z-index: 99999!important;	
+}
+.btn-sm.btn-sm2 {
+	padding:3px 6px;
 }
 /* media 320px */
 @media (max-width: 320px) {
