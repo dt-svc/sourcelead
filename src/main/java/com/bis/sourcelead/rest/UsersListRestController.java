@@ -1695,7 +1695,7 @@ public class UsersListRestController {
 			 */
 			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					DateFormat sdf = LoginSessionController.DATEFORMAT;
 					employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -302,7 +302,7 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		model.setViewName("billing/createReceivableExpensesBill");
+		model.setViewName("billing/createExpensesReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);

@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -1107,6 +1110,26 @@ public class ExpensesServiceImpl implements ExpensesService{
 			expense.setDateFrequency(sb.toString());
 		});
 		return expensesList;
+	}
+
+	@Override
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
+
+		Expenses expense = expensesDao.getExpenseByExpenseId(expenseId);
+		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
+		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
+		float sum = 0;
+		for(ExpensesEntries entries : entriesList){
+			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
+			expensesEntriesDTO.setDate(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+			expensesEntriesDTO.setDescription(entries.getDescription());
+			expensesEntriesDTO.setAmount(entries.getAmount());
+			expensesEntriesDTO.setCategory(entries.getExpensesCategoryId().getExpensesName());
+			sum = sum+entries.getAmount();
+			expensesEntriesDTO.setSubTotal(String.valueOf(sum));
+			expensesEntriesDTOList.add(expensesEntriesDTO);
+		}
+		return expensesEntriesDTOList;
 	}
 	
 }

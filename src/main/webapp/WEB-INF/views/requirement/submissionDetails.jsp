@@ -11,6 +11,7 @@
  <jsp:include page="educationSubmissionDetails.jsp" />
  <jsp:include page="certificationSubmissionDetails.jsp" />
  <jsp:include page="documentsSubmissionDetails.jsp"></jsp:include>
+ <jsp:include page="submissionReferencesDetails.jsp"/>
  <jsp:include page="submissionCandidateProfile.jsp" />
  <jsp:include page="submissionCandidateResume.jsp" />
  <jsp:include page="../candidates/candidatesCommentsList.jsp"></jsp:include>
@@ -363,6 +364,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 		       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
 		       result = result + '<li><a href="#tabb-8" onclick="documentsSubmissionDetails('+candidateId+');">Documents</a></li>';
+		       result = result + '<li><a href="#tabb-9" onclick="submissionReferencesDetails('+candidateId+');">References</a></li>';
                result = result + '<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+','+submissionId+');">Comments</a></li>';
 		       result = result + '<div class="clearfix"></div>';
 		       result = result + '</ul>';
@@ -388,6 +390,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   
 			   result = result + '<div id="tabb-8" class="new-tabs_inn">';
 			   result = result + '</div>';
+			   
+			   result = result + '<div id="tabb-9" class="new-tabs_inn">';
+			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
@@ -407,7 +412,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   			 result = result + '<div class="col-md-6">';
 			  			 result = result + '<div class="release-jobs submissionDetails">';
 					     result = result + '<div class="clearfix sub-details">';
-					     result = result + ' <h2 class="active">Submission Details</h2>';
+					     result = result + ' <h2 class="active">Submission Details ';
+					     if(json.submissionStatus == 'SUBMISSION'){
+					    	 result = result + '<i class="fa fa-pencil-square ml" title="Edit Submission" onClick="editSubmittedApplicant('+requirementId+','+submissionId+','+candidateId+','+json.resumeId+')"></i>';
+					     }
+					     result = result + '</h2>';
 					     result = result + ' <div class="content clearfix" style="display: block;">';
 					     result = result + submissionDetails;
 					     result = result + ' </div>';

@@ -363,15 +363,8 @@ function validateOrgShortCode(){
 		 }); 
 }
 $(function(){
-    $("#generatedUserId").keypress(function(event){
-        var ew = event.which;
-        if(ew == 32)
-            return true;
-        if(65 <= ew && ew <= 90)
-            return true;
-        if(97 <= ew && ew <= 122)
-            return true;
-        return false;
+	$("#generatedUserId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
     });
 });
 $(function() {

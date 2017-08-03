@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
@@ -83,28 +82,28 @@ public class addExpenseController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User reopenedUser = userService.getUserById(Long.parseLong(reOpenedUserId));
-		if(expenseId != null && null != type){
-			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		  	
-		}/*else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
-			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		}*/
-		
-
-		Long expenseID=Long.parseLong(expenseId);
+	    
+	    Long expenseID=Long.parseLong(expenseId);
 		List<ExpensesApproverHierarchy> ls = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expenseID);
 		String isSubmittedForApproval="";
 		for(ExpensesApproverHierarchy expensesApproverHierarchy:ls){
 			isSubmittedForApproval=expensesApproverHierarchy.getExpenseApprovalStatus().getValue();
 				
 		}
+	    
+	    
+		if(expenseId != null && null != type && !type.equalsIgnoreCase("rejecting")){
+			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+		  	
+		}/*else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+		}*/
 		
 		User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
-		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
+		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), Long.parseLong(expenseId));
 		Expenses expense = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
-		if(StringUtils.isNotEmpty(expenseId) && null != type){
-			//User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
-			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser, projectMembers.getProjects().getProjectName());
+		if(StringUtils.isNotEmpty(expenseId) && null != type && !type.equalsIgnoreCase("rejecting")){
+			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 		}
 		
 		ModelAndView model = new ModelAndView();
@@ -125,6 +124,7 @@ public class addExpenseController {
 
 		 ExpensesEntryDocuments	expensesEntryDocument =	expensesEntryDocumentsService.getExpensesEntryDocumentById(entryDocumentId);	
 			    
+		 
 		 byte[] pdfBytes = null;
 			if("application/pdf".equalsIgnoreCase(expensesEntryDocument.getFileContentType())){
 				pdfBytes = expensesEntryDocument.getDocFile();
