@@ -61,6 +61,17 @@ window.onload = function() {
 	  var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';	     
 	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
+	    	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	   	  if(locationList.match("yyyy-MM-dd")){
+	   		  reqListDate = 'YYYY-MM-DD';
+	   	  }if(locationList.match("dd-MM-yyyy")){
+	   		  reqListDate = 'DD-MM-YYYY'; 
+	   	  }if(locationList.match("MM-dd-yyyy")){
+	   		  reqListDate = 'MM-DD-YYYY'; 
+	   	  }if(locationList.match("yyyy-dd-MM")){
+	   		  reqListDate = 'YYYY-DD-MM'; 
+	   	  }  
+	   	
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	          result = result +"<thead>"; 
@@ -71,7 +82,7 @@ window.onload = function() {
 	          result = result +"    <th>Experience</th>"; 
 	          result = result +"    <th>No of Jobss</th>"; 
 	          result = result +"    <th>Owner</th>"; 
-	          result = result +"    <th>Last Update</th>"; 
+	          result = result +"    <th>Last Update <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
 	          result = result +"  </tr>"; 
 	          result = result +"</thead>";
 	          result = result +"<tbody>"; 

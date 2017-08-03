@@ -209,7 +209,7 @@ public class CandidateListRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
@@ -536,7 +536,7 @@ public class CandidateListRestController {
 					CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 					if (candidateIndex.getUpdatedDate() != null) {
 						Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
-						String updatedDate = LoginSessionController.DATEFORMAT.format(date1);
+						String updatedDate = simpleDateFormat.format(date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
 					}
 					candidatesList.add(candidateIndex);
