@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletOutputStream;
@@ -51,6 +50,8 @@ import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -1740,6 +1741,42 @@ public class InvoiceRestController {
 		return isDeleted;
 	}
 	
+	@RequestMapping(value = "/getTotalHosursForBilling", method = RequestMethod.GET)
+	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+			
+			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			StringBuilder sb = new StringBuilder();
+			String estimatedHours = null;
+			try {
+				Date requestStartDate =  formatter.parse(startDate);
+				Calendar startCal = Calendar.getInstance();
+				startCal.setTime(requestStartDate); 
+				
+				Date requestEndDate =  formatter.parse(endDate);
+				Calendar endCal = Calendar.getInstance();
+				endCal.setTime(requestEndDate); 
+				
+				int workDays = 0;
+			    if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
+			        startCal.setTime(requestEndDate);
+			        endCal.setTime(requestStartDate);
+			    }
+			    do {
+//			        if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+			            ++workDays;
+//			        }
+			        startCal.add(Calendar.DATE, 1);
+			    } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); 
+
+			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
+
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+			
+			return sb.append(estimatedHours).append(":00").toString();
+		} 
+	 
 	
 	/**
 	 * to save invoice/bill based on expenses
@@ -1854,9 +1891,9 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/getExpensesEntries", method = RequestMethod.GET)
 	@ResponseBody
-	public  Expenses getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
-		Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
-		return expense;
+	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
+		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId);
+		return expensesEntriesDTOList;
 	}
 	
 }

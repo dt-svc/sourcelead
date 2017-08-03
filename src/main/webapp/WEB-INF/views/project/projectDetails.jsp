@@ -14,6 +14,8 @@
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor1").Editor();
+				$("#txtEditor1").find(".Editor-editor").data-validation('validate_length length2-5000');
+				$("#txtEditor1").find(".Editor-editor").data-validation-optional('rule-required',true);
 			});
        </script> 
        
@@ -142,14 +144,16 @@
 						}
 						
 						var proStatus ='';
-						if(json.projectStatus == 'STARTED'){
-							proStatus = 'Started';
+						if(json.projectStatus == 'NOTSTARTED'){
+							proStatus = 'Not Started';
 						}else if(json.projectStatus == 'INPROGRESS'){
 							proStatus = 'In-Progress';
 						}else if(json.projectStatus == 'ONHOLD'){
 							proStatus = 'On-Hold';
 						}else if(json.projectStatus == 'COMPLETED'){
 							proStatus = 'Completed';
+						}else if(json.projectStatus == 'DROPPED'){
+							proStatus = 'Dropped';
 						}
 						
 						
@@ -188,6 +192,34 @@
 						result = result + '	<span title="'+json.projectName+'">'+json.projectName+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Manager 1:</strong><span>';
+
+						for (var j = 0; j < json.managersList.length; j++) {
+							var manager = json.managersList[j];
+							if (json.manager1 == manager.id) {
+								result = result + manager.firstName + " "
+										+ manager.lastName;
+							}
+						}
+						result = result	+ '</span><div class="clearfix"></div>';
+						result = result + '	</div>';
+
+						if (json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") {
+							result = result	+ '<div class="project_details_cta">';
+							result = result	+ '	<strong>Manager 2:</strong><span>';
+
+							for (var j = 0; j < json.managersList.length; j++) {
+								var manager = json.managersList[j];
+								if (json.manager2 == manager.id) {
+									result = result + manager.firstName + " "
+											+ manager.lastName;
+								}
+							}
+							result = result	+ '</span><div class="clearfix"></div>';
+							result = result + '	</div>';
+						}
+						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
@@ -364,12 +396,13 @@
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
-						result = result + '	<label>Status</label>';
-						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();">';
-						if (json.projectStatus == 'STARTED') {
-							result = result	+ '<option selected >Started</option>';
+						result = result + '	<label>Status<span	class="text-danger">*</span></label>';
+						result = result	+ '<select id="projectStatusId" name="projectStatusId" onchange="projectStatus();" field-name="Status" data-validation="required">';
+						result = result	+ '<option value="">Select Status</option>';
+						if (json.projectStatus == 'NOTSTARTED') {
+							result = result	+ '<option selected >Not Started</option>';
 						} else {
-							result = result + '<option>Started</option>';
+							result = result + '<option>Not Started</option>';
 						}
 
 						if (json.projectStatus == 'INPROGRESS') {
@@ -389,12 +422,18 @@
 						} else {
 							result = result + '<option>On-Hold</option>';
 						}
+						if (json.projectStatus == 'DROPPED') {
+							result = result	+ '<option selected>Dropped</option>';
+						} else {
+							result = result + '<option>Dropped</option>';
+						}
+						
 
 						result = result + '</select>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '<label>Project name<span	class="text-danger">*</span></label>';
-						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-100" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
+						result = result	+ '		<span><input type="text" id="projectName" name="projectName" value="'+json.projectName+'" placeholder="Project name" class="project_detfield" data-validation="required validate_Space validate_length length2-250" field-name="Project Name" ></span><span id=fname_msg></span><div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
@@ -919,14 +958,14 @@ function showLevel2Div(){
 		    if(manager2 == null || manager2 == "" || manager2 == "undefined"){
 		    	$("#level2Toggle").show();
 		    	$("#levelone-select").removeClass('col-md-12');
-			    $("#levelone-select").addClass('col-md-9');  
+			    $("#levelone-select").addClass('col-md-8');  
 		    }else{
 		    	$("#demo").show();
 		    }
 		    getChildLevel1Approvers(currentUserId, manager2);
 		}else if(currentUserType != null && currentUserType != '' && currentUserType !='undefined' && currentUserType == 'Admin'){
 		    $("#level2Toggle").hide();   
-		    $("#levelone-select").removeClass('col-md-9');
+		    $("#levelone-select").removeClass('col-md-8');
 		    $("#levelone-select").addClass('col-md-12');  
 		    $("#demo").hide();  
 		}

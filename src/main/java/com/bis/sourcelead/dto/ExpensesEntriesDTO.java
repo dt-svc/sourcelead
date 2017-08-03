@@ -28,6 +28,12 @@ public class ExpensesEntriesDTO implements Serializable {
 	private Float amount;
 
 	private String description;
+	
+	private String date;
+	
+	private String subTotal;
+	
+	private String category;
 
 	public Long getId() {
 		return id;
@@ -106,6 +112,34 @@ public class ExpensesEntriesDTO implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(String subTotal) {
+		this.subTotal = subTotal;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	
