@@ -997,10 +997,17 @@ public class ContractRestController {
 			 	}
 			 	
 			 // updating contract end date 
+			 	Date previousEndDate = contracts.getEndDate();
 			 	contracts.setEndDate(convertedEndDate);
 			 	contracts.setUpdatedDate(new Date());
 			 	contracts.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveNewContract(contracts);
+				if(contracts.getContractType().equalsIgnoreCase(Constants.CLIENT_MSA) || contracts.getContractType().equalsIgnoreCase(Constants.VENDOR_MSA)){
+				contractsTemplateService.sendMSAEndDateModifiedMail(contracts,orgLocation,previousEndDate);
+				}
+				if(contracts.getContractType().equalsIgnoreCase(Constants.Client_SOW) || contracts.getContractType().equalsIgnoreCase(Constants.Vendor_SOW)){
+				contractsTemplateService.sendSOWEndDateModifiedMail(contracts,orgLocation);
+				}
 		 	}
 			
 			return "success";
