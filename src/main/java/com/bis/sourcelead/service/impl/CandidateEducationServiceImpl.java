@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +10,6 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -48,6 +47,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 
 	 @Autowired
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService;
 	
 	/**
 	 * @author ajith kumar
@@ -86,8 +88,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		orgLocations.setId(orgLocationId);
 		candidateEducation.setOrglocationId(orgLocations);
-		
-		
+		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		if(jsonObject.has("name")){
 			if(candidateEducation != null && candidateEducation.getName() != null && candidateEducation.getName() != "" && !candidateEducation.getName().equalsIgnoreCase(jsonObject.getString("name"))){
 				activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -111,8 +113,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			try {
 				
 				//String pattern = "dd-MM-yyyy";
-				DateFormat format = LoginSessionController.DATEFORMAT;
-                Date startDate = format.parse(jsonObject.getString("startDate"));
+				//DateFormat format = LoginSessionController.DATEFORMAT;
+                Date startDate = simpleDateFormat.parse(jsonObject.getString("startDate"));
                 candidateEducation.setStartDate(startDate);
 				
 			} catch (Exception e) {
@@ -122,8 +124,8 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if (jsonObject.has("endDate") && !(jsonObject.getString("endDate").isEmpty()) && !" ".equals(jsonObject.get("endDate"))) {
 			try {
 				//String pattern = "dd-MM-yyyy";
-				DateFormat format = LoginSessionController.DATEFORMAT;
-                Date validTo = format.parse(jsonObject.getString("endDate"));
+				//DateFormat format = LoginSessionController.DATEFORMAT;
+                Date validTo = simpleDateFormat.parse(jsonObject.getString("endDate"));
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();

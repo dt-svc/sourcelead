@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +71,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 			CandidateCertifications candidatecertificate  = new CandidateCertifications();
 			Candidate can = new Candidate();
+			SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
 			StringBuffer activitySummary = new StringBuffer();
 			 if(candidateId!= null){
 				 if(jsonObject.has("candidatecertificateID")){
@@ -116,9 +116,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 					try {
 						
 						//String pattern = "dd-MM-yyyy";
-                        DateFormat format = LoginSessionController.DATEFORMAT;
+                        //DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validFrom = format.parse(jsonObject.getString("validFrom"));
+                        Date validFrom = simpleDateFormat.parse(jsonObject.getString("validFrom"));
                         candidatecertificate.setValidFrom(validFrom);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -132,9 +132,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
 					try {
 						//String pattern = "dd-MM-yyyy";
-						DateFormat format = LoginSessionController.DATEFORMAT;
+						//DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validTo = format.parse(jsonObject.getString("validTo"));
+                        Date validTo = simpleDateFormat.parse(jsonObject.getString("validTo"));
                         candidatecertificate.setValidTo(validTo);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
