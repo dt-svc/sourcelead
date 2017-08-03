@@ -94,8 +94,8 @@ z-index: 9999999999 !important;
 								</div>
 								
 								<div class="form-group">
-								<label class="col-md-4">Country :</label>
-								<p class="tbldata-dotdot-me">${orgloc.country}</p>
+								<label class="col-md-4">Location :</label>
+								<p class="tbldata-dotdot-me">${orgloc.location}</p>
 								</div>
 								
 								<div class="form-group">
