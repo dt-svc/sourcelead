@@ -1445,9 +1445,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 						percentage = percentage +10;
 				 }
 				 
-				 //Skills Details - 10 %
+				 //Skills Details - 15 %
 				 if(can.getSkillsName()!=null && !"".equalsIgnoreCase(can.getSkillsName()) ){
-						percentage = percentage +10;
+						percentage = percentage +15;
 				 }
 				 
 				//PrimarySkill Details - 5 %
