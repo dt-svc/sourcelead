@@ -491,6 +491,12 @@ function validateTaskName(){
 						<br />
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
+					<div>
+						<input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">Mail to team members 
+						&emsp;&emsp;				
+						<input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">Mail to manager
+					</div>
+					
 
 				</div>
 

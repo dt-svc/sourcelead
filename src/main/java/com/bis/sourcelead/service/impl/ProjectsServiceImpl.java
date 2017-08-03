@@ -498,7 +498,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 */
 		
 		//send mail to assigned team members
-		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("on".equals(jsonObj.getString("isMailToTeamMembers")))){
 			
 			User  approverUserId2  = null;
 			User  approverUserId1 = null;
@@ -529,7 +529,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}
 		
 		
-		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+		
+		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("on".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
 				String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
