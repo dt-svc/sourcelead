@@ -193,13 +193,14 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
       
 		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
-		
+		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		for(CandidateEducation education :edulist){
 			if(education.getStartDate() != null){
-			education.setStartDateStr(LoginSessionController.DATEFORMAT.format(education.getStartDate()));
+			education.setStartDateStr(simpleDateFormat.format(education.getStartDate()));
 			}
 			if(education.getEndDate() != null){
-			education.setEndDateStr(LoginSessionController.DATEFORMAT.format(education.getEndDate()));
+			education.setEndDateStr(simpleDateFormat.format(education.getEndDate()));
 			}
 		}
 		return edulist;
