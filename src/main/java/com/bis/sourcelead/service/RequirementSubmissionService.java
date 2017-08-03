@@ -265,4 +265,6 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation);
 
 	List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long id, String string, String tab, String userType, User user, Date startUTCDate, Date endUTCDate);
+	
+	RequirementSubmission editRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues) throws Exception;
 }

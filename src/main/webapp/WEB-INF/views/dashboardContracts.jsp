@@ -38,6 +38,17 @@ function contractList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#contractList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  DashboardContractDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  DashboardContractDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  DashboardContractDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  DashboardContractDate = 'YYYY-DD-MM'; 
+	  }  
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getDashboardContracts?${_csrf.parameterName}=${_csrf.token}&locationId="+locationId,    
@@ -52,7 +63,7 @@ function contractList(){
 	                     result = result +"    <th>Applicant Name</th>";
 	                     result = result +"    <th>Job</th>";
 	                     result = result +"    <th>Rate</th>"; 
-	                     result = result +"    <th>Join Date</th>"; 
+	                     result = result +"    <th>Join Date<br>(<small class='custom-small'>"+DashboardContractDate+"</small>)</th>"; 
 	                     result = result +"    <th>Vendor</th>"; 
 	                     result = result +"    <th>Contact</th>"; 
 	                     result = result +"    <th>Action</th>"; 

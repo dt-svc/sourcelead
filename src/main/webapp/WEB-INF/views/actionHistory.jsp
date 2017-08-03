@@ -80,6 +80,18 @@ function actionHistoryList(userSessionId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 
+	  
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+	  	actionListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  actionListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  actionListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  actionListDate = 'YYYY-DD-MM'; 
+	  }
+	  
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId,    
@@ -93,7 +105,7 @@ function actionHistoryList(userSessionId){
 	                     result = result +"  <tr>"; 
 	                     result = result +"    <th>Action Name</th>";
 	                     result = result +"    <th>Action Performed</th>";
-	                     result = result +"    <th>Action Date</th>"; 
+	                     result = result +"    <th>Action Date<br>(<small class='custom-small'>"+actionListDate+"</small>)</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
