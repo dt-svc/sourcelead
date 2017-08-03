@@ -182,6 +182,8 @@ public class CandidateIndex implements Serializable {
 	
 	private String currentResumeUUID;
 	
+	private String generatedId;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -901,6 +903,18 @@ public class CandidateIndex implements Serializable {
 	{
 		this.currentResumeUUID = currentResumeUUID;
 	}
+
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+	
+	
 	
 }
 

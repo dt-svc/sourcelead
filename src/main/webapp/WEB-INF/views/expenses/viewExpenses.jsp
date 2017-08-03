@@ -120,7 +120,7 @@
 							<ul>
 							    <li><strong>Date :</strong><span>${entry.expenseDate}</span><div class="clearfix"></div></li>
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><p title="${entry.description}">${entry.description}</p>
+								<li><strong>Description :</strong><span title="${entry.description}">${entry.description}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Amount :</strong><span>${entry.amount}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
@@ -128,7 +128,7 @@
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix"></div>
-								<div id='attachmentSection' class='col-md-4 noPad'>
+								<div id='attachmentSection' class='col-md-4 noPad mt10'>
 				                   <div class="uploadFile timesheet_week_comm">
 				                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
 					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
@@ -139,7 +139,7 @@
 					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
 					                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
 					                                 <i class='glyphicon glyphicon-save'></i>
-										             <input type='button' value='${entryDoc.fileName}'/>
+										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
 										        </a>
 										        <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a>
 					                         </strong>
