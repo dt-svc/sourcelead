@@ -412,7 +412,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   			 result = result + '<div class="col-md-6">';
 			  			 result = result + '<div class="release-jobs submissionDetails">';
 					     result = result + '<div class="clearfix sub-details">';
-					     result = result + ' <h2 class="active">Submission Details</h2>';
+					     result = result + ' <h2 class="active">Submission Details ';
+					     if(json.submissionStatus == 'SUBMISSION'){
+					    	 result = result + '<i class="fa fa-pencil-square ml" title="Edit Submission" onClick="editSubmittedApplicant('+requirementId+','+submissionId+','+candidateId+','+json.resumeId+')"></i>';
+					     }
+					     result = result + '</h2>';
 					     result = result + ' <div class="content clearfix" style="display: block;">';
 					     result = result + submissionDetails;
 					     result = result + ' </div>';

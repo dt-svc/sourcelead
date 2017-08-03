@@ -113,7 +113,7 @@ margin-top: 3px;
 		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
 		   		</sec:authorize>
 				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
-					<li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
 						   <ul class="ul_padding">
 						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -159,19 +159,34 @@ $('input:checkbox[name=expenseStatus]:checked').each(function()
 {
 	expenseStatus.push($(this).val());
 });
+
+
+var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+if(locationList.match("yyyy-MM-dd")){
+	expensesApprvListDate = 'YYYY-MM-DD';
+}if(locationList.match("dd-MM-yyyy")){
+	expensesApprvListDate = 'DD-MM-YYYY'; 
+}if(locationList.match("MM-dd-yyyy")){
+	expensesApprvListDate = 'MM-DD-YYYY'; 
+}if(locationList.match("yyyy-dd-MM")){
+	  expensesApprvListDate = 'YYYY-DD-MM'; 
+}
+
+
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
+    
 	result = result+' <table id="example">';
 	result = result+' <thead>';
 	result = result+' <tr>';
 	result = result+' <th>Employee</th>';
 	result = result+' <th>EmploymentType</th>';
 	result = result+' <th>Project</th>';
-	result = result+' <th>Start Date</th>';
-	result = result+' <th>End Date</th>';
+	result = result+' <th>Start Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
+	result = result+' <th>End Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
 	result = result+' <th>No of Items</th>';
 	result = result+' <th>Amount</th>';
 	result = result+' <th>Status</th>';
@@ -179,8 +194,7 @@ $.ajax({
 	result = result+' </tr>';
 	result = result+' </thead>';
 	result = result+' <tbody>';
-	
-	if(data !=''){
+	if(data !='' && data !=[] && data !='[]'){
 	var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
@@ -245,7 +259,7 @@ $.ajax({
     	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
     	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
 	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
-	 	 result = result+" </i><br><d title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</d>";
+	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
 	 	 result = result+" </div>";
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
@@ -262,13 +276,15 @@ $.ajax({
 	 result = result+' </tr>';
 	 }
 	 $("#temp").val("temp");
-	  }else{
-	  }
 	result = result+' </tbody>';
 	result = result+' </table>';
+	}else{ 
+		$('#hideExportIfDataEmptyId').hide();
+	}
 	$("#approverDataExpensesDiv").empty();
 	$("#approverDataExpensesDiv").append(result);
 	pagination();
+	
   }
 });
 }
