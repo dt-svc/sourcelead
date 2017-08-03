@@ -346,9 +346,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUser == null){
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
-		}else{
-			onboardingUser.setPassword(sourceleadPasswordEncoder.encode(password));
-			userDao.addUser(onboardingUser);
 		}
 		
 		onboardingUserRole = userRoleDao.getUserDetailsByUserIdAndLocationId(onboardingUser.getId(), orgLocations.getId());
