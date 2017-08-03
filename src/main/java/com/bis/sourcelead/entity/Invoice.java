@@ -176,6 +176,14 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
+	@ManyToOne
+    @JoinColumn(name="EXPENSES_ID", nullable=true) 
+	private Expenses expensesId;
+	
+	@ManyToOne
+    @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
+	private ProjectMembers projectMemberId;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
@@ -963,6 +971,22 @@ public class Invoice {
 
 	public void setExpensesInvoices(String expensesInvoices) {
 		this.expensesInvoices = expensesInvoices;
+	}
+
+	public Expenses getExpensesId() {
+		return expensesId;
+	}
+
+	public void setExpensesId(Expenses expensesId) {
+		this.expensesId = expensesId;
+	}
+
+	public ProjectMembers getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(ProjectMembers projectMemberId) {
+		this.projectMemberId = projectMemberId;
 	}
 	
 	

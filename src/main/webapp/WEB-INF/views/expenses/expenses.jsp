@@ -77,7 +77,7 @@
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
 			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
-			   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+			   <li title="Export"  id="hideExportExpenseLink"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
 						   <ul class="ul_padding">
 						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -238,6 +238,7 @@ function getExpensesList(){
 		        		  $("#temp").val("temp");
 		        	  }else{
 		        		  /* $("#temp").val(''); */
+						  $('#hideExportExpenseLink').hide();
 		        	  }
 	        	 
    			
@@ -562,4 +563,3 @@ function exportToPdf(type){
 	       e.stopPropagation();
 	   });        
 </script> 
-<jsp:include page="../masterFooter.jsp" />
