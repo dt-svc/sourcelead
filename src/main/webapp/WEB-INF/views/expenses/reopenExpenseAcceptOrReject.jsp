@@ -30,9 +30,10 @@
 			var type  = '${type}';
 			if(type == 'accept'){     
 				$("#accept").removeAttr("style");
-			}else if(type == 'reject'){
+			}else if(type == 'rejecting'){
 				$("#reject").removeAttr("style");
 			}
+			alert('${isSubmittedForApproval}');
 		});
 </script>
 
@@ -152,7 +153,7 @@ width: auto;
 			var sourceleadUrl = '${sourceleadUrl}';
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
-			var type = '${type}';
+			var type = 'reject';
 			var reason = '${reason}';
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
