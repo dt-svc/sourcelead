@@ -33,7 +33,6 @@
 			}else if(type == 'rejecting'){
 				$("#reject").removeAttr("style");
 			}
-			alert('${isSubmittedForApproval}');
 		});
 </script>
 
