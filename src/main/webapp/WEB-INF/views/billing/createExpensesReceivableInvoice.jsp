@@ -24,11 +24,31 @@ $(document).ready(function(){
 </script>
 <script>
 function checkBox(){
-	var invoiceforexpenses = $("#invoiceforexpenses").val();
-	if(invoiceforexpenses == "N"){
-		$("#invoiceforexpenses").val('Y');
+	var invoiceforexpenses = $("#invoiceforexpenses").is(":checked");
+	if(invoiceforexpenses == false){
+		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
+		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectId').removeAttr('data-validation');
+		$('#projectMemberId').removeAttr('data-validation');
+		$('#expensesId').removeAttr('data-validation');
+		$('#projectId').attr('data-validation-optional',"true");
+		$('#projectMemberId').attr('data-validation-optional',"true");
+		$('#expensesId').attr('data-validation-optional',"true");
+		$("#invoiceforexpenses").val("N");
+		$("#addbutton").show();
+		populateInlineItemsGrid();
 	}else{
-		$("#invoiceforexpenses").val('N');
+		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
+		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
+		$('#projectId').attr("data-validation","required");
+		$('#projectMemberId').attr("data-validation","required");
+		$('#expensesId').attr("data-validation","required");
+		$("#invoiceforexpenses").val("Y");
+		$("#addbutton").hide();
+		 populateExpensesDetailsGrid("");
+		 
 	}
 }
 
@@ -119,7 +139,7 @@ function checkBox(){
 			<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
               <div class="col-md-9 checkBox">
-                  <input type="checkbox"  name="invoiceforexpenses" class="paddingRight" value="N" id="invoiceforexpenses" onclick="checkBox()">
+                  <input type="checkbox"  name="invoiceforexpenses" class="paddingRight" id="invoiceforexpenses" onclick="checkBox()">
                   Invoice for Expenses
               </div>
             </div>
@@ -127,22 +147,22 @@ function checkBox(){
               <div id="associate-expenses" style="display: none">
                <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field"> 
+              <div class="col-md-9 select-field" id="projectIdDiv"> 
                 <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectAssignMembers();" field-name="Project Name"> 
                   </select>
               </div>
             </div>
                   <div class="form-group">
               <label class="col-md-3">Associate<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="associate" name="associate" onchange="getExpenses();" field-name="Associate Name">
+              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
                 </select>
               </div>
             </div>
                   <div class="form-group">
               <label class="col-md-3">Expenses<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="expenses" name="expenses" onchange="getExpensesDetails();"  field-name="Expense Name">
+              <div class="col-md-9 select-field" id="expensesIdDiv">
+                <select class="chosen-select form-control" id="expensesId" name="expensesId" onchange="getExpensesDetails();"  field-name="Expense Name">
                 </select> 
               </div>
             </div>
@@ -157,7 +177,7 @@ function checkBox(){
             <div id="tableBody"></div>
             
             <div class="clearfix"></div>
-            <div class="clearfix">
+            <div class="clearfix" id="addbutton">
               <button type="button" class="btn btn-sm btn-primary mr" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
             </div>
         </div>
@@ -332,15 +352,13 @@ function getProjectsList(projectName){
 
 <script>
 function getExpensesDetails(){
-	var expensesId = $("#expenses").val();
+	var expensesId = $("#expensesId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	alert(expensesId);
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?${_csrf.parameterName}=${_csrf.token}&expensesId="+expensesId,
 		success :function(data) {
 			populateExpensesDetailsGrid(data);
-			/* S.no. Date, category, description , amount  */
 		},
 		});	
 }
@@ -350,10 +368,9 @@ function getExpensesDetails(){
 <script>
 function populateExpensesDetailsGrid(data){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
-  /*   if(data != '' && data !=null){ */
-       /*  var json = JSON.parse(data); */
            var result = '';
-            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value="1" />';
+           var subTotal = '0';
+            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
             result = result +' <tr>';
@@ -365,57 +382,63 @@ function populateExpensesDetailsGrid(data){
             result = result +' </tr>';
             result = result +' </thead>';
             result = result +' <tbody>';
-            
-            for(var i=0;i < data.length;i++){
-            	
+            if(data !=null && data !=''){
+            	 for(var i=0;i < data.length;i++){
+                 	/* S.no. Date, category, description , amount  */
+                 	  var opt = data[i];
+                 	  subTotal = opt.subTotal;
+                 	  result = result +'   <tr>';
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
+         		      result = result +'   </td>';
+         		      
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.date !=null && opt.date != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+(i+1)+'edate" name="'+(i+1)+'edate" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.category !=null && opt.category != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+(i+1)+'category" name="'+(i+1)+'category" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.description !=null && opt.description != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+(i+1)+'description" name="'+(i+1)+'description" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.amount !=null && opt.amount != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+(i+1)+'total" name="'+(i+1)+'total" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      
+         		      result = result +' </tr>';
+         		      
+                 }	
             }
-		      result = result +'   <tr>';
-		     result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-100">';
-		      result = result +'       <input type="text" class="calendar form-control input-sm hasDatepicker" id="edate-input" placeholder="End Date">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      /*   result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-big">';
-		      result = result +'         <textarea placeholder="Description" class="form-control" rows="1">Description</textarea>';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-100">';
-		      result = result +'       <input type="text" class="form-control input-sm" placeholder="Rate">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-100">';
-		      result = result +'       <input type="text" class="form-control input-sm" placeholder="Rate">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td>';
-		      result = result +'     <div class="tbldata-dotdot-vsm">';
-		      result = result +'       <input type="text" class="form-control input-sm" placeholder="Total">';
-		      result = result +'     </div>';
-		      result = result +'   </td>';
-		      result = result +'   <td><a class="text-danger" title="Remove row"><i class="fa fa-remove"></i></a></td>'; */
-		      result = result +' </tr>';
-          
+           
             
-      /*   for (var i = 0; i < json.length; i++) {  
-    	   <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
-            <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
-            <tbody>
-              <tr id='divAttachmentTsRow0'>
-             
-        } */
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
-        result = result +' <td colspan="4"></td>';
+        result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
         result = result +' </tbody>';
         result = result +' </table>';
+        $("#subTotal").val(subTotal);
         $("#tableBody").empty();
         $("#tableBody").append(result);
         maskme();
@@ -423,6 +446,7 @@ function populateExpensesDetailsGrid(data){
       /*   document.getElementById("bottomGrid").style.display="block";
         document.getElementById("bottomGrid").style.display="block"; */
       /*   document.getElementById("lineItemAddRows").style.display="block"; */
+         $("#addbutton").hide();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
@@ -431,7 +455,7 @@ function populateExpensesDetailsGrid(data){
 
 <script>
 function getExpenses(){
-	var memberId = $("#associate").val();
+	var memberId = $("#projectMemberId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
@@ -449,9 +473,9 @@ function getExpenses(){
 			} */
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
 			}
-			$("#expenses").empty();
-			$("#expenses").append(output);
-			$('#expenses').trigger("chosen:updated");
+			$("#expensesId").empty();
+			$("#expensesId").append(output);
+			$('#expensesId').trigger("chosen:updated");
 		},
 		});	
 }
@@ -477,9 +501,9 @@ function getProjectAssignMembers(){
 			} */
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
 			}
-			$("#associate").empty();
-			$("#associate").append(output);
-			$('#associate').trigger("chosen:updated");
+			$("#projectMemberId").empty();
+			$("#projectMemberId").append(output);
+			$('#projectMemberId').trigger("chosen:updated");
 		},
 		});
 }
@@ -596,6 +620,7 @@ function populateInlineItemsGrid(){
       /*   document.getElementById("bottomGrid").style.display="block";
         document.getElementById("bottomGrid").style.display="block"; */
       /*   document.getElementById("lineItemAddRows").style.display="block"; */
+         $("#addbutton").show();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
@@ -709,7 +734,6 @@ function populateInlineItemsGrid(){
 	     var discountType = $("#disCount").val();
 	     var subtractValueFromRow = $("#hiddenTotal").val();
 	    if(subtractValueFromRow != '' && subtractValueFromRow !='undefined'){
-				alert("Emtered");	    	
 	    	 var total ='';
 		 	 if(discountType == 'flat'){
 		 		total = subtractValueFromRow-discountValue;
@@ -1214,9 +1238,7 @@ function saveInvoice(saveType){
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
-	alert(currencyCode);
          if ($('#project_invoice_form').validate(false, validationSettings)){  
- 		  alert("2");
         	 var frm = $('#project_invoice_form').serializeFormJSON();
  	        var con = JSON.stringify(frm);
  	        con = con.replace(/[{}]/g, "");
@@ -1695,14 +1717,14 @@ function getPaymentTerms(){
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
-	
+	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
