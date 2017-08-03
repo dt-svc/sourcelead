@@ -544,7 +544,7 @@ public class TimesheetApprovalRestController {
 			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey()))).append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
 			  	    	 }
 			  	    	 else{
-			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/").append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
+			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>0").append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
 			  	    	 }
 	    	   }
 	     }

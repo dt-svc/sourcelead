@@ -505,7 +505,7 @@ function preventTabkey(e){
           </c:if>
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
-           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
+           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
@@ -1358,6 +1358,9 @@ $("#searchType").selectpicker('refresh');
 
 <!-- Task related code Ends -->
 <!--  Company Invite pop -->
+<div class="success_pop" id="inviteCompanyId" style="display: none;">
+   	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
+</div>
 <div class="sideMask"></div>
 <div class="modal modalInvite" class="invite" role="dialog">
     <div class="modal-dialog">
@@ -1369,6 +1372,7 @@ $("#searchType").selectpicker('refresh');
           <h4 class="modal-title">Invite Company</h4>
         </div>
         <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+         
         <div class="modal-body invite_class">
             <div class="form-group clearfix">
                 <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
@@ -1453,7 +1457,12 @@ function saveInviteCompany() {
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 					success : function(result) {
 						 $(".modalInvite").fadeOut();
-						  $(".sideMask").fadeOut();
+						  $(".sideMask").fadeOut(); 
+						  $("#inviteCompanyId").removeAttr("style");
+	            		  $("#inviteCompanyId").css({ display: "block" });
+	        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+	        			  companyMsgFadeinFunction();
+	        			  flushInviteCompany();
 					},
 				});
 		return true;
@@ -1466,7 +1475,12 @@ $('body').on('blur', '#inviteCompany_form', function() {
 	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
 });
 </script>
-
+<script>
+	function companyMsgFadeinFunction() {
+		$("#inviteCompanyId").fadeIn(200);
+        $('#inviteCompanyId').fadeOut(3000);
+	}
+</script> 
 <!-- 
 <script>
 // This example displays an address form, using the autocomplete feature
