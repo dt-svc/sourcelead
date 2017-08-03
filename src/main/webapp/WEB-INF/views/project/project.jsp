@@ -21,8 +21,11 @@
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
+// 				$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+// 				$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 			});
        </script> 
+  
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -86,9 +89,9 @@ function validateTaskName(){
 	var fileCounter = 0;
 	function addFileUpload(){
 		
-		$('<div>').attr('style','float:left; width:245px; border:1px solid #ddd; margin:0 5px 5px 0; padding:5px;overflow: hidden').append('<input id="file' +  '" name = "project_files' + '" type="file" />' +
-	            '<input id="Button' + fileCounter + '" type="button" ' +
-	            'value="Remove Document" onclick = "RemoveFileUpload(this)" />').appendTo($('#FileUploadContainer'));
+		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file' +  '" name = "project_files' + '" type="file" class="pull-left" />' +
+	            '<a id="Button' + fileCounter + '' +
+	            'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 
 	    		fileCounter++;
 	}
@@ -147,15 +150,12 @@ function validateTaskName(){
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value=""
-											id="StartDate" name="StartDate" field-name="Start Date"
-											data-validation="required" readonly="readonly"> <span
-											class="input-group-addon input-groupAddon"><i
-											class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" value="" id="StartDate" name="StartDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > <span
+											class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
 										<input type="text" class="form-control" value="" id="EndDate"
-											name="EndDate" field-name="End Date" readonly="readonly">
+											name="EndDate" field-name="End Date" placeholder="End Date" readonly="readonly">
 										<span class="input-group-addon input-groupAddon"><i
 											class="fa fa-calendar"></i></span>
 									</div>
@@ -226,8 +226,8 @@ function validateTaskName(){
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="input-group">
-									<div class="input-group-btn selp-custom-min" id="flatPercentageId" >
-										<select class="form-control chosen-select" name="flatPercentageId">
+									<div class="input-group-btn selp-custom-min tblminwidth-125" id="flatPercentageId" >
+										<select class="form-control chosen-select"  name="flatPercentageId">
 											<option value="flat">FLAT</option>
 											<option value="percentage">PERCENTAGE</option>
 										</select>
@@ -255,7 +255,7 @@ function validateTaskName(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-100"
+								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-250"
 									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden">Enter Project Id</span>
 
 							</div>
@@ -270,7 +270,7 @@ function validateTaskName(){
 										<select class="form-control chosen-select"
 											name="level1Manager" id="level1Manager" field-name="Manager"
 											data-validation="required" onchange="getLevel2Approvers();">
-											<option value="">-- Level Manager --</option>
+											<option value="">-- Select Level1 Manager --</option>
 											<c:forEach var="option" items="${user_List}">
 												<option value="${option.id},${option.userType}">${option.firstName}
 													${option.lastName}</option>
@@ -350,9 +350,9 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3">Invoice Frequency <span
 								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-frequency">
+							<div class="col-md-9" id="chosen-InvoiceFrequency">
 								<select class="form-control chosen-select" id="invoiceFrequency"
-									name="invoiceFrequency" onchange="removeFrequencyValidation();"
+									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
 									field-name="Invoice Frequency" data-validation="required">
 									<option value="">-Invoice Frequency-</option>
 									<option value="Weekly">Weekly</option>
@@ -475,22 +475,31 @@ function validateTaskName(){
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea"></textarea>
+						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 <!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
 
 					</div>
 
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<h5>Documents</h5>
-						<input id="Button1" type="button" value="Add Document"
-							onclick="addFileUpload()" /> <br /> <br /> <br />
+						<div class="row mt mb10">
+						<h5 class="col-md-1 paddingRight">Documents</h5>
+						<div class="col-md-10 paddingLeft">
+						<input id="Button1" type="button" value="Add Document" onclick="addFileUpload()" class="btn btn-sm btn-primary" />
+						</div>
+							</div>
 						<div id="FileUploadContainer">
 							<!--FileUpload Controls will be added here -->
 						</div>
 						<br />
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
+					<div>
+						<input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">Mail to team members 
+						&emsp;&emsp;				
+						<input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">Mail to manager
+					</div>
+					
 
 				</div>
 
@@ -532,6 +541,9 @@ function allowOverTime(){
 		$('#flatPercentage').attr('style','visibility:hidden');
 	}
 	
+}
+function removeInvoiceFrequencyValidation(){
+	$('#chosen-InvoiceFrequency').find('p.jquery_form_error_message').remove();
 }
 </script>
 <script>

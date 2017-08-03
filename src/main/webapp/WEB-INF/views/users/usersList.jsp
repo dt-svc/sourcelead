@@ -273,7 +273,9 @@ function getUsersSearchResult(searchValue){
       </div>
       </div>
       </section>
-      
+      <div class="project_wrap_table datatable_filter" id="userListGrid">
+              <div id="userListViewDiv" class="filter_position backgroundWhite pdtop mt" style="display:none;"></div> 
+          </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="usersListBody"></div> 
@@ -281,9 +283,7 @@ function getUsersSearchResult(searchValue){
           <div id="loadMoreDiv"></div> 
       </div>
       
-           <div class="project_wrap_table datatable_filter">
-              <div id="userListViewDiv"></div> 
-          </div>      
+               
       
       <div id="usersListEmptyBody"></div>
       <div id="popUp"></div>

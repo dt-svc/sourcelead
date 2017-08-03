@@ -1,4 +1,4 @@
-@harset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -2871,7 +2871,7 @@ border: 1px solid #ccc; border-radius: 5px; padding: 15px; box-sizing: border-bo
     color: #d3394c; font-size: 18px; font-weight: 900;
 }
 .inputfile + label {
-    max-width: 1-0%; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; display: inline-block;
+    /*max-width: 1-0%;*/ max-width: 10%; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; display: inline-block;
     overflow: hidden; padding: 0.625rem 1.25rem;
 }
 .inputfile {
