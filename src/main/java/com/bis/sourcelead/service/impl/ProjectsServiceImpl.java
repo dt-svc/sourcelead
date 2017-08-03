@@ -613,11 +613,22 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-			    	StringBuilder projectStringBuilder=new StringBuilder();
 			    	if(approverHierarchy.getLevel()==1){
-			    		projects.setManagerLevel1(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+			    		StringBuilder manager1 = new StringBuilder();
+			    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+			    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+			    		}else{
+			    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+			    		}
+			    		
 			    	}else if(approverHierarchy.getLevel()==2){
-			    		projects.setManagerLevel2(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+			    		StringBuilder manager2 = new StringBuilder();
+			    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+			    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+			    		}else{
+			    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+			    		}
+			    		
 			    	}
 			    }
 	    }
