@@ -1017,7 +1017,7 @@ function flushProjectTasks(){
 									datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 									
 									$('#startDate'+opt.id).datepicker({
-										dateFormat : 'dd-mm-yy',
+										dateFormat : finalDateFormatProjectSave,
 										changeMonth: true,
 										changeYear: true, 
 										minDate:projectStartDate,
@@ -1180,22 +1180,21 @@ function assignEmployeeCancel(){
 			changeYear: true, 
 			onSelect : function(selected) {
 				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '+1d');
 				//var dt = toDate("#StartDate");
-				 var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
 		});
-
 		$('#EndDate').datepicker({
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
 				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '-1d');
 			//	var dt = toDate("#EndDate");
-				   var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#StartDate").datepicker("option", "maxDate", dt);
 				addValidClass();
@@ -1212,12 +1211,22 @@ function assignEmployeeCancel(){
                 if(mm<10){
                     mm='0'+mm
                 } 
+                
                 var today = yyyy+'-'+mm+'-'+dd;
+                
                 var proStartDateTP = today.split("-");
                 var d1 = new Date(proStartDateTP[0], proStartDateTP[1] - 1, proStartDateTP[2]);
                 
                 var proEndDateTP = dummyDate.split("-");
-                var d2 = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+                if(locationDate.match("yyyy-MM-dd")){
+                	 var d2 = new Date(proEndDateTP[0], proEndDateTP[1] - 1, proEndDateTP[2]);
+      		    }if(locationDate.match("dd-MM-yyyy")){
+      		    	var d2 = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+      		    }if(locationDate.match("MM-dd-yyyy")){
+      		    	var d2 = new Date(proEndDateTP[2], proEndDateTP[0] - 1, proEndDateTP[1]);
+      		    }if(locationDate.match("yyyy-dd-MM")){
+      		    	var d2 = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
+      		    }
                 
 				if(d1 > d2){
 					$("#Satatus").empty();

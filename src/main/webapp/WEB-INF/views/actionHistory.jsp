@@ -116,7 +116,7 @@ function actionHistoryList(userSessionId){
 	                    	    }
 	                    	    
 	                    	    if(opt.actionPerformed != null && opt.actionPerformed !='' && opt.actionPerformed !='undefined'){
-	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-big textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
 	                    	    }else{
 	                    	     result = result +"<td><div class='textLeft'>---</div></td>";
 	                    	    }

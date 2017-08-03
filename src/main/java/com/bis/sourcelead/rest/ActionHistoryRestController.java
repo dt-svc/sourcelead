@@ -17,6 +17,7 @@ import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class ActionHistoryRestController {
@@ -40,6 +41,7 @@ public class ActionHistoryRestController {
 		if(actionHistoryList != null){
 			for(ActionHistory actionHistory:actionHistoryList){
 				actionHistory.setActionTimeStr(conversionUtil.getDateAsddMMMYYYYHHMMSS(actionHistory.getActionTime()));
+				//actionHistory.setActionTimeStr(LoginSessionController.DATEFORMAT.format(actionHistory.getActionTime()));
 			}
 		}
 		return actionHistoryList;
