@@ -27,6 +27,19 @@ function userAssignedProjects(userId){
 
 <script>
 function prepareAssignedProjectsData(data){
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  assignedProjectsDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  assignedProjectsDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  assignedProjectsDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  assignedProjectsDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	var result = "";
 	result = result +"<table id='assignedProjectsListPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -34,8 +47,8 @@ function prepareAssignedProjectsData(data){
     result = result +"    <th>Project Id</th>"; 
     result = result +"    <th>Project Name</th>"; 
     result = result +"    <th>Rate</th>"; 
-    result = result +"    <th>Start Date</th>";
-    result = result +"    <th>End Date</th>"; 
+    result = result +"    <th>Start Date <br>(<small class='custom-small'>"+assignedProjectsDate+"</small>)</th>";
+    result = result +"    <th>End Date <br>(<small class='custom-small'>"+assignedProjectsDate+"</small>)</th>";
     result = result +"    <th>Approved Hours</th>"; 
     result = result +"    <th>Rejected Hours</th>"; 
     result = result +"    <th>Waiting For Approval</th>"; 

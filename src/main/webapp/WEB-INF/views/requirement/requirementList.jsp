@@ -275,7 +275,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Location</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
+    result = result +"    <th>Posted On <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
     result = result +"    <th>Status</th>"; 
        result = result +"<th>Actions</th>";
 //     result = result +"    <th>Release</th>"; 
