@@ -396,7 +396,7 @@ function getViewInvoice(){
 				result = result +'	            <div class="form-horizontal billsubTotal">                                                    ';
 				result = result +'	              <div class="form-group">                                                                    ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Subtotal</strong></label>                   ';
-				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
+				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
 				result = result +'	              </div>                                                                                      ';
 				result = result +'	              <!-- Discount UI -->                                                                        ';
 				result = result +'	              <div class="form-group">                                                                    ';
@@ -500,7 +500,7 @@ function getViewInvoice(){
 				
 				result = result +'	                <div class="form-group mt">                                                        ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
-				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><span><strong>'+report.total+'</strong></span></div> ';
+				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><span><strong>'+report.total+'</strong></span></div> ';
 				result = result +'	              </div>                                                                               ';
 				if(convertCurrencyCode != null && convertCurrencyCode != '' && convertCurrencyCode != 'undefined'){
 					 result = result +'  <div class="row">';
@@ -585,7 +585,7 @@ function invoiceNotes(){
    	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
-   	 output = output+'     <div class="comments-content">';
+   	    output = output+'     <div class="comments-content">';
    	    output = output+'     <div class="commentsNotes_inner">';
    	    output = output+'         <p class="comment-by">';
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
