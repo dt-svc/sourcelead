@@ -690,7 +690,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     position:relative; background-color:#fff; z-index:5; border-top:2px solid #368ee0;
     }
 .project-tabs-menu li a, .canreq-tabs-menu li a {
-    padding:7px 25px; text-decoration:none; font-size:15px; color:#666; display:block;
+    padding:7px 15px; text-decoration:none; font-size:15px; color:#666; display:block;
     }
 .project-tabs-menu .current a, .canreq-tabs-menu .current a {
     color:#1d6cb5;
@@ -839,16 +839,16 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
        
        
 ::-webkit-scrollbar {
-    width: 6px; height: 6px; border-radius:2px;
+    width: 8px; height: 8px; border-radius:2px;
 }
 ::-webkit-scrollbar-button {
-    background: #ccc
+    background: #ccc;
 }
 ::-webkit-scrollbar-track-piece {
-    background: #fff
+    background: #fff;
 }
 ::-webkit-scrollbar-thumb {
-    background: #368ee0
+    background: #368ee0;
 }
           
        
@@ -4552,7 +4552,7 @@ float: none !important; padding: 2px 5px; color: #333;
     font-size: 14px; display: inline-block; cursor: pointer; padding: 1px; margin: 1px; color: #375d81 !important;
 }
 .project_wrap_table table i.glyphicon-trash {
-    color: #fe4556;
+    color: #fe4556 !important;
 }
 .expensHead {
     position: relative; background-color: #fff; border-top:1px solid #ededed; padding: 5px 15px;
@@ -5204,7 +5204,16 @@ width: 48%; margin: 0px 0.5%;
 td.tbldata-dotdot_50 {
 	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50px !important; display: block; margin: 0 auto;
 }
-
+.inpTextFil {
+	background-color: transparent; border: none; font-size: 14px; color: #232323;
+	box-shadow:0px 0px 0px #ccc; text-align: center; width: 100%;
+}
+.textLeft{
+	text-align: left !important;
+}
+.padLeft {
+padding: 0px 10px 0px 25px !important;
+}
 
 
 

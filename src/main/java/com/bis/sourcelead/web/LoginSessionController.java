@@ -208,6 +208,16 @@ public class LoginSessionController {
 			}else{
 				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
 			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
@@ -354,6 +364,7 @@ public class LoginSessionController {
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
@@ -676,6 +687,7 @@ public class LoginSessionController {
 				OrgLocations orgLocations = userRole.getOrgLocations();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 				SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 				
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());

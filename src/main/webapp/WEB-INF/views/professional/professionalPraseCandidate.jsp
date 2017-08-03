@@ -66,7 +66,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Candidate Profile</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Profile Update</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
