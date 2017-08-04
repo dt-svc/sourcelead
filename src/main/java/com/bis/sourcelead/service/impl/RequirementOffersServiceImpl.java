@@ -147,7 +147,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"joiningDate") && jsonObj.getString(c+"joiningDate") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"joiningDate"))){
-									requirementOffers.setDateOfJoining(commonUtil.getDateFormat(jsonObj.getString(c+"joiningDate")));
+									requirementOffers.setDateOfJoining(LoginSessionController.DATEFORMAT.parse(jsonObj.getString(c+"joiningDate")));
 								}
 								
 								if(jsonObj.has(c+"PaymentType") && !jsonObj.getString(c+"PaymentType").isEmpty()){
@@ -1200,6 +1200,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			}
 			
 			Contracts contracts = contractsTemplateService.getContractByReqSubmissionSowTypeAndOrgLocId(offer.getSubmissionId().getId(), orglocation, Constants.Vendor_SOW);
+			if(contracts != null && contracts.getContractUUID() != null)
 			offer.setContractUUID(contracts.getContractUUID());
 			
 			Boolean flag = contractsTemplateService.getVendorMsaCreatedOrNot(offer.getSubmissionId().getVendorLocationId().getId(), orglocation.getId());

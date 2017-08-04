@@ -13,4 +13,4 @@ Setting Property Location
       -DpropertyLocation="file:/home/properties/app.properties"
       -DpropertyLocation="file:/C:\properties\app.properties"(For Windows)
 
-	  test commit
+	  test commit.

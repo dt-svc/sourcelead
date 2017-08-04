@@ -77,7 +77,7 @@
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
 			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
-			   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+			   <li title="Export"  id="hideExportExpenseLink"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
 						   <ul class="ul_padding">
 						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -139,6 +139,18 @@ function getExpensesList(){
 	obj['userId']='${SourceLeadWeb_user.id}';
 	obj['locationCode']='${SourceLeadWeb_orgLocations.locationCode}';
 	var jsonData= JSON.stringify(obj);
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  expensesReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  expensesReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  expensesReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  expensesReqListDate = 'YYYY-DD-MM'; 
+	  }
+	
 	 $.ajax({
 		 type : "POST",
 		  data: jsonData,
@@ -154,8 +166,8 @@ function getExpensesList(){
 					result = result +"<th>Purpose</th>";
 					result = result +"<th>Project</th>";
 					result = result +"<th>Client</th>";
-					result = result +"<th>Start Date</th>";
-					result = result +"<th>End Date</th>";
+					result = result +"<th>Start Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
+					result = result +"<th>End Date<br>(<small class='custom-small'>"+expensesReqListDate+"</small>)</th>";
 					result = result +"<th>No of Items</th>";
 					result = result +"<th>Amount</th>";
 					result = result +"<th>Status</th>";
@@ -226,6 +238,7 @@ function getExpensesList(){
 		        		  $("#temp").val("temp");
 		        	  }else{
 		        		  /* $("#temp").val(''); */
+						  $('#hideExportExpenseLink').hide();
 		        	  }
 	        	 
    			
@@ -550,4 +563,3 @@ function exportToPdf(type){
 	       e.stopPropagation();
 	   });        
 </script> 
-<jsp:include page="../masterFooter.jsp" />

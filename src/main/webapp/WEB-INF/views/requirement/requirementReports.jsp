@@ -54,6 +54,20 @@ function getRequirementList(){
 <script>
 function prepareReportDataDiv(data){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
+	
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  prepareReportDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  prepareReportDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  prepareReportDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  prepareReportDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -66,7 +80,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Owner</th>';
 	result = result + '    <th>Status</th>';
 	result = result + '    <th>No.Of Applicants</th>';
-	result = result + '    <th>Posted On</th>';
+	result = result + '    <th>Posted On <br>(<small class="custom-small">'+prepareReportDate+'</small>)</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -188,13 +202,25 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 </script>
 <script>
 	$(function() {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEduUpdate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEduUpdate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+		  }
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEduUpdate,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportStartDate");
+				//var dt = toDate("#ExportStartDate");/
 				dt.setDate(dt.getDate() + 1);
 				$("#ExportEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
@@ -205,13 +231,13 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 		$('#ExportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEduUpdate,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ExportEndDate");
+				//var dt = toDate("#ExportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ExportStartDate").datepicker("option", "maxDate", dt);
 				addValidClass();

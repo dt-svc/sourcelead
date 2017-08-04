@@ -35,8 +35,6 @@ public class Invoice {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	
-	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
 	private OrgRelations orgRelationID;
@@ -172,6 +170,19 @@ public class Invoice {
 	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
 	private String submissionApproverHierarchyId;
 	
+	@Column(name = "INVOICE_CATEGORY")
+	private String invoiceCategory;
+	
+	@Column(name = "EXPENSES_INVOICES")
+	private String expensesInvoices;
+	
+	@ManyToOne
+    @JoinColumn(name="EXPENSES_ID", nullable=true) 
+	private Expenses expensesId;
+	
+	@ManyToOne
+    @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
+	private ProjectMembers projectMemberId;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
@@ -944,6 +955,38 @@ public class Invoice {
 	public static long getSerialversionuid()
 	{
 		return serialVersionUID;
+	}
+
+	public String getInvoiceCategory() {
+		return invoiceCategory;
+	}
+
+	public void setInvoiceCategory(String invoiceCategory) {
+		this.invoiceCategory = invoiceCategory;
+	}
+
+	public String getExpensesInvoices() {
+		return expensesInvoices;
+	}
+
+	public void setExpensesInvoices(String expensesInvoices) {
+		this.expensesInvoices = expensesInvoices;
+	}
+
+	public Expenses getExpensesId() {
+		return expensesId;
+	}
+
+	public void setExpensesId(Expenses expensesId) {
+		this.expensesId = expensesId;
+	}
+
+	public ProjectMembers getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(ProjectMembers projectMemberId) {
+		this.projectMemberId = projectMemberId;
 	}
 	
 	

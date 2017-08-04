@@ -41,6 +41,7 @@ import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -596,7 +597,7 @@ public class OpenJobsRestController {
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
 		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
-		 requirementDeatilsSummary.setRequirementCreatedDateToString(Constants.DMY.format(requirementDeatilsSummary.getCreatedDate()));
+		 requirementDeatilsSummary.setRequirementCreatedDateToString(LoginSessionController.DATEFORMAT.format(requirementDeatilsSummary.getCreatedDate()));
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
 	 }

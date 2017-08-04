@@ -26,7 +26,7 @@
  </style>
  
       <!-- Modal content Assign Team-->
-           <div role="dialog" id="assignTeam" class="modal fade">
+           <div role="dialog" id="assignTeam" class="modal fade modalAssignTeam">
              <div class="modal-dialog modal-lg">
                <div class="modal-content">
                  <div class="modal-header">
@@ -132,9 +132,12 @@
  
  <script>
  /* function filterStatus() {
-	 $(".export_pipline").toggle();
-	 //$("#exportPop").slideUp();
- }; */
+ $(".export_pipline").toggle();
+ //$("#exportPop").slideUp();
+}; */
+function filterStatus() {
+	$("#exportPop").hide();
+};
  </script>
  
 
@@ -187,7 +190,7 @@ result = result + '<div class="project_tabs mb">';
 	 		result = result +'</li>';
 			} 
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
+		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
 			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
 			result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
@@ -276,7 +279,16 @@ result = result + '<div class="project_tabs mb">';
 	 }else{
 		 values = "Active";
 	 }
-
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  projectempListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  projectempListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  projectempListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  projectempListDate = 'YYYY-DD-MM'; 
+	  }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    	type: "POST",
@@ -296,8 +308,8 @@ result = result + '<div class="project_tabs mb">';
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
 	            result = result + '	 	<th>Emp Role</th>';
-	            result = result + '	     <th>Start Date</th>';
-	            result = result + '	     <th>End Date</th>';
+	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
+	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>Approved hrs</th>';
 	            result = result + '	     <th>Rejected hrs</th>';
 	            result = result + '	     <th>Wait for Approval </th>';
@@ -563,6 +575,18 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 		endDateStr = "";
 	}
 	var searchByName = $("#searchByName").val();
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  teamMembersDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  teamMembersDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  teamMembersDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  teamMembersDate = 'YYYY-DD-MM'; 
+	  }  
+	
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
@@ -577,8 +601,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
             output = output+' <th>Name</th>';
             output = output+' <th>Email</th>';
             output = output+' <th>Role</th>';
-            output = output+' <th>Start Date</th>';
-            output = output+' <th>End Date</th>';
+            output = output+' <th>Start Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
+            output = output+' <th>End Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
             output = output+' </tr>';
             output = output+' </thead>';
             output = output+' <tbody>';
@@ -1152,7 +1176,16 @@ function resourceRequestsTab(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
 	 
-	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  resourceReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  resourceReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  resourceReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  resourceReqListDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
@@ -1177,8 +1210,8 @@ function resourceRequestsTab(){
 	    		result = result + '	             <th>Approver</th>';
 	    		result = result + '	             <th>Req. Resources</th>';
 	    		result = result + '	             <th>Alloted Resources</th>';
-	    		result = result + '	             <th>Estimated Hours</th>';
-	    		result = result + '	             <th>Estimated Budget</th>';
+	    		result = result + '	             <th>Estimated Hours<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
+	    		result = result + '	             <th>Estimated Budget<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Req. On</th>';
 	    		result = result + '	             <th>Req. By</th>';
 	    		result = result + '	             <th>Action</th>';

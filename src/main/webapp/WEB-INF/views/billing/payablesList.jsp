@@ -1095,10 +1095,24 @@ function customDate(){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatPayableDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatPayableDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatPayableDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatPayableDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatPayableDate = 'yy-dd-mm'; 
+	  }
+	  
+	
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatPayableDate,
 		onSelect : function(selected) {
 			var dt = new Date(selected);
 			var dt = toDate("#billingStartDate");
@@ -1112,7 +1126,7 @@ function customDate(){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatPayableDate,
 		beforeShow: function(){
 	           this.value='';
 	     },

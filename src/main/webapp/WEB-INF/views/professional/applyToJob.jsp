@@ -691,7 +691,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 		result = result + '<form id="applyToJob_form" name="applyToJob_form" method="post">';
-		result = result + '<div class="form-horizontal clearfix select-field">';
+		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 		result = result + '<input type="hidden" id="candidateId" name="candidateId" value='+candidateId+'>';
 		if(referId != null && referId != '' && referId != 'undefined'){
@@ -706,7 +706,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-6">';
 		result = result + '<label class="col-md-2 mt10">Resume</label>';
 		result = result + '<div class="panel-border_a col-md-8 mt10" id="resumesDiv">';
-		result = result + '<select id="candidateResumesList" data-validation="required" onchange="getCandidateDetails();" name="candidateResume" field-name="Resume" class="form-control block">';
+		result = result + '<select id="candidateResumesList" data-validation="required" name="candidateResume" field-name="Resume" class="form-control block">';
 		result = result + '</select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -728,7 +728,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		
 		result = result + '</div>';
 		
-		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div></div>';
+		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div><div id="detailsLoading"></div></div>';
 		result = result + '</div>';
 		
 		result = result + '</div>'; 
@@ -768,7 +768,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	else if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
 		
 		result = result + '<form id="submitCandidateToJob_form" name="submitCandidateToJob_form" enctype="multipart/form-data" method="post">';
-		result = result + '<div class="form-horizontal clearfix select-field">';
+		result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 				
 		result = result + '<div class="row">';
@@ -882,10 +882,14 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	$("#applytoJobDiv").append(result);
 	
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-		getResumesList();
+		$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		    setTimeout(function () {
+			getResumesList();
+			getCandidateDetails();
+		    $("#detailsLoading").removeAttr('style');
+ 			}, 3000);
+	
 	}
-	
-	
 
 	   var config = {
 				  '.chosen-select'           : {},
@@ -1310,6 +1314,8 @@ function getResumesList(){
 	 var candidateId = '${candidateId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	
+	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1319,9 +1325,8 @@ function getResumesList(){
 		        	var output = "";
 		        	if(json.length > 1){
 		        		output = output + "<option value=''>-- Select Resume --</option>";
-		        	}else{
-		        		getCandidateDetails();
 		        	}
+		        	
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];

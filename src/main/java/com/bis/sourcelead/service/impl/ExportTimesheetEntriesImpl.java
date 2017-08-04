@@ -769,7 +769,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			
 			StringBuilder StDateAndEndDate = new StringBuilder("");
 			StringBuilder separator = new StringBuilder(",");
-		    DateFormat format = Constants.DF_DMY;
+		    DateFormat format = LoginSessionController.DATEFORMAT;
 		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
 			int flag = 0; 
@@ -877,7 +877,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 
 	private LinkedHashMap<Date, Date> getTotalCountFromStartAndEndDate(Date startDate,Date endDate) throws Exception {
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		DateFormat format = Constants.DF_DMY;
+		DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
@@ -1071,7 +1071,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int flag = 0;
 		StringBuilder StDateAndEndDate = new StringBuilder("");
 		StringBuilder separator = new StringBuilder(",");
-		DateFormat format = Constants.DF_DMY;
+		DateFormat format = LoginSessionController.DATEFORMAT;
 	    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 	Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
 	if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){

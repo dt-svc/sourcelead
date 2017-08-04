@@ -81,14 +81,13 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		
 		 User interviewerUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
 		 Requirement requirement = requirementservice.getRequirementByRequirementId(requirementSubmission.getRequirement().getId());
-		 User requirementCreatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 		 RequirementInterview requirementInterview = requirementInterviewService.getinterviewBySubmissionId(requirementSubmission.getId());
 		 requirementInterview.getCandidateName();
 		 
 		EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(requirementCreatorUser.getFirstName());
-		 emailMessage.setLastName(requirementCreatorUser.getLastName());
-		 emailMessage.setToEmail(requirementCreatorUser.getEmail());
+		 emailMessage.setFirstName(requirement.getCreatedBy().getFirstName());
+		 emailMessage.setLastName(requirement.getCreatedBy().getLastName());
+		 emailMessage.setToEmail(requirement.getCreatedBy().getEmail());
 		 emailMessage.setFromEmail(interviewerUser.getEmail());
 		 emailMessage.setCreatedBy(interviewerUser.getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
@@ -164,7 +163,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,requirementSubmission.getOrgLocations().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
-		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirementCreatorUser, OrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, interviewerUser, requirement.getCreatedBy(), OrgLoc, notificationScenario);
 		}
 
 	@Override
