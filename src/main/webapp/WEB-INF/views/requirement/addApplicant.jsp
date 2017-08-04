@@ -658,7 +658,8 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	    		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	    		pipelineList(requirementId);
+	    		requirementStatusBar(requirementId);
+	    		//pipelineList(requirementId);
 	        },
 	    });  
       return true; 
@@ -1058,7 +1059,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	    		$("body").css('overflow-y', 'auto');
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	    		pipelineList(requirementId);
+	    		requirementStatusBar(requirementId);
+	    		//pipelineList(requirementId);
 	        },
 	    }); 
       return true; 
