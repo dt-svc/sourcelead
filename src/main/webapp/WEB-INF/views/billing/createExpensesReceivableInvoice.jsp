@@ -35,7 +35,9 @@ function checkBox(){
 		$('#projectId').attr('data-validation-optional',"true");
 		$('#projectMemberId').attr('data-validation-optional',"true");
 		$('#expensesId').attr('data-validation-optional',"true");
-		populateExpensesDetailsGrid();
+		$("#invoiceforexpenses").val("N");
+		$("#addbutton").show();
+		populateInlineItemsGrid();
 	}else{
 		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
@@ -43,7 +45,10 @@ function checkBox(){
 		$('#projectId').attr("data-validation","required");
 		$('#projectMemberId').attr("data-validation","required");
 		$('#expensesId').attr("data-validation","required");
-		populateInlineItemsGrid();
+		$("#invoiceforexpenses").val("Y");
+		$("#addbutton").hide();
+		 populateExpensesDetailsGrid("");
+		 
 	}
 }
 
@@ -172,7 +177,7 @@ function checkBox(){
             <div id="tableBody"></div>
             
             <div class="clearfix"></div>
-            <div class="clearfix">
+            <div class="clearfix" id="addbutton">
               <button type="button" class="btn btn-sm btn-primary mr" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
             </div>
         </div>
@@ -377,48 +382,51 @@ function populateExpensesDetailsGrid(data){
             result = result +' </tr>';
             result = result +' </thead>';
             result = result +' <tbody>';
-            for(var i=0;i < data.length;i++){
-            	/* S.no. Date, category, description , amount  */
-            	  var opt = data[i];
-            	  subTotal = opt.subTotal;
-            	  result = result +'   <tr>';
-    		      result = result +'   <td>';
-    		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
-    		      result = result +'   </td>';
-    		      
-    		      result = result +'   <td>';
-    		      result = result +'     <div class="tbldata-dotdot-100">';
-    		      if(opt.date !=null && opt.date != ''){
-    		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+(i+1)+'edate" name="'+(i+1)+'edate" placeholder="S.No">';	  
-    		      }
-    		      result = result +'     </div>';
-    		      result = result +'   </td>';
-    		      result = result +'   <td>';
-    		      result = result +'     <div class="tbldata-dotdot-100">';
-    		      if(opt.category !=null && opt.category != ''){
-    		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+(i+1)+'category" name="'+(i+1)+'category" placeholder="S.No">';	  
-    		      }
-    		      result = result +'     </div>';
-    		      result = result +'   </td>';
-    		      result = result +'   <td>';
-    		      result = result +'     <div class="tbldata-dotdot-100">';
-    		      if(opt.description !=null && opt.description != ''){
-    		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+(i+1)+'description" name="'+(i+1)+'description" placeholder="S.No">';	  
-    		      }
-    		      result = result +'     </div>';
-    		      result = result +'   </td>';
-    		      
-    		      result = result +'   <td>';
-    		      result = result +'     <div class="tbldata-dotdot-100">';
-    		      if(opt.amount !=null && opt.amount != ''){
-    		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+(i+1)+'total" name="'+(i+1)+'total" placeholder="S.No">';	  
-    		      }
-    		      result = result +'     </div>';
-    		      result = result +'   </td>';
-    		      
-    		      result = result +' </tr>';
-    		      
+            if(data !=null && data !=''){
+            	 for(var i=0;i < data.length;i++){
+                 	/* S.no. Date, category, description , amount  */
+                 	  var opt = data[i];
+                 	  subTotal = opt.subTotal;
+                 	  result = result +'   <tr>';
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
+         		      result = result +'   </td>';
+         		      
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.date !=null && opt.date != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+(i+1)+'edate" name="'+(i+1)+'edate" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.category !=null && opt.category != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+(i+1)+'category" name="'+(i+1)+'category" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.description !=null && opt.description != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+(i+1)+'description" name="'+(i+1)+'description" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      
+         		      result = result +'   <td>';
+         		      result = result +'     <div class="tbldata-dotdot-100">';
+         		      if(opt.amount !=null && opt.amount != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+(i+1)+'total" name="'+(i+1)+'total" placeholder="S.No">';	  
+         		      }
+         		      result = result +'     </div>';
+         		      result = result +'   </td>';
+         		      
+         		      result = result +' </tr>';
+         		      
+                 }	
             }
+           
             
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
@@ -438,6 +446,7 @@ function populateExpensesDetailsGrid(data){
       /*   document.getElementById("bottomGrid").style.display="block";
         document.getElementById("bottomGrid").style.display="block"; */
       /*   document.getElementById("lineItemAddRows").style.display="block"; */
+         $("#addbutton").hide();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
@@ -611,6 +620,7 @@ function populateInlineItemsGrid(){
       /*   document.getElementById("bottomGrid").style.display="block";
         document.getElementById("bottomGrid").style.display="block"; */
       /*   document.getElementById("lineItemAddRows").style.display="block"; */
+         $("#addbutton").show();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();

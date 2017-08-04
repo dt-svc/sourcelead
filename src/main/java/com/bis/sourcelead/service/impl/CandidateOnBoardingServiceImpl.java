@@ -346,9 +346,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUser == null){
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
-		}else{
-			onboardingUser.setPassword(sourceleadPasswordEncoder.encode(password));
-			userDao.addUser(onboardingUser);
 		}
 		
 		onboardingUserRole = userRoleDao.getUserDetailsByUserIdAndLocationId(onboardingUser.getId(), orgLocations.getId());
@@ -691,13 +688,13 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(task.getSubject()!= null  && !"".equalsIgnoreCase(task.getSubject())){
+		 if(!isNullOrEmpty(task.getSubject())){
 		 globalVarsMap.put("subject", task.getSubject()); 
 		 }else{
 		 globalVarsMap.put("subject", "--");	 
 		 }
-		 if(task.getPriority()!= null  && !"".equalsIgnoreCase(task.getPriority())){
-		 globalVarsMap.put("priority", task.getPriority()); 
+		 if(!isNullOrEmpty(task.getPriority())){
+		   globalVarsMap.put("priority", task.getPriority()); 
 		 }else{
 		 globalVarsMap.put("priority", "--");	 
 		 }
