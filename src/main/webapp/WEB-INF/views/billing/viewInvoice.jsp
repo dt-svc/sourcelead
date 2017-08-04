@@ -790,9 +790,10 @@ function addNotes() {
 function paymentHistroy(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
+	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
+	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                

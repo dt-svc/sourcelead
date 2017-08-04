@@ -359,10 +359,11 @@
 <script>
 function getClientBasedOnSelectedProject(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId,       
+	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId+"&locationId="+locationId,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);
