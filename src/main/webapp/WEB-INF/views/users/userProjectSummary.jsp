@@ -52,9 +52,9 @@ function prepareAssignedProjectsData(data){
     result = result +"    <th>Approved Hours</th>"; 
     result = result +"    <th>Rejected Hours</th>"; 
     result = result +"    <th>Waiting For Approval</th>"; 
-    result = result +"    <th>Save</th>";
+    result = result +"    <th>Saved Hours</th>";
     result = result +"    <th>Claimed Expense</th>"; 
-    result = result +"	  <th>Status </th>";
+    result = result +"	  <th>Status</th>";
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
@@ -145,7 +145,11 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectStatus != '' && opt.projectStatus != null && opt.projectStatus != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.projectStatus+"'>"+opt.projectStatus+"</span></div>";
+   		if(opt.projectStatus == "CLOSED"){
+	   	result = result +"<div class='tbldata-dotdot_80' title='In-Active'>In-Active</span></div>";
+   		}else{
+   			result = result +"<div class='tbldata-dotdot_80' title='Active'>Active</span></div>";
+   		}
    	}else{
    		result = result +"<div>-----</div>";
    	}

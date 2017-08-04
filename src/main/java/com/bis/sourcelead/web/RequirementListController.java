@@ -153,7 +153,6 @@ public class RequirementListController {
 		return false;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
 	public ModelAndView releaseRequirementToClientOrVendors(String requirementUUID,HttpServletRequest request) throws Exception {
 		
