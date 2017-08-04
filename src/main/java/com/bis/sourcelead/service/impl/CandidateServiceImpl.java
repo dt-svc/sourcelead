@@ -1234,9 +1234,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		if(null != candidatesList && candidatesList.size() >0){
 			for(Candidate can  : candidatesList){
-				
+				if(can.getCreatedBy() != null){
 				User usr = userService.getUserByUserCode(can.getCreatedBy());
+				if(usr.getId() != null){
 				tempOwnersIds.add(usr.getId());
+				}
+				}
 			}
 		}
 		
