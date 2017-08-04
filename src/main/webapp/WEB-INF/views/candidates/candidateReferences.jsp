@@ -77,7 +77,7 @@
 				+ '     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
 		result = result
-				+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+				+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 
 		result = result + '   <div id="candidateReferencesList" ></div>';
 		result = result + '   </div>';
@@ -134,7 +134,7 @@
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
 								result = result
-										+ "  <td><div title='"+opt.name+"'>"
+										+ "  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"
 										+ opt.name + "</div></td>";
 							} else {
 								result = result + "  <td><div>----</div></td>";

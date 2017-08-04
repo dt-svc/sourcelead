@@ -147,8 +147,8 @@ public class RequirementDaoImpl implements RequirementDao {
 			subQuery = " where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
 			params.put("orgLocationId",orgLocationId);
 		}else{
-			String subQuery1 = "requirement.createdBy =:loginUserCode and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
-			params.put("loginUserCode",user.getUserCode());
+			String subQuery1 = "requirement.createdBy.id =:userId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
+			params.put("userId",user.getId());
 			
 			String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
 			params.put("userId",user.getId());
