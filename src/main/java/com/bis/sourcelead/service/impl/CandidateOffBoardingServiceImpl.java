@@ -391,6 +391,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 emailMessage.setFromEmail(task.getTaskOwnerId().getEmail());
 		 emailMessage.setCreatedBy(task.getTaskOwnerId().getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
@@ -406,7 +407,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(LoginSessionController.DATEFORMAT.format(task.getTaskDate()));
+		 task.setTaskDateStr(simpleDateFormat.format(task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

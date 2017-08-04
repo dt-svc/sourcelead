@@ -138,9 +138,11 @@ public class TimesheetController {
 		
 		    User superUser = userService.getUserById(userId);
 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMemberId);
-		    
+		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		    SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		    ModelAndView model = new ModelAndView();
-			DateFormat format = LoginSessionController.DATEFORMAT;
+			DateFormat format = simpleDateFormat;
 			if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();

@@ -1058,11 +1058,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 
-		 
-		 projects.setStartDateStr(LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
+		 projects.setStartDateStr(simpleDateFormat.format(projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(LoginSessionController.DATEFORMAT.format(changedEndDate));
+		    	 projects.setEndDateStr(simpleDateFormat.format(changedEndDate));
 		    }
 			
 		    
@@ -1121,7 +1121,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-
+	 	SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
@@ -1365,9 +1365,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
-	    	    projects.setStartDateStr(LoginSessionController.DATEFORMAT.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(simpleDateFormat.format(projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(LoginSessionController.DATEFORMAT.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(simpleDateFormat.format(projects.getEndDate()));
 			    }
 				
 			    

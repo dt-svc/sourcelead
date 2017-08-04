@@ -2253,8 +2253,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
-		 String date = (LoginSessionController.DATEFORMAT.format(invoice.getDueDate()));
+		 SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+		 String date = (simpleDateFormat.format(invoice.getDueDate()));
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
