@@ -169,11 +169,12 @@ public class AddExpensesRestController {
 		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    
 		    String isSuperUser = Constants.NO;
+		    SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
 		    	isSuperUser = Constants.YES;
 		    }
 		    
-			DateFormat format = LoginSessionController.DATEFORMAT;
+			DateFormat format = simpleDateFormat;
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
