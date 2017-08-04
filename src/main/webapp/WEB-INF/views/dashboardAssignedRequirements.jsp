@@ -14,7 +14,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->

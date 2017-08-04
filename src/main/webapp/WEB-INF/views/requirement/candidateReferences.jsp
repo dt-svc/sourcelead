@@ -4,12 +4,6 @@
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
