@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -87,6 +88,9 @@ public class RequirementInterviewRestController {
 	 
 	 @Autowired
 	 ProposeTimeService  proposeTimeService;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService; 
 	 
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
@@ -329,12 +333,14 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getProposeTime" , method = RequestMethod.POST)
-	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception {
 		 String resultJson = null;
 		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 for(ProposeTime pst:proposeTimeList){
 			if(null != pst.getProposeDate()){
-				pst.setProposeDateStr(LoginSessionController.DATEFORMAT.format(pst.getProposeDate()));	
+				pst.setProposeDateStr(simpleDateFormat.format(pst.getProposeDate()));	
 				pst.setProposeTime(pst.getProposeTime());
 			}
 		 }

@@ -2011,17 +2011,18 @@ public class CandidateOnBoardRestController {
 		 
 		 
 		 @RequestMapping(value = "/viewCandidateOnboardTasksByOnboardingUUID" , method = RequestMethod.GET)
-		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,@RequestParam(value="locationId", required=false) Long locationId,
 				 HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 
 			 
 			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
-			 
+			 OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			 List<Tasks> tasksList = taskService.getTasksListOnboardingId(onboarding.getId());
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(simpleDateFormat.format(tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){
