@@ -2656,9 +2656,10 @@ function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
 	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";
