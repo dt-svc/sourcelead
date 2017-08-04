@@ -3932,7 +3932,7 @@ function documentpaginationBackout(){
     $("#requirementsPaginationBackout").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
-<div class='project_inn_mask'></div>
+<div class='project_inn_mask projectMask-zindex'></div>
 <div id="popUp"></div>
 <div id="customizePopUp"></div>
 <script>
@@ -6152,7 +6152,6 @@ function cancelCustomize(){
 
 <script type="text/javascript">
 function loadFile(event,candidateId){
-	
 		var output = document.getElementById('userImage');
 	    var uploadedImage = document.getElementById('uploadedImage').value;
 	    var sizeinbytes = document.getElementById('uploadedImage').files[0].size;
@@ -6250,7 +6249,7 @@ function refreshImageBlock(candidateId){
 <script type="text/javascript">
 function deleteImage(candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";

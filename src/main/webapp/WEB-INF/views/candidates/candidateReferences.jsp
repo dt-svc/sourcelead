@@ -134,7 +134,7 @@
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
 								result = result
-										+ "  <td><div title='"+opt.name+"'>"
+										+ "  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"
 										+ opt.name + "</div></td>";
 							} else {
 								result = result + "  <td><div>----</div></td>";
