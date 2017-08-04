@@ -4,12 +4,17 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
 }
 .fullWid {width: 100% !important;}
 </style>
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<!-- end files for autocomplete with tagit -->
 
 <!-- Content Area -->
  <section class="content-wraper">

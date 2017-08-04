@@ -573,6 +573,18 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 		endDateStr = "";
 	}
 	var searchByName = $("#searchByName").val();
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  teamMembersDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  teamMembersDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  teamMembersDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  teamMembersDate = 'YYYY-DD-MM'; 
+	  }  
+	
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
@@ -587,8 +599,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
             output = output+' <th>Name</th>';
             output = output+' <th>Email</th>';
             output = output+' <th>Role</th>';
-            output = output+' <th>Start Date</th>';
-            output = output+' <th>End Date</th>';
+            output = output+' <th>Start Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
+            output = output+' <th>End Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
             output = output+' </tr>';
             output = output+' </thead>';
             output = output+' <tbody>';

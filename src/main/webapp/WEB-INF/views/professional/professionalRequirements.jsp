@@ -98,6 +98,16 @@ window.onload = function () {
 			getSubmissionDetailsSideBar('${publicRequirementTitle}','${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
 		}else{
 			applyToJob('${publicRequirementTitle}','${publicRequirementId}','${publicReferId}');
+			
+			var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+			
+			if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+				selectRequirementType('OpenJobs');
+			}else{
+				selectRequirementType('CrowdSourcingJobs');
+			}
+			
+			
 		}
 	}else{
 		requirementsList(0);

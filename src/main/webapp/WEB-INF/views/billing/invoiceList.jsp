@@ -593,7 +593,7 @@ function getInvoiceList(){
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 					'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>';				
 					'</sec:authorize>' ;
 				}
 				result = result +'         </td>  ';
@@ -1091,9 +1091,10 @@ function customDate(){
 		changeYear: true, 
 		dateFormat : finalDateFormatClientInvoiceDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+			//var dt = new Date(selected);
+			//var dt = toDate("#billingStartDate");
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -1108,9 +1109,10 @@ function customDate(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+// 			var dt = new Date(selected);
+// 			var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}

@@ -107,6 +107,16 @@ function getViewInvoice(){
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
 	  var currencyCode = '${SourceLeadWeb_currencyCode}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  viewInvoiceDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  viewInvoiceDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  viewInvoiceDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  viewInvoiceDate = 'YYYY-DD-MM'; 
+		  }
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
@@ -778,9 +788,10 @@ function addNotes() {
 function paymentHistroy(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
+	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
+	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                

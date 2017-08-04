@@ -566,9 +566,9 @@ public class TimesheetRestController {
 		
 		String exportPdf = "pdf";
 		String exportExcel = "excel";
-		timesheetEntriesDiv.append("					<div class='export' onClick='dropDownExport();'> ");
-		timesheetEntriesDiv.append("						<p><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
-		timesheetEntriesDiv.append("							<ul id='exporrtEntries'> ");
+		timesheetEntriesDiv.append("					<div class='export dropdown'> ");
+		timesheetEntriesDiv.append("						<p class='dropdown-toggle' data-toggle='dropdown'><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
+		timesheetEntriesDiv.append("							<ul id='exporrtEntries' class='dropdown-menu dropdown-menu-right'> ");
 		timesheetEntriesDiv.append("			                	<li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportPdf+"\",\""+submissionStatus+"\");'><i class='fa fa-file-pdf-o text-danger'></i>&nbsp;PDF</li> ");
 		timesheetEntriesDiv.append("			                    <li onClick='timesheetEntriesExport(\""+weekStartDate+"\",\""+weekEndDate+"\","+projectMemberId+",\""+exportExcel+"\",\""+submissionStatus+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;Excel</li> ");
 		timesheetEntriesDiv.append("			                    <li class='hidden'>Word<i class='fa fa-file-word-o'></i></li> ");

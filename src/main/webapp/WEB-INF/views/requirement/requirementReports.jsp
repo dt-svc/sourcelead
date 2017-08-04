@@ -32,6 +32,20 @@ function getRequirementList(){
 <script>
 function prepareReportDataDiv(data){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
+	
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  prepareReportDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  prepareReportDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  prepareReportDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  prepareReportDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -44,7 +58,7 @@ function prepareReportDataDiv(data){
 	result = result + '    <th>Owner</th>';
 	result = result + '    <th>Status</th>';
 	result = result + '    <th>No.Of Applicants</th>';
-	result = result + '    <th>Posted On</th>';
+	result = result + '    <th>Posted On <br>(<small class="custom-small">'+prepareReportDate+'</small>)</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';

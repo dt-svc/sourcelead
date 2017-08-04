@@ -222,6 +222,18 @@ function getRequestedAssociateListDiv(){
 	
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqAssociateDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqAssociateDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqAssociateDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqAssociateDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	 var result = '';
 	 
 	 
@@ -235,8 +247,8 @@ function getRequestedAssociateListDiv(){
 	 result = result +'<th>Name</th>';
 	 result = result +'<th>Pay Rate</th>';
 	 result = result +'<th>Bill Rate</th>';
-	 result = result +'<th>Start Date</th>';
-	 result = result +'<th>End Date</th>';
+	 result = result +'<th>Start Date <br>(<small class="custom-small">'+reqAssociateDate+'</small>)</th>';
+	 result = result +'<th>End Date <br>(<small class="custom-small">'+reqAssociateDate+'</small>)</th>';
 	 result = result +'<th>Consulting</th>';
 	 result = result +'<th>Est Hours</th>';
 	 result = result +'<th>Est Budget</th>';
@@ -1293,14 +1305,14 @@ function toDate(selector) {
 function getEstimatedHours(rowId){
 	var startDate = document.getElementById(rowId+"sdate-input").value;
 	var endDate = document.getElementById(rowId+"edate-input").value;
-	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours, 
+		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
 		        success: function(estimatedHours) {
 		        	
 		        	$('#'+rowId+'estHours').val(estimatedHours);

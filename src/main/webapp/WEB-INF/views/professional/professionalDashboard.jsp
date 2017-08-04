@@ -676,7 +676,8 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#dptodate").datepicker("option", "minDate", dt);
 			}
@@ -688,7 +689,8 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	   onSelect : function(selected) {
-			var dt = new Date(selected);
+			//var dt = new Date(selected);
+			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#dpfromdate").datepicker("option", "maxDate", dt);
 	  	}
@@ -701,7 +703,8 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
 				$("#portlettodate").datepicker("option", "minDate", dt);
 			}
@@ -713,7 +716,8 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
-				var dt = new Date(selected);
+				//var dt = new Date(selected);
+				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
 				$("#portletfromdate").datepicker("option", "maxDate", dt);
 		  	}
