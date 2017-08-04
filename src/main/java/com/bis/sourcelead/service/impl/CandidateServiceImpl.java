@@ -530,7 +530,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setSystemGeneratedId(Constants.CANDIDATE_ENTITY);
 		candidate.setGeneratedId(sb.append(candidate.getSystemGeneratedId()).append(entityGenId).toString());*/
 		
-		candidate.setGeneratedId(getCandidateId(orgLocations));
+		/*candidate.setGeneratedId(getCandidateId(orgLocations));*/
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
