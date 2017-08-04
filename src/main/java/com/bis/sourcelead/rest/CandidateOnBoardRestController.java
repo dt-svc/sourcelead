@@ -1856,7 +1856,7 @@ public class CandidateOnBoardRestController {
 			
 			List<RequirementSubmission> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
 			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
-			
+			SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 			if(null != submissionList && submissionList.size() > 0){
 				
 				for(RequirementSubmission submission : submissionList){
@@ -1873,7 +1873,7 @@ public class CandidateOnBoardRestController {
 					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
 					
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
-					submission.setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
+					submission.setOfferJoinDate(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
@@ -2011,17 +2011,18 @@ public class CandidateOnBoardRestController {
 		 
 		 
 		 @RequestMapping(value = "/viewCandidateOnboardTasksByOnboardingUUID" , method = RequestMethod.GET)
-		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,@RequestParam(value="locationId", required=false) Long locationId,
 				 HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 
 			 
 			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
-			 
+			 OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			 List<Tasks> tasksList = taskService.getTasksListOnboardingId(onboarding.getId());
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(simpleDateFormat.format(tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){

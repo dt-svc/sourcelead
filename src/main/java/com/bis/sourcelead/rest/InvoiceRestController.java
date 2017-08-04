@@ -369,6 +369,7 @@ public class InvoiceRestController {
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		Date endDateUTC = null;
 		Date startDateUTC = null;
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
@@ -401,8 +402,8 @@ public class InvoiceRestController {
 			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = LoginSessionController.DATEFORMAT.parse(customStartDate);
-				Date endTime = LoginSessionController.DATEFORMAT.parse(customEndDate);
+				Date startTime = simpleDateFormat.parse(customStartDate);
+				Date endTime = simpleDateFormat.parse(customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -477,8 +478,8 @@ public class InvoiceRestController {
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
-					String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
-					Date invoiceDueDate = LoginSessionController.DATEFORMAT.parse(dueDate);
+					String dueDate = simpleDateFormat.format(invoice.getDueDate());
+					Date invoiceDueDate = simpleDateFormat.parse(dueDate);
 					
 					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
 					

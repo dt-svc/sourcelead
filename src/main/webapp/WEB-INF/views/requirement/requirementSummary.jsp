@@ -5043,7 +5043,7 @@ function getRateListDiv(submissionId, candidateId){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
+         url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	 var json = JSON.parse(data);
