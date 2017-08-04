@@ -806,7 +806,7 @@ public class Constants {
 	public static final String CANDIDATE_ADDED_FROM_JOB = "has added candidate through ";
 	
 	public static final String EXPENSES = "expenses";
-	public static final String VIEW_TYPE = "LISTVIEW";
+	public static final String VIEW_TYPE = "LISTVIEW"; 
 	
 
 }
