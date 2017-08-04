@@ -207,8 +207,17 @@ function preventTabkey(e){
 		function logoutFormSubmit() {
 			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 			var userSessionId = '${userLoginSession.id}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId;
-			//document.getElementById("logoutForm").submit();
+			var userLoginSession = '${userLoginSession.logoutTime}';
+			if(userLoginSession == null || userLoginSession == '')
+				{
+				alert("test");
+				window.location.href = sourceleadUrl+"/login";
+				}
+			else
+				{
+				alert("hello");
+				window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId;
+				}
 		}
 </script>
 

@@ -33,6 +33,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -85,6 +87,9 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private AddExpensesService addExpensesService;
+	
+	@Autowired
+	ExpensesService expensesService;
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
@@ -148,11 +153,20 @@ public class AddExpensesRestController {
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+				User superUser = userService.getUserById(reOpenedUserId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 			  	
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+				User superUser = userService.getUserById(reOpenedUserId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
+
 			}
 		
 	}
