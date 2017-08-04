@@ -477,8 +477,7 @@ public class InvoiceRestController {
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
-					String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
-					Date invoiceDueDate = LoginSessionController.DATEFORMAT.parse(dueDate);
+					Date invoiceDueDate = invoice.getDueDate();
 					
 					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
 					
