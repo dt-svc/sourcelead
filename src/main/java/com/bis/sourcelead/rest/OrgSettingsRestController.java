@@ -102,7 +102,7 @@ public class OrgSettingsRestController {
 		try {
 			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
-			LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
+			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
@@ -428,6 +428,7 @@ public class OrgSettingsRestController {
 		String resultJson = null;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (null != orgLocations && null != orgLocations.getUser()) {
 			StringBuilder userName = new StringBuilder();
 			if (!isNullOrEmpty(orgLocations.getUser().getLastName())) {
@@ -442,7 +443,7 @@ public class OrgSettingsRestController {
 			orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
 			orgLocations.setOrgCode(org.getOrgCode());
 			orgLocations.setTimeZoneName(orgLocations.getTimezone().getTimeZoneId());
-			orgLocations.setCreatedDateStr(LoginSessionController.DATEFORMAT.format(orgLocations.getCreatedDate()));
+			orgLocations.setCreatedDateStr(simpleDateFormat.format(orgLocations.getCreatedDate()));
 			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocations.getId());
 			if (null != userRole) {
 				orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());

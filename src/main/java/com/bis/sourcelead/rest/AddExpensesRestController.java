@@ -169,11 +169,12 @@ public class AddExpensesRestController {
 		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    
 		    String isSuperUser = Constants.NO;
+		    SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
 		    	isSuperUser = Constants.YES;
 		    }
 		    
-			DateFormat format = LoginSessionController.DATEFORMAT;
+			DateFormat format = simpleDateFormat;
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
@@ -380,7 +381,7 @@ public class AddExpensesRestController {
 				 StringBuilder acceptBuilder=new StringBuilder();
 			     StringBuilder rejectBuilder=new StringBuilder();
 			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=reject&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			
 				 
 //				 StringBuilder loginURLSB = new StringBuilder();
