@@ -1856,7 +1856,7 @@ public class CandidateOnBoardRestController {
 			
 			List<RequirementSubmission> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
 			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
-			
+			SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 			if(null != submissionList && submissionList.size() > 0){
 				
 				for(RequirementSubmission submission : submissionList){
@@ -1873,7 +1873,7 @@ public class CandidateOnBoardRestController {
 					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
 					
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
-					submission.setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
+					submission.setOfferJoinDate(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
