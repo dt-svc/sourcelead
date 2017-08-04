@@ -656,10 +656,12 @@ public class InvoiceRestController {
 	 	  return resultJson;
 	 	}
 	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
-	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,@RequestParam(value = "locationId", required = false) Long locationId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
 	     	Long Id = null;
+	     	OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+	     	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 	     	Invoice invoiceId =  invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 	     	Invoice invoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 	     	if(invoice.getParentInvoiceId() != null){
@@ -670,7 +672,7 @@ public class InvoiceRestController {
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
-	     		ip.setPaymentDateStr(LoginSessionController.DATEFORMAT.format(ip.getPaymentDate()));
+	     		ip.setPaymentDateStr(simpleDateFormat.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
@@ -1743,17 +1745,19 @@ public class InvoiceRestController {
 	}
 	
 	@RequestMapping(value = "/getTotalHosursForBilling", method = RequestMethod.GET)
-	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
-			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
 			try {
-				Date requestStartDate =  formatter.parse(startDate);
+				Date requestStartDate =  simpleDateFormat.parse(startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  formatter.parse(endDate);
+				Date requestEndDate =  simpleDateFormat.parse(endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
@@ -1779,17 +1783,19 @@ public class InvoiceRestController {
 		} 
 	
 	@RequestMapping(value = "/getTotalHosursForPayable", method = RequestMethod.GET)
-	public @ResponseBody String getTotalHosursForPayable(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+	public @ResponseBody String getTotalHosursForPayable(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
-			DateFormat formatter = LoginSessionController.DATEFORMAT;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
 			try {
-				Date requestStartDate =  formatter.parse(startDate);
+				Date requestStartDate =  simpleDateFormat.parse(startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  formatter.parse(endDate);
+				Date requestEndDate =  simpleDateFormat.parse(endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				

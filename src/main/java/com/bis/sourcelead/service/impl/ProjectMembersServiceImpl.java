@@ -41,6 +41,7 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -86,6 +87,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 private EmployeesService employeesService;
+	 
+	 @Autowired
+	 OrgLocationService orgLocationService;
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -363,10 +367,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 
 		HashSet<ProjectMembers> projectMemberList = new HashSet<ProjectMembers>();
 		String teamMembersList = "";
-		
+		OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+		SimpleDateFormat simpleDateFormat=locations.getLocFullFormDateFormatter();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+//        SimpleDateFormat format = new SimpleDateFormat(pattern);
 		if (jsonObj.has("employeeMaxCount")){
 			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 			if(!jsonObj.getString("employeeMaxCount").isEmpty()){
@@ -385,23 +390,23 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								pmh.setProjectMemberId(pm);
 								pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 					            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
-					            	 Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
+					            	 Date currentStartDate = simpleDateFormat.parse(jsonObj.getString("employeestartDate"+c));
 					            	 pmh.setProjectAssignedDate(currentStartDate);
 					            }else{
 					            	
 					            	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-					            		Date startDate = format.parse(jsonObj.getString("StartDate"));
+					            		Date startDate = simpleDateFormat.parse(jsonObj.getString("StartDate"));
 					            		pmh.setProjectAssignedDate(startDate);
 					            	}
 					            }
 					            
 					            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
-					            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
+					            	Date currentEndDate = simpleDateFormat.parse(jsonObj.getString("employeeendDate"+c));
 					            	pmh.setProjectTerminationDate(currentEndDate);
 					            }
 					            else{
 					            	 if(!jsonObj.getString("EndDate").isEmpty()){
-						            		Date endDate = format.parse(jsonObj.getString("EndDate"));
+						            		Date endDate = simpleDateFormat.parse(jsonObj.getString("EndDate"));
 						            		pmh.setProjectTerminationDate(endDate);
 						             }
 						    	}
