@@ -102,7 +102,9 @@ public class AddExpensesRestController {
 	private PdfConversionUtil pdfConversionUtil;
 	
 	@RequestMapping(value = "/getClientByProjectMemberId", method = RequestMethod.GET)
-	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId) throws Exception {
+	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
+		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(locationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != projectMemberId && !"".equalsIgnoreCase(projectMemberId)){
 			ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
 			if(null != projectMembers.getProjects()){
@@ -117,9 +119,9 @@ public class AddExpensesRestController {
 					 }
 
 					}
-					 project.setStartDateStr(LoginSessionController.DATEFORMAT.format(project.getStartDate()));
+					 project.setStartDateStr(simpleDateFormat.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(LoginSessionController.DATEFORMAT.format(project.getEndDate()));
+					 project.setEndDateStr(simpleDateFormat.format(project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
