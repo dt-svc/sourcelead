@@ -2632,7 +2632,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 
 		int maxRowCount = Integer.parseInt(jsonObj.getString("invoiceExpMaxRowNumber"));
-		for (int i = 1; i < maxRowCount; i++) {
+		for (int i =0; i < maxRowCount; i++) {
 			// expensesDate invoice; orgLocation; description; quantity; total;
 			// status;
 			if (jsonObj.has(i + "description")) {
