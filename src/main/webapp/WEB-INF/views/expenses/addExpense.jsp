@@ -112,7 +112,7 @@
 <div class="form-group col-md-6 mt5 mb5 noPad">
 <span class="col-md-6 noPad">Expenses Amount Total:</span>
 <div class="col-md-6">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmontRoundOffValue > 0 ? expenses.totalAmontRoundOffValue : '00.00' }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
