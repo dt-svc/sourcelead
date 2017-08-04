@@ -1443,10 +1443,10 @@ public class RequirementListRestController {
 							}
 						}
 						if (requirementSubmission.getCreatedDate() != null) {
-							requirementSubmission.setCreatedDateStr(Constants.DF_YMD.format(requirementSubmission.getCreatedDate()));
+							requirementSubmission.setCreatedDateStr(simpleDateFormat.format(requirementSubmission.getCreatedDate()));
 						}
 						if (requirementSubmission.getUpdatedDate() != null) {
-							requirementSubmission.setUpDatedStr(Constants.DF_YMD.format(requirementSubmission.getUpdatedDate()));
+							requirementSubmission.setUpDatedStr(simpleDateFormat.format(requirementSubmission.getUpdatedDate()));
 						}
 						User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 						StringBuilder canNameSB = new StringBuilder();

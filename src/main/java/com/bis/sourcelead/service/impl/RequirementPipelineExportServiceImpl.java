@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -43,6 +44,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 	@Autowired
 	PdfUtilPipelineHelper pdfUtilPipelineHelper;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 
 	/**
 	 * @author Shiva and Rakshith
@@ -56,9 +60,13 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			
+			SimpleDateFormat  simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+					
+			
 			StringBuilder excelStringBuilder=new StringBuilder();
-			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(dateFormat.format(new Date())).toString());
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(simpleDateFormat.format(new Date())).toString());
 			Row writeRow = null;
 			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
 				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
@@ -125,7 +133,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 			StringBuilder tempFileBuilder=new StringBuilder();
-			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".xls");
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(simpleDateFormat.format(new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -143,6 +151,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub,
 			String submissionType,OrgLocations loginOrgLocation) {
+		
+		
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -157,8 +167,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null) {
-			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = date.format(requirementsub.getCreatedDate());
+			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())) {
@@ -272,9 +283,16 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @param writeRow
 	 * @param requirementsub
 	 * @return
+	 * @throws Exception 
 	 * @description: this is for rejected pipeline requirement.
 	 */
-	private Sheet createXlsSheetRejected(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) {
+	private Sheet createXlsSheetRejected(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) throws Exception {
+		
+		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
+		
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		
+		 
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -289,8 +307,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null) {
-			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = date.format(requirementsub.getCreatedDate());
+			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
@@ -472,11 +490,16 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @param writeRow
 	 * @param requirementsub
 	 * @return
+	 * @throws Exception 
 	 * @description: for short listed candidates
 	 */
 	private Sheet createXlsSheetShortListed(Sheet createExcelsheet, Row writeRow,
-			RequirementSubmission requirementsub) {
+			RequirementSubmission requirementsub) throws Exception {
 
+		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
+		
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -491,8 +514,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null	&& !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())) {
-			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = date.format(requirementsub.getCreatedDate());
+			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
@@ -632,9 +655,15 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @param requirementsub
 	 * @param submissionType 
 	 * @return
+	 * @throws Exception 
 	 * @description: for applied candidates(All candidates)
 	 */
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub, String submissionType) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub, String submissionType) throws Exception {
+		
+		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
+		
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -649,8 +678,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
 		}
 		if (requirementsub.getCreatedDate() != null) {
-			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = date.format(requirementsub.getCreatedDate());
+			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
