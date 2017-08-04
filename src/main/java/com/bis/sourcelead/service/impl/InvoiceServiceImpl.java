@@ -1896,6 +1896,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
 			String endDate = outputFormatter1.print(zoned);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
@@ -1928,8 +1929,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					&& !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = LoginSessionController.DATEFORMAT.parse(customStartDate);
-				Date endTime = LoginSessionController.DATEFORMAT.parse(customEndDate);
+				Date startTime = simpleDateFormat.parse(customStartDate);
+				Date endTime = simpleDateFormat.parse(customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1966,10 +1967,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       					}
       				}
       				if (null != invoice.getInvoiceDate()) {
-      					invoice.setInvoiceDateStr(LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate()));
+      					invoice.setInvoiceDateStr(simpleDateFormat.format(invoice.getInvoiceDate()));
       				}
       				if (null != invoice.getDueDate()) {
-      					invoice.setDueDateStr(LoginSessionController.DATEFORMAT.format(invoice.getDueDate()));
+      					invoice.setDueDateStr(simpleDateFormat.format(invoice.getDueDate()));
       				}
       				invoice.setTotal(invoice.getTotal());
       				invoice.setInvoiceStatus(invoice.getInvoiceStatus());

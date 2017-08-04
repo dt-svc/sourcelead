@@ -1412,6 +1412,7 @@ public class CandidateListRestController {
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
+				 SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
 					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -1454,8 +1455,8 @@ public class CandidateListRestController {
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
-								Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
+								Date startTime =  simpleDateFormat.parse(customStartDate);
+								Date endTime =  simpleDateFormat.parse(customEndDate);
 								String customStartTimeStr = null;
 								String customEndTimeStr = null;
 								if(null !=startTime){
@@ -1498,7 +1499,7 @@ public class CandidateListRestController {
 						}
 						
 						if(null != candidate.getUpdatedDate()){
-							candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
+							candidate.setCandidateUpdateDateToString(simpleDateFormat.format(candidate.getUpdatedDate()));
 						}
 						 
 						freshList.add(candidate);
