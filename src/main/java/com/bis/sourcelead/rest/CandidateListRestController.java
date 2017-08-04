@@ -195,9 +195,9 @@ public class CandidateListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"","generatedId", "firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
+		String[] tableColumns = {"", "firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
 		
-		int sortColumnIndex = 8; //by default sorting using updated date
+		int sortColumnIndex = 7; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
@@ -1412,6 +1412,7 @@ public class CandidateListRestController {
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
+				 SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
 					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -1454,8 +1455,8 @@ public class CandidateListRestController {
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
-								Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
+								Date startTime =  simpleDateFormat.parse(customStartDate);
+								Date endTime =  simpleDateFormat.parse(customEndDate);
 								String customStartTimeStr = null;
 								String customEndTimeStr = null;
 								if(null !=startTime){
@@ -1498,7 +1499,7 @@ public class CandidateListRestController {
 						}
 						
 						if(null != candidate.getUpdatedDate()){
-							candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
+							candidate.setCandidateUpdateDateToString(simpleDateFormat.format(candidate.getUpdatedDate()));
 						}
 						 
 						freshList.add(candidate);

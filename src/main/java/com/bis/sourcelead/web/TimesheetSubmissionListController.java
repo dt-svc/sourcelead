@@ -118,7 +118,8 @@ public class TimesheetSubmissionListController {
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    DateFormat format = LoginSessionController.DATEFORMAT;
+		    SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
+		    DateFormat format = simpleDateFormat;
 		    
 		    List<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
 		    StringBuilder sb = new StringBuilder();	
@@ -162,7 +163,7 @@ public class TimesheetSubmissionListController {
 							}
 							
 				    	  ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
-						 sb.append("<tr id='row").append(projectMember.getId()).append(LoginSessionController.DATEFORMAT.format(actualStartDate)).append("To").append(LoginSessionController.DATEFORMAT.format(actualEndDate)).append("'>");
+						 sb.append("<tr id='row").append(projectMember.getId()).append(simpleDateFormat.format(actualStartDate)).append("To").append(simpleDateFormat.format(actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
 						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
@@ -177,7 +178,7 @@ public class TimesheetSubmissionListController {
 					     sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName() : "--")).append("</div></td>");
 					     sb.append("	<td><div>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
 					     sb.append("<td><div id='datefrequency"+projectMember.getId()+"'>");
-				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+LoginSessionController.DATEFORMAT.format(actualStartDate)+" To "+LoginSessionController.DATEFORMAT.format(actualEndDate)+"</span>");
+				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+simpleDateFormat.format(actualStartDate)+" To "+simpleDateFormat.format(actualEndDate)+"</span>");
 				         sb.append("    </div>");
 				     	 sb.append("    </td>");
 					     Float totalHours = 0f;
