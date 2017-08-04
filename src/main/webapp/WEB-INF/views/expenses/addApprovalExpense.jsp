@@ -429,9 +429,8 @@ function getMembersForSelectedProject(){
 				return false;
 			}
 			else{
-				$("#submitForApprovalExpensesId").prop('disabled', true);
-				$("#cancelForApprovalExpensesId").prop('disabled', true);
-				
+				//$("#submitForApprovalExpensesId").prop('disabled', true);
+				//$("#cancelForApprovalExpensesId").prop('disabled', true);
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];
