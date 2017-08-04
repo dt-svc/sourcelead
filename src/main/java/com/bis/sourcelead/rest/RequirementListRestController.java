@@ -437,7 +437,7 @@ public class RequirementListRestController {
 			Boolean isLoginUserAsApprover = false;
 			
 			
-			if(requirement.getApproverHierarchy().equalsIgnoreCase(Constants.YES)){
+			if(requirement.getApproverHierarchy() != null  && requirement.getApproverHierarchy().equalsIgnoreCase(Constants.YES)){
 				
 				List<RequirementApproverHierarchy> list = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementId));
 				if (list != null && list.size() > 0) {
