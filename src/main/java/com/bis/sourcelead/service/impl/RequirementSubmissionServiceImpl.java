@@ -247,7 +247,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
-		 
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
@@ -582,7 +582,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 				try {
-					   templateFields.setDateOfBirth(LoginSessionController.DATEFORMAT.parse(jsonObj.getString("DOB")));
+					   templateFields.setDateOfBirth(simpleDateFormat.parse(jsonObj.getString("DOB")));
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}
@@ -3348,7 +3348,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
-		 
+		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
@@ -3596,7 +3596,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 				try {
-					   templateFields.setDateOfBirth(LoginSessionController.DATEFORMAT.parse(jsonObj.getString("DOB")));
+					   templateFields.setDateOfBirth(simpleDateFormat.parse(jsonObj.getString("DOB")));
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}

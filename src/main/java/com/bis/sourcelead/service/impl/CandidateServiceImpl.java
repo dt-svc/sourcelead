@@ -17,7 +17,6 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,13 +47,10 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -68,6 +64,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -110,6 +107,9 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	CandidateEmployersService candidateEmployersService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
 	CandidateDocumentsService candidateDocumentsService;
@@ -638,9 +638,11 @@ public class CandidateServiceImpl implements CandidateService {
 	@Override
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception {
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
-			 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
+			 can.setCandidateUpdateDateToString(simpleDateFormat.format(can.getUpdatedDate()));
 			}
 		}
 		return candidateList;
@@ -1176,9 +1178,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
 			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			for(Candidate can :candidateList){
 				if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(simpleDateFormat.format(can.getUpdatedDate()));
 				}
 				User user  = userService.getUserByUserCode(can.getCreatedBy());
 				if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
@@ -1202,9 +1206,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
 			Date startDateUTC, Date endDateUTC,String ownersList) throws Exception {
 		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can : candidateReportsList){
 			if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(simpleDateFormat.format(can.getUpdatedDate()));
 				}
 			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
 			 can.setCandidateRequiementCount(requirementSubmissionCount);
@@ -1359,11 +1365,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
 	{
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (Candidate candidate : candidateList) {
 			StringBuilder sb = new StringBuilder();
 			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 			candidate.setEmail(candidate.getEmail());
-			candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
+			candidate.setCandidateUpdateDateToString(simpleDateFormat.format(candidate.getUpdatedDate()));
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());

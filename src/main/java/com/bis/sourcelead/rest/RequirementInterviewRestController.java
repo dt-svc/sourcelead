@@ -471,12 +471,12 @@ public class RequirementInterviewRestController {
 			if(loginOrgLocations.getTimezone() != null){
 				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 			}
-			
+			SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			Date startUTCDate = null;
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  LoginSessionController.DATEFORMAT.parse(date);
+			Date startTime =  simpleDateFormat.parse(date);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);
