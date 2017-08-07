@@ -177,7 +177,7 @@ public class ProjectPlanningRestController {
 			
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
 
-			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 
 			int estimatedHours = 0;
 			

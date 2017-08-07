@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +54,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class AddExpensesRestController {
@@ -185,12 +182,12 @@ public class AddExpensesRestController {
 		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    
 		    String isSuperUser = Constants.NO;
-		    SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
+		   // SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
 		    	isSuperUser = Constants.YES;
 		    }
 		    
-			DateFormat format = simpleDateFormat;
+			//DateFormat format = simpleDateFormat;
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);

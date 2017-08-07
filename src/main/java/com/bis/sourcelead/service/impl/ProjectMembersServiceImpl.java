@@ -692,16 +692,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
 		
 		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
-		SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
 		for (ProjectMembers projectMember : projectMembersList) {
 			try {
 				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(projectMember.getId());
 				projectMember.setProjectName(projectMember.getProjects().getProjectName());
 				if (pmh.getProjectAssignedDate() != null) {
-					projectMember.setProjectAssignedDateStr(simpleDateFormat.format(pmh.getProjectAssignedDate()));
+					projectMember.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectAssignedDate()));
 				}
 				if (pmh.getProjectTerminationDate() != null) {
-					projectMember.setProjectEndDateStr(simpleDateFormat.format(pmh.getProjectTerminationDate()));
+					projectMember.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectTerminationDate()));
 				}
 				if (pmh.getStatus() != null) {
 					projectMember.setProjectStatus(pmh.getStatus());

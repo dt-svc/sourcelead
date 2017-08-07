@@ -1239,20 +1239,20 @@ public class InvoiceRestController {
 			@RequestParam("locationCode") String locationCode) throws Exception {
 		
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 		String[] frequency = paymentFrequency.split(" ");
 		//SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		String dueDateStr = null;
 		
 		try {
 
-			Date date =  formatter.parse(invoiceDate);
+			Date date =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),invoiceDate);
 			Calendar c = Calendar.getInstance();
 			c.setTime(date);
 			c.add(Calendar.DATE, Integer.parseInt(frequency[0]));
-			dueDateStr =  formatter.format(c.getTime());
+			dueDateStr =  commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),c.getTime());
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 		
@@ -1748,16 +1748,16 @@ public class InvoiceRestController {
 	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+			//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
 			try {
-				Date requestStartDate =  simpleDateFormat.parse(startDate);
+				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  simpleDateFormat.parse(endDate);
+				Date requestEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
@@ -1775,7 +1775,7 @@ public class InvoiceRestController {
 
 			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
 
-	        } catch (ParseException e) {
+	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 			
@@ -1786,16 +1786,16 @@ public class InvoiceRestController {
 	public @ResponseBody String getTotalHosursForPayable(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
 			try {
-				Date requestStartDate =  simpleDateFormat.parse(startDate);
+				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  simpleDateFormat.parse(endDate);
+				Date requestEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
@@ -1813,7 +1813,7 @@ public class InvoiceRestController {
 
 			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
 
-	        } catch (ParseException e) {
+	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 			
