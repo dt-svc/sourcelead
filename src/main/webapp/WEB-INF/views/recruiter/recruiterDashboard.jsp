@@ -2,14 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-<script src="resources/js/amcharts.js"></script>
-<script src="resources/js/serial.js"></script>
-<script src="resources/js/light.js"></script>
-<script src="resources/js/pie.js"></script>
-
-
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getJobSummarySerialChart();

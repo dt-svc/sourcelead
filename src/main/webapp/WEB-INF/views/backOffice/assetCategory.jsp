@@ -5,9 +5,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
