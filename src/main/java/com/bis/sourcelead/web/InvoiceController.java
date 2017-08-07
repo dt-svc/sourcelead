@@ -55,6 +55,9 @@ public class InvoiceController {
 	 
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private InvoiceService invoiceService;
 	 
 /**
  * @author Laxman
@@ -109,7 +112,6 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
@@ -119,7 +121,12 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId)){
+		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
+			model.setViewName("billing/createExpensesReceivableInvoice");
+		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
+			model.setViewName("billing/createExpensesReceivableInvoice");
+		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
 		}else{
 			model.setViewName("billing/createInvoice");
@@ -302,7 +309,7 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		model.setViewName("billing/createReceivableExpensesBill");
+		model.setViewName("billing/createExpensesReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);

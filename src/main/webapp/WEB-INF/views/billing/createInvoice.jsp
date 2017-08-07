@@ -2,10 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -1384,7 +1381,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
-			$("#discountTotal").val(subTotal);
+			$("#discountTotal").val("00.00");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -2039,13 +2036,14 @@ var validationSettings = {
 function getEstimatedHours(rowId){
 	var startDate = document.getElementById(rowId+"sdate-input").value;
 	var endDate = document.getElementById(rowId+"edate-input").value;
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours,
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
 		        success: function(estimatedHours) {
 		        	$('#'+rowId+'totalHours').val(estimatedHours);
 		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
@@ -2060,11 +2058,12 @@ function getEstimatedHours(rowId){
 function editHoursValidations(startDate,endDate,rowId){
 	if(startDate && endDate){
 		 var sourceleadUrl ='${sourceleadUrl}';
+		 var locationId = '${SourceLeadWeb_orgLocationId}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
 		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours,
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
 		        success: function(estimatedHours) {
 		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
 		        	totalHoursCalculateAmount(rowId);

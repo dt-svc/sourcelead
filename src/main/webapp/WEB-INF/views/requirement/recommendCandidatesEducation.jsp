@@ -2,13 +2,6 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
-<!-- these files for autocomplete with tagit -->
-
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%-- 
@@ -81,8 +74,8 @@ function candidateEducationList(candidateId){
 	                 	 result  = result + '           <th>Specialization</th>';
 	                 	 result  = result + '           <th>Start date</th>';
 	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';

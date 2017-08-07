@@ -5,14 +5,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
@@ -658,7 +652,8 @@ $('body').on('submit', '#editSubmittedApplicant_form', function(e){
 	    		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	    		pipelineList(requirementId);
+	    		requirementStatusBar(requirementId);
+	    		//pipelineList(requirementId);
 	        },
 	    });  
       return true; 
@@ -1058,7 +1053,8 @@ $('body').on('submit', '#addApplicant_form', function(e){
 	    		$("body").css('overflow-y', 'auto');
 	    		var allApplicants = 'all';
 	    		requirementPipeline(requirementId,allApplicants); 
-	    		pipelineList(requirementId);
+	    		requirementStatusBar(requirementId);
+	    		//pipelineList(requirementId);
 	        },
 	    }); 
       return true; 
@@ -1221,6 +1217,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
 	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
+	    		$(".sideMask").fadeOut(200);
 	    		if(redirectTo == "compare"){
 	    			compareRecommendedUsers(requirementId);
 	    		}
@@ -1839,7 +1836,7 @@ function getSubmittedCandidateDetails(submissionId){
 		        	 if(json.candidateWorkExperienceMonths != null && json.candidateWorkExperienceMonths != "" && json.candidateWorkExperienceMonths != 'undefined'){
 		        		 $("select[name=monthExp]").val(json.candidateWorkExperienceMonths);
 		        	 }else{
-		        		 $("select[name=monthExp]").val(''); 
+		        		 $("select[name=monthExp]").val(0); 
 		        	 } 
 		        	 
 		        	 if(json.expectedRateType != null && json.expectedRateType != "" && json.expectedRateType != 'undefined'){

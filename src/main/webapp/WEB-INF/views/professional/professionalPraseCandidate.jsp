@@ -2,13 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-	
 	<script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','');
@@ -66,7 +59,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Candidate Profile</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> &raquo; Profile Update</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 

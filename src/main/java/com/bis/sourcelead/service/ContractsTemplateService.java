@@ -70,6 +70,10 @@ public interface ContractsTemplateService {
 
 	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
 
+	void sendMSAEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, Date previousEndDate) throws Exception;
+
+	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation) throws Exception;
+
 
 	
 }

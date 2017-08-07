@@ -4,12 +4,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<script src="resources/js/jquery-fun.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <link rel="stylesheet" href="resources/css/style.css" />
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
@@ -706,7 +703,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<div class="col-md-6">';
 		result = result + '<label class="col-md-2 mt10">Resume</label>';
 		result = result + '<div class="panel-border_a col-md-8 mt10" id="resumesDiv">';
-		result = result + '<select id="candidateResumesList" data-validation="required" onchange="getCandidateDetails();" name="candidateResume" field-name="Resume" class="form-control block">';
+		result = result + '<select id="candidateResumesList" data-validation="required" name="candidateResume" field-name="Resume" class="form-control block">';
 		result = result + '</select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -728,7 +725,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		
 		result = result + '</div>';
 		
-		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div></div>';
+		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div><div id="detailsLoading"></div></div>';
 		result = result + '</div>';
 		
 		result = result + '</div>'; 
@@ -882,10 +879,14 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	$("#applytoJobDiv").append(result);
 	
 	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-		getResumesList();
+		$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		    setTimeout(function () {
+			getResumesList();
+			getCandidateDetails();
+		    $("#detailsLoading").removeAttr('style');
+ 			}, 3000);
+	
 	}
-	
-	
 
 	   var config = {
 				  '.chosen-select'           : {},
@@ -1310,6 +1311,8 @@ function getResumesList(){
 	 var candidateId = '${candidateId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	
+	 
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
@@ -1319,9 +1322,8 @@ function getResumesList(){
 		        	var output = "";
 		        	if(json.length > 1){
 		        		output = output + "<option value=''>-- Select Resume --</option>";
-		        	}else{
-		        		getCandidateDetails();
 		        	}
+		        	
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -2540,9 +2542,10 @@ function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
 	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";

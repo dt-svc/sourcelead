@@ -3,28 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
-<%-- <link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- --%>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
- -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
- 
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;

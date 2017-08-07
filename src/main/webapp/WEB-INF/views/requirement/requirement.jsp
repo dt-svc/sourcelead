@@ -1881,16 +1881,24 @@ function getCities(){
 		                 }
 			    	 }else{
 		    			var newSkill = this.value.replace(","," ");
-		    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    			if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
-		    				 preventTabkey(e); 
-		    				 var option = $("<option>").val(newSkill).text(newSkill);
-		                     select.append(option);
-		                     select.find(option).prop('selected', true);
-		                     $("#skills option").each(function(){
-		                         $(this).siblings("[value='"+ this.value+"']").remove();
+							 preventTabkey(e); 
+							 var isNewSkill = true;
+							 $("#skills option:selected").each(function(){
+								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+									 //alert(newSkill);
+									 isNewSkill = false;
+									 return false;
+								 }
+		                    
 		                   });
-		                   $("#skills").trigger("chosen:updated");
+							if(isNewSkill){
+		    				 var option = $("<option>").val(newSkill).text(newSkill);
+							 select.append(option);
+		                     select.find(option).prop('selected', true);
+							}
+			               $("#skills").trigger("chosen:updated");
 		                }
 				       
 	    	         }

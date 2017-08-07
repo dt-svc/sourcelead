@@ -5,20 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%-- 
      @author : David Raju.
      this script is to get filter popup
@@ -275,7 +262,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Location</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
+    result = result +"    <th>Posted On <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
     result = result +"    <th>Status</th>"; 
        result = result +"<th>Actions</th>";
 //     result = result +"    <th>Release</th>"; 
@@ -511,7 +498,6 @@ function prepareRequirementData(data){
 	        
 	        '</sec:authorize>';
 	        
-	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
@@ -522,7 +508,7 @@ function prepareRequirementData(data){
         }
 		else{
            result = result +"<div>--</div>";
-       }    '</sec:authorize>';    
+          }    
 		result = result +"</div></td>";
         result = result +"</tr>";
         result = result +"</tr>";
@@ -544,12 +530,12 @@ function prepareRequirementData(data){
 }
 </script>
 <script>
- $('#requirementPagination').DataTable( { 
-	"autoWidth": false,
-	"scrollX": true,
-}); 
+//  $('#requirementPagination').DataTable( { 
+// 	"autoWidth": false,
+// 	"scrollX": true,
+// }); 
 function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+// 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -1574,8 +1560,8 @@ function requirementPipeline(requirementId){
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 
-						<!-- <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span> --><i
-							class="glyphicon glyphicon-play" id="clientsList"></i>
+						<!-- <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span> -->
+<!-- 						<i class="glyphicon glyphicon-play" id="clientsList"></i> -->
 							<div id="filter1ApprovedPop" class="approved_pop">
 								<ul>
 									<c:forEach var="report" items="${add_clientList}">

@@ -3,10 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -273,7 +269,9 @@ function getUsersSearchResult(searchValue){
       </div>
       </div>
       </section>
-      
+      <div class="project_wrap_table datatable_filter" id="userListGrid">
+              <div id="userListViewDiv" class="filter_position backgroundWhite pdtop mt" style="display:none;"></div> 
+          </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="usersListBody"></div> 
@@ -281,9 +279,7 @@ function getUsersSearchResult(searchValue){
           <div id="loadMoreDiv"></div> 
       </div>
       
-           <div class="project_wrap_table datatable_filter">
-              <div id="userListViewDiv"></div> 
-          </div>      
+               
       
       <div id="usersListEmptyBody"></div>
       <div id="popUp"></div>

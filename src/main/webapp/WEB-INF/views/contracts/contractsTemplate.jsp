@@ -4,7 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
 <style type="text/css">
@@ -24,10 +23,6 @@ padding: 2px 10px !important;
 margin: 0 !important;
 }
 </style>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
 
 <!-- Content Area -->
 <section class="content-wraper">
