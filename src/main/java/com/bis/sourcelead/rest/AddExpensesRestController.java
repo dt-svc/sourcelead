@@ -33,6 +33,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -87,6 +89,9 @@ public class AddExpensesRestController {
 	private AddExpensesService addExpensesService;
 	
 	@Autowired
+	ExpensesService expensesService;
+	
+	@Autowired
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
@@ -104,7 +109,7 @@ public class AddExpensesRestController {
 	@RequestMapping(value = "/getClientByProjectMemberId", method = RequestMethod.GET)
 	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(locationId);
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != projectMemberId && !"".equalsIgnoreCase(projectMemberId)){
 			ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
 			if(null != projectMembers.getProjects()){
@@ -119,9 +124,9 @@ public class AddExpensesRestController {
 					 }
 
 					}
-					 project.setStartDateStr(simpleDateFormat.format(project.getStartDate()));
+					 project.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(simpleDateFormat.format(project.getEndDate()));
+					 project.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
@@ -150,11 +155,20 @@ public class AddExpensesRestController {
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+				User superUser = userService.getUserById(reOpenedUserId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 			  	
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+				Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+				User superUser = userService.getUserById(reOpenedUserId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
+
 			}
 		
 	}
@@ -195,7 +209,7 @@ public class AddExpensesRestController {
 			@RequestParam(value = "locationCode") String locationCode) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		//date formats
-		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != projectId && !"".equalsIgnoreCase(projectId)){
 			Projects project =	projectsService.getProjectById(Long.parseLong(projectId));
 			if(null != project){
@@ -211,9 +225,9 @@ public class AddExpensesRestController {
 					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
 					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
 					}*/
-					 project.setStartDateStr(dateFormat.format(project.getStartDate()));
+					 project.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(dateFormat.format(project.getEndDate()));
+					 project.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
@@ -349,15 +363,15 @@ public class AddExpensesRestController {
 //				 globalVarsMap.put("expenseId",sah.getExpenseId().getExpenseId());
 //					 }
 //				 }
-				 SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+				 //SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				 if(null != sah.getExpenseId()){
 					 if(null != sah.getExpenseId().getStartDate()){
-				 globalVarsMap.put("startDate",dateFormat.format(sah.getExpenseId().getStartDate()));
+				 globalVarsMap.put("startDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),sah.getExpenseId().getStartDate()));
 					 }
 				 }	 
 				 if(null != sah.getExpenseId()){
 					 if(null != sah.getExpenseId().getEndDate()){
-				 globalVarsMap.put("endDate",dateFormat.format(sah.getExpenseId().getEndDate()));
+				 globalVarsMap.put("endDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),sah.getExpenseId().getEndDate()));
 					 }
 				 }
 				 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));

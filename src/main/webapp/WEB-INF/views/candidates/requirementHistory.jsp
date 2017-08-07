@@ -266,6 +266,16 @@ function getHistoryCandiResume(uuid,title){
 function getRateListDiv(candidateId,submissionId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqHistryRateListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqHistryRateListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqHistryRateListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqHistryRateListDate = 'YYYY-DD-MM'; 
+	  }  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
@@ -288,7 +298,7 @@ function getRateListDiv(candidateId,submissionId){
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
 	                     result = result + '        <th>Comment</th>';
-	                     result = result + '        <th>Date</th>';
+	                     result = result + '        <th>Date <br>(<small class="custom-small">'+reqHistryRateListDate+'</small>)</th>';
 	                     result = result + '        <th>Status</th>';
 	                     result = result + '      </tr>';
 	                     result = result + '    </thead>';
