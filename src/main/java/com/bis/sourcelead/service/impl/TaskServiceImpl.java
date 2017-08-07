@@ -278,6 +278,10 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public void mailToUserTask(Tasks task) throws Exception{
 		Timezone timezone = timeZoneService.getTimezone(task.getOwnerOrglocationId().getTimezone().getId());
+		
+		OrgLocations orglo = orgLocationService.getOrgLocations(task.getOwnerOrglocationId().getId());
+	//	SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
+		
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
 			 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
@@ -300,7 +304,7 @@ public class TaskServiceImpl implements TaskService{
 			 globalVarsMap.put("priority", "--");	 
 			 }
 			 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-			 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+			 task.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),task.getTaskDate()));
 			 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 			 globalVarsMap.put("date", task.getTaskDateStr());	 
 			 	}

@@ -673,7 +673,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,locationsId,projectId);
 	}
-
+	
 	@Override
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception
 	{
@@ -690,15 +690,18 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
 	{
 		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
+		
+		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
 		for (ProjectMembers projectMember : projectMembersList) {
 			try {
 				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(projectMember.getId());
 				projectMember.setProjectName(projectMember.getProjects().getProjectName());
 				if (pmh.getProjectAssignedDate() != null) {
-					projectMember.setProjectAssignedDateStr(ConversionUtil.getDateAsString(pmh.getProjectAssignedDate()));
+					projectMember.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectAssignedDate()));
 				}
 				if (pmh.getProjectTerminationDate() != null) {
-					projectMember.setProjectEndDateStr(ConversionUtil.getDateAsString(pmh.getProjectTerminationDate()));
+					projectMember.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectTerminationDate()));
 				}
 				if (pmh.getStatus() != null) {
 					projectMember.setProjectStatus(pmh.getStatus());
