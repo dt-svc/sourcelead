@@ -306,15 +306,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			 	pm.setEmployee(emp);
 				pm.setProjects(projects);
 				/*String pattern = "dd-MM-yyyy";
-	            SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-				SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
+	            SimpleDateFormat format = new SimpleDateFormat(pattern);
+				SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();*/
 	            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
 				
 				ProjectMembersHistory pmh = new ProjectMembersHistory();
 				pmh.setProjectMemberId(pm);
 				pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 	            if(StringUtils.isNotEmpty(startDate)){
-	            	 Date currentStartDate = format.parse(startDate);
+	            	 Date currentStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
 	            	 pmh.setProjectAssignedDate(currentStartDate);
 	            }
 	            else{
@@ -322,7 +322,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	            }
 	            if(StringUtils.isNotEmpty(endDate)){
 	            	if(endDate != null && !"--".equalsIgnoreCase(endDate)){
-	            		Date currentEndDate = format.parse(endDate);
+	            		Date currentEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
 	            		pmh.setProjectTerminationDate(currentEndDate);
 	            	}
 	            	
@@ -368,7 +368,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		HashSet<ProjectMembers> projectMemberList = new HashSet<ProjectMembers>();
 		String teamMembersList = "";
 		OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
-		SimpleDateFormat simpleDateFormat=locations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat=locations.getLocFullFormDateFormatter();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 //		String pattern = "dd-MM-yyyy";
 //        SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -390,23 +390,23 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								pmh.setProjectMemberId(pm);
 								pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 					            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
-					            	 Date currentStartDate = simpleDateFormat.parse(jsonObj.getString("employeestartDate"+c));
+					            	 Date currentStartDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("employeestartDate"+c));
 					            	 pmh.setProjectAssignedDate(currentStartDate);
 					            }else{
 					            	
 					            	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-					            		Date startDate = simpleDateFormat.parse(jsonObj.getString("StartDate"));
+					            		Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("StartDate"));
 					            		pmh.setProjectAssignedDate(startDate);
 					            	}
 					            }
 					            
 					            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
-					            	Date currentEndDate = simpleDateFormat.parse(jsonObj.getString("employeeendDate"+c));
+					            	Date currentEndDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("employeeendDate"+c));
 					            	pmh.setProjectTerminationDate(currentEndDate);
 					            }
 					            else{
 					            	 if(!jsonObj.getString("EndDate").isEmpty()){
-						            		Date endDate = simpleDateFormat.parse(jsonObj.getString("EndDate"));
+						            		Date endDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("EndDate"));
 						            		pmh.setProjectTerminationDate(endDate);
 						             }
 						    	}

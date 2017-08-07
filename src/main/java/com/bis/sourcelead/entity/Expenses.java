@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -294,7 +295,8 @@ private static final long serialVersionUID = 1L;
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr =	LoginSessionController.DATEFORMAT.format(startDate);
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			startDateStr = dateFormat.format(startDate);
 		}
 		
 		return startDateStr;
@@ -306,7 +308,8 @@ private static final long serialVersionUID = 1L;
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = LoginSessionController.DATEFORMAT.format(endDate);
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);
 		}
 		return endDateStr;
 	}
