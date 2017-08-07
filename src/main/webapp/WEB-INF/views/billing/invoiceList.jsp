@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -1093,9 +1091,10 @@ function customDate(){
 		changeYear: true, 
 		dateFormat : finalDateFormatClientInvoiceDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+			//var dt = new Date(selected);
+			//var dt = toDate("#billingStartDate");
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -1110,9 +1109,10 @@ function customDate(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+// 			var dt = new Date(selected);
+// 			var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}
