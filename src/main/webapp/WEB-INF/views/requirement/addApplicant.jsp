@@ -5,14 +5,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
-
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 

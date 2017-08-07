@@ -3,12 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 	
 	<link href="resources/css/candidate-common.css" rel="stylesheet">
 	
