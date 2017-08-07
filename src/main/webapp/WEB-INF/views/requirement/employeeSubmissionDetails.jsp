@@ -30,6 +30,18 @@
 	function employeeSubmissionDetailsList(candidateId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		
+		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  empSubListDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  empSubListDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  empSubListDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  empSubListDate = 'YYYY-DD-MM'; 
+		  }  
+		
+		
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -49,8 +61,8 @@
 								result = result	+ '           <th>Employer</th>';
 								result = result	+ '           <th>Designation</th>';
 								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start date</th>';
-								result = result	+ '           <th>End date</th>';
+								result = result	+ '           <th>Start date <br>(<small class="custom-small">'+empSubListDate+'</small>)</th>';
+								result = result	+ '           <th>End date <br>(<small class="custom-small">'+empSubListDate+'</small>)</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";
 								result = result + "<tbody>";
