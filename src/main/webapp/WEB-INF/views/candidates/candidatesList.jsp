@@ -282,7 +282,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'<div class="media-body candidate-details">';
 			            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
-			             result = result+'<h3 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h3>';
+			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             
