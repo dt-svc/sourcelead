@@ -28,7 +28,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -89,7 +88,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -185,7 +183,7 @@ public class RequirementListRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+		// SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 		List<Requirement> requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(), status, clients, user, userRoleName);
 		for (Requirement requirement : requirementList) {
 			/*
@@ -199,7 +197,7 @@ public class RequirementListRestController {
 			 * toString()); } }
 			 */
 			
-			requirement.setPostedDateStr(formatter.format(requirement.getCreatedDate()));
+			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getCreatedDate()));
 			/*
 			 * int totalApplicatsCountForRequirement = 0;
 			 * totalApplicatsCountForRequirement = requirementSubmissionService.
@@ -377,13 +375,13 @@ public class RequirementListRestController {
 		if (requirementId != null && !requirementId.isEmpty()) {
 			Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 			User intiatorUser = userService.getUserById(requirement.getCreatedBy().getId());
-			 SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
+			 //SimpleDateFormat formatter = loginOrgLocation.getLocFullFormDateFormatter();
 			 if(requirement.getCreatedDate()!=null){
-					requirement.setRequirementCreatedDateToString(formatter.format(requirement.getCreatedDate()));
+					requirement.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getCreatedDate()));
 				}
 
 			if (null != requirement.getClosedDate()) {
-				requirement.setClosedDateStringFormat(formatter.format(requirement.getClosedDate()));
+				requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirement.getClosedDate()));
 			}
 			// to get the RequirementApproverHierarchy to set the Status
 		
@@ -562,7 +560,7 @@ public class RequirementListRestController {
 		
 		String resultJson = null;
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		
 		/*Timezone timezone = null;
 		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
@@ -630,7 +628,7 @@ public class RequirementListRestController {
 										RequirementOffers requirementOffershis = requirementOfferHistory.getOfferId();
 										requirementSubmission.setOfferId(requirementOffershis.getId());
 										if (requirementOffershis.getDateOfJoining() != null) {
-											requirementSubmission.setOfferJoinDate(dateFormat.format(requirementOffershis.getDateOfJoining()));
+											requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffershis.getDateOfJoining()));
 										}
 										if (requirementOffershis.getPositionType() != null) {
 											requirementSubmission.setPositionType(requirementOffershis.getPositionType());
@@ -653,7 +651,7 @@ public class RequirementListRestController {
 								}
 								requirementSubmission.setOfferId(requirementOffers.getId());
 								if (requirementOffers.getDateOfJoining() != null) {
-									requirementSubmission.setOfferJoinDate(dateFormat.format(requirementOffers.getDateOfJoining()));
+									requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
 								}
 								if (requirementOffers.getPositionType() != null) {
 									requirementSubmission.setPositionType(requirementOffers.getPositionType());
@@ -770,7 +768,7 @@ public class RequirementListRestController {
 								String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 								DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-								currentDateInTimezone = dateFormat.format(converteDate);
+								currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),converteDate);
 								requirementSubmission.setCreatedDateStr(currentDateInTimezone);
 								SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 								String time = localDateFormat.format(converteDate);
@@ -783,7 +781,7 @@ public class RequirementListRestController {
 								String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone.getTimeZoneId(), currentTimeStr);
 								DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-								currentDateInTimezone = dateFormat.format(converteDate);
+								currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),converteDate);
 								requirementSubmission.setUpDatedStr(currentDateInTimezone);
 							}
 						}
@@ -1347,7 +1345,7 @@ public class RequirementListRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		File file = null;
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId), user, loginOrgLocation,loginUserRole);
 		if (requirementId != null && !requirementId.isEmpty()) {
 			List<RequirementSubmission> requirementStatusList = null;
@@ -1390,13 +1388,13 @@ public class RequirementListRestController {
 							else {
 								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
-							requirementSubmission.setSubmittedOn(simpleDateFormat.format(requirementSubmissionHistory.getCreatedDate()));
+							requirementSubmission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 						}
 						if (requirementOffersList.size() > 0) {
 							RequirementOffers requirementOffers = requirementOffersList.get(0);
 							requirementSubmission.setOfferId(requirementOffers.getId());
 							if (requirementOffers.getDateOfJoining() != null) {
-								requirementSubmission.setOfferJoinDate(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
+								requirementSubmission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
 							}
 							if (requirementOffers.getPaymentType() != null) {
 								requirementSubmission.setPositionType(requirementOffers.getPaymentType());
@@ -1443,10 +1441,10 @@ public class RequirementListRestController {
 							}
 						}
 						if (requirementSubmission.getCreatedDate() != null) {
-							requirementSubmission.setCreatedDateStr(simpleDateFormat.format(requirementSubmission.getCreatedDate()));
+							requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmission.getCreatedDate()));
 						}
 						if (requirementSubmission.getUpdatedDate() != null) {
-							requirementSubmission.setUpDatedStr(simpleDateFormat.format(requirementSubmission.getUpdatedDate()));
+							requirementSubmission.setUpDatedStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmission.getUpdatedDate()));
 						}
 						User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 						StringBuilder canNameSB = new StringBuilder();
