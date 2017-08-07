@@ -8,7 +8,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="resources/js/InterViewFormBuilder.js" type="text/javascript" ></script>
 <script src="resources/js/interViewForm-html-generator.js" type="text/javWascript" ></script> 
-<script src="resources/js/formvalidator.js"></script>
 
 <link rel="stylesheet" href="resources/css/style.css" />
 <script type="text/javascript">
