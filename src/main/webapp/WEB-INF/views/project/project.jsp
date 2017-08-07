@@ -15,8 +15,8 @@
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
-// 				$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
-// 				$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+				$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+				$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 			});
        </script> 
   
