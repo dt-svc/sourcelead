@@ -129,10 +129,10 @@ public class ExpensesApprovalRestController {
 		List<ExpensesEntries> expensesEntries = expensesEntriesService.getExpensesEntriesByExpenseId(Long.parseLong(expenseId));
 		
 		 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-	        SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+	        //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 		
 		for(ExpensesEntries expEntries:expensesEntries){
-			expEntries.setExpenseDateString(formatter.format(expEntries.getExpenseDate()));
+			expEntries.setExpenseDateString(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),expEntries.getExpenseDate()));
 		}
 		return commonUtil.toJSON(expensesEntries);
    }
@@ -183,7 +183,7 @@ public class ExpensesApprovalRestController {
 	private void sendEmailToExpenseApprovalStatus(Long expenseId, User loginUser, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		
 		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
-		SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 		 Submission_Status submissionStatus = sah.getExpenseStatus();
 	 	 String submissionStatusStr = submissionStatus.getValue();
 	 	  if(StringUtils.isNotEmpty(submissionStatusStr) && 
@@ -239,18 +239,18 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("frequencyType",sah.getExpenseId().getProjectMembers().getProjects().getInvoiceFrequency());
 			 if(null != sah.getExpenseId()){
 				 if(null != sah.getExpenseId().getStartDate()){
-			 globalVarsMap.put("startDate",dateFormat.format(sah.getExpenseId().getStartDate()));
+			 globalVarsMap.put("startDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),sah.getExpenseId().getStartDate()));
 				 }
 			 }	 
 			 if(null != sah.getExpenseId()){
 				 if(null != sah.getExpenseId().getEndDate()){
-			 globalVarsMap.put("endDate", dateFormat.format(sah.getExpenseId().getEndDate()));
+			 globalVarsMap.put("endDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),sah.getExpenseId().getEndDate()));
 				 }
 			 }
 			 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));
 			 
 			Date todayDate = new Date();
-			 globalVarsMap.put("submitForApprovalDate",dateFormat.format(todayDate));
+			 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
 			
 			// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
@@ -259,7 +259,7 @@ public class ExpensesApprovalRestController {
 			 
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();
-			 globalVarsMap.put("timeFrequency",timeFrequencySB.append(dateFormat.format(sah.getExpenseId().getStartDate())).append(" to ").append(dateFormat.format(sah.getExpenseId().getEndDate())).toString());
+			 globalVarsMap.put("timeFrequency",timeFrequencySB.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),sah.getExpenseId().getStartDate())).append(" to ").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),sah.getExpenseId().getEndDate())).toString());
 			 
 			 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
 			 globalVarsMap.put("managerLastName", loginUser.getLastName());
