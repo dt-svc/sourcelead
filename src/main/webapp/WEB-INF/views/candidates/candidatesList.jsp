@@ -1242,250 +1242,12 @@ function cancel(candidateId){
 			     </div>  
 	    </div>
 	     </div>
-	<div id="timelineview" class="tab-pane fade">
-	    <div class="clients_side_wrap_inn">
-	             <div id="candidateTimelineDiv">
-	             
-	             
-	             
-	             
-	             
-	             
-	             	<!-- <div class="content-area clearfix">
-				      <div id="accordion-sl" class="release-jobs"> 
-				        Accordion First Tab
-				        <div class="clearfix timeline">
-				          <h2>11/07/2017</h2>
-				          <div class="content content-custom clearfix">
-				            <div class="timeline_inner">
-				              <div class="row mt">
-				                <div class="col-md-12"> 
-				                  The time line
-				                  <ul class="timeline">
-				                    timeline time label
-				                    <li class="time-label hidden"> <span class="bg-red"> 10 Feb. 2014 </span> </li>
-				                    /.timeline-label 
-				                    timeline item
-				                    <li> <i class="fa fa-envelope bg-blue"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
-				                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
-				                        <div class="timeline-body"> Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-				                          weebly ning heekya handango imeem plugg dopplr jibjab, movity
-				                          jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-				                          quora plaxo ideeli hulu weebly balihoo... </div>
-				                        <div class="timeline-footer"> <a class="btn btn-primary btn-xs">Read more</a> <a class="btn btn-danger btn-xs">Delete</a> </div>
-				                      </div>
-				                    </li>
-				                    END timeline item 
-				                    timeline item
-				                    <li> <i class="fa fa-user bg-aqua"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-				                        <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-				                        <div class="timeline-body"></div>
-				                      </div>
-				                    </li>
-				                    END timeline item 
-				                    timeline item
-				                    <li> <i class="fa fa-comments bg-yellow"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-clock-o bg-purple"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-briefcase bg-green"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i>1 day ago</span>
-				                        <h3 class="timeline-header"><a href="#">Requirement</a></h3>
-				                        <div class="timeline-body">
-				                          <p>We have urgent requirement for Core Java with NMS/EMS domain. Job Description : ... Not disclosed.</p>
-				                          <p>Posted by: HR</p>
-				                        </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-bar-chart bg-maroon"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Projects</a></h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-calculator bg-olive"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Expenses</a></h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    END timeline item
-				                  </ul>
-				                </div>
-				                /.col 
-				              </div>
-				            </div>
-				          </div>
-				        </div>
-				        Accordion First Tab Ends 
-				        
-				        Accordion second Tab
-				        <div class="clearfix timeline">
-				          <h2>11/07/2017</h2>
-				          <div class="content content-custom clearfix">
-				            <div class="timeline_inner">
-				              <div class="row mt">
-				                <div class="col-md-12"> 
-				                  The time line
-				                  <ul class="timeline">
-				                    timeline time label
-				                    <li class="time-label hidden"> <span class="bg-red"> 10 Feb. 2014 </span> </li>
-				                    /.timeline-label 
-				                    timeline item
-				                    <li> <i class="fa fa-envelope bg-blue"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
-				                        <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
-				                        <div class="timeline-body"> Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-				                          weebly ning heekya handango imeem plugg dopplr jibjab, movity
-				                          jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-				                          quora plaxo ideeli hulu weebly balihoo... </div>
-				                        <div class="timeline-footer"> <a class="btn btn-primary btn-xs">Read more</a> <a class="btn btn-danger btn-xs">Delete</a> </div>
-				                      </div>
-				                    </li>
-				                    END timeline item 
-				                    timeline item
-				                    <li> <i class="fa fa-user bg-aqua"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-				                        <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
-				                      </div>
-				                    </li>
-				                    END timeline item 
-				                    timeline item
-				                    <li> <i class="fa fa-comments bg-yellow"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-clock-o bg-purple"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-briefcase bg-green"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i>1 day ago</span>
-				                        <h3 class="timeline-header"><a href="#">Requirement</a></h3>
-				                        <div class="timeline-body">
-				                          <p>We have urgent requirement for Core Java with NMS/EMS domain. Job Description : ... Not disclosed.</p>
-				                          <p>Posted by: HR</p>
-				                        </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-bar-chart bg-maroon"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Projects</a></h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    <li> <i class="fa fa-calculator bg-olive"></i>
-				                      <div class="timeline-item"> <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
-				                        <h3 class="timeline-header"><a href="#">Expenses</a></h3>
-				                        <div class="timeline-body"> Take me to your leader!
-				                          Switzerland is small and neutral!
-				                          We are more like Germany, ambitious and misunderstood! </div>
-				                        <div class="timeline-footer"> <a class="btn btn-warning btn-flat btn-xs">View comment</a> </div>
-				                      </div>
-				                    </li>
-				                    END timeline item
-				                  </ul>
-				                </div>
-				                /.col 
-				              </div>
-				            </div>
-				          </div>
-				        </div>
-				        Accordion second Tab Ends 
-				      </div>
-				    </div>
-	             
-	              -->
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-	             
-			     </div>  
-	    </div>
-	</div>
-  </div>			     
+				<div id="timelineview" class="tab-pane fade">
+					<div class="clients_side_wrap_inn">
+						<div id="candidateTimelineDiv"></div>
+					</div>
+				</div>
+			</div>			     
     </div>
     <!-- Compnay details Ends --> 
   </div>
@@ -1501,14 +1263,14 @@ function cancel(candidateId){
 
 
 <script>
-function activeTab(){
-	$("#candDetailView").removeClass("active");
-	$("#candQuickView").addClass("active");
-	$("#quickview").addClass("active in");
-	$("#detailview").removeClass("active in");
-	$("#candTimelineView").removeClass("active");
-	$("#timelineview").removeClass("active in");
-}
+	function activeTab() {
+		$("#candDetailView").removeClass("active");
+		$("#candQuickView").addClass("active");
+		$("#quickview").addClass("active in");
+		$("#detailview").removeClass("active in");
+		$("#candTimelineView").removeClass("active");
+		$("#timelineview").removeClass("active in");
+	}
 </script>
 
  
@@ -1576,29 +1338,7 @@ $(document).ready(function() {
         $(tab).fadeIn();
     });
 
-	// Levels adding script
-	/*  $(".addUser-org").click(function(event){  
-		 $(".collapse-div-adduser").toggleClass("showMydiv");
-		 $(".collapse-div").removeClass("showMydiv");
-		 event.preventDefault();
-	 }); */
-	/*  $(".close-div").click(function(){
-		 $(this).parent().toggleClass("showMydiv");
-		 }); */
-	/*  $(".assign-org").click(function(){
-		 $(".collapse-div").toggleClass("show-div");
-		 $(".collapse-div-adduser").removeClass("show-div");
-	 }); */
-	/*  $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div").click(function(e){
-		 e.stopPropagation();
-	 }); */
-	 /* $('html').click(function(){
-	    $(".collapse-div-adduser").removeClass("show-div");
-		$(".collapse-div").removeClass("show-div");
-	   });	
-	   $("#endDate").click(function(){
-		   $(".endDate").toggle(200);
-	   }); */
+	
 });
 </script>	
 
@@ -2345,47 +2085,7 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
-    <%-- <div class="addconsultant-popup">
-				  <div class="row">
-                      <div class="col-md-offset-2 col-md-8">
-				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-6 mt">
-                        <div class="small-widget bg-purple">
-                            <a href="<c:url value='/addConsultant?type=parseConsultant'/>"  title="Parse Resume">
-                                <div class="clearfix mb10">
-                                <i class="fa fa-file-text-o fa-4x"></i>
-                                    <span class="fa fa-arrow-right"></span>
-                                </div>
-                                <strong class="clearfix">Parse Resume</strong>
-                                </a>
-                        </div>
-					  </div>
-					  <div class="col-md-6 mt">
-                          <div class="small-widget bg-yellow">
-                              <a href="<c:url value='/addConsultant?type=addConsultant'/>" title="Add Candidate">
-                                  <div class="clearfix mb10">
-                                      <i class="fa fa-user-circle fa-4x"></i>
-                                      <span class="fa fa-plus"></span>
-                                  </div>
-                                  <strong class="clearfix">Add Consultant</strong>
-                                </a>
-                                
-                          </div>
-					  </div>
-                      </div>
-                          <div class="col-md-4 hidden">
-                          <div class="small-widget bg-green">
-                              <a href="import-candidate.html" title="Import Candidate">
-                                  <div class="clearfix mb10">
-                                <i class="fa fa-user-circle fa-4x"></i>
-                                      <span class="fa fa-download"></span>
-                                  </div>
-                                  <strong class="clearfix">Import Candidate</strong>
-                                </a>
-                          </div>
-                      </div>
-				  </div>
-			  </div> --%>
+    
     
     <script>
     //addcandidate-popup script
@@ -2399,21 +2099,6 @@ function getCities(){
         $('.pop_mask').fadeOut(200);
        }
     </script>
-    
-     <script>
-    //addConsultant-popup script
-    /* function addConsultant(){
-        $('.addconsultant-popup').fadeIn(200);
-        $('.pop_mask').fadeIn(200);
-        $('#addmorepop').slideUp(200);
-    };
-       function closeConsultant(){
-        $('.addconsultant-popup').fadeOut(200);
-        $('.pop_mask').fadeOut(200);
-       } */
-    </script>
-    
-   
 
 <script>
 //Function to validate if maxExpYears  value is more the minExpYears  value
