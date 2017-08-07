@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +41,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class ProjectPlanningRestController {
@@ -163,11 +161,7 @@ public class ProjectPlanningRestController {
 	 @RequestMapping(value = "/getOrgLocationRoles", method = RequestMethod.GET)
 	 public @ResponseBody String  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
 		 
-		String resultJson;
-		
-		List<Long> orgLocationIds = null; 
-		List<Long> roleIds = null; 
-		
+		 String resultJson;
 		 String[] orgLocationId = orgLocations.split(",");
 		
 		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocationId[0]));
@@ -182,8 +176,9 @@ public class ProjectPlanningRestController {
 				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-			//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-			//DateFormat formatter = LoginSessionController.DATEFORMAT;
+
+			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+
 			int estimatedHours = 0;
 			
 			try {
