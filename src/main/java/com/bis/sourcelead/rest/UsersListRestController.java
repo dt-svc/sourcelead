@@ -555,7 +555,7 @@ public class UsersListRestController {
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
 		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		userRole.setUserType(userRole.getUserType());
 		
 		if (employee != null) {
@@ -564,7 +564,7 @@ public class UsersListRestController {
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			if (employee.getHireDate() != null) {
-				userRole.setHireDateStr(LoginSessionController.DATEFORMAT.format(employee.getHireDate()));
+				userRole.setHireDateStr(simpleDateFormat.format(employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
@@ -1619,7 +1619,7 @@ public class UsersListRestController {
 		JSONObject jsonObj = new JSONObject(json);
 		String password = "";
 		boolean isUserActive = false;
-
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if (user != null) {
 			user.setFirstName(jsonObj.getString("FirstName"));
@@ -1695,8 +1695,8 @@ public class UsersListRestController {
 			 */
 			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
 				try {
-					DateFormat sdf = LoginSessionController.DATEFORMAT;
-					employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
+					//DateFormat sdf = simpleDateFormat;
+					employees.setHireDate(simpleDateFormat.parse(jsonObj.getString("DateofJoin")));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

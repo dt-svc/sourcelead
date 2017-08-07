@@ -275,7 +275,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Location</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
+    result = result +"    <th>Posted On <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
     result = result +"    <th>Status</th>"; 
        result = result +"<th>Actions</th>";
 //     result = result +"    <th>Release</th>"; 
@@ -511,7 +511,6 @@ function prepareRequirementData(data){
 	        
 	        '</sec:authorize>';
 	        
-	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
 	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
@@ -522,7 +521,7 @@ function prepareRequirementData(data){
         }
 		else{
            result = result +"<div>--</div>";
-       }    '</sec:authorize>';    
+          }    
 		result = result +"</div></td>";
         result = result +"</tr>";
         result = result +"</tr>";

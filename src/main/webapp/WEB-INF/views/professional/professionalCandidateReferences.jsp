@@ -122,7 +122,7 @@
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
 								result = result
-										+ "  <td><div title='"+opt.name+"'>"
+										+ "  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"
 										+ opt.name + "</div></td>";
 							} else {
 								result = result + "  <td><div>----</div></td>";
@@ -178,17 +178,17 @@
 										+ '<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 							} else {
 								result = result
-										+ ' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
+										+ ' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
 										+ candidateId
 										+ ','
 										+ opt.id
-										+ ');editRelation(this);" title="Edit"></a></sec:authorize>';
+										+ ');editRelation(this);" title="Edit"></a>';
 								result = result
-										+ '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('
+										+ '<i class="glyphicon glyphicon-trash" onclick="removeReference('
 										+ candidateId
 										+ ','
 										+ opt.id
-										+ ');" title= "Remove"></i></sec:authorize>';
+										+ ');" title= "Remove"></i>';
 							}
 
 						}

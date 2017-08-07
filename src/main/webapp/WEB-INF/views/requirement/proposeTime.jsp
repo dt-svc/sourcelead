@@ -264,7 +264,7 @@ width: 8%;
   <script>
   function removeRow(rowId){
 	  document.getElementById('divProposeTimeRow' + rowId).style.display = 'none';
-	  var requirementInterviewId = '${requirementInterview.id}';
+	  
 	  var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val());
 	  $("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val(rowNum - 1);
 		

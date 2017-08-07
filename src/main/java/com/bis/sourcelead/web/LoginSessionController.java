@@ -208,6 +208,11 @@ public class LoginSessionController {
 			}else{
 				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
 			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
             SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
@@ -359,6 +364,7 @@ public class LoginSessionController {
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
@@ -681,6 +687,7 @@ public class LoginSessionController {
 				OrgLocations orgLocations = userRole.getOrgLocations();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 				SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 				
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
@@ -969,15 +976,15 @@ public class LoginSessionController {
 	
 	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations,HttpServletRequest request) throws Exception {
 
-		
-		candidateOnBoarding.setJoiningDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getStartDate()));
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		candidateOnBoarding.setJoiningDateStr(simpleDateFormat.format(candidateOnBoarding.getStartDate()));
 		
 		if(null != candidateOnBoarding.getEndDate()){
-			candidateOnBoarding.setEndDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getEndDate()));
+			candidateOnBoarding.setEndDateStr(simpleDateFormat.format(candidateOnBoarding.getEndDate()));
 		}
 		
 		if(null != candidateOnBoarding.getDueDate()){
-			candidateOnBoarding.setDueDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getDueDate()));
+			candidateOnBoarding.setDueDateStr(simpleDateFormat.format(candidateOnBoarding.getDueDate()));
 		}
 		
 		

@@ -27,6 +27,19 @@ function userAssignedProjects(userId){
 
 <script>
 function prepareAssignedProjectsData(data){
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  assignedProjectsDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  assignedProjectsDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  assignedProjectsDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  assignedProjectsDate = 'YYYY-DD-MM'; 
+	  }  
+	
+	
 	var result = "";
 	result = result +"<table id='assignedProjectsListPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -34,14 +47,14 @@ function prepareAssignedProjectsData(data){
     result = result +"    <th>Project Id</th>"; 
     result = result +"    <th>Project Name</th>"; 
     result = result +"    <th>Rate</th>"; 
-    result = result +"    <th>Start Date</th>";
-    result = result +"    <th>End Date</th>"; 
+    result = result +"    <th>Start Date <br>(<small class='custom-small'>"+assignedProjectsDate+"</small>)</th>";
+    result = result +"    <th>End Date <br>(<small class='custom-small'>"+assignedProjectsDate+"</small>)</th>";
     result = result +"    <th>Approved Hours</th>"; 
     result = result +"    <th>Rejected Hours</th>"; 
     result = result +"    <th>Waiting For Approval</th>"; 
-    result = result +"    <th>Save</th>";
+    result = result +"    <th>Saved Hours</th>";
     result = result +"    <th>Claimed Expense</th>"; 
-    result = result +"	  <th>Status </th>";
+    result = result +"	  <th>Status</th>";
     result = result +"  </tr>"; 
     result = result +"</thead>";
     result = result +"<tbody>"; 
@@ -132,7 +145,11 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectStatus != '' && opt.projectStatus != null && opt.projectStatus != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.projectStatus+"'>"+opt.projectStatus+"</span></div>";
+   		if(opt.projectStatus == "CLOSED"){
+	   	result = result +"<div class='tbldata-dotdot_80' title='In-Active'>In-Active</span></div>";
+   		}else{
+   			result = result +"<div class='tbldata-dotdot_80' title='Active'>Active</span></div>";
+   		}
    	}else{
    		result = result +"<div>-----</div>";
    	}
