@@ -165,31 +165,64 @@ function prepareAssignedProjectsData(data){
     $("#tab-2").append(result);  
     pagination(); 
     
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEduSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduSave = 'yy-dd-mm'; 
+	  }
     for (var i = 0; i < data.length; i++) { 
         var opt = data[i];
         
       //Assign date of project member
 		 var selected = opt.projectAssignedDateStr;
 		 var from = selected.split("-");
-		 var dt = new Date(from[2], from[1] - 1, from[0]);
+		 //var dt = new Date(from[2], from[1] - 1, from[0]);
+	 if(locationDate.match("yyyy-MM-dd")){
+        	 var dt = new Date(from[0], from[1] - 1, from[2]);
+		    }if(locationDate.match("dd-MM-yyyy")){
+		    	var dt = new Date(from[2], from[1] - 1, from[0]);
+		    }if(locationDate.match("MM-dd-yyyy")){
+		    	var dt = new Date(from[2], from[0] - 1, from[1]);
+		    }if(locationDate.match("yyyy-dd-MM")){
+		    	var dt = new Date(from[0], from[2] - 1, from[1]);
+		    } 
          dt.setDate(dt.getDate());
         //Main project end date
          var projectEndDate = opt.endDate;
          var endDate = "";
-         if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+         /* if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
         	 var fromEnd = projectEndDate.split("-");
         	 endDate = new Date(fromEnd[2], fromEnd[1] - 1, fromEnd[0]);
 	             endDate.setDate(endDate.getDate()); 
          }
-         
+          */
+          if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
+        	  var proEndDateTP = projectEndDate.split("-");
+         if(locationDate.match("yyyy-MM-dd")){
+        	 var endDate = new Date(proEndDateTP[0], proEndDateTP[1] - 1, proEndDateTP[2]);
+		    }if(locationDate.match("dd-MM-yyyy")){
+		    	var endDate = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+		    }if(locationDate.match("MM-dd-yyyy")){
+		    	var endDate = new Date(proEndDateTP[2], proEndDateTP[0] - 1, proEndDateTP[1]);
+		    }if(locationDate.match("yyyy-dd-MM")){
+		    	var endDate = new Date(proEndDateTP[0], proEndDateTP[2] - 1, proEndDateTP[1]);
+		    }
+          }
+          
         $('#endDate'+opt.id).datepicker({
-  	      dateFormat: 'dd-mm-yy',
+  	      dateFormat: finalDateFormatEduSave,
   	      changeMonth : true,
   	      changeYear : true,
   	      minDate: dt,
   	      maxDate: endDate,
   	      showOn: 'focus',
-          dateFormat: 'dd-mm-yy',
+          dateFormat: finalDateFormatEduSave,
           showButtonPanel: true,
           closeText: 'Clear',
   	       onClose: function() {
