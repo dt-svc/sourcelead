@@ -887,9 +887,10 @@ function feedbackView(interviewId,templateId){
 	$(".feedback_view").show(200);
 	$(".mask_inner").fadeIn(200);
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "GET",
-		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 			success: function(data) {
 				var json = JSON.parse(data);
 				var result = "";
