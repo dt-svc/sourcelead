@@ -236,21 +236,13 @@ function requirementList(){
 --%>
 
 <script>
-function prepareRequirementData(data){
+function prepareRequirementData(json){
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
 	 $("#requirementList").empty();
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  reqListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  reqListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  reqListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  reqListDate = 'YYYY-DD-MM'; 
-	  }  
+	 
+	 
 	var result = "";
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -262,7 +254,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Location</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
+    result = result +"    <th>Posted On</th>";
     result = result +"    <th>Status</th>"; 
        result = result +"<th>Actions</th>";
 //     result = result +"    <th>Release</th>"; 
@@ -278,7 +270,7 @@ function prepareRequirementData(data){
 	result = result +'</div>';
 	result = result +'</div>';
 	
-    var json = JSON.parse(data);
+  /*   var json = JSON.parse(data); */
     
     for (var i = 0; i < json.length; i++) { 
     	
@@ -355,21 +347,22 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>----</div></td>";
         } */
        /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
-       	result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+       	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
        	/* } else{
        	 result = result +"<td><div>0</div></td>";
         } */
         if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-       	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
+       	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+" "+opt.manager+"'>"+opt.manager+"</div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
-        if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-          	 result = result +"<td><div class='tblminwidth-90'>"+opt.postedDateStr+"</div></td>";
+        
+        if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
+          	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedOnStr+"</div></td>";
            }else{
-          	 result = result +"<td><div class='tblminwidth-90'>----</div></td>";
+          	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
-          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
+          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -498,8 +491,21 @@ function prepareRequirementData(data){
 	        
 	        '</sec:authorize>';
 	        
+	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-	        	if(opt.isRequirementReleasedByuser == 'Y'){
+			   var userRoleName = '${loginUserRole}'; 
+			   var userId = '${SourceLeadWeb_user.id}';
+			   var contains = false;
+			  
+			   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
+				  for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
+					  if(userId == opt.requirementReleasedUserIds[k]){
+						  var contains = true;
+					  }
+				   }
+			   }
+			 
+			   if(contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN'){
 	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
 
 			   	 }else{	
@@ -508,7 +514,7 @@ function prepareRequirementData(data){
         }
 		else{
            result = result +"<div>--</div>";
-          }    
+       }    '</sec:authorize>';    
 		result = result +"</div></td>";
         result = result +"</tr>";
         result = result +"</tr>";
@@ -1593,20 +1599,20 @@ function requirementPipeline(requirementId){
 										onclick="requirementList();"><label for="c6">New<span
 											id="newRequirementCount"></span></label></li>
 									<li><input id="c7" name="requirementStatus"
-										type="checkbox" value="Draft" onclick="requirementList();"><label
+										type="checkbox" value="DRAFT" onclick="requirementList();"><label
 										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
 									<li><input id="c8" type="checkbox"
-										name="requirementStatus" type="checkbox" value="submitted"
+										name="requirementStatus" type="checkbox" value="SUBMITTED"
 										onclick="requirementList();"><label for="c8">Submitted
 											<span id="submittedRequirementCount"></span>
 									</label></li>
 									<li><input id="c9" type="checkbox"
-										name="requirementStatus" type="checkbox" value="open"
+										name="requirementStatus" type="checkbox" value="OPEN"
 										onclick="requirementList();"><label for="c9">Open
 											<span id="openRequirementCount"></span>
 									</label></li>
 									<li><input id="c10" type="checkbox"
-										name="requirementStatus" type="checkbox" value="onhold"
+										name="requirementStatus" type="checkbox" value="ONHOLD"
 										onclick="requirementList();"><label for="10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
