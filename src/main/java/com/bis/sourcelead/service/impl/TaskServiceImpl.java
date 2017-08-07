@@ -280,7 +280,7 @@ public class TaskServiceImpl implements TaskService{
 		Timezone timezone = timeZoneService.getTimezone(task.getOwnerOrglocationId().getTimezone().getId());
 		
 		OrgLocations orglo = orgLocationService.getOrgLocations(task.getOwnerOrglocationId().getId());
-		SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
+	//	SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
 		
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
@@ -304,7 +304,7 @@ public class TaskServiceImpl implements TaskService{
 			 globalVarsMap.put("priority", "--");	 
 			 }
 			 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-			 task.setTaskDateStr(simpleDateFormat.format(task.getTaskDate()));
+			 task.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),task.getTaskDate()));
 			 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 			 globalVarsMap.put("date", task.getTaskDateStr());	 
 			 	}

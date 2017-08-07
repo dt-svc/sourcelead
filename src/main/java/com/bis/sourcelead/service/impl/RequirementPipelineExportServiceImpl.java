@@ -62,11 +62,11 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			Workbook createExcelworkbook = new XSSFWorkbook();
 			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			
-			SimpleDateFormat  simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+			//SimpleDateFormat  simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 					
 			
 			StringBuilder excelStringBuilder=new StringBuilder();
-			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(simpleDateFormat.format(new Date())).toString());
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString());
 			Row writeRow = null;
 			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
 				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
@@ -133,7 +133,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 			StringBuilder tempFileBuilder=new StringBuilder();
-			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(simpleDateFormat.format(new Date())).toString(),".xls");
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -168,8 +168,8 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		}
 		if (requirementsub.getCreatedDate() != null) {
 			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			SimpleDateFormat simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
-			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
+			//SimpleDateFormat simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+			String createdDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())) {
@@ -290,7 +290,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		
 		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		 
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
@@ -308,7 +308,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		}
 		if (requirementsub.getCreatedDate() != null) {
 			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
+			String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
@@ -498,7 +498,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
@@ -515,7 +515,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		}
 		if (requirementsub.getCreatedDate() != null	&& !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())) {
 			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
+			String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
@@ -662,7 +662,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		
 		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
@@ -679,7 +679,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		}
 		if (requirementsub.getCreatedDate() != null) {
 			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = simpleDateFormat.format(requirementsub.getCreatedDate());
+			String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementsub.getCreatedDate());
 			writeRow.createCell(4).setCellValue(createdDate);
 		}
 		if (requirementsub.getExpectedCTC() != null && !"".equalsIgnoreCase(requirementsub.getExpectedCTC())) {
