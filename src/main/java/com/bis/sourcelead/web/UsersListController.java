@@ -146,17 +146,19 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		 List<UserRole> activeList = null;
 		 List<UserRole> inactiveList = null;
 		 List<UserRole> notLoggedInList = null;
-		 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
- 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(dateFormat.format(new Date())).toString());
          
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
  		List<UserRole> rolesList = new ArrayList<UserRole>();
- 		
+ 		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+ 		 DateFormat dateFormat = simpleDateFormat;
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(dateFormat.format(new Date())).toString());
+
  		try {
  			
  			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){

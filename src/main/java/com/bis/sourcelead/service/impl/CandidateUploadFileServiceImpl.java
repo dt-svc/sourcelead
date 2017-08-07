@@ -526,8 +526,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 						 jsonObj.put("experienceYears", String.valueOf(years));
 						 jsonObj.put("experienceMonths", "0");
 					 }else{
-						 jsonObj.put("experienceYears", "0");
-						 jsonObj.put("experienceMonths", "0");
+						 jsonObj.put("experienceYears", "");
+						 jsonObj.put("experienceMonths", "");
 					 }
 					 
 				 }

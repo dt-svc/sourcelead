@@ -102,7 +102,9 @@ public class AddExpensesRestController {
 	private PdfConversionUtil pdfConversionUtil;
 	
 	@RequestMapping(value = "/getClientByProjectMemberId", method = RequestMethod.GET)
-	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId) throws Exception {
+	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
+		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(locationId);
+		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != projectMemberId && !"".equalsIgnoreCase(projectMemberId)){
 			ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
 			if(null != projectMembers.getProjects()){
@@ -117,9 +119,9 @@ public class AddExpensesRestController {
 					 }
 
 					}
-					 project.setStartDateStr(LoginSessionController.DATEFORMAT.format(project.getStartDate()));
+					 project.setStartDateStr(simpleDateFormat.format(project.getStartDate()));
 					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-					 project.setEndDateStr(LoginSessionController.DATEFORMAT.format(project.getEndDate()));
+					 project.setEndDateStr(simpleDateFormat.format(project.getEndDate()));
 					 }
 				 return commonUtil.toJSON(project);
 			}
@@ -169,11 +171,12 @@ public class AddExpensesRestController {
 		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    
 		    String isSuperUser = Constants.NO;
+		    SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
 		    	isSuperUser = Constants.YES;
 		    }
 		    
-			DateFormat format = LoginSessionController.DATEFORMAT;
+			DateFormat format = simpleDateFormat;
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
@@ -380,7 +383,7 @@ public class AddExpensesRestController {
 				 StringBuilder acceptBuilder=new StringBuilder();
 			     StringBuilder rejectBuilder=new StringBuilder();
 			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=reject&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			
 				 
 //				 StringBuilder loginURLSB = new StringBuilder();

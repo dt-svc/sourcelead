@@ -16,7 +16,6 @@ import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 
 @Repository

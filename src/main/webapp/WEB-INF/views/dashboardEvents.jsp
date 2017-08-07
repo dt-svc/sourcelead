@@ -202,6 +202,18 @@ function dashboardAddInterview(){
 	var selectedDate = $("#eventCalendar").val();
 	$('.action-pop').slideUp();
 	interviewTemplate();
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  DashBoardInterViewDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  DashBoardInterViewDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  DashBoardInterViewDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  DashBoardInterViewDate = 'YYYY-DD-MM'; 
+	  }  
+	
 	var result = "";
 	result = result + '<div class="add_inter addinterview_dashboard">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
@@ -251,7 +263,7 @@ function dashboardAddInterview(){
 			result = result + '<tr id="divTsRow0">';
 				result = result + '<th>Applicant</th>';
 				result = result + '<th>Interview Type</th>';
-				result = result + '<th>Interview Date</th>';
+				result = result + '<th>Interview Date<br>(<small class="custom-small">'+DashBoardInterViewDate+'</small>)</th>';
 				result = result + '<th>Start - End Time</th>';	
 				result = result + '<th>Time Zone</th>';
 				result = result + '<th>Details</th>';
@@ -821,10 +833,21 @@ function cancelAddInterviewDiv(){
 	
   <script>
   $(function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEDashboardeventCalendar = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEDashboardeventCalendar = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
+	  }
     $("#eventCalendar" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
-      dateFormat : 'dd-mm-yy',
+      dateFormat : finalDateFormatEDashboardeventCalendar,
       onSelect : function(selected) {
   		getInterviewsandTasks();
 	   }
@@ -864,9 +887,10 @@ function feedbackView(interviewId,templateId){
 	$(".feedback_view").show(200);
 	$(".mask_inner").fadeIn(200);
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "GET",
-		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 			success: function(data) {
 				var json = JSON.parse(data);
 				var result = "";

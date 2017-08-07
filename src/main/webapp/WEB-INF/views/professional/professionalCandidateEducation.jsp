@@ -78,6 +78,19 @@ function professionalCandidateEducation(candidateId){
 function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candidateEducationListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candidateEducationListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candidateEducationListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candidateEducationListDate = 'YYYY-DD-MM'; 
+	  }
+	
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -110,10 +123,10 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Start date<br>(<small class="custom-small">'+candidateEducationListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End date<br>(<small class="custom-small">'+candidateEducationListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -170,19 +183,19 @@ function candidateEducationList(candidateId){
 	                    		 }
 	                    		 else{
 	                    			 if(candidateType == "Candidates"){
-	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a>';
 	                    			 }else{
-	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a>';
 	                    			 }
 	                    				 
 	                    		 }
 	                    		 if(window.candidateStatusGlobal == '0'){
-									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
+									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';''
 	                    		 }else{
 	                    			 if(candidateType == "Candidates"){
-	                    				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+	                    				 result = result+'<i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></div></td>';	 
 	                    			 }else{
-	                    				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+	                    				 result = result+' <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></div></td>';
 	                    			 }
 	                    			  
 	                    		 }

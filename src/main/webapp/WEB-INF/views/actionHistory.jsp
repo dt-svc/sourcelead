@@ -57,7 +57,7 @@ margin-top: 75px; padding:10px; border: 1px solid #ddd;
   <section class="container actionHistory">
   <h4>Actions Performed</h4>
   <div class="clients_wrap_table">
-	<div id="actionHistoryList" class="clearfix require_wrap_table overflow_inherint"></div>
+	<div id="actionHistoryList" class="clearfix clients_wrap_table overflow_inherint"></div>
 <div class="clearfix text-center mb">
 <div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 <%-- 	<a href="<c:url value='/login'/>" class="btn btn-primary" title="Go to Loginpage">Go to Login <i class="fa fa-arrow-right paddingLeft"></i></a> --%>
@@ -88,12 +88,12 @@ function actionHistoryList(userSessionId){
 			    	     $("#actionHistoryLoading").removeAttr("style");
 	                	 $("#actionHistoryList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='actionHistoryPagenation' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='actionHistoryPagenation' class='display ' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result = result +"    <th>Action Name</th>";
-	                     result = result +"    <th>Action Performed</th>";
-	                     result = result +"    <th>Action Date</th>"; 
+	                     result = result +"    <th class='textLeft'>Action Time</th>";
+	                     result = result +"    <th class='textLeft'>Action Name</th>";
+	                     result = result +"    <th class='textLeft'>Action Performed</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -102,24 +102,26 @@ function actionHistoryList(userSessionId){
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
+	                    	 
+	                    	 	if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
+	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionTimeStr+"'>"+opt.actionTimeStr+"</div></td>"; 
+	                    	    }else{
+	                    	     result = result +"<td><div class='textLeft'>---</div></td>"; 
+	                    	    }
 	                    	   
 	                    	    if(opt.actionName != null && opt.actionName !='' && opt.actionName !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.actionName+"'>"+opt.actionName+"</div></td>";
+	                    		 result = result +"<td><div class='textLeft' title='"+opt.actionName+"'>"+opt.actionName+"</div></td>";
 	                    	    }else{
-	                    	     result = result +"<td><div><span title=''>---</span></div></td>";	
+	                    	     result = result +"<td><div class='textLeft'>---</div></td>";	
 	                    	    }
 	                    	    
 	                    	    if(opt.actionPerformed != null && opt.actionPerformed !='' && opt.actionPerformed !='undefined'){
-	                    		 result = result +"<td><div>"+opt.actionPerformed+"</div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-big textLeft' title='"+opt.actionPerformed+"'>"+opt.actionPerformed+"</div></td>";
 	                    	    }else{
-	                    	     result = result +"<td><div><span>---</span></div></td>";
+	                    	     result = result +"<td><div class='textLeft'>---</div></td>";
 	                    	    }
 	                    	    
-	                    	    if(opt.actionTimeStr != null && opt.actionTimeStr !='' && opt.actionTimeStr !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-vsm' title='"+opt.actionTimeStr+"'>"+opt.actionTimeStr+"</div></td>"; 
-	                    	    }else{
-	                    	     result = result +"<td><div><span>---</span></div></td>"; 
-	                    	    }
+	                    	   
 	                    	    
 		                     result = result +"</tr>";
 	                     }

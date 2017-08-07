@@ -71,6 +71,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
+	  		closePop();
 			return true;
 		 }else{ 
 				return false;
@@ -90,6 +91,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
           result = result +"    <th>&nbsp;</th>";
+          /*result = result +"    <th>Generated ID</th>";*/ 
           result = result +"    <th>Name</th>"; 
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
@@ -121,6 +123,7 @@ function cpagination(url){
         }),
         "columns": [
             { "data": "isAssociate" },
+            /*{ "data": "generatedId"},*/
             { "data": "firstName"},
             { "data": "primarySkill" },
             { "data": "designationType"},
@@ -157,7 +160,20 @@ function cpagination(url){
 		              result = result +"</div>";
 		              return  result;
 	    	  	}
-	      }, {
+	      },/*{
+	    	  "targets": colIndex++,
+              "data": "generatedId",
+              "render": function ( data, type, full, meta ) {
+            	  
+              		var result = "";
+              		if(full.generatedId != null && full.generatedId != '' && full.generatedId != "undefined"){
+  	            	  		result = result +"<div><span title='"+full.generatedId+"'>"+full.generatedId+"</span></div>";
+  	              	}else{
+  	            	  		result = result +"<div>----</div>";
+  	             	}
+  	              return result;
+              }
+	          }*/{
             "targets": colIndex++,
             "data": "firstName",
             "render": function ( data, type, full, meta ) {
