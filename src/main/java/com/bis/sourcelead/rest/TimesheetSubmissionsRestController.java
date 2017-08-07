@@ -177,9 +177,10 @@ public class TimesheetSubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	DateFormat  sdf = LoginSessionController.DATEFORMAT;
-        Date sDate  =  sdf.parse(startDate);
-        Date eDate  =  sdf.parse(endDate);
+	 	SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+	 	//DateFormat  sdf = LoginSessionController.DATEFORMAT;
+        Date sDate  =  simpleDateFormat.parse(startDate);
+        Date eDate  =  simpleDateFormat.parse(endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);

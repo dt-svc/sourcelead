@@ -1347,6 +1347,7 @@ public class RequirementListRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		File file = null;
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		RequirementSubmissionCounts requirementSubmissionCounts = getRequirementSubmissionsCount(Long.valueOf(requirementId), user, loginOrgLocation,loginUserRole);
 		if (requirementId != null && !requirementId.isEmpty()) {
 			List<RequirementSubmission> requirementStatusList = null;
@@ -1389,13 +1390,13 @@ public class RequirementListRestController {
 							else {
 								requirementSubmission.setSubmittedBy(usr.getFirstName());
 							}
-							requirementSubmission.setSubmittedOn(LoginSessionController.DATEFORMAT.format(requirementSubmissionHistory.getCreatedDate()));
+							requirementSubmission.setSubmittedOn(simpleDateFormat.format(requirementSubmissionHistory.getCreatedDate()));
 						}
 						if (requirementOffersList.size() > 0) {
 							RequirementOffers requirementOffers = requirementOffersList.get(0);
 							requirementSubmission.setOfferId(requirementOffers.getId());
 							if (requirementOffers.getDateOfJoining() != null) {
-								requirementSubmission.setOfferJoinDate(LoginSessionController.DATEFORMAT.format(requirementOffers.getDateOfJoining()));
+								requirementSubmission.setOfferJoinDate(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
 							}
 							if (requirementOffers.getPaymentType() != null) {
 								requirementSubmission.setPositionType(requirementOffers.getPaymentType());

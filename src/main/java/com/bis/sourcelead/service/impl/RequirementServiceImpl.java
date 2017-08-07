@@ -856,7 +856,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 * System Generated Id For Job
 			 */
 			
-		requirement.setGeneratedId(getRequirementId(orgLocations));
+		//requirement.setGeneratedId(getRequirementId(orgLocations));
 		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
