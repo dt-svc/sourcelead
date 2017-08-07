@@ -120,6 +120,7 @@ $(document).ready(function() {
 			assignedToValidation();
 		}	
 	} 
+	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
 
@@ -692,7 +693,7 @@ $(document).ready(function () {
 		 <div class="form-group">
 			<label class="col-md-3">Zip Code</label>
 			<div class="col-md-9">
-			     <input type="text"  class="form-control" name="zipcode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" >
+			     <input type="text"  class="form-control" name="zipCode" id="ReqZipCode" value="${requirement.zipCode}" placeholder="Zip Code" field-name="zip Code" readonly>
 			</div>
 		</div>
 		
