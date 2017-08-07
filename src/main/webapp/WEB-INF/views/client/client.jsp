@@ -2,13 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
 
 <script type="text/javascript">
 window.onload = function () {
@@ -408,41 +401,40 @@ function getOrgDetails()
    	        success: function(data) {
    	        	if(data != null && data != ''){
    	        		var json = JSON.parse(data);
-	   	        		if(json['website'] != null && json['website'] != ''){
-				      		$("#webSite").val(json['website']);
-				      		$("#webSite").attr("disabled", true);
-				      	}
-	   	        		if(json['location'] != null && json['location'] != ''){
-	   	        		$('#clientLocation').attr("data-validation-optional", "true");  
-			      		document.getElementById("locationDiv").style.display="none";
-   	        			document.getElementById("orgLocationDiv").style.display="";
-   	        		    $("#orgLocation").val(json['location']);
-			      		}
-	   	        		if(json['country'] != null && json['country'] != ''){
+   	        		if(json['country'] != null && json['country'] != ''){
    	        			document.getElementById("countryDiv").style.display="none";
    	        			document.getElementById("orgCountryDiv").style.display="";
    	        		    $("#orgCountry").val(json['country'] );
-   	        		 	}
+   	        		}
    	        		
-   	        			document.getElementById("stateDiv").style.display="none";
-   	        			document.getElementById("orgStateDiv").style.display="";
-   	        			if(json['state'] != null && json['state'] != ''){
-   	        		    $("#orgState").val(json['state']);
-   	        			}
-   	        		
-   	        			document.getElementById("cityDiv").style.display="none";
-   	        			document.getElementById("orgCityDiv").style.display="";
-   	        			if(json['city'] != null && json['city'] != ''){
+   	        		if(json['state'] != null && json['state'] != ''){
+        			document.getElementById("stateDiv").style.display="none";
+        			document.getElementById("orgStateDiv").style.display="";
+  	        		    $("#orgState").val(json['state']);
+  	        		}
+   	        		if(json['city'] != null && json['city'] != ''){
+	       			document.getElementById("cityDiv").style.display="none";
+	       			document.getElementById("orgCityDiv").style.display="";
    	        		    $("#orgCity").val(json['city']);
-   	        	    	}
-   	        			
-   	        			if(json['zipCode'] != null && json['zipCode'] != ''){
-			      		document.getElementById("zipCodeDiv").style.display="none";
-   	        			document.getElementById("orgZipCodeDiv").style.display="";
+   	        		}
+		   	        
+			      	if(json['website'] != null && json['website'] != ''){
+			      		$("#webSite").val(json['website']);
+			      		$("#webSite").attr("disabled", true);
+			      	}
+			      	
+			      	if(json['location'] != null && json['location'] != ''){
+			      	$('#clientLocation').attr("data-validation-optional", "true");  
+			      	document.getElementById("locationDiv").style.display="none";
+   	        		document.getElementById("orgLocationDiv").style.display="";
+   	        		    $("#orgLocation").val(json['location']);
+			      	}
+			      	
+			      	if(json['zipCode'] != null && json['zipCode'] != ''){
+			      	document.getElementById("zipCodeDiv").style.display="none";
+   	        		document.getElementById("orgZipCodeDiv").style.display="";
    	        		    $("#orgZipCode").val(json['zipCode']);
-			      	    }
-			    	
-			      	 
+			      	}
    	        	}
    			 },
    	        error: function(e){

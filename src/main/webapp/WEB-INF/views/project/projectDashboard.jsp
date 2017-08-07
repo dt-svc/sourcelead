@@ -1,28 +1,9 @@
-<!-- <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet"> -->
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/bootstrap-select.min.js"></script>
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  -->
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 
  <style>
  
@@ -323,7 +304,7 @@ $(document).ready(function() {
 
 <script>
 function pagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+// 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#example').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -361,7 +342,16 @@ function filter(){
 		clients.push($(this).val());
 		    });
 	
-	
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  projectListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  projectListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  projectListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  projectListDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getProjectsByStatusAndClient?${_csrf.parameterName}=${_csrf.token}&values="+values+"&clients="+clients, 	   
@@ -374,7 +364,7 @@ function filter(){
    		    	result = result +'    <th>Name</th>'; 
    		    	result = result +'     <th>Manager</th>';
    		    	result = result +'     <th>Invoice Frequency</th>';
-   		    	result = result +'     <th>Date</th>';
+   		    	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
    		    	result = result +'      <th>Client</th>';
    		    	result = result +'       <th>Status</th>';
    		    	result = result +'    </tr>';
@@ -383,6 +373,7 @@ function filter(){
    		    	for (var i=0; i<json.length; i++)
    				{   
    		    		var report = json[i];
+   		    		
    		    		var projectSequeneNumber;
    		    		if(report.projectSequeneNumber != null && report.projectSequeneNumber != '' && report.projectSequeneNumber !='undefined'){
    		    				projectSequeneNumber = report.projectSequeneNumber;

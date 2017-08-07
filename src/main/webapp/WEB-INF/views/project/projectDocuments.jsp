@@ -3,12 +3,14 @@
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
+<style>
+.validation_p p.jquery_form_error_message {
+    bottom: -26px;
+}
+</style>
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 	function projectDocuments(projectId, status) {
@@ -107,6 +109,7 @@ function addProjectDocument(projectId) {
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
 	result = result+'</div>';
+	result = result  +'<div class="clearfix"></div>';
 	result = result+'</div>';  
 	result = result+'</div>'; 
  
@@ -166,7 +169,7 @@ function getDocument(projectId, documentId){
    		    		description = json.description;
    		    	}
 	   		 	result = result  +'<!-- Popup Div -->';
-	   		 	result = result  +'<form role="form"  id="projectDocumentType_form" name="projectDocumentType_form" method="post" > ';
+	   		 	result = result  +'<form role="form"  id="editProjectDocumentType_form" name="editProjectDocumentType_form" method="post" > ';
 	   		 	result = result  +'<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	   		 	result = result  +'<div class="form-horizontal clearfix"> ';
 	   		 	result = result  +'   ';
@@ -195,7 +198,7 @@ function getDocument(projectId, documentId){
 	   		 	result = result+'</div>';  
 	   		 	
 	   		 	result = result  +'<div class="clearfix mr" id="docAddButton">';
-	   		     result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="storeProjectDocument('+projectId+','+documentId+');" />'; 
+	   		     result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="editStoreProjectDocument('+projectId+','+documentId+');" />'; 
 	   		 	result = result  +'</div>';
 	   		 	result = result  +'</div>';
 	   		 	result = result  +'</form>';
@@ -231,12 +234,52 @@ function getDocument(projectId, documentId){
 </script>
 
 <script type="text/javascript">
-	function storeProjectDocument(projectId,documentId){
+	function storeProjectDocument(projectId){
 			 if ($('#projectDocumentType_form').validate(false, validationSettings)){
 				var frm = $('#projectDocumentType_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
 				var form = $('#projectDocumentType_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#save_doc").attr("disabled", "disabled");
+         		$("#save_doc" ).addClass('button').val('Processing..');
+				//It will escape all the special characters
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/saveProjectDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&projectId="+projectId,
+						success : function(result) {
+								closePopup();
+								$("#popUpDiv").removeClass("edit-details-active");
+								projectDocuments(projectId);
+						},
+					}); 
+					return true;
+			 }else{ 
+					return false;
+			 } 
+		}
+		$('body').on('blur', '#projectDocumentType_form', function() {
+		$("#projectDocumentType_form").showHelpOnFocus();
+		$("#projectDocumentType_form").validateOnBlur(false, validationSettings);
+	});
+		
+</script>
+
+<script type="text/javascript">
+	function editStoreProjectDocument(projectId,documentId){
+			 if ($('#editProjectDocumentType_form').validate(false, validationSettings)){
+				var frm = $('#editProjectDocumentType_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#editProjectDocumentType_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#save_doc").attr("disabled", "disabled");
@@ -263,12 +306,15 @@ function getDocument(projectId, documentId){
 					return false;
 			 } 
 		}
-		$('body').on('blur', '#projectDocumentType_form', function() {
-		$("#projectDocumentType_form").showHelpOnFocus();
-		$("#projectDocumentType_form").validateOnBlur(false, validationSettings);
+		$('body').on('blur', '#editProjectDocumentType_form', function() {
+		$("#editProjectDocumentType_form").showHelpOnFocus();
+		$("#editProjectDocumentType_form").validateOnBlur(false, validationSettings);
 	});
 		
 </script>
+
+
+
 <script type="text/javascript">
 	(function($) {
 		$.fn.serializeFormJSON = function() {

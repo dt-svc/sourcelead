@@ -2,8 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
@@ -1095,14 +1093,27 @@ function customDate(){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatPayableDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatPayableDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatPayableDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatPayableDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatPayableDate = 'yy-dd-mm'; 
+	  }
+	  
+	
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatPayableDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+		 var dt = $(this).datepicker('getDate', '+1d');
+	      dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -1112,14 +1123,13 @@ function customDate(){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatPayableDate,
 		beforeShow: function(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+			 var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}

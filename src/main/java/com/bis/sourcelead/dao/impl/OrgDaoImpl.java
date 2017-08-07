@@ -259,7 +259,7 @@ public class OrgDaoImpl implements OrgDao {
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		
+		List<Org> orgsList = null;
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
 			userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
@@ -272,11 +272,15 @@ public class OrgDaoImpl implements OrgDao {
 		String orgNameSubQuery = "";
 		
 		if (!isNullOrEmpty(withoutWhitespace)) {
-			orgNameSubQuery = "and ((org.orgName LIKE '" + withoutWhitespace + "%') OR (org.user.email LIKE '" + withoutWhitespace + "')) ";
+			orgNameSubQuery = "and org.orgName LIKE :orgName";
+			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setString("orgName", withoutWhitespace + "%").setCacheable(true).list();
+		}else{
+			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
 		}
 		
-	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
-	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
+	    
         return orgsList;
 	}
 

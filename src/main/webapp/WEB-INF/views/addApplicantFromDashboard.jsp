@@ -1,8 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="resources/css/style.css" />
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
@@ -34,7 +31,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	var result = "";
 	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
 	result = result + '<h3>Add Applicant</h3>';
-	result = result + '<div class="form-horizontal clearfix select-field">';
+	result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="reqCoolingOffPeriod" name="reqCoolingOffPeriod" value=\''+reqCoolingOffPeriod+'\'>';
 	

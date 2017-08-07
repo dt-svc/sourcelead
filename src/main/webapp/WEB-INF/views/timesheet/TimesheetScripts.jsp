@@ -3,8 +3,8 @@
 <meta http-equiv="Expires" content="0">
 
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="resources/js/jquery.min.js"></script>
+<script src="resources/js/jquery-ui.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
 <link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" >

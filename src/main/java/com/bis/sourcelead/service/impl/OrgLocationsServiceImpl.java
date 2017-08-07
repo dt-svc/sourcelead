@@ -248,7 +248,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation,JSONObject jsonObj) throws NumberFormatException, Exception {
 			if(jsonObj.has("generatedUserId") && !"".equalsIgnoreCase(jsonObj.getString("generatedUserId"))){
-				orgLocation.setGeneratedUserId(jsonObj.getString("generatedUserId"));
+				orgLocation.setGeneratedUserId(jsonObj.getString("generatedUserId").toUpperCase());
 			}
 			if(jsonObj.has("timeZone") && !"".equalsIgnoreCase(jsonObj.getString("timeZone"))){
 				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(jsonObj.getString("timeZone")));

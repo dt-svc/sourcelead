@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,10 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Laxman
@@ -120,6 +124,20 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     
     @Column(name = "EXPECTED_RATE_PER")
 	private String expectedRatePer;
+    
+    @Transient
+    @JsonProperty
+    private String dob;
+    
+    @Transient
+    @JsonProperty
+    private Integer candidateWorkExperienceYears;
+    
+    @Transient
+    @JsonProperty
+    private Integer candidateWorkExperienceMonths;
+
+
     
 	public Long getId() {
 		return id;
@@ -353,5 +371,51 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 
 	public void setExpectedRatePer(String expectedRatePer) {
 		this.expectedRatePer = expectedRatePer;
+	}
+
+	public String getDob() {
+		if(dateOfBirth != null){
+			SimpleDateFormat dateFormat = requirementSubmission.getOrgLocations().getLocFullFormDateFormatter();
+			dob = dateFormat.format(dateOfBirth);	
+		}
+		return dob;
+	}
+
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
+
+	public Integer getCandidateWorkExperienceYears() {
+		if(workExperience != null && !workExperience.isEmpty()){
+			if(workExperience.contains(".")){
+				String[] exp = workExperience.split("\\.");
+				candidateWorkExperienceYears = Integer.parseInt(exp[0]);
+			}else{
+				candidateWorkExperienceYears = Integer.parseInt(workExperience);
+			}
+			
+		}
+		return candidateWorkExperienceYears;
+	}
+
+	public void setCandidateWorkExperienceYears(Integer candidateWorkExperienceYears) {
+		this.candidateWorkExperienceYears = candidateWorkExperienceYears;
+	}
+
+	public Integer getCandidateWorkExperienceMonths() {
+		if(workExperience != null && !workExperience.isEmpty()){
+			if(workExperience.contains(".")){
+				String[] exp = workExperience.split("\\.");
+				if(exp.length > 1){
+					candidateWorkExperienceMonths = Integer.parseInt(exp[1]);
+				}
+			}
+			
+		}
+		return candidateWorkExperienceMonths;
+	}
+
+	public void setCandidateWorkExperienceMonths(Integer candidateWorkExperienceMonths) {
+		this.candidateWorkExperienceMonths = candidateWorkExperienceMonths;
 	}
 }

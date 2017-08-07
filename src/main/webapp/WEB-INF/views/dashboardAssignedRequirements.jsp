@@ -14,7 +14,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
 
 <div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
       <!-- Assigned Requirements -->
@@ -164,7 +163,7 @@ function requirementList(){
 			         	    	  result = result +"<div class='text-center'>---</div>";
 			         	       }
 		         	        '</sec:authorize>';
-		         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		         	       
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
 		                       		 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
@@ -173,7 +172,7 @@ function requirementList(){
 		                       	 }
 		                     }else{
 			                     result = result +"<div>---</div>";
-		                     } '</sec:authorize>';
+		                     } 
 		                     result = result + '</div>';
 		                     result = result +"</td>";
 		                     if(checkSize>=10 && i==9 ){

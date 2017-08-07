@@ -11,10 +11,13 @@
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link rel="stylesheet" href="resources/css/export.css" type="text/css" media="all" />
+<link href="resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- <link href="resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
+<link href="resources/css/buttons.dataTables.min.css" rel="stylesheet">
 <link href="resources/css/dataTablePagination.css" rel="stylesheet" type="text/css">
 <link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/font-awesome.min.css">
@@ -29,13 +32,22 @@
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/h	tml5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
 <!-- <script src="resources/js/jquery-1.11.1.min.js"></script> -->
-<script src="resources/js/chosen.jquery.min.js"></script>
+
+
+<!--  Amcharts -->
+<script src="resources/js/pie.js"></script>
+<script src="resources/js/amcharts.js"></script>
+<script src="resources/js/serial.js"></script>
+<script src="resources/js/export.min.js"></script>
+<script src="resources/js/themes/light.js"></script>
+<!--  Amcharts -->
+<script src="resources/js/bootstrap-colorpicker.min.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
 <script src="resources/js/jquery.dataTables.min.js"></script>
@@ -46,6 +58,22 @@
 <script src="resources/js/moment.min.js"></script>
 <script src="resources/js/datetime-moment.js"></script>
 
+<!--  Data tables script files -->
+<!-- <script src="resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="resources/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<!--  chosen jquery -->
+<script src="resources/js/chosen.jquery.min.js"></script>
+<!--  chosen jquery -->
+<script src="resources/js/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<!--  Data tables script files ends -->
+
+
 
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -53,6 +81,7 @@
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
+
 
 
 <style>
@@ -481,18 +510,9 @@ function preventTabkey(e){
                     <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="<c:url value='/displayUserImage/${report.notificationFrom.id}'/>">
                     </span> </div>
                     <div class="msg-content">
-                    <c:if test="${report.actionLink != ''  && report.actionLink !='undefined' && ! empty report.actionLink}">
-                     <a href="${report.actionLink}"><p>${report.body}</p>
-                     <c:out value="${userId}" />
-                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a> --%>
-                      <span>${report.calDays}</span></a> 
-                      </c:if>
-                    <c:if test="${empty report.actionLink}">
                      <a href="#"><p>${report.body}</p>
                      <c:out value="${userId}" />
-                      <%-- <span>${report.calDays} days ago at ${report.time} ${report.dateValue}</span></a>  --%>
                       <span>${report.calDays}</span></a> 
-                  	</c:if>
                    </div>
                   </div>
                 </li>
@@ -505,7 +525,7 @@ function preventTabkey(e){
           </c:if>
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
-           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
+           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
@@ -1358,6 +1378,9 @@ $("#searchType").selectpicker('refresh');
 
 <!-- Task related code Ends -->
 <!--  Company Invite pop -->
+<div class="success_pop" id="inviteCompanyId" style="display: none;">
+   	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
+</div>
 <div class="sideMask"></div>
 <div class="modal modalInvite" class="invite" role="dialog">
     <div class="modal-dialog">
@@ -1369,6 +1392,7 @@ $("#searchType").selectpicker('refresh');
           <h4 class="modal-title">Invite Company</h4>
         </div>
         <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+         
         <div class="modal-body invite_class">
             <div class="form-group clearfix">
                 <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
@@ -1453,7 +1477,12 @@ function saveInviteCompany() {
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
 					success : function(result) {
 						 $(".modalInvite").fadeOut();
-						  $(".sideMask").fadeOut();
+						  $(".sideMask").fadeOut(); 
+						  $("#inviteCompanyId").removeAttr("style");
+	            		  $("#inviteCompanyId").css({ display: "block" });
+	        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+	        			  companyMsgFadeinFunction();
+	        			  flushInviteCompany();
 					},
 				});
 		return true;
@@ -1466,7 +1495,12 @@ $('body').on('blur', '#inviteCompany_form', function() {
 	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
 });
 </script>
-
+<script>
+	function companyMsgFadeinFunction() {
+		$("#inviteCompanyId").fadeIn(200);
+        $('#inviteCompanyId').fadeOut(3000);
+	}
+</script> 
 <!-- 
 <script>
 // This example displays an address form, using the autocomplete feature

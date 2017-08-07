@@ -76,7 +76,7 @@
 					<div class="col-md-9" id="errProject">
 
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<c:if test="${fn:length(expEntry.projectMembersList) gt 1}">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
@@ -109,9 +109,9 @@
 	</div>
 </div>
 <div class="expensHead">
-<div class="form-group">
-<span class="col-md-3">Expenses Amount Total:</span>
-<div class="col-md-9">
+<div class="form-group col-md-6 mt5 mb5 noPad">
+<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
@@ -139,7 +139,7 @@
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.expensesCategoryId.expensesName}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
+			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me" title="${entry.description}">${entry.description}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
@@ -266,9 +266,9 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			$("#submitForApprovalExpensesId").prop('disabled', true);
+			/* $("#submitForApprovalExpensesId").prop('disabled', true);
 			$("#draftForApprovalExpensesId").prop('disabled', true);
-			$("#cancelForApprovalExpensesId").prop('disabled', true);
+			$("#cancelForApprovalExpensesId").prop('disabled', true); */
 			
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
@@ -359,10 +359,11 @@
 <script>
 function getClientBasedOnSelectedProject(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId,       
+	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId+"&locationId="+locationId,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);

@@ -108,14 +108,14 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		
 		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-		if(StringUtils.isNotEmpty(startDate)){
+		if(StringUtils.isNotEmpty(startDate) && !startDate.equalsIgnoreCase("undefined")){
 			Date startTime = dateFormat.parse(startDate);
 			String customStartTimeStr = TZ_DF_CSD.format(startTime);
 			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 			startDateUTC = TZ_DF_TS.parse(startDateString);
 		}
 		
-		if(StringUtils.isNotEmpty(endDate)){
+		if(StringUtils.isNotEmpty(endDate) && !startDate.equalsIgnoreCase("undefined")){
 			Date endTime =  dateFormat.parse(endDate);
 			String customEndTimeStr = TZ_DF_CED.format(endTime);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
@@ -571,8 +571,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
-				 globalVarsMap.put("reopenUser",orgLoc.getUser().getFirstName());
+				 globalVarsMap.put("approverUser",orgLoc.getUser().getFirstName());
+				 globalVarsMap.put("reopenUser",reopenedUser.getFirstName());
 				 globalVarsMap.put("projectName", projectName);
 				 globalVarsMap.put("clientName",expenses.getClientName());
 				 
@@ -624,7 +624,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLoc, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, orgLoc.getUser(), reopenedUser, orgLoc, notificationScenario);
 
 		}
 
