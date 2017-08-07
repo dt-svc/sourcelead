@@ -1018,10 +1018,10 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			
 			
-		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode "+subQueryDateRange+" ";
+		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy.id =:userCode "+subQueryDateRange+" ";
 			Session session = this.sessionFactory.getCurrentSession();
 		    params.put("orgLocationId",orgLocationId);
-		    params.put("userCode",user.getUserCode());
+		    params.put("userCode",user.getId());
 			
 			/*String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
 			Session session = this.sessionFactory.getCurrentSession();
