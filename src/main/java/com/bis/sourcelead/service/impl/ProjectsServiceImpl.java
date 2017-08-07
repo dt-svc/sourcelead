@@ -451,7 +451,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		// generated id for project
 		
-		projects.setGeneratedId(getProjectId(loginOrgLocation));
+		//projects.setGeneratedId(getProjectId(loginOrgLocation));
+		
 		//prepare projectmembers list...
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);

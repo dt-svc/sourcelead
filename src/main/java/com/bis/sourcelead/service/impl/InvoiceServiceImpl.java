@@ -97,6 +97,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.ExpensesInvoicePdfHelper;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -184,6 +185,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+//	@Autowired
+//	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
 	
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
@@ -2558,16 +2562,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
 
-		// store attached Documents (after)
-//		File file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType,	vendorCurrencyCode, loginOrgCurrencyCode);
-//		invoice.setFileName(file.getName());
-		// byte[] bytesArray = new byte[(int) file.length()];
-//		byte[] bytesArray = getByteArray(file);
-//		invoice.setDocFile(bytesArray);
-//		invoiceDao.saveInvoce(invoice);
-//		if (null != file) {
-//			file.delete();
-//		}
+		/*//store attached Documents (after)
+		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType,	vendorCurrencyCode, loginOrgCurrencyCode);
+		invoice.setFileName(file.getName());
+		byte[] bytesArray = getByteArray(file);
+		invoice.setDocFile(bytesArray);
+		invoiceDao.saveInvoce(invoice);
+		if (null != file) {
+			file.delete();
+		}*/
 
 		if (invoice.getSubmissionApproverHierarchyIds() != null
 				&& invoice.getSubmissionApproverHierarchyIds().size() > 0) {

@@ -530,7 +530,7 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setSystemGeneratedId(Constants.CANDIDATE_ENTITY);
 		candidate.setGeneratedId(sb.append(candidate.getSystemGeneratedId()).append(entityGenId).toString());*/
 		
-		candidate.setGeneratedId(getCandidateId(orgLocations));
+		/*candidate.setGeneratedId(getCandidateId(orgLocations));*/
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);
@@ -1419,6 +1419,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setUpdatedDate(commonUtil.currentDate());
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);

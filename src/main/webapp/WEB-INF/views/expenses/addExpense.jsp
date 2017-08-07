@@ -76,7 +76,7 @@
 					<div class="col-md-9" id="errProject">
 
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<c:if test="${fn:length(expEntry.projectMembersList) gt 1}">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
@@ -266,9 +266,9 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			$("#submitForApprovalExpensesId").prop('disabled', true);
+			/* $("#submitForApprovalExpensesId").prop('disabled', true);
 			$("#draftForApprovalExpensesId").prop('disabled', true);
-			$("#cancelForApprovalExpensesId").prop('disabled', true);
+			$("#cancelForApprovalExpensesId").prop('disabled', true); */
 			
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
