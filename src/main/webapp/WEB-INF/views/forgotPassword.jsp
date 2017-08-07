@@ -41,8 +41,8 @@
     </div>
 </div>  
   
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+	<script src="resources/js/jquery.min.js"></script>
+    <script src="resources/js/jquery-ui.js"></script>
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/jquery-fun.js"></script> 
     

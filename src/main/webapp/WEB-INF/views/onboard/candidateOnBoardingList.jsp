@@ -183,14 +183,20 @@
                         			 if(opt.candidateOnBoardStatus == 'Rejected'){
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div><i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i></td>";
                         			 }else if(opt.candidateOnBoardStatus == 'Accepted'){
-                            			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
+                            			 result = result +"<td><div>Completed</div></td>";
                             		 }else{
                         				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                         			 }
                         			 
                         		 }
                     		 }else{
-                    			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    			 if(opt.candidateOnBoardStatus == 'Accepted'){
+                    				 result = result +"<td><div>Completed</div></td>"
+                    			 }else{
+                    				 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    			 }
+                    			 
+                    			
                     		 }
                     		 
                     		 
@@ -296,7 +302,7 @@
                     		 result = result +"<td><div><span>"+opt.offBoardStatus+"</span></div></td>";
                     		 
                     		 if(opt.offboardSubmitted == 'Y'){
-                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    			 result = result +"<td><div><span class='text-success'>Completed</span></div></td>";
                     		 }else{
                     			 result = result +"<td><div><span class='text-warning'>Pending</span></div></td>";
                     		 }

@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -178,19 +179,20 @@ public class ProjectPlanningRestController {
 	 
 	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
 		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
-			
-			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			int estimatedHours = 0;
 			
 			try {
 
-				Date requestStartDate =  formatter.parse(startDate);
+				Date requestStartDate =  simpleDateFormat.parse(startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  formatter.parse(endDate);
+				Date requestEndDate =  simpleDateFormat.parse(endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
