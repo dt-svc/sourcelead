@@ -3,11 +3,7 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script src="resources/js/formvalidator.js"></script>
-
 
 <section class="content-wraper">
     <div id="onboardingLoading"></div>

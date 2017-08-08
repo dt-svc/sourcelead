@@ -3,19 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
-
-
-
-
 <style type="text/css">
 vendor_wrap {
 overflow-x: auto;
@@ -796,7 +783,6 @@ $(document).ready(function(){
 function preparedVendorsListFromElk(data){
 	var json = JSON.parse(data);
 		   	var result = "";
-		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
 		   	result = result +' <th>Vendor Name</th>';
@@ -888,7 +874,6 @@ function preparedVendorsListFromElk(data){
 		    	result = result +'</tbody>';
 			    $("#vendorList").empty();  
 			    $("#vendorList").append(result)
-			    
 			    for (var i=0; i<json.length; i++)
 				{  
 		   		
@@ -898,7 +883,7 @@ function preparedVendorsListFromElk(data){
 			    
 				}
 			    $("#emptyVendorList").val(json.length)
-			    pagination1();
+			    pagination123456();
 }
 </script>
 
@@ -1041,7 +1026,7 @@ function getVendorListsElk(){
 
 
  <script>
-function pagination1(){  
+function pagination123456(){  
 	document.getElementById("vendorContactList").style.display="none";
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
@@ -1055,7 +1040,8 @@ function pagination1(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
-    } );
+    });
+    $('#vendorList').wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -1524,8 +1510,8 @@ function pagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-		
-    } );
+    });
+    $('#vendorContactList').wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -1648,38 +1634,6 @@ function getClientDetails(){
 }	
 </script> 
 
-<script>
-function pagination1(){  
-	/* document.getElementById("vendorList").style.display="none"; */
-	/*  document.getElementById("vendorList_info").style.display="none"; 
-	 document.getElementById("vendorList_paginate").style.display="none";  */
-    $('#vendorList').DataTable( { 
-    	"scrollCollapse": false,
-    	//"scrollX": true,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
-	 
-	 
-   /*  $(document).ready(function() {
-    	var oTable = $('#example').dataTable( {
-    	"sScrollY": "200px",
-    	"bPaginate": false
-    	} );
-    	$(window).bind('resize', function () {
-    	oTable.fnAdjustColumnSizing();
-    	} ); document.getElementById("example").style.display="block";
-
-    	} ); */
-    $(".dataTables_empty").html("");
-}
-</script>
 <script>
 	function vendorSpocSideBar(spocId,ownerId,spocUserId,spocName,tempOwnerId,spocLocationId,orgRelationId,userId) {
 		var result = "";
