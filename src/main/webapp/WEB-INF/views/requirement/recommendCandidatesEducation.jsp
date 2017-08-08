@@ -53,6 +53,18 @@ function candidateEducation(candidateId){
 function candidateEducationList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candEduListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candEduListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candEduListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candEduListDate = 'YYYY-DD-MM'; 
+	  }
+	 
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -72,8 +84,8 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+candEduListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+candEduListDate+'</small>)</th>';
 	                 	 result  = result + '           <th>Score</th>';
 	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
