@@ -299,13 +299,14 @@ function getUsersSearchResult(searchValue){
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
+	var viewType = "LISTVIEW";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls&viewType=LISTVIEW";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -351,13 +352,14 @@ function flushAdvancedData(){
 function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
+	var viewType = "LISTVIEW";
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var userRole = document.getElementById("userRole").value;
 	var searchByName = document.getElementById("searchByName").value;
 	var userState = document.getElementById("userState").value;
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf&viewType=LISTVIEW";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
