@@ -40,7 +40,7 @@ function prepareAssignedProjectsData(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  assignedProjectsDate = 'YYYY-DD-MM'; 
 	  }  
-	
+	  
 	var result = "";
 	result = result +"<table id='assignedProjectsListPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -97,7 +97,7 @@ function prepareAssignedProjectsData(data){
 	result = result +"</td>";
 	
 	result = result +"<td>";
-   	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
+	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
    		result = result +"	    <div><input type='text' value='"+opt.projectEndDateStr+"' class='project_inline_field project_inline_field_enddate' id='endDate"+opt.id+"' name='endDate'  readonly='readonly'></div>";
    	}else{
    		result = result +"<div>-----</div>";
@@ -165,10 +165,8 @@ function prepareAssignedProjectsData(data){
     $("#tab-2").empty(); 
     $("#tab-2").append(result);  
     pagination(); 
-    
     for (var i = 0; i < data.length; i++) { 
         var opt = data[i];
-        
       //Assign date of project member
 		 var selected = opt.projectAssignedDateStr;
 		 var from = selected.split("-");
@@ -223,7 +221,7 @@ function inlineEditForEndDate(id,projectMemberId){
 </script>
 <script>
 function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	//$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#assignedProjectsListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
