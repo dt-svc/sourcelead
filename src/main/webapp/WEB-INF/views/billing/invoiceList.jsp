@@ -235,7 +235,7 @@ $(document).ready(function(){
 		      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
 		      <div class="col-md-4 mt25">
 		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
+		            <a  href="<c:url value='/createInvoice'/>" title="Create Client Based invoice">
 		          <div class="clearfix mb10"> 
 		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
 		          </div>
@@ -245,7 +245,7 @@ $(document).ready(function(){
 		
 		        <div class="col-md-4 mt25">
 		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
+		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create Project Based invoice">
 		            <div class="clearfix mb10">
 		                <!--<i class="fa fa-usd fa-3x"></i>-->
 		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
@@ -255,7 +255,7 @@ $(document).ready(function(){
 		          
 		         <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create custom invoice">
+		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create Other Invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
@@ -279,7 +279,7 @@ $(document).ready(function(){
 		        $('.pop_mask').fadeOut(200);
 		       }
 		    </script> 
-  
+		    
 <script>
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
@@ -343,11 +343,11 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>                                                                ';
 	result = result +'            <div class="col-md-6 mt">                                                ';
 	result = result +'              <div class="clearfix mb invoiceAttachment">                         ';
-	result = result +'              <label><strong>Attachments</strong></label>                         ';
+	result = result +'              <label><strong>Attachment</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
-	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
+	result = result +'                  <i class="fa fa-times" onClick="remove()"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
 	result = result +'            </div>                                                                ';
@@ -386,6 +386,13 @@ function receivePaymentPop1(invoiceId,total){
 }
 
 </script>  
+
+<script>
+function remove(){
+	    $('#paymentAttachment').val('');
+}
+</script>
+
 <script>
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
@@ -744,7 +751,7 @@ $('#mypop').click(function(){
 
 <script>
 function invoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+// 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -1340,7 +1347,7 @@ function linkInvoice(invoiceId,totalAmount){
 
 <script>
 function LinkInvoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+// 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#linkInvoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
