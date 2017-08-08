@@ -122,8 +122,8 @@ public class ExpensesInvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
-				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+				String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getCreatedDate());
+				String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -267,13 +267,13 @@ public class ExpensesInvoicePdfHelper {
 
 					StringBuilder startAndEndDate = new StringBuilder();
 					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
-						String endDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getEndDate());
+						String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
+						String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getEndDate());
 						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
 								.append(System.getProperty("line.separator")).append(endDate);
 						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
 					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
+						String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
 						table.addCell(
 								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					} else {
@@ -452,8 +452,8 @@ public class ExpensesInvoicePdfHelper {
 					address.append(orgLocation.getCountry()).toString();
 				}
 
-				String createdDate = LoginSessionController.DATEFORMAT.format(invoice.getCreatedDate());
-				String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+				String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getCreatedDate());
+				String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getDueDate());
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
@@ -595,13 +595,13 @@ public class ExpensesInvoicePdfHelper {
 
 					StringBuilder startAndEndDate = new StringBuilder();
 					if (null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
-						String endDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getEndDate());
+						String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
+						String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getEndDate());
 						startAndEndDate.append(StartDate).append(System.getProperty("line.separator")).append("to")
 								.append(System.getProperty("line.separator")).append(endDate);
 						table.addCell(getCell(startAndEndDate.toString(), Element.ALIGN_CENTER, font10));
 					} else if (null != invoiceLineItems.getStartDate()) {
-						String StartDate = LoginSessionController.DATEFORMAT.format(invoiceLineItems.getStartDate());
+						String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoiceLineItems.getStartDate());
 						table.addCell(
 								getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					} else {
