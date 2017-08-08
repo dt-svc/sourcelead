@@ -1861,6 +1861,10 @@ public class InvoiceRestController {
 
 		Invoice invoice = invoiceService.saveExpenseInvoice(jsonObj, user, orgLocation, saveType, attachedfileList,invoiceType, org, currencyCode,invoiceCategory);
 
+		if(invoice !=null && invoice.getExpensesId() !=null && Constants.SENT.equalsIgnoreCase(saveType)) {
+			invoiceService.updateExpensesForinvoice(invoice,invoiceType);
+		}
+		
 		if (Constants.PAYABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
 			SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg",
 					"Successfully you have created a Bill");
@@ -1919,9 +1923,10 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getExpensesByProjectMemberId", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Expenses> getExpensesByProjectMemberId(
-			@RequestParam(value = "memberId", required = false) Long projectMemberId) throws Exception {
+			@RequestParam(value = "memberId", required = false) Long projectMemberId,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception {
 
-		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId);
+		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId,invoiceType);
 		return expensesList;
 
 	}
