@@ -150,7 +150,10 @@ function filterStatus() {
 	   var result = "";
  	 
  	result = result + '    	<div class="col-md-12 mt">';
- 	 result = result + '    	<div class="require_one">';
+ 	
+ 	/* Dont remove this commented code. Need to implement functionality */
+
+ 	/*  result = result + '    	<div class="require_one">';
 	result = result + '       <div class="require_wrap_details_cta noPad">';
 	result = result + '   		<div class="NeDe"><b>Estimated Budget:</b> <span><strong>INR</strong> 250000</span><div class="clearfix"></div></div>';
 	result = result + '        	<div class="NeDe"><b>Estimated Hours:</b> <span>250</span><div class="clearfix"></div></div>';
@@ -161,7 +164,7 @@ function filterStatus() {
 	result = result + '        	<div class="NeDe"><b>Expenses:</b> <span><strong>INR</strong> 50000</span><div class="clearfix"></div></div>';
 	result = result + '       </div>';
 	result = result + '       <div class="clearfix"></div>';
-	result = result + '     </div>';
+	result = result + '     </div>'; */
 	result = result + '     </div>';
 	result = result + '       <div class="clearfix"></div>';
 	
