@@ -713,10 +713,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					projectMember.setProjectUUID(projectMember.getProjects().getProjectUUID());
 				}
 				
-				if(projectMember.getProjects() != null){
+				/*if(projectMember.getProjects() != null){
 					projectMember.setProjectEndDateStr(conversionUtil.getDateAsString(projectMember.getProjects().getEndDate()));
 				}
-				
+				*/
 				if (pmh.getProjectAssignedDate() != null
 						&& pmh.getProjectTerminationDate() != null) {
 					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "DRAFT");
