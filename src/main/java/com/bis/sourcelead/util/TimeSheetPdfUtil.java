@@ -123,17 +123,17 @@ public class TimeSheetPdfUtil {
      */
 	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations) throws Exception {
 
-		DateFormat format = LoginSessionController.DATEFORMAT;
+		//DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
 		Map<String,Date> weekDates = new HashMap<>();
 		
 		File file = null;
 		
-		Date employeeStartDate = format.parse(frequencyStartDate.replaceAll("/", "-"));
-		Date employeeEndDate = format.parse(frequencyEndDate.replaceAll("/", "-"));
+		Date employeeStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyStartDate.replaceAll("/", "-"));
+		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(format.format(new Date()));
+		sb.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		file = File.createTempFile(sb.toString(),".pdf");
 		file.setReadable(true);
 		
@@ -160,8 +160,8 @@ public class TimeSheetPdfUtil {
 				 String key = entry.getKey();
 			     String value = entry.getValue();
 			     
-				 Date weekStartDate = format.parse(key.replaceAll("/", "-"));
-				 Date weekEndDate = format.parse(value.replaceAll("/", "-"));
+				 Date weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+				 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 				 
 				 java.util.List<TimesheetHours> hoursList = new ArrayList<>();
 				 int column = 0;
@@ -193,7 +193,7 @@ public class TimeSheetPdfUtil {
 				 Long satTotHours = 0L;
 				 Long sunTotHours = 0L;
 				 
-				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(key));
+				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key));
 		    		switch (dayOfTheDateWithStartDate) {
 		    	        case 1:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,6);
 		    	                 break;

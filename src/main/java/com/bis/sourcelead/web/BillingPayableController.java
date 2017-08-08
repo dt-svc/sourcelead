@@ -108,9 +108,9 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
 		Date currentDate = new Date();
-		String convertedDate = dateFormatter.format(currentDate);
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createPayables");
 		model.addObject("sourceleadUrl", sourceleadUrl);

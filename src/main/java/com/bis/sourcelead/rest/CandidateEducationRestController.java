@@ -174,12 +174,12 @@ public class CandidateEducationRestController {
 		String resultJson;
 		 CandidateEducation  candidatesEducationList = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
 		 Candidate can = candidateService.getCandidateById(candidateId);
-		 SimpleDateFormat formatter = can.getOrgLocationId().getLocFullFormDateFormatter();
+		 //SimpleDateFormat formatter = can.getOrgLocationId().getLocFullFormDateFormatter();
 		 if(candidatesEducationList.getStartDate() != null){
-			 candidatesEducationList.setStartDateStr(formatter.format(candidatesEducationList.getStartDate())); 
+			 candidatesEducationList.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(),candidatesEducationList.getStartDate())); 
 			 }
 			 if(candidatesEducationList.getEndDate() != null){
-				 candidatesEducationList.setEndDateStr(formatter.format(candidatesEducationList.getEndDate())); 
+				 candidatesEducationList.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(can.getOrgLocationId().getDateFormat(),candidatesEducationList.getEndDate())); 
 			 }
 			/* List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS); 
 			 candidatesEducationList.setEducationList(educationsList);*/
