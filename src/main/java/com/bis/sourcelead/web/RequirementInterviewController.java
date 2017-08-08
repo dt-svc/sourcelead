@@ -64,13 +64,18 @@ public class RequirementInterviewController {
 	@Autowired
 	private TimeZoneService timeZoneService;
 	
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	
 	@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();
 		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		     SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		    // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		     if("Maybe".equalsIgnoreCase(interviewStatus)){
 		    	 requirementInterview.setInterviewStatus(null);	 
@@ -116,7 +121,7 @@ public class RequirementInterviewController {
 				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 				for(ProposeTime pst:proposeTime){
 					if(null != pst.getProposeDate()){
-						pst.setProposeDateStr(simpleDateFormat.format(pst.getProposeDate()));	
+						pst.setProposeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pst.getProposeDate()));	
 					}
 				}
 				model.addObject("proposeTime",proposeTime);
@@ -146,7 +151,7 @@ public class RequirementInterviewController {
 				model.addObject("interviewStatus",interviewStatus);
 				model.addObject("requirementInterviewId",requirementInterviewId);
 				model.addObject("requirementInterview",requirementInterview);
-				model.addObject("requirementInterviewDate",simpleDateFormat.format(requirementInterview.getDateOfInterview()));
+				model.addObject("requirementInterviewDate",commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementInterview.getDateOfInterview()));
 				model.addObject("interviewEndTime",requirementInterview.getEndTimeStr());
 				model.addObject("interviewStartTime",requirementInterview.getStartTimeStr());
 				model.addObject("sourceleadUrl", sourceleadUrl);
@@ -161,13 +166,13 @@ public class RequirementInterviewController {
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();
 		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		     SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		  //   SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		     String dateOfInterviewStr ="";
 				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 				for(ProposeTime pst:proposeTime){
 					if(null != pst.getProposeDate()){
-						pst.setProposeDateStr(simpleDateFormat.format(pst.getProposeDate()));	
+						pst.setProposeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pst.getProposeDate()));	
 					}
 				}
 				model.addObject("proposeTime",proposeTime);
@@ -210,7 +215,7 @@ public class RequirementInterviewController {
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-					interviewDateInTimezone = simpleDateFormat.format(interviewConverteDate);
+					interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),interviewConverteDate);
 					dateOfInterviewStr = interviewDateInTimezone;
 			    }
 				model.setViewName("requirement/proposeTime");

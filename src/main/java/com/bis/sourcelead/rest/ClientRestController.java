@@ -740,9 +740,9 @@ public class ClientRestController {
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		String resultJson;
 		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
-		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		for (Requirement req : reqList) {
-			req.setPostedDateStr(formatter.format(req.getCreatedDate()));
+			req.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req.getCreatedDate()));
 			int interviewsSum = 0;
 			int offeredSum = 0;
 			int submitToClient = 0;
