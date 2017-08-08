@@ -714,7 +714,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				}
 				
 				if(projectMember.getProjects() != null){
-					projectMember.setProjectEndDateStr(conversionUtil.getDateAsString(projectMember.getProjects().getEndDate()));
+					projectMember.setMemberEnddate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMember.getProjects().getEndDate()));
 				}
 				
 				if (pmh.getProjectAssignedDate() != null
