@@ -135,7 +135,8 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			@RequestParam(value="searchByName", required=false) String searchByName,
 			@RequestParam(value="userState", required=false) String userState,
 			@RequestParam(value="loginUserRole", required=false) String loginUserRole,
-			@RequestParam(value="exportType", required=false) String exportType,HttpServletResponse response) throws Exception {
+			@RequestParam(value="exportType", required=false) String exportType,
+			@RequestParam(value="viewType", required=false) String viewType,HttpServletResponse response) throws Exception {
 		
 		 List<UserRole> activeList = null;
 		 List<UserRole> inactiveList = null;
@@ -171,7 +172,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
  			}
  			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
- 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),0);
+ 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),0,viewType);
  			}
  		
  			if(null != rolesList){
