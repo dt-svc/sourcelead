@@ -155,16 +155,16 @@ public class DashboardController {
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="SUBMIT_TO_CLIENT" ;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqSubmissionsList) {
 				 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
 					for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
-					      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(simpleDateFormat.format(rsh.getSubmissionId().getCreatedDate()));
+					      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
 				    }
 				if("SUBMIT_TO_CLIENT".equalsIgnoreCase(requirementSubmissionHistory2.getToStage())){
-					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(simpleDateFormat.format(requirementSubmissionHistory2.getCreatedDate()));
+					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory2.getCreatedDate()));
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
 				}
 			}
@@ -192,13 +192,13 @@ public class DashboardController {
 		String stage ="INTERVIEW" ;
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
-	   SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
+	  // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
 			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
 			requirementSubmissionHistory2.getSubmissionId().setNumOfInterview(interviewedCount);
 			 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
 			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
-			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(simpleDateFormat.format(rsh.getSubmissionId().getCreatedDate()));
+			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
 		    }
 		  }
 		model.addObject("tab",tab);
@@ -224,7 +224,7 @@ public class DashboardController {
 		
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
-		SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory requirementSubmissionHistory : toDayReqOfferscount) {
 			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmissionHistory.getSubmissionId().getId(), loginOrgLocations.getId());
 			for (RequirementOffers requirementOffers : offersList) {
@@ -232,7 +232,7 @@ public class DashboardController {
 				requirementSubmissionHistory.getSubmissionId().setOfferRate(requirementOffers.getAmount());
 				requirementSubmissionHistory.getSubmissionId().setRateType(requirementOffers.getPaymentType());
 				requirementSubmissionHistory.getSubmissionId().setRatePer(requirementOffers.getPaymentMode());
-				requirementSubmissionHistory.getSubmissionId().setOfferJoinDate(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
+				requirementSubmissionHistory.getSubmissionId().setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
 				if(null != requirementOffers.getPositionType()){
 					requirementSubmissionHistory.getSubmissionId().setPositionType(requirementOffers.getPositionType());
 				}
@@ -241,7 +241,7 @@ public class DashboardController {
 				}
 			}
 				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory.getToStage())){
-					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(simpleDateFormat.format(requirementSubmissionHistory.getCreatedDate()));
+					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 				}
 		}
 		

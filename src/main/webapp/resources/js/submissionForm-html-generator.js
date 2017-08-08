@@ -505,7 +505,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                              
                              '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>ZipCode'+reqSymbol+'</label>' +
-                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode"  />'+
+                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode" readonly />'+
                              '</div>';
                     		 
                     		 

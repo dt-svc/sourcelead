@@ -247,7 +247,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
@@ -582,7 +582,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 				try {
-					   templateFields.setDateOfBirth(simpleDateFormat.parse(jsonObj.getString("DOB")));
+					   templateFields.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}
@@ -3348,7 +3348,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
 		 Candidate candidate = null;
 		 CandidateResumes candidateResumes = null;
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+	//	 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
@@ -3596,7 +3596,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 				try {
-					   templateFields.setDateOfBirth(simpleDateFormat.parse(jsonObj.getString("DOB")));
+					   templateFields.setDateOfBirth(	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}
@@ -4121,10 +4121,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		StringBuilder tempFileBuilder = new StringBuilder();
 		StringBuilder excelStringBuilder=new StringBuilder();
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(reqsub.getOrgLocations().getId());
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append("shortListed Candidates List").toString());
 		Date date = new Date();
-		//String formatedDate = LoginSessionController.DATEFORMAT.format(date);
+		String formatedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),date);
 		Row writeRow = null;
 		createExcelsheet = getExcelSheetWithHeaderForShortListCandidates(createExcelsheet, writeRow, createExcelworkbook,candidateCount,reqsub);
 		int column = 2;
@@ -4136,7 +4136,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				column++;
 			}
 		}
-			 file = File.createTempFile(tempFileBuilder.append("ShortList Candidate List").append(simpleDateFormat).toString(),".xls");
+			 file = File.createTempFile(tempFileBuilder.append("ShortList Candidate List").append(formatedDate).toString(),".xls");
 				file.setReadable(true);
 
 				FileOutputStream fos = new FileOutputStream(file);
@@ -4488,7 +4488,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public RequirementSubmission editRequirementSubmission(JSONObject jsonObj, User user, OrgLocations orgLocations,
 			String jsonStringvalues) throws Exception {
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		RequirementSubmission requirementSubmission = null;
 		 if(jsonObj.has("submissionId") && !isNullOrEmpty(jsonObj.getString("submissionId"))){
 			 requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.valueOf(jsonObj.getString("submissionId")));
@@ -4548,7 +4548,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 				 if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
 						try {
-							   templateFields.setDateOfBirth(simpleDateFormat.parse(jsonObj.getString("DOB")));
+							   templateFields.setDateOfBirth(		commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
 							} catch (Exception e) {
 							  e.printStackTrace();
 							}
