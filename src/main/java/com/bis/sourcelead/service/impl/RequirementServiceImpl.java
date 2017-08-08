@@ -2620,6 +2620,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 			 writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString()); 
  		}
+		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
+			 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate())); 
+		}
 		return createExcelsheet;
 	}
 
