@@ -1,0 +1,808 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<script type="text/javascript">
+window.onload = function () {
+	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+ };
+</script>
+ <script>
+	$(document).ready(function() {
+		document.getElementById("client_form").reset();
+	});
+</script>
+ 
+<style>
+.clsDatePicker {
+	z-index: 100000 !important;
+}
+
+.ui-front {
+    z-index: 9999999;
+}
+
+</style>
+
+
+
+
+<!-- Content Area -->
+<section class="content-wraper">
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Create Client</h2>
+		</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
+			&raquo; Create Client</div>
+	</section>
+	
+	<div class="content-area content-new clearfix">
+	<div id="loading"></div> 
+	<form:form id="client_form" name="client_form" method="post">
+      <div class="clearfix form-horizontal inner-content">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+           <h3>Client Details</h3>
+            <div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9" id="clientNameDiv">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur=" getOrgDetails(); validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="hidden" id="orgLocationId" />
+					<span class="hidden">Enter Client Name</span>
+				</div>
+			</div>
+            
+			<div class="form-group " id="companyWebsiteDiv">
+				<label class="col-md-3">Website</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
+				</div>
+			</div>
+						
+			
+			<div class="form-group" id="locationDiv" style="display: block;">
+	          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9" id="locationField">
+	          <div class="positionRelative">
+	          <input class="form-control positionRelative" id="clientLocation" name="location" placeholder="Enter your Location"  type="text" field-name="Locatin" data-validation="required"></input>
+	          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('clientLocation','clientCountry','clientState','clientCity','clientZipCode');"></i>
+	          </div>
+	          </div>
+	        </div>
+		
+		   <div class="form-group" id="orgLocationDiv" style="display: none;">
+	          <label class="col-md-3">Location</label>
+	          <div class="col-md-9">
+	          <div class="positionRelative">
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Locatin" readonly></input>
+	          </div>
+	          </div>
+	        </div>
+		
+			<div class="form-group" id="countryDiv" style="display: block;">
+	          <label class="col-md-3">Country</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}" type="text" readonly></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group" id="orgCountryDiv" style="display: none;">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				</div>
+			</div>
+	        
+	        
+	        <div class="form-group" id="stateDiv" style="display: block;">
+	          <label class="col-md-3">State</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientState" name="state" placeholder="Enter your State" type="text" readonly></input>
+	          </div>
+	        </div>
+	        
+	        	 
+			 <div class="form-group" id="orgStateDiv" style="display: none;">
+				<label class="col-md-3">State</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+				</div>
+		 	</div>
+		
+		
+	        <div class="form-group" id="cityDiv" style="display: block;">
+	          <label class="col-md-3">City</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+	          </div>
+	        </div>
+	        
+	        
+		  <div class="form-group" id="orgCityDiv" style="display: none;">
+				<label class="col-md-3">City</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
+				</div>
+		   </div>
+		 
+	        <div class="form-group" id="zipCodeDiv" style="display: block;">
+	          <label class="col-md-3">ZipCode</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group" id="orgZipCodeDiv" style="display: none;">
+	          <label class="col-md-3">ZipCode</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+	          </div>
+	  		  </div>	
+			
+			<div class="form-group hidden">
+	          <label class="col-md-3">Lat</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientLatitude" name="latitude" type="text"></input>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group hidden" >
+	          <label class="col-md-3">Long</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="clientLongitude" name="longitude"  type="text"></input>
+	          </div>
+	        </div> 
+         
+            <div class="form-group">
+              <label class="col-md-3">Tier</label>
+              <div class="col-md-9">
+                  <select class="form-control selectpicker" id="level" name="level">
+                    <option value="Tier-1">Tier-1</option>
+                    <option value="Tier-2">Tier-2</option>
+                    <option value="Tier-3">Tier-3</option>
+                    <option value="Tier-4">Tier-4</option>
+                    <option selected="selected" value="Tier-5">Tier-5</option>
+                  </select>
+              </div>
+            </div>
+            
+            
+            <div class="form-group ">
+				<label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+			<div class="form-group ">
+				<label class="col-md-3">Billing Address</label>
+				<div class="col-md-9">
+				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+            <div class="clearfix mb"></div>
+             <div class="form-group">
+              <label class="col-md-3">Payment Term</label>
+              <div class="col-md-9">
+                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
+                  <option selected="selected" disabled value="">Select Payment Term</option>
+                    <option value="10 days">10 days</option>
+                    <option value="15 days">15 days</option>
+                    <option value="30 days">30 days</option>
+                    <option value="45 days">45 days</option>
+                    <option value="60 days">60 days</option>
+                    <option value="90 days">90 days</option>
+                  </select>
+              </div>
+            </div>
+            
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+            <h3>Contact Details</h3>
+            
+            <div class="form-group" id="EmailIdDiv">
+				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
+	                            <span class="hidden">Valid Email</span>
+				</div>
+			</div>
+            
+            <div class="form-group">
+              <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9">
+                <input class="form-control" type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3">Last Name</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" id="lastName"
+									name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
+              </div>
+            </div>
+			
+            <div class="form-group">
+              <label class="col-md-3">Phone Number</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3">Status</label>
+              <div class="col-md-9">
+                <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
+                  <option value="Active">Active</option>
+                  <option value="In-Active">In-Active</option>
+                 <!--  <option value="New">New</option>
+                  <option value="Negotiation">Negotiation</option>
+                  <option value="Contract">Contract</option> -->
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 candAdvsrch">
+                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+                <c:forEach var="user" items="${userList}">
+	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="Y"
+							name="isMailSent" checked="checked"> Send Invitation
+				</label>
+              </div>
+            </div>
+            
+            <!-- These are the default sourelead roles we are providing for spoc in client creation -->
+           <!--    <div class="form-group" id="roleDiv" style="display: block;">
+                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <div class="col-md-9">
+                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" data-validation="required">
+		                        <option value="">-Select Role-</option>
+			              </select>
+                  </div>
+                </div>-->
+                
+                <div class="form-group" id="userRoleDiv" style="display: none;">
+					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+					<div class="col-md-9">
+					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
+					<input type="hidden" id="userRole" name="roleTypeId" value="" />
+					
+				   </div>
+		        </div> 
+		 
+          </div>
+        </div>
+      </div>
+      <div class="form-footer clearfix">
+        <div class="col-lg-12">
+          <div class="pull-right">
+            <input type="button" value="Save" id="save_client" onclick="saveClient(); flushSaveClient()" class="btn btn-primary"> 
+			<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'" class="btn btn-default ml">
+          </div>
+        </div>
+      </div>
+      </form:form>
+      </div>
+      
+	
+</section>
+<!-- Content Area Ends-->
+
+<!-- Footer Area -->
+<jsp:include page="../masterFooter.jsp" />
+<!-- Footer Area -->
+
+
+
+<script type="text/javascript">
+function getOrgName(){
+	var orgCode = '${SourceLeadWeb_orgCode}';
+	var sourceleadUrl = '${sourceleadUrl}';
+	
+	/* $( "#orgName" ).val( '' ); */
+	$( "#orgLocationId" ).val( '' );
+	
+	$("#webSite").attr("disabled", false);
+	$("#webSite" ).val('');
+	
+	$("#orgCountry").val('');
+	$("#orgState").val('');
+	$("#orgCity").val('');
+	$("#orgLocation").val('');
+	$("#orgZipCode").val('');
+	
+	document.getElementById("countryDiv").style.display="";
+	document.getElementById("orgCountryDiv").style.display="none";
+	
+	document.getElementById("stateDiv").style.display="";
+	document.getElementById("orgStateDiv").style.display="none";
+	
+	document.getElementById("cityDiv").style.display="";
+	document.getElementById("orgCityDiv").style.display="none";
+	
+	document.getElementById("locationDiv").style.display="";
+	document.getElementById("orgLocationDiv").style.display="none";
+	
+	document.getElementById("zipCodeDiv").style.display="";
+	document.getElementById("orgZipCodeDiv").style.display="none";
+	
+	
+	/* $("#role" ).val('');
+	$("#role").attr("data-validation", "required");
+	document.getElementById("roleDiv").style.display="";*/
+	document.getElementById("userRoleDiv").style.display="none"; 
+	
+	$.ajax({                           
+    	type: "POST",
+    	url : sourceleadUrl+"/getOrgs?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode,
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	var org = [];
+        	for(var i=0;i<json.length;i++){
+       		 var label = json[i][0]; 
+       		 var value = json[i][1];
+       	     tmp = {
+       	        'label': label,
+       	        'value': value
+       	      };
+       	  	org.push(tmp);
+       		}
+        	$("#orgName").autocomplete({
+                
+                minLength: 0,
+                source: org,
+                focus: function( event, ui ) {
+                       $( "#orgName" ).val( ui.item.label );
+                       $( "#orgLocationId" ).val( ui.item.value );
+                       return false;
+                   },
+                select: function( event, ui ) {
+                    return false;
+                }  
+             })
+        },
+        error: function(e){
+        }
+    });
+}
+</script>
+
+
+<script type="text/javascript">
+function getOrgDetails()
+{
+	var orgName = document.getElementById("orgName").value;
+	orgName = encodeURIComponent(orgName);
+ 	var orgLocationId = document.getElementById("orgLocationId").value; 
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(orgName){
+   	 $.ajax({
+   	    	type: "POST",
+   	    	url : sourceleadUrl+"/getOrgDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&orgName="+orgName,
+   	        contentType: "application/json; charset=utf-8",
+   	        dataType: "json",
+   	        success: function(data) {
+   	        	if(data != null && data != ''){
+   	        		var json = JSON.parse(data);
+   	        		if(json['country'] != null && json['country'] != ''){
+   	        			document.getElementById("countryDiv").style.display="none";
+   	        			document.getElementById("orgCountryDiv").style.display="";
+   	        		    $("#orgCountry").val(json['country'] );
+   	        		}
+   	        		
+   	        		if(json['state'] != null && json['state'] != ''){
+        			document.getElementById("stateDiv").style.display="none";
+        			document.getElementById("orgStateDiv").style.display="";
+  	        		    $("#orgState").val(json['state']);
+  	        		}
+   	        		if(json['city'] != null && json['city'] != ''){
+	       			document.getElementById("cityDiv").style.display="none";
+	       			document.getElementById("orgCityDiv").style.display="";
+   	        		    $("#orgCity").val(json['city']);
+   	        		}
+		   	        
+			      	if(json['website'] != null && json['website'] != ''){
+			      		$("#webSite").val("www."+json['website']);
+			      		$("#webSite").attr("disabled", true);
+			      	}
+			      	
+			      	if(json['location'] != null && json['location'] != ''){
+			      	$('#clientLocation').attr("data-validation-optional", "true");  
+			      	document.getElementById("locationDiv").style.display="none";
+   	        		document.getElementById("orgLocationDiv").style.display="";
+   	        		    $("#orgLocation").val(json['location']);
+			      	}
+			      	
+			      	if(json['zipCode'] != null && json['zipCode'] != ''){
+			      	document.getElementById("zipCodeDiv").style.display="none";
+   	        		document.getElementById("orgZipCodeDiv").style.display="";
+   	        		    $("#orgZipCode").val(json['zipCode']);
+			      	}
+   	        	}
+   			 },
+   	        error: function(e){
+   	        }
+   	    });
+   	 
+   validateEmail(); 
+   getSpocUserDetails();
+	
+	}
+	
+}
+</script>
+
+
+<script type="text/javascript">
+function getRolesList(){
+	var orgName = document.getElementById("orgName").value;
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(orgName){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&moduleType=VMS", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Role --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+		        $("#loading").removeAttr("style"); 
+	        },
+	    });
+	}else{
+		var output = "";
+    	 output = output + "<option value=''>-- Select Role --</option>"; 
+    	 $("#role").empty();
+	     $("#role").append(output);
+	     $('#role').trigger("chosen:updated");
+	}
+	 
+}
+</script>
+
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+<script type="text/javascript">
+	function saveClient() {
+		if ($('#client_form').validate(false, validationSettings)) {
+			var orgLocationId = document.getElementById("orgLocationId").value;
+			var frm = $('#client_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			  //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
+						success : function(result) {
+							if (result == 'clientDashboard') {
+								location.replace(sourceleadUrl
+										+ "/clientDashboard");
+							}
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#client_form', function() {
+		$("#client_form").showHelpOnFocus();
+		$("#client_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+
+
+<script type="text/javascript">
+function validateEmail(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(email != null){
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateClientOrVendorEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+			success : function(data) {
+				var result = data;
+				if(result == 'Invalid Email') {
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					document.getElementById("email").setAttribute( 'record-exist', 'yes');
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					
+				}else if(result == 'Valid Email') {
+					$('input#email').removeAttr("class record-exist record-exist-errormsg");
+					$('input#email').attr('class','valid form-control');
+					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					
+				}
+			},
+
+		});
+	}
+}
+</script>
+
+ 
+<script type="text/javascript">
+function getSpocUserDetails(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl = '${sourceleadUrl}';
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	if(email){
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getSpocUserDetails?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+	        contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data != ''){
+	        		var json = JSON.parse(data);
+	        		
+	        		 if(json[0] != null && json[0] != ''){
+	        			$("#firstName").attr("disabled", true);
+	        		    $("#firstName").val(json[0]);
+	        		 }else{
+	        			 $("#firstName").attr("disabled", false);
+	        			 //$("#firstName").val('');
+	        		 }
+	        		 
+	        		 if(json[1] != null && json[1] != ''){
+		        			$("#lastName").attr("disabled", true);
+		        		    $("#lastName").val(json[1]);
+	        		 }else{
+	        			    $("#lastName").attr("disabled", false);
+	        			    //$("#lastName").val('');
+	        		 }
+		        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#phoneNumber").attr("disabled", true);
+		        		    $("#phoneNumber").val(json[2]);
+	        		 }else{
+	        			    $("#phoneNumber").attr("disabled", false);
+	        			    //$("#phoneNumber").val('');
+	        		 }
+	        		 
+	        		 
+	        		 if(json[3] != null && json[3] != ''){
+	        			 /* $("#role").removeAttr("data-validation");
+		        			$("#role" ).val('');
+	        			    document.getElementById("roleDiv").style.display="none"; */
+	   	        			document.getElementById("userRoleDiv").style.display="";
+	   	        			$("#userRole").val(json[3]);
+	   	        			$("#userRoleText").val(json[4]);
+		        		 }else{
+		        			 /* $("#role").attr("data-validation", "required"); */
+		        			 $("#userRole" ).val('');
+		        			 /* document.getElementById("roleDiv").style.display=""; */
+		        			 document.getElementById("userRoleDiv").style.display="none";
+		        		 }
+	        	}
+			 },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$("#firstName").attr("disabled", false);
+	    $("#firstName").val('');
+	    
+	    $("#lastName").attr("disabled", false);
+	    $("#lastName").val('');
+	    
+	    $("#phoneNumber").attr("disabled", false);
+	    $("#phoneNumber").val('');
+	    
+	    /* $("#role").attr("data-validation", "required"); */
+	    $("#userRole" ).val('');
+	    /* document.getElementById("roleDiv").style.display=""; */
+		document.getElementById("userRoleDiv").style.display="none";
+	   
+	}
+	
+}
+</script>
+ 
+   <script type="text/javascript">
+function validateClientName(){
+	var clientName = (document.getElementById("orgName").value).replace(/[{}]/g, "");
+	var client = encodeURIComponent(clientName);
+	
+	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+	if(client.match(/^[^\s-](.*)*$/) != null){
+		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+	if (client != null && client != '') {
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/ws/isClientNameValid?${_csrf.parameterName}=${_csrf.token}&clientName="+client+"&responderType=Client",
+			success : function(data) {
+				var result = data;
+				if (result == true) {
+					//duplicate client
+					$("#save_client").removeAttr("disabled");
+			        $("#save_client").attr("disabled", "disabled");
+					$("input#orgName").after( "<p class='jquery_form_error_message'>" + clientName + " is already existed as client</span>");
+					document.getElementById("orgName").setAttribute( 'record-exist', 'yes');
+					document.getElementById("orgName").setAttribute( 'record-exist-errorMsg', clientName +"  already existed as client");
+					$('input#orgName').removeAttr( "record-exist record-exist-errorMsg");
+					
+				}else {
+					//New WebSite class="form-control"
+					//$("#save_client").removeAttr("disabled");
+					$("#save_client").removeAttr("disabled");
+					$('input#orgName').removeAttr("class record-exist record-exist-errormsg");
+					$('input#orgName').attr('class','valid form-control');
+					$('#clientNameDiv').find('p.jquery_form_error_message').remove();
+					$("#save_client").click(function() {
+						
+					});
+				}
+				
+				$("#loading").removeAttr("style");
+			},
+
+		});
+	}
+  }
+}
+</script>   
+
+
+<!-- <script type="text/javascript">
+ function validateClientEmail() {
+	 var EmailId = document.getElementById("EmailId").value; 
+	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(EmailId != null && EmailId != ""){
+		/*$("#save_client").attr("disabled", "disabled");
+         $("#save_client" ).addClass('button').val('Processing..'); */
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getClientEmailVerification?${_csrf.parameterName}=${_csrf.token}&EmailId="+EmailId, 
+		        success: function(data) {
+		        	if(data == 'true'){
+		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#EmailId").after("<p class='jquery_form_error_message'>"+EmailId+" is Already Existed</span>");
+						  document.getElementById("EmailId").setAttribute('record-exist','yes');
+						  document.getElementById("EmailId").setAttribute('record-exist-errorMsg',EmailId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#EmailId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#EmailIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#save_client" ).addClass('button').val('Save');
+                         $("#save_client").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>     
+ -->
+ 
+ 
+ <script type="text/javascript">
+	function validateWebsite() {
+		var website = document.getElementById("webSite").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(website.match(/^[^\s-](.*)*$/) !== null){
+		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
+		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		
+		if (website != null && website != '') {
+
+			//$("#save_client").attr("disabled", "disabled");
+			// $( "#save_client" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/ws/validateClientWebsite?website="+ website + "&sourceleadBLockedwebsites="+ sourceleadBLockedwebsites,
+				success : function(data) {
+					var result = data;
+					if (result == "Website Duplicated" || result == "Invalid Website") {
+						//existed website
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+						$("input#webSite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						document.getElementById("webSite").setAttribute('record-exist', 'yes');
+						document.getElementById("webSite").setAttribute('record-exist-errorMsg',website + ' is '+result);
+						$('input#webSite').removeAttr( "record-exist record-exist-errormsg");
+						
+					} else {
+						//New WebSite class="form-control"
+						$('input#webSite').removeAttr("class record-exist record-exist-errormsg");
+						$('input#webSite').attr('class','valid form-control');
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+				
+						/* $("#save_client").click(function() {
+							if ($(this).validate(false, validationSettings)) {
+							}
+						}); */
+					}
+				},
+
+			});
+		}
+	  }
+	}
+</script>
+
+<script type="text/javascript">
+	function flushSaveClient() {
+		$("#save_client").removeAttr("disabled");
+	}
+</script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+ 
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	        
+	       $("#owner").chosen();
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>
