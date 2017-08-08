@@ -1642,8 +1642,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
@@ -1725,8 +1725,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
