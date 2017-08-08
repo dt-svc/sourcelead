@@ -3,28 +3,19 @@ package com.bis.sourcelead.web;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -40,15 +31,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -65,6 +55,10 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	@Autowired
+	 private CommonUtil commonUtil;
+	
 	
 	
 	/**
@@ -141,22 +135,25 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 			@RequestParam(value="searchByName", required=false) String searchByName,
 			@RequestParam(value="userState", required=false) String userState,
 			@RequestParam(value="loginUserRole", required=false) String loginUserRole,
-			@RequestParam(value="exportType", required=false) String exportType,HttpServletResponse response) throws Exception {
+			@RequestParam(value="exportType", required=false) String exportType,
+			@RequestParam(value="viewType", required=false) String viewType,HttpServletResponse response) throws Exception {
 		
 		 List<UserRole> activeList = null;
 		 List<UserRole> inactiveList = null;
 		 List<UserRole> notLoggedInList = null;
-		 DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
- 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(dateFormat.format(new Date())).toString());
          
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		ArrayList<UserRole> userRolesList = new ArrayList<UserRole>();
  		List<UserRole> rolesList = new ArrayList<UserRole>();
- 		
+ 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+ 		 //DateFormat dateFormat = simpleDateFormat;
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+
  		try {
  			
  			if(!isNullOrEmpty(userState) && isNullOrEmpty(userRole) && isNullOrEmpty(searchByName)){
@@ -175,7 +172,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  				rolesList = userRoleService.getUsersListByUserNameAndLocationId(searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode());
  			}
  			else if(!isNullOrEmpty(userRole) && !"All".equalsIgnoreCase(userRole) && !isNullOrEmpty(searchByName)){
- 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),0);
+ 				rolesList = userRoleService.getUsersListByRoleAndNameAndLocationId(Long.parseLong(userRole), searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),0,viewType);
  			}
  		
  			if(null != rolesList){
@@ -192,7 +189,7 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
  			createExcelsheet = userRoleService.getExcelFile(createExcelsheet,createExcelworkbook,activeList,inactiveList,notLoggedInList,userRolesList,userState);
  	 		 /* file = new File("users_"+dateFormat.format(new Date())+".xls");*/
  			  StringBuilder templateSB = new StringBuilder();
- 	 		  file = File.createTempFile(templateSB.append("users_").append(dateFormat.format(new Date())).toString(),".xls");
+ 	 		  file = File.createTempFile(templateSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
  	 		  file.setReadable(true);
  	 		  
  			 FileOutputStream fos = new FileOutputStream(file);

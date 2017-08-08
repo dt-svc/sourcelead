@@ -30,6 +30,9 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	@Autowired
 	TimeZoneDao timeZoneDao;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	/**
 	 * updating the Requirement Submission Hostory
 	 * @param requirementSubmission
@@ -100,7 +103,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
         String updatedDate     = dateFormat.format(c.getTime());
         Date parsed = dateFormat.parse(updatedDate);
         java.sql.Timestamp coolingOffEndDate = new java.sql.Timestamp(parsed.getTime());
-		
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		RequirementSubmissionHistory requirementSubmissionHistory1 = requirementSubmissionHistoryDao.isInCoolingOffPeriodByEmailAndLocationsId(email, orgLocations.getId(), reqCoolingOffPeriod, requirementId);
 		
 		boolean isInCoolingOffPeriod = false;
@@ -128,7 +131,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 						String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						currentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
+						currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),converteDate);
 						requirementSubmissionHistory1.setCoolingOffPeriodEndDateStr(currentDateInTimezone);
 						
 						/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");

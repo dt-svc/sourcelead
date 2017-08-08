@@ -165,12 +165,12 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	@Override
 	public File expensesReportExportListPdf(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws ParseException, IOException {
 		List<ProjectMembers> projectMembers = null;
-
+		//SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
-		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
+		Date convertedStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
+		Date convertedEndDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endtDate);
 		 LinkedHashSet<String> dateformat = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate,convertedEndDate);
 		 	 String[] headersDetails = Constants.EXPENSES_REPORTS_HEADERS;
 		     String[] monthHedders = dateformat.toArray(new String[dateformat.size()]);
@@ -238,7 +238,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 			        java.util.List<String[]> expensesList = new ArrayList<>();
 			        projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(convertedStartDate, convertedEndDate, orgLoc.getId(), loginUser.getId());
 			        for(ProjectMembers proMembers : projectMembers){
-			        	expensesList.add(prepareUserStringArray(proMembers,headers,frequencyMonth));
+			        	expensesList.add(prepareUserStringArray(proMembers,headers,frequencyMonth,orgLoc));
 			        }
 			        for (String[] userArray: expensesList) {
 		                for (int i = 0; i < userArray.length; i++) {
@@ -263,13 +263,13 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				return file;
 	}
 
-	private String[] prepareUserStringArray(ProjectMembers projectMember, String[] headers, String frequencyMonth) throws ParseException {
-
+	private String[] prepareUserStringArray(ProjectMembers projectMember, String[] headers, String frequencyMonth,OrgLocations locations) throws ParseException {
+		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
-		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
+		Date convertedStartDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),startDate);
+		Date convertedEndDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),endtDate);
 		LinkedHashSet<String> dateList = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate, convertedEndDate);
 		DateFormat format =Constants.Y;
 		String year = format.format(convertedEndDate);
@@ -852,13 +852,13 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 
 	@Override
 	public File expensesReportExportListExcel(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws IOException, ParseException {
-		
+		//SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		File file = null;
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
-		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
+		Date convertedStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
+		Date convertedEndDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endtDate);
 		LinkedHashSet<String> dateformat = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate,convertedEndDate);
 		String[] headersDetails = Constants.EXPENSES_REPORTS_HEADERS;
 	     String[] monthHedders = dateformat.toArray(new String[dateformat.size()]);
@@ -878,7 +878,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					writeRow = createExcelsheet.createRow(column+1);
 					 List<Expenses> expenses  = getExpensesByProjectMemberIdAndExpenseStartAndEndDate(proMembers.getId(),convertedStartDate,convertedEndDate);
 					 if(expenses !=null && !expenses.isEmpty()){
-						 createExcelsheet = createXlsSheet(createExcelsheet, writeRow, proMembers,frequencyMonth,headers);
+						 createExcelsheet = createXlsSheet(createExcelsheet, writeRow, proMembers,frequencyMonth,headers,orgLoc);
 							column++; 
 					 }
 					
@@ -896,12 +896,13 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		return file;
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ProjectMembers projectMember, String frequencyMonth, String[] headers) throws ParseException {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ProjectMembers projectMember, String frequencyMonth, String[] headers,OrgLocations orgLoc) throws ParseException {
+		//SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
-		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
+		Date convertedStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
+		Date convertedEndDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endtDate);
 		LinkedHashSet<String> dateList = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate, convertedEndDate);
 		DateFormat format =Constants.Y;
 		String year = format.format(convertedEndDate);

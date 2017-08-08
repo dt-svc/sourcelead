@@ -54,6 +54,7 @@ import com.bis.sourcelead.beans.BillingGraphBean;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
@@ -97,6 +98,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.ExpensesInvoicePdfHelper;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -159,6 +161,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	AddExpensesDao addExpensesDao;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -185,6 +190,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
+//	@Autowired
+//	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
+	
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
 		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
@@ -201,7 +209,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		
 		//String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+        //SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         Invoice invoice = null;
         
@@ -280,11 +288,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
-			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
+			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
 		}
 		if(jsonObj.has("dueDate") && !"".equalsIgnoreCase(jsonObj.getString("dueDate"))){
-			Date dueDate = format.parse(jsonObj.getString("dueDate"));
+			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("dueDate"));
 			invoice.setDueDate(dueDate);
 		}
 		
@@ -585,7 +593,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
 		 //String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+	     //SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 	     
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
@@ -605,14 +613,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"invoiceStartDate") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceStartDate"))){
-						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"invoiceStartDate"));
+						 Date invoiceStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i+"invoiceStartDate"));
 						 invoiceLineItems.setStartDate(invoiceStartDate);
 					 }else{
 						 invoiceLineItems.setStartDate(null);
 					 }
 					 
 					 if(null != jsonObj.getString(i+"invoiceEndDate") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceEndDate"))){
-						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"invoiceEndDate"));
+						 Date invoiceStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i+"invoiceEndDate"));
 						 invoiceLineItems.setEndDate(invoiceStartDate);
 					 }else{
 						 invoiceLineItems.setEndDate(null);
@@ -803,10 +811,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
-		 SimpleDateFormat dateFormat=orglocations.getLocFullFormDateFormatter();
-		 String date = (dateFormat.format(invoice.getDueDate()));
+		 //SimpleDateFormat dateFormat=orglocations.getLocFullFormDateFormatter();
+		 String date = (commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),invoice.getDueDate()));
 
-		String invoiceDate= (dateFormat.format(invoice.getInvoiceDate()));
+		String invoiceDate= (commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),invoice.getInvoiceDate()));
 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -909,7 +917,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	{
 		Invoice invoice = new Invoice();
 		//String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+        //SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
         
         
         //-----------------------------
@@ -984,11 +992,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 			
 		}
 		if(jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))){
-			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
+			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
 		}
 		if(jsonObj.has("dueDate") && !"".equalsIgnoreCase(jsonObj.getString("dueDate"))){
-			Date dueDate = format.parse(jsonObj.getString("dueDate"));
+			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("dueDate"));
 			invoice.setDueDate(dueDate);
 		}
 		
@@ -1057,7 +1065,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
 		 //String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+	     //SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 	     
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRowNum"));
 		 for(int i=1;i<maxRowCount;i++){
@@ -1070,11 +1078,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 InvoiceLineItems  invoiceLineItems = new InvoiceLineItems();
 					 
 					 if(null != jsonObj.getString(i+"sdate") && !"".equalsIgnoreCase(jsonObj.getString(i+"sdate"))){
-						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"sdate"));
+						 Date invoiceStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i+"sdate"));
 						 invoiceLineItems.setStartDate(invoiceStartDate);
 					 }
 					 if(null != jsonObj.getString(i+"edate") && !"".equalsIgnoreCase(jsonObj.getString(i+"edate"))){
-						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"edate"));
+						 Date invoiceStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i+"edate"));
 						 invoiceLineItems.setEndDate(invoiceStartDate);
 					 }
 					 if(null != jsonObj.getString(i+"candidateId") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidateId"))){
@@ -1896,6 +1904,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
 			String endDate = outputFormatter1.print(zoned);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
@@ -1928,8 +1937,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					&& !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = LoginSessionController.DATEFORMAT.parse(customStartDate);
-				Date endTime = LoginSessionController.DATEFORMAT.parse(customEndDate);
+				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1966,10 +1975,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
       					}
       				}
       				if (null != invoice.getInvoiceDate()) {
-      					invoice.setInvoiceDateStr(LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate()));
+      					invoice.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate()));
       				}
       				if (null != invoice.getDueDate()) {
-      					invoice.setDueDateStr(LoginSessionController.DATEFORMAT.format(invoice.getDueDate()));
+      					invoice.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate()));
       				}
       				invoice.setTotal(invoice.getTotal());
       				invoice.setInvoiceStatus(invoice.getInvoiceStatus());
@@ -2253,8 +2262,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 
-		 String date = (LoginSessionController.DATEFORMAT.format(invoice.getDueDate()));
+		 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+		 String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getDueDate()));
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
@@ -2557,16 +2566,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
 
-		// store attached Documents (after)
-//		File file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType,	vendorCurrencyCode, loginOrgCurrencyCode);
-//		invoice.setFileName(file.getName());
-		// byte[] bytesArray = new byte[(int) file.length()];
-//		byte[] bytesArray = getByteArray(file);
-//		invoice.setDocFile(bytesArray);
-//		invoiceDao.saveInvoce(invoice);
-//		if (null != file) {
-//			file.delete();
-//		}
+		/*//store attached Documents (after)
+		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType,	vendorCurrencyCode, loginOrgCurrencyCode);
+		invoice.setFileName(file.getName());
+		byte[] bytesArray = getByteArray(file);
+		invoice.setDocFile(bytesArray);
+		invoiceDao.saveInvoce(invoice);
+		if (null != file) {
+			file.delete();
+		}*/
 
 		if (invoice.getSubmissionApproverHierarchyIds() != null
 				&& invoice.getSubmissionApproverHierarchyIds().size() > 0) {
@@ -2629,7 +2637,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 
 		int maxRowCount = Integer.parseInt(jsonObj.getString("invoiceExpMaxRowNumber"));
-		for (int i = 1; i < maxRowCount; i++) {
+		for (int i =0; i < maxRowCount; i++) {
 			// expensesDate invoice; orgLocation; description; quantity; total;
 			// status;
 			if (jsonObj.has(i + "description")) {
@@ -2684,7 +2692,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					if(jsonObj.has(i + "category")){
 						if (null != jsonObj.getString(i + "category")
 								&& !"".equalsIgnoreCase(jsonObj.getString(i + "category"))) {
-							invoiceLineItems.setAmount(jsonObj.getString(i + "category"));
+							invoiceLineItems.setExpenseCategory(jsonObj.getString(i + "category"));
 						}
 					}
 					
@@ -2706,6 +2714,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 		return expensesinvoicelineitemsSet;
 
+	}
+	@Override
+	public void updateExpensesForinvoice(Invoice invoice,String invoiceType) throws Exception {
+		Expenses expenses = invoice.getExpensesId();
+		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+		   expenses.setBillingRecievableStatus("SENT");
+		}else {
+			expenses.setBillingPayableStatus("SENT");	
+		}
+		addExpensesDao.storeAddExpensesData(expenses);
 	}
 	
 }

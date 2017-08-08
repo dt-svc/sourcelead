@@ -56,10 +56,13 @@ public class InvoiceController {
 	CommonUtil commonUtil;
 	 
 	@Autowired
-	private InvoiceService invoiceService;
+	private PdfConversionUtil pdfConversionUtil;
+   
+    @Autowired
+	private ProjectsService projectsService;
 	
 	@Autowired
-	private PdfConversionUtil pdfConversionUtil;
+	private InvoiceService invoiceService;
 	 
 	@Autowired
 	private InvoiceDocumentsService invoiceDocumentsService;
@@ -91,11 +94,11 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		model.setViewName("billing/createInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
-		String convertedDate = formatter.format(currentDate);
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -117,7 +120,6 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
@@ -127,7 +129,12 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId)){
+		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
+			model.setViewName("billing/createExpensesReceivableInvoice");
+		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
+			model.setViewName("billing/createExpensesReceivableInvoice");
+		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
 		}else{
 			model.setViewName("billing/createInvoice");
@@ -237,7 +244,7 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
@@ -254,7 +261,7 @@ public class InvoiceController {
 		}
 		
 		Date currentDate = new Date();
-		String convertedDate = dateFormat.format(currentDate);
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -270,7 +277,7 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+	//	SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -286,7 +293,7 @@ public class InvoiceController {
 			sessionData = new SessionMaintainanceData();
 		}
 		Date currentDate = new Date();
-		String convertedDate = dateFormat.format(currentDate);
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectPayableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);

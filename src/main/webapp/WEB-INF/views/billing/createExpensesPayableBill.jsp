@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/jquery.mask.min.js"></script>
@@ -83,37 +81,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
             </div>
               
-              <div class="form-group">
-              <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field"> 
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
-                  <%--  <option value=''>--Select Clinet--</option>
-                   <c:forEach var="projects" items="${projectsList}">
-                         <option value="${projects.id}">${projects.projectName}</option>
-                  </c:forEach> --%>
-                  </select>
-              </div>
-            </div>
-           <div class="form-group">
-              <label class="col-md-3">Frequency</label>
-              <div class="col-md-9 select-field">
-                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
-                 <!--  <option value=''>--Select Payment Term--</option>
-                  <option>10 days</option>
-                  <option>15 days</option>
-                  <option>20 days</option>
-                  <option>30 days</option>
-                  <option>60 days</option>-->
-                  </select> 
-              </div>
-            </div>
-<!-- 	   
-	       <div class="form-group">
-              <label class="col-md-3">Invoice Frequency</label>
-              <div class="col-md-9">
-                <input class="form-control" id="invoiceFrequency" name="invoiceFrequency" placeholder="Invoice Frequency" type="text">
-              </div>
-            </div> -->
               
             <div class="form-group">
               <label class="col-md-3">Billing Address</label>
@@ -128,6 +95,39 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 									name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
 			</div>
+			
+			<div class="clearfix mb"></div>
+			<div class="form-group">
+              <label class="col-md-3">&nbsp;</label>
+              <div class="col-md-9 checkBox">
+                  <input type="checkbox"  name="invoiceforexpenses" value="N" class="paddingRight" id="invoiceforexpenses" onclick="checkBox()">
+                  Invoice for Expenses
+              </div>
+            </div>
+            
+              <div id="associate-expenses" style="display: none">
+              <div class="form-group">
+              <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 select-field"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
+                  </select>
+              </div>
+            </div>
+                  <div class="form-group">
+              <label class="col-md-3">Associate<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
+                </select>
+              </div>
+            </div>
+                  <div class="form-group">
+              <label class="col-md-3">Expenses<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9 select-field" id="expensesIdDiv">
+                <select class="chosen-select form-control" id="expensesId" name="expensesId" onchange="getExpensesDetails();"  field-name="Expense Name">
+                </select> 
+              </div>
+            </div>
+              </div>
             
           </div>
         </div>
@@ -1334,37 +1334,7 @@ $(document).ready(function(){
 });
 </script>
   
-<!-- <script>
-function getClientContactsExisted(clientContactId){
-	var orgRelationId = $("#orgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	var selected = "";
-	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
-		selected = 'selected';
-	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
-	}
-	
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
-	});
 
-	}
-</script> -->
-
-<!-- Get alla clients when editing -->
 
 
 <script>
@@ -1518,6 +1488,17 @@ function cancel(){
 }
 </script>
 
+
+<script>
+    $("#invoiceforexpenses").click(function(){
+         if ($(this).is(':checked')) {
+        document.getElementById("associate-expenses").style.display="block";
+    } else {
+        document.getElementById("associate-expenses").style.display="none";
+    }
+    });
+</script>
+
 <script>
 function addTaxDivs(){
 	var result = "";
@@ -1664,7 +1645,7 @@ function getVendorContacts(vendorContactId){
 	}
 </script>
 
-<script>
+<!-- <script>
 $(document).ready(function() {  
 	maskme();    
  });
@@ -1688,5 +1669,5 @@ function maskme(){
         }
     });
 }
-</script>
+</script> -->
  <jsp:include page="../masterFooter.jsp" />	

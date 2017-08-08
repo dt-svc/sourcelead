@@ -13,7 +13,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	}
  }
  
-  function candidateList(){ 	 
+  function candidateList(){
 	  var candFilterRadio = $('input[name=candidateStatus]');
  	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
@@ -111,7 +111,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 
 function cpagination(url){ 
 	var colIndex = 0;
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#candidatePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,

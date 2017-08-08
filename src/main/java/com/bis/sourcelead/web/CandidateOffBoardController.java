@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,12 +92,12 @@ public class CandidateOffBoardController {
 		 
 		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 		 
-		 
+		 //SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(loginOrgLocation.getId(),user.getId(),offboarding.getId());
 			List<Tasks> taskList = new ArrayList<Tasks>();
 			if(null != tasksList && tasksList.size() > 0){
 				for(Tasks tasks : tasksList){
-					tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
+					tasks.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),tasks.getTaskDate()));
 					taskList.add(tasks);
 				}
 				

@@ -61,7 +61,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 					Date empStartDate = project.getStartDate();
 					Date empEndDate = project.getEndDate();
 					//DateFormat format = Constants.DF_STD_DMY;
-					java.text.SimpleDateFormat format = project.getOrgLocationsId().getLocFullFormDateFormatter();
+					//java.text.SimpleDateFormat format = project.getOrgLocationsId().getLocFullFormDateFormatter();
 					 try {
 						    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Monthly")){
 						   
@@ -106,7 +106,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								   for(int i=0;i<=monthdiff;i++){
 									   Date startDate = empMonthStartDate;
 									   Date endDate = CalendarUtil.getMonthEndDateByGivenDate(startDate, 0).get("ENDDATE");
-									   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
+									   timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),endDate));
 									   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, 1).get("STARTDATE");
 								   }
 ;
@@ -175,11 +175,11 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								   for(int i=0;i<=monthdiff;i++){
 									   Date startDate = empMonthStartDate;
 									   Date endDate = CalendarUtil.getMonth15thDateByGivenDate(startDate, 0).get("STARTDATE");
-									   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
+									   timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),endDate));
 									   if(empMonthEndDate.after(endDate)){
 										   startDate =  CalendarUtil.getMonth16thDateByGivenDate(startDate, 0).get("STARTDATE");
 										   endDate   =  CalendarUtil.getMonthEndDateByGivenDate(startDate, 0).get("ENDDATE");
-										   timesheetFrequencyList.put(format.format(startDate), format.format(endDate));
+										   timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),endDate));
 										   empMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(startDate, 1).get("STARTDATE");
 									   }
 									   else{
@@ -259,7 +259,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 											else{
 												tsCal.setTime(tsStartDate);
 											}
-										    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
+										    timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter( project.getOrgLocationsId().getDateFormat(),tsStartDate), commonUtil.dateStrFromOrgDateFormatter( project.getOrgLocationsId().getDateFormat(),tsEndDate));
 										    
 										    tsStartDate = CalendarUtil.getDateIncrementByincrement(tsCal, 14).getTime();
 										    Calendar tsEndCal = Calendar.getInstance(TimeZone.getDefault());
@@ -351,7 +351,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 										else{
 											tsCal.setTime(tsStartDate);
 										}
-									    timesheetFrequencyList.put(format.format(tsStartDate), format.format(tsEndDate));
+									    timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter( project.getOrgLocationsId().getDateFormat(),tsStartDate), commonUtil.dateStrFromOrgDateFormatter( project.getOrgLocationsId().getDateFormat(),tsEndDate));
 									    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
 										tsEndDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "SUN").getTime();
 								  }

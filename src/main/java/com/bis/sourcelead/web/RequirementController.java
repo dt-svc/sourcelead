@@ -187,12 +187,12 @@ public class RequirementController {
 				
 			}
 			
-	        SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+	      //  SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 
 	 
 			if(null !=requirement.getClosedDate()){
 				
-				requirement.setClosedDateStringFormat(formatter.format(requirement.getClosedDate()));
+				requirement.setClosedDateStringFormat(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getClosedDate()));
 			}
 			
 			if(requirement != null && requirement.getId() != null){

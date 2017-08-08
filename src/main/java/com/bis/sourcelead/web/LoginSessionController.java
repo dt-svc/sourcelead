@@ -976,15 +976,15 @@ public class LoginSessionController {
 	
 	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations,HttpServletRequest request) throws Exception {
 
-		
-		candidateOnBoarding.setJoiningDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getStartDate()));
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateOnBoarding.getStartDate()));
 		
 		if(null != candidateOnBoarding.getEndDate()){
-			candidateOnBoarding.setEndDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getEndDate()));
+			candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOnBoarding.getEndDate()));
 		}
 		
 		if(null != candidateOnBoarding.getDueDate()){
-			candidateOnBoarding.setDueDateStr(LoginSessionController.DATEFORMAT.format(candidateOnBoarding.getDueDate()));
+			candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOnBoarding.getDueDate()));
 		}
 		
 		

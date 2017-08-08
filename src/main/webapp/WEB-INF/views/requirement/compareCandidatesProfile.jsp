@@ -3,14 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
 <style>
 .new_side_wrap {
 	z-index:100000 !important; 
@@ -74,7 +66,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     }else{
     	jobNoticePeriod = "---";
     }
-    
+
     var jobEducation = "";
     if(data.jobEducation != null && data.jobEducation != '' && data.jobEducation != 'undefined'){
     	jobEducation = data.jobEducation;
@@ -150,7 +142,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     result = result +'<select class="chosen-select form-control" id="compareCandidateList1" onchange="getCandidatetoCompare(1,'+requirementId+');">';
 	result = result +'</select>';
 	result = result +'</div>';
-	result = result +'<div id="profileDiv1"></div>';
+	result = result +'<div id="profileDiv1"><span id="noRecords1" class="compNoRecords"></span></div>';
 	result = result +'</div>';
     
     result = result +'<div class="profilecompare-widget">';
@@ -159,7 +151,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     result = result +'<select class="chosen-select form-control" id="compareCandidateList2" onchange="getCandidatetoCompare(2,'+requirementId+');">';
 	result = result +'</select>';
 	result = result +'</div>';
-	result = result +'<div id="profileDiv2"></div>';
+	result = result +'<div id="profileDiv2"><span id="noRecords2" class="compNoRecords"></span></div>';
 	result = result +'</div>';
     
     result = result +'<div class="profilecompare-widget">';
@@ -168,7 +160,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     result = result +'<select class="chosen-select form-control" id="compareCandidateList3" onchange="getCandidatetoCompare(3,'+requirementId+');">';
 	result = result +'</select>';
 	result = result +'</div>';
-	result = result +'<div id="profileDiv3"></div>';
+	result = result +'<div id="profileDiv3"><span id="noRecords3" class="compNoRecords"></span></div>';
 	result = result +'</div>';
     
     result = result +'<div class="profilecompare-widget">';
@@ -177,7 +169,7 @@ function compareRecommendedUsersdiv(data,requirementId){
     result = result +'<select class="chosen-select form-control" id="compareCandidateList4" onchange="getCandidatetoCompare(4,'+requirementId+');">';
 	result = result +'</select>';
 	result = result +'</div>';
-	result = result +'<div id="profileDiv4"></div>';
+	result = result +'<div id="profileDiv4"><span id="noRecords4" class="compNoRecords"></span></div>';
 	result = result +'</div>';
     
     result = result +'    </div>';
@@ -377,18 +369,22 @@ function prepareCandidateGrid(data,requirementId){
 		    	    
 		    	    if(count==1){
 		    	    	$("#profileDiv1").empty();
+// 		    	    	$("#noRecords1").hide();
 		    	    	$("#profileDiv1").append(opt);
 		    	    }
 		    	    if(count==2){
 		    	    	$("#profileDiv2").empty();
+// 		    	    	$("#noRecords2").hide();
 		    	    	$("#profileDiv2").append(opt);
 		    	    }
 		    	    if(count==3){
 		    	    	$("#profileDiv3").empty();
+// 		    	    	$("#noRecords3").hide();
 		    	    	$("#profileDiv3").append(opt);
 		    	    }
 		    	    if(count==4){
 		    	    	$("#profileDiv4").empty();
+// 		    	    	$("#noRecords4").hide();
 		    	    	$("#profileDiv4").append(opt);
 		    	    }
 		    	}
@@ -419,15 +415,23 @@ function getCandidatetoCompare(div,requirementId){
 		candidateId = $("#compareCandidateList4").val();
 		$("#loading4").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	}
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	 $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	candidateDiv(json,div,requirementId);
-	        }
-	 });
+	alert(candidateId)
+	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	candidateDiv(json,div,requirementId);
+		        }
+		 });
+	}else{
+		$("#loading"+div).removeAttr("style");
+		$("#profileDiv"+div).empty();
+		$("#profileDiv"+div).append('<span id="noRecords'+div+'" class="compNoRecords"></span>');
+	}
+	
 }
 </script>
 

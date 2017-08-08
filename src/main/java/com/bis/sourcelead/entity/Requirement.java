@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -23,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.criteria.CriteriaBuilder.In;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -305,6 +307,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String searchType;;
 	
 	@Transient
+	@JsonProperty
 	private String clientName;
 	
 	@Transient
@@ -326,6 +329,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String reqEducationListString;
 	
 	@Transient
+	@JsonProperty
 	private String manager;
 	
 	@Transient
@@ -466,11 +470,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	private Long referId;
 	
-	 @Transient
-     @JsonProperty
-     private String isRequirementRelesedToPublic;
+    @Transient
+    @JsonProperty
+    private String isRequirementRelesedToPublic;
+	 
+    @Transient
+	@JsonProperty
+	private List<Long> requirementReleasedUserIds;
 
-	
+	@Transient
+	@JsonProperty
+	private String postedOnStr;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -613,11 +623,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setIsJobApplied(String isJobApplied) {
 		this.isJobApplied = isJobApplied;
 	}
-
 	public String getClientName() {
+		if(clientId != null){
+			if(clientId.getResponderType().equalsIgnoreCase("Client")){
+				clientName = clientId.getResponderLocationId().getOrg().getOrgName();
+			}
+			if(clientId.getResponderType().equalsIgnoreCase("Vendor")){
+				clientName = clientId.getLocationId().getOrg().getOrgName();
+			}
+		}
+		
 		return clientName;
 	}
-
+	
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
@@ -824,6 +842,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public Date getCreatedDate() {
+		String postedOnStr = "";
+		if(createdDate != null){
+			postedOnStr = Constants.DF_DMY.format(createdDate);
+		}
+		setPostedOnStr(postedOnStr);
 		return createdDate;
 	}
 
@@ -905,9 +928,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getManager() {
+		if(managerUserId != null){
+			String managerFirstName = "";
+			if(StringUtils.isNotEmpty(managerUserId.getFirstName())){
+				managerFirstName = managerUserId.getFirstName();
+			}
+			String managerLastName = "";
+			if(StringUtils.isNotEmpty(managerUserId.getLastName())){
+				managerLastName = managerUserId.getLastName();
+			}
+			StringBuilder name = new StringBuilder();
+			manager = name.append(managerFirstName).append(" ").append(managerLastName).toString();
+		}
 		return manager;
 	}
-
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
@@ -1582,6 +1616,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.systemGeneratedId = systemGeneratedId;
 	}
 
+	public List<Long> getRequirementReleasedUserIds() {
+		requirementReleasedUserIds = new ArrayList<>();
+		if(StringUtils.isNotEmpty(releasedBy)){
+			for (String s : releasedBy.split(",")){
+				requirementReleasedUserIds.add(Long.parseLong(s));
+			 }
+		}
+		return requirementReleasedUserIds;
+	}
+	
+	public String getPostedOnStr() {
+		return postedOnStr;
+	}
+
+	public void setPostedOnStr(String postedOnStr) {
+		this.postedOnStr = postedOnStr;
+	}
+
 	public String getIsRequirementRelesedToPublic() {
 		
 		if(isPublic == null   && isCrowdSourcing == null ){
@@ -1596,4 +1648,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.isRequirementRelesedToPublic = isRequirementRelesedToPublic;
 	}
 
+	
 }

@@ -61,10 +61,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateDocuments;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -87,7 +83,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 /**
  * Handles requests for the Candidate List Service.
  * 
@@ -209,7 +204,7 @@ public class CandidateListRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
@@ -536,7 +531,7 @@ public class CandidateListRestController {
 					CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 					if (candidateIndex.getUpdatedDate() != null) {
 						Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
-						String updatedDate = simpleDateFormat.format(date1);
+						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
 					}
 					candidatesList.add(candidateIndex);
@@ -1412,6 +1407,7 @@ public class CandidateListRestController {
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
+				 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
 					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -1454,8 +1450,8 @@ public class CandidateListRestController {
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
-								Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
+								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 								String customStartTimeStr = null;
 								String customEndTimeStr = null;
 								if(null !=startTime){
@@ -1498,7 +1494,7 @@ public class CandidateListRestController {
 						}
 						
 						if(null != candidate.getUpdatedDate()){
-							candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
+							candidate.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),candidate.getUpdatedDate()));
 						}
 						 
 						freshList.add(candidate);

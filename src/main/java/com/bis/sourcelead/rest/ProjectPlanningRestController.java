@@ -1,7 +1,7 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,7 +41,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class ProjectPlanningRestController {
@@ -162,11 +161,7 @@ public class ProjectPlanningRestController {
 	 @RequestMapping(value = "/getOrgLocationRoles", method = RequestMethod.GET)
 	 public @ResponseBody String  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
 		 
-		String resultJson;
-		
-		List<Long> orgLocationIds = null; 
-		List<Long> roleIds = null; 
-		
+		 String resultJson;
 		 String[] orgLocationId = orgLocations.split(",");
 		
 		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocationId[0]));
@@ -178,19 +173,19 @@ public class ProjectPlanningRestController {
 	 
 	 @RequestMapping(value = "/getEstimatedHoursForResourceRequest", method = RequestMethod.GET)
 		public @ResponseBody Integer getEstimatedHoursForResourceRequest(@RequestParam(value = "startDate", required = false) String startDate,
-				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours) throws Exception {
+				@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
-			
-			DateFormat formatter = LoginSessionController.DATEFORMAT;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+
 			int estimatedHours = 0;
 			
 			try {
 
-				Date requestStartDate =  formatter.parse(startDate);
+				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  formatter.parse(endDate);
+				Date requestEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
@@ -210,7 +205,7 @@ public class ProjectPlanningRestController {
 
 			    estimatedHours = (workDays*averageWorkingHours);
 
-	        } catch (ParseException e) {
+	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 			

@@ -110,7 +110,7 @@ public class BillingPayableRestController {
 		    String resultJson;
 		 
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		  //SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		    if(null != invoice){
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
@@ -125,10 +125,10 @@ public class BillingPayableRestController {
 				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	if(invoice.getInvoiceDate() != null){
-		    		invoice.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
+		    		invoice.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate()));	
 		    	}
 		    	if(invoice.getDueDate() != null){
-		    		invoice.setDueDateStr(dateFormat.format(invoice.getDueDate()));	
+		    		invoice.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate()));	
 		    	}
 		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
@@ -161,26 +161,27 @@ public class BillingPayableRestController {
 //							}
 			    		}
 		    		}else{
-		    			User user = userService.getUserById(lineItems.getUser().getId());
-		    			if(null != user.getLastName()){
-			    			sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-		    			  }else{
-			    			sb.append(user.getFirstName());
-		    			 }
-		    			lineItems.setUserId(lineItems.getUser().getId());
+		    			if(lineItems.getUser() !=null) {
+		    				User user = userService.getUserById(lineItems.getUser().getId());
+			    			if(null != user.getLastName()){
+				    			sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+			    			  }else{
+				    			sb.append(user.getFirstName());
+			    			 }
+			    			lineItems.setUserId(lineItems.getUser().getId());
+		    			}
 		    		}
 		    		
 		    		
 		    		if(null != lineItems.getStartDate()){
-		    			lineItems.setStartDateStr(dateFormat.format(lineItems.getStartDate()));
+		    			lineItems.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lineItems.getStartDate()));
 		    		}
 		    		
 		    		if(null != lineItems.getEndDate()){
-		    			lineItems.setEndDateStr(dateFormat.format(lineItems.getEndDate()));
+		    			lineItems.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lineItems.getEndDate()));
 		    		}
 		    		
 		    		lineItems.setCandidateName(sb.toString());
-		    		
 		    		
 		    	
 		    		lineItemsList.add(lineItems);
@@ -188,7 +189,28 @@ public class BillingPayableRestController {
 		    	if(null != invoice.getProjectID()){
 		    		invoice.setProjectName(invoice.getProjectID().getProjectName());
 		    		invoice.setInvoiceFrequency(invoice.getInvoiceFrequency());
+		    		invoice.setProjectId(String.valueOf(invoice.getProjectID().getId()));
 		    	}
+		    	if(invoice.getProjectMemberId() !=null) {
+		    		StringBuilder sb = new StringBuilder();
+		    		if(invoice.getProjectMemberId().getEmployee().getUser().getLastName() != null) {
+		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName()).append(invoice.getProjectMemberId().getEmployee().getUser().getLastName());
+		    		}else {
+		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName());	
+		    		}
+		    		invoice.setProjectMemberName(sb.toString());
+		    		invoice.setMemberId(String.valueOf(invoice.getProjectMemberId().getId()));
+		    	}
+		    	if(invoice.getExpensesId() !=null) {
+		    		StringBuilder sb = new StringBuilder();
+		    		String startDate  = conversionUtil.getDateAsString(invoice.getExpensesId().getStartDate());
+					String endDate  = conversionUtil.getDateAsString(invoice.getExpensesId().getEndDate());
+					sb.append(startDate).append(" / ").append(endDate);
+		    		invoice.setExpensesFrequency(sb.toString());
+		    		invoice.setExpensesInvoices(invoice.getExpensesInvoices());
+		    		invoice.setExpId(String.valueOf(invoice.getExpensesId().getId()));
+		    	}
+		    	
 		    	invoice.setInvoiceLineItemsList(lineItemsList);
 		    	
 		    	List<InvoiceDocument> invoiceDocumentsList = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getId());

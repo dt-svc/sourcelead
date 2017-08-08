@@ -184,8 +184,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="profile_details clearfix">';
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
-               result = result + '<div class="media-left image-parent">';
+               result = result + '<div class="media-left image-parent positionRelative">';
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
+               if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
+					  if(json.candidateScore >=50){ 
+					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+					  }
+				  }
+               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
@@ -1904,11 +1910,11 @@ function interviewFeedback(interviewId,templateId,id){
 	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
 	//$(this).next('.content').slideDown();
-	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(data) {
 			var json = JSON.parse(data);
 			var result = "";
@@ -2664,9 +2670,10 @@ function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
 	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";

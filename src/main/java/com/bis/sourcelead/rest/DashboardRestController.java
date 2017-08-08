@@ -539,7 +539,7 @@ public class DashboardRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
 			List<RequirementInterviewHistory> requirementInterviewList = null;
-			
+			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			String currentTime = null;
 			String userType = null;
 			Timezone timezone = null;
@@ -554,7 +554,7 @@ public class DashboardRestController {
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			if(dateRange != null && !"today".equals(dateRange) && !"previous".equals(dateRange) && !"upcoming".equals(dateRange)){
 				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-				Date startTime =  LoginSessionController.DATEFORMAT.parse(dateRange);
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 				String startTimeTS = Constants.TZ_DF.format(startTime); 
 				String endTimeTS = END_TZ_DF.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
@@ -788,7 +788,7 @@ public class DashboardRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
 			List<RequirementInterviewHistory> requirementInterviewList = null;
-			
+			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			String currentTime = null;
 			String userType = null;
 			Timezone timezone = null;
@@ -802,7 +802,7 @@ public class DashboardRestController {
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  LoginSessionController.DATEFORMAT.parse(dateRange);
+			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);
@@ -828,7 +828,7 @@ public class DashboardRestController {
 				taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 				taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
 				converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
-				taskCurrentDateInTimezone = LoginSessionController.DATEFORMAT.format(converteDate);
+				taskCurrentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),converteDate);
 			}
 			
 			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,dateRange,converteDate,timezone);

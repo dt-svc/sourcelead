@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -398,7 +399,7 @@ public class SubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
 		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
@@ -435,8 +436,7 @@ public class SubmissionsRestController {
 			}
 			
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -473,7 +473,8 @@ public class SubmissionsRestController {
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
 				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-		DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
@@ -507,8 +508,7 @@ public class SubmissionsRestController {
 			}
 	
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -674,9 +674,9 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		// requirementSubmissionService.sendRejectionMailToVendorContact(user,
-		// requirementSubmission.getRejectedReason(), submissionId,
-		// orgLocations);
+		 requirementSubmissionService.sendRejectionMailToVendorContact(user,
+		 requirementSubmission.getRejectedReason(), submissionId,
+		 orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		return "success";
 	}

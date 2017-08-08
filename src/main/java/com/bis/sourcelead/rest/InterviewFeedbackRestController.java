@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -67,6 +69,9 @@ public class InterviewFeedbackRestController {
 	
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	 private OrgLocationService orgLocationService;
   
 	
 	/**
@@ -250,10 +255,11 @@ public class InterviewFeedbackRestController {
     
     
     @RequestMapping(value = "/getInterviewrsFeedbackList" , method = RequestMethod.GET)
-	   public String getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId) throws Exception {
+	   public String getInterviewrsFeedbackList(@RequestParam(value="interviewId", required=false) Long interviewId,@RequestParam(value="locationId", required=false) Long locationId) throws Exception {
 		    String resultJson = null;
 						List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewId);
-						
+						OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+						//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 						for(RequirementInterviewer interviewer: interviewers){
 							StringBuilder name = new StringBuilder();
 							if(null != interviewer.getInterviewerUser().getLastName() && !"".equalsIgnoreCase(interviewer.getInterviewerUser().getLastName())){
@@ -264,7 +270,7 @@ public class InterviewFeedbackRestController {
 							
 							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 							if(feedbackTemplate != null){
-								interviewer.setFeedbackDate(LoginSessionController.DATEFORMAT.format(feedbackTemplate.getCreatedDate()));
+								interviewer.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));
 								interviewer.setFeedbackStatus(feedbackTemplate.getStatus());
 							}
 						}

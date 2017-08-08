@@ -147,6 +147,7 @@ public class ReportRestController {
 		 Date endDateUTC =null ;
 		 String filterDate = null;
 		 Date startDateUTC = null;
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(timePeriod)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -189,8 +190,8 @@ public class ReportRestController {
 					 if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
-						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
 						String customStartTimeStr = null;
 						String customEndTimeStr = null;
 						if(null !=startTime){
@@ -276,6 +277,8 @@ public class ReportRestController {
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -301,8 +304,8 @@ public class ReportRestController {
 					 if(customStartDate  != null && !"".equalsIgnoreCase(customStartDate) && customStartDate  != "undefined" && customEndDate != null && !"".equalsIgnoreCase(customEndDate) && customEndDate  != "undefined"){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
-						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -407,6 +410,8 @@ public class ReportRestController {
 		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
@@ -434,8 +439,8 @@ public class ReportRestController {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  LoginSessionController.DATEFORMAT.parse(customStartDate);
-						Date endTime =  LoginSessionController.DATEFORMAT.parse(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
