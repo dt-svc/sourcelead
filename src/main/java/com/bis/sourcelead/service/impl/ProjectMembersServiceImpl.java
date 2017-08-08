@@ -95,6 +95,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 CommonUtil commonUtil;
 	 
 	 @Autowired
+	 ConversionUtil conversionUtil;
+	 
+	 @Autowired
 	 private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
 	 
@@ -706,6 +709,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				if (pmh.getStatus() != null) {
 					projectMember.setProjectStatus(pmh.getStatus());
 				}
+				if(projectMember.getProjects() != null){
+					projectMember.setProjectUUID(projectMember.getProjects().getProjectUUID());
+				}
+				
+				if(projectMember.getProjects() != null){
+					projectMember.setProjectEndDateStr(conversionUtil.getDateAsString(projectMember.getProjects().getEndDate()));
+				}
+				
 				if (pmh.getProjectAssignedDate() != null
 						&& pmh.getProjectTerminationDate() != null) {
 					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "DRAFT");
