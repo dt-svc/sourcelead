@@ -399,7 +399,7 @@ public class SubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
 		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
@@ -436,8 +436,7 @@ public class SubmissionsRestController {
 			}
 			
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -475,7 +474,7 @@ public class SubmissionsRestController {
 				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
 		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
@@ -509,8 +508,7 @@ public class SubmissionsRestController {
 			}
 	
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(simpleDateFormat.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}

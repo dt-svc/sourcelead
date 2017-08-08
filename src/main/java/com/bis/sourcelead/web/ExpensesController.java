@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,10 +17,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesDTO;
-import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
-import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -36,6 +33,7 @@ import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -50,6 +48,9 @@ public class ExpensesController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	ExpensesCategoryService expensesCategoryService;
@@ -197,13 +198,13 @@ public class ExpensesController {
 		sessionData.setNav(Constants.MY_EXPENSES);
 		/*String expensesId = addExpensesService.getExpenseId();
 		model.addObject("ExpensesId", expensesId);*/
-		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		Expenses expenses = null;
 		if(null != expenseId && !expenseId.isEmpty()){
 			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId,orgLoc.getId());
-			expenses.setStartDateStr(dateFormat.format(expenses.getStartDate()));
+			expenses.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
 			if(null != expenses.getEndDate()){
-				expenses.setEndDateStr(dateFormat.format(expenses.getEndDate()));
+				expenses.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));
 			}
 			
 			if(expenses.getCreatedBy()!= null){
