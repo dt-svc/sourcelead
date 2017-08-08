@@ -164,7 +164,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     
 	 
 	 
-	 @Override
+/*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
 			
 	    	Long number = 000000001L;
@@ -184,7 +184,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	        StringBuffer sb = new StringBuffer();
 			return sb.append(Constants.PROJECT_ENTITY).append(ConvetredCandidatesId).toString();
 			
-		}
+		}*/
 	 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
