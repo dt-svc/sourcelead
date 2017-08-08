@@ -598,6 +598,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);

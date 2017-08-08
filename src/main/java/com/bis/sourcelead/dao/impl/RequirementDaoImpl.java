@@ -187,8 +187,70 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		
 		String subQuery7 = "";
+		String[] subStatus = status.split(",");
 		if((null == status || "".equals(status)) && (null == clients || "".equals(clients))){
 			subQuery7 = " and (requirement.requirementSubmissionStatus ='NEW' or requirement.requirementSubmissionStatus = 'SUBMITTED' or requirement.requirementSubmissionStatus = 'DRAFT' or requirement.requirementSubmissionStatus = 'OPEN') ";
+		}
+		else{
+			if (Arrays.asList(subStatus).contains("NEW")) {
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'NEW' ";
+			}
+			if (Arrays.asList(subStatus).contains("DRAFT")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'DRAFT' ";
+			}
+			if (Arrays.asList(subStatus).contains("SUBMITTED")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'SUBMITTED' ";
+			}
+			if (Arrays.asList(subStatus).contains("APPROVED")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'APPROVED' ";
+			}
+			if (Arrays.asList(subStatus).contains("REJECTED")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'REJECTED' ";
+			}
+			if (Arrays.asList(subStatus).contains("OPEN")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'OPEN' ";
+			}
+			
+			if (Arrays.asList(subStatus).contains("FILLEDCLOSED")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'FILLEDCLOSED' ";
+			}
+			if (Arrays.asList(subStatus).contains("UNFILLEDCLOSED")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'UNFILLEDCLOSED' ";
+			}
+			if (Arrays.asList(subStatus).contains("CANCEL")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'CANCEL' ";
+			}
+			if (Arrays.asList(subStatus).contains("CLOSED")) {
+				if(StringUtils.isNotEmpty(subQuery7)){
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'CLOSED' ";
+			}
+			subQuery7 = " and ( " +subQuery7 + " ) ";
 		}
 		
 		Query query = null;
@@ -1018,10 +1080,10 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			
 			
-		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode "+subQueryDateRange+" ";
+		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy.id =:userCode "+subQueryDateRange+" ";
 			Session session = this.sessionFactory.getCurrentSession();
 		    params.put("orgLocationId",orgLocationId);
-		    params.put("userCode",user.getUserCode());
+		    params.put("userCode",user.getId());
 			
 			/*String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
 			Session session = this.sessionFactory.getCurrentSession();

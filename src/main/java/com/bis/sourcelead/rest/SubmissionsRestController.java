@@ -676,9 +676,9 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		// requirementSubmissionService.sendRejectionMailToVendorContact(user,
-		// requirementSubmission.getRejectedReason(), submissionId,
-		// orgLocations);
+		 requirementSubmissionService.sendRejectionMailToVendorContact(user,
+		 requirementSubmission.getRejectedReason(), submissionId,
+		 orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		return "success";
 	}
