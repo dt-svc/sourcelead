@@ -744,7 +744,7 @@ $('#mypop').click(function(){
 
 <script>
 function invoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+// 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
