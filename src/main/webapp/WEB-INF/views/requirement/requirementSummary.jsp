@@ -4557,7 +4557,6 @@ function requirementRecommendations(requirementId){
 		    $("#status-div").empty();
 		    $("#status-data").empty();
 			$("#tab-3").append(result);
-			
 			recommendationpagination();
 			$("#tab-3").show();
 			$(".project-tabs-menu a").click(function(event) {
@@ -4588,6 +4587,7 @@ function recommendationpagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
+    $("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 
