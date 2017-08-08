@@ -120,7 +120,7 @@ function onboardingTemplatesList(){
 
 <script>
 function onboardingPagenation(){ 
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+//	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

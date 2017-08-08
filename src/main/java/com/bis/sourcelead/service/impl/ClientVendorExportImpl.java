@@ -312,13 +312,13 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		 }
 		 String projectManager = sb.substring(0, sb.length()-1);
 		 
-		SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
+	//	SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
 		if(!"pdf".equalsIgnoreCase(exportType)){
 			Workbook wb = new XSSFWorkbook();
 			CellStyle style = commonUtil.getCellStyle(wb);
 			//DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			StringBuilder projName=new StringBuilder();
-			Sheet sheet = wb.createSheet(projName.append(project.getProjectName()).append("_").append(dateFormat.format(new Date())).toString());
+			Sheet sheet = wb.createSheet(projName.append(project.getProjectName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date())).toString());
 			Row writeRow = null;
 			setExcelTitle(sheet,project.getProjectName(),project,wb,writeRow,projectManager);
 			int rowCount = 7;
@@ -330,7 +330,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 				row++;
 			}
 			 StringBuilder projNameSB=new StringBuilder();
-			 file = File.createTempFile(projNameSB.append(project.getProjectName()).append("_").append(dateFormat.format(new Date())).toString(),".xls");
+			 file = File.createTempFile(projNameSB.append(project.getProjectName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date())).toString(),".xls");
 			 file.setReadable(true);
 			 /*file = new File(projectName +"_" + dateFormat.format(new Date()) + ".xls");*/
 			FileOutputStream fos = new FileOutputStream(file);
@@ -361,7 +361,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		
 		//DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		
-		SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
 		CellStyle style = wb.createCellStyle();
 	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
@@ -404,11 +404,11 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		 Cell cell6 = writeRow.createCell(1);
 		 StringBuilder value=new StringBuilder();
 		 if(project.getStartDate()!=null && project.getEndDate() !=null){
-			 String convertedStartDate = dateFormat.format(project.getStartDate());
-			 String convertedEndDate = dateFormat.format(project.getEndDate());
+			 String convertedStartDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getStartDate());
+			 String convertedEndDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getEndDate());
 			 cell6.setCellValue(value.append(convertedStartDate).append(" to ").append(convertedEndDate).toString()); 
 		 }else{
-			 String convertedStartDate = dateFormat.format(project.getStartDate());
+			 String convertedStartDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getStartDate());
 			 cell6.setCellValue(value.append(convertedStartDate).append(" to ").append("--").toString()); 
 		 }
 		 cell6.setCellStyle(style);

@@ -119,6 +119,39 @@ public class CommonUtil {
         return new Date();
     }
 	
+	/**
+	 * Converting Org based date format as string
+	 * @param orgDateFormat
+	 * @param date
+	 * @return String
+	 */
+	public String dateStrFromOrgDateFormatter(String orgDateFormat, Date date){
+		String dateStr = null;
+		if(date != null && StringUtils.isNotEmpty(orgDateFormat)){
+			SimpleDateFormat df = new SimpleDateFormat(orgDateFormat);
+			dateStr = df.format(date);
+		}
+		return dateStr;
+	}
+	
+	/**
+	 *  Converting Org based date format as Util.Date
+	 * @param orgDateFormat
+	 * @param dateStr
+	 * @return Date
+	 */
+	public Date orgLocationDateFormat(String orgDateFormat, String dateStr){
+		DateFormat df = new SimpleDateFormat(orgDateFormat);
+		Date date = null;
+		 try {
+		        date = df.parse(dateStr);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+			return date;
+	}
+	
+	
 	public void storeSourceleadTasks(User user,Projects projects) throws Exception{
 		Collection<ProjectTasks> tasksList = projectTasksService.getAllSourceleadTasks();
 		if(tasksList != null && !tasksList.isEmpty()){
