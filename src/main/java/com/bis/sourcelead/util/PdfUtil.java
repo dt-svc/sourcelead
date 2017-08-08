@@ -69,7 +69,8 @@ public class PdfUtil {
 	@Autowired
 	EmployeesService employeesService;
 	
-	
+	@Autowired
+	 CommonUtil commonUtil;
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -874,15 +875,15 @@ public class PdfUtil {
 			Projects project, String projectManager) throws DocumentException, IOException {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
+	    //SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
 	   // DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbpe = new StringBuilder();
-	    sbpe.append(projectName).append("_").append(dateFormat.format(new Date()));
+	    sbpe.append(projectName).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(projectName).append("_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append(projectName).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    try {
@@ -912,11 +913,11 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("Manager :"+projectManager));
 	        if(project.getStartDate()!=null && project.getEndDate() !=null){
 	        	StringBuilder dateSB = new StringBuilder();
-	        	String convertedStartDate = dateFormat.format(project.getStartDate());
-	        	String convertedEndDate = dateFormat.format(project.getEndDate());
+	        	String convertedStartDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getStartDate());
+	        	String convertedEndDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getEndDate());
 	        	orderedList.add(new ListItem("Date :"+dateSB.append(convertedStartDate).append(" to ").append(convertedEndDate).toString()));
 			 }else{
-				 String convertedStartDate = dateFormat.format(project.getStartDate());
+				 String convertedStartDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getStartDate());
 				 orderedList.add(new ListItem("Date :"+convertedStartDate));
 			 }
 	        document.add(orderedList);

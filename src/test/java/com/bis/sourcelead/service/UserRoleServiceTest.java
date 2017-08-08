@@ -116,10 +116,11 @@ public class UserRoleServiceTest {
 			userRole.setId(1l);
 			Long roleId = 2l;
 			String userName = "shiva";
+			String viewtype = "LISTVIEW";
 			Long locationId = 1l;
 			String userState = "ACTIVE";
 			Long userId = 3l;
-			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin",0);
+			List<UserRole> userslist =userRoleService.getUsersListByRoleAndNameAndLocationId(roleId,userName,locationId,userState,userId,"SOURCELEAD_ADMIN","sladmin",0,viewtype);
 			assertNotNull(userslist);
 		}
 		
