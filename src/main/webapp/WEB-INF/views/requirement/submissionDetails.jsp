@@ -1210,7 +1210,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1258,6 +1258,14 @@ function getOfferDetails(submissionId){
 
 </script>
 
+<script>
+function viewOfferDocument(offerId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(offerId != null && offerId != ""){
+		window.open(sourceleadUrl+'/viewOfferDocument/'+title+'?offerId='+offerId,title,"height=600,width=600");
+	}  
+}
+</script>
 
 
 <%-- 
