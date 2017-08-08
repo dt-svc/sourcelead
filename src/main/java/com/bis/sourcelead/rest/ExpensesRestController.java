@@ -185,6 +185,15 @@ public class ExpensesRestController {
 		expenseEntryDetailsDTO.setCurrencyCodeList(currencyCodeList);
 		return expenseEntryDetailsDTO;
 	}
+	
+	@RequestMapping(value = "/rest/storeDocumentForIOS")
+	public @ResponseBody String storeDocumentForIOS(MultipartHttpServletRequest request,@RequestParam(value = "docName") Long docName) throws Exception
+	{
+		  final Map files = request.getFileMap();
+           MultipartFile  multiFile = (MultipartFile)files.get(0);
+           System.out.println(multiFile.getOriginalFilename());
+           return multiFile.getOriginalFilename();
+	}
 	@RequestMapping(value = "/rest/storeExpenseEntryDetails")
 	public @ResponseBody String storeExpenseEntryDetails(@RequestParam("entryForm") String entryForm, 
 			MultipartHttpServletRequest request) throws Exception
