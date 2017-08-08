@@ -238,7 +238,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
-	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers);
+	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers,orgLoc);
 	        if(expenseList != null && expenseList.size() >0){
 	        	for (String[] expenseArray: expenseList) {
 	        		for (int i = 0; i < expenseArray.length; i++) {
@@ -263,7 +263,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	    }
 		return file;
 	}
-private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers) {
+private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers,OrgLocations orgLoc) {
 	
 	List<String[]> arrayList = new ArrayList<>();
 	for(ExpensesApproverHierarchy ex:expApperoverHierarchy){
@@ -331,14 +331,14 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}
 			
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
 				expenseArray[8] = expenseId.getStartDateStr();
 			}else{
 				expenseArray[8] = "--";
 			}
 			
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
 				expenseArray[9] = expenseId.getEndDateStr();
 			}else{
 				expenseArray[9] = "--";
@@ -410,7 +410,7 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 		int column = 0;
 		for (ExpensesApproverHierarchy expensesList : expApperoverHierarchy) {
 			writeRow = createExcelsheet.createRow(column+1);
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList,orgLoc);
 			column++;
 		}
 		 try {
@@ -440,7 +440,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	return createExcelsheet;
 }
 
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex,OrgLocations orgLoc) {
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
@@ -488,12 +488,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				createExcelsheet.autoSizeColumn(7);
 			}
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}
