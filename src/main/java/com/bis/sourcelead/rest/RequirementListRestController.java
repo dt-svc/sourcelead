@@ -40,6 +40,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementSearchDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -178,15 +181,28 @@ public class RequirementListRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT')")
 	@RequestMapping(value = "/getRequirementListByOrgLocationID")
-	public List<Requirement> getRequirementListByOrgLocationID(@RequestParam(value = "status", required = false) String status, @RequestParam(value = "clients", required = false) String clients, HttpServletRequest request) throws Exception
+	public ResponseList<Requirement> getRequirementListByOrgLocationID(RequirementSearchDTO requirementSearchDTO, HttpServletRequest request) throws Exception
 	{
 		
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		
-		List<Requirement>   requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(),status,clients,user,userRoleName);
-		return requirementList;
+		Map<Long,List<Requirement>> requirementMap = requirementService.getRequirementListByOrgLocationIDWithMaxResults(loginOrgLocation.getId(),requirementSearchDTO.getStatus(),requirementSearchDTO.getClients(),user,userRoleName,requirementSearchDTO.getStart(),requirementSearchDTO.getLength());
+		
+		List<Requirement> requirementList = new ArrayList<>();
+		Long count = 0l;
+		if(requirementMap != null && !requirementMap.isEmpty()){
+			Map.Entry<Long,List<Requirement>> entry=requirementMap.entrySet().iterator().next();
+			count = entry.getKey();
+			requirementList.addAll(entry.getValue());
+		}
+		
+		ResponseList<Requirement> response = new ResponseList<>();
+	    response.setData(requirementList);
+	    response.setRecordsTotal(count.intValue());
+	    response.setRecordsFiltered(count.intValue());
+		return response;
 	}
 	
 	/**

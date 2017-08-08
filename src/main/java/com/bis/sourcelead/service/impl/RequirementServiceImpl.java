@@ -1394,6 +1394,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 
 	
+	@Override
+	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User  user,String userRoleName,int start,int length) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationIDWithMaxResults(orgLocationId,status,clients,user,userRoleName,start,length);
+	}
+	
 	/**
 	 * @author sarath kumar
 	 * @since  sep 13 2016
@@ -3707,5 +3712,5 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception {
 		return requirementDao.getAllRequirementVisaByRequirementI(requirementId);
 	}
-	
+
 }
