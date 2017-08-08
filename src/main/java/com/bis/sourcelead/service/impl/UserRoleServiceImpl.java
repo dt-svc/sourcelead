@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -37,7 +36,6 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class UserRoleServiceImpl implements UserRoleService{
@@ -288,7 +286,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(0).setCellValue(empl.getEmployeeId()); 
 			 }
 			 if(empl.getHireDate() !=null){
-				 String dateOfJoin = LoginSessionController.DATEFORMAT.format(empl.getHireDate());
+				 String dateOfJoin = commonUtil.dateStrFromOrgDateFormatter(userRoles.getOrgLocations().getDateFormat(),empl.getHireDate());
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){
