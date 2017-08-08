@@ -1377,7 +1377,7 @@ public class TimesheetRestController {
 			JSONObject jsonObj = new JSONObject(json);
 	    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 	    	//DateFormat format = Constants.DF_DMY;
-	    	DateFormat  format = LoginSessionController.DATEFORMAT;	
+	    	//DateFormat  format = LoginSessionController.DATEFORMAT;	
 	    	ProjectMembers projectMember = null;
 			if(jsonObj.getString("projectMemberId") != null && jsonObj.getString("projectMemberId") != "" && jsonObj.getString("projectMemberId") != "undefined"){
 				  projectMember = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
@@ -1399,18 +1399,18 @@ public class TimesheetRestController {
 					
 					
 					if(jsonObj.getString("tabStartDate") != null && jsonObj.getString("tabStartDate") != "" && jsonObj.getString("tabStartDate") != "undefined"){
-			    	    startDate = format.parse(jsonObj.getString("tabStartDate"));
+			    	    startDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("tabStartDate"));
 			    	}
 					if(jsonObj.getString("tabEndDate") != null && jsonObj.getString("tabEndDate") != "" && jsonObj.getString("tabEndDate") != "undefined"){
-			    		 endDate = format.parse(jsonObj.getString("tabEndDate"));
+			    		 endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("tabEndDate"));
 			    	}
 					
 					if(jsonObj.getString("frequencyDates") != null && jsonObj.getString("frequencyDates") != "" && jsonObj.getString("frequencyDates") != "undefined"){
 						 String[] frequency = jsonObj.getString("frequencyDates").split("To");
 			       		 String frstartDate = frequency[0].trim();
 			       		 String frEndDate = frequency[1].trim();
-			       		 frequencyStartDate = format.parse(frstartDate);
-			       		 frequencyEndDate = format.parse(frEndDate);
+			       		 frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),frstartDate);
+			       		 frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),frEndDate);
 			       		
 					}
 					 
@@ -1830,8 +1830,8 @@ public class TimesheetRestController {
 						for(String tabDate : tabDatesArray){
 							tabDate = tabDate.replace("\"", "");
 							String[] words = tabDate.split("To");	
-							Date actualStartDate = format.parse(words[0].replaceAll("/", "-"));
-							Date actualEndDate = format.parse(words[1].replaceAll("/", "-"));
+							Date actualStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),words[0].replaceAll("/", "-"));
+							Date actualEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),words[1].replaceAll("/", "-"));
 							List<TimesheetSubmissions> timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(actualStartDate, actualEndDate, projectMember.getId());
 				            if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				            	for(TimesheetSubmissions timesheetSubmissions : timesheetSubmissionsList){
@@ -2078,13 +2078,13 @@ public class TimesheetRestController {
 			    }
 			    
 				//DateFormat format = Constants.DF_DMY;
-			    DateFormat  format = LoginSessionController.DATEFORMAT;
+			    //DateFormat  format = LoginSessionController.DATEFORMAT;
 				if(StringUtils.isNotEmpty(timesheetFrequency)){
 				 	 String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();
 				  	 String weekEndDate = frequency[1].trim();
-				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-					 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	 Date startDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+					 Date endDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 				  	submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,"notify",isSuperUser);
 				
 				    //send mail & notification logic
@@ -2108,13 +2108,13 @@ public class TimesheetRestController {
 			    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    User reopenedUser = userService.getUserById(reopenedUserId);
 				//DateFormat format = Constants.DF_DMY;
-			    DateFormat  format = LoginSessionController.DATEFORMAT;
+			    //DateFormat  format = LoginSessionController.DATEFORMAT;
 				if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
 				 	 String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();
 				  	 String weekEndDate = frequency[1].trim();
-				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-					 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	 Date startDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+					 Date endDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 				  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,type,Constants.YES);
 				
 				    //send mail & notification logic
@@ -2124,8 +2124,8 @@ public class TimesheetRestController {
 					 String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();
 				  	 String weekEndDate = frequency[1].trim();
-				  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-				  	 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+				  	 Date startDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+				  	 Date endDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 				  	 submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,loginUser,type,Constants.YES);
 				
 				    //send mail & notification logic

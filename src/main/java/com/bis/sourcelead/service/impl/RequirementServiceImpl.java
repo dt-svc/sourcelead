@@ -368,9 +368,9 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
 				try {
-					  SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+					 // SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 					Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-					Date startTime =  formatter.parse(jsonObj.getString("closedDate"));
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("closedDate"));
 					String currentTimeStr = Constants.TZ_DF.format(startTime);  
 
 					String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -1393,6 +1393,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
+	
+	@Override
+	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User  user,String userRoleName,int start,int length) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationIDWithMaxResults(orgLocationId,status,clients,user,userRoleName,start,length);
+	}
 	
 	/**
 	 * @author sarath kumar
@@ -3707,5 +3712,5 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception {
 		return requirementDao.getAllRequirementVisaByRequirementI(requirementId);
 	}
-	
+
 }

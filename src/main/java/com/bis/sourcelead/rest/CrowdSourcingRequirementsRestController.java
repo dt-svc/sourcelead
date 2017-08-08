@@ -1122,12 +1122,12 @@ public class CrowdSourcingRequirementsRestController {
 	  			if(timezoneId != null){
 					timezone = timeZoneService.getTimezone(timezoneId);
 				}
-	  			
+	  			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 	  			Date startUTCDate = null;
 				Date endUTCDate = null;
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-				Date startTime =  LoginSessionController.DATEFORMAT.parse(dateRange);
+				Date startTime =  commonUtil.orgLocationDateFormat(candidate.getOrgLocationId().getDateFormat(),dateRange);
 				
 				String startTimeTS = Constants.TZ_DF.format(startTime); 
 				String endTimeTS = END_TZ_DF.format(startTime);
@@ -1885,7 +1885,7 @@ public class CrowdSourcingRequirementsRestController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
-			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
@@ -1935,7 +1935,7 @@ public class CrowdSourcingRequirementsRestController {
 						}else{
 							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).toString());
 						}
-						rr.setReferredOn(LoginSessionController.DATEFORMAT.format(rr.getCreatedDate()));
+						rr.setReferredOn(commonUtil.dateStrFromOrgDateFormatter(candidate.getOrgLocationId().getDateFormat(),rr.getCreatedDate()));
 						
 					}
 					refer.setReferToMeList(referedToMeJobs);
@@ -1962,7 +1962,7 @@ public class CrowdSourcingRequirementsRestController {
 							}else{
 								rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
 							}
-							rs.setReferredOn(LoginSessionController.DATEFORMAT.format(requirementRefer.getCreatedDate()));
+							rs.setReferredOn(commonUtil.dateStrFromOrgDateFormatter(candidate.getOrgLocationId().getDateFormat(),requirementRefer.getCreatedDate()));
 							refer.setReferUUID(requirementRefer.getReferUUID());
 						}
 						
@@ -2080,7 +2080,7 @@ public class CrowdSourcingRequirementsRestController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date jobPortletsStartDate = null;
 			Date jobPortletsEndDate = null;
-			
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				

@@ -369,7 +369,6 @@ public class InvoiceRestController {
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		Date endDateUTC = null;
 		Date startDateUTC = null;
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
@@ -402,8 +401,8 @@ public class InvoiceRestController {
 			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-				Date startTime = simpleDateFormat.parse(customStartDate);
-				Date endTime = simpleDateFormat.parse(customEndDate);
+				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -478,8 +477,8 @@ public class InvoiceRestController {
 				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
-					String dueDate = simpleDateFormat.format(invoice.getDueDate());
-					Date invoiceDueDate = simpleDateFormat.parse(dueDate);
+					String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate());
+					Date invoiceDueDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),dueDate);
 					
 					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
 					
@@ -661,7 +660,6 @@ public class InvoiceRestController {
 	     	String resultJson;
 	     	Long Id = null;
 	     	OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-	     	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 	     	Invoice invoiceId =  invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 	     	Invoice invoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 	     	if(invoice.getParentInvoiceId() != null){
@@ -672,7 +670,7 @@ public class InvoiceRestController {
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
-	     		ip.setPaymentDateStr(simpleDateFormat.format(ip.getPaymentDate()));
+	     		ip.setPaymentDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
@@ -1748,16 +1746,14 @@ public class InvoiceRestController {
 	public @ResponseBody String getTotalHosursForBilling(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-			SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
 			try {
-				Date requestStartDate =  simpleDateFormat.parse(startDate);
+				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  simpleDateFormat.parse(endDate);
+				Date requestEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
@@ -1775,7 +1771,7 @@ public class InvoiceRestController {
 
 			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
 
-	        } catch (ParseException e) {
+	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 			
@@ -1786,16 +1782,14 @@ public class InvoiceRestController {
 	public @ResponseBody String getTotalHosursForPayable(@RequestParam(value = "startDate", required = false) String startDate,@RequestParam(value = "endDate", required = false) String endDate,@RequestParam(value = "averageWorkingHours", required = false) Integer averageWorkingHours,@RequestParam(value = "locationId", required = false) Long locationId) throws Exception {
 			
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-			//DateFormat formatter = LoginSessionController.DATEFORMAT;
 			StringBuilder sb = new StringBuilder();
 			String estimatedHours = null;
 			try {
-				Date requestStartDate =  simpleDateFormat.parse(startDate);
+				Date requestStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(requestStartDate); 
 				
-				Date requestEndDate =  simpleDateFormat.parse(endDate);
+				Date requestEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(requestEndDate); 
 				
@@ -1813,7 +1807,7 @@ public class InvoiceRestController {
 
 			    estimatedHours = String.valueOf((workDays*averageWorkingHours));
 
-	        } catch (ParseException e) {
+	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 			
@@ -1861,6 +1855,10 @@ public class InvoiceRestController {
 
 		Invoice invoice = invoiceService.saveExpenseInvoice(jsonObj, user, orgLocation, saveType, attachedfileList,invoiceType, org, currencyCode,invoiceCategory);
 
+		if(invoice !=null && invoice.getExpensesId() !=null && Constants.SENT.equalsIgnoreCase(saveType)) {
+			invoiceService.updateExpensesForinvoice(invoice,invoiceType);
+		}
+		
 		if (Constants.PAYABLE.equals(invoiceType) && Constants.DRAFT.equals(saveType)) {
 			SourceLeadSessionManager.setSessionAttribute(request, "payableInvoiceCreateMsg",
 					"Successfully you have created a Bill");
@@ -1919,9 +1917,10 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getExpensesByProjectMemberId", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Expenses> getExpensesByProjectMemberId(
-			@RequestParam(value = "memberId", required = false) Long projectMemberId) throws Exception {
+			@RequestParam(value = "memberId", required = false) Long projectMemberId,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception {
 
-		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId);
+		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId,invoiceType);
 		return expensesList;
 
 	}

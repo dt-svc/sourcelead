@@ -199,6 +199,10 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 					&& !"".equalsIgnoreCase(requirement.getNoticePeriod())) {
 				candidateCompare.setJobNoticePeriod(requirement.getNoticePeriod());
 			}
+			if (requirement.getEducation() != null
+					&& !"".equalsIgnoreCase(requirement.getEducation())) {
+				candidateCompare.setJobEducation(requirement.getEducation());
+			}
 		}
 		if (candidateList != null) {
 			for(int i = 0; i<candidateList.size(); i++){

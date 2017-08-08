@@ -110,7 +110,7 @@ public class BillingPayableRestController {
 		    String resultJson;
 		 
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		  SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		  //SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		    if(null != invoice){
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
@@ -125,10 +125,10 @@ public class BillingPayableRestController {
 				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	if(invoice.getInvoiceDate() != null){
-		    		invoice.setInvoiceDateStr(dateFormat.format(invoice.getInvoiceDate()));	
+		    		invoice.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate()));	
 		    	}
 		    	if(invoice.getDueDate() != null){
-		    		invoice.setDueDateStr(dateFormat.format(invoice.getDueDate()));	
+		    		invoice.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate()));	
 		    	}
 		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
@@ -174,11 +174,11 @@ public class BillingPayableRestController {
 		    		
 		    		
 		    		if(null != lineItems.getStartDate()){
-		    			lineItems.setStartDateStr(dateFormat.format(lineItems.getStartDate()));
+		    			lineItems.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lineItems.getStartDate()));
 		    		}
 		    		
 		    		if(null != lineItems.getEndDate()){
-		    			lineItems.setEndDateStr(dateFormat.format(lineItems.getEndDate()));
+		    			lineItems.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lineItems.getEndDate()));
 		    		}
 		    		
 		    		lineItems.setCandidateName(sb.toString());

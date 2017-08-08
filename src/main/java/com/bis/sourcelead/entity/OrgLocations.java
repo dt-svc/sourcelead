@@ -619,6 +619,10 @@ public class OrgLocations implements Serializable{
 	}
 
 
+	public void setLocFullFormDateFormatter(SimpleDateFormat locFullFormDateFormatter) {
+		this.locFullFormDateFormatter = locFullFormDateFormatter;
+	}
+
 	public Integer getAverageWorkingHours() {
 		return averageWorkingHours;
 	}

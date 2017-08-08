@@ -480,10 +480,9 @@ function validateTaskName(){
 						<br />
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
-					<div>
-						<input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">Mail to team members 
-						&emsp;&emsp;				
-						<input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">Mail to manager
+					<div class="clearfix col-md-12">
+						<span class="paddingRight"><input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">&nbsp;Mail to team members</span> 
+						<span class="paddingLeft"><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
 					</div>
 					
 
@@ -492,7 +491,7 @@ function validateTaskName(){
 				<!--  div row end -->
 
 
-				<div class="form-footer clearfix row">
+				<div class="form-footer clearfix row mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
 							<input type="button" value="Save" id="save_project"

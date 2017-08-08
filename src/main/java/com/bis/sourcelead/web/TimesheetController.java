@@ -140,15 +140,15 @@ public class TimesheetController {
 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMemberId);
 		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-		    SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		   // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		    ModelAndView model = new ModelAndView();
-			DateFormat format = simpleDateFormat;
+			//DateFormat format = simpleDateFormat;
 			if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
 			  	 String weekEndDate = frequency[1].trim();
-			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-				 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+			  	 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+				 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 			  	
 				 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
 			  	 
@@ -158,8 +158,8 @@ public class TimesheetController {
 				 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
 			  	 String weekEndDate = frequency[1].trim();
-			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-			  	 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+			  	 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+			  	 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 			  	 
 				 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
 			  	//send mail & notification logic

@@ -118,8 +118,8 @@ public class TimesheetSubmissionListController {
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
-		    DateFormat format = simpleDateFormat;
+		   // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
+		   // DateFormat format = simpleDateFormat;
 		    
 		    List<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), status, userRole);
 		    StringBuilder sb = new StringBuilder();	
@@ -146,7 +146,7 @@ public class TimesheetSubmissionListController {
 				    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
 				    	 if(actualStartDate != null && actualEndDate != null){
 				    	 LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-				    		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(actualStartDate), format.format(actualEndDate));
+				    		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate), commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
 							if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 								for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 						    		 String  k = entry.getKey();
@@ -155,15 +155,15 @@ public class TimesheetSubmissionListController {
 							        Date weekStartDate;
 							        Date weekEndDate;
 									try {
-										 weekStartDate = format.parse(k.replaceAll("/", "-"));
-										 weekEndDate = format.parse(v.replaceAll("/", "-"));
+										 weekStartDate = commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),k.replaceAll("/", "-"));
+										 weekEndDate = commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),v.replaceAll("/", "-"));
 										 displayWeeksList.put(weekStartDate, weekEndDate);
 									} catch (Exception e) {}
 								}
 							}
 							
 				    	  ProjectMembers projectMember = projectMembersService.getProjectMemberById(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getId());
-						 sb.append("<tr id='row").append(projectMember.getId()).append(simpleDateFormat.format(actualStartDate)).append("To").append(simpleDateFormat.format(actualEndDate)).append("'>");
+						 sb.append("<tr id='row").append(projectMember.getId()).append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)).append("To").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)).append("'>");
 						 sb.append("  <td>");
 						 sb.append("<div class='time_appr_user'>");
 						 sb.append("   <img  id='userImage' onerror='predefineProfileImage(this);' src='").append(request.getContextPath()).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'>");
@@ -178,7 +178,7 @@ public class TimesheetSubmissionListController {
 					     sb.append("	<td><div>").append(((projectMember.getProjects().getOrgRelationId() != null) ?projectMember.getProjects().getOrgRelationId().getResponderLocationId().getOrgLocationName() : "--")).append("</div></td>");
 					     sb.append("	<td><div>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
 					     sb.append("<td><div id='datefrequency"+projectMember.getId()+"'>");
-				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+simpleDateFormat.format(actualStartDate)+" To "+simpleDateFormat.format(actualEndDate)+"</span>");
+				         sb.append("  <span class='res_date'><i class='fa fa-calendar'></i>"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+" To "+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)+"</span>");
 				         sb.append("    </div>");
 				     	 sb.append("    </td>");
 					     Float totalHours = 0f;
@@ -209,7 +209,7 @@ public class TimesheetSubmissionListController {
 					     }
 					
 					    /*sb.append("<td><div class='sm'><a href='javascript:void(0)'>").append(totalHours).append("/40</a></div></td>");*/
-					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+format.format(actualStartDate)+"To"+format.format(actualEndDate)+"\" ,\""+projectMember.getId()+"\",\"dashboard\");'>").append(CommonUtil.getHoursDisplayFormat(totalHours)).append("/").append(CommonUtil.getHoursDisplayFormat(estimatedTotalHours)).append("</a></div></td>");
+					     sb.append("<td><div class='sm'><a href='#' onClick='timesheetApprovalPopUpByProjectMemberId(\""+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)+"\" ,\""+projectMember.getId()+"\",\"dashboard\");'>").append(CommonUtil.getHoursDisplayFormat(totalHours)).append("/").append(CommonUtil.getHoursDisplayFormat(estimatedTotalHours)).append("</a></div></td>");
 					    sb.append("<td><div class='sm' id='status").append(projectMember.getId()).append("'>").append(sah.getSubmissionApprovalStatus()).append("</div></td>");
 					    sb.append("<td>");
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.NEW){
@@ -217,11 +217,11 @@ public class TimesheetSubmissionListController {
 					     }
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 					    	 sb.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
-			            	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
+			            	                     .append(projectMember.getId()).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate)).
 			            	                      append("\",").append(tdSpanLength).append(",\"").append("dashboard").append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"")
-			            	                     .append(format.format(actualStartDate))
-			            	                     .append("\",\"").append(format.format(actualEndDate))
+			            	                     .append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate))
+			            	                     .append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate))
 			            	                     .append("\",").append(tdSpanLength).append(",\"").append("dashboard").append("\");'></i></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
