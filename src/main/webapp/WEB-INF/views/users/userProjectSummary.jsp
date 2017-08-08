@@ -28,6 +28,8 @@ function userAssignedProjects(userId){
 <script>
 function prepareAssignedProjectsData(data){
 	
+	var sourceleadUrl ='${sourceleadUrl}';
+
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  assignedProjectsDate = 'YYYY-MM-DD';
@@ -38,8 +40,7 @@ function prepareAssignedProjectsData(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  assignedProjectsDate = 'YYYY-DD-MM'; 
 	  }  
-	
-	
+	  
 	var result = "";
 	result = result +"<table id='assignedProjectsListPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -73,7 +74,7 @@ function prepareAssignedProjectsData(data){
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='proj_show' ><span title='"+opt.projectName+"'>"+opt.projectName+"</span><i class='fa fa-binoculars'></i></div>";
+   		result = result +"<div class='proj_show'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a><i class='fa fa-binoculars'></i></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -96,7 +97,7 @@ function prepareAssignedProjectsData(data){
 	result = result +"</td>";
 	
 	result = result +"<td>";
-   	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
+	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
    		result = result +"	    <div><input type='text' value='"+opt.projectEndDateStr+"' class='project_inline_field project_inline_field_enddate' id='endDate"+opt.id+"' name='endDate'  readonly='readonly'></div>";
    	}else{
    		result = result +"<div>-----</div>";
@@ -164,17 +165,15 @@ function prepareAssignedProjectsData(data){
     $("#tab-2").empty(); 
     $("#tab-2").append(result);  
     pagination(); 
-    
     for (var i = 0; i < data.length; i++) { 
         var opt = data[i];
-        
       //Assign date of project member
 		 var selected = opt.projectAssignedDateStr;
 		 var from = selected.split("-");
 		 var dt = new Date(from[2], from[1] - 1, from[0]);
          dt.setDate(dt.getDate());
         //Main project end date
-         var projectEndDate = opt.endDate;
+         var projectEndDate = opt.projectEndDateStr;
          var endDate = "";
          if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
         	 var fromEnd = projectEndDate.split("-");
@@ -222,7 +221,7 @@ function inlineEditForEndDate(id,projectMemberId){
 </script>
 <script>
 function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	//$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#assignedProjectsListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
