@@ -101,6 +101,13 @@ private static final long serialVersionUID = 1L;
 	@Enumerated(EnumType.STRING)
 	private Submission_Status expenseStatus;
 	
+//	  
+	@Column(name = "BILLING_RECIEVABLE_STATUS")
+	private String billingRecievableStatus;
+	
+	@Column(name = "BILLING_PAYABLE_STATUS")
+	private String billingPayableStatus;
+	
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
 	 @JsonBackReference
 //    @Fetch(FetchMode.SELECT)
@@ -377,6 +384,22 @@ private static final long serialVersionUID = 1L;
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getBillingRecievableStatus() {
+		return billingRecievableStatus;
+	}
+
+	public void setBillingRecievableStatus(String billingRecievableStatus) {
+		this.billingRecievableStatus = billingRecievableStatus;
+	}
+
+	public String getBillingPayableStatus() {
+		return billingPayableStatus;
+	}
+
+	public void setBillingPayableStatus(String billingPayableStatus) {
+		this.billingPayableStatus = billingPayableStatus;
 	}
 
 

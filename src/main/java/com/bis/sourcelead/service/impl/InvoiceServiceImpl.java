@@ -54,6 +54,7 @@ import com.bis.sourcelead.beans.BillingGraphBean;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
@@ -160,6 +161,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	AddExpensesDao addExpensesDao;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1642,8 +1646,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-//		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
@@ -1725,8 +1729,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-//		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
@@ -2688,7 +2692,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					if(jsonObj.has(i + "category")){
 						if (null != jsonObj.getString(i + "category")
 								&& !"".equalsIgnoreCase(jsonObj.getString(i + "category"))) {
-							invoiceLineItems.setAmount(jsonObj.getString(i + "category"));
+							invoiceLineItems.setExpenseCategory(jsonObj.getString(i + "category"));
 						}
 					}
 					
@@ -2710,6 +2714,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 		return expensesinvoicelineitemsSet;
 
+	}
+	@Override
+	public void updateExpensesForinvoice(Invoice invoice,String invoiceType) throws Exception {
+		Expenses expenses = invoice.getExpensesId();
+		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+		   expenses.setBillingRecievableStatus("SENT");
+		}else {
+			expenses.setBillingPayableStatus("SENT");	
+		}
+		addExpensesDao.storeAddExpensesData(expenses);
 	}
 	
 }

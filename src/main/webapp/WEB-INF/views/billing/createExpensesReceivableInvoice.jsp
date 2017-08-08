@@ -18,8 +18,6 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
 <script>
 $(document).ready(function(){
 	populateInlineItemsGrid();
-	
-	
 });
 </script>
 <script>
@@ -460,7 +458,6 @@ function populateExpensesDetailsGrid(data){
 
 <script>
 function raja(data){
-	alert(data);
 	 var currencyCode = '${SourceLeadWeb_currencyCode}';
      var result = '';
      result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
@@ -490,8 +487,6 @@ function raja(data){
      $("#tableBody").empty();
      $("#tableBody").append(result);
      
-     alert(data.length);
-     alert(currencyCode);
 }
 </script>
 
@@ -520,7 +515,7 @@ function editExpensesDetailsEdit(data){
                  	  result = result +'   <tr>';
                  	 result = result +' <input type="hidden" value='+opt.id+' id="'+i+'lineItemId"   name="'+i+'lineItemId">';
          		      result = result +'   <td>';
-         		      result = result +'     <div class="tbldata-dotdot-100">'+i+'</div>';
+         		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
          		      result = result +'   </td>';
          		      
          		      result = result +'   <td>';
@@ -544,7 +539,6 @@ function editExpensesDetailsEdit(data){
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
-         		      
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.amount !=null && opt.amount != ''){
@@ -592,7 +586,7 @@ function getExpenses(projectMemberId,expensesFrequency){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&memberId="+memberId,
+		url: sourceleadUrl+"/getExpensesByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&memberId="+memberId+"&invoiceType=Receivable",
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -1764,6 +1758,19 @@ $(document).ready(function() {
 	maskme();    
  });
 </script>
+
+<script>
+    $("#invoiceforexpenses").click(function(){
+         if ($(this).is(':checked')) {
+        document.getElementById("associate-expenses").style.display="block";
+    } else {
+        document.getElementById("associate-expenses").style.display="none";
+    }
+    });
+</script>
+
+
+
 <script>
 function maskme(){
 
@@ -1872,6 +1879,8 @@ function getDueDateByFrequency(){
     function checkedvalue(status){
     	$("#invoiceforexpenses").prop("checked", true);
     	 document.getElementById("associate-expenses").style.display="block";
+    	 $("#invoiceforexpenses").val('Y');
+    	 document.getElementById("invoiceforexpenses").disabled = true;
     }
     </script>
     
@@ -1901,14 +1910,6 @@ function errInvoiceDate(){
 } 
 </script>
 
-<script>
-    $("#invoiceforexpenses").click(function(){
-         if ($(this).is(':checked')) {
-        document.getElementById("associate-expenses").style.display="block";
-    } else {
-        document.getElementById("associate-expenses").style.display="none";
-    }
-    })
-    </script>
+
     
  <jsp:include page="../masterFooter.jsp" />	

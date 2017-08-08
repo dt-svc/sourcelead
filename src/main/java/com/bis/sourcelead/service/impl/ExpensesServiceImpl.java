@@ -1103,13 +1103,16 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@SuppressWarnings("static-access")
 	@Override
-	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId) throws Exception {
-		List<Expenses> expensesList = expensesDao.getExpensesByProjectMemberId(projectMemberId);
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType) throws Exception {
+		List<Expenses> expensesList = expensesDao.getExpensesByProjectMemberId(projectMemberId,invoiceType);
 		expensesList.forEach(expense->{
 			StringBuilder sb = new StringBuilder();
 			String startDate  = conversionUtil.getDateAsString(expense.getStartDate());
 			String endDate  = conversionUtil.getDateAsString(expense.getEndDate());
 			sb.append(startDate).append(" / ").append(endDate);
+			if(expense.getPurpose() !=null && !"".equals(expense.getPurpose())) {
+				sb.append("(").append(expense.getPurpose()).append(")");
+			}
 			expense.setDateFrequency(sb.toString());
 		});
 		return expensesList;
