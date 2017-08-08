@@ -74,7 +74,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}
 		
 		
-		SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
         
         orgDocuments.setSourceType(sourceType);
 		
@@ -113,11 +113,11 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			}
 		}
 		if(jsonObj.has("startDate") && StringUtils.isNotBlank(jsonObj.getString("startDate")) && StringUtils.isNotEmpty(jsonObj.getString("startDate"))){
-			Date startDate = formatter.parse(jsonObj.getString("startDate"));
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("startDate"));
 			orgDocuments.setStartDate(startDate);
 		}
 		if(jsonObj.has("endDate") && StringUtils.isNotBlank(jsonObj.getString("endDate")) && StringUtils.isNotEmpty(jsonObj.getString("endDate"))){
-			Date endDate = formatter.parse(jsonObj.getString("endDate"));
+			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("endDate"));
 			orgDocuments.setEndDate(endDate);
 		}
 		
@@ -148,13 +148,13 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		
          List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, loginUserId, managerUserIds, orgLocationId,sourceType);
          OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
-         SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+         //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
-			    documents.setStartDateStr(formatter.format(documents.getStartDate()));
+			    documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
 			}
 			if(documents.getEndDate() != null){
-			   documents.setEndDateStr(formatter.format(documents.getEndDate()));
+			   documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
 			}
 			if(documents.getSpocUser() != null){
 				StringBuilder docSB=new StringBuilder();
@@ -177,15 +177,15 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		 OrgLocations orglo;
 		try {
 			orglo = orgLocationService.getOrgLocations(orgLocationId);
-			SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+			//SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 			
 		       
 			 for(OrgDocuments documents :documentsList){
 					if(documents.getStartDate() != null){
-					    documents.setStartDateStr(formatter.format(documents.getStartDate()));
+					    documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
 					}
 					if(documents.getEndDate() != null){
-					   documents.setEndDateStr(formatter.format(documents.getEndDate()));
+					   documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
 					}
 					if(documents.getSpocUser() != null){
 						StringBuilder spocNameSB=new StringBuilder();
@@ -231,12 +231,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByIdAndSpocId(docId,userId);
         
-        SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+        //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(formatter.format(documents.getStartDate()));
+            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(formatter.format(documents.getEndDate()));
+           documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
@@ -262,12 +262,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		 logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
 	        OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByDocIdAndLocationId(Id, locationId);
 	        OrgLocations orglo = orgLocationService.getOrgLocations(locationId);
-	        SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+	        //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 	        if(documents.getStartDate() != null){
-	            documents.setStartDateStr(formatter.format(documents.getStartDate()));
+	            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
 	        }
 	        if(documents.getEndDate() != null){
-	           documents.setEndDateStr(formatter.format(documents.getEndDate()));
+	           documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
 	        }        
 	        if(documents.getOwnerUser() != null){
 	        	documents.setOwnerId(documents.getOwnerUser().getId());
