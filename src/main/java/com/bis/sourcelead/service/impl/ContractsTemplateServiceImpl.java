@@ -2518,7 +2518,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			String contractConvertDateInTimezone = Constants.DMY.format(contractConvertEndDate);
 			globalVarsMap.put("presentEndDate", contractConvertDateInTimezone);
 		}
-		globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
+		globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
 		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
@@ -2604,7 +2604,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			globalVarsMap.put("jobId", "--");
 		}
 		globalVarsMap.put("JobTitle", contracts.getRequirementSubmission().getRequirement().getJobTitle());
-		globalVarsMap.put("InitiatorLocation", contracts.getOrgLocationId().getOrg().getOrgName());
+		globalVarsMap.put("InitiatorLocation", contracts.getOrgLocationId().getOrgLocationName());
 		if (projectId.toString() != null && !"".equalsIgnoreCase(projectId.toString())) {
 			globalVarsMap.put("projectId", projectId.toString());
 		}
@@ -2644,7 +2644,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		else {
 			globalVarsMap.put("EndDate", "--");
 		}
-		globalVarsMap.put("PartnerOrganisation", contracts.getContractOrgLocationId().getOrg().getOrgName());
+		globalVarsMap.put("PartnerOrganisation", contracts.getContractOrgLocationId().getOrgLocationName());
 		StringBuilder loginBuilder = new StringBuilder();
 		globalVarsMap.put("loginUrl", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		// setting the Recipient information
