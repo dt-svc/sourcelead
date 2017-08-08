@@ -97,11 +97,11 @@ public class TaskServiceImpl implements TaskService{
 		DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(OrgLocationId);
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != date && "" != date){
-		DateFormat  sdf = simpleDateFormat;		
-		Date startTime =  sdf.parse(date);
-		Date endTime =  sdf.parse(date);
+		//DateFormat  sdf = simpleDateFormat;		
+		Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),date);
+		Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),date);
 		String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 		String customEndTimeStr = TZ_DF_CED.format(endTime);  
 		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -127,7 +127,7 @@ public class TaskServiceImpl implements TaskService{
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 				 TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = simpleDateFormat.format(converteDate);
+				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),converteDate);
 				tk.setTaskDateStr(currentDateInTimezone);
 		    }
 			if(tk.getTaskTime() != null){
@@ -172,7 +172,7 @@ public class TaskServiceImpl implements TaskService{
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
-		SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 	 	//String pattern = "dd-MM-yy";
         //SimpleDateFormat format = new SimpleDateFormat(pattern);
         
@@ -218,7 +218,7 @@ public class TaskServiceImpl implements TaskService{
 		    	}*/
 				
 				if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty() && jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
-				Date startTime =  CalendarUtil.getDateFromDateAndTime(simpleDateFormat.parse(jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
+				Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
 				String currentTimeStr = Constants.TZ_DF.format(startTime);  
 				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE , currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -278,6 +278,10 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public void mailToUserTask(Tasks task) throws Exception{
 		Timezone timezone = timeZoneService.getTimezone(task.getOwnerOrglocationId().getTimezone().getId());
+		
+		OrgLocations orglo = orgLocationService.getOrgLocations(task.getOwnerOrglocationId().getId());
+	//	SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
+		
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
 			 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
@@ -300,7 +304,7 @@ public class TaskServiceImpl implements TaskService{
 			 globalVarsMap.put("priority", "--");	 
 			 }
 			 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-			 task.setTaskDateStr(Constants.DF_DMY.format(task.getTaskDate()));
+			 task.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),task.getTaskDate()));
 			 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 			 globalVarsMap.put("date", task.getTaskDateStr());	 
 			 	}
