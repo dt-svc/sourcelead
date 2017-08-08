@@ -598,7 +598,7 @@ $.ajax({
  
  <script>
 function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	//$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#expensesReportsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
