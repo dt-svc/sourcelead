@@ -116,9 +116,9 @@ public class ExpensesApprovalRestController {
 	@RequestMapping(value = "/getExpensesApprovalDetailsByExpenseId")
 	public String getExpensesApprovalListByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId) throws Exception {
 		Expenses expenses = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
-		expenses.setStartDateStr(LoginSessionController.DATEFORMAT.format(expenses.getStartDate()));
+		expenses.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(expenses.getOrgLocationId().getDateFormat(),expenses.getStartDate()));
 		if(null != expenses.getEndDate()){
-		expenses.setEndDateStr(LoginSessionController.DATEFORMAT.format(expenses.getEndDate()));
+		expenses.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(expenses.getOrgLocationId().getDateFormat(),expenses.getEndDate()));
 		}	
 		return commonUtil.toJSON(expenses);
    }
