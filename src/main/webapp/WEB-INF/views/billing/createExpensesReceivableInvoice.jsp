@@ -20,6 +20,7 @@ $(document).ready(function(){
 	populateInlineItemsGrid();
 });
 </script>
+
 <script>
 function checkBox(){
 	var invoiceforexpenses = $("#invoiceforexpenses").val();
@@ -49,9 +50,8 @@ function checkBox(){
 		 
 	}
 }
-
-
 </script>
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -169,8 +169,6 @@ function checkBox(){
           </div>
         </div>
         <div class="clearfix"></div>
-        <!-- Drap and Drop Table Row -->
-        <!-- Table starts here-->
           <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">
             <div id="tableBody"></div>
             
@@ -179,23 +177,11 @@ function checkBox(){
               <button type="button" class="btn btn-sm btn-primary mr" onClick="addExpenseInvoiceRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
             </div>
         </div>
-        <!-- Table Ends here-->
           
           <!-- Adding Content Starts herer -->
-          <!--  <div id="bottomGrid" style="display: none;" class="mt"> -->
            <div id="bottomGrid"  class="mt">
           <div class="clearfix invoice_other">
           <div class="col-md-5">
-           <!--  <div class="clearfix mb">
-              <button type="button" class="btn btn-sm btn-primary mr" onclick="cloneRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
-              <button type="button" class="btn btn-sm btn-default" onclick="deleteRow()"><i class="fa fa-close paddingRight"></i>Clear</button>
-            </div> -->
-            <!--   <div class="clearfix mb"> <p>Do you want to raise separate invoice for each line item:</p>
-              <label class="paddingLeft paddingRight">
-                <input  type="radio" value="Y" id="isSeparateInvoice" name="isSeparateInvoice"><strong class="paddingLeft">Yes</strong></label>
-              <label class="paddingLeft">
-                <input type="radio" id="isSeparateInvoice" name="isSeparateInvoice"><strong class="paddingLeft">No</strong></label>
-            </div> -->
             <div class="clearfix mb">
               <label><strong>Message</strong></label>
               <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
@@ -259,9 +245,7 @@ function checkBox(){
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
               </div>
               
-             <!--  Added Rajashekar -->
                 <div id="conversionId"></div>
-                  <!--  End Rajashekar -->
               
               </div>
           </div>
@@ -456,39 +440,7 @@ function populateExpensesDetailsGrid(data){
 </script>
 
 
-<script>
-function raja(data){
-	 var currencyCode = '${SourceLeadWeb_currencyCode}';
-     var result = '';
-     result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
-     result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
-     result = result +' <thead>';
-     result = result +' <tr>';
-     result = result +' <th>S.No</th>';
-     result = result +' <th>Date</th>';
-     result = result +' <th>Category</th>';
-     result = result +' <th>Description/Price</th>';
-     result = result +' <th>Amount</th>';
-     result = result +' </tr>';
-     result = result +' </thead>';
-     result = result +' <tbody>';
-     
-     result = result +' <tfoot class="table_footer">';
-     result = result +' <tr>';
-     result = result +' <td colspan="3"></td>';
-     result = result +'<td><strong>Sub Total</strong></td>';
-     result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
-     result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
-     result = result +' </tr>';
-     result = result +' </tfoot> ';
-     result = result +' </tbody>';
-     result = result +' </table>';
-     /* $("#subTotal").val(subTotal); */
-     $("#tableBody").empty();
-     $("#tableBody").append(result);
-     
-}
-</script>
+
 
 <script>
 function editExpensesDetailsEdit(data){
@@ -1902,6 +1854,9 @@ function flushValues(){
 	$("#conversionFrom").val('0.0');
 	
 }
+</script>
+
+<script>
 function errDueDate(){
 	$('#errDuedate').find('p.jquery_form_error_message').remove();
 }
