@@ -630,9 +630,12 @@ function exportToPdf(type){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect : function(selected) {
-				$("#filterEndDate").datepicker("option", "minDate", selected);
-			}
+			onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#filterEndDate").datepicker("option", "minDate", dt);
+	        }
 		
 		});
 		
@@ -640,9 +643,12 @@ function exportToPdf(type){
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : finalDateFormatexpApprvList,
-			onSelect : function(selected) {
-				$("#filterStartDate").datepicker("option", "maxDate", selected);
-			}
+			onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#filterStartDate").datepicker("option", "maxDate", dt);
+	        }
 		});
 		
 	});
