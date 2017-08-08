@@ -134,11 +134,11 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					result = result+'<p title="'+candidateSummary+'"><i class="fa fa-quote-left text-muted"></i>'+candidateSummary+'</p>';
 					result = result+'      </div>';
 					result = result+'                </div>                                                                                                                                        ';
-					result = result+'                <div class="media-right">                                                                                                                     ';
+					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
 					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
 					  if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
 						  if(json.candidateScore >=50){ 
-						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
 						  }
 					  }
 					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        

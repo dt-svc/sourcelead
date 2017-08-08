@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,13 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "EXPENSE_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_Status expenseStatus;
+	
+//	  
+	@Column(name = "BILLING_RECIEVABLE_STATUS")
+	private String billingRecievableStatus;
+	
+	@Column(name = "BILLING_PAYABLE_STATUS")
+	private String billingPayableStatus;
 	
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
 	 @JsonBackReference
@@ -294,7 +302,8 @@ private static final long serialVersionUID = 1L;
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr =	LoginSessionController.DATEFORMAT.format(startDate);
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			startDateStr = dateFormat.format(startDate);
 		}
 		
 		return startDateStr;
@@ -306,7 +315,8 @@ private static final long serialVersionUID = 1L;
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = LoginSessionController.DATEFORMAT.format(endDate);
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);
 		}
 		return endDateStr;
 	}
@@ -377,6 +387,22 @@ private static final long serialVersionUID = 1L;
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getBillingRecievableStatus() {
+		return billingRecievableStatus;
+	}
+
+	public void setBillingRecievableStatus(String billingRecievableStatus) {
+		this.billingRecievableStatus = billingRecievableStatus;
+	}
+
+	public String getBillingPayableStatus() {
+		return billingPayableStatus;
+	}
+
+	public void setBillingPayableStatus(String billingPayableStatus) {
+		this.billingPayableStatus = billingPayableStatus;
 	}
 
 

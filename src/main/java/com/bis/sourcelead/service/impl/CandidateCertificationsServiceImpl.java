@@ -75,7 +75,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 			CandidateCertifications candidatecertificate  = new CandidateCertifications();
 			Candidate can = new Candidate();
-			SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
+			//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
 			StringBuffer activitySummary = new StringBuffer();
 			 if(candidateId!= null){
 				 if(jsonObject.has("candidatecertificateID")){
@@ -122,7 +122,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 						//String pattern = "dd-MM-yyyy";
                         //DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validFrom = simpleDateFormat.parse(jsonObject.getString("validFrom"));
+                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),jsonObject.getString("validFrom"));
                         candidatecertificate.setValidFrom(validFrom);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -138,7 +138,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 						//String pattern = "dd-MM-yyyy";
 						//DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validTo = simpleDateFormat.parse(jsonObject.getString("validTo"));
+                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),jsonObject.getString("validTo"));
                         candidatecertificate.setValidTo(validTo);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -195,14 +195,14 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 				Long orgLocationId) throws Exception {
 		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter(); 
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter(); 
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(simpleDateFormat.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(simpleDateFormat.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;

@@ -49,6 +49,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -80,6 +81,10 @@ public class TimesheetSubmissionsRestController {
 	
 	@Autowired
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
 
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
@@ -177,10 +182,10 @@ public class TimesheetSubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+	 //	SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 	 	//DateFormat  sdf = LoginSessionController.DATEFORMAT;
-        Date sDate  =  simpleDateFormat.parse(startDate);
-        Date eDate  =  simpleDateFormat.parse(endDate);
+        Date sDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
+        Date eDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
@@ -206,11 +211,11 @@ public class TimesheetSubmissionsRestController {
 		
 			 //Employees emp = employeesService.getEmployee(empId.toString());
 	 	 
-			 SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+			// SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 			 ProjectMembers projectMembers = projectMembersService.getProjectMemberById(pmId);
 			// DateFormat format = Constants.DF_DMY;
-			 Date frequencyStartDate = dateFormat.parse(startDate.replaceAll("/", "-"));
-			 Date frequencyEndDate = dateFormat.parse(endDate.replaceAll("/", "-"));
+			 Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+			 Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
 		 
 			 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pmId);
 			 Submission_Status submissionStatus = sah.getSubmissionStatus();

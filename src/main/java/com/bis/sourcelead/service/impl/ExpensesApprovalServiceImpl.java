@@ -102,21 +102,21 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception {
 		Date endDateUTC = null;
 		Date startDateUTC = null;
-		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+	//	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
 		if(StringUtils.isNotEmpty(startDate) && !startDate.equalsIgnoreCase("undefined")){
-			Date startTime = dateFormat.parse(startDate);
+			Date startTime = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
 			String customStartTimeStr = TZ_DF_CSD.format(startTime);
 			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 			startDateUTC = TZ_DF_TS.parse(startDateString);
 		}
 		
 		if(StringUtils.isNotEmpty(endDate) && !startDate.equalsIgnoreCase("undefined")){
-			Date endTime =  dateFormat.parse(endDate);
+			Date endTime =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endDate);
 			String customEndTimeStr = TZ_DF_CED.format(endTime);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
@@ -125,10 +125,10 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
-				expensesApproverHierarchy.setExpenseStartDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
-				expensesApproverHierarchy.setExpenseEndDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getEndDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseEndDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getEndDate()));
 			}else{
-				expensesApproverHierarchy.setExpenseStartDateString(dateFormat.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
 			}
 			
 			if (null != expensesApproverHierarchy.getExpenseId()) {
@@ -598,6 +598,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 //getting the current EmailScenario by EmailScenario unique name and entity type
 				 if(null != type && "accept".equalsIgnoreCase(type)){
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
