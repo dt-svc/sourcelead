@@ -36,6 +36,8 @@ window.onload = function () {
 <script>
 	$(document).ready(function() {
 		document.getElementById("orgSettings_form").reset();
+		zipcodeMask('${SourceLeadWeb_country}','orgEditZipCode');
+		
 	});
 </script>
 
