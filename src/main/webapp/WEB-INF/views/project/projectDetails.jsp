@@ -390,7 +390,7 @@
 						result = result	+ ' <form id="editProject_form"  name="editProject_form" method="post">';
 						result = result	+ '<div class="user_summary_edit_cta projectdetails_edit_cta" id="ProjectIdDiv">';
 						result = result + '	<label>Project Id</label>';
-						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="ProjectSequene Number" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
+						result = result	+ '	<input type="text"  id="ProjectSequeneNumber" name="ProjectSequeneNumber" value="'+projectSequeneNumber+'" placeholder="Project Id" data-validation="validate_Space validate_length length2-50" data-validation-optional="true" onKeyUp="validateProjectSequeneNumber();" class="project_detfield">';
 						result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';

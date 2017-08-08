@@ -293,7 +293,7 @@ function preventTabkey(e){
 					</c:if>
 				</c:if>
 				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName}">${SourceLeadWeb_displayName}</span>
+				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
 				</c:if>
 				</div>
 	</c:if>
@@ -1587,8 +1587,6 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
         });
     }
    
-    
-    
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
   place = autocomplete.getPlace();
   var address = {};

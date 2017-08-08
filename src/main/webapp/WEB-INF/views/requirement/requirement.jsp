@@ -1868,7 +1868,7 @@ function getCities(){
 		    select = $("#skills");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
+		    chosen.search_field.on('keyup', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -1881,9 +1881,8 @@ function getCities(){
 		                 }
 			    	 }else{
 		    			var newSkill = this.value.replace(","," ");
-		    			if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
-							 preventTabkey(e); 
 							 var isNewSkill = true;
 							 $("#skills option:selected").each(function(){
 								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
@@ -1911,12 +1910,11 @@ function getCities(){
 		    selectone = $("#education");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keydown keyup', function(e1)
+		    chosenone.search_field.on('keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace("\'","");
-		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
-		    		   preventTabkey(e1); 
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);

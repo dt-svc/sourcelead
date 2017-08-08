@@ -451,13 +451,13 @@ public class TimesheetApprovalRestController {
 		    String startDate = frequency[0].trim();
 		    String endDate = frequency[1].trim();
 		   // DateFormat format = Constants.DF_DMY;
-		    DateFormat  format = LoginSessionController.DATEFORMAT;
+		    //DateFormat  format = LoginSessionController.DATEFORMAT;
 	        DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 	        Date actualStartDate=null;
 		    Date actualEndDate=null;
 		    try {
-		   	 actualStartDate = format.parse(startDate.replaceAll("/", "-"));
-		   	 actualEndDate = format.parse(endDate.replaceAll("/", "-"));
+		   	 actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate.replaceAll("/", "-"));
+		   	 actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate.replaceAll("/", "-"));
 		    }catch (Exception e) {}
 		    int tdSpanLength = 6;
 		    StringBuilder timesheetApprovalDiv = new StringBuilder();
@@ -470,8 +470,8 @@ public class TimesheetApprovalRestController {
 			        Date weekStartDate;
 			        Date weekEndDate;
 					try {
-						 weekStartDate = format.parse(k.replaceAll("/", "-"));
-						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+						 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 						 displayWeeksList.put(weekStartDate, weekEndDate);
 					} catch (Exception e) {}
 				}
@@ -570,11 +570,11 @@ public class TimesheetApprovalRestController {
 	     }
 	     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
      	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
-     	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
+     	                     .append(projectMember.getId()).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate)).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate)).
      	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' title='Reject' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
      	                     .append(projectMember.getId()).append("\",\"")
-     	                      .append(format.format(actualStartDate))
-     	                     .append("\",\"").append(format.format(actualEndDate))
+     	                      .append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate))
+     	                     .append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate))
      	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
         }
 	   if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
@@ -601,13 +601,13 @@ public class TimesheetApprovalRestController {
 		        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		        //DateFormat format = Constants.DF_DMY;
-		        DateFormat  format = LoginSessionController.DATEFORMAT;
+		        //DateFormat  format = LoginSessionController.DATEFORMAT;
 		        DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		        Date actualStartDate=null;
 			    Date actualEndDate=null;
 			    try {
-			    	 actualStartDate = format.parse(startDate.replaceAll("/", "-"));
-			    	 actualEndDate = format.parse(endDate.replaceAll("/", "-"));
+			    	 actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate.replaceAll("/", "-"));
+			    	 actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate.replaceAll("/", "-"));
 			    }catch (Exception e) {}
 		        StringBuilder timesheetApprovalDiv = new StringBuilder();
 		        Long clientId = null;
@@ -661,8 +661,8 @@ public class TimesheetApprovalRestController {
 	 				        Date weekStartDate;
 	 				        Date weekEndDate;
 							try {
-								 weekStartDate = format.parse(k.replaceAll("/", "-"));
-								 weekEndDate = format.parse(v.replaceAll("/", "-"));
+								 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+								 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 								 displayWeeksList.put(weekStartDate, weekEndDate);
 								 if(weekStartDate.equals(weekEndDate)){
 									 timesheetApprovalDiv.append("	                    <th>").append(shortormat.format(weekStartDate)).append("</th>  ");
@@ -781,11 +781,11 @@ public class TimesheetApprovalRestController {
 					     }
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
-			            	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
+			            	                     .append(projectMember.getId()).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate)).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate)).
 			            	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' title='Reject' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"")
-			            	                      .append(format.format(actualStartDate))
-			            	                     .append("\",\"").append(format.format(actualEndDate))
+			            	                      .append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate))
+			            	                     .append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate))
 			            	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
@@ -846,12 +846,12 @@ public class TimesheetApprovalRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		//DateFormat df = Constants.DMY;
-		DateFormat df = LoginSessionController.DATEFORMAT;
+		//DateFormat df = LoginSessionController.DATEFORMAT;
 		Date stDate = null;
 		Date edDate= null;
 		if(null !=startDate && !("undefined").equalsIgnoreCase(startDate) && null !=endDate && !("undefined").equalsIgnoreCase(endDate)){
-		 stDate = df.parse(startDate);
-		 edDate = df.parse(endDate);
+		 stDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
+		 edDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 		}
 		File file = null;
 		

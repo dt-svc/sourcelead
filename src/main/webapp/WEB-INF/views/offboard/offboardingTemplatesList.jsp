@@ -118,7 +118,7 @@ function offboardingTemplatesList(){
 
 <script>
 function offboardingPagenation(){ 
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+	 //$.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

@@ -54,14 +54,14 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	public List<RequirementOfferHistory> getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(
 			Long submissionId, Long orgLocationsId) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationsId);
-		SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementOfferHistory> offersList = null;
 		offersList = requirementOfferHistoryDao.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(submissionId,orgLocationsId);
 		if (offersList != null && !offersList.isEmpty() ) {
 			for (RequirementOfferHistory requirementOfferHistory : offersList) {
 				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getOfferId().getId());
 				if(offers.getDateOfJoining() != null){
-					requirementOfferHistory.setDateOfJoiningStr(format.format((offers.getDateOfJoining())));
+					requirementOfferHistory.setDateOfJoiningStr((commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),offers.getDateOfJoining())));
 				}
 				
 				if(requirementOfferHistory.getSubmissionId().getVendorLocationId() != null){
