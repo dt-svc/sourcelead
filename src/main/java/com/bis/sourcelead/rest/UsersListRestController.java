@@ -209,7 +209,8 @@ public class UsersListRestController {
 			@RequestParam(value = "searchByName", required = false) String searchByName,
 			@RequestParam(value = "userState", required = false) String userState,
 			@RequestParam(value = "loginUserRole", required = false) String loginUserRole,
-			@RequestParam(value = "offset", required = false) Integer offset) throws Exception {
+			@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "viewType", required = false) String viewType) throws Exception {
 
 		String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -225,7 +226,7 @@ public class UsersListRestController {
 				 userRoleType = null;
 			}
 			
-			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
+			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset,viewType);
 	
 			if(null != rolesList && rolesList.size() >0){
 				for(UserRole role : rolesList){
