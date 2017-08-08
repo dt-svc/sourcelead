@@ -293,7 +293,7 @@ function preventTabkey(e){
 					</c:if>
 				</c:if>
 				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName}">${SourceLeadWeb_displayName}</span>
+				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
 				</c:if>
 				</div>
 	</c:if>
@@ -1587,8 +1587,6 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
         });
     }
    
-    
-    
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
   place = autocomplete.getPlace();
   var address = {};
@@ -1609,14 +1607,16 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type) {
         
     }
   }
-  
   $("#"+countryId).val(address.country).change();
   $("#"+stateId).val(address.state).change();
   $("#"+cityId).val(address.city).change();
   $("#"+zipCodeId).val(address.zipcode).change();
+  $("#"+zipCodeId).attr("readonly", false);
   if(type == "invite"){
 	  getTimezonesList();
   }
+  zipcodeMask(address.country,zipCodeId);
+  
 });
 }
 function geolocate(latitudeId,longtitudeId) {
@@ -1639,5 +1639,24 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 	$("#"+stateId).val('');
 	$("#"+cityId).val('');
 	$("#"+zipCodeId).val('');
+	 $("#"+zipCodeId).attr("readonly", true);
 }
 </script>
+<script>
+function zipcodeMask(country,zipCodeId){
+	if(country == "India" || country == "Singapore"){
+		 $("#"+zipCodeId).mask("999999");
+	}else if(country == "United States" || country == "France"){
+		$("#"+zipCodeId).mask("99999");
+	}else if(country == "Australia"){
+		$("#"+zipCodeId).mask("9999");
+	}else if(country == "United Kingdom"){
+		$("#"+zipCodeId).mask("aa99");
+	}else{
+		$("#"+zipCodeId).mask("999999");
+	}
+		     
+}
+</script>
+<script src="resources/js/zipcodeMaskedinput-1.3.min.js"></script>
+
