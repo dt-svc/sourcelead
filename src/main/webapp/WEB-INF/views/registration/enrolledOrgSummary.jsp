@@ -76,7 +76,7 @@ z-index: 9999999999 !important;
 								
 								<div class="form-group">
 								<label class="col-md-4">Website :</label>
-								<p class="tbldata-dotdot-me">${orgloc.org.webSite}</p>
+								<p class="tbldata-dotdot-me">${orgloc.website}</p>
 								</div>
 								
 								<div class="form-group">
