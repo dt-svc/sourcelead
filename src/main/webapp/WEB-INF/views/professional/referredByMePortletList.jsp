@@ -147,9 +147,10 @@ function portletListFilter(requirementStatus){
   <script type="text/javascript">
   function professionalDashboardPortletList(startDate,endDate,requirementStatus){
 	  var sourceleadUrl = '${sourceleadUrl}';
+	  var locationCode ='${SourceLeadWeb_locationCode}'; 
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus,
+		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 

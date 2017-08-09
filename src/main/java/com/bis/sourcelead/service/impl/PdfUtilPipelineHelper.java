@@ -781,11 +781,12 @@ public class PdfUtilPipelineHelper  {
  * convert pojo to Array of Interview
  * @param requirementsub
  * @return
+ * @throws Exception 
  */
-	private String[] prepareRequirementPipelineToArrayInterview(RequirementSubmission requirementsub) {
+	private String[] prepareRequirementPipelineToArrayInterview(RequirementSubmission requirementsub) throws Exception {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS.length];
 		
-		
+		OrgLocations orglo = orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
 			requirementArray[0] = requirementsub.getCandidateName();
 		}else{
@@ -814,7 +815,7 @@ public class PdfUtilPipelineHelper  {
 		StringBuilder interviewStringBuilder = new StringBuilder();
 		for(RequirementInterview listInterviews:rquirementInterviews){
 			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
-				requirementArray[4] = LoginSessionController.DATEFORMAT.format(listInterviews.getDateOfInterview());
+				requirementArray[4] = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),listInterviews.getDateOfInterview());
 			}else{
 				requirementArray[4] = "--";
 			}
