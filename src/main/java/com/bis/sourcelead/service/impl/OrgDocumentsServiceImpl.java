@@ -207,11 +207,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
     public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
         logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsById(Id);
+        OrgLocations orglo = orgLocationService.getOrgLocations(documents.getLocationId().getId());
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(LoginSessionController.DATEFORMAT.format(documents.getStartDate()));
+            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(LoginSessionController.DATEFORMAT.format(documents.getEndDate()));
+           documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
