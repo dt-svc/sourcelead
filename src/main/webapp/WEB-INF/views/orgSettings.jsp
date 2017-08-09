@@ -177,19 +177,17 @@ function cancelOrgImg(){
 				  <div class="profile-img-container" style="position:relative;">
 				   <img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" alt="Org Image" class="comp-image img-responsive">
 				  
-			    <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 				  <div class="btn-group uploadfile">
-				  <button type="button" class="btn btn-sm btn-primary">
-				  <i class="fa fa-upload"></i></button>
-				   <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
-                  </label>
- 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
-	                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
-					  <i class="fa fa-trash"></i></button>
-				  </c:if>
+					  <button type="button" class="btn btn-sm btn-primary">
+					  <i class="fa fa-upload"></i></button>
+					   <label class="btn btn-sm btn-primary">
+	                    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event)" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                  </label>
+	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+						  <i class="fa fa-trash"></i></button>
+					  </c:if>
 				  </div>
-			   </c:if>
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
@@ -235,33 +233,6 @@ function cancelOrgImg(){
 								<input type="text"  class="form-control" name="zipcode" id="orgEditZipCode" field-name="Zip" data-validation="validate_int validate_Space validate_length length5-10" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
-								
-								
-								
-							<%-- <div class="form-group">
-								<label class="col-md-3">Country</label>
-								<div class="col-md-9">
-								 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" readonly="readonly" >
-				                 </select>
-								</div>
-							</div>
-							 <input type="hidden" id="existingCountry" value="${SourceLeadWeb_country}"/>
-							
-							 <div class="form-group">
-								<label class="col-md-3">State</label>
-								<div class="col-md-9">
-								     <select  class="chosen-select form-control" name="state" id="state" field-name="State"  > </select>
-								</div>
-							 </div>
-							 <input type="hidden" id="existingState" value="${SourceLeadWeb_orgLocations.state}">
-							
-							<div class="form-group">
-								<label class="col-md-3">City</label>
-								<div class="col-md-9">
-								     <select  class="chosen-select form-control" name="city" id="city" field-name="City"  ></select>
-								</div>
-							</div> --%>
-							
 							
 							<div class="form-group">
 							<label class="col-md-3">Address</label>
@@ -308,9 +279,16 @@ function cancelOrgImg(){
 				
 					<div class="col-md-5">
 						<div class="form-group">
-							<label class="col-md-3">Website</label>
-							<div class="col-md-9">
-							<input type="text" readonly="readonly" class="form-control" value="${SourceLeadWeb_website}">
+							<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9" id="websiteDiv">
+							<c:if test="${SourceLeadWeb_website == null}">
+							   <input type="text"  class="form-control"  onblur="validateOrgLocationWebsite();" data-validation="required" field-name="Website" id="website"  name="website" value="${SourceLeadWeb_website}">
+							</c:if>
+							
+							<c:if test="${SourceLeadWeb_website != null}">
+							   <input type="text" readonly="readonly" class="form-control" name="website" value="${SourceLeadWeb_website}">
+							</c:if>
+							
 							</div>
 							</div>
 						<div class="form-group mt">
@@ -1342,9 +1320,15 @@ function getOrgLocationDetails(orgLocationId){
     		    var json = JSON.parse(data);
     	        var result = '';
     	        var editPrimaryUser = '';
+    	        var website = '';
     	        
     	        if(json.orglocationUserStatus == 'NOT_LOGGEDIN'){
     	        	editPrimaryUser = '<a id="edit-user" href="javascript:editPrimaryUser('+orgLocationId+');"><i class="fa fa-edit" title="Edit Contact Details"></i></a>';
+    	        }
+    	        if(json['website'] != null && json['website'] != '' && json['website'] != 'undefined'){
+    	        	website = json['website'];
+    	        }else{
+    	        	website = "-------";
     	        }
     	        
     	        result = result +'<div class="col-xs-12 col-sm-3 col-md-3">';
@@ -1373,7 +1357,7 @@ function getOrgLocationDetails(orgLocationId){
 	    								 
 	    	        result = result +'<div class="form-group">';
 	    	        result = result +'<label class="col-md-4">Website :</label>';
-	    	        result = result +'<p class="tbldata-dotdot-me">'+json['website']+'</p>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+website+'</p>';
 	    	        result = result +'</div>';
 	    	        
 	    	        result = result +'<div class="form-group">';
@@ -2016,6 +2000,52 @@ function validateCompanyName(){
 		   }); 
 		 
 	 }
+}
+</script>
+
+
+<script type="text/javascript">
+function validateOrgLocationWebsite (){
+      var website = document.getElementById("website").value; 
+     var sourceleadUrl ='${sourceleadUrl}';
+     var sourceleadBLockedwebsites ='${sourceLeadBlockedSocialDomains}';
+	 $('input#website').removeAttr( "record-exist record-exist-errormsg");
+	 if(website != null && website != ''){
+		
+		 $("#register_button").attr("disabled", "disabled");
+		 $( "#register_button" ).addClass('button').val('Processing..');
+			 $.ajax({
+				    type: "GET",
+       	            url: sourceleadUrl+"/ws/validateOrgWebsite?website="+website+"&sourceleadBLockedwebsites="+sourceleadBLockedwebsites,
+			        success: function(data) {
+			        	 var result = data;
+			        		if (result == "Website Duplicated" || result == "Invalid Website") {
+		        			//existed website
+		    	    		$('#websiteDiv').find('p.jquery_form_error_message').remove(); 
+		    	    		$('input#website').attr('class','error form-control');
+		    	    		$("input#website").closest('b').after("<p class='jquery_form_error_message'> "+website+" "+result+"</p>");
+		    				$('input#website').attr('record-exist','yes');
+		    				$('input#website').attr('record-exist-errorMsg',website+' '+result+''); 
+		    				$( "#save_button" ).addClass('sign_btn').val('Register');
+		    				$("#save_button").removeAttr("disabled");
+			        	}
+			        	else{
+			        		//New WebSite
+			        		$("#register_button").removeAttr("disabled");
+				    		$('input#website').removeAttr( "class record-exist record-exist-errormsg");
+							$('#websiteDiv').find('p.jquery_form_error_message').remove();
+							$('input#website').attr('class','valid form-control');
+							$( "#save_button" ).removeAttr("style");
+							$( "#save_button" ).addClass('sign_btn').val('Register');
+							$( "#save_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+			        	}  
+			       },
+			        
+		   }); 
+	}
 }
 </script>
 
