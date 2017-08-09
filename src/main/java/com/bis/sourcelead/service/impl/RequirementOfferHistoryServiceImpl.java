@@ -106,16 +106,17 @@ public class RequirementOfferHistoryServiceImpl implements RequirementOfferHisto
 	}
 
 	@Override
-	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId)
+	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId,String locationCode)
 			throws Exception {
 		
 		List<RequirementOfferHistory> offersList = null;
-		offersList = requirementOfferHistoryDao.getCrowdSourcingOfferDetailsBySubmissionId(submissionId);
+		offersList = requirementOfferHistoryDao.getCrowdSourcingOfferDetailsBySubmissionId(submissionId,locationCode);
+		OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		if (offersList != null && !offersList.isEmpty() ) {
 			for (RequirementOfferHistory requirementOfferHistory : offersList) {
 				RequirementOffers offers = requirementOffersDao.getRequirementOfferId(requirementOfferHistory.getOfferId().getId());
 				if(offers.getDateOfJoining() != null){
-					requirementOfferHistory.setDateOfJoiningStr(LoginSessionController.DATEFORMAT.format((offers.getDateOfJoining())));
+					requirementOfferHistory.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),(offers.getDateOfJoining())));
 				}
 				
 				if(requirementOfferHistory.getSubmissionId().getVendorLocationId() != null){
