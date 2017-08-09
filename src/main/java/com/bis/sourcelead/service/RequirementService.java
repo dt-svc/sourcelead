@@ -1,24 +1,19 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
@@ -35,6 +30,8 @@ public interface RequirementService {
 	public Requirement addRequirement(Requirement requirement) throws Exception;
 	
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user, String userRoleName) throws Exception;
+	
+	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User  user, String userRoleName,int start,int length) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	

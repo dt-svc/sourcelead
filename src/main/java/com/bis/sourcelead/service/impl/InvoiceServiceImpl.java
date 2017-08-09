@@ -190,8 +190,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
-//	@Autowired
-//	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
+	@Autowired
+	private ExpensesInvoicePdfHelper expensesInvoicePdfHelper;
 	
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
@@ -1197,13 +1197,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType) throws Exception {
+	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType,OrgLocations orgLocations) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = LoginSessionController.DATEFORMAT;
-			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 			Row writeRow = null;
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
@@ -1212,7 +1212,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;
 			}
-			 file = File.createTempFile(orgName + Constants.BILLING + dateFormat.format(new Date()),".xls");
+			file = File.createTempFile(orgName + Constants.BILLING + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()),".xls");
 			 file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
@@ -1267,12 +1267,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getInvoiceDate()){
-		String invoiceDate = LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate());
+		String invoiceDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate());
 		 writeRow.createCell(5).setCellValue(invoiceDate);
 	}
 	
 	if(null != invoice.getDueDate()){
-		String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+		String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate());
 		writeRow.createCell(6).setCellValue(dueDate);  
 	}
 	
@@ -1588,6 +1588,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoiceLineItemsSet.add(invoiceLineItems);
 			submissionApproverHiearachyIds.add(String.valueOf(projectMember.getSubmissionApproverHierarchyId()));
 		}
+		 if(submissionApproverHiearachyIds !=null && submissionApproverHiearachyIds.size() >0){
+	        	String submissionIds = submissionApproverHiearachyIds.stream().map(Object::toString).collect(Collectors.joining(","));
+	        	invoice.setSubmissionApproverHierarchyId(submissionIds);
+	        }
 		invoice.setSubTotal(String.valueOf(subTotal));
 		invoice.setDueAmount(String.valueOf(subTotal));
 		invoice.setTotal(String.valueOf(subTotal));
@@ -1646,8 +1650,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
@@ -1729,8 +1733,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
@@ -1904,7 +1908,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date endDateUTC = null;
 		Date startDateUTC = null;
-		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+
 		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
 			String endDate = outputFormatter1.print(zoned);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
@@ -1937,8 +1941,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					&& !"undefined".equalsIgnoreCase(customEndDate)) {
 				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+
 				Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
 				Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -2262,8 +2268,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 StringBuilder msgBuild = new StringBuilder();
 		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
 		 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		 String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invoice.getDueDate()));
+
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
@@ -2566,7 +2574,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
 
-		/*//store attached Documents (after)
+		//store attached Documents (after)
 		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType,	vendorCurrencyCode, loginOrgCurrencyCode);
 		invoice.setFileName(file.getName());
 		byte[] bytesArray = getByteArray(file);
@@ -2574,7 +2582,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		invoiceDao.saveInvoce(invoice);
 		if (null != file) {
 			file.delete();
-		}*/
+		}
 
 		if (invoice.getSubmissionApproverHierarchyIds() != null
 				&& invoice.getSubmissionApproverHierarchyIds().size() > 0) {
