@@ -172,7 +172,10 @@ function filterStatus() {
 result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
 result = result + '<li class="current"><a href="#tab-a">Resources ('+projectMembersCount+')</a></li>';
-result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>';
+
+/* Dont delete this commented code. Functionality is in progress */
+/* result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; */
+
 result = result + '<li class=""><a href="#tab-c">Budget Requests (10)</a></li>';
 result = result + '<div class="clearfix"></div>';
 result = result + '</ul>';
