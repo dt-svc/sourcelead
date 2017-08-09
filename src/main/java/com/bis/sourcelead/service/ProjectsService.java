@@ -116,6 +116,6 @@ public interface ProjectsService {
 		
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
-		public String getProjectId(OrgLocations orgLocations);
+//		public String getProjectId(OrgLocations orgLocations);
 		
 }

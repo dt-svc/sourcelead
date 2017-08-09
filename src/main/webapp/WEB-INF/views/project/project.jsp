@@ -12,14 +12,6 @@
 
 <script src="resources/js/editor.js"></script>
 <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
-			$(document).ready(function() {
-				$("#txtEditor").Editor();
-// 				$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
-// 				$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
-			});
-       </script> 
-  
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -122,7 +114,7 @@ function validateTaskName(){
 								<input type="text" value="" id="ProjectSequeneNumber"
 									name="ProjectSequeneNumber"
 									data-validation="validate_Space validate_length length2-50"
-									data-validation-optional="true" class="form-control"
+									data-validation-optional="true" class="form-control" placeholder="Project Id"
 									onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
@@ -249,8 +241,8 @@ function validateTaskName(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="ProjectName" data-validation="required validate_Space validate_length length2-250"
-									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden">Enter Project Id</span>
+								<input type="text" class="form-control" name="ProjectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
+									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
 						</div>
@@ -488,10 +480,9 @@ function validateTaskName(){
 						<br />
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
-					<div>
-						<input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">Mail to team members 
-						&emsp;&emsp;				
-						<input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">Mail to manager
+					<div class="clearfix col-md-12">
+						<span class="paddingRight"><input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">&nbsp;Mail to team members</span> 
+						<span class="paddingLeft"><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
 					</div>
 					
 
@@ -500,7 +491,7 @@ function validateTaskName(){
 				<!--  div row end -->
 
 
-				<div class="form-footer clearfix row">
+				<div class="form-footer clearfix row mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
 							<input type="button" value="Save" id="save_project"
@@ -1374,3 +1365,11 @@ function getChildLevel1Approvers(currentApproverId){
 <!-- script for converting dateformat in datepicker -->
 
 <!-- script for dateformat in datepicker End -->
+
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+	});
+ </script>

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.bis.sourcelead.entity.Candidate;
@@ -17,7 +18,11 @@ public interface RequirementDao {
 	
 	public Requirement storeRequirement(Requirement requirement) throws Exception;
 	
+	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User user, String userRoleName,int start,int length) throws Exception;
+	
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user, String userRoleName) throws Exception;
+	
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
@@ -73,8 +78,6 @@ public interface RequirementDao {
     
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
-	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
-	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
 	
 	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
