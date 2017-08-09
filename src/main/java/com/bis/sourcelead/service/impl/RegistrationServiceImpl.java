@@ -471,7 +471,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName());
-		orgLocations.setWebsite(registration.getWebsite());
+		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);

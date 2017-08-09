@@ -1125,9 +1125,10 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
 		 type: "POST",
-		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
+		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
