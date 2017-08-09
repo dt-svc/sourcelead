@@ -89,7 +89,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		orgLocations.setId(orgLocationId);
 		candidateEducation.setOrglocationId(orgLocations);
 		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
-		SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		if(jsonObject.has("name")){
 			if(candidateEducation != null && candidateEducation.getName() != null && candidateEducation.getName() != "" && !candidateEducation.getName().equalsIgnoreCase(jsonObject.getString("name"))){
 				activitySummary.append("Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObject.getString("name")).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -114,7 +114,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date startDate = simpleDateFormat.parse(jsonObject.getString("startDate"));
+                Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObject.getString("startDate"));
                 candidateEducation.setStartDate(startDate);
 				
 			} catch (Exception e) {
@@ -125,7 +125,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			try {
 				//String pattern = "dd-MM-yyyy";
 				//DateFormat format = LoginSessionController.DATEFORMAT;
-                Date validTo = simpleDateFormat.parse(jsonObject.getString("endDate"));
+                Date validTo = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObject.getString("endDate"));
                 candidateEducation.setEndDate(validTo);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -194,13 +194,13 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
       
 		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
-		SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		for(CandidateEducation education :edulist){
 			if(education.getStartDate() != null){
-			education.setStartDateStr(simpleDateFormat.format(education.getStartDate()));
+			education.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getStartDate()));
 			}
 			if(education.getEndDate() != null){
-			education.setEndDateStr(simpleDateFormat.format(education.getEndDate()));
+			education.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getEndDate()));
 			}
 		}
 		return edulist;

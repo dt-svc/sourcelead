@@ -210,11 +210,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		// return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 			for(CandidateResumes canResumes :candidateResumesList){
 				if(canResumes.getUpdatedDate() != null){
-					canResumes.setCandidateResumeUpdateDateToString(simpleDateFormat.format(canResumes.getUpdatedDate()));
+					canResumes.setCandidateResumeUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canResumes.getUpdatedDate()));
 				}
 			}
 			return candidateResumesList;

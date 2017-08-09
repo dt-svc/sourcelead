@@ -1506,12 +1506,12 @@ public class VendorRestController {
 					}
 				}
 			}
-			   SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+			   //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 			mainRequirement.setVendorInterviewsCount(interviewsSum);
 			mainRequirement.setVendorOfferedCount(offeredSum);
 			mainRequirement.setVendorBackoutCount(backoutSum);
 			mainRequirement.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
-			mainRequirement.setPostedDateStr(formatter.format(requirement.getCreatedDate()));
+			mainRequirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
 			if (mainRequirement.getManagerUserId() != null) {
 				String managerFirstName = "";
 				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {

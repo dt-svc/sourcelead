@@ -66,8 +66,8 @@ public class ExpensesReportsRestController {
 		String[] dates = datequarterly.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		Date convertedStartDate = LoginSessionController.DATEFORMAT.parse(startDate);
-		Date convertedEndDate = LoginSessionController.DATEFORMAT.parse(endtDate);
+		Date convertedStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
+		Date convertedEndDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endtDate);
 		LinkedHashSet<String> dateList = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate, convertedEndDate);
 		 DateFormat format =Constants.Y;
 		 String year = format.format(convertedEndDate);
