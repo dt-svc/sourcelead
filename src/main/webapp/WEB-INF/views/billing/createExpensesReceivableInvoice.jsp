@@ -245,7 +245,7 @@ function checkBox(){
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
               </div>
               
-                <div id="conversionId"></div>
+                <div id="conversionId"  style="display: none"></div>
               
               </div>
           </div>
@@ -293,11 +293,8 @@ function getClientContacts(){
 	$('#clientContact').trigger("chosen:updated");
 	},
 	});
-	
-	/* document.getElementById("bottomGrid").style.display="none";
-	document.getElementById("lineItemAddRows").style.display="none"; */
-	/* document.getElementById("tableBody").style.display="none"; */
-	getProjectsList();
+	addConversionDiv();
+	getProjectsList(); 
 	}
 </script>
 
@@ -705,7 +702,7 @@ function populateInlineItemsGrid(){
          $("#addbutton").show();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
-        addConversionDiv();
+       /*  addConversionDiv(); */
 }
 </script>
 
@@ -862,8 +859,11 @@ function addConversionDiv(){
 		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 		result = result +'  </div>';
 		result = result +'  </div>';
+		document.getElementById("conversionId").style.display="block";
 		$("#conversionId").empty();
 		$("#conversionId").append(result);
+	}else{
+		document.getElementById("conversionId").style.display="none";
 	}
 }
 </script>
@@ -1410,8 +1410,8 @@ function toDate(selector) {
     		});
 	}
 	</script>
-	
-	 <script type="text/javascript">
+
+ <script type="text/javascript">
 $(document).ready(function(){
 	var invoiceUUID = '${invoiceUUID}';
 	if(invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
