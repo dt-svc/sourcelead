@@ -148,7 +148,7 @@ function checkBox(){
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field"> 
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectMemberByVendor();" field-name="Project Name"> 
                   </select>
               </div>
             </div>
@@ -308,7 +308,7 @@ function getProjectsList(projectName){
 </script>
 
 <!-- Get Project Frequency Based on project id -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
 	var projectId = null;
 	projectId = $("#projectId").val();
@@ -342,26 +342,27 @@ function getProjectFrequency(invoiceFrequency){
 	});
 
 }
-</script>
+</script> -->
 
 
 <!-- Get all assigned members for the project based on project id -->
-<!-- <script type="text/javascript">
-function getProjectAssignedMem(){
-	var frequency = $("#frequency").val();
+ <script type="text/javascript">
+function getProjectMemberByVendor(){
 	var projectId = $("#projectId").val();
 	var orgRelationId = $("#vendorOrgRelationId").val();
+	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
+	url: sourceleadUrl+"/getVendorAssignedMembersForProjects?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
 	success :function(data) {
-		populateInlineItemsGrid(data);
+		alert(data);
 	},
 	}); 
-
+ 
 }
-</script> -->
+</script> 
 
 <!-- <script>
 function getProjectAssignedMem1(invoiceLineItemsList){
