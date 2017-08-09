@@ -259,7 +259,7 @@ public class InterviewFeedbackRestController {
 		    String resultJson = null;
 						List<RequirementInterviewer> interviewers = requirementInterviewerService.getInterviwersListByInterviewId(interviewId);
 						OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
-						SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+						//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 						for(RequirementInterviewer interviewer: interviewers){
 							StringBuilder name = new StringBuilder();
 							if(null != interviewer.getInterviewerUser().getLastName() && !"".equalsIgnoreCase(interviewer.getInterviewerUser().getLastName())){
@@ -270,7 +270,7 @@ public class InterviewFeedbackRestController {
 							
 							InterviewFeedbackTemplate feedbackTemplate = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(interviewer.getId()) ;
 							if(feedbackTemplate != null){
-								interviewer.setFeedbackDate(simpleDateFormat.format(feedbackTemplate.getCreatedDate()));
+								interviewer.setFeedbackDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),feedbackTemplate.getCreatedDate()));
 								interviewer.setFeedbackStatus(feedbackTemplate.getStatus());
 							}
 						}

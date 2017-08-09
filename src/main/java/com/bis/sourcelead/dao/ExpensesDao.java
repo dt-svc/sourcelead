@@ -19,7 +19,7 @@ public interface ExpensesDao<Expenses> {
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 	public Expenses getExpenseByExpenseId(long expenseId);
     public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationID)throws Exception;
-	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId);
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType);
 	}
 	
 

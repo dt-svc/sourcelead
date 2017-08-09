@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +33,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
-import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -42,7 +40,6 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -76,6 +73,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
@@ -111,7 +111,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
-	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
 		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
@@ -133,10 +133,10 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
 	}
 	if (jsonObj.has("startDateExpense") && !(jsonObj.getString("startDateExpense").isEmpty())){
-		expenses.setStartDate(dateFormat.parse(jsonObj.getString("startDateExpense")));
+		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("startDateExpense")));
 	}
 	if (jsonObj.has("endDateExpense") && !(jsonObj.getString("endDateExpense").isEmpty())){
-		expenses.setEndDate(dateFormat.parse(jsonObj.getString("endDateExpense")));
+		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("endDateExpense")));
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);

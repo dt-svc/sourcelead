@@ -134,10 +134,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 
 		File file = null;
 		Workbook wb = new XSSFWorkbook();
-		DateFormat format = LoginSessionController.DATEFORMAT;
+		//DateFormat format = LoginSessionController.DATEFORMAT;
 		
 		StringBuilder fName=new StringBuilder();
-		Sheet sheet = wb.createSheet(fName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(format.format(new Date())).toString());
+		Sheet sheet = wb.createSheet(fName.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 		Row writeRow = null;
 		
 		CellStyle style = wb.createCellStyle();
@@ -147,8 +147,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
         font.setColor(IndexedColors.BLACK.getIndex());
         style.setFont(font);
 		
-		Date employeeStartDate = format.parse(frequencyStartDate.replaceAll("/", "-"));
-		Date employeeEndDate = format.parse(frequencyEndDate.replaceAll("/", "-"));
+		Date employeeStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyStartDate.replaceAll("/", "-"));
+		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
 		Submission_Status submissionStatus = sah.getSubmissionStatus();
@@ -164,8 +164,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 String key = entry.getKey();
 			     String value = entry.getValue();
 			     
-				 Date weekStartDate = format.parse(key.replaceAll("/", "-"));
-				 Date weekEndDate = format.parse(value.replaceAll("/", "-"));
+				 Date weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+				 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 				 
 				 String weekMondayDate = null;
 				 
@@ -200,7 +200,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 Long friTotHours = 0L;
 				 Long satTotHours = 0L;
 				 Long sunTotHours = 0L;
-				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(key));
+				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key));
 		    		switch (dayOfTheDateWithStartDate) {
 		    	        case 1:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,6);
 		    	                 break;
@@ -640,10 +640,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			StringBuilder StDateAndEndDate = new StringBuilder("");
 			StringBuilder separator = new StringBuilder(",");
 		    //DateFormat format = Constants.DF_DMY;
-			DateFormat format = LoginSessionController.DATEFORMAT;
+			//DateFormat format = LoginSessionController.DATEFORMAT;
 		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		        
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
@@ -651,8 +651,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				        Date weekStartDate;
 				        Date weekEndDate;
 					try {
-						 weekStartDate = format.parse(k.replaceAll("/", "-"));
-						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+						 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 						 if(weekStartDate.equals(weekEndDate)){
 							 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate));
 						 }else{
@@ -667,12 +667,12 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			String[] headersList = Constants.TIMESHEET_APPROVAL_MECHANISM_HEADER;
 			headers = getHeaders(headersList,StDateAndEndDate.toString());
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+	    //DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 
 	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetApproval_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    
@@ -947,9 +947,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}
 		//for creating workbook and sheet in excel.
 		Workbook createExcelworkbook = new XSSFWorkbook();
-		DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 		StringBuilder excelStringBuilder=new StringBuilder();
-		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrgLocationName()).append("_").append(dateFormat.format(new Date())).toString());
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 		Row writeRow = null;
 		// to get list of project members from data base.
 		List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId());
@@ -981,7 +981,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}
 		// output the file using file output stream.
 		StringBuilder tempFileBuilder=new StringBuilder();
-		file = File.createTempFile(tempFileBuilder.append(orgLocations.getOrgLocationName()).append("_TimeSheet_").append(dateFormat.format(new Date())).toString(),".xls");
+		file = File.createTempFile(tempFileBuilder.append(orgLocations.getOrgLocationName()).append("_TimeSheet_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
 		file.setReadable(true);
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
@@ -1071,9 +1071,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int flag = 0;
 		StringBuilder StDateAndEndDate = new StringBuilder("");
 		StringBuilder separator = new StringBuilder(",");
-		DateFormat format = LoginSessionController.DATEFORMAT;
+		//DateFormat format = LoginSessionController.DATEFORMAT;
 	    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-	Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
+	Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
 	if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 		for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
     		 String  k = entry.getKey();
@@ -1081,8 +1081,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		        Date weekStartDate;
 		        Date weekEndDate;
 			try {
-				 weekStartDate = format.parse(k.replaceAll("/", "-"));
-				 weekEndDate = format.parse(v.replaceAll("/", "-"));
+				 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+				 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 				 if(weekStartDate.equals(weekEndDate)){
 					 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate));
 				 }else{

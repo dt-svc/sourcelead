@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -65,6 +66,9 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	 @Autowired
+	 CommonUtil commonUtil;
 
 	@Autowired
 	ProjectPlanningNewResourceRequestDao projectPlanningNewResourceRequestDao;
@@ -613,7 +617,7 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations) throws Exception {
 		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedNewResourceRequests = new ArrayList<Long>();
-	     SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
+	     //SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
 		 for(int i=1;i<=maxRowCount;i++){
 			 if(jsonObj.has("noOfResources"+i) && !isNullOrEmpty(jsonObj.getString("noOfResources"+i))){
@@ -674,11 +678,11 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 					 resourceRequest.setRateType(jsonObj.getString("rateType"+i));
 				 }
 				 if(jsonObj.has("startDate"+i) && !isNullOrEmpty(jsonObj.getString("startDate"+i))){
-					 Date startDate = format.parse(jsonObj.getString("startDate"+i));
+					 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("startDate"+i));
 					 resourceRequest.setStartDate(startDate);
 				 }
 				 if(jsonObj.has("endDate"+i) && !isNullOrEmpty(jsonObj.getString("endDate"+i))){
-					 Date endDate = format.parse(jsonObj.getString("endDate"+i));
+					 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("endDate"+i));
 					 resourceRequest.setEndDate(endDate);
 				 }
 				 if(jsonObj.has("estimatedHours"+i) && !isNullOrEmpty(jsonObj.getString("estimatedHours"+i))){
