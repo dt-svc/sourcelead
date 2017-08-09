@@ -452,6 +452,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	private String requirementOrgName;
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
+	
 	@Transient
 	private String systemGeneratedId;
 	
@@ -1585,12 +1588,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		return serialVersionUID;
 	}
 
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
 	public String getApproverHierarchy() {
 		return approverHierarchy;
 	}
 
 	public void setApproverHierarchy(String approverHierarchy) {
 		this.approverHierarchy = approverHierarchy;
+	}
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
 	}
 
 	public String getSystemGeneratedId()
