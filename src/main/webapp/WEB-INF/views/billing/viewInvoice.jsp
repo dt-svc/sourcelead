@@ -56,11 +56,11 @@ $(document).ready(function(){
               </a>
             </li>
             <li class="">
-            <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">
+            <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\',\'ROLE_VIEW_EDIT_INVOICE\')">
               <a href="#paymentHistory" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="paymentHistroy();">
-              </sec:authorize>
                 <h5>Payment History</h5>
               </a>
+               </sec:authorize>
             </li>
             
             

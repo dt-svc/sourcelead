@@ -1197,13 +1197,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType) throws Exception {
+	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType,OrgLocations orgLocations) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = LoginSessionController.DATEFORMAT;
-			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 			Row writeRow = null;
 			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
@@ -1212,7 +1212,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;
 			}
-			 file = File.createTempFile(orgName + Constants.BILLING + dateFormat.format(new Date()),".xls");
+			file = File.createTempFile(orgName + Constants.BILLING + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()),".xls");
 			 file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
@@ -1267,12 +1267,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getInvoiceDate()){
-		String invoiceDate = LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate());
+		String invoiceDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate());
 		 writeRow.createCell(5).setCellValue(invoiceDate);
 	}
 	
 	if(null != invoice.getDueDate()){
-		String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+		String dueDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate());
 		writeRow.createCell(6).setCellValue(dueDate);  
 	}
 	
@@ -1588,6 +1588,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoiceLineItemsSet.add(invoiceLineItems);
 			submissionApproverHiearachyIds.add(String.valueOf(projectMember.getSubmissionApproverHierarchyId()));
 		}
+		 if(submissionApproverHiearachyIds !=null && submissionApproverHiearachyIds.size() >0){
+	        	String submissionIds = submissionApproverHiearachyIds.stream().map(Object::toString).collect(Collectors.joining(","));
+	        	invoice.setSubmissionApproverHierarchyId(submissionIds);
+	        }
 		invoice.setSubTotal(String.valueOf(subTotal));
 		invoice.setDueAmount(String.valueOf(subTotal));
 		invoice.setTotal(String.valueOf(subTotal));
@@ -1646,8 +1650,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
@@ -1729,8 +1733,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();

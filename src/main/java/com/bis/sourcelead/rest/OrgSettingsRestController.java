@@ -102,7 +102,7 @@ public class OrgSettingsRestController {
 		try {
 			org = orgService.saveOrgSettings(orgSettings, multiFile, org);
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
-			LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
+			//LoginSessionController.DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
