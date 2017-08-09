@@ -1508,6 +1508,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		RequirementInterview reqnterview = getRequirementInterviewById(requirementInterviewId);
 		User interviewCreactorUser =  userService.getUserByUserCode(reqnterview.getCreatedBy());
 		RequirementSubmission reqSubmission = requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
+		OrgLocations orglo = orgLocationService.getOrgLocations(reqSubmission.getOrgLocations().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		 OrgSpoc spoc= null;
 		if(null != reqSubmission.getVendorLocationId()){
@@ -1560,7 +1561,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			String interviewDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE,
 					reqnterview.getTimezone().getTimeZoneId(), currentTimeStr);
 			Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-			interviewDateInTimezone = LoginSessionController.DATEFORMAT.format(interviewConverteDate);
+			interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),interviewConverteDate);
 			reqnterview.setDateOfInterviewStr(interviewDateInTimezone);
 			globalVarsMap.put("InterviewDate", reqnterview.getDateOfInterviewStr());
 		} else {

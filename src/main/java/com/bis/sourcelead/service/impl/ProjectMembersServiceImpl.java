@@ -209,14 +209,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		for (ProjectMembers projectMembers : allProjectsList) {
 			projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+			 OrgLocations orglo = orgLocationService.getOrgLocations( projectMembers.getProjects().getOrgLocationsId().getId());	
 			 if(pmh == null){
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 projectMembers.setStartDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectAssignedDate()));
+				 projectMembers.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectAssignedDate()));
              }
         	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-        		 projectMembers.setEndDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectTerminationDate()));
+        		 projectMembers.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectTerminationDate()));
         	 }
         	 
         	 /*projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -224,7 +225,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
 			}*/
 			if (projectMembers.getProjects().getEndDate() != null) {
-				projectMembers.setProjectEndDateStr(LoginSessionController.DATEFORMAT.format(projectMembers.getProjects().getEndDate()));
+				projectMembers.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMembers.getProjects().getEndDate()));
 			}
 	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");

@@ -1352,7 +1352,7 @@ public class InvoiceRestController {
 			File file= null;
 			String convertedExportStartDate = conversionUtil.getDateAsString(startDateUTC);
 			String convertedExportEndDate = conversionUtil.getDateAsString(endDateUTC);
-			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType);
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType,orgLocations);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
