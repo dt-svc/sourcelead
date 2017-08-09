@@ -1452,7 +1452,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoic
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='payable_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount.toFixed(2)+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMergeBill("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
