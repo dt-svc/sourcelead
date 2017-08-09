@@ -136,9 +136,10 @@ function portletListFilter(requirementStatus){
   <script type="text/javascript">
   function recruiterDashboardPortletList(startDate,endDate,requirementStatus){
 	  var sourceleadUrl = '${sourceleadUrl}';
+	  var locationCode ='${SourceLeadWeb_locationCode}'; 
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus,
+		   	url: sourceleadUrl+"/getRecruiterSubmttedJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
