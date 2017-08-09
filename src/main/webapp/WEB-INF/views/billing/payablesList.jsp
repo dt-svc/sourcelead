@@ -266,7 +266,8 @@ $(document).ready(function(){
 			<div class="col-md-4 mt25">
 				<div class="small-widget bgGreen">
 					<a href="<c:url value='/createPayables'/>"
-						title="Create custom bill">
+						title="Create Vendor Based Bill">
+
 						<div class="clearfix mb10">
 							<img src="resources/images/invoice_icon.png" class="text-center"
 								alt="create_receivables">
@@ -278,7 +279,7 @@ $(document).ready(function(){
 			<div class="col-md-4 mt25">
 				<div class="small-widget bg-yellow">
 					<a href="<c:url value='/createInvoiceProjectPayableBased'/>"
-						title="Create project based bill">
+						title="Create Project Based Bill">
 						<div class="clearfix mb10">
 							<!--<i class="fa fa-usd fa-3x"></i>-->
 							<img src="resources/images/invoice_icon.png" class="text-center"
@@ -289,8 +290,8 @@ $(document).ready(function(){
 			</div>
 
 			 <div class="col-md-4 mt25">
-		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other bill">
-		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create other bill">
+		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create Other Bill">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
@@ -382,7 +383,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
-	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
+// 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
 	result = result +'            </div>                                                                ';
@@ -1390,7 +1391,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 
 <script>
 function linkInvoicePayablePagination(){  
-	// $.fn.dataTable.moment( 'DD-MM-YYYY' );
+
     $('#linkInvoicePayable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
