@@ -1544,11 +1544,12 @@ function getCities(){
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	var anyofKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
 		            select.append(option);
@@ -1565,11 +1566,12 @@ function getCities(){
 		    selectone = $("#allReqKeyWord");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var allofKeyWord = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
 		        {
+		        	preventTabkey(e1); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(allofKeyWord).text(allofKeyWord);
 		            selectone.append(option);
@@ -1587,11 +1589,12 @@ function getCities(){
 		    selecttwo = $("#excludeReqKeyWord");
 		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
+		    chosentwo.search_field.on('keydown keyup', function(e2)
 		    {
 		    	var excludeKeyWord = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
+		        if (tagItBykeyForSkills(e2) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
 		        {
+		        	preventTabkey(e2); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
 		            selecttwo.append(option);
@@ -1624,6 +1627,47 @@ function getCities(){
 	        		
 		        }
 		    });
+		    
+		  //Adding Customized Skills to the list
+		       var selectfour, chosenfour;
+			    selectfour = $("#skills");
+			    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Email:' });
+			    chosenfour = selectfour.data('chosen');
+			    chosenfour.search_field.on('keyup', function(e)
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 selectfour.append(option);
+			 		             selectfour.find(option).prop('selected', true);
+			 		             selectfour.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#skills").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+								 var isNewSkill = true;
+								 $("#skills option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										 //alert(newSkill);
+										 isNewSkill = false;
+										 return false;
+									 }
+			                    
+			                   });
+								if(isNewSkill){
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+								 selectfour.append(option);
+			                     selectfour.find(option).prop('selected', true);
+								}
+				               $("#skills").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+			    });
+		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
@@ -2537,6 +2581,21 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 	$("#"+stateId).val('');
 	$("#"+cityId).val('');
 	$("#"+zipCodeId).val('');
+}
+</script>
+<script type="text/javascript">
+function tagItBykeyForSkills(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+<script type="text/javascript">
+function preventTabkey(e){
+	 if(e.which == 9){
+		 e.preventDefault();
+	 }
 }
 </script>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-596e031897dcfb4a"></script>
