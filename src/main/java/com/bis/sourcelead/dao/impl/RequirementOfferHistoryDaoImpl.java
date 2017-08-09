@@ -102,7 +102,7 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId)
+	public List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId,String locationCode)
 			throws Exception {
 		  
 		    logger.debug("In RequirementOfferHistoryDaoImpl class getCrowdSourcingOfferDetailsBySubmissionId method");

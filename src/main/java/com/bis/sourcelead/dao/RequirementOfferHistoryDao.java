@@ -17,6 +17,6 @@ public interface RequirementOfferHistoryDao {
 	
 	List<RequirementOfferHistory> getAllRequirementOfferHistoriesByOfferId(Long offerId);
 	
-	List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId) throws Exception;
+	List<RequirementOfferHistory> getCrowdSourcingOfferDetailsBySubmissionId(Long submissionId,String locationCode) throws Exception;
 	
 }
