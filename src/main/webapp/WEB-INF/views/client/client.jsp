@@ -129,7 +129,7 @@ window.onload = function () {
 	        <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"  readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        

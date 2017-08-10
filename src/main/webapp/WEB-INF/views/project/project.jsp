@@ -74,19 +74,43 @@ function validateTaskName(){
 	
 	var fileCounter = 0;
 	function addFileUpload(){
+		/* var result = '';
+		result = result + '<div class="pull-left" style="float:left; width:325px; margin-right:15px; margin-bottom:15px; border:1px solid #ddd; padding:5px;">';
+		result = result + '<div style="width:125px; margin-bottom:5px;"><lable class="paddingRight small">Is Confidential ?</label> <input type="checkbox" name="isclient" value="N" class="pull-right" /></div>';
 		
+		result = result + '<div style="margin:0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff;" >';
+		result = result + ' <input id="file" name = "project_files" type="file" class="pull-left" /> <a id="Button' + fileCounter + '"  value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>';
+		result = result + '</div>';
+		
+		result = result + '</div>';
+		fileCounter++;
+		 $("#FileUploadContainer").append(result); */
+		
+// 		$('<div>').attr('style','width:150px; margin:0; padding:0 0 5px 0;').append('<lable class="paddingRight">Is Confidential ?</label>' + '<input type="checkbox" name="isclient" value="N" class="pull-right" />').appendTo($('#FileUploadContainer'));
 		$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file' +  '" name = "project_files' + '" type="file" class="pull-left" />' +
 	            '<a id="Button' + fileCounter + '' +
 	            'value="" onclick = "RemoveFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 
-	    		fileCounter++;
+	    		fileCounter++; 
+	    		
 	}
 	function RemoveFileUpload(div)
 	{
 		 document.getElementById("FileUploadContainer").removeChild(div.parentNode);
 	}
 </script>
-
+<script>
+function isclientChckbox(){
+	if($("#isClinet").val() == "N"){
+		$("#isClinet").val("Y");
+		document.getElementById("selectClient").style.display="block";
+	}else{
+		document.getElementById("selectClient").style.display="none";
+		$("#isClinet").val("N");
+		
+	}
+}
+</script>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -120,15 +144,23 @@ function validateTaskName(){
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-3">Client</label>
+							<label class="col-md-3">Is Client project ?</label>
 							<div class="col-md-9">
-								<select class="form-control select-bg chosen-select"
-									name="selectClient" id="addClientId">
-									<option value=''>-- Select Client --</option>
-									<c:forEach var="option" items="${add_clientList}">
-										<option value="${option.orgLocationId}">${option.orgName}</option>
-									</c:forEach>
-								</select> <span class="hidden">Enter Project Id</span>
+								
+								<div class="row">
+									<div class="col-md-1 mt5 paddingRight">
+										<input type="checkbox" name="isclient" value="N" id="isClinet" onclick="isclientChckbox();">
+									</div>
+									<div class="col-md-11 paddingLeft" id="selectClient" style="display: none;">
+									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId" >
+										<option value=''>-- Select Client --</option>
+										<c:forEach var="option" items="${add_clientList}">
+											<option value="${option.orgLocationId}">${option.orgName}</option>
+										</c:forEach>
+									</select> <span class="hidden">Enter Project Id</span>
+							</div>
+								</div>
+							
 							</div>
 						</div>
 						<div class="form-group">
@@ -392,7 +424,7 @@ function validateTaskName(){
 
 				</div>
 				<!--  div row end -->
-
+<!-- dont remove the code because next implement code Laxman -->
 				<!--  div row start -->
 				<!-- <div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -404,6 +436,8 @@ function validateTaskName(){
 					</div>
 				</div> -->
 
+
+          
 				<div class="row">
 					<%-- <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 

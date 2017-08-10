@@ -445,7 +445,7 @@ function getViewInvoice(){
 						
 						result = result +'	                  <div class="clearfix attachfile_invoice">                                               ';
 						result = result +'	                      <p class="pull-left" title="'+doc.fileName+'">'+doc.fileName+'</p>                                         ';
-						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+doc.id+"\"></a></i>";
+						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+doc.id+"\"></a><a class='fa fa-eye ml10' onclick='viewInvoiceDocView("+doc.id+",\""+doc.fileName+"\");'></a></i>";
 						result = result +'	                  </div>                                                                                  ';
 		    		}
 				}
@@ -590,6 +590,17 @@ function getViewInvoice(){
 }
 
 </script>
+
+
+<script>
+function viewInvoiceDocView(documentId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(documentId != null && documentId != ""){
+		window.open(sourceleadUrl+'/viewInvoiceDocView/'+title+'?documentId='+documentId,title,"height=600,width=600");
+	}  
+}
+</script>
+
 
 <script>
 function invoiceNotesList(){
