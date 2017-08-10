@@ -129,7 +129,7 @@ window.onload = function() {
 		              }else{
 		            	  result = result +"  <td><div>----</div></td>";  
 		              }
-		              result = result +"  <td><div class='tblminwidth-75'>"+candidateUpdateDateToString+"</div></td>";
+		              result = result +"  <td><div class='tblminwidth-125'>"+candidateUpdateDateToString+"</div></td>";
 		              result = result +"</tr>"; 
 	          }
 	          result = result +" </tbody>";

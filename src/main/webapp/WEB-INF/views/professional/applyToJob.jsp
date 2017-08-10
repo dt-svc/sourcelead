@@ -359,9 +359,10 @@ function getOfferDetails(submissionId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var parentRequirement = '${parentRequirement}';
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({  
          type : "POST",
-         url: sourceleadUrl+"/getCrowdSourcingOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getCrowdSourcingOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&locationCode="+locationCode,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
             		

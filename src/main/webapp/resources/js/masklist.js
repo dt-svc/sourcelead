@@ -1,6 +1,5 @@
  function masklist(){
-	 
-     var countryfield = $("#CountryAutocomplete").val();//<--Get Hidden Country Value
+     var countryfield = $("#candidateCountry").val();//<--Get Hidden Country Value
 	 var countryfield = countryfield.replace(/\s/g,'');//<--Replace white spaces
  	 if(countryfield != ''){ //<------Check if hidden value is null | if not null proceed to enable i.p and apply mask pass the country as a variable to the function
  		 applymask(countryfield);//<-- Apply Mask	  
@@ -8,22 +7,24 @@
  	 else{
  		  disableip();//alert("mask disabled No-country Value");
  	 }	  
-	 $('#country').focusout(function(){ //<-- on select country and focus out
-								  var countryfield = $("#CountryAutocomplete").val(); //<-- get hidden value and trim white spaces
+	/* $('#candidateCountry').focusout(function(){ //<-- on select country and focus out
+								  var countryfield = $("#candidateCountry").val(); //<-- get hidden value and trim white spaces
 								  var countryfield = countryfield.replace(/\s/g,'');
 								  if(countryfield != ''){  
+									  alert("22");
 									   enableip();
 									   applymask(countryfield); 								    
 								   } 
 							 	     else{disableip(); 
 							 	   }
-	 });
+	 });*/
 
  }		
  
 function applymask(countryfield){
 		var country=null;
 		country = countryfield;
+		alert("country>>>>>>>>"+country);
 		if(countryfield == 'United States'){
 			country="UnitedStates";
 		}else if(countryfield == 'United Kingdom'){
@@ -32,7 +33,7 @@ function applymask(countryfield){
 		else{
 			country=countryfield;
 		}
-		var Phcode={
+		/*var Phcode={
 				 	Argentina:'+54 (##) ####-####',
 					Australia:'+61 # #### #### ',
 					Brazil:'+55(##)####-####',
@@ -73,7 +74,7 @@ function applymask(countryfield){
 					Turkey:'+90-###-#######',
 					UnitedKingdom:'+44-##-####-####',
 					UnitedStates:'+1-###-###-####'
-		  }
+		  }*/
 		var Pincode={
 			        Argentina:'####',
 					Australia:'####',
@@ -95,7 +96,7 @@ function applymask(countryfield){
 					UnitedKingdom:'aa#a#aa',
 					UnitedStates:'#####'
 		}
-		var Taxcode={
+		/*var Taxcode={
 				    Argentina:'###########',//
 					Australia:'#########',//
 					Brazil:'## ### ###',//
@@ -157,37 +158,40 @@ function applymask(countryfield){
 					Turkey:'+90-###-#######',
 					UnitedKingdom:'+44-##-####-####',
 					UnitedStates:'+1-###-###-####'
-		}
+		}*/
 		
 		var SSNcode={
 				UnitedStates:'####'
 		}
 		
-		var phauth=Phcode[country];
+		alert("2222");
+//		var phauth=Phcode[country];
 		var pinauth=Pincode[country];
-		var mobauth=Mobcode[country];
+		/*var mobauth=Mobcode[country];
 		var taxauth=Taxcode[country];
 		var Homeauth=Homecode[country];
 		var Faxauth=Faxcode[country];
-		var SSNauth=SSNcode[country];
+		var SSNauth=SSNcode[country];*/
 		
+		alert("country"+pinauth);
 		   //
-		$("#mobile").mask(mobauth,{placeholder:"x"});
-		$("#phone").mask(phauth,{placeholder:"x"});
-		$("#zipcode").mask(pinauth,{placeholder:"x"});
-		$("#taxid").mask(taxauth,{placeholder:"x"});
+		/*$("#mobile").mask(mobauth,{placeholder:"x"});
+		$("#phone").mask(phauth,{placeholder:"x"});*/
+		$("#zipcode11").mask(pinauth,{placeholder:"x"});
+		alert("pincode");
+		/*$("#taxid").mask(taxauth,{placeholder:"x"});
 		$("#home").mask(Homeauth,{placeholder:"x"});
 		$("#faxPhone").mask(Faxauth,{placeholder:"x"});
-		$("#conferencePhone").mask(Faxauth,{placeholder:"x"});
-		$(".mobileOffer").mask(Faxauth,{placeholder:"x"});
+		$("#conferencePhone").mask(Faxauth,{placeholder:"x"});*/
+		/*$(".mobileOffer").mask(Faxauth,{placeholder:"x"});
 		 if(SSNauth != null && SSNauth != 'undefined'  && SSNauth != ''){
 			 $("#SSN").mask(SSNauth,{placeholder:"x"});
-		 }
+		 }*/
 							
 							
 }
 						 
-function enableip(){
+/*function enableip(){
   $('#mobile').removeAttr("disabled").css('background-color', '#fff').val('');
   $('#phone').removeAttr("disabled").css('background-color', '#fff').val('');
   $('#zipcode').removeAttr("disabled").css('background-color', '#fff').val('');
@@ -200,7 +204,7 @@ function enableip(){
 	  $('#SSN').removeAttr("disabled").css('background-color', '#fff').val('');
   }
  
-}
+}*/
  /////////////**********************************************///////////////////
  function disableip(){
  $('#zipcode').unmask();

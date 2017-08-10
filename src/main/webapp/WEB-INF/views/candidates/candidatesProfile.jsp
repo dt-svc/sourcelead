@@ -477,10 +477,10 @@ function editCandidate(candidateId){
 							result = result + '		    </div>';
 							result = result + '		  </div>';
 							
-							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
+							zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
 							if(json.designationType == "Other"){
