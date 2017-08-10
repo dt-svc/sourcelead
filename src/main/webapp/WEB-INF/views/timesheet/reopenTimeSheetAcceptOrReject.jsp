@@ -32,6 +32,8 @@
 				$("#accept").removeAttr("style");
 			}else if(type == 'reject'){
 				$("#reject").removeAttr("style");
+			}else if(type == 'actionPerformed'){
+				$("#actionPerformed").removeAttr("style");
 			}
 		});
 </script>
@@ -91,6 +93,15 @@ width: auto;
 							  </div>
 					</form>							  
 		  		</div>
+		  		
+		  		<div id="actionPerformed" style="display:none">
+				          <div class="col-md-8 col-md-offset-2 inner-widget bg-blue">
+					          <i class="fa fa-check-circle fa-3x"></i>
+							  <p class="reason-msg">Action Performed</p>
+							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+						  </div>
+		  		</div>
+		  		
 		 </div>
   </section>
   <!-- Footer Area -->

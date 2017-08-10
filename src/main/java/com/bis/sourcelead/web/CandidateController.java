@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
@@ -502,6 +503,34 @@ public class CandidateController {
 			
 			return model;
 	    }
+	 
+	 
+	 @RequestMapping(value = "/viewInterviewListResumes/{title}", method = RequestMethod.GET)
+	 public void viewInterviewListResumes(@RequestParam(value="resumeUUID", required=false) String resumeUUID,
+	 		@PathVariable(value="title") String title,
+	 		HttpServletResponse response) throws Exception {
+	  
+	 	  CandidateResumes candidateResume = candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
+	 	
+	 	 byte[] pdfBytes = null;
+	 		if("application/pdf".equalsIgnoreCase(candidateResume.getFileContentType())){
+	 			pdfBytes = candidateResume.getDocFile();
+	 		}
+	 		else{
+	 			 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateResume.getDocFile());
+	 		}
+	 		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	 	  	    response.setContentType("application/pdf");
+	 	  	    ServletOutputStream sos = response.getOutputStream();
+	 	  	    if(null != pdfBytes){
+	 	  	    	response.setContentLength(pdfBytes.length);
+	 	  	    	sos.write(pdfBytes);
+	 	  	    }
+	 	          sos.flush();
+	 	          sos.close();
+
+	 } 
+	 
 	 
 	 
 	private boolean isNullOrEmpty(String msg) {

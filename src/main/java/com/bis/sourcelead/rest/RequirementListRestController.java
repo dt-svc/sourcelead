@@ -1378,26 +1378,22 @@ public class RequirementListRestController {
 	
 	/**
 	 * Search Requirement
-	 * 
+	 * R
 	 * @param json
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/searchRequiremet", method = RequestMethod.GET)
-	public @ResponseBody String searchRequirement(@RequestParam(value = "json", required = false) String json, HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/searchRequiremet", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<Requirement> searchRequirement(RequirementSearchDTO requirementSearchDTO,@RequestParam(value = "json", required = false) String json, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		String resultJson = "";
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		List<Requirement> searchRequirementList = requirementService.searchRequirement(orgLocation, jsonObj, org, userRoleName, user);
-		resultJson = commonUtil.toJSON(searchRequirementList);
-		return resultJson;
+		ResponseList<Requirement> resp = requirementService.searchRequirement(orgLocation, requirementSearchDTO, org, userRoleName, user);
+		return resp;
 	}
 	
 	@RequestMapping(value = "/getUniversalRequirementsListByOrgLocationID")

@@ -4,11 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.ibm.icu.math.BigDecimal;
 
 public class ExpensesDTOConverter {
 
@@ -18,6 +18,9 @@ public class ExpensesDTOConverter {
 		expensesDTO.setExpenseId(expenses.getExpenseId());
 		expensesDTO.setPurpose(expenses.getPurpose());
 		expensesDTO.setTotalAmount(expenses.getTotalAmount());
+		BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
+		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		expensesDTO.setTotalAmontRoundOffValue(totalAmountRoundOff);
 		expensesDTO.setClientName(expenses.getClientName());
 		expensesDTO.setProjectName(expenses.getProjectMembers().getProjects().getProjectName());
 		expensesDTO.setProjectMemberId(expenses.getProjectMembers().getId());
