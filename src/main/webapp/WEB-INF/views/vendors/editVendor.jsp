@@ -234,8 +234,10 @@
 				        $("#editVendorDetailsDiv").append(result);
 				        if(json.orgType == 'Company'){
 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite');
+				        	zipcodeMask(country,'existingZipCode');
 				        }else{
-				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');				        	
+				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');	
+				        	zipcodeMask(country,'clientZipCode');
 				        }
 				        
 				        

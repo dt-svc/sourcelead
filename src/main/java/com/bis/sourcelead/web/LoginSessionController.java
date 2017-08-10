@@ -968,7 +968,7 @@ public class LoginSessionController {
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
-		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
 	}

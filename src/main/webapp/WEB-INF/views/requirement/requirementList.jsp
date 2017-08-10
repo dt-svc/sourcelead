@@ -1798,13 +1798,17 @@ function searchRequirement(){
          }; 
      if ($('#requirement_form').validate(false, validationSettings)){  
 			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#requirement_form').serializeFormJSON();
+		/* 	var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
-   		    var formData = new FormData(form); 
+   		    var formData = new FormData(form);  */
 			//It will escape all the special characters
+			var url = sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}";
+			url += "&"+$($('#requirement_form')[0]).serialize();
+			
+			alert(url);
 			$("#search_requiremet").attr("disabled", "disabled");
 			$("#search_requiremet").addClass('button').val('Processing..');
 
@@ -1812,7 +1816,6 @@ function searchRequirement(){
 			$("#search_requiremet").removeAttr("disabled");
 			closePop();
 			clearAlldata();
-			var url = sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}&json="+jsonData;
 			prepareRequirementData(url);
 			/* $.ajax({
 						type : "GET",
@@ -2076,7 +2079,7 @@ function jpagination(url){
         "ajax": $.fn.dataTable.pipeline( {
             url: url,
             method: 'POST',
-            pages: 10
+            pages: 1
         }),
         "columns": [
             { "data": "jobId" },
@@ -2086,7 +2089,7 @@ function jpagination(url){
             { "data": "country"},
             { "data": "totalApplicants" },
             { "data": "manager" },
-            { "data": "postedOnStr"},
+            { "data": "createdDate"},
             { "data": "requirementSubmissionStatus" },
             { "data": "requirementUUID" }
         ],
@@ -2177,6 +2180,7 @@ function jpagination(url){
 		 	{
 		         "targets": colIndex++,
 		         "data": "totalApplicants",
+		     	 "sortable": false,
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
@@ -2198,7 +2202,7 @@ function jpagination(url){
 			 },
 			 {
 			         "targets": colIndex++,
-			         "data": "postedOnStr",
+			         "data": "createdDate",
 			         "render": function (data, type, opt, meta ) {
 		         		   var result = "";
 		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
@@ -2211,6 +2215,7 @@ function jpagination(url){
 			 },
 			 {
 			         "targets": colIndex++,
+			         "sortable": false,
 			         "data": "requirementSubmissionStatus",
 			         "render": function (data, type, opt, meta) {
 			         		    var result = "";
@@ -2340,6 +2345,7 @@ function jpagination(url){
 			 },
 			 {
 			         "targets": colIndex++,
+			         "sortable": false,
 			         "data": "requirementUUID",
 			         "render": function ( data, type, opt, meta ) {
 			         		   var result = "";

@@ -161,7 +161,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }
 	    	   
 	    	   if(json.requirementSubmissionTemplateFields.city != null && json.requirementSubmissionTemplateFields.city != '' && json.requirementSubmissionTemplateFields.city !='undefined'){
-	    		   city =' , ' + json.requirementSubmissionTemplateFields.city; 
+	    		   city = json.requirementSubmissionTemplateFields.city; 
 	    	   }else{
 	    		   city = " ";
 	    	   }
@@ -172,7 +172,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   lastName = "";
 	    	   }
 	    	   if(json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != 'undefined'){
-	    		   country = json.requirementSubmissionTemplateFields.country;
+	    		   country = ' , ' +json.requirementSubmissionTemplateFields.country;
 	    	   }else{
 	    		   country = "";
 	    	   }
@@ -253,7 +253,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
-		       result = result +country +''+ state +''+ city
+		       result = result +city +''+ state +''+ country
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+expectedRatePer+'/'+expectedRateType+'</li>';
@@ -1216,7 +1216,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1264,6 +1264,14 @@ function getOfferDetails(submissionId){
 
 </script>
 
+<script>
+function viewOfferDocument(offerId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(offerId != null && offerId != ""){
+		window.open(sourceleadUrl+'/viewOfferDocument/'+title+'?offerId='+offerId,title,"height=600,width=600");
+	}  
+}
+</script>
 
 
 <%-- 

@@ -449,7 +449,7 @@ public class Constants {
 	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
-			"Status"};
+			"Status", "Posted On"};
 	public static final String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS = { "Name", "Email", "PhoneNumber",
 			"Resume", "Applied On", "Rate", "Source", "Score", "Experience", "Status",
 			"Submitted On", "Submitted By" };

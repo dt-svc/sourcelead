@@ -319,6 +319,11 @@
 				+ ' <option id="workRelated" valeu="Work Related">Work Related</option>';
 		result = result
 				+ '<option  id="familyRelated" value="Family Related">Family Related</option>';
+		result = result
+				+ '<option  id="friend" value="Friend">Friend</option>';
+		result = result
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
+				
 		result = result + ' </select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -662,7 +667,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -684,6 +689,17 @@
 												+ (json.relation == "Family Related" ? "selected"
 														: '')
 												+ '>Family Related</option>';
+									   result = result
+												+ '<option  '
+												+ (json.relation == "Friend" ? "selected"
+														: '')
+												+ '>Friend</option>';
+												
+										result = result
+												+ '<option  '
+												+ (json.relation == "Neighbour" ? "selected"
+														: '')
+												+ '>Neighbour</option>';		
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';

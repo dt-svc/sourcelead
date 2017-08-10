@@ -1352,7 +1352,7 @@ public class InvoiceRestController {
 			File file= null;
 			String convertedExportStartDate = conversionUtil.getDateAsString(startDateUTC);
 			String convertedExportEndDate = conversionUtil.getDateAsString(endDateUTC);
-			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType);
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType,orgLocations);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -1936,6 +1936,27 @@ public class InvoiceRestController {
 	public  List<ExpensesEntriesDTO> getExpensesEntries(@RequestParam(value = "expensesId", required = false) Long expenseId)throws Exception {
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = expensesService.getApprovedExpenses(expenseId);
 		return expensesEntriesDTOList;
+	}
+	
+	/**
+	 * To get peoject assigned vendor members
+	 * @param projectId
+	 * @param orgRelationId
+	 * @param userId
+	 * @param orgLocationId
+	 * @return List<ProjectMembers>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getVendorAssignedMembersForProjects", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(
+			@RequestParam(value = "projectId", required = false) Long projectId,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+
+		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId,orgLocationId,orgRelationId);
+		return associatesList;
 	}
 	
 }

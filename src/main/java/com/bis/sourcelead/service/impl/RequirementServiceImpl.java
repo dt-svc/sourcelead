@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +31,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +52,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.dto.RequirementSearchDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -80,6 +85,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -193,7 +199,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
@@ -2625,6 +2632,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 			 writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString()); 
  		}
+		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
+			 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate())); 
+		}
 		return createExcelsheet;
 	}
 
@@ -3055,14 +3065,28 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 */
 	@Override
+	public ResponseList<Requirement> searchRequirement(OrgLocations orgLocation, RequirementSearchDTO search,Org org,String userRole,User user) throws Exception {
 
-	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org,String userRole,User user) throws Exception {
+		ResponseList<Requirement> resp= new ResponseList<>();
+		/*
+		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
+		 */
+		String[] tableColumns = {"", "jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
+		
+		int sortColumnIndex = 8; //by default sorting using updated date
+		boolean sortColumnOrder = false; //by default descending order
+		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
+			sortColumnOrder = !search.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+		}
+		
 		
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-		 
-		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
+		
+		BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 	   	 //Exclude Keyword
 //		 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
 //			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -3122,28 +3146,28 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			
 			
 			//Requirement Title
-			if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
+			if(StringUtils.isNotEmpty(search.getRequirementTitle())){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", search.getRequirementTitle()));
 		    }
 			// jobId
-			if(jsonObj.has("jobId") && !"".equalsIgnoreCase(jsonObj.getString("jobId"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", jsonObj.getString("jobId")));
+			if(StringUtils.isNotEmpty(search.getJobId())){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", search.getJobId()));
 		    }
-		 //Country
-			if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
+		   //Country
+			if(StringUtils.isNotEmpty(search.getCountry())){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("country", search.getCountry()));
 		    }
 			 //State
-			if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
+			if(StringUtils.isNotEmpty(search.getState())){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("state", search.getState()));
 		    }
 			//City
-			if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
+			if(StringUtils.isNotEmpty(search.getCity())){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("city", search.getCity()));
 		    }
 			
-			if(jsonObj.has("noticePeriod") && !"".equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
-				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
+			if(StringUtils.isNotEmpty(search.getNoticePeriod())){
+				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(search.getNoticePeriod(), "noticePeriod");
 				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
 					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
 					for(String keywd : noticePeriodArray){
@@ -3203,12 +3227,20 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 //		    }
 			
 		    //requirementStatu
-			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", jsonObj.getString("requirementStatus")));
-		    }
+			if(StringUtils.isNotEmpty(search.getRequirementStatus())){
+				ArrayList<String> requirementStatusArray = getSearchKeywordsFromChosenSelectField(search.getRequirementStatus(), "requirementStatus");
+				if(requirementStatusArray != null && !requirementStatusArray.isEmpty()){
+					BoolQueryBuilder reqStatusBoolQueryBuilder = new BoolQueryBuilder();
+					for(String keywd : requirementStatusArray){
+						reqStatusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+					}
+					boolQueryBuilder.must(reqStatusBoolQueryBuilder);
+				} 
+			}
 			
-			if(jsonObj.has("updatedOn") && !"".equalsIgnoreCase(jsonObj.getString("updatedOn"))){
-				String updatedOn =  jsonObj.getString("updatedOn");
+			
+			if(StringUtils.isNotEmpty(search.getUpdatedOn())){
+				String updatedOn = search.getUpdatedOn();
 				String upOn = UpdateOnToDate(updatedOn);
 				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
 				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
@@ -3228,8 +3260,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 //			}
 			
 			//client
-			if(jsonObj.has("client") && !"".equalsIgnoreCase(jsonObj.getString("client"))){
-				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "client");
+			if(StringUtils.isNotEmpty(search.getClient())){
+				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(search.getClient(), "client");
 				if(employerArray != null && !employerArray.isEmpty()){
 					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
 					for(String keywd : employerArray){
@@ -3250,8 +3282,12 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 //				} 	
 //			}
 			
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-			List<Requirement>   reqList = new ArrayList<>();
+			SearchResponse searchResponse = sourceleadELKBaseIndexer
+					.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
+							search.getStart(), search.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+			SearchHit searchHits[] = searchResponse.getHits().getHits();
+			//boolQueryBuilderForCount
+			List<Requirement>   reqList = new LinkedList<>();
 			if(searchHits != null && searchHits.length >0){
 				for (SearchHit hit : searchHits) {
 					String sourceAsString = hit.getSourceAsString();
@@ -3300,7 +3336,15 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		            }
 				}
 			}
-		return reqList;
+		 resp.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+		 SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+				.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,
+						0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
+		
+		 resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+	     resp.setData(reqList);
+
+      return resp;
 		
 	}
 	 private Requirement getData(RequirementIndex requirementIndex, User user) throws Exception {
@@ -3314,12 +3358,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	
      	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
      	Date elkDate = elkFormat.parse(convertedStirng);
-     	
-     	/*String convertedStirngArray[]  = convertedStirng.split("-");
-     	StringBuilder dateString = new StringBuilder();
-     	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
-     	*/
-     	
      	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
@@ -3331,6 +3369,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	if(requirementIndex.getMaxExperience() !=null){
      		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
      	}
+     	requirement.setPostedOnStr(LoginSessionController.DATEFORMAT.format(elkDate));
      	requirement.setClientName(requirementIndex.getClient());
      	requirement.setCountry(requirementIndex.getCountry());
      	requirement.setState(requirementIndex.getState());
@@ -3341,23 +3380,18 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
      	}
      	requirement.setManager(requirementIndex.getManager());
-     	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+     	if(StringUtils.isNotEmpty(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}
      	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
 		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 
-       if(null != requirementIndex.getReleasedBy() && !"".equalsIgnoreCase(requirementIndex.getReleasedBy())){
+       if(StringUtils.isNotEmpty(requirementIndex.getReleasedBy())){
 			List<Long> userId = new ArrayList<Long>();
 			for (String s : requirementIndex.getReleasedBy().split(",")){
 				userId.add(Long.parseLong(s));
 			 }
-			boolean flag = userId.contains(user.getId());
-     		if(flag == true){
-     			requirement.setIsRequirementReleasedByuser("Y");
-     		}else{
-     			requirement.setIsRequirementReleasedByuser("N");
-     		}
+     		requirement.setRequirementReleasedUserIds(userId);
 		}
        if(null != requirementIndex.getRequirementUUID()){
    		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
@@ -3374,26 +3408,17 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return str.substring(0, str.length()-1);
 	}
 
-	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
+	private ArrayList<String> getSearchKeywordsFromChosenSelectField(String paramValue,String param) throws Exception {
 		 ArrayList<String> keyWordList = null;
-		 if(jsonObj.has(param)){
-			 String searchKeywordString = null;
-			 try{
-	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
-	   		   searchKeywordString = jsonArray.toString();
-		   	  }
-		   	  catch(JSONException e){
-		   		  searchKeywordString= jsonObj.getString(param);
-		   	  }
-			 
-		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
-		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
+		 if(StringUtils.isNotEmpty(paramValue)){
+			 keyWordList = new ArrayList<String>(Arrays.asList(paramValue.split(",")));
 		 }
 		 else{
-			 keyWordList = new ArrayList<String>();
+			 keyWordList = new ArrayList<String>(); 
 		 }
-         return keyWordList;
-     }
+		
+        return keyWordList;
+    }
 	 
 	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
 		 ArrayList<String> keyWordList = null;

@@ -151,7 +151,7 @@ window.onload = function () {
 							<label class="col-md-3">ZipCode1</label>
 							<div class="col-md-9">
 								<input class="form-control" id="clientZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text"></input>
+									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 							</div>
 						</div>
 
@@ -159,7 +159,7 @@ window.onload = function () {
 							<label class="col-md-3">ZipCode2</label>
 							<div class="col-md-9">
 								<input class="form-control" id="orgZipCode" name="orgZipcode"
-									placeholder="Enter your Zip code" type="text" readonly></input>
+									placeholder="Enter your Zip code" type="text" readonly ></input>
 							</div>
 						</div>
 
