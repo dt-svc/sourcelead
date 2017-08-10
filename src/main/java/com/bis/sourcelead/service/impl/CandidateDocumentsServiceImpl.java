@@ -95,7 +95,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					if (multiFile != null) {
 						candidateDocuments.setDocFile(multiFile.getBytes());
 						if(multiFile.getOriginalFilename() != null && multiFile.getOriginalFilename() != "" && !multiFile.getOriginalFilename().equalsIgnoreCase(candidateDocuments.getFileName())){
-							activitySummary.append("File Name").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+							activitySummary.append("Document").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
 						candidateDocuments.setFileName(multiFile.getOriginalFilename());
 						candidateDocuments.setFileContentType(multiFile.getContentType());
@@ -161,7 +161,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 				if (multiFile != null) {
 					candidateDocuments.setDocFile(multiFile.getBytes());
 					if(multiFile.getOriginalFilename() != null && multiFile.getOriginalFilename() != ""){
-						activitySummary.append("File Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+						activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(multiFile.getOriginalFilename()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
 					candidateDocuments.setFileName(multiFile.getOriginalFilename());
 					candidateDocuments.setFileContentType(multiFile.getContentType());

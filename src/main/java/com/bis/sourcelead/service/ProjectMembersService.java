@@ -94,5 +94,7 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId)throws Exception;
 
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId)throws Exception;
+
 	
 }

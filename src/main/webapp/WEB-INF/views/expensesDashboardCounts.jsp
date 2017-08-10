@@ -10,7 +10,7 @@ $(document).ready(function(){
 		expensesCount("myExpenses");
 });
 </script>
-
+<sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix">Expenses &nbsp;&nbsp;</h4>
@@ -68,7 +68,7 @@ $(document).ready(function(){
           </div>
         </div>
       </div>
-      
+    </sec:authorize>
 <script type="text/javascript">
 function expensesCount(expenseType){
     var sourceleadUrl ='${sourceleadUrl}';

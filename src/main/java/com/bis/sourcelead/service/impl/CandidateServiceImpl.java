@@ -1492,6 +1492,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				//photo Details - 5 %
 				 if(can.getDocFile()!=null){
 					 percentage = percentage + 5; 
+				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getDocFile() != null){
+					 percentage = percentage + 5; 
 				 }
 
 				//document Details - 10 %
