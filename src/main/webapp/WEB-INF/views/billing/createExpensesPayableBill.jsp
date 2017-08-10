@@ -493,7 +493,6 @@ function populateInlineItemsGrid(data){
 function addConversionDiv(){
 	var result = "";
 	var vendorCurrency = $("#vendorCurrency").val();
-	alert(vendorCurrency);
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	if(vendorCurrency != currencyCode){
 		result = result +'<div class="row">';
@@ -503,8 +502,11 @@ function addConversionDiv(){
 		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 		result = result +'</div>';
 		result = result +'</div>';
+		 document.getElementById("conversionId").style.display="block";
 		$("#conversionId").empty();
 		$("#conversionId").append(result);
+	}else{
+		 document.getElementById("conversionId").style.display="none";
 	}
 }
 </script>
@@ -1559,9 +1561,6 @@ function getVendorContacts(vendorContactId){
 		$('#vendorContact').trigger("chosen:updated");
 	},
 	});
-	/* document.getElementById("bottomGrid").style.display="none";
-	document.getElementById("lineItemAddRows").style.display="none";
-	document.getElementById("tableBody").style.display="none"; */
 	getProjectsList();
 	}
 </script>

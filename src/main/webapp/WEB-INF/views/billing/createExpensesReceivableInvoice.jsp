@@ -1583,7 +1583,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 			$('#'+maxRowNum+'total').val(opt.amount);
 			
 	 }
-
+	 addConversionDiv();
 	
 }
 </script>
