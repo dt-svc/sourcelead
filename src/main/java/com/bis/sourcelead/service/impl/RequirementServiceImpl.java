@@ -80,6 +80,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -193,7 +194,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
@@ -3322,8 +3324,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	StringBuilder dateString = new StringBuilder();
      	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
      	*/
-     	
-     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
+     	OrgLocations orglo = orgLocationService.getOrgLocations(requirementIndex.getOrgLocationId());
+     	requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
