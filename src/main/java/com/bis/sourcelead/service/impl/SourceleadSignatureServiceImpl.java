@@ -293,7 +293,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 	    		 }
 	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrgLocationName()+"</span></span>"+endem+"</p>");	    	 }
 	    	 
-	    	 if(signature.getLabelName().equalsIgnoreCase("Address") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getOrgAddress())){
+	    	 if(signature.getLabelName().equalsIgnoreCase("Address") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrgLocationAddress())){
 	    		 
 	    		 String fontWeight = "";
 	    		 String underline = "";
@@ -315,7 +315,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 		    			 }
 		    		 }
 	    		 }
-	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrg().getOrgAddress()+"</span></span>"+endem+"</p>");
+	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+orgLocations.getOrgLocationAddress()+"</span></span>"+endem+"</p>");
 	    	 }
 	     
 	    	 
@@ -397,12 +397,12 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 			    			 }
 			    		 }
 		    		 }
-		    		 signatureHTML.append("<p style='margin:0'><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" font-size: "+signature.getFontSize()+";'>Email:</span> "+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+user.getEmail()+"</span></span>"+endem+" | ");	    		
+		    		 signatureHTML.append("<p style='margin:0'><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" font-size: "+signature.getFontSize()+";'>Email:</span> "+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+user.getEmail()+"</span></span>"+endem+"");	    		
 	    		
 	    	 }
 
 
-	   if(signature.getLabelName().equalsIgnoreCase("Website") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getWebSite())){
+	   if(signature.getLabelName().equalsIgnoreCase("Website") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getWebsite())){
 		 
 		 
 		 String fontWeight = "";
@@ -425,7 +425,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 	   			 }
 	   		 }
 			 }
-			 signatureHTML.append("<span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" font-size: "+signature.getFontSize()+";'>Website:<span> "+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>www."+orgLocations.getOrg().getWebSite()+"</span></span>"+endem+"<p>");	    		
+			 signatureHTML.append(" | <span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" font-size: "+signature.getFontSize()+";'>Website:<span> "+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>www."+orgLocations.getWebsite()+"</span></span>"+endem+"<p>");	    		
 		
 			}
 		    	 

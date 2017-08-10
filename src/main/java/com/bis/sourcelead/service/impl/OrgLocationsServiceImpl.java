@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.json.JSONException;
@@ -92,6 +94,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		orgLocations.setDateFormat(orgSettings.getDateFormat1());
 	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
+        orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
       
         
@@ -99,6 +102,25 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
+	}
+	
+	
+	private String convertWebsite(String website){
+		if(!website.startsWith("http") && !website.startsWith("https")){
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+	    return host;
 	}
 	
 	/**
