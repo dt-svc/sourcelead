@@ -100,11 +100,11 @@ function certificationSubmissionDetailsList(candidateId){
 				            		candidatevalidToDateToString = "----";
 				            	}
 	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span>'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+opt.provider+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title="'+opt.provider+'">'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+description+'</span></div></td>';
+	                    	 result  = result + '           <td><div><span title="'+description+'">'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
 	                     result  = result + '         </tr>';
