@@ -58,9 +58,6 @@ public class InvoiceController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
    
-    @Autowired
-	private ProjectsService projectsService;
-	
 	@Autowired
 	private InvoiceService invoiceService;
 	 
