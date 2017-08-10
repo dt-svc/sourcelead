@@ -485,7 +485,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_EMAIL);
-            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+//            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
             // covert subject,body and signature
@@ -494,8 +494,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = sourceleadUrl;
             
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
-            notificationScenario.setSubject(notificationbody);
+//            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
+//            notificationScenario.setSubject(notificationbody);
 
 
             // construct HTML template using required data
@@ -512,9 +512,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		} catch (UnsupportedEncodingException e) {
     			logger.error(ExceptionUtils.getFullStackTrace(e));
     		}
-            String actionLink="";
-            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
+//            String actionLink="";
+//            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
+//			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
             
             
     }
