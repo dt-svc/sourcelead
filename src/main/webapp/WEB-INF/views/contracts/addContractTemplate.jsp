@@ -70,8 +70,7 @@
 										${contractsTemplate.templateType  == 'I-9 Form' ? 'selected' : ''}>I-9
 										Form</option>
 									<option
-										${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full
-										Time Offer</option>
+										${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full Time Offer</option>
 
 									
 								</select>
@@ -99,7 +98,7 @@
 				<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9">
-							<textarea id="txtEditor" name="templateContent"
+							<textarea id="txtEditor" name="templateContent" field-name="Template Content"
 								data-validation="required" class="form-control newContrtextarea">${contractsTemplate.templateContent}</textarea>
 							
 						</div>

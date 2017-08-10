@@ -8,7 +8,7 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum">Home &raquo; Applicant List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Applicant List</div>
     </section>
     
     <!-- Project -->

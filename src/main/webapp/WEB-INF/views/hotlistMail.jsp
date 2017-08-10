@@ -783,7 +783,7 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 10, 15, -1], [10, 10, 15, "All"]],
+    	"lengthMenu": [[10, 10, 15, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],
