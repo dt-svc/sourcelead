@@ -127,7 +127,7 @@
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
 								</li>
-								<div class="clearfix"></div>
+								<div class="clearfix">
 								<div id='attachmentSection' class='col-md-4 noPad mt10'>
 				                   <div class="uploadFile timesheet_week_comm">
 				                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
@@ -145,6 +145,7 @@
 					                         </strong>
 					                       </c:forEach>
 					                 </div> 
+					             </div>
 					             </div>
 					             </div>   				
 								<div class="clearfix"></div>
