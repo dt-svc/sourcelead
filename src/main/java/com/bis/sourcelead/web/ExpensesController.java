@@ -36,6 +36,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.math.BigDecimal;
 
 @Controller
 public class ExpensesController {
@@ -207,6 +208,9 @@ public class ExpensesController {
 				expenses.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));
 			}
 			
+			BigDecimal totalAmo = new BigDecimal(expenses.getTotalAmount());
+			BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+			expenses.setTotalAmountRoundoffValue(totalAmountRoundOff);
 			if(expenses.getCreatedBy()!= null){
 				User createduser = userService.getUserByUserCode(expenses.getCreatedBy());
 				StringBuilder createdName = new StringBuilder();
