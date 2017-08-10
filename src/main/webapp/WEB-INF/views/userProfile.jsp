@@ -14,7 +14,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <script src="resources/js/formvalidator.js"></script>
-    
+    <script type="text/javascript">
+		window.onload = function () {
+			initLocationAuto('userLocation','','','','','','');
+		 };
+	</script>
 <script>
 	function predefineProfileImage(imageId){
 		$(imageId).attr('src','resources/images/userprofile-img.png');
@@ -161,7 +165,9 @@ function resetProfile(){
 						  <div class="form-group" id="loactionDiv">
 							<label class="col-md-4">Location</label>
 							<div class="col-md-8">
-							  <textarea rows="1" name="location" field-name="Location" class="form-control" data-validation-optional="true" data-validation="validate_length length2-500" />${SourceLeadWeb_user.location}</textarea>
+							  <%-- <textarea rows="1" name="location" field-name="Location"  id="userLocation" class="form-control"  />${SourceLeadWeb_user.location}</textarea> --%>
+							  <input type="text" value="${SourceLeadWeb_user.location}" class="form-control" name="location" field-name="Location"  id="userLocation" />
+							  <i class="fa fa-refresh btn btn-primary refresh-icon mr" title="Refresh" onclick="refreshLocation();"></i>
 							</div>
 						</div>
 					</div>
@@ -574,5 +580,13 @@ var validationSettings = {
    };
 })(jQuery);
 </script>
+
+
+<script>
+function refreshLocation(){
+	$("#userLocation").val('');
+}
+</script>
+
 
 </html>

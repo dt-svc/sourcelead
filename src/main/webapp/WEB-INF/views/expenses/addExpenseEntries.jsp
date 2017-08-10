@@ -445,7 +445,8 @@ function addExpenseRow(){
 			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
 			var paymentMode = $("#paymentMode"+entityId).val();
 			var expenseRateType = $("#expenseRateType"+entityId).val();
-			var expenseAmount = $("#expenseAmount"+entityId).val();
+			var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
+			
 			var descriptions = $("#entryDes"+entityId).val();
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);

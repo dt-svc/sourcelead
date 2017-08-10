@@ -229,12 +229,12 @@ $.ajax({
 
 	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
 
-	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount+'">';
+	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
 	'</sec:authorize>';
-	
-	result = result+ data.expenseId.totalAmount;
+	 var  numb = data.expenseId.totalAmount.toFixed(2);
+	result = result+numb;
 	
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'</a>';
