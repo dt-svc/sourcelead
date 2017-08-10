@@ -49,11 +49,16 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDate(Long projectMembersId,Date startDate, Date endDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
-		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
-		
-		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId and expenses.endDate  BETWEEN :startDate and :endDate";
-		List<Expenses> expenses =session.createQuery(query).setLong("projectMembersId", projectMembersId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setCacheable(true).list();
+		List<Expenses> expenses = null;
+		if(startDate !=null && endDate !=null){
+			java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+			java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+			String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId and expenses.endDate  BETWEEN :startDate and :endDate";
+			expenses =session.createQuery(query).setLong("projectMembersId", projectMembersId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setCacheable(true).list();
+		}else{
+			String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId";
+			expenses =session.createQuery(query).setLong("projectMembersId", projectMembersId).list();
+		}
 		return expenses;
 	}
 
@@ -62,7 +67,7 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ExpensesApproverHierarchy> getExpensesTotalMontWiseCountBasedOnprojectMemberIdStartDateAndEndDate(Date startDate, Date endDate,Long proMembersId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "ExpensesApproverHierarchy expensesHierarchy left join fetch expensesHierarchy.expenseId expenses left join fetch expenses.projectMembers proMembers where proMembers.id =:projectMembersId and expenses.startDate  >= :startDate and :endtDate <= expenses.endDate";
+		String query = "ExpensesApproverHierarchy expensesHierarchy left join fetch expensesHierarchy.expenseId expenses left join fetch expenses.projectMembers proMembers where proMembers.id =:projectMembersId and expenses.startDate  >= :startDate and :endDate <= expenses.endDate";
 		List<ExpensesApproverHierarchy> expensesApproverHierarchy =session.createQuery(query).setLong("projectMembersId", proMembersId).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 		return expensesApproverHierarchy;
 	}
