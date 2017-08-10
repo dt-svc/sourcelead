@@ -41,6 +41,10 @@ public class ProjectApproverHierarchy implements Serializable{
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
+	
+    @ManyToOne
+    @JoinColumn(name = "PROJECT_CLIENTS_ID")
+    private ProjectClients projectClientsId;
  	
     @Column(name = "LEVEL")
     private Integer level;
@@ -92,6 +96,14 @@ public class ProjectApproverHierarchy implements Serializable{
 		this.approverUserId = approverUserId;
 	}
 
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
 
 	public Integer getLevel() {
 		return level;

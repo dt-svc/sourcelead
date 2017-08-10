@@ -49,10 +49,14 @@ public class ProjectMembers implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
+
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	private Candidate projectMemberCandidteId;
 
 	/*
 	 * @Column(name = "TIMESHEET_FREQUENCY") private String timesheetFrequency;
@@ -474,6 +478,8 @@ public class ProjectMembers implements Serializable {
 	public void setEmployee(Employees employee) {
 		this.employee = employee;
 	}
+	
+	
 
 	/*
 	 * public String getTimesheetFrequency() { return timesheetFrequency; }
@@ -481,6 +487,14 @@ public class ProjectMembers implements Serializable {
 	 * public void setTimesheetFrequency(String timesheetFrequency) {
 	 * this.timesheetFrequency = timesheetFrequency; }
 	 */
+
+	public Candidate getProjectMemberCandidteId() {
+		return projectMemberCandidteId;
+	}
+
+	public void setProjectMemberCandidteId(Candidate projectMemberCandidteId) {
+		this.projectMemberCandidteId = projectMemberCandidteId;
+	}
 
 	public String getRole() {
 		return role;
