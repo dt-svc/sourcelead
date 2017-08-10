@@ -40,12 +40,13 @@ window.onload = function() {
 		var userId ='${SourceLeadWeb_user.id}'; 
 		var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
 		var timezoneId = "";
+		var locationCode ='${SourceLeadWeb_locationCode}'; 
 		if(timezone != null && timezone != '' && timezone != 'undefined'){
 			timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
 		}
 		$.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/getRecruiterSubmittiedInterviews?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&userId="+userId+"&timezoneId="+timezoneId,
+	        url: sourceleadUrl+"/getRecruiterSubmittiedInterviews?${_csrf.parameterName}=${_csrf.token}&dateRange="+date+"&userId="+userId+"&timezoneId="+timezoneId+"&locationCode="+locationCode,
 	        success: function(json) {
 	        	 var result = "";
 				     result = result + '    <div class="eventHeader">                                                      ';

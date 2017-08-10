@@ -122,7 +122,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 		
 		RequirementOffers requirementOffers = null;
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (long c = 1; c < maxCount; c++) {
 				if(jsonObj.has(c+"applicantId")){
 						
@@ -146,7 +146,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								requirementOffers.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"joiningDate") && jsonObj.getString(c+"joiningDate") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"joiningDate"))){
-									requirementOffers.setDateOfJoining(simpleDateFormat.parse(jsonObj.getString(c+"joiningDate")));
+									requirementOffers.setDateOfJoining(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(c+"joiningDate")));
 								}
 								
 								if(jsonObj.has(c+"PaymentType") && !jsonObj.getString(c+"PaymentType").isEmpty()){
@@ -397,7 +397,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             StringBuilder attachmentBuilder=new StringBuilder();
             emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-            SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+            //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
             
@@ -453,7 +453,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
                             
             if (requirementOffers.getDateOfJoining() != null) {
-                    requirementOffers.setDateOfJoiningStr(simpleDateFormat.format((requirementOffers.getDateOfJoining())));
+                    requirementOffers.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),(requirementOffers.getDateOfJoining())));
                     globalVarsMap.put("dateofJoin",requirementOffers.getDateOfJoiningStr());
             } else {
                     globalVarsMap.put("dateofJoin", "--");
@@ -485,7 +485,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_EMAIL);
-            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+//            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
             // covert subject,body and signature
@@ -494,8 +494,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = sourceleadUrl;
             
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
-            notificationScenario.setSubject(notificationbody);
+//            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
+//            notificationScenario.setSubject(notificationbody);
 
 
             // construct HTML template using required data
@@ -512,9 +512,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		} catch (UnsupportedEncodingException e) {
     			logger.error(ExceptionUtils.getFullStackTrace(e));
     		}
-            String actionLink="";
-            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
+//            String actionLink="";
+//            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
+//			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
             
             
     }
@@ -530,7 +530,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 */
 		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(touser.getFirstName());
 		emailMessage.setLastName(touser.getLastName());
@@ -557,7 +557,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 			}
 			if(null != requirementOffers.getDateOfJoining() ){
-			requirementOffers.setDateOfJoiningStr(simpleDateFormat.format((requirementOffers.getDateOfJoining())));	
+			requirementOffers.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),(requirementOffers.getDateOfJoining())));	
 			globalVarsMap.put("JoinDate", requirementOffers.getDateOfJoiningStr());
 			}
 			else{
@@ -614,7 +614,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		 */
 		User touser = userService.getUserByUserCode(requirementOffers.getCreatedBy());
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-		SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(touser.getFirstName());
 		emailMessage.setLastName(touser.getLastName());
@@ -642,7 +642,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 		}
 		if(null != requirementOffers.getDateOfJoining() ){
-		requirementOffers.setDateOfJoiningStr(simpleDateFormat.format((requirementOffers.getDateOfJoining())));	
+		requirementOffers.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),(requirementOffers.getDateOfJoining())));	
 		globalVarsMap.put("joinDate", requirementOffers.getDateOfJoiningStr());
 		}
 		else{
@@ -928,7 +928,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
 	{
 		JSONObject jsonObj = new JSONObject(); 
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+	//	SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		RequirementSubmissionTemplateFields candidate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
 		if(null != candidate){
 		jsonObj.put("contractType", "Vendor SOW");
@@ -960,7 +960,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		
 		//Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
-		String currentTimeStr = simpleDateFormat.format(requirementOffers.getDateOfJoining());  
+		String currentTimeStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementOffers.getDateOfJoining());  
 		
 		jsonObj.put("startDate", currentTimeStr);
 		}
@@ -1157,7 +1157,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	public List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId) throws Exception
 	{
 		OrgLocations orglocation = orgLocationService.getOrgLocations(locationId);
-		SimpleDateFormat simpleDateFormat = orglocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat simpleDateFormat = orglocation.getLocFullFormDateFormatter();
 		Timezone timezone = null;
 		if (null != orglocation.getTimezone()) {
 			timezone = timeZoneService.getTimezone(orglocation.getTimezone().getId());
@@ -1194,7 +1194,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					currentDateInTimezone = simpleDateFormat.format(converteDate);
+					currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orglocation.getDateFormat(),converteDate);
 					offer.setDateOfJoiningStr(currentDateInTimezone);
 					SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
 					String time = localDateFormat.format(converteDate);

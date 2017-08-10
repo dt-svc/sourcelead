@@ -10,11 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -38,9 +41,11 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -88,14 +93,22 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 private EmployeesService employeesService;
 	 
 	 @Autowired
+	 OrgLocationService orgLocationService;
+	 
+	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 ConversionUtil conversionUtil;
 	 
 	 @Autowired
 	 private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
-	 
 	 @Autowired
 	 private ExpensesReportService expensesReportService;
+	 
+	 @Autowired
+	 CandidateService candidateService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -202,14 +215,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		for (ProjectMembers projectMembers : allProjectsList) {
 			projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+			 OrgLocations orglo = orgLocationService.getOrgLocations( projectMembers.getProjects().getOrgLocationsId().getId());	
 			 if(pmh == null){
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 projectMembers.setStartDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectAssignedDate()));
+				 projectMembers.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectAssignedDate()));
              }
         	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-        		 projectMembers.setEndDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectTerminationDate()));
+        		 projectMembers.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectTerminationDate()));
         	 }
         	 
         	 /*projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -217,7 +231,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
 			}*/
 			if (projectMembers.getProjects().getEndDate() != null) {
-				projectMembers.setProjectEndDateStr(LoginSessionController.DATEFORMAT.format(projectMembers.getProjects().getEndDate()));
+				projectMembers.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMembers.getProjects().getEndDate()));
 			}
 	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
@@ -302,15 +316,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			 	pm.setEmployee(emp);
 				pm.setProjects(projects);
 				/*String pattern = "dd-MM-yyyy";
-	            SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-				SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
+	            SimpleDateFormat format = new SimpleDateFormat(pattern);
+				SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();*/
 	            HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
 				
 				ProjectMembersHistory pmh = new ProjectMembersHistory();
 				pmh.setProjectMemberId(pm);
 				pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 	            if(StringUtils.isNotEmpty(startDate)){
-	            	 Date currentStartDate = format.parse(startDate);
+	            	 Date currentStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
 	            	 pmh.setProjectAssignedDate(currentStartDate);
 	            }
 	            else{
@@ -318,7 +332,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	            }
 	            if(StringUtils.isNotEmpty(endDate)){
 	            	if(endDate != null && !"--".equalsIgnoreCase(endDate)){
-	            		Date currentEndDate = format.parse(endDate);
+	            		Date currentEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
 	            		pmh.setProjectTerminationDate(currentEndDate);
 	            	}
 	            	
@@ -363,10 +377,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		 
 		HashSet<ProjectMembers> projectMemberList = new HashSet<ProjectMembers>();
 		String teamMembersList = "";
-		
+		OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+		//SimpleDateFormat simpleDateFormat=locations.getLocFullFormDateFormatter();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+//		String pattern = "dd-MM-yyyy";
+//        SimpleDateFormat format = new SimpleDateFormat(pattern);
 		if (jsonObj.has("employeeMaxCount")){
 			String employeeMaxCount = jsonObj.getString("employeeMaxCount");
 			if(!jsonObj.getString("employeeMaxCount").isEmpty()){
@@ -385,23 +400,23 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								pmh.setProjectMemberId(pm);
 								pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 					            if(StringUtils.isNotEmpty(jsonObj.getString("employeestartDate"+c))){
-					            	 Date currentStartDate = format.parse(jsonObj.getString("employeestartDate"+c));
+					            	 Date currentStartDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("employeestartDate"+c));
 					            	 pmh.setProjectAssignedDate(currentStartDate);
 					            }else{
 					            	
 					            	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-					            		Date startDate = format.parse(jsonObj.getString("StartDate"));
+					            		Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("StartDate"));
 					            		pmh.setProjectAssignedDate(startDate);
 					            	}
 					            }
 					            
 					            if(StringUtils.isNotEmpty(jsonObj.getString("employeeendDate"+c))){
-					            	Date currentEndDate = format.parse(jsonObj.getString("employeeendDate"+c));
+					            	Date currentEndDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("employeeendDate"+c));
 					            	pmh.setProjectTerminationDate(currentEndDate);
 					            }
 					            else{
 					            	 if(!jsonObj.getString("EndDate").isEmpty()){
-						            		Date endDate = format.parse(jsonObj.getString("EndDate"));
+						            		Date endDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),jsonObj.getString("EndDate"));
 						            		pmh.setProjectTerminationDate(endDate);
 						             }
 						    	}
@@ -668,7 +683,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,locationsId,projectId);
 	}
-
+	
 	@Override
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception
 	{
@@ -685,19 +700,30 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
 	{
 		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
+		Float finalExpenseAmount = 0f;
+		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
 		for (ProjectMembers projectMember : projectMembersList) {
 			try {
 				ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(projectMember.getId());
 				projectMember.setProjectName(projectMember.getProjects().getProjectName());
 				if (pmh.getProjectAssignedDate() != null) {
-					projectMember.setProjectAssignedDateStr(ConversionUtil.getDateAsString(pmh.getProjectAssignedDate()));
+					projectMember.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectAssignedDate()));
 				}
 				if (pmh.getProjectTerminationDate() != null) {
-					projectMember.setProjectEndDateStr(ConversionUtil.getDateAsString(pmh.getProjectTerminationDate()));
+					projectMember.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectTerminationDate()));
 				}
 				if (pmh.getStatus() != null) {
 					projectMember.setProjectStatus(pmh.getStatus());
 				}
+				if(projectMember.getProjects() != null){
+					projectMember.setProjectUUID(projectMember.getProjects().getProjectUUID());
+				}
+				
+				if(projectMember.getProjects() != null){
+					projectMember.setMemberEnddate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMember.getProjects().getEndDate()));
+				}
+				
 				if (pmh.getProjectAssignedDate() != null
 						&& pmh.getProjectTerminationDate() != null) {
 					Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getId(), "DRAFT");
@@ -711,11 +737,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				}
 				if (projectMember.getProjects() != null) {
 					if (projectMember.getProjects().getStartDate() != null) {
-						Date empStaerDate = projectMember.getProjects().getStartDate();
-						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), empStaerDate, commonUtil.currentDate());
+						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), null, null);
 						if (expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()) {
 							for (Expenses exp : expensesClaimendAmount) {
-								projectMember.setUserExpensesClaimedAmount(exp.getTotalAmount());
+								finalExpenseAmount = finalExpenseAmount + exp.getTotalAmount();
+								projectMember.setUserExpensesClaimedAmount(finalExpenseAmount);
 							}
 						}
 					}
@@ -750,4 +776,35 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		});
 		return (List<ProjectMembers>) projectMemberList;
 	}
+
+	@Override
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
+			Long orgRelationId) throws Exception {
+
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
+
+		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
+				.filter(item -> item.getEmployee().getUser().getCandidateSet().stream()
+						.filter(predicate -> predicate.getOrgRelationId().getId().longValue() == orgRelationId)
+						.findAny().isPresent())
+				.collect(Collectors.toList());
+		projectMemberList.forEach(pm -> {
+			try {
+				StringBuilder sb = new StringBuilder();
+				if (pm.getEmployee().getUser().getLastName() != null) {
+					sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
+							.append(pm.getEmployee().getUser().getLastName());
+				} else {
+					sb.append(pm.getEmployee().getUser().getFirstName());
+				}
+				pm.setEmpName(sb.toString());
+
+			} catch (Exception exception) {
+				logger.error(ExceptionUtils.getFullStackTrace(exception));
+			}
+
+		});
+		return projectMemberfilteredList;
+	}
+
 }

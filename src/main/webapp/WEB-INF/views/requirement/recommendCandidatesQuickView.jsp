@@ -4,12 +4,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 <%-- 
      @author : Pavan Kumar Jampana.
      this script is for quick view of Candidate.
@@ -115,11 +109,11 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					
 					result = result+'                </div>                                                                                                                                        ';
 				
-					result = result+'                <div class="media-right">                                                                                                                     ';
+					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
 					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
 					if(recScore != null && recScore != '' && recScore != 'undefined'){
 						  if(recScore >=50){ 
-						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
 						  }
 					  }
 					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        

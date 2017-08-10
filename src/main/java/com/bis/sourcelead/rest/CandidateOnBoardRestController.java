@@ -131,9 +131,9 @@ public class CandidateOnBoardRestController {
 		
 		List<OnBoardingTemplate> templatesList = onBoardingTemplateService.getOnBoardingTemplatesList(loginOrgLocation.getId());
 		List<OnBoardingTemplate> onboardingTemplatesList = new ArrayList<OnBoardingTemplate>();
-		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for(OnBoardingTemplate template : templatesList){
-			template.setTemplateCreatedDate(dateFormat.format(template.getCreatedDate()));
+			template.setTemplateCreatedDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),template.getCreatedDate()));
 			onboardingTemplatesList.add(template);
 		}
 		
@@ -713,10 +713,10 @@ public class CandidateOnBoardRestController {
 				@RequestParam(value = "locationCode") String locationCode) throws Exception {
 		 
 		 	OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		 	SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
+		 	//SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
 			RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
 			if(null != offer.getDateOfJoining()){
-				offer.setDateOfJoiningStr(dateFormat.format(offer.getDateOfJoining()));
+				offer.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),offer.getDateOfJoining()));
 			}
 			
 			
@@ -785,14 +785,14 @@ public class CandidateOnBoardRestController {
 		String resultJson;
 		
 		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
+		//SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 		List<CandidateOnBoarding> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingListByOrgLocationId(loginOrgLocation.getId());
 		List<CandidateOnBoarding> onBoardingList = new ArrayList<CandidateOnBoarding>();
 		
 		if(null != candidateOnBoardingList && candidateOnBoardingList.size() > 0){
 			for(CandidateOnBoarding candidateOnBoarding : candidateOnBoardingList){
 				if(null != candidateOnBoarding.getStartDate()){
-					candidateOnBoarding.setJoiningDateStr(format.format(candidateOnBoarding.getStartDate()));
+					candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOnBoarding.getStartDate()));
 				}
 				
 				StringBuilder candidateName = new StringBuilder();
@@ -834,7 +834,7 @@ public class CandidateOnBoardRestController {
 		String resultJson;
 		StringBuilder candidateName = new StringBuilder();
 		OrgLocations orglocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		SimpleDateFormat formatter = orglocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat formatter = orglocations.getLocFullFormDateFormatter();
 		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
 		if(null != candidateOnBoarding){
 			candidateOnBoarding.setOnBoardCandidateId(candidateOnBoarding.getCandidateId().getId());
@@ -865,14 +865,14 @@ public class CandidateOnBoardRestController {
 				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
 			}
 			
-			candidateOnBoarding.setJoiningDateStr(formatter.format(candidateOnBoarding.getStartDate()));
+			candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),candidateOnBoarding.getStartDate()));
 			
 			if(null != candidateOnBoarding.getEndDate()){
-				candidateOnBoarding.setEndDateStr(formatter.format(candidateOnBoarding.getEndDate()));
+				candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),candidateOnBoarding.getEndDate()));
 			}
 			
 			if(null != candidateOnBoarding.getDueDate()){
-				candidateOnBoarding.setDueDateStr(formatter.format(candidateOnBoarding.getDueDate()));
+				candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),candidateOnBoarding.getDueDate()));
 			}
 			
 			
@@ -1856,7 +1856,7 @@ public class CandidateOnBoardRestController {
 			
 			List<RequirementSubmission> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
 			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
-			SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+			//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 			if(null != submissionList && submissionList.size() > 0){
 				
 				for(RequirementSubmission submission : submissionList){
@@ -1873,7 +1873,7 @@ public class CandidateOnBoardRestController {
 					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
 					
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
-					submission.setOfferJoinDate(simpleDateFormat.format(requirementOffers.getDateOfJoining()));
+					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
@@ -2011,17 +2011,18 @@ public class CandidateOnBoardRestController {
 		 
 		 
 		 @RequestMapping(value = "/viewCandidateOnboardTasksByOnboardingUUID" , method = RequestMethod.GET)
-		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,@RequestParam(value="locationId", required=false) Long locationId,
 				 HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 
 			 
 			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
-			 
+			 OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			 List<Tasks> tasksList = taskService.getTasksListOnboardingId(onboarding.getId());
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(LoginSessionController.DATEFORMAT.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){

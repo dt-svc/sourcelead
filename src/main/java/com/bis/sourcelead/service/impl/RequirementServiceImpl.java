@@ -80,6 +80,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -193,7 +194,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
@@ -368,9 +370,9 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
 				try {
-					  SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
+					 // SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 					Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-					Date startTime =  formatter.parse(jsonObj.getString("closedDate"));
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("closedDate"));
 					String currentTimeStr = Constants.TZ_DF.format(startTime);  
 
 					String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
@@ -1393,6 +1395,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
 	}
 
+	
+	@Override
+	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User  user,String userRoleName,int start,int length) throws Exception {
+		return requirementDao.getRequirementListByOrgLocationIDWithMaxResults(orgLocationId,status,clients,user,userRoleName,start,length);
+	}
 	
 	/**
 	 * @author sarath kumar
@@ -2620,6 +2627,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 			 writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString()); 
  		}
+		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
+			 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate())); 
+		}
 		return createExcelsheet;
 	}
 
@@ -3314,8 +3324,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	StringBuilder dateString = new StringBuilder();
      	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
      	*/
-     	
-     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
+     	OrgLocations orglo = orgLocationService.getOrgLocations(requirementIndex.getOrgLocationId());
+     	requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
@@ -3707,5 +3717,5 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception {
 		return requirementDao.getAllRequirementVisaByRequirementI(requirementId);
 	}
-	
+
 }

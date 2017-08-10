@@ -3,9 +3,7 @@
 <meta http-equiv="Expires" content="0">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
@@ -152,7 +150,10 @@ function filterStatus() {
 	   var result = "";
  	 
  	result = result + '    	<div class="col-md-12 mt">';
- 	 result = result + '    	<div class="require_one">';
+ 	
+ 	/* Dont remove this commented code. Need to implement functionality */
+
+ 	/*  result = result + '    	<div class="require_one">';
 	result = result + '       <div class="require_wrap_details_cta noPad">';
 	result = result + '   		<div class="NeDe"><b>Estimated Budget:</b> <span><strong>INR</strong> 250000</span><div class="clearfix"></div></div>';
 	result = result + '        	<div class="NeDe"><b>Estimated Hours:</b> <span>250</span><div class="clearfix"></div></div>';
@@ -163,7 +164,7 @@ function filterStatus() {
 	result = result + '        	<div class="NeDe"><b>Expenses:</b> <span><strong>INR</strong> 50000</span><div class="clearfix"></div></div>';
 	result = result + '       </div>';
 	result = result + '       <div class="clearfix"></div>';
-	result = result + '     </div>';
+	result = result + '     </div>'; */
 	result = result + '     </div>';
 	result = result + '       <div class="clearfix"></div>';
 	
@@ -171,7 +172,10 @@ function filterStatus() {
 result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
 result = result + '<li class="current"><a href="#tab-a">Resources ('+projectMembersCount+')</a></li>';
-result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>';
+
+/* Dont delete this commented code. Functionality is in progress */
+/* result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; */
+
 result = result + '<li class=""><a href="#tab-c">Budget Requests (10)</a></li>';
 result = result + '<div class="clearfix"></div>';
 result = result + '</ul>';
@@ -1157,7 +1161,6 @@ function toDate(selector) {
 //  New project Tabs
 	$("#tab-a").show();
     $(".newPrTabsMenu a").click(function(event) {
-    	alert("Hi Srinivas");
         event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");

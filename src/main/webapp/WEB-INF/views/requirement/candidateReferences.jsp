@@ -4,12 +4,6 @@
 <!-- these files for autocomplete with tagit -->
 
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -111,7 +105,7 @@ function candReferencesList(candidateId){
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != "undefined")
 	    	             	 {
-	    	             		result = result +"  <td><div class="tbldata-dotdot-me" title='"+opt.name+"'>"+opt.name+"</div></td>"; 
+	    	             		result = result +"  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"+opt.name+"</div></td>"; 
 	    	             	 }else{
 	    	             		 result = result +"  <td><div>----</div></td>"; 
 	    	             	 }
@@ -539,7 +533,7 @@ function deleteReference(candidateId,refId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12">';
-								result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+								result = result  +'<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 								result = result  +'</div>';
 								result = result  +'</div>';
 								

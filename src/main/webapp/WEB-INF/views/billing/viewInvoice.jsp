@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
@@ -58,11 +56,11 @@ $(document).ready(function(){
               </a>
             </li>
             <li class="">
-            <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">
+            <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\',\'ROLE_VIEW_EDIT_INVOICE\')">
               <a href="#paymentHistory" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="paymentHistroy();">
-              </sec:authorize>
                 <h5>Payment History</h5>
               </a>
+               </sec:authorize>
             </li>
             
             
@@ -285,7 +283,7 @@ function getViewInvoice(){
                         result = result +'                     <th>Associates</th>';
                         result = result +'                     <th>Description</th>';
                         result = result +'                     <th>SOW/PO</th>                                          ';
-					    result = result +'                     <th>Date<br>(<small class="custom-small">'+viewInvoiceDate+'</small>)</th>';
+                        result = result +'                     <th>Date</th>                                             ';
                         result = result +'                     <th>Rate Hourly</th>                                             ';
                         result = result +'                     <th>Total Hours</th>                                      ';
                         result = result +'                     <th>Total Amount</th>                                     ';
@@ -790,9 +788,10 @@ function addNotes() {
 function paymentHistroy(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
+	  var locationId = '${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
+	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                

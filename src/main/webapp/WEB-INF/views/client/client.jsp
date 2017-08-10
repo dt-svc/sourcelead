@@ -2,13 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
 
 <script type="text/javascript">
 window.onload = function () {
@@ -54,7 +47,7 @@ window.onload = function () {
            <h3>Client Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur="getOrgDetails(); validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur=" getOrgDetails(); validateClientName();" field-name="Client Name" data-validation="required validate_Space validate_length length2-250" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Client Name</span>
 				</div>
@@ -78,6 +71,14 @@ window.onload = function () {
 	          </div>
 	        </div>
 		
+		   <div class="form-group" id="orgLocationDiv" style="display: none;">
+	          <label class="col-md-3">Location</label>
+	          <div class="col-md-9">
+	          <div class="positionRelative">
+	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Locatin" readonly></input>
+	          </div>
+	          </div>
+	        </div>
 		
 			<div class="form-group" id="countryDiv" style="display: block;">
 	          <label class="col-md-3">Country</label>
@@ -86,6 +87,14 @@ window.onload = function () {
 	          </div>
 	        </div>
 	        
+	        <div class="form-group" id="orgCountryDiv" style="display: none;">
+				<label class="col-md-3">Country</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
+				</div>
+			</div>
+	        
+	        
 	        <div class="form-group" id="stateDiv" style="display: block;">
 	          <label class="col-md-3">State</label>
 	          <div class="col-md-9">
@@ -93,6 +102,15 @@ window.onload = function () {
 	          </div>
 	        </div>
 	        
+	        	 
+			 <div class="form-group" id="orgStateDiv" style="display: none;">
+				<label class="col-md-3">State</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
+				</div>
+		 	</div>
+		
+		
 	        <div class="form-group" id="cityDiv" style="display: block;">
 	          <label class="col-md-3">City</label>
 	          <div class="col-md-9">
@@ -100,13 +118,27 @@ window.onload = function () {
 	          </div>
 	        </div>
 	        
+	        
+		  <div class="form-group" id="orgCityDiv" style="display: none;">
+				<label class="col-md-3">City</label>
+				<div class="col-md-9">
+				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
+				</div>
+		   </div>
+		 
 	        <div class="form-group" id="zipCodeDiv" style="display: block;">
 	          <label class="col-md-3">ZipCode</label>
 	          <div class="col-md-9">
-	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+	          <input class="form-control" id="clientZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 	          </div>
 	        </div>
 	        
+	        <div class="form-group" id="orgZipCodeDiv" style="display: none;">
+	          <label class="col-md-3">ZipCode</label>
+	          <div class="col-md-9">
+	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+	          </div>
+	  		  </div>	
 			
 			<div class="form-group hidden">
 	          <label class="col-md-3">Lat</label>
@@ -121,46 +153,6 @@ window.onload = function () {
 	          <input class="form-control" id="clientLongitude" name="longitude"  type="text"></input>
 	          </div>
 	        </div> 
-        
-        
-	        <div class="form-group" id="orgLocationDiv" style="display: none;">
-	          <label class="col-md-3">Location</label>
-	          <div class="col-md-9">
-	          <div class="positionRelative">
-	          <input class="form-control positionRelative" id="orgLocation" name="orgLocation" placeholder="Enter your address"  type="text" field-name="Locatin" readonly></input>
-	          </div>
-	          </div>
-	        </div>
-	        
-        
-			<div class="form-group" id="orgCountryDiv" style="display: none;">
-				<label class="col-md-3">Country</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCountry" name="orgCountry" value="" readonly="readonly">
-				</div>
-			</div>
-			
-			
-		 
-		 <div class="form-group" id="orgStateDiv" style="display: none;">
-				<label class="col-md-3">State</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgState" placeholder="Enter your State" name="orgState" value="" readonly="readonly">
-				</div>
-		 </div>
-		
-		<div class="form-group" id="orgCityDiv" style="display: none;">
-				<label class="col-md-3">City</label>
-				<div class="col-md-9">
-				<input type="text" class="form-control" id="orgCity" placeholder="Enter your City" name="orgCity" value="" readonly="readonly">
-				</div>
-		 </div>
-		<div class="form-group" id="orgZipCodeDiv" style="display: none;">
-	          <label class="col-md-3">ZipCode</label>
-	          <div class="col-md-9">
-	          <input class="form-control" id="orgZipCode" name="orgZipcode" placeholder="Enter your Zip code" type="text" readonly></input>
-	          </div>
-	    </div>	
          
             <div class="form-group">
               <label class="col-md-3">Tier</label>
@@ -322,12 +314,11 @@ function getOrgName(){
 	var orgCode = '${SourceLeadWeb_orgCode}';
 	var sourceleadUrl = '${sourceleadUrl}';
 	
-	
 	/* $( "#orgName" ).val( '' ); */
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
-	/* $("#webSite" ).val(''); */
+	$("#webSite" ).val('');
 	
 	$("#orgCountry").val('');
 	$("#orgState").val('');
@@ -426,7 +417,7 @@ function getOrgDetails()
    	        		}
 		   	        
 			      	if(json['website'] != null && json['website'] != ''){
-			      		$("#webSite").val(json['website']);
+			      		$("#webSite").val("www."+json['website']);
 			      		$("#webSite").attr("disabled", true);
 			      	}
 			      	

@@ -5,20 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%-- 
      @author : David Raju.
      this script is to get filter popup
@@ -169,14 +156,16 @@ max-width:220px;
 function requirementListCheck(serachValue,universalRequirementSearchList){
 if(universalRequirementSearchList=="universalRequirementList")	 {
 	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
+	var url = sourceleadUrl+"/getUniversalRequirementsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue;
+	prepareRequirementData(url);
+	/*  $.ajax({
          type : "POST",
           url: sourceleadUrl+"/getUniversalRequirementsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
           success :function(data) {
         	  prepareRequirementData(data);
          },
           
-     }); 
+     });  */
   }
 	 else{
 		  	$("#c6").prop("checked", true);
@@ -217,12 +206,14 @@ function requirementList(){
 	var orgVMS = '${SourceLeadWeb_vms}';
 	$("#requirementList").empty();
 	 $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.ajax({
+	 var url = sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients;
+	 prepareRequirementData(url);
+	 /* $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
-            success :function(data) {
+            success :function(data) { */
                  /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-					prepareRequirementData(data);
+					//prepareRequirementData(data);
 					/* } else{
                 	 $("#requirementList").empty();
                 	 $("#requirementList").removeAttr("style");
@@ -236,9 +227,9 @@ function requirementList(){
 					$("#requirementList").empty();
 				    $("#requirementList").append(result); 
                 } */
-          },
+         /*  },
             
-       }); 
+       });  */
   } 
 </script>
 
@@ -249,21 +240,13 @@ function requirementList(){
 --%>
 
 <script>
-function prepareRequirementData(data){
+function prepareRequirementData(url){
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
 	 $("#requirementList").empty();
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  reqListDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  reqListDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  reqListDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  reqListDate = 'YYYY-DD-MM'; 
-	  }  
+	 
+	 
 	var result = "";
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
@@ -275,7 +258,7 @@ function prepareRequirementData(data){
     result = result +"    <th>Location</th>"; 
     result = result +"    <th>Applicants</th>"; 
     result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
+    result = result +"    <th>Posted On</th>";
     result = result +"    <th>Status</th>"; 
        result = result +"<th>Actions</th>";
 //     result = result +"    <th>Release</th>"; 
@@ -290,286 +273,25 @@ function prepareRequirementData(data){
 	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</div>';
-	
-    var json = JSON.parse(data);
-    
-    for (var i = 0; i < json.length; i++) { 
-    	
-   	 var opt = json[i]; 
-        	
-   	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
-   	 
-   	result = result +"<td>";
-   	if(opt.jobId != '' && opt.jobId != null){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-   	 if(opt.jobId != '' && opt.jobId != null){
-   	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-        '</sec:authorize>';
-        '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-        '</sec:authorize>';
-   	 }else{
-   		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-            '</sec:authorize>';
-            '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-            '</sec:authorize>';
-   	 }
-        if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-       	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
-        }else{
-       	 result = result +"<td><div>-----</div></td>";
-        }
-        
-       /*  if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-       	 if(opt.jobType=='Other'){
-       		if(opt.otherJobType != null && opt.otherJobType !='' && opt.otherJobType !='undefined'){
-       			result = result +"<td><div>"+opt.otherJobType+"</div></td>";
-       		}else{
-       			result = result +"<td><div>-----</div></td>";
-       		}
-       	 }else{
-       		 result = result +"<td><div>"+opt.jobType+"</div></td>";
-       	 }
-        }else{
-       	 result = result +"<td><div>-----</div></td>";
-        } */
-        
-        
-      if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
-    	 {
-   	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
-          result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
-    	 }else{
-    		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
-    	 }
-    	 }else{
-    		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
-    	 }
-       
-        if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
-        }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-
-        }else{
-            result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-        }
-       /*  if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
-       	 result = result +"<td><div>"+opt.positions+"</div></td>";
-        }else{
-       	 result = result +"<td><div>----</div></td>";
-        } */
-       /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
-       	result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
-       	/* } else{
-       	 result = result +"<td><div>0</div></td>";
-        } */
-        if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-       	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
-        }else{
-       	 result = result +"<td><div>----</div></td>";
-        }
-        if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-          	 result = result +"<td><div class='tblminwidth-90'>"+opt.postedDateStr+"</div></td>";
-           }else{
-          	 result = result +"<td><div class='tblminwidth-90'>----</div></td>";
-           }
-          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
-           if(opt.requirementSubmissionStatus == "DRAFT"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-	
-				result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-			}else if(opt.requirementSubmissionStatus == "CLOSED"){
-				result = result +"<option disabled selected >CLOSED</option>";
-
-			}
-			else if(opt.requirementSubmissionStatus == "CANCEL"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-
-			}else if(opt.requirementSubmissionStatus == "OPEN"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-			}
-			else if(opt.requirementSubmissionStatus == "NEW"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				result = result +"<option value='OPEN'>OPEN</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-				result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-			'</sec:authorize>';
-			'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-				result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-			'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-				
-			}
-			else if(opt.requirementSubmissionStatus == "REJECTED"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-				
-			}
-			
-			else if(opt.requirementSubmissionStatus == "SUBMITTED"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-				
-			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-				
-				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='OPEN'>OPEN</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-					'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-					'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}
-				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='DRAFT'>DRAFT</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}
-				if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}if(opt.requirementSubmissionPreviousStatus == "NEW"){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='OPEN'>OPEN</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-						result = result +"<option value='ONHOLD'>ONHOLD</option>";
-					'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-				'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}
-				 
-			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
-				result = result +"<option value='OPEN'>OPEN</option>";
-				
-			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-				
-			}
-
-			result = result +" </select>";	
-           result = result +" </div></td>";
-           result = result +" <td><div class='widthIcon'>";
-           
-	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
-	        
-	        '</sec:authorize>';
-	        
-	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-	        	if(opt.isRequirementReleasedByuser == 'Y'){
-	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
-
-			   	 }else{	
-					result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
-			   	 }
-        }
-		else{
-           result = result +"<div>--</div>";
-       }    '</sec:authorize>';    
-		result = result +"</div></td>";
-        result = result +"</tr>";
-        result = result +"</tr>";
-       
-    }
-    
     result = result +" </tbody>";
     result = result +"</table>"; 
     $("#noReq").val('');
     $("#requirementList").append(result); 
-    $("#requirementEmptyListMessage").val(json.length);
-    for (var i = 0; i < json.length; i++) { 
+    //$("#requirementEmptyListMessage").val(json.length);
+    /* for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
-    }
-    
-    pagination(); 
-    msgFadein1(); 
+    } */
+    jpagination(url); 
+    /* msgFadein1(); */ 
 }
 </script>
-<script>
- $('#requirementPagination').DataTable( { 
-	"autoWidth": false,
-	"scrollX": true,
-}); 
-function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
-    $('#requirementPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"aaSorting": [[7,'desc']],
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    } );
-}
-</script>
+
 <script>
 function statusvalidating(id){
 	changeStatusAuthorisation(id);
 }
 </script>
-
 <%-- 
      @author : sarath kumar.
      this script is for show side bar when you click on the candidate name.
@@ -577,7 +299,6 @@ function statusvalidating(id){
      2.parameter : csrf token , candidateId .
      3.ajax url implementation in CandidateListRestController.
 --%>
-
 <script>
 function sideBar(requirementId){
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -1574,8 +1295,8 @@ function requirementPipeline(requirementId){
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
 
-						<!-- <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span> --><i
-							class="glyphicon glyphicon-play" id="clientsList"></i>
+						<!-- <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span> -->
+<!-- 						<i class="glyphicon glyphicon-play" id="clientsList"></i> -->
 							<div id="filter1ApprovedPop" class="approved_pop">
 								<ul>
 									<c:forEach var="report" items="${add_clientList}">
@@ -1607,20 +1328,20 @@ function requirementPipeline(requirementId){
 										onclick="requirementList();"><label for="c6">New<span
 											id="newRequirementCount"></span></label></li>
 									<li><input id="c7" name="requirementStatus"
-										type="checkbox" value="Draft" onclick="requirementList();"><label
+										type="checkbox" value="DRAFT" onclick="requirementList();"><label
 										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
 									<li><input id="c8" type="checkbox"
-										name="requirementStatus" type="checkbox" value="submitted"
+										name="requirementStatus" type="checkbox" value="SUBMITTED"
 										onclick="requirementList();"><label for="c8">Submitted
 											<span id="submittedRequirementCount"></span>
 									</label></li>
 									<li><input id="c9" type="checkbox"
-										name="requirementStatus" type="checkbox" value="open"
+										name="requirementStatus" type="checkbox" value="OPEN"
 										onclick="requirementList();"><label for="c9">Open
 											<span id="openRequirementCount"></span>
 									</label></li>
 									<li><input id="c10" type="checkbox"
-										name="requirementStatus" type="checkbox" value="onhold"
+										name="requirementStatus" type="checkbox" value="ONHOLD"
 										onclick="requirementList();"><label for="10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
@@ -2075,19 +1796,25 @@ function searchRequirement(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
- if ($('#requirement_form').validate(false, validationSettings)){  
+     if ($('#requirement_form').validate(false, validationSettings)){  
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#requirement_form')[0];
-   		   var formData = new FormData(form); 
+   		    var formData = new FormData(form); 
 			//It will escape all the special characters
 			$("#search_requiremet").attr("disabled", "disabled");
 			$("#search_requiremet").addClass('button').val('Processing..');
 
-			$.ajax({
+			$("#search_requiremet").addClass('button').val('Search');
+			$("#search_requiremet").removeAttr("disabled");
+			closePop();
+			clearAlldata();
+			var url = sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}&json="+jsonData;
+			prepareRequirementData(url);
+			/* $.ajax({
 						type : "GET",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
@@ -2097,13 +1824,12 @@ function searchRequirement(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
-							$("#search_requiremet").addClass('button').val('Search');
-							$("#search_requiremet").removeAttr("disabled");
-							closePop();
-							/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-								clearAlldata();
-			                	 prepareRequirementData(data);
-/* 		                 }else{
+							
+							
+							 if(data != null && data != 'undefined' && data != "" && data != '[]'){ 
+								
+			                	// prepareRequirementData(data);
+		                 }else{
 		                	 $("#requirementList").empty();
 		                	 $("#requirementList").removeAttr("style");
 		                	 $("#requirementEmptyListMessage").val("noRequirement");
@@ -2116,8 +1842,8 @@ function searchRequirement(){
 							$("#requirementList").empty();
 						    $("#requirementList").append(result); 
 		                }
- */						},
-					}); 
+ 					},
+					}); */ 
 			return true;
 		}else{ 
 				return false;
@@ -2340,4 +2066,338 @@ function clearSearch(){
 }
 </script>
 
+<script>
+function jpagination(url){ 
+	var colIndex = 0;
+    $('#requirementPagination').DataTable( { 
+    		"processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+            { "data": "jobId" },
+            { "data": "jobTitle"},
+            { "data": "clientName"},
+            { "data": "jobType" },
+            { "data": "country"},
+            { "data": "totalApplicants" },
+            { "data": "manager" },
+            { "data": "postedOnStr"},
+            { "data": "requirementSubmissionStatus" },
+            { "data": "requirementUUID" }
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "jobId",
+	    	  	"sortable": false,
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		 var result = "";
+	    	  		 result = result +"<td>";
+	    	  	  	 if(opt.jobId != '' && opt.jobId != null){
+	    	  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
+	    	  	    	}else{
+	    	  	  		 result = result +"<div>-----</div>";
+	    	  	  	 }
+	    	  		 result = result +"</td>";
+		             return  result;
+	    	  	}
+	      },{
+            "targets": colIndex++,
+            "data": "jobTitle",
+            "render": function ( data, type, opt, meta ) {
+            		var result = "";
+            		 if(opt.jobId != '' && opt.jobId != null){
+            		  	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+            		       	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+            		       '</sec:authorize>';
+            		       '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+            		       	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+            		       '</sec:authorize>';
+            		  	 }else{
+            		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+            		           	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+            		           '</sec:authorize>';
+            		           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+            		           	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+            		           '</sec:authorize>';
+            		  	 }
+	                return result;
+             }
+            },
+	        {
+	            "targets": colIndex++,
+	            "data": "clientName",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
+            	      	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
+            	       }else{
+            	      	 result = result +"<td><div>-----</div></td>";
+            	       }
+		                return result;
+	             }
+	        },
+        	{
+	            "targets": colIndex++,
+	            "data": "jobType",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	            		 if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
+	            	   	 {
+	            	  	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
+	            	         result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
+	            	   	 }else{
+	            	   		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
+	            	   	 }
+	            	   	 }else{
+	            	   		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
+	            	   	 }
+		                return result;
+	             }
+        	},
+         	{
+ 	            "targets": colIndex++,
+ 	            "data": "country",
+ 	            "render": function ( data, type, opt, meta ) {
+ 	            		var result = "";
+ 	            		if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
+ 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
+ 	            	    }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
+ 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+ 	            	    }else{
+ 	            	           result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+ 	            	    }
+ 		                return result;
+ 	             }
+		    },
+		 	{
+		         "targets": colIndex++,
+		         "data": "totalApplicants",
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+			            return result;
+		          }
+		 	 },
+			 {
+			         "targets": colIndex++,
+			         "data": "manager",
+			         "render": function ( data, type, opt, meta ) {
+			         		var result = "";
+			         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+" "+opt.manager+"'>"+opt.manager+"</div></td>";
+		         	        }else{
+		         	      	 result = result +"<td><div>----</div></td>";
+		         	        }
+				            return result;
+			          }
+			 },
+			 {
+			         "targets": colIndex++,
+			         "data": "postedOnStr",
+			         "render": function (data, type, opt, meta ) {
+		         		   var result = "";
+		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
+		                  	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedOnStr+"</div></td>";
+		                   }else{
+		                  	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
+		                   }
+			               return result;
+			          }
+			 },
+			 {
+			         "targets": colIndex++,
+			         "data": "requirementSubmissionStatus",
+			         "render": function (data, type, opt, meta) {
+			         		    var result = "";
+			         		   result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
+			                   if(opt.requirementSubmissionStatus == "DRAFT"){
+			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+			         	
+			         				result = result +"<option value='ONHOLD'>ONHOLD</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         					result = result +"<option value='CANCEL'>CANCEL</option>";
+			         				'</sec:authorize>';
+			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
+			         				result = result +"<option disabled selected >CLOSED</option>";
+
+			         			}
+			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
+			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
+
+			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
+			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+			         					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+			         					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+			         					result = result +"<option value='ONHOLD'>ONHOLD</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         					result = result +"<option value='CANCEL'>CANCEL</option>";
+			         				'</sec:authorize>';
+			         			}
+			         			else if(opt.requirementSubmissionStatus == "NEW"){
+			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         				result = result +"<option value='OPEN'>OPEN</option>";
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+			         					result = result +"<option value='ONHOLD'>ONHOLD</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+			         				result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+			         			'</sec:authorize>';
+			         			'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+			         				result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+			         			'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         					result = result +"<option value='CANCEL'>CANCEL</option>";
+			         				'</sec:authorize>';
+			         			}else if(opt.requirementSubmissionStatus == "APPROVED"){
+			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
+			         				
+			         			}
+			         			else if(opt.requirementSubmissionStatus == "REJECTED"){
+			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
+			         				
+			         			}
+			         			
+			         			else if(opt.requirementSubmissionStatus == "SUBMITTED"){
+			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+			         					result = result +"<option value='ONHOLD'>ONHOLD</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         					result = result +"<option value='CANCEL'>CANCEL</option>";
+			         				'</sec:authorize>';
+			         				
+			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
+			         				
+			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
+			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         					result = result +"<option value='OPEN'>OPEN</option>";
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+			         						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+			         					'</sec:authorize>';
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+			         						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+			         					'</sec:authorize>';
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         						result = result +"<option value='CANCEL'>CANCEL</option>";
+			         					'</sec:authorize>';
+			         				}
+			         				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
+			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         					result = result +"<option value='DRAFT'>DRAFT</option>";
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         						result = result +"<option value='CANCEL'>CANCEL</option>";
+			         					'</sec:authorize>';
+			         				}
+			         				if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
+			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         					result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         						result = result +"<option value='CANCEL'>CANCEL</option>";
+			         					'</sec:authorize>';
+			         				}if(opt.requirementSubmissionPreviousStatus == "NEW"){
+			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+			         					result = result +"<option value='OPEN'>OPEN</option>";
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
+			         						result = result +"<option value='ONHOLD'>ONHOLD</option>";
+			         					'</sec:authorize>';
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+			         					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
+			         				'</sec:authorize>';
+			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
+			         					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
+			         				'</sec:authorize>';
+			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
+			         						result = result +"<option value='CANCEL'>CANCEL</option>";
+			         					'</sec:authorize>';
+			         				}
+			         				 
+			         			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
+			         				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+			         				result = result +"<option value='OPEN'>OPEN</option>";
+			         				
+			         			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
+			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
+			         				
+			         			}
+
+			         			result = result +" </select>";	
+			                    result = result +" </div></td>";
+				                return result;
+			          }
+			 },
+			 {
+			         "targets": colIndex++,
+			         "data": "requirementUUID",
+			         "render": function ( data, type, opt, meta ) {
+			         		   var result = "";
+			         		  result = result +" <td><div class='widthIcon'>";
+			      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+			      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+			      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
+			      	        '</sec:authorize>';
+			      	        
+			      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+			      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
+			      						   var userRoleName = '${loginUserRole}'; 
+			      						   var userId = '${SourceLeadWeb_user.id}';
+			      						   var contains = false;
+			      						  
+			      						   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
+			      							  for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
+			      								  if(userId == opt.requirementReleasedUserIds[k]){
+			      									  var contains = true;
+			      								  }
+			      							   }
+			      						   }
+			      						 
+			      						   if(contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN'){
+			      				    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+			      			
+			      						   	 }else{	
+			      								result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
+			      						   	 }
+			      			       }
+			      				   else{
+			      			          result = result +"<div>--</div>";
+			      				   } 
+			                   '</sec:authorize>';    
+			      		       result = result +"</div></td>";
+				              return result;
+			          }
+			 }
+            ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[7,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 160px; height: 160px;'/>"
+	     }
+    } );
+    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#dataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   requirementList();
+    	   }
+    	});
+  }
+</script>
 <jsp:include page="../masterFooter.jsp" />

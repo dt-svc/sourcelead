@@ -3,10 +3,7 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script src="resources/js/formvalidator.js"></script>
 
 <style>
 .ratetype p {
@@ -881,7 +878,7 @@ function cancel(){
 
 <script>
 function offboardingPagenation(){ 
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+	 //$.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

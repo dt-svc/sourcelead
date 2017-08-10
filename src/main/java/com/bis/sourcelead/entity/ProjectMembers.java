@@ -130,6 +130,11 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String projectName;
+	
+	@JsonProperty
+	@Transient
+	private String memberEnddate;
+	
 	@Transient
 	@JsonProperty
 	private String userId;
@@ -355,6 +360,10 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private Float userExpensesClaimedAmount;
+	
+	@JsonProperty
+	@Transient
+	private String projectUUID;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -1223,9 +1232,24 @@ public class ProjectMembers implements Serializable {
 		this.userExpensesClaimedAmount = userExpensesClaimedAmount;
 	}
 
-	
+	public String getProjectUUID()
+	{
+		return projectUUID;
+	}
 
-	
+	public void setProjectUUID(String projectUUID)
+	{
+		this.projectUUID = projectUUID;
+	}
 
+	public String getMemberEnddate()
+	{
+		return memberEnddate;
+	}
+
+	public void setMemberEnddate(String memberEnddate)
+	{
+		this.memberEnddate = memberEnddate;
+	}
 	
 }

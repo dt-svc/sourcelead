@@ -161,7 +161,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }
 	    	   
 	    	   if(json.requirementSubmissionTemplateFields.city != null && json.requirementSubmissionTemplateFields.city != '' && json.requirementSubmissionTemplateFields.city !='undefined'){
-	    		   city =' , ' + json.requirementSubmissionTemplateFields.city; 
+	    		   city = json.requirementSubmissionTemplateFields.city; 
 	    	   }else{
 	    		   city = " ";
 	    	   }
@@ -172,7 +172,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   lastName = "";
 	    	   }
 	    	   if(json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != 'undefined'){
-	    		   country = json.requirementSubmissionTemplateFields.country;
+	    		   country = ' , ' +json.requirementSubmissionTemplateFields.country;
 	    	   }else{
 	    		   country = "";
 	    	   }
@@ -184,8 +184,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="profile_details clearfix">';
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
-               result = result + '<div class="media-left image-parent">';
+               result = result + '<div class="media-left image-parent positionRelative">';
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
+               if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
+					  if(json.candidateScore >=50){ 
+					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+					  }
+				  }
+               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
@@ -247,7 +253,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
-		       result = result +country +''+ state +''+ city
+		       result = result +city +''+ state +''+ country
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+expectedRatePer+'/'+expectedRateType+'</li>';
@@ -1896,11 +1902,11 @@ function interviewFeedback(interviewId,templateId,id){
 	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
 	//$(this).next('.content').slideDown();
-	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(data) {
 			var json = JSON.parse(data);
 			var result = "";
@@ -2656,9 +2662,10 @@ function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
 	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";

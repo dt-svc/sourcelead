@@ -968,7 +968,7 @@ public class LoginSessionController {
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
-		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
 	}
@@ -976,15 +976,15 @@ public class LoginSessionController {
 	
 	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations,HttpServletRequest request) throws Exception {
 
-		SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		candidateOnBoarding.setJoiningDateStr(simpleDateFormat.format(candidateOnBoarding.getStartDate()));
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateOnBoarding.getStartDate()));
 		
 		if(null != candidateOnBoarding.getEndDate()){
-			candidateOnBoarding.setEndDateStr(simpleDateFormat.format(candidateOnBoarding.getEndDate()));
+			candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOnBoarding.getEndDate()));
 		}
 		
 		if(null != candidateOnBoarding.getDueDate()){
-			candidateOnBoarding.setDueDateStr(simpleDateFormat.format(candidateOnBoarding.getDueDate()));
+			candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOnBoarding.getDueDate()));
 		}
 		
 		

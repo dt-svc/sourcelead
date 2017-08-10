@@ -86,13 +86,13 @@ function requirementHistoryList(candidateId){
            	 }
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.country+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.country+'">'+report.country+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.ownerName+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+clientName+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+report.createdDateStr+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.submissionStatus+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.submissionStatus+'">'+report.submissionStatus+'</span></div></td>';
 	    		result = result  +'	          </tr>';
            	 
      		}
@@ -266,6 +266,16 @@ function getHistoryCandiResume(uuid,title){
 function getRateListDiv(candidateId,submissionId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqHistryRateListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqHistryRateListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqHistryRateListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqHistryRateListDate = 'YYYY-DD-MM'; 
+	  }  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
@@ -288,7 +298,7 @@ function getRateListDiv(candidateId,submissionId){
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
 	                     result = result + '        <th>Comment</th>';
-	                     result = result + '        <th>Date</th>';
+	                     result = result + '        <th>Date <br>(<small class="custom-small">'+reqHistryRateListDate+'</small>)</th>';
 	                     result = result + '        <th>Status</th>';
 	                     result = result + '      </tr>';
 	                     result = result + '    </thead>';

@@ -2,12 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
-
 <script type="text/javascript">
 window.onload = function () {
 	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
@@ -154,7 +148,7 @@ window.onload = function () {
 						</div>
 
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
-							<label class="col-md-3">ZipCode</label>
+							<label class="col-md-3">ZipCode1</label>
 							<div class="col-md-9">
 								<input class="form-control" id="clientZipCode" name="zipcode"
 									placeholder="Enter your Zip code" type="text"></input>
@@ -162,7 +156,7 @@ window.onload = function () {
 						</div>
 
 						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
-							<label class="col-md-3">ZipCode</label>
+							<label class="col-md-3">ZipCode2</label>
 							<div class="col-md-9">
 								<input class="form-control" id="orgZipCode" name="orgZipcode"
 									placeholder="Enter your Zip code" type="text" readonly></input>
@@ -381,7 +375,7 @@ function getOrgName(){
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
-	/* $("#webSite" ).val(''); */
+	$("#webSite" ).val(''); 
 	
 	$("#orgCountry").val('');
 	$("#orgState").val('');
@@ -480,7 +474,7 @@ function getOrgDetails()
    	        		}
 		   	        
 			      	if(json['website'] != null && json['website'] != ''){
-			      		$("#webSite").val(json['website']);
+			      		$("#webSite").val("www."+json['website']);
 			      		$("#webSite").attr("disabled", true);
 			      	}
 			      	
@@ -490,14 +484,13 @@ function getOrgDetails()
    	        		document.getElementById("orgLocationDiv").style.display="";
    	        		    $("#orgLocation").val(json['location']);
 			      	}
-			      	
-			      	if(json['zipCode'] != null && json['zipCode'] != ''){
-			      	document.getElementById("zipCodeDiv").style.display="none";
-   	        		document.getElementById("orgZipCodeDiv").style.display="";
-   	        		    $("#orgZipCode").val(json['zipCode']);
+			      	var zipCode = json['zipCode'];
+			      	if(zipCode != null && zipCode != ""){
+			      		document.getElementById("zipCodeDiv").style.display="none";
+	   	        		document.getElementById("orgZipCodeDiv").style.display="";
+	   	        	    $("#orgZipCode").val(json['zipCode']);
 			      	}
-			    	
-			      	 
+			      	
    	        	}
    			 },
    	        error: function(e){

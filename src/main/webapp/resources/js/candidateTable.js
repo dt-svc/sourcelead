@@ -13,7 +13,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	}
  }
  
-  function candidateList(){ 	 
+  function candidateList(){
 	  var candFilterRadio = $('input[name=candidateStatus]');
  	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
@@ -111,7 +111,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 
 function cpagination(url){ 
 	var colIndex = 0;
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#candidatePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -277,7 +277,7 @@ function cpagination(url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 160px; height: 160px;'/>"
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

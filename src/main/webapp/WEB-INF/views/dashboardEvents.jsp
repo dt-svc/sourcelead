@@ -1,6 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
@@ -14,7 +15,9 @@ width: 75px; padding: 0 !important;
         <div class="row">
         <div class="col-xs-12 col-md-12 event_calendar">
             <h4 class="pull-left mb10">Events</h4>
+            <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
             <button class="btn btn-primary pull-right btn-sm mb10" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+            </sec:authorize>
         </div>
       <!-- show Calendar -->
         <div class="col-xs-12 col-md-5 mb">
@@ -887,9 +890,10 @@ function feedbackView(interviewId,templateId){
 	$(".feedback_view").show(200);
 	$(".mask_inner").fadeIn(200);
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "GET",
-		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 			success: function(data) {
 				var json = JSON.parse(data);
 				var result = "";

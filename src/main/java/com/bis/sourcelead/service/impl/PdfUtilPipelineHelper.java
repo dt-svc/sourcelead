@@ -19,7 +19,9 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -48,20 +50,27 @@ public class PdfUtilPipelineHelper  {
 
 	@Autowired
 	RequirementService requirementService;
+	@Autowired
+	OrgLocationService orgLocationService;
 	
+	@Autowired
+	private CommonUtil commonUtil;
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtilPipelineHelper.class);
 	
 	public File getRequirementPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, OrgLocations loginOrgLocation,
 			String requirementId,String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+		//SimpleDateFormat simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 		StringBuilder fileStringBuilder=new StringBuilder();
 		if(submissionType.equals("SUBMIT_TO_CLIENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			
+			
 			StringBuilder sbClientPipe = new StringBuilder();
-			sbClientPipe.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date()));
+			sbClientPipe.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date()));
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
 
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -99,9 +108,9 @@ public class PdfUtilPipelineHelper  {
 		}
 		if(submissionType.equals("REQUEST_SENT")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REQUEST_SENT_HEADERS;
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -138,9 +147,9 @@ public class PdfUtilPipelineHelper  {
 			return file;
 		}else if(submissionType.equals("SHORTLIST")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS;
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -177,9 +186,9 @@ public class PdfUtilPipelineHelper  {
 			return file;
 		}else if(submissionType.equals("INTERVIEW")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS;
-		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		   // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -216,9 +225,9 @@ public class PdfUtilPipelineHelper  {
 			return file;
 		}else if(submissionType.equals("OFFERMADE")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_OFFERMADE_EXCEL_HEADERS;
-		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		   // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 	        StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -255,9 +264,9 @@ public class PdfUtilPipelineHelper  {
 			return file;
 		}else if(submissionType.equals("REJECTED")){
 			String[] headers = Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS;
-		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		  //  DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -294,9 +303,9 @@ public class PdfUtilPipelineHelper  {
 			return file;
 		}else{
 			String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
-		    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		   // DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
-		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
 		    file.setReadable(true);
 			StringBuilder sbPipeHearder = new StringBuilder();
 	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Requirements");
@@ -625,12 +634,15 @@ public class PdfUtilPipelineHelper  {
  * convert pojo to Array of Rejected
  * @param requirementsub
  * @return
+ * @throws Exception 
  */
-	private String[] prepareRequirementPipelineToArrayRejected(RequirementSubmission requirementsub) {
+	private String[] prepareRequirementPipelineToArrayRejected(RequirementSubmission requirementsub) throws Exception {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_REJECTED_EXCEL_HEADERS.length];
 		
 		
+		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		
+		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
 			requirementArray[0] = requirementsub.getCandidateName();
 		}else{
@@ -655,8 +667,8 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[3] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = date.format(requirementsub.getCreatedDate());
+			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementsub.getCreatedDate());
 			requirementArray[4] = createdDate;
 
 		}else{
@@ -769,11 +781,12 @@ public class PdfUtilPipelineHelper  {
  * convert pojo to Array of Interview
  * @param requirementsub
  * @return
+ * @throws Exception 
  */
-	private String[] prepareRequirementPipelineToArrayInterview(RequirementSubmission requirementsub) {
+	private String[] prepareRequirementPipelineToArrayInterview(RequirementSubmission requirementsub) throws Exception {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_INTERVIEW_EXCEL_HEADERS.length];
 		
-		
+		OrgLocations orglo = orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
 			requirementArray[0] = requirementsub.getCandidateName();
 		}else{
@@ -802,7 +815,7 @@ public class PdfUtilPipelineHelper  {
 		StringBuilder interviewStringBuilder = new StringBuilder();
 		for(RequirementInterview listInterviews:rquirementInterviews){
 			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
-				requirementArray[4] = LoginSessionController.DATEFORMAT.format(listInterviews.getDateOfInterview());
+				requirementArray[4] = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),listInterviews.getDateOfInterview());
 			}else{
 				requirementArray[4] = "--";
 			}
@@ -827,11 +840,15 @@ public class PdfUtilPipelineHelper  {
 	/**
 	 * @param requirementsub
 	 * @return
+	 * @throws Exception 
 	 * @Description: pdf for shortlisted.
 	 */
-	private String[] prepareRequirementPipelineToArrayShortedListed(RequirementSubmission requirementsub) {
+	private String[] prepareRequirementPipelineToArrayShortedListed(RequirementSubmission requirementsub) throws Exception {
 		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS.length];
 		
+		OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
+		
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
 			requirementArray[0] = requirementsub.getCandidateName();
@@ -857,8 +874,8 @@ public class PdfUtilPipelineHelper  {
 			requirementArray[3] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-			String createdDate = date.format(requirementsub.getCreatedDate());
+			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementsub.getCreatedDate());
 			requirementArray[4] = createdDate;
 
 		}else{
@@ -909,11 +926,14 @@ public class PdfUtilPipelineHelper  {
  * convert pojo to Array Applicants
  * @param requirementsub
  * @return
+ * @throws Exception 
  */
-	private String[] prepareRequirementPipelineToArray(RequirementSubmission requirementsub) {
+	private String[] prepareRequirementPipelineToArray(RequirementSubmission requirementsub) throws Exception {
 			String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS.length];
 			
+			OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 			
+			// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 			if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
 				requirementArray[0] = requirementsub.getCandidateName();
@@ -939,8 +959,8 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[3] = "--";
 			}
 			if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-				DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
-				String createdDate = date.format(requirementsub.getCreatedDate());
+				//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+				String createdDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementsub.getCreatedDate());
 				requirementArray[4] = createdDate;
 
 			}else{

@@ -48,7 +48,7 @@ public interface InvoiceService {
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
-	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType) throws Exception;
+	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType,OrgLocations orgLocations) throws Exception;
 
 	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
 
@@ -75,6 +75,8 @@ public interface InvoiceService {
 	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
 
 	Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,List<MultipartFile> attachedfileList, String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+
+	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 
 	
 

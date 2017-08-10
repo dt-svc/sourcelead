@@ -86,7 +86,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		CandidateOffBoarding candidateOffBoarding = null;
 		
 		// date format
-		SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if(jsonObj.has("savedoffboardId") && !isNullOrEmpty(jsonObj.getString("savedoffboardId"))){
 			candidateOffBoarding = candidateOffBoardingDao.getCandidateOffBoardingById(Long.valueOf(jsonObj.getString("savedoffboardId")));
@@ -117,7 +117,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		if(jsonObj.has("dateOfJoin") && !isNullOrEmpty(jsonObj.getString("dateOfJoin"))){
-			candidateOffBoarding.setDateOfJoin(dateFormat.parse(jsonObj.getString("dateOfJoin")));
+			candidateOffBoarding.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("dateOfJoin")));
 		}
 		
 		if(jsonObj.has("role") && !isNullOrEmpty(jsonObj.getString("role"))){
@@ -130,7 +130,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOffBoarding.setEndDate(dateFormat.parse(jsonObj.getString("endDate")));
+			candidateOffBoarding.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("endDate")));
 		}
 		
 		if(jsonObj.has("reason") && !isNullOrEmpty(jsonObj.getString("reason"))){
@@ -152,7 +152,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		if(jsonObj.has("effectiveDate") && !isNullOrEmpty(jsonObj.getString("effectiveDate"))){
-			candidateOffBoarding.setEffectiveDate(dateFormat.parse(jsonObj.getString("effectiveDate")));
+			candidateOffBoarding.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("effectiveDate")));
 		}
 		
 		if(jsonObj.has("offboardingTemplate") && !isNullOrEmpty(jsonObj.getString("offboardingTemplate"))){
@@ -249,7 +249,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 	}
 public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, User loginUser,OrgLocations orgLocations) throws Exception{
-        SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+       // SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
         EmailMessage emailMessage = new EmailMessage();
          emailMessage.setFirstName(loginUser.getFirstName());
          emailMessage.setLastName(loginUser.getLastName());
@@ -262,9 +262,9 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
         //setting the class filed values
          Map<String, String> globalVarsMap = new HashMap<String, String>();
         
-        String effectiveDate=dateFormat.format(candidateOffBoarding.getEffectiveDate());
+        String effectiveDate=commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOffBoarding.getEffectiveDate());
          globalVarsMap.put("effectiveDate", effectiveDate);
-         String endDate=dateFormat.format(candidateOffBoarding.getEndDate());
+         String endDate=commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOffBoarding.getEndDate());
          globalVarsMap.put("endDate", endDate);
          globalVarsMap.put("offboardReason", candidateOffBoarding.getReason());
          globalVarsMap.put("loginUser", emailMessage.getFromName());
@@ -391,7 +391,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 emailMessage.setFromEmail(task.getTaskOwnerId().getEmail());
 		 emailMessage.setCreatedBy(task.getTaskOwnerId().getUserCode());
 		 StringBuilder msgBuild = new StringBuilder();
-		 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		// SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 emailMessage.setFromName(msgBuild.append(task.getTaskOwnerId().getFirstName()).append(" ").append(task.getTaskOwnerId().getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
@@ -407,7 +407,7 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 globalVarsMap.put("priority", "--");	 
 		 }
 		 if(null != task.getTaskDate() && !"".equalsIgnoreCase(task.getTaskDate().toString())){
-		 task.setTaskDateStr(simpleDateFormat.format(task.getTaskDate()));
+		 task.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),task.getTaskDate()));
 		 if( task.getTaskDateStr()!= null  && !"".equalsIgnoreCase( task.getTaskDateStr().toString())){
 		 globalVarsMap.put("date", task.getTaskDateStr());	 
 		 	}

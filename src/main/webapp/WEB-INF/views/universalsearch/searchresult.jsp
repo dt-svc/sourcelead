@@ -2,14 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
-<link href="resources/css/register-style.css" rel="stylesheet">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link href="resources/css/register-style.css" rel="stylesheet">
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> -->
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
@@ -338,9 +331,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
-				    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
+				    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\',\''+report.projectUUID+'\');">'+report.projectName+'</a></strong></label>, <label>'+report.invoiceFrequency+'</label>';
 				    	}else{
-				    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\',\''+report.projectUUID+'\');">'+report.projectName+'</a></strong></label>';
 				    	}
 				    	result = result+'</p>';
 				    	if(report.clientName !=null && report.clientName != '' && report.clientName !="undefined"){
@@ -594,10 +587,10 @@ function getSearchResultsForAll(searchType,searchValue){
 				  				    	
 				  				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				  				    	if(report.projectName !=null && report.projectName != '' && report.projectName !="undefined" && report.invoiceFrequency !=null && report.invoiceFrequency !='' && report.invoiceFrequency !='undefined'){
-								    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\',\''+report.projectUUID+'\');">'+report.projectName+'</a></strong></label>';
 								    		result = result+'<label>'+report.invoiceFrequency+'</label>';
 				  				    	}else{
-				  				    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\');">'+report.projectName+'</a></strong></label>';
+				  				    		result = result+'<p><label><strong><a href="#" onclick="projectSearchSideBar('+report.id+',\''+report.projectName+'\',\''+report.startDate+'\',\''+report.endDate+'\',\''+report.projectStatus+'\',\''+report.projectUUID+'\');">'+report.projectName+'</a></strong></label>';
 				  				    	}
 				  				    	result = result+'</p>';
 				  				    	if(report.clientName !=null && report.clientName != '' && report.clientName !="undefined"){
@@ -908,10 +901,11 @@ function userSummaryRedirect(userId){
 </script>
 
 <script>
-function projectSearchSideBar(projectId,projectName,startDate,endDate, status){
+function projectSearchSideBar(projectId,projectName,startDate,endDate, status,projectUUID){
 	var projectKeyword = "projectSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/projectDashboard?&projectId="+projectId+"&projectName="+projectName+"&startDate="+startDate+"&endDate="+endDate+"&status="+status+"&projectKeyword="+projectKeyword;
+	window.location.href = sourceleadUrl + "/projectSummary?projectUUID="+projectUUID;
+// 	window.location.href = sourceleadUrl + "/projectDashboard?&projectId="+projectId+"&projectName="+projectName+"&startDate="+startDate+"&endDate="+endDate+"&status="+status+"&projectKeyword="+projectKeyword;
 }
 </script>
 
