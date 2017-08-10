@@ -362,14 +362,16 @@ function getProjectMemberByVendor(pid,projectMemberName){
 	success :function(data) {
 		var output = "";
 		output = output + "<option value=''>--Select Associate--</option>";
-		for (var i=0; i<data.length; i++)
-		{
-		var opt = data[i];
-		var selected = "";
-		  if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
-			 selected = 'selected';
-		}  
-		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
+		if(data !=null){
+			for (var i=0; i<data.length; i++)
+			{
+			var opt = data[i];
+			var selected = "";
+			  if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
+				 selected = 'selected';
+			}  
+			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
+			}	
 		}
 		$("#projectMemberId").empty();
 		$("#projectMemberId").append(output);
@@ -1850,14 +1852,16 @@ function getExpenses(projectMemberId,expensesFrequency){
 		success :function(data) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
-			for (var i=0; i<data.length; i++)
-			{
-			var opt = data[i];
-			var selected = "";
-			 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
-				selected = 'selected';
-			} 
-			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
+			if(data !=null){
+				for (var i=0; i<data.length; i++)
+				{
+				var opt = data[i];
+				var selected = "";
+				 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
+					selected = 'selected';
+				} 
+				output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
+				}
 			}
 			$("#expensesId").empty();
 			$("#expensesId").append(output);
