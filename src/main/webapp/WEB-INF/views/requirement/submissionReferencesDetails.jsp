@@ -34,7 +34,6 @@
 
 <script>
 function submissionReferencesList(candidateId){
-alert("A");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationCode ='${SourceLeadWeb_locationCode}';
 	

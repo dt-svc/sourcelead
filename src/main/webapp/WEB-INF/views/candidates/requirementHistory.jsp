@@ -86,13 +86,13 @@ function requirementHistoryList(candidateId){
            	 }
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.country+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.country+'">'+report.country+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.ownerName+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+clientName+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+report.createdDateStr+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.submissionStatus+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.submissionStatus+'">'+report.submissionStatus+'</span></div></td>';
 	    		result = result  +'	          </tr>';
            	 
      		}
