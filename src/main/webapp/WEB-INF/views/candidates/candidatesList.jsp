@@ -477,7 +477,7 @@ function candidateSideBar(candidateId){
 			             result = result + '<div id="tab-10" class="project_tabs_inn">';
 			             result = result+'     </div>';
 						 
-						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
+						 result = result + '<div id="tab-8" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
