@@ -4406,9 +4406,11 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
-		    
+		    alert("report.currentResumeName :"+report.currentResumeName);
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
-		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a></span></div></td>';
+			 var file =  report.currentResumeName;
+			  var fileName = file.substr(0,5);
+		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
 			  }else{
 				result = result +'<td class="text-center"><div><span>--</span></div></td>';
 			} 
@@ -4570,6 +4572,15 @@ function requirementRecommendations(requirementId){
            },
              
         }); 
+}
+</script>
+
+<script>
+function viewAssociateCandidateResumeDocView(candidateId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(candidateId != null && candidateId != ""){
+		window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
+	}  
 }
 </script>
 
@@ -6284,9 +6295,11 @@ function deleteImage(candidateId){
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
 	        	 $("#popUp").empty();

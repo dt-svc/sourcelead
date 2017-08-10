@@ -743,16 +743,24 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/deleteCandidateImage", method = RequestMethod.GET)
 	public String deleteCandidateImage(@RequestParam(value = "candidateId", required = false) String candidateId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(loginUserId);
+		StringBuffer activitySummary = new StringBuffer();
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		candidate.setDocFile(null);
 		candidate.setFileContentType(null);
+		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
 		candidate.setFileName(null);
 		candidateService.addCandidate(candidate);
+		
+		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
+		
 		return "success";
 
 	}
@@ -1336,6 +1344,7 @@ public class CandidateListRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
@@ -1344,9 +1353,12 @@ public class CandidateListRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "failed";
 		}
 	}
@@ -1363,6 +1375,7 @@ public class CandidateListRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(visaName)) {
+			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
 			can.setVisaType(visaName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
@@ -1370,9 +1383,12 @@ public class CandidateListRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
+			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
 			can.setVisaType(null);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "failed";
 		}
 	}
