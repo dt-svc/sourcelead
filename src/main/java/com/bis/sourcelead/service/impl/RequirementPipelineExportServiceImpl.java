@@ -424,9 +424,10 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	 * @param writeRow
 	 * @param requirementsub
 	 * @return
+	 * @throws Exception 
 	 * @Description : for interview candidates
 	 */
-	private Sheet createXlsSheetInterview(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) {
+	private Sheet createXlsSheetInterview(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub) throws Exception {
 		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
 			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
 		}
@@ -443,9 +444,11 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		
 		java.util.List<RequirementInterview> rquirementInterviews = requirementsub.getRequirementInterviewList();
 		StringBuilder interviewStringBuilder = new StringBuilder();
+		
+		 OrgLocations orglo = orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
 		for(RequirementInterview listInterviews:rquirementInterviews){
 			if(listInterviews.getDateOfInterview() != null && !"".equalsIgnoreCase(listInterviews.getDateOfInterview().toString())){
-				writeRow.createCell(4).setCellValue( LoginSessionController.DATEFORMAT.format(listInterviews.getDateOfInterview()));
+				writeRow.createCell(4).setCellValue( commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),listInterviews.getDateOfInterview()));
 			}
 			if(listInterviews.getStartTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getStartTimeStr()) && listInterviews.getEndTimeStr() != null && !"".equalsIgnoreCase(listInterviews.getEndTimeStr())){
 				writeRow.createCell(5).setCellValue(  interviewStringBuilder.append(listInterviews.getStartTimeStr()).append("-").append(listInterviews.getEndTimeStr()).toString());

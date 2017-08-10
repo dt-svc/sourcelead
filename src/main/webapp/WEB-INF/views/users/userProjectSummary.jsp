@@ -196,7 +196,7 @@ function prepareAssignedProjectsData(data){
 		    } 
          dt.setDate(dt.getDate());
         //Main project end date
-         var projectEndDate = opt.projectEndDateStr;
+         var projectEndDate = opt.memberEnddate;
          var endDate = "";
          /* if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
         	 var fromEnd = projectEndDate.split("-");

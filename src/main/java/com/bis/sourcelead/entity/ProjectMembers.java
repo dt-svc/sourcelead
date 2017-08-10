@@ -130,6 +130,11 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String projectName;
+	
+	@JsonProperty
+	@Transient
+	private String memberEnddate;
+	
 	@Transient
 	@JsonProperty
 	private String userId;
@@ -1235,6 +1240,16 @@ public class ProjectMembers implements Serializable {
 	public void setProjectUUID(String projectUUID)
 	{
 		this.projectUUID = projectUUID;
+	}
+
+	public String getMemberEnddate()
+	{
+		return memberEnddate;
+	}
+
+	public void setMemberEnddate(String memberEnddate)
+	{
+		this.memberEnddate = memberEnddate;
 	}
 	
 }
