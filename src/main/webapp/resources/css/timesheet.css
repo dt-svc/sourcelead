@@ -4445,7 +4445,7 @@ float: none !important; padding: 2px 5px; color: #333;
 }
  
 .gridFil {
-    position: absolute; right: -30px; top: -15px;
+    position: absolute; right: 0px; top: -15px;
 }
 .gridFil i {
     display: block; padding: 6px 0px 0px 0px; font-size: 18px; background-color: #ededed; cursor: pointer; color: #666;
@@ -4985,7 +4985,7 @@ top: -50px !important; right: 25px !important;
 display: inline-block !important; padding: 6px; font-size: 20px; margin: 0px 0px 0px 8px; color: #333;
 }
 .expAttView:hover {
-color: #33c38e;
+color: #368ee0;
 }
 .chosen-container {
     width: 100% !important;
@@ -5196,7 +5196,7 @@ width: 48%; margin: 0px 0.5%;
 	border-color: rgba(136, 183, 213, 0); border-top-color: #a21e23; border-width: 12px; margin-left: -12px;
 }
 
-/*    Org Chart CSS   */
+	/*    Org Chart CSS   */
 
 .timesheetAttachment .Cred, .project_wrap_table .Cred {
     color: #ef3d3d !important;
@@ -5215,6 +5215,12 @@ td.tbldata-dotdot_50 {
 padding: 0px 10px 0px 25px !important;
 }
 
-
+.ProImgPosit {
+    bottom: 33px !important; left: 10px !important; width: auto !important;
+}
+.compNoRecords {
+    background-color: #fff; height: 500px; background-image: url(../images/norecords.jpg);
+    background-repeat: no-repeat; background-position: center; background-size: 190px; display: block;
+}
 
 
