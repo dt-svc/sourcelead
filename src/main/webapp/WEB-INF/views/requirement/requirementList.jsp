@@ -1808,7 +1808,6 @@ function searchRequirement(){
 			var url = sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}";
 			url += "&"+$($('#requirement_form')[0]).serialize();
 			
-			alert(url);
 			$("#search_requiremet").attr("disabled", "disabled");
 			$("#search_requiremet").addClass('button').val('Processing..');
 
