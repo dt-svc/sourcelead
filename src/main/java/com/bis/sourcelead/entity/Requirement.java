@@ -842,7 +842,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public Date getCreatedDate() {
-		String postedOnStr = "";
 		if(createdDate != null){
 			postedOnStr = Constants.DF_DMY.format(createdDate);
 		}
@@ -1625,7 +1624,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		}
 		return requirementReleasedUserIds;
 	}
-	
+	public void setRequirementReleasedUserIds(List<Long> requirementReleasedUserIds) {
+		this.requirementReleasedUserIds = requirementReleasedUserIds;
+	}
+
 	public String getPostedOnStr() {
 		return postedOnStr;
 	}
