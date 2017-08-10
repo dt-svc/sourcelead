@@ -407,7 +407,7 @@
      this script is for saving document
      1.usage     : onclick
      2.parameter : candidateId.
-     3.ajax url implementation in CandidateDocumentRestController.
+     3.ajax url implementation in CandidateReferencesRestController.
 --%>
 <script type="text/javascript">
 	function storeCandidateReferences(candidateId) {
@@ -674,7 +674,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 										result = result + '</div>';
 										result = result + '</div>';
 

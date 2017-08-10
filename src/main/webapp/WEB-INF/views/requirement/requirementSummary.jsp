@@ -4381,7 +4381,7 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+');" class="proj_show tbldata-dotdot-me"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
+		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+','+report.finalScore+');" class="proj_show tbldata-dotdot-me"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
 		    if(report.finalScore != null && report.finalScore != '' && report.finalScore != 'undefined'){
 				  if(report.finalScore >=50){ 
 				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
@@ -4613,7 +4613,7 @@ function popClose(){
 
 <script>
 var candidateStatusGlobal ="";
-function clientSideBar(candidateId){
+function clientSideBar(candidateId,recScore){
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
@@ -4711,9 +4711,14 @@ function clientSideBar(candidateId){
 			             
 			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
 			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well well-sm text-center clearfix">';
-						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+			             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
+						 result = result+' <div class="profile-img-container profile-image text-center">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 if(recScore != null && recScore != '' && recScore != 'undefined'){
+							  if(recScore >=50){ 
+							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+							  }
+						  }
 						 result = result+'  <div class="btn-group uploadfile">';
 						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 result = result+'  <i class="fa fa-upload"></i></button>';
@@ -4724,6 +4729,7 @@ function clientSideBar(candidateId){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
+					     
 						 result = result+'  </div>';
 						 result = result+'  </div>';
 						 result = result+'  </div>';
@@ -5209,7 +5215,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + ' </div>';
 		                     
 		                     result = result + '  <div class="form-group col-md-12">';
-		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason"></textarea>';
+		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
 		                     result = result + '  </div>';
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';

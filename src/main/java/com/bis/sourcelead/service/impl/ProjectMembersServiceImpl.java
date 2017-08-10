@@ -214,14 +214,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		for (ProjectMembers projectMembers : allProjectsList) {
 			projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
 			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+			 OrgLocations orglo = orgLocationService.getOrgLocations( projectMembers.getProjects().getOrgLocationsId().getId());	
 			 if(pmh == null){
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 projectMembers.setStartDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectAssignedDate()));
+				 projectMembers.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectAssignedDate()));
              }
         	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-        		 projectMembers.setEndDate(LoginSessionController.DATEFORMAT.format(pmh.getProjectTerminationDate()));
+        		 projectMembers.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),pmh.getProjectTerminationDate()));
         	 }
         	 
         	 /*projectMembers.setStartDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectAssignedDate()));
@@ -229,7 +230,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				projectMembers.setEndDate(com.bis.sourcelead.constants.Constants.DF_YMD.format(projectMembers.getProjectEndDate()));
 			}*/
 			if (projectMembers.getProjects().getEndDate() != null) {
-				projectMembers.setProjectEndDateStr(LoginSessionController.DATEFORMAT.format(projectMembers.getProjects().getEndDate()));
+				projectMembers.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMembers.getProjects().getEndDate()));
 			}
 	        Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(userId, projectMembers.getProjects().getId(), "DRAFT");
 	        Float draftTimesheetsSubmissionsCountAsApprover = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForApprover(userId, projectMembers.getProjects().getId(), "DRAFT");
@@ -698,7 +699,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId, Long orgLocationId) throws Exception
 	{
 		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectsByUserId(userId);
-		
+		Float finalExpenseAmount = 0f;
 		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orglo.getLocFullFormDateFormatter();
 		for (ProjectMembers projectMember : projectMembersList) {
@@ -719,7 +720,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				}
 				
 				if(projectMember.getProjects() != null){
-					projectMember.setProjectEndDateStr(conversionUtil.getDateAsString(projectMember.getProjects().getEndDate()));
+					projectMember.setMemberEnddate(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projectMember.getProjects().getEndDate()));
 				}
 				
 				if (pmh.getProjectAssignedDate() != null
@@ -735,11 +736,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				}
 				if (projectMember.getProjects() != null) {
 					if (projectMember.getProjects().getStartDate() != null) {
-						Date empStaerDate = projectMember.getProjects().getStartDate();
-						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), empStaerDate, commonUtil.currentDate());
+						List<Expenses> expensesClaimendAmount = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(), null, null);
 						if (expensesClaimendAmount != null && !expensesClaimendAmount.isEmpty()) {
 							for (Expenses exp : expensesClaimendAmount) {
-								projectMember.setUserExpensesClaimedAmount(exp.getTotalAmount());
+								finalExpenseAmount = finalExpenseAmount + exp.getTotalAmount();
+								projectMember.setUserExpensesClaimedAmount(finalExpenseAmount);
 							}
 						}
 					}
