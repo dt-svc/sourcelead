@@ -322,7 +322,7 @@
 		result = result
 				+ '<option  id="friend" value="Friend">Friend</option>';
 		result = result
-				+ '<option  id="neighborhood" value="Neighborhood">Neighborhood</option>';
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
 				
 		result = result + ' </select>';
 		result = result + '</div>';
@@ -697,9 +697,9 @@
 												
 										result = result
 												+ '<option  '
-												+ (json.relation == "Neighborhood" ? "selected"
+												+ (json.relation == "Neighbour" ? "selected"
 														: '')
-												+ '>Neighborhood</option>';		
+												+ '>Neighbour</option>';		
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';
