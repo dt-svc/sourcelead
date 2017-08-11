@@ -1205,7 +1205,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType,orgLocations);
 			int column = 0;
 			for (Invoice invoice : invoiceList) {
 				writeRow = createExcelsheet.createRow(column + 10);
@@ -1298,14 +1298,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
 	}
 	
-	if(null != invoice.getLinkInvoiceReferenceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))){
-		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceReferenceId()));
+	if(null != invoice.getLinkInvoiceRefInvoiceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()))){
+		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()));
 	}
 		
 	return createExcelsheet;
 	}
 
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType, OrgLocations orgLocations) {
 	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
@@ -1329,7 +1329,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell3.setCellStyle(style);
 
 	Cell cell4 = writeRow.createCell(1);
-	cell4.setCellValue(exportStartDate +" - "+exportEndDate);
+	cell4.setCellValue(exportStartDate+ " - " +exportEndDate);
 	cell4.setCellStyle(style);
 
 	writeRow = createExcelsheet.createRow(3);
