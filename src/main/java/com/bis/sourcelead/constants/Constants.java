@@ -805,6 +805,9 @@ public class Constants {
 	public static final String CANDIDATE_REFERENCES_UPDATED = "updated references";
 	public static final String CANDIDATE_COMMENTS_NEW = "posted new comment";
 	public static final String CANDIDATE_ADDED_FROM_JOB = "added candidate through ";
+	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
+	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
+	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
