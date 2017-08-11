@@ -1449,7 +1449,7 @@ function makeAsPublicVisibility(){
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 		
-		//Adding Customized Visa to the list
+		/* //Adding Customized Visa to the list
         var select, chosen;
 	    select = $("#visaName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
@@ -1481,7 +1481,7 @@ function makeAsPublicVisibility(){
 			                }
 					       
 		    	         }
-	    	});
+	    	}); */
 	    
 	    
 	    //Adding Customized Skills to the list
