@@ -2387,8 +2387,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			List<MultipartFile> attachedfileList, String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory)
 					throws Exception {
 
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
 
 		Invoice invoice = null;
 
@@ -2473,11 +2472,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 
 		if (jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))) {
-			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
+			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
 		}
 		if (jsonObj.has("dueDate") && !"".equalsIgnoreCase(jsonObj.getString("dueDate"))) {
-			Date dueDate = format.parse(jsonObj.getString("dueDate"));
+			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("dueDate"));
 			invoice.setDueDate(dueDate);
 		}
 
