@@ -803,13 +803,24 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
 		    	if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() == orgLocations.getId().longValue()){
-		    		Candidate candidate = candidateService.getCandidateByCandidateId(requirementOffers.getSubmissionId().getCandidate().getId());
-			    	candidate.setIsAssociate(Constants.YES);
-			    	candidate.setUpdatedBy(loginUser.getUserCode());
-			    	candidate.setUpdatedDate(commonUtil.currentDate());
-			    	
+		    		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),orgLocations.getId());
+			    	if(candidate != null){
+			    		candidate.setIsAssociate(Constants.YES);
+				    	candidate.setUpdatedBy(loginUser.getUserCode());
+				    	candidate.setUpdatedDate(commonUtil.currentDate());	
+			    	}else{
+			    		candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    		candidate.setCreatedBy(loginUser.getUserCode());
+			    		candidate.setUpdatedBy(loginUser.getUserCode());
+			    	}
 			    	candidateService.saveOrUpdateCandidate(candidate);
 			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			    	
+			    	if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+			    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+			    		   addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    	}
+			    	
 		    	}else{
 		    		Candidate candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
 		    		candidate.setCreatedBy(loginUser.getUserCode());
@@ -1261,7 +1272,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Override
 	public Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception {
 		
-		Candidate candidate = candidateService.findByCandidateEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
+		RequirementSubmission clientSubmission = null;
+		Candidate candidate = null; 
+		
+		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
+			candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+		}else{
+			candidate = candidateService.findByCandidateEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
+		}
+		
 		if(candidate == null){
 			candidate = new Candidate();
 			MasterCandidate masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
@@ -1286,33 +1307,49 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		candidate.setExperienceMonths(templateFields.getCandidateWorkExperienceMonths().toString());
     			}
     		}
-    		candidate.setOrgLocationId(orgLocations);
+    		
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-    		
     		candidate.setDesignationType("C2C");
-    		OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());
-    		if(orgRelations != null){
-    			candidate.setOrgRelationId(orgRelations);
-    			Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
-    			if(orgSpocList != null){
-    				for(OrgSpoc orgSpoc : orgSpocList){
-    					if(orgSpoc.getVendorUser().getUserCode().equalsIgnoreCase(requirementOffers.getSubmissionId().getCreatedBy())){
-    						candidate.setSpocId(orgSpoc);
-    					}
-    				}
-    			}
+    		
+    		if(requirementSubmission.getSourceSubmission() != null){
+    			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());
+        		if(orgRelations != null){
+        			candidate.setOrgRelationId(orgRelations);
+        			Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+        			if(orgSpocList != null){
+        				for(OrgSpoc orgSpoc : orgSpocList){
+        					if(orgSpoc.getVendorUser().getUserCode().equalsIgnoreCase(requirementOffers.getSubmissionId().getCreatedBy())){
+        						candidate.setSpocId(orgSpoc);
+        					}
+        				}
+        			}
+        		}
+        		candidate.setOrgLocationId(orgLocations);
+        		candidate.setIsAssociate(Constants.YES);
+    		}else{
+    			candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
+    			candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
+    			candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+    			candidate.setIsAssociate(Constants.NO);
     		}
     		
-    		candidate.setIsAssociate(Constants.YES);
+    		
+    		
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
     		candidateService.saveOrUpdateCandidate(candidate);
 	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 	    	
-	    	requirementSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
-	    	requirementSubmission.setCandidate(candidate);
-	    	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+	    	if(requirementSubmission.getSourceSubmission() != null){
+	    		requirementSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+		    	requirementSubmission.setCandidate(candidate);
+		    	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+	    	}else{
+	    		clientSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+	    		clientSubmission.setCandidate(candidate);
+	    		requirementSubmissionService.storeRequirementSubmission(clientSubmission);
+	    	}
     		
 		}
 		return candidate;

@@ -2600,4 +2600,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 }
 		     return shortListCandidatesList;
 		}
+
+		@Override
+		@Transactional
+		public RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(
+				Long sourceSubmissionId, Long vendorLocationId) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+		     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.sourceSubmission.id =:sourceSubmissionId and rs.vendorLocationId.id =:vendorLocationId ";
+		     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "sourceSubmissionId", sourceSubmissionId).setLong( "vendorLocationId", vendorLocationId).setCacheable(true).list();
+		   
+		     if(shortListCandidatesList != null && shortListCandidatesList.size() >0){
+					return shortListCandidatesList.get(0);
+				}
+				return null;
+		}
 }
