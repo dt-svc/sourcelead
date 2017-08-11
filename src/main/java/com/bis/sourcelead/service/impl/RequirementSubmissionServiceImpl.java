@@ -4637,4 +4637,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmission;
 	}
 
+	@Override
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(
+			OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer)
+			throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(orgLocations, requirementId, existingApplicantsIds, isClientOffer);
+	}
+
 }

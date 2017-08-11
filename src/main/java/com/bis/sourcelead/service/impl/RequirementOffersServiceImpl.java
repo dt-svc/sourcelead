@@ -158,12 +158,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					
 					     for(int i=0 ;i<applicants.length;i++ ){
 					    	     requirementOffers  = new RequirementOffers();
-								RequirementSubmission submission = new RequirementSubmission();
-								submission.setId(Long.parseLong(applicants[i].replace("\"", "")));
+								RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 								requirementOffers.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"joiningDate") && jsonObj.getString(c+"joiningDate") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"joiningDate"))){
-									requirementOffers.setDateOfJoining(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(c+"joiningDate")));
+									requirementOffers.setDateOfJoining(commonUtil.orgLocationDateFormat(submission.getOrgLocations().getDateFormat(),jsonObj.getString(c+"joiningDate")));
 								}
 								
 								if(jsonObj.has(c+"PaymentType") && !jsonObj.getString(c+"PaymentType").isEmpty()){
@@ -203,7 +202,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                                
                                 requirementOffers.setOfferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
-								requirementOffers.setOfferStatus(Constants.OFFERMADE);
+								 if(jsonObj.has("isClientOffer")){
+									 requirementOffers.setOfferStatus(Constants.CLIENT_OFFERMADE);
+								 }else{
+									 requirementOffers.setOfferStatus(Constants.OFFERMADE);
+								 }
+								
 								requirementOffers.setCreatedDate(new Date());
 								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
@@ -226,12 +230,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           //to save offer history
 					           RequirementOfferHistory offerHistory = new RequirementOfferHistory();
 					           offerHistory.setOfferId(updateOffer);
-					           offerHistory.setSubmissionId(submission);
 					           offerHistory.setOrgLocationId(orgLocations);
-					           if(jsonObj.has("isClientOffer")){
+					           if(jsonObj.has("isClientOffer") && submission.getSourceSubmission() != null){
 					        	   offerHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+					        	   offerHistory.setNotifyToVendor(Constants.NO);
+					        	   offerHistory.setSubmissionId(submission.getSourceSubmission());
 					           }else{
 					        	   offerHistory.setOfferSourceType(Constants.OFFERMADE);
+					        	   offerHistory.setSubmissionId(submission);
 					           }
 					           if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
 					        	   offerHistory.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
@@ -246,6 +252,19 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           offerHistory.setUpdatedDate(new Date());
 					           offerHistory.setUpdatedBy(loginUser.getUserCode());
 					           requirementOfferHistoryService.storeRequirementOfferHistory(offerHistory);
+					           
+					           if(jsonObj.has("isClientOffer") && submission.getSourceSubmission() != null){
+					        	   RequirementOfferHistory clientOfferHistory = new RequirementOfferHistory();
+					        	   clientOfferHistory.setOfferId(updateOffer);
+					        	   clientOfferHistory.setOrgLocationId(submission.getOrgLocations());
+					        	   clientOfferHistory.setOfferSourceType(Constants.OFFERMADE);
+					        	   clientOfferHistory.setSubmissionId(submission);
+					        	   clientOfferHistory.setNotifyToVendor(Constants.YES);
+					        	   clientOfferHistory.setNotifyToApplicant(Constants.YES);
+					        	   clientOfferHistory.setStatus(Constants.RECORD_ACTIVE);
+					        	   clientOfferHistory.setCreatedDate(new Date());
+						           requirementOfferHistoryService.storeRequirementOfferHistory(clientOfferHistory);
+					           }
 					           
 					           
 					           
@@ -783,7 +802,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				  }
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
-		    	if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		    	if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() == orgLocations.getId().longValue()){
 		    		Candidate candidate = candidateService.getCandidateByCandidateId(requirementOffers.getSubmissionId().getCandidate().getId());
 			    	candidate.setIsAssociate(Constants.YES);
 			    	candidate.setUpdatedBy(loginUser.getUserCode());
@@ -792,7 +811,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			    	candidateService.saveOrUpdateCandidate(candidate);
 			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		    	}else{
-		    		Candidate candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,orgLocations);
+		    		Candidate candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
 		    		candidate.setCreatedBy(loginUser.getUserCode());
 		    		candidate.setUpdatedBy(loginUser.getUserCode());
 		    		candidateService.saveOrUpdateCandidate(candidate);

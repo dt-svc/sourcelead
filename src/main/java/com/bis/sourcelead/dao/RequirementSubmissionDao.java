@@ -197,4 +197,6 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation);
 
 	List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate);
+	
+	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception;
 }

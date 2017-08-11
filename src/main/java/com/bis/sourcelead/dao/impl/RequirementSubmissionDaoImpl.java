@@ -2578,4 +2578,26 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	        	
 	        }
 		}
+
+		@Override
+		@Transactional
+		public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(
+				OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer)
+				throws Exception {
+			
+			  Session session = this.sessionFactory.getCurrentSession();
+			
+			  String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION') "; 
+			 
+			 
+			 List<RequirementSubmission> shortListCandidatesList;
+			 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
+				 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" ";
+				 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).setCacheable(true).list();
+			 }else{
+				 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+"";
+				 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setCacheable(true).list();
+			 }
+		     return shortListCandidatesList;
+		}
 }

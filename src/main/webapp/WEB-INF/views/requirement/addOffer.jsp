@@ -70,7 +70,6 @@ function addOffer(requirementId){
 				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
-					result= result + ' <label>';
 					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
 				} 
 				
