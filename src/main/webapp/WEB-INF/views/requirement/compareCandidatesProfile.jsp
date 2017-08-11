@@ -251,7 +251,7 @@ function prepareCandidateGrid(data,requirementId){
 				    }
 			    	var rate ="";
 				    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
-				    	rate = report.expectedRate + ' ' + report.rateType;
+				    	rate = report.expectedRate + ' / ' + report.rateType;
 				    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 				    	rate = report.expectedRate;
 				    }else{
@@ -459,7 +459,7 @@ function candidateDiv(report,div,requirementId){
 	    
 	   	var rate ="";
 	    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
-	    	rate = report.expectedRate + ' ' + report.rateType;
+	    	rate = report.expectedRate + ' / ' + report.rateType;
 	    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 	    	rate = report.expectedRate;
 	    }else{
