@@ -29,7 +29,6 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
@@ -56,9 +55,6 @@ public class InvoiceController {
 	 
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
-   
-    @Autowired
-	private ProjectsService projectsService;
 	
 	@Autowired
 	private InvoiceService invoiceService;
