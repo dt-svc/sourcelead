@@ -430,6 +430,7 @@
 						$("#editClientDetailsDiv").empty();
 				        $("#editClientDetailsDiv").append(result);
 				        initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
+				        zipcodeMask(country,'clientZipCode');
 				        $(function(){
 				            var config = {
 				        		  '.chosen-select'           : {},

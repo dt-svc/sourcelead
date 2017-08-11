@@ -1,10 +1,10 @@
 package com.bis.sourcelead.dto.helper;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.ExpensesEntryDocumentsDTO;
@@ -23,6 +23,9 @@ public class ExpensesEntriesDTOConverter {
 		expensesEntriesDTO.setReceiptIssuedBy(expensesEntries.getReceiptIssuedBy());
 		expensesEntriesDTO.setCurrencyType(expensesEntries.getCurrencyType());
 		expensesEntriesDTO.setAmount(expensesEntries.getAmount());
+		BigDecimal totalAmo = new BigDecimal(expensesEntries.getAmount());
+		BigDecimal amountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		expensesEntriesDTO.setAmountRoundOff(amountRoundOff);	
 		expensesEntriesDTO.setDescription(expensesEntries.getDescription());
 		if(expensesEntries.getExpensesCategoryId() != null){
 			expensesEntriesDTO.setExpensesCategoryId(ExpenseCategoryDTOConverter.getExpensesCategoryDTOFromExpensesCategory(expensesEntries.getExpensesCategoryId()));

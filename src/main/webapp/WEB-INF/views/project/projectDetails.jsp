@@ -218,6 +218,7 @@
 							result = result + '	</div>';
 						}
 						
+						
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						result = result + '<span title="'+clientName+'">'+clientName+'</span><div class="clearfix"></div>';
@@ -498,8 +499,8 @@
 							result = result + '</div>';
 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
-						result = result + '	<label>Client</label>';
-
+// 						result = result + '	<label class="user_summary_edit_cta projectdetails_checkbox">Is Client Project ? <input type="checkbox" valu="" name="isclient"></label>';
+						result = result + '	<label class="user_summary_edit_cta projectdetails_checkbox">Is Client Project </label>';
 						if (json.relationId != null) {
 							result = result	+ '<select class="noImg" id="clientId" disabled="disabled" name="clientId">';
 						} else {

@@ -607,9 +607,11 @@ function deleteImage(candidateId){
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
 	        	 $("#popUp").empty();
