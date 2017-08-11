@@ -214,7 +214,8 @@ function getExpensesList(){
 			        			  noOfExpenses = "--";
 			        		  }
 			        		  if(report.totalAmount != null && report.totalAmount != '' && report.totalAmount != 'undefined'){
-			        			  totalAmount = report.totalAmount;
+			        			  var  numb = report.totalAmount.toFixed(2);
+			        			  totalAmount = numb;
 			        		  }else{
 			        			  totalAmount = "--";
 			        		  }

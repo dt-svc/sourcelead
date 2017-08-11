@@ -22,8 +22,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -50,6 +56,16 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 
 	@Autowired
 	private SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
+	
+	@Autowired
+	private ProjectsDao projectsDao;
+	
+	@Autowired
+	private OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	private ProjectMembersDao projectMembersDao;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetSubmissionsDaoImpl.class);
 	
@@ -131,12 +147,15 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	
 	/**
 	 * This method gives startDate of coming week from the existing submission records if exists
+	 * @throws Exception 
 	 *
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Date getNextMondayByProjectMemberId(Long pojectMemberId) {
+	public Date getNextMondayByProjectMemberId(Long pojectMemberId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(pojectMemberId);
+		Projects projects = projectsDao.getProjectById(projectMembers.getProjects().getId());
          String query = "select MAX(ts.startDate) from TimesheetSubmissions ts  where ts.projectMembers.id =:pojectMemberId and ts.status = '1' ";
          List<java.sql.Timestamp>  wtsList = (List<java.sql.Timestamp>)session.createQuery(query).setLong("pojectMemberId", pojectMemberId).list();
          Date date = null;
@@ -146,7 +165,7 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
          		Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				startCal.setLenient(false);
 				startCal.setTime(new Date(sqlDate.getTime()));
-				Calendar monday = CalendarUtil.getNextWeekDayByCalendar(startCal, "MON");
+				Calendar monday = CalendarUtil.getNextWeekDayByCalendar(startCal, "MON",projects.getOrgLocationsId().getDateFormat());
 				date = monday.getTime();
          	}
           }
@@ -795,15 +814,14 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<TimesheetSubmissions> getWeekFrequency(Long projectId,Long locationsId,Long userId) throws Exception {
-		
+		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(locationsId);
 		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
 		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
-		
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
 		
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
 		
 		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		Date previousWeekStartDate = previousMonday.getTime();
@@ -826,12 +844,12 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception {
 		Date currentWeekStartDate = CalendarUtil.getCurrentWeekDay("MON");
 		java.sql.Date  currentWeekStartDayDate = new java.sql.Date(currentWeekStartDate.getTime());
-		
+		Projects project = projectsDao.getProjectById(projectId);
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
 		
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",project.getOrgLocationsId().getDateFormat());
 		
 		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		Date previousWeekStartDate = previousMonday.getTime();

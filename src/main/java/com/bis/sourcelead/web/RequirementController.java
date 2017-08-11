@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -1035,5 +1036,58 @@ public class RequirementController {
 	sos.close();
 
 }	
+
+@RequestMapping(value = "/viewOfferDocument/{title}", method = RequestMethod.GET)
+public void viewOfferDocument(@RequestParam(value="offerId", required=false) String offerId,
+		@PathVariable(value="title") String title,
+		HttpServletResponse response) throws Exception {
+ 
+	 RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(Long.parseLong(offerId));
+	 byte[] pdfBytes = null;
+		if("application/pdf".equalsIgnoreCase(requirementOffers.getFileContentType())){
+			pdfBytes = requirementOffers.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(requirementOffers.getDocFile());
+		}
+		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    ServletOutputStream sos = response.getOutputStream();
+	  	    if(null != pdfBytes){
+	  	    	response.setContentLength(pdfBytes.length);
+	  	    	sos.write(pdfBytes);
+	  	    }
+	          sos.flush();
+	          sos.close();
+
+} 
+
+
+@RequestMapping(value = "/viewOffersListAttachment/{title}", method = RequestMethod.GET)
+public void viewOffersListAttachment(@RequestParam(value="offerId", required=false) String offerId,
+		@PathVariable(value="title") String title,
+		HttpServletResponse response) throws Exception {
+	
+	 RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferId(Long.parseLong(offerId));
+	 byte[] pdfBytes = null;
+		if("application/pdf".equalsIgnoreCase(requirementOffers.getFileContentType())){
+			pdfBytes = requirementOffers.getDocFile();
+		}
+		else{
+			 pdfBytes = pdfConversionUtil.convertDocToPdf(requirementOffers.getDocFile());
+		}
+		 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+	  	    response.setContentType("application/pdf");
+	  	    ServletOutputStream sos = response.getOutputStream();
+	  	    if(null != pdfBytes){
+	  	    	response.setContentLength(pdfBytes.length);
+	  	    	sos.write(pdfBytes);
+	  	    }
+	          sos.flush();
+	          sos.close();
+
+} 
+
+
 	
 }

@@ -263,7 +263,8 @@ public class ProjectsServiceTest {
 				if("Admin".equalsIgnoreCase(userRole.getUserType()))
 					continue;
 					String level ="";
-					DateFormat format = Constants.DF_DMY;
+					DateFormat format = Constants.DF_STD_FORMAT;
+					String dateFormart = "MM-dd-yyyy";
 					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"scheduler");
 					LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 					if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
@@ -276,7 +277,7 @@ public class ProjectsServiceTest {
 							Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 							currentCal.setLenient(false);
 							currentCal.setTime(new Date());
-							Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "FRI");
+							Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "FRI",dateFormart);
 							
 				             Boolean flag = true;
 				            /* if(CalendarUtil.getNumberOfDays(frequencyEndDate,currentMonday.getTime()) <-2){
@@ -376,7 +377,7 @@ public class ProjectsServiceTest {
 										 }
 										 
 										 for(TimesheetSubmissions ts1 :timesheetSubmissions){
-											 frequency.add("<b>"+Constants.DMY.format(ts1.getStartDate())+" To "+Constants.DMY.format(ts1.getEndDate()));
+											 frequency.add("<b>"+Constants.DF_STD_FORMAT.format(ts1.getStartDate())+" To "+Constants.DF_STD_FORMAT.format(ts1.getEndDate()));
 										   }
 									    if(frequency != null && !frequency.isEmpty()){
 										 tempHTML.append("<td>"+frequency.stream().collect(Collectors.joining("<br/>"))+"</td>");

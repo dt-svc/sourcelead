@@ -2,7 +2,7 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
  <!-- Applicant Authorization -->
-      <div class="col-md-6">
+      <div class="col-md-12 pdRight pdLeft">
         <div class="dashboard-widget">
           <h4 class="clearfix">Applicant Permission
           </h4>
@@ -12,7 +12,7 @@
   		<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>
    		 </div>
             <ul class="nav nav-tabs">
-              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Request Sent</a></li>
+              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
               <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
                  <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
             </ul>

@@ -138,7 +138,7 @@
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
+          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
           </div>
         </div>
         

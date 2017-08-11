@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -162,8 +163,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	
 	@Override
-	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
-		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId,OrgLocations orgLocations) throws Exception {
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId,orgLocations);
 		return projectMembersList;
 		
 	}
@@ -781,34 +782,29 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			Long orgRelationId) throws Exception {
 
 		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
-		List<ProjectMembers> pmList = new ArrayList<>();
-		for(ProjectMembers pm:pmList) {
-			
-		}
-		
-		
+
+		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
+				.filter(item -> item.getEmployee().getUser().getCandidateSet().stream()
+						.filter(predicate -> predicate.getOrgRelationId().getId().longValue() == orgRelationId)
+						.findAny().isPresent())
+				.collect(Collectors.toList());
 		projectMemberList.forEach(pm -> {
 			try {
-				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(
-						pm.getEmployee().getUser().getId(), orgLocationId, orgRelationId);
-				if (candidate != null) {
-					StringBuilder sb = new StringBuilder();
-					if (pm.getEmployee().getUser().getLastName() != null) {
-						sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
-								.append(pm.getEmployee().getUser().getLastName());
-					} else {
-						sb.append(pm.getEmployee().getUser().getFirstName());
-					}
-					pm.setEmpName(sb.toString());
-					pmList.add(pm);
+				StringBuilder sb = new StringBuilder();
+				if (pm.getEmployee().getUser().getLastName() != null) {
+					sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
+							.append(pm.getEmployee().getUser().getLastName());
+				} else {
+					sb.append(pm.getEmployee().getUser().getFirstName());
 				}
-				
+				pm.setEmpName(sb.toString());
+
 			} catch (Exception exception) {
 				logger.error(ExceptionUtils.getFullStackTrace(exception));
 			}
 
 		});
-		return pmList;
+		return projectMemberfilteredList;
 	}
 
 }
