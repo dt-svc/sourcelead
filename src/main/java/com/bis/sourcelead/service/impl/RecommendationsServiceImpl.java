@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +27,6 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -36,8 +34,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
-import com.itextpdf.text.log.SysoLogger;
 
 @Service
 public class RecommendationsServiceImpl implements RecommendationsService{
@@ -49,6 +47,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	 @Autowired
 	 private CandidateService candidateService;
+	 
+	 @Autowired
+	 private CommonUtil commonUtil;
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -78,7 +79,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = recommendationsDao.getRequirementByRequirementId(requirementId);
-		requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
+		requirement.setRequirementCreatedDateToString(commonUtil.elkDateFormatter(requirement.getCreatedDate()));
 		return requirement;
 	}
 

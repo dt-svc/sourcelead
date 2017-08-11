@@ -159,7 +159,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 										      jsonObj.getString(c+"startTime"));
 									String currentTimeStr = Constants.TZ_DF.format(startTime);  
 									String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
-									Date converteDate = Constants.DF_YMD.parse(startTimeUTC);
+									Date converteDate = commonUtil.dateFromElk(startTimeUTC);
 									requirementInterview.setDateOfInterview(converteDate);
 								}
 								
@@ -584,7 +584,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				      jsonObj.getString("startTime"));
 			String currentTimeStr = Constants.TZ_DF.format(startTime);  
 			String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
-			Date converteDate = Constants.DF_YMD.parse(startTimeUTC);
+			Date converteDate = commonUtil.dateFromElk(startTimeUTC);
 			requirementInterview.setDateOfInterview(converteDate);
 		}
 		
@@ -671,7 +671,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),proposeDate),  proposeTime);
 			String currentTimeStr = Constants.TZ_DF.format(startTime);  
 			String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
-			Date converteDate = Constants.DF_YMD.parse(startTimeUTC);
+			Date converteDate = commonUtil.dateFromElk(startTimeUTC);
 			requirementInterview.setDateOfInterview(converteDate);
 		}
 		

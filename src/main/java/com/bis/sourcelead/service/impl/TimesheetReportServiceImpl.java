@@ -266,7 +266,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	                    <th>Rate</th>            ");
 			
 			LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
@@ -544,7 +544,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 //Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 		 int tdSpanLength = 6;
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();
@@ -842,7 +842,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 //Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 		 int tdSpanLength = 6;
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();

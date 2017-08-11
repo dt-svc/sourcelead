@@ -51,7 +51,7 @@ public interface TimesheetSubmissionsService {
     
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
-    public Date getNextMondayByProjectMemberId(Long pojectMemberId);
+    public Date getNextMondayByProjectMemberId(Long pojectMemberId) throws Exception;
     
     public Integer getTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus)throws Exception;
 

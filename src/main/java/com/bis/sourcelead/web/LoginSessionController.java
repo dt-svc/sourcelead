@@ -774,7 +774,7 @@ public class LoginSessionController {
 		try {
 			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
-			setSessionOrgLocationAttributesDateFormat(orgLocations);
+			//setSessionOrgLocationAttributesDateFormat(orgLocations);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,orgLocations,request);
 			
@@ -958,11 +958,11 @@ public class LoginSessionController {
 		}
 	}
 	
-	public static DateFormat DATEFORMAT;
+	/*public static DateFormat DATEFORMAT;
 	private void setSessionOrgLocationAttributesDateFormat(OrgLocations orgLocations){
 	
 		DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());	
-	}
+	}*/
 	
 	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request)
 	{
