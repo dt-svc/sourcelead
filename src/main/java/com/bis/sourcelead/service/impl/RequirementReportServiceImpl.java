@@ -191,7 +191,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		List<Requirement> reqList = requirementReportDao.getRequirementStageReports(orgLocation, Status);
 		for (Requirement requirement : reqList) {
-			String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
+			String postedDate = getDateStr(requirement.getCreatedDate(), timezone,orgLocation.getDateFormat());
 			requirement.setPostedDateStr(postedDate);
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -298,21 +298,21 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
 							if(ApplicantSubmissionStatus.SUBMISSION.toString().equals(rsh.getToStage())){
-								submissionDate = getDateStr(rsh.getCreatedDate(),timezone);
+								submissionDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.SHORTLIST.toString().equals(rsh.getToStage())){
-								shortlistDate = getDateStr(rsh.getCreatedDate(),timezone);
+								shortlistDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.INTERVIEW.toString().equals(rsh.getToStage())){
-								interviewDate = getDateStr(rsh.getCreatedDate(),timezone);
+								interviewDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.OFFERMADE.toString().equals(rsh.getToStage())){
-								offerDate = getDateStr(rsh.getCreatedDate(),timezone);
+								offerDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.REQUEST_SENT.toString().equals(rsh.getToStage())){
-								requestSentDate = getDateStr(rsh.getCreatedDate(),timezone);
+								requestSentDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equals(rsh.getToStage())){
-								submitToClientDate = getDateStr(rsh.getCreatedDate(),timezone);
+								submitToClientDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.REJECTED.toString().equals(rsh.getToStage())){
-								rejectedDate = getDateStr(rsh.getCreatedDate(),timezone);
+								rejectedDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}else if(ApplicantSubmissionStatus.BACKOUT.toString().equals(rsh.getToStage())){
-								backedOutDate = getDateStr(rsh.getCreatedDate(),timezone);
+								backedOutDate = getDateStr(rsh.getCreatedDate(),timezone,orgLocation.getDateFormat());
 							}
 						}
 						applicantReport.setRequirementTitle(reqSub.getRequirement().getJobTitle());
@@ -516,7 +516,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				for(RequirementSubmission rs : requirementSubmissionList){
 						ApplicantReport applicantReport = new ApplicantReport();
 						applicantReport.setRequirementTitle(rs.getRequirement().getJobTitle());
-						applicantReport.setReceivedOn(getDateStr(rs.getUpdatedDate(),timezone));
+						applicantReport.setReceivedOn(getDateStr(rs.getUpdatedDate(),timezone,orgLocation.getDateFormat()));
 						applicantReport.setSource(rs.getCreatedUser()+'('+rs.getVendorLocationId().getOrgLocationName()+')');
 						applicantReport.setApplicantName(rs.getCandidate().getFirstName());
 						applicantReport.setStage(rs.getSubmissionStatus().toString());
@@ -826,20 +826,20 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		    	}
 		    }
 			if(null != totalList && totalList.size() >0){
-				List<AssignedRequirementReports> astoReqList = getAssignedRequirementList(totalList,timezone);
+				List<AssignedRequirementReports> astoReqList = getAssignedRequirementList(totalList,timezone,orgLocation.getDateFormat());
 				return astoReqList;
 			}
 			return null;
 	}
 
-	private List<AssignedRequirementReports> getAssignedRequirementList(List<RequirementAssignTo> totalList, Timezone timezone) throws ParseException
+	private List<AssignedRequirementReports> getAssignedRequirementList(List<RequirementAssignTo> totalList, Timezone timezone,String dateFormat) throws ParseException
 	{
 		List<AssignedRequirementReports> astoList = new ArrayList<>();
 		 for(RequirementAssignTo rato :totalList){
 				StringBuilder sb = new StringBuilder();
 				AssignedRequirementReports assignedRequirementReports = new AssignedRequirementReports();
 				assignedRequirementReports.setJobTitle(rato.getRequirementId().getJobTitle());
-				assignedRequirementReports.setPostedOn(getDateStr(rato.getRequirementId().getUpdatedDate(),timezone));
+				assignedRequirementReports.setPostedOn(getDateStr(rato.getRequirementId().getUpdatedDate(),timezone,dateFormat));
 				if(rato.getRequirementId().getManagerUserId() != null){
 					if(rato.getRequirementId().getManagerUserId().getFirstName() !=null && rato.getRequirementId().getManagerUserId().getLastName() !=null){
 						sb.append(rato.getRequirementId().getManagerUserId().getFirstName()).append(" ").append(rato.getRequirementId().getManagerUserId().getLastName());
@@ -866,7 +866,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					}
 				}
 				assignedRequirementReports.setAssignedUser(assignUserName.toString());
-				assignedRequirementReports.setAssignedOn(getDateStr(rato.getUpdatedDate(), timezone));
+				assignedRequirementReports.setAssignedOn(getDateStr(rato.getUpdatedDate(), timezone,dateFormat));
 				assignedRequirementReports.setOffered(0);
 				if(rato.getTeamId() !=null){
 					assignedRequirementReports.setTeamName(rato.getTeamId().getName());
@@ -1259,14 +1259,13 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	 * @return String
 	 * @throws ParseException
 	 */
-	private String getDateStr(Date date, Timezone timezone) throws ParseException
+	private String getDateStr(Date date, Timezone timezone,String dateFormat) throws ParseException
 	{
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat standardFormat = new SimpleDateFormat("dd-MM-yyyy");
 		String currentTimeStr = Constants.TZ_DF.format(date);
 		String currentDateInTimezone = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, timezone.getTimeZoneId(), currentTimeStr);
 		Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-		return currentDateInTimezone = standardFormat.format(converteDate);
+		return currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(dateFormat,converteDate);
 	}
 
 	@Override
