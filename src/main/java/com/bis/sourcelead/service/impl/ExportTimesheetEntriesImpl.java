@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +39,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -49,10 +48,12 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -67,8 +68,8 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
@@ -115,6 +116,9 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	EmployeesService employeesService;
 	
 	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Value("${sourceleadUrl}")
@@ -125,6 +129,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private ProjectsService projectsService;
+	
 	
 	@Autowired
 	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
@@ -155,7 +163,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		String submissionStatusStr = submissionStatus.getValue();
 		int count = 9;
 		//int lastRow = 0;
-	     Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate);
+	     Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
 		 if(tabFrequency != null && !tabFrequency.isEmpty()){
 			 Float billableHours = 0f;
 			 Float nonBillableHours =  0f;
@@ -202,21 +210,21 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				 Long sunTotHours = 0L;
 				 int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key));
 		    		switch (dayOfTheDateWithStartDate) {
-		    	        case 1:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,6);
+		    	        case 1:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,6,orgLocations.getDateFormat());
 		    	                 break;
-		    	        case 2:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0);
+		    	        case 2:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0,orgLocations.getDateFormat());
 		    	                 break;
-		    	        case 3:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,1);
+		    	        case 3:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,1,orgLocations.getDateFormat());
 		    	             break;
-		    	        case 4:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,2);
+		    	        case 4:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,2,orgLocations.getDateFormat());
 		    	            break;
-		    	        case 5: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,3);
+		    	        case 5: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,3,orgLocations.getDateFormat());
 		    	            break;
-		    	        case 6:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,4);
+		    	        case 6:  weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,4,orgLocations.getDateFormat());
 		    	              break;
-		    	        case 7: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,5);
+		    	        case 7: weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,5,orgLocations.getDateFormat());
 		    	             break;
-		    	        default:   weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0);
+		    	        default:   weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0,orgLocations.getDateFormat());
 		    	                 break;
 		           }
 		    		writeRow = sheet.createRow(count);
@@ -228,32 +236,32 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    		datecell1.setCellValue(weekMondayDate); 
 		    		datecell1.setCellStyle(style);
 		    		
-		    		String tuesDayDate =  CalendarUtil.getNextDate(weekMondayDate);
+		    		String tuesDayDate =  CalendarUtil.getNextDate(weekMondayDate,orgLocations.getDateFormat());
 		    		Cell datecell2 = writeRow.createCell(2);
 		    		datecell2.setCellValue(tuesDayDate); 
 		    		datecell2.setCellStyle(style);
 		    		
-		    		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate);
+		    		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate,orgLocations.getDateFormat());
 		    		Cell datecell3 = writeRow.createCell(3);
 		    		datecell3.setCellValue(WednesDayDate); 
 		    		datecell3.setCellStyle(style);
 		    		
-		    		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate);
+		    		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate,orgLocations.getDateFormat());
 		    		Cell datecell4 = writeRow.createCell(4);
 		    		datecell4.setCellValue(ThursDayDate); 
 		    		datecell4.setCellStyle(style);
 		    		
-		    		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate);
+		    		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate,orgLocations.getDateFormat());
 		    		Cell datecell5 = writeRow.createCell(5);
 		    		datecell5.setCellValue(FriDayDate); 
 		    		datecell5.setCellStyle(style);
 		    		
-		    		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate);
+		    		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate,orgLocations.getDateFormat());
 		    		Cell datecell6 = writeRow.createCell(6);
 		    		datecell6.setCellValue(SaturdayDate); 
 		    		datecell6.setCellStyle(style);
 		    		
-		    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate);
+		    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate,orgLocations.getDateFormat());
 		    		Cell datecell7 = writeRow.createCell(7);
 		    		datecell7.setCellValue(SundayDate);
 		    		datecell7.setCellStyle(style);
@@ -643,7 +651,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			//DateFormat format = LoginSessionController.DATEFORMAT;
 		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		        
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
@@ -766,12 +774,13 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 
 	private String[] prepareTimesheetPdfToArray(ProjectMembers projMembers,String client,String timesheetFrequency,String Stage,User user,Date startDate, Date endDate) throws Exception {
 		String[] timeSheetApprovalArray;
-			
+			Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 			StringBuilder StDateAndEndDate = new StringBuilder("");
 			StringBuilder separator = new StringBuilder(",");
-		    DateFormat format = LoginSessionController.DATEFORMAT;
+		    //DateFormat format = LoginSessionController.DATEFORMAT;
 		    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate),format.format(endDate));
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 			int flag = 0; 
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
@@ -780,8 +789,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				        Date weekStartDate;
 				        Date weekEndDate;
 					try {
-						 weekStartDate = format.parse(k.replaceAll("/", "-"));
-						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 weekStartDate = 	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+						 weekEndDate = 	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 						 if(weekStartDate.equals(weekEndDate)){
 							 StDateAndEndDate.append(flag != 0 ? separator : "" ).append(shortormat.format(weekStartDate));
 						 }else{
@@ -825,7 +834,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 	int count = 5;
-		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
+		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate,orgLocations.getDateFormat());
 			Float totalHours = 0f;
 		    Float estimatedTotalHours = 0f;
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
@@ -875,10 +884,10 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			return timeSheetApprovalArray;
 	}
 
-	private LinkedHashMap<Date, Date> getTotalCountFromStartAndEndDate(Date startDate,Date endDate) throws Exception {
+	private LinkedHashMap<Date, Date> getTotalCountFromStartAndEndDate(Date startDate,Date endDate,String dateFormat) throws Exception {
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		DateFormat format = LoginSessionController.DATEFORMAT;
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+		//DateFormat format = LoginSessionController.DATEFORMAT;
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(dateFormat,startDate), commonUtil.dateStrFromOrgDateFormatter(dateFormat,endDate),dateFormat);
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();
@@ -886,8 +895,8 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		        Date weekStartDate;
 		        Date weekEndDate;
 				try {
-					 weekStartDate = format.parse(k.replaceAll("/", "-"));
-					 weekEndDate = format.parse(v.replaceAll("/", "-"));
+					 weekStartDate = commonUtil.orgLocationDateFormat(dateFormat,k.replaceAll("/", "-"));
+					 weekEndDate = commonUtil.orgLocationDateFormat(dateFormat,v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 				} catch (Exception e) {}
 			}
@@ -994,6 +1003,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	// creating excel sheet data here depending upon input frequency.
 	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user) throws Exception {
+		Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
 		if (projMembers.getEmployee().getUser().getFullName() != null && !"".equalsIgnoreCase(projMembers.getEmployee().getUser().getFullName())) {
 			writeRow.createCell(0).setCellValue(projMembers.getEmployee().getUser().getFullName());
 			createExcelsheet.setColumnWidth(0, 10000);
@@ -1016,7 +1026,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			createExcelsheet.setColumnWidth(4, 10000);
 		}
 		int count = 5;
-			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate);
+			LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate,projects.getOrgLocationsId().getDateFormat());
 				Float totalHours = 0f;
 				Float estimatedTotalHours = 0f;
 				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getId(), startDate, endDate);
@@ -1073,7 +1083,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		StringBuilder separator = new StringBuilder(",");
 		//DateFormat format = LoginSessionController.DATEFORMAT;
 	    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-	Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate));
+	Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 	if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 		for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
     		 String  k = entry.getKey();
