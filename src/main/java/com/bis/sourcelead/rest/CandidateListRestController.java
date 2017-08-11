@@ -530,7 +530,7 @@ public class CandidateListRestController {
 					StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 					CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 					if (candidateIndex.getUpdatedDate() != null) {
-						Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
+						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
 						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
 					}
