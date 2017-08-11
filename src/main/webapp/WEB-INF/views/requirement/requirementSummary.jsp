@@ -4406,7 +4406,7 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
-		    alert("report.currentResumeName :"+report.currentResumeName);
+		   
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 			 var file =  report.currentResumeName;
 			  var fileName = file.substr(0,5);
