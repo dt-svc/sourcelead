@@ -293,10 +293,11 @@ function deleteRequestedDoc(){
  	 $("input[name='documents[]']:checked").each( function (i) {
  		 documentsIds[i] = $(this).val();
  	});
- 	 
+ 	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/acceptRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&documentsIds="+documentsIds, 
+	    	 url: sourceleadUrl+"/acceptRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
 	        success: function(result) {
 	        	candidateDocuments(candidateId);
 	        },

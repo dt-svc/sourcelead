@@ -266,9 +266,6 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			/* $("#submitForApprovalExpensesId").prop('disabled', true);
-			$("#draftForApprovalExpensesId").prop('disabled', true);
-			$("#cancelForApprovalExpensesId").prop('disabled', true); */
 			
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
@@ -285,6 +282,10 @@
 				return false;
 			}
 			else{
+				$("#submitForApprovalExpensesId").prop('disabled', true);
+				$("#draftForApprovalExpensesId").prop('disabled', true);
+				$("#cancelForApprovalExpensesId").prop('disabled', true);
+				
 				var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];

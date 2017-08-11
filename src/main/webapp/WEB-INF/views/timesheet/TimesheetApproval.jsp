@@ -21,6 +21,7 @@ $(document).ready(function() {
 		
                var sourceleadUrl ='${sourceleadUrl}';
                var frequencyMonth = $("#frequencyMonth").val();
+               var locationCode ='${SourceLeadWeb_locationCode}'; 
                if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
             	   frequencyMonth = '';
                
@@ -45,7 +46,7 @@ $(document).ready(function() {
         	   $.ajax({
 	      	          type : "POST",
 	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage,		
+        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode,		
         		      success :function(result) {
         		    	    $("#timesheetApprovalDiv").removeAttr("style");
         		    	    $("#timesheetApprovalDiv").empty();
