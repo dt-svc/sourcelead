@@ -1205,7 +1205,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType,orgLocations);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
 			for (Invoice invoice : invoiceList) {
 				writeRow = createExcelsheet.createRow(column + 10);
@@ -1305,7 +1305,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	return createExcelsheet;
 	}
 
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType, OrgLocations orgLocations) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType) {
 	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
