@@ -299,7 +299,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -386,8 +386,12 @@ function errRemoveClientContact(){
 	}
 	
 	</script>
-
-
+	
+<script>
+function remove(){
+	$('#0invoicedocFile').val("");
+}
+</script>
 
 <script>
 	function loadInvoiceDetails(invoiceUUID){
@@ -1425,7 +1429,7 @@ function calculateDiscount(){
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
 				onchange='validateContractsUploadFile(REPLACEROWID)'> <i
-				class="fa fa-times"
+				class="fa fa-times" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
 		</div>
