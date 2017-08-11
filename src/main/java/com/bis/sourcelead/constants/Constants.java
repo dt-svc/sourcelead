@@ -66,17 +66,17 @@ public class Constants {
 	public static final Integer RECORD_INACTIVE = 0;
 	public static final Integer LEVEL1 = 1;
 	public static final Integer LEVEL2 = 2;
-	/*public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static final DateFormat DF = new SimpleDateFormat("yyyy/MM/dd");
 	public static final DateFormat DF_STD = new SimpleDateFormat("yyyy/MM/dd");
-	public static final DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");*/
+	public static final DateFormat DF_YMD = new SimpleDateFormat("yyyy-MM-dd");
 	public static final DateFormat DF_STD_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
 	public static final DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
 	public static final DateFormat Y = new SimpleDateFormat("yyyy");
 	public static final DateFormat M = new SimpleDateFormat("MMMM");
 	public static final DateFormat DF_MM = new SimpleDateFormat("MM");
-	/*public static final DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
-	public static final DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");*/
+	public static final DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
+	public static final DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("ddMMM");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -805,6 +805,9 @@ public class Constants {
 	public static final String CANDIDATE_REFERENCES_UPDATED = "updated references";
 	public static final String CANDIDATE_COMMENTS_NEW = "posted new comment";
 	public static final String CANDIDATE_ADDED_FROM_JOB = "added candidate through ";
+	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
+	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
+	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
