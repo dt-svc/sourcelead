@@ -816,10 +816,6 @@ public class RequirementController {
 							requirementSubmissionHistory.setFromStage("OFFERMADE");
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
 							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-							
-							Candidate candidate = candidateService.getCandidateById(requirementSubmission.getCandidate().getId());
-							candidate.setIsAssociate(Constants.YES);
-							candidateService.addCandidate(candidate);
 					  }
 			    	
 					
@@ -828,6 +824,15 @@ public class RequirementController {
 						    requirementOffers.setOfferStatus("OFFERACCEPTED");
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
+						    
+							Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),requirementOffers.getSubmissionId().getOrgLocations().getId());
+							if(candidate != null){
+								candidate.setIsAssociate(Constants.YES);
+								candidateService.saveOrUpdateCandidate(candidate);
+						    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+							}else{
+								requirementOffersService.addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+							}
 				     }
 				      
 				      if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
