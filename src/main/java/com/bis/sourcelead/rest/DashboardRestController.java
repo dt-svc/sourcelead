@@ -824,7 +824,7 @@ public class DashboardRestController {
 			
 			String status =  "myTask";
 			if(!"".equalsIgnoreCase(dateRange)){
-				Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(dateRange);
+				Date date1 = commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 				taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 				taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
 				converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);

@@ -286,15 +286,15 @@ public class RequirementInterviewRestController {
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  	        String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
-			String pattern = "dd-MM-yyyy";
-	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+			/*String pattern = "dd-MM-yyyy";
+	        SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 RequirementInterview interview = requirementInterviewService.getRequirementInterviewById(jsonObj.getString("requirementInterviewId"));
 			int maxTaxRowCount = Integer.parseInt(jsonObj.getString("proposeNewTimeRowsNum"+interview.getId()+""));
 			 for(int i=0;i<maxTaxRowCount;i++){
 				 ProposeTime proposeTime = new ProposeTime();
 					 if(null != jsonObj.getString("interviewDate"+i) && !"".equalsIgnoreCase(jsonObj.getString("interviewDate"+i))){
-						 Date proposeDate = format.parse(jsonObj.getString("interviewDate"+i));
+						 Date proposeDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("interviewDate"+i));
 						 proposeTime.setProposeDate(proposeDate);
 					 }
 					 if(null != jsonObj.getString("time"+i) && !"".equalsIgnoreCase(jsonObj.getString("time"+i))){

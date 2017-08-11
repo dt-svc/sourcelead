@@ -2639,8 +2639,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					throws NumberFormatException, Exception {
 		Set<InvoiceLineItems> expensesinvoicelineitemsSet = new HashSet<>();
 
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		/*String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 
 		List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 
@@ -2666,7 +2666,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					if(jsonObj.has(i + "edate")){
 						if (null != jsonObj.getString(i + "edate")
 								&& !"".equalsIgnoreCase(jsonObj.getString(i + "edate"))) {
-							Date expenseDate = format.parse(jsonObj.getString(i + "edate"));
+							Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i + "edate"));
 							invoiceLineItems.setStartDate(expenseDate);
 						}	
 					}
