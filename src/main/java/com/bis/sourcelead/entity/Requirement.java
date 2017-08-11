@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,7 +23,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
@@ -842,10 +842,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public Date getCreatedDate() {
-		if(createdDate != null){
-			postedOnStr = Constants.DF_DMY.format(createdDate);
-		}
-		setPostedOnStr(postedOnStr);
+		
 		return createdDate;
 	}
 
@@ -1629,6 +1626,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getPostedOnStr() {
+		if(createdDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			postedOnStr = dateFormat.format(createdDate);	
+		}
 		return postedOnStr;
 	}
 

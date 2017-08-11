@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
@@ -11,9 +12,13 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class ProjectsIndexHelper {
+
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -34,10 +39,10 @@ public class ProjectsIndexHelper {
 			projectsIndex.setOrgLocationId(projects.getOrgLocationsId().getId());
 
 			if(null != projects.getStartDate()){
-				projectsIndex.setStartDate(Constants.DF_YMD.format(projects.getStartDate()));
+				projectsIndex.setStartDate(commonUtil.elkDateFormatter(projects.getStartDate()));
 			}
 			if(null != projects.getEndDate()){
-				projectsIndex.setEndDate(Constants.DF_YMD.format(projects.getEndDate()));
+				projectsIndex.setEndDate(commonUtil.elkDateFormatter(projects.getEndDate()));
 			}
 			if(!isNullOrEmpty(projects.getInvoiceFrequency())){
 				projectsIndex.setInvoiceFrequency(projects.getInvoiceFrequency());
@@ -47,11 +52,11 @@ public class ProjectsIndexHelper {
 			}
 			
 			if(null != projects.getCreatedDate()){
-				projectsIndex.setCreatedDate(Constants.DF_YMD.format(projects.getCreatedDate()));
+				projectsIndex.setCreatedDate(commonUtil.elkDateFormatter(projects.getCreatedDate()));
 			}
 			
 			if(null != projects.getUpdatedDate()){
-				projectsIndex.setUpdatedDate(Constants.DF_YMD.format(projects.getUpdatedDate()));
+				projectsIndex.setUpdatedDate(commonUtil.elkDateFormatter(projects.getUpdatedDate()));
 			}
 			projectsIndex.setProjectUUID(projects.getProjectUUID());
 			

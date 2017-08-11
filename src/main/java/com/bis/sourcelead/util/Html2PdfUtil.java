@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -32,7 +31,6 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
@@ -54,6 +52,9 @@ public class Html2PdfUtil {
 	
 	@Autowired
 	private RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
 		try {
@@ -237,14 +238,14 @@ public class Html2PdfUtil {
 		        		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
 		        		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		        		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-		                matchPattern.appendReplacement(sb, Constants.DF_DMY.format(convertedDate));
+		                matchPattern.appendReplacement(sb, commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),convertedDate));
 		            }
 		            else if(matchPattern.group().equalsIgnoreCase("[Start Date]")){
 		            	String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
 	            		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
 	            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	            		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-	                    matchPattern.appendReplacement(sb, Constants.DF_DMY.format(convertedDate));
+	                    matchPattern.appendReplacement(sb, commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),convertedDate));
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[End date]")){
 		            	if(null != contracts.getEndDate()){
@@ -252,7 +253,7 @@ public class Html2PdfUtil {
 		            		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
 		            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		            		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-		            		matchPattern.appendReplacement(sb, Constants.DF_DMY.format(convertedDate));
+		            		matchPattern.appendReplacement(sb, commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),convertedDate));
 		            	}
 		            	else{
 		            		matchPattern.appendReplacement(sb,"");
