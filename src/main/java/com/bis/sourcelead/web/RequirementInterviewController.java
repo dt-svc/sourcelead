@@ -165,14 +165,14 @@ public class RequirementInterviewController {
 	 @ResponseBody  ModelAndView proposeNewTimePublicpage(@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();
-		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  //   SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		     String dateOfInterviewStr ="";
 				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 				for(ProposeTime pst:proposeTime){
 					if(null != pst.getProposeDate()){
-						pst.setProposeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pst.getProposeDate()));	
+						pst.setProposeDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementInterview.getSubmissionId().getOrgLocations().getDateFormat(),pst.getProposeDate()));	
 					}
 				}
 				model.addObject("proposeTime",proposeTime);
@@ -215,7 +215,7 @@ public class RequirementInterviewController {
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
 					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-					interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),interviewConverteDate);
+					interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(requirementInterview.getSubmissionId().getOrgLocations().getDateFormat(),interviewConverteDate);
 					dateOfInterviewStr = interviewDateInTimezone;
 			    }
 				model.setViewName("requirement/proposeTime");
