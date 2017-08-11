@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -215,9 +216,10 @@ public class ExpensesEntries implements Serializable {
 	}
 
 	public String getExpenseDateStr() {
-		if(null != expenseDate){
-			expenseDateStr = LoginSessionController.DATEFORMAT.format(expenseDate);
-		}
+			if(expenseDate != null){
+				SimpleDateFormat dateFormat = expensesId.getOrgLocationId().getLocFullFormDateFormatter();
+				expenseDateStr = dateFormat.format(expenseDate);	
+			}
 		return expenseDateStr;
 	}
 

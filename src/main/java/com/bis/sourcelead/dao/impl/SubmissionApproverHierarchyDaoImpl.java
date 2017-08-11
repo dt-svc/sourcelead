@@ -23,12 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.User;
@@ -58,6 +59,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
+	
+	@Autowired
+	private ProjectsDao projectsDao; 
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
@@ -873,6 +880,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception {
 		ProjectMembers projectMembers =projectMembersDao.getProjectMemberById(projectMemberId);
+		Projects projects = projectsDao.getProjectById(projectMembers.getProjects().getId());
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
 		java.sql.Timestamp tsStartDate = null;
@@ -1062,17 +1070,17 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    else{
 	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
 	    	submissionApproverHierarchy.setTotalHours(0f);
-	    	 DateFormat format = LoginSessionController.DATEFORMAT;
-	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+	    	// DateFormat format = LoginSessionController.DATEFORMAT;
+	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(),endDate),projects.getOrgLocationsId().getDateFormat());
 	    	
              if(tabFrequencyDates != null && !tabFrequencyDates.isEmpty()){
             	tabFrequencyDates.forEach((k,v)->
             	{
             		try {
-            			 weekApprovalStatusMap.put(format.parse(k.replaceAll("/", "-")),Submission_ApprovalStatus.NEW);
-	   	    			 weekBillableHours.put(format.parse(k.replaceAll("/", "-")), 0f);
-	   	    			 weekNonBillableHours.put(format.parse(k.replaceAll("/", "-")), 0f);
-	   	    	         weekTotalHoursMap.put(format.parse(k.replaceAll("/", "-")), 0f);
+            			 weekApprovalStatusMap.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(),k.replaceAll("/", "-")),Submission_ApprovalStatus.NEW);
+	   	    			 weekBillableHours.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(),k.replaceAll("/", "-")), 0f);
+	   	    			 weekNonBillableHours.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(),k.replaceAll("/", "-")), 0f);
+	   	    	         weekTotalHoursMap.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(),k.replaceAll("/", "-")), 0f);
 					} catch (Exception e) {}
 					
             	});
@@ -1292,7 +1300,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception {
-			
+		ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
+		Projects projects = projectsDao.getProjectById(projectMembers.getProjects().getId());
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = null;
 		if(startDate != null){
@@ -1363,8 +1372,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	    else{
 	    	submissionApproverHierarchy = new SubmissionApproverHierarchy();
 	    	submissionApproverHierarchy.setTotalHours(0f);
-	    	 DateFormat format = LoginSessionController.DATEFORMAT;
-	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+	    	 DateFormat format = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+	    	 Map<String,String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate),projects.getOrgLocationsId().getDateFormat());
 	    	
              if(tabFrequencyDates != null && !tabFrequencyDates.isEmpty()){
             	tabFrequencyDates.forEach((k,v)->

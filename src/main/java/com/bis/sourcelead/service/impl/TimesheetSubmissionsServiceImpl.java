@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.TimesheetSubmissionsDao;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -41,6 +43,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	
 	 /**
@@ -342,6 +347,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		     * Get all employeeList(who is member in the project,in which logged in user is approver or logged in user is admin)  with date range
 			*/
 			Collection<TimesheetSubmissions> timesheetSubmissionsList =  getApprovalTimesheetSubmissions(user.getId(),locationsId);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 	        StringBuilder sb = new StringBuilder();
 			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()){
 				
@@ -358,7 +364,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			sb.append(" <tbody>");	
 			 
 	        //String pattern = "dd-MM-yyyy";
-	        		 DateFormat  format = LoginSessionController.DATEFORMAT;
+	        		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 	        Date currentStartDate = null;
 	        Date currentEndDate = null;
 	        
@@ -382,8 +388,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	 		      		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 	 		      		cal.setLenient(false);
 	 		      		cal.setTime(new Date());
-	 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
+	 		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+	 		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN",orgLocations.getDateFormat());
 	 		      		
 	 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 	 		      		Date previousMondayDate = previousMonday.getTime();
@@ -409,7 +415,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        	   
 	        	   
 	        	   
-	        	   Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
+	        	   Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON",orgLocations.getDateFormat());
 				   Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				   startCal.setLenient(false);
 	        	   
@@ -420,14 +426,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			    	  Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
 			    	  endCal.setTime(employeeEndDate);
-			    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON").getTime());
+			    	  startCal.setTime(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(endCal,"MON",orgLocations.getDateFormat()).getTime());
 			       }
 			       else if(employeeStartDate != null && employeeStartDate.after(currentWeekStartDate)){
 			    	  startCal.setTime(employeeStartDate);
 			       }
 	        	   
-	        	   String startDate =  format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
-			       String endDate   =  format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime());
+	        	   String startDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime());
+			       String endDate   =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime());
 	        		 		
 			       ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 			       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
@@ -436,14 +442,14 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	        		   ts.setFullName(stringBuilder.append(ts.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(ts.getProjectMembers().getEmployee().getUser().getLastName()).toString());
 	        	   }
 	        	   
-	        	   currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-	               currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
+	        	   currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime();
+	               currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime();
 	               
 	               if(currentStartDate !=null){
-	            	   	ts.setStartDateStr(format.format(currentStartDate));
+	            	   	ts.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentStartDate));
 	               }
 	        	   if(currentEndDate !=null){
-	        		   ts.setEndDateStr(format.format(currentEndDate));
+	        		   ts.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentEndDate));
 	        	   }
 	        	   
 	        	   
@@ -483,7 +489,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			HashMap<String, Date> submissionDateRange =	 timesheetSubmissionsDao.getMinAndMaxTimesheetSubmissionDatesForApprover(user.getId(),projectMemberUserId,locationsId);
 			Date employeeStartDate = submissionDateRange.get("STARTDATE");
 			Date employeeEndDate = submissionDateRange.get("ENDDATE");
-			
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
       	   
       	    if(StringUtils.isNotEmpty(loginUserRole) && (loginUserRole.equalsIgnoreCase("ROLE_APPROVER") || loginUserRole.equalsIgnoreCase("ROLE_ADMIN"))){
@@ -495,8 +501,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		      		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		      		cal.setLenient(false);
 		      		cal.setTime(new Date());
-		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
+		      		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+		      		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN",orgLocations.getDateFormat());
 		      		
 		      		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
 		      		Date previousMondayDate = previousMonday.getTime();
@@ -530,13 +536,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			  StringBuilder endDateBuilder = new StringBuilder();
 			 
 			  //String pattern = "dd-MM-yyyy";
-	          DateFormat  format = LoginSessionController.DATEFORMAT;
+	          //DateFormat  format = LoginSessionController.DATEFORMAT;
 	          Date currentStartDate = null;
 	          Date currentEndDate = null;
 	          Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			   startCal.setLenient(false);
 			   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty()){  
-				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
+				      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON",orgLocations.getDateFormat());
 				      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
 				    	  startCal.setTime(currentWeekStartDate);
 				      }
@@ -551,7 +557,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				      }
 	          }
 			  else{
-	               Date sDate  =  format.parse(startDate);
+	               Date sDate  =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
 	               if(sDate != null && employeeEndDate.before(sDate)){
 	            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 				    	  endCal.setLenient(false);
@@ -563,10 +569,10 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	               }
 				  
 			  }
-			   startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
-		       endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
+			   startDateBuilder.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime()));
+		       endDateBuilder.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime()));
 		         
-		         ts = getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId(),projectMemberUserId,employeeId);
+		         ts = getAllApprovalEmployeeTimesheetSubmissionsByEmployeeUserId(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime(), user.getId(),projectMemberUserId,employeeId);
 		         if(ts != null){
 		        	 if(!StringUtils.isNotEmpty(ts.getCombinedStatus())){
 			        	 break l1;
@@ -574,15 +580,15 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		         }
 		         
 		        
-		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
+		         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime();
+		         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime();
 			
 	        
 			if(currentStartDate !=null){
-	      	   	ts.setStartDateStr(format.format(currentStartDate));
+	      	   	ts.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentStartDate));
 	        }
 	  	    if(currentEndDate !=null){
-	  		   ts.setEndDateStr(format.format(currentEndDate));
+	  		   ts.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentEndDate));
 	  	    }
 	  	   ts.setUserId(ts.getProjectMembers().getEmployee().getUser().getId().toString());
 	       ts.setEmployeeId(ts.getProjectMembers().getEmployee().getId().toString());
@@ -599,7 +605,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	           sb.append("<td><div id='datefrequency"+ts.getUserId()+ts.getStartDateStr().replaceAll("-", "")+"'>");
 	           Date leftNavStartDate = getLeftNavStartDateForApproverBasedOnCurrentStartDate(user.getId(), ts.getProjectMembers().getEmployee().getUser().getId(), currentStartDate);
 	           if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || employeeStartDate.equals(leftNavStartDate))){
-		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
+		       			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leftNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i>");
 	     	   }
 	           else{
 	        	   sb.append("       	<i class='glyphicon glyphicon-none'></i>");
@@ -610,9 +616,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		     		Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 	    			rightCal.setLenient(false);
 	    			rightCal.setTime(rightNavStartDate);
-	    			Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
+	    			Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN",orgLocations.getDateFormat());
 				    if(rightNavEndDate.getTime().before(employeeEndDate) || employeeEndDate.equals(rightNavEndDate.getTime())){
-		     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
+		     			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rightNavStartDate)+"\",\""+ts.getProjectMembers().getEmployee().getUser().getId()+"\",\""+ts.getProjectMembers().getId()+"\",\""+ts.getProjectMembers().getEmployee().getId()+"\");'></i><abbr></abbr> ");	
 		     	    }
 	           }
 	           else{
@@ -947,11 +953,12 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		 * 
 
 		 * @return  Date
+		 * @throws Exception 
 		 * 
 		 * @throws NullPointer
 		 */
 		@Override
-		public Date getNextMondayByProjectMemberId(Long projectMemberId) {
+		public Date getNextMondayByProjectMemberId(Long projectMemberId) throws Exception {
 			return timesheetSubmissionsDao.getNextMondayByProjectMemberId(projectMemberId);
 		}
 

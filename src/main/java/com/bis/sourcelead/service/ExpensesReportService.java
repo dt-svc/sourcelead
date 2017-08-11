@@ -21,7 +21,7 @@ public interface ExpensesReportService {
 	public List<ExpensesApproverHierarchy> getAllExpensesReportListByLoginUserIdAndOrgLocationId(Long loginUserId, Long loginOrgLocationId)
 			throws Exception;
 
-	public Map<String, Map<String,String>> getYearsAndQuartersComboList() throws JSONException, ParseException;
+	public Map<String, Map<String,String>> getYearsAndQuartersComboList(String dateFormat) throws JSONException, ParseException;
 
 	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDate(Long proMembersId,Date convertedStartDate, Date convertedEndDate) throws ParseException;
 
