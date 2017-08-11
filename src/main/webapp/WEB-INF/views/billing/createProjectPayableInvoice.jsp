@@ -258,7 +258,7 @@ function getProjectsList(projectName){
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value=''>Select Project</option>";
+	output = output + "<option value=''>--Select Project--</option>";
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
@@ -281,12 +281,12 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
+	$('#frequency').val('').trigger('chosen:updated');
 	var projectId = null;
 	projectId = $("#projectId").val();
 	if(projectId == null){
 	projectId = '${projectId}';
 	}
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
@@ -306,6 +306,7 @@ function getProjectFrequency(invoiceFrequency){
 		}
 		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
 		}
+		
 		$("#frequency").empty();
 		$("#frequency").append(output);
 		$('#frequency').trigger("chosen:updated");

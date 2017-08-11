@@ -350,7 +350,7 @@ function errRemoveVendorContact(){
          result = result +'  <tr>';
          result = result +'  <th colspan="5">';
          result = result +'  Add Tax';
-         result = result +'  <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()" id="addTaxDiv" disabled="disabled">';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()" id="addTaxDiv">';
          result = result +'  <i class="fa fa-plus"></i></button>';
          result = result +'  </th>';
          result = result +'  </tr>';
