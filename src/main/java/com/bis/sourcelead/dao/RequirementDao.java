@@ -7,9 +7,9 @@ import java.util.Set;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
@@ -128,6 +128,18 @@ public interface RequirementDao {
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
 
 	public Set<RequirementAssignTo> getRequirementAssignedToTeamByRequirementId(Long id);
+
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId);
+
+	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId);
+
+	public List<Projects> addGeneratedIdRecordsToProjectsForOldRecords(Long orglocationId);
+
+	List<Candidate> addGeneratedIdRecordsToCandidatesForOldRecords(Long orglocationId);
+
+	boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
+
+	boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId);
 
 	
 }

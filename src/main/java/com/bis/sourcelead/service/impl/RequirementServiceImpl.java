@@ -46,6 +46,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
@@ -61,6 +63,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -98,7 +101,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -196,6 +198,12 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	private CandidateDao candidateDao;
+	
+	@Autowired
+	private ProjectsDao projectsDao;
 	
 	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
@@ -3718,4 +3726,80 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getAllRequirementVisaByRequirementI(requirementId);
 	}
 
+	@Override
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) {
+		  boolean data = false;
+		  boolean jobs = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId);
+		  boolean projects =requirementDao.checkForOldrecordsInProjectsUsingOrgLocationid(orglocationId);
+		  boolean candidates = requirementDao.checkForOldrecordsInCandidtesUsingOrgLocationid(orglocationId);
+		  if(jobs == true || projects == true || candidates == true){
+			   data = true; 
+		  }
+		  return data;
+	}
+
+	@Override
+	public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception {
+		List<Requirement> requirementList =  requirementDao.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		List<Candidate> candidateList =  requirementDao.addGeneratedIdRecordsToCandidatesForOldRecords(orglocationId);
+		List<Projects> projectList =  requirementDao.addGeneratedIdRecordsToProjectsForOldRecords(orglocationId);
+		boolean data = false ;
+		int jobsGeneratedId = 0;
+		int candidateGeneratedId = 0;
+		int projectsGeneratedId = 0;
+		String finalJobsGeneratedId = null;
+		String finalCandidatesGeneratedId = null;
+		String finalProjectsGeneratedId = null;
+		// for jobs
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orglocationId);
+		if(!requirementList.isEmpty() && requirementList!= null){
+		 for(Requirement req:requirementList){
+			if(req.getGeneratedId() == null){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					jobsGeneratedId = jobsGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(jobsGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalJobsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredjobsId).toString();
+			        req.setGeneratedId(finalJobsGeneratedId);
+			        requirementDao.storeRequirement(req);
+			        data =  true;
+				}
+			}
+		}
+		 System.out.println("Requirement data successfully");
+	 }if(!candidateList.isEmpty() && candidateList!= null){
+		for(Candidate candidate:candidateList){
+			if(candidate.getGeneratedId() == null){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					candidateGeneratedId = candidateGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(candidateGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalCandidatesGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredjobsId).toString();
+			        candidate.setGeneratedId(finalCandidatesGeneratedId);
+			        candidateDao.storeCandidate(candidate);
+			        data =  true;
+				}
+			}
+		}
+		System.out.println("candidate data successfully");
+	}if(!projectList.isEmpty() && projectList!= null){
+		for(Projects projects:projectList){
+			if(projects.getGeneratedId() == null){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					projectsGeneratedId = projectsGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(projectsGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalProjectsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.PROJECT_ENTITY).append(ConvetredjobsId).toString();
+			        projects.setGeneratedId(finalProjectsGeneratedId);
+			        projectsDao.updateProject(projects);
+			        data =  true;
+				}
+			}
+		} 
+	}
+		return data;
+   }
 }

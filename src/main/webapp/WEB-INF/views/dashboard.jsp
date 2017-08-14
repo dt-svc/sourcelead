@@ -344,6 +344,52 @@ $('#dasboardTaskDatpicker').datepicker({
 	getTimezonesList(); 
 }
 </script>
+<script>
+function checkForOldrecords(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orglocationId ='${SourceLeadWeb_orgLocationId}';
+	  $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/checkForOldrecords?${_csrf.parameterName}=${_csrf.token}&orglocationId="+orglocationId, 
+	        success: function(data) {
+	        	if(data == true){
+	        		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+					addGeneratedIdRecordsToDataBasrForOldRecords();
+	        	}else{
+	        		  var result = '';
+	               	  result=result+'<div class="sideMask" style="display:none"></div>';
+	               	  $("#configurePopUpDiv").empty();
+	               	  $("#configurePopUpDiv").append(result);
+	        	}
+	        }
+	 }); 
+}
+</script>
+
+<script>
+function addGeneratedIdRecordsToDataBasrForOldRecords(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orglocationId ='${SourceLeadWeb_orgLocationId}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/addGeneratedIdRecordsToDataBaseForOldRecords?${_csrf.parameterName}=${_csrf.token}&orglocationId="+orglocationId, 
+	        success: function(data) {
+	        	if(data == true){
+	        		 var result = '';
+	               	  result=result+'<div class="sideMask" style="display:none"></div>';
+	               	  $("#configurePopUpDiv").empty();
+	               	  $("#configurePopUpDiv").append(result);
+	        	}else{
+	        		  var result = '';
+	               	  result=result+'<div class="sideMask" style="display:none"></div>';
+	               	  $("#configurePopUpDiv").empty();
+	               	  $("#configurePopUpDiv").append(result);
+	        	}
+	        }
+	 }); 
+}
+</script>
+
 
 <script>
 function validateOrgShortCode(){
@@ -411,10 +457,7 @@ function storeOrgShortCode(){
        	      dataType : 'json',
             	  url: sourceleadUrl+"/saveOrgShortCodeform?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,
                   success: function(data) {
-                	  var result = '';
-                	  result=result+'<div class="sideMask" style="display:none"></div>';
-                	  $("#configurePopUpDiv").empty();
-                	  $("#configurePopUpDiv").append(result);
+                	  checkForOldrecords();
       			},  
              });
     	    return true;

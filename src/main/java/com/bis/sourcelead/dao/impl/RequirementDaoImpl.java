@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -1702,6 +1704,81 @@ public class RequirementDaoImpl implements RequirementDao {
 			return null;
 		}
 		return requirement.iterator().next();	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select requirement.generatedId from Requirement requirement where orgLocationId.id =:orglocationId"; 
+		List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		Boolean data  = requirement.contains(null);
+		return data;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select projects.generatedId from Projects projects where orgLocationsId.id =:orglocationId"; 
+		List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		Boolean data  = requirement.contains(null);
+		return data;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select candidate.generatedId from Candidate candidate where orgLocationId.id =:orglocationId"; 
+		List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		Boolean data  = requirement.contains(null);
+		return data;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select requirement from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!requirement.isEmpty()){
+			return requirement;
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Projects> addGeneratedIdRecordsToProjectsForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select projects from Projects projects left join fetch projects.orgLocationsId orgLocation where orgLocation.id =:orglocationId";
+		List<Projects> projects  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!projects.isEmpty()){
+			return projects;
+		}else{
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Candidate> addGeneratedIdRecordsToCandidatesForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select candidate from Candidate candidate left join fetch candidate.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!candidate.isEmpty()){
+			return candidate;
+		}else{
+			return null;
+		}
 	}
 
 	
