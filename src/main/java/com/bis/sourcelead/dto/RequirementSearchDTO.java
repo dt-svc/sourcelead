@@ -12,6 +12,10 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String requirementStatus;
 	private String updatedOn;
 	private String client;
+	private String searchType;
+	
+	private String filterStatus;
+	private String filterClients;
 	
 	public String getStatus() {
 		return status;
@@ -60,6 +64,24 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	}
 	public void setClient(String client) {
 		this.client = client;
+	}
+	public String getFilterStatus() {
+		return filterStatus;
+	}
+	public void setFilterStatus(String filterStatus) {
+		this.filterStatus = filterStatus;
+	}
+	public String getFilterClients() {
+		return filterClients;
+	}
+	public void setFilterClients(String filterClients) {
+		this.filterClients = filterClients;
+	}
+	public String getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
 	}
 	
 
