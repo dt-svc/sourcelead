@@ -18,8 +18,6 @@ public interface RequirementDao {
 	
 	public Requirement storeRequirement(Requirement requirement) throws Exception;
 	
-	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User user, String userRoleName,int start,int length) throws Exception;
-	
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user, String userRoleName) throws Exception;
 	
 	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
