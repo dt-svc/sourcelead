@@ -74,8 +74,10 @@ function candidateCommentsList(candidateId,submissionId){
               $("#tab-4").empty();  
               $("#tab-5").empty();  
               $("#tab-6").empty();
-              $("#tab-8").empty();
               $("#tab-7").empty();
+              $("#tab-9").empty();
+              $("#tab-10").empty();
+              
               $("#tabb-1").empty();
           	  $("#tabb-2").empty(); 
           	  $("#tabb-3").empty();
@@ -83,8 +85,9 @@ function candidateCommentsList(candidateId,submissionId){
               $("#tabb-5").empty();  
               $("#tabb-6").empty();
               $("#tabb-8").empty();
+              $("#tabb-9").empty();
               $("#tab-7").append(result);
-              
+              $("#tab-8").empty();
          },
          
       });

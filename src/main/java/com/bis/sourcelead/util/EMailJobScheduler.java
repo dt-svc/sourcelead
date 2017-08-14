@@ -341,15 +341,15 @@ public class EMailJobScheduler {
 	@Async
 	private void sendCronRemainderForProjectMember(ProjectMembers projectMember,UserRole userRole,String frequency) throws Exception{
 			String level ="";
-			DateFormat format = Constants.DF_DMY;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(userRole.getOrgLocations().getId());
 			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"employeeScheduler");
 			LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 			if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 				    String key = entry.getKey();
 				    String value =entry.getValue();
-				    Date frequencyStartDate = format.parse(key.replaceAll("/", "-"));
-					Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+				    Date frequencyStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+					Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 					
 					Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 					currentCal.setLenient(false);
@@ -491,7 +491,6 @@ public class EMailJobScheduler {
 	private void level1ORLevel2ManagersCronRemainder(String invoiceFrequency, int managerLevel) throws Exception {
 		List<Org> orgList = orgService.getOrgs();
 		Map<String,String>  timesheetFrequencyMap = null;
-		DateFormat format = Constants.DF_DMY;
 		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
@@ -533,7 +532,7 @@ public class EMailJobScheduler {
 													    String key = entry.getKey();
 													    String value =entry.getValue();
 													    
-														Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
 														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 														currentCal.setLenient(false);
 														currentCal.setTime(CommonUtil.currentDate());
@@ -630,7 +629,6 @@ public class EMailJobScheduler {
 	private void adminCronRemainder(String invoiceFrequency) throws Exception {
 		List<Org> orgList = orgService.getOrgs();
 		Map<String,String>  timesheetFrequencyMap = null;
-		DateFormat format = Constants.DF_DMY;
 		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
@@ -666,7 +664,7 @@ public class EMailJobScheduler {
 													    String key = entry.getKey();
 													    String value =entry.getValue();
 													    
-														Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
 														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 														currentCal.setLenient(false);
 														currentCal.setTime(CommonUtil.currentDate());
@@ -856,7 +854,7 @@ public class EMailJobScheduler {
 					  					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					  					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 					  					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-					  					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+					  					interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),interviewConverteDate);
 					  					dateOfInterviewStr = interviewDateInTimezone;
 				  			  		    candidatesHotListDummy.setProjectEndDate(dateOfInterviewStr);
 				  			  		   hotlist1.add(candidatesHotListDummy);
@@ -1395,6 +1393,7 @@ public class EMailJobScheduler {
 	private void contractExpiryRemainderMail(Contracts contracts, int days) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(contracts.getOrgLocationId().getId());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
@@ -1408,8 +1407,8 @@ public class EMailJobScheduler {
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName("SourceLead Admin"); 
 			 
-			 String endDate = Constants.DMY.format(contracts.getEndDate());
-			 String startDate = Constants.DMY.format(contracts.getStartDate());
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
+			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
 			 String dayCount = String.valueOf(days);
 			 
 			//setting the class filed values

@@ -48,6 +48,10 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
+	@ManyToOne
+	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
+   	private Candidate vendorCandidateId;
+	
 	@ManyToOne 
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
@@ -1416,5 +1420,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRequirementOfferHistoryList(Set<RequirementOfferHistory> requirementOfferHistoryList) {
 		this.requirementOfferHistoryList = requirementOfferHistoryList;
+	}
+
+	public Candidate getVendorCandidateId() {
+		return vendorCandidateId;
+	}
+
+	public void setVendorCandidateId(Candidate vendorCandidateId) {
+		this.vendorCandidateId = vendorCandidateId;
 	}
 }

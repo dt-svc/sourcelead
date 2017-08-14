@@ -5,6 +5,14 @@ import java.io.Serializable;
 public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String status;
 	private String clients;
+	
+	private String requirementTitle;
+	private String jobId;
+	private String noticePeriod;
+	private String requirementStatus;
+	private String updatedOn;
+	private String client;
+	
 	public String getStatus() {
 		return status;
 	}
@@ -16,6 +24,42 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	}
 	public void setClients(String clients) {
 		this.clients = clients;
+	}
+	public String getRequirementTitle() {
+		return requirementTitle;
+	}
+	public void setRequirementTitle(String requirementTitle) {
+		this.requirementTitle = requirementTitle;
+	}
+	public String getJobId() {
+		return jobId;
+	}
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+	public String getRequirementStatus() {
+		return requirementStatus;
+	}
+	public void setRequirementStatus(String requirementStatus) {
+		this.requirementStatus = requirementStatus;
+	}
+	public String getUpdatedOn() {
+		return updatedOn;
+	}
+	public void setUpdatedOn(String updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+	public String getClient() {
+		return client;
+	}
+	public void setClient(String client) {
+		this.client = client;
 	}
 	
 

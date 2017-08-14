@@ -73,6 +73,10 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  * @author: Naresh Bolisetty
  * 
  */
+/**
+ * @author BIS104
+ *
+ */
 @Component
 public class CommonUtil {
 	
@@ -135,6 +139,20 @@ public class CommonUtil {
 	}
 	
 	/**
+	 * Elk date format
+	 * @param dateString
+	 * @return
+	 */
+	public String elkDateFormatter(Date date){
+		String dateStr = null;
+		if(date != null){
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			dateStr = df.format(date);
+		}
+		return dateStr;
+	}
+	
+	/**
 	 *  Converting Org based date format as Util.Date
 	 * @param orgDateFormat
 	 * @param dateStr
@@ -149,6 +167,18 @@ public class CommonUtil {
 		        e.printStackTrace();
 		    }
 			return date;
+	}
+	
+	
+	public  Date  dateFromElk(String dateString){
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
+	    Date date = null;
+	    try {
+	        date = df.parse(dateString);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		return date;
 	}
 	
 	
