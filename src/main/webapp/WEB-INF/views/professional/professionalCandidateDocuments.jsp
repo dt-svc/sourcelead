@@ -4,8 +4,6 @@
 <!-- these files for autocomplete with tagit -->
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
@@ -50,13 +48,9 @@ function professionalCandidateDocuments(candidateId){
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType =="Candidates"){
-			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
-			'</sec:authorize>';
 		}else{
-			'<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">'; 
 			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
-			'</sec:authorize>';
 		}
 		
 	}else{
@@ -146,13 +140,9 @@ function candDocumentsList(candidateId){
 			           			var docUUID = opt.documentUUID;
 			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
 			           			if(candidateType =="Candidates"){
-				           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-				           			'</sec:authorize>';
 			           			}else{
-				           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CROWDSOURCING_PROFILE\')">';
 				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-				           			'</sec:authorize>';
 			           			}
 			           			
 			           		}

@@ -299,24 +299,16 @@ function candidateCertificateList(candidateId){
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 if(candidateType == "Candidates"){
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }else{
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }
 	                    		 
 	                    	}else{
 	                    		if(candidateType == "Candidates"){
-	                    			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		}else{
-	                    			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-		                    		 result = result +' </sec:authorize>';
 	                    		}
 	                    		
 	                    	}
@@ -328,24 +320,6 @@ function candidateCertificateList(candidateId){
 	                     $("#candidateCertificateList").append(result); 
 	                     certificationPagination(); 
 	                     msgFadein(); 
-             /*   }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidate Certifications Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateCertificateList").empty();
-				    $("#candidateCertificateList").append(result);
-				    
-				    $("#popUpDivEmp").empty();
-					$("#popUpDivEmp").append(result);
-               } */
         },
           
      }); 
@@ -619,28 +593,6 @@ function addCertification(candidateId) {
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
-								 
-								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
-
-							  /*  var certificateStartDate = $("#StartDateEdit").val();
-								var certificateEndDate = $("#EndDateEdit").val(); */
-								
 								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 								  var finalDateFormatCerEdit = '';
 								  if(locationDate.match("yyyy-MM-dd")){
@@ -854,11 +806,6 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 function selectScoreType(){
 	
 	 var selectedText = document.getElementById("scoreType").value;
-	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-		 $("#candidateScore").removeAttr("readonly");
-	}else{
-		 $("#candidateScore").attr("readonly", "readonly");
-	} */
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
