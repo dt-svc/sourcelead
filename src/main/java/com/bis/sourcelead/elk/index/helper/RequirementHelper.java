@@ -58,6 +58,7 @@ public class RequirementHelper {
 			requirementIndex.setIndustryName(requirement.getIndustryName());
 			requirementIndex.setTravelAllownace(requirement.getTravelAllowance());
 			requirementIndex.setReqCoolingOffPeriod(requirement.getReqCoolingOffPeriod());
+			requirementIndex.setReleaseJobToAllUsers(requirement.getReleaseJobToAllUsers());
 			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
