@@ -203,15 +203,11 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/getOnboardTemplateDocumentByTemplateId" , method = RequestMethod.POST)
-	 public @ResponseBody  String getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
+	 public @ResponseBody List<OnBoardingTemplateDocuments> getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
 			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 		
-		String resultJson;
-		
 		List<OnBoardingTemplateDocuments> documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByTemplateId(templateId,documentType);
-	 	 
-	 	resultJson = commonUtil.toJSON(documentsList);
-		return resultJson;
+		return documentsList;
 	   
 	}
 	

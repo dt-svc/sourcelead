@@ -8,6 +8,12 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
+<style>
+.timesheet_week_comm strong input.dele  {
+width : 6% !important;
+}
+</style>
+
 <section class="content-wraper">
     <div id="loading"></div>
     <section class="content-header clearfix">
@@ -29,7 +35,7 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="getTemplateDetails();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Template details</small> </a> </li>
-            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplatePolicyDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -824,9 +830,9 @@ function createTemplate(saveType){
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        getTemplatePolicyDocumentsDetails(templateId);
-		     	        getTemplateSupportingDocumentsDetails(templateId);
+		     	       /*  getTemplateSupportingDocumentsDetails(templateId);
 		     	        getTemplateContractsDocumentsDetails(templateId);
-		     	        getTemplateFormsDocumentsDetails(templateId);
+		     	        getTemplateFormsDocumentsDetails(templateId); */
 		        	}
 		        	
 	     	        $("#templateId").val(templateId);
@@ -893,9 +899,9 @@ function createTemplateDocs(saveType){
 		     	        getOnboardingTasksList();
 		        	}else{
 		        		getTemplatePolicyDocumentsDetails();
-		        		getTemplateSupportingDocumentsDetails();
+		        		/* getTemplateSupportingDocumentsDetails();
 		        		getTemplateContractsDocumentsDetails();
-		        		getTemplateFormsDocumentsDetails();
+		        		getTemplateFormsDocumentsDetails(); */
 		        	}
 		    	  
 		    	  $("#save_doc_button").removeAttr("disabled");
@@ -1049,9 +1055,8 @@ function getTemplatePolicyDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1075,7 +1080,9 @@ function getTemplatePolicyDocumentsDetails(templateId){
                 	 $("#savedPociliesAttachments").append(result);
                 	 $("#onboardTasksList").empty();
                 	 
-                	 
+               	    getTemplateSupportingDocumentsDetails(templateId);
+	     	        getTemplateContractsDocumentsDetails(templateId);
+	     	        getTemplateFormsDocumentsDetails(templateId);
 			        
 		        },
 		    });
@@ -1095,9 +1102,8 @@ function getTemplateSupportingDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1140,9 +1146,8 @@ function getTemplateContractsDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1184,9 +1189,8 @@ function getTemplateFormsDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
