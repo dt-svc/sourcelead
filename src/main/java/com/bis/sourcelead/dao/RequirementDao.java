@@ -129,17 +129,19 @@ public interface RequirementDao {
 
 	public Set<RequirementAssignTo> getRequirementAssignedToTeamByRequirementId(Long id);
 
-	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId);
+	
 
 	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId);
 
 	public List<Projects> addGeneratedIdRecordsToProjectsForOldRecords(Long orglocationId);
 
 	List<Candidate> addGeneratedIdRecordsToCandidatesForOldRecords(Long orglocationId);
+	
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName);
 
-	boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
+	/*boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
 
-	boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId);
+	boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId);*/
 
 	
 }

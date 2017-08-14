@@ -3747,18 +3747,14 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 
 	@Override
-	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) {
-		  boolean data = false;
-		  boolean jobs = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId);
-		  boolean projects =requirementDao.checkForOldrecordsInProjectsUsingOrgLocationid(orglocationId);
-		  boolean candidates = requirementDao.checkForOldrecordsInCandidtesUsingOrgLocationid(orglocationId);
-		  if(jobs == true || projects == true || candidates == true){
-			   data = true; 
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception {
+		  boolean flag = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId,"");
+		  if(flag){
+			 flag = addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
 		  }
-		  return data;
+		  return flag;
 	}
 
-	@Override
 	public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception {
 		List<Requirement> requirementList =  requirementDao.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
 		List<Candidate> candidateList =  requirementDao.addGeneratedIdRecordsToCandidatesForOldRecords(orglocationId);

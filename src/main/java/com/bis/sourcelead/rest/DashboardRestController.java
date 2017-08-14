@@ -947,10 +947,10 @@ public class DashboardRestController {
 		return generationIdStatus;
 	}
 	
-	@RequestMapping(value = "/addGeneratedIdRecordsToDataBaseForOldRecords", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/addGeneratedIdRecordsToDataBaseForOldRecords", method = RequestMethod.POST)
 	public boolean addGeneratedIdRecordsToJobsForOldRecords(@RequestParam(value = "orglocationId", required = false) Long orglocationId) throws Exception{
 		boolean generationIdStatus  = requirementService.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
 		return generationIdStatus;
-	}
+	}*/
 		
 }

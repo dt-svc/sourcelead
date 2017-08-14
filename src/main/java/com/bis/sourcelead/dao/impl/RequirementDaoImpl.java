@@ -8,12 +8,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -1709,42 +1712,48 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) {
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select requirement.generatedId from Requirement requirement where orgLocationId.id =:orglocationId"; 
-		List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
-		Boolean data  = requirement.contains(null);
+		Boolean data  = true;
+		if(StringUtils.isNotEmpty(tableName)){
+			String query = "select table.generatedId from "+tableName+" table where table.orgLocationId.id =:orglocationId"; 
+			List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+			 data  = requirement.contains(null);
+		}
+		else{
+			LinkedList<String> tableNames = new LinkedList<String>();
+			tableNames.add("Requirement");
+			tableNames.add("Projects");
+			tableNames.add("Candidate");
+			l1:{
+				for(String tabName : tableNames){
+					if(tabName != "Projects"){
+						String query = "select table.generatedId from "+tabName+" table where table.orgLocationId.id =:orglocationId";
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						data  = result.contains(null);
+					}else{
+						String query = "select table.generatedId from "+tabName+" table where table.orgLocationsId.id =:orglocationId";
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						data  = result.contains(null);
+					}
+					
+					if(!data){
+						break l1;
+					}
+				}
+			}
+		}
+		
 		return data;
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select projects.generatedId from Projects projects where orgLocationsId.id =:orglocationId"; 
-		List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
-		Boolean data  = requirement.contains(null);
-		return data;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select candidate.generatedId from Candidate candidate where orgLocationId.id =:orglocationId"; 
-		List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
-		Boolean data  = requirement.contains(null);
-		return data;
-	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	@SuppressWarnings("unchecked")
 	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select requirement from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId";
 		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
 		if(!requirement.isEmpty()){
 			return requirement;
