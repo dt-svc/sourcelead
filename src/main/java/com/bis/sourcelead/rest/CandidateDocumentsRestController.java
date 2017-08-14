@@ -216,7 +216,13 @@ public class CandidateDocumentsRestController {
 			candidateDocuments.setUpdatedDate(commonUtil.currentDate());
 			candidateDocumentsService.updateCandidateDocuments(candidateDocuments);
 			StringBuffer activitySummary = new StringBuffer();
-		    activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.NEW_VALUE_TAG_END);
+			if(candidateDocuments.getFileName() != null && !candidateDocuments.getFileName().equalsIgnoreCase("")){
+				activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getFileName()).append(Constants.NEW_VALUE_TAG_END);
+			}else if(candidateDocuments.getDocumentType().equalsIgnoreCase("Other")){
+				activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentOtherType()).append(Constants.NEW_VALUE_TAG_END);
+			}else{
+				activitySummary.append("Document").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocuments.getDocumentType()).append(Constants.NEW_VALUE_TAG_END);
+			}
 			candidateActivityCommonUtil.storeCandidateDocumentsHistory(candidateDocuments, user);
 			candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateDocuments.getCandidateId(), "", Constants.CANDIDATE_DELETED_DOCUMENTS, activitySummary.toString(), "CANDIDATE");
 
@@ -270,7 +276,7 @@ public class CandidateDocumentsRestController {
 	}
 	
 	@RequestMapping(value = "/rejectRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "documentsIds", required = false) String documentsIds, HttpServletRequest request) throws Exception
+	public @ResponseBody String rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "documentsIds", required = false) String documentsIds,HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -281,10 +287,13 @@ public class CandidateDocumentsRestController {
 	}
 	
 	@RequestMapping(value = "/acceptRequestedDocuments", method = RequestMethod.POST)
-	public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds, HttpServletRequest request) throws Exception
+	public @ResponseBody String acceptRequestedDocuments(@RequestParam(value = "documentsIds", required = false) String documentsIds,  @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "candidateId", required = false) Long candidateId) throws Exception
 	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		requestedDocumentsService.acceptRequestedDocuments(user, documentsIds);
+		//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User user = userService.getUserById(userId);
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
 		return "success";
 	}
 	

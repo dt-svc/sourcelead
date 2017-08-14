@@ -87,12 +87,13 @@ $(document).ready(function() {
 	function timesheetEntriesDivByProjectMemberId(){ 
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
+	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $("#timesheetEntriesDivByProjectMemberId").empty();
 	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=user",		
+   	      	  	  url: sourceleadUrl+"/timesheetEntriesDivByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&from=user"+"&locationCode="+locationCode,		
    		          success :function(result) {
    		        	 $("#loadTime").removeAttr("style");
    		        	 $("#timesheetEntriesDivByProjectMemberId").empty();
@@ -119,12 +120,13 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         var projectMemberId = $("#projectMemberId").val();
+	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $("#timesheetDivByFrequency").empty();
 	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
-   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=user",		
+   	      	  	  url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from=user"+"&locationCode="+locationCode,		
    		          success :function(result) {
    		        	  		
    		        	      $("#loadTime").removeAttr("style");
@@ -153,13 +155,14 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         approvalStatus =$("#timesheetSubmissionStatus").val();
 	         $("#timesheetDivByTab").empty();
 	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user"+"&locationCode="+locationCode,		
   		          success :function(result) {
   		        	   $("#loadTime").removeAttr("style");
   		    	       $("#timesheetDivByTab").empty();
@@ -176,12 +179,13 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
+	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $("#timesheetDivByTab").empty();
 	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=user"+"&locationCode="+locationCode,		
   		          success :function(result) {
   		        	  $("#loadTime").removeAttr("style");
   		        	   $("#timesheetDivByTab").empty();
@@ -223,10 +227,11 @@ $(document).ready(function() {
 function withdrawMyTimesheet(projectMemberId,timesheetFrequency){ 
 	/* var frm = $('#timesheet_form').serializeFormJSON(); */
 	var sourceleadUrl ='${sourceleadUrl}';
+	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
-     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
+     	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
 	      success :function(result) {
 	    	  $("#loadTime").removeAttr("style"); 
 	    	  timesheetDivByFrequency();

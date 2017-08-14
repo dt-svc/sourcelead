@@ -1,6 +1,7 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
+<link href="resources/css/summernote.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap-multiselect.css" type="text/css">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css" type="text/css">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -66,7 +67,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-          <select class="form-control"   field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails">
+          <select class="form-control"   field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="getUserList('All');" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
             <!-- Modal content Multiple mail -->
@@ -159,7 +160,7 @@ display: none;
   <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
   <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
-  <script src="resources/js/nicEdit.js"></script> 
+  <!-- <script src="resources/js/nicEdit.js"></script> -->
   
   
    <script>
@@ -177,11 +178,13 @@ display: none;
 			        	 $("input[name=subject]").val(json['subject']);
 			    		 
 			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
-			        		 nicEditors.findEditor('bodytext').setContent('<br/>'+json['comments']+'<br/><br/>'+json['body']); 
+			        		// nicEditors.findEditor('bodytext').setContent('<br/>'+json['comments']+'<br/><br/>'+json['body']); 
+			        		$('#bodytext').summernote('editor.pasteHTML','<br/>'+json['comments']+'<br/><br/>'+json['body']);
 			        	 }
 			        	 
 			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
-			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+			        		 //nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
 			        	 }
 			        	
 			        }
@@ -190,6 +193,22 @@ display: none;
   }
   </script> 
  
+
+<script src="resources/js/summernote.js"></script>
+<script>
+	$('#bodytext').summernote({
+  toolbar: [
+    // [groupName, [list of button]]
+    ['style', ['bold', 'italic', 'underline', 'clear']],
+    ['font', ['strikethrough', 'superscript', 'subscript']],
+    ['fontsize', ['fontsize']],
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+	['table',['table']],
+    ['height', ['height']]
+  ]
+});
+</script>
 
 <script type="text/javascript">
 $(function(){
@@ -218,7 +237,7 @@ $(function(){
 		if ($('#email_form').validate(false, validationSettings)){ 
 			
 				var sourceleadUrl = '${sourceleadUrl}';
-				nicEditors.findEditor('bodytext').saveContent();
+				//nicEditors.findEditor('bodytext').saveContent();
 				
 				var frm = $('#email_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
@@ -233,7 +252,8 @@ $(function(){
 		   	    	alertMailerMsg("Provide at least one To mail");
 		   	    }
 		  		else{
-		  			var bodytext = nicEditors.findEditor('bodytext').getContent();
+		  			//var bodytext = nicEditors.findEditor('bodytext').getContent();
+		  			var bodytext = $("#bodytext").summernote('code');
 		  			/*  if(bodytext.length < 60000){  */	
 		  			
 			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -686,10 +706,12 @@ document.getElementById("attachfileBtn").onchange = function () {
 	};
 </script>
 
+<!-- 
+
 <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
-
+-->
 
   
 <jsp:include page="masterFooter.jsp" />

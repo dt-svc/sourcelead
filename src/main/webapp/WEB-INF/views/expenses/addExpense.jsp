@@ -112,7 +112,7 @@
 <div class="form-group col-md-6 mt5 mb5 noPad">
 <span class="col-md-6 noPad">Expenses Amount Total:</span>
 <div class="col-md-6">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmontRoundOffValue > 0 ? expenses.totalAmontRoundOffValue : '00.00' }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
@@ -140,7 +140,7 @@
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.expensesCategoryId.expensesName}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me" title="${entry.description}">${entry.description}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
@@ -266,9 +266,6 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			/* $("#submitForApprovalExpensesId").prop('disabled', true);
-			$("#draftForApprovalExpensesId").prop('disabled', true);
-			$("#cancelForApprovalExpensesId").prop('disabled', true); */
 			
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
@@ -285,6 +282,10 @@
 				return false;
 			}
 			else{
+				$("#submitForApprovalExpensesId").prop('disabled', true);
+				$("#draftForApprovalExpensesId").prop('disabled', true);
+				$("#cancelForApprovalExpensesId").prop('disabled', true);
+				
 				var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];

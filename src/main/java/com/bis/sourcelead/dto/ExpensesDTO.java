@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.bis.sourcelead.enums.Submission_Status;
+import com.ibm.icu.math.BigDecimal;
 
 public class ExpensesDTO implements Serializable {
 private static final long serialVersionUID = 1L;
@@ -37,6 +38,8 @@ private static final long serialVersionUID = 1L;
 	private boolean sahApproved;
 	
 	private String expCreatedBy;
+	
+	private BigDecimal totalAmontRoundOffValue;
 	
 	public Long getId() {
 		return id;
@@ -157,6 +160,16 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpCreatedBy(String expCreatedBy) {
 		this.expCreatedBy = expCreatedBy;
+	}
+
+	public BigDecimal getTotalAmontRoundOffValue()
+	{
+		return totalAmontRoundOffValue;
+	}
+
+	public void setTotalAmontRoundOffValue(BigDecimal totalAmontRoundOffValue)
+	{
+		this.totalAmontRoundOffValue = totalAmontRoundOffValue;
 	}
 	
 }

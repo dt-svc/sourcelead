@@ -33,6 +33,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ibm.icu.math.BigDecimal;
 
 @Entity
 @Table(name = "EXPENSES", catalog = "sourcelead")
@@ -101,7 +102,6 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "EXPENSE_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_Status expenseStatus;
-	
 //	  
 	@Column(name = "BILLING_RECIEVABLE_STATUS")
 	private String billingRecievableStatus;
@@ -153,6 +153,10 @@ private static final long serialVersionUID = 1L;
 	@JsonProperty
 	private String dateFrequency;
     
+
+	@Transient
+	@JsonProperty
+	private BigDecimal totalAmountRoundoffValue;
 	
 	public Long getId() {
 		return id;
@@ -404,6 +408,15 @@ private static final long serialVersionUID = 1L;
 	public void setBillingPayableStatus(String billingPayableStatus) {
 		this.billingPayableStatus = billingPayableStatus;
 	}
+
+	public BigDecimal getTotalAmountRoundoffValue() {
+		return totalAmountRoundoffValue;
+	}
+
+	public void setTotalAmountRoundoffValue(BigDecimal totalAmountRoundoffValue) {
+		this.totalAmountRoundoffValue = totalAmountRoundoffValue;
+	}
+
 
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {
