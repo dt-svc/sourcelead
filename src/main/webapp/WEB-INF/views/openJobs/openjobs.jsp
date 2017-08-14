@@ -947,7 +947,8 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
-				result = result +'	<h4 onClick="getPostedOrgJobs(this);" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';	
+				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
+				result = result +'	<h4 onClick="getPostedOrgJobs('+i+');" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';	
 				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
@@ -1046,7 +1047,13 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 
 <script>
 function getPostedOrgJobs(id){
-	$("#postedOrg").val(id.innerHTML);
+	if(id !=null && id != '' && id !='undefined'){
+		var locationId = $("#"+id+"locationId").val();
+		 $("#postedOrg").val(locationId);
+	}else{
+		var locationId = $("#locationId").val();
+		 $("#postedOrg").val(locationId);
+	}
 	requirementsFilter("postedOrg");
 }
 </script>
@@ -1125,10 +1132,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 	$("#openJobsRequirementsList").hide(); 
 	$("#loadMoreDiv").hide(); 
 	 var sourceleadUrl = '${sourceleadUrl}';
-	 var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
 		 type: "POST",
-		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID+"&locationCode="+locationCode,
+		   	url: sourceleadUrl+"/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
 	    	  var json = JSON.parse(data);
@@ -1173,7 +1179,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<div class="jobResultsInn job_ResultsInn">';
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
-				result = result +'	<h4 onClick="getPostedOrgJobs(this);">'+json.requirementOrgName+'</h4>';
+				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
+				result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>';
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
 		    	}
