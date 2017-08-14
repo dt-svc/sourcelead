@@ -144,16 +144,11 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/createNewOnBoardingTemplate" , method = RequestMethod.POST)
-	 public @ResponseBody  String createNewOnBoardingTemplate(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String createNewOnBoardingTemplate(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
 		
 		 String resultJson;
-		 
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 
+		 JSONObject jsonObj = new JSONObject(jsonPayload);
 		 OnBoardingTemplate onBoardingTemplate = null;
-		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 
@@ -263,14 +258,12 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam(value="json", required=false) String json,
+	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam("json") String jsonPayload,
 			MultipartHttpServletRequest request) throws Exception {
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		json = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json);
-		
+		JSONObject jsonObj = new JSONObject(jsonPayload);
 		
 		//save  mutliple attachment for contracts Documents.
 		if ((jsonObj.has("contractsAttcahmentMaxRowNumber"))){
@@ -510,18 +503,14 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/saveOnBoardTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveOnBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String saveOnBoardTasks(@RequestParam("json") String jsonPayload, HttpServletRequest request) throws Exception {
 		
 		 
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
+		 JSONObject jsonObj = new JSONObject(jsonPayload);
 		 
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
 		 
 		 OnboardTasks onboardTasks = new OnboardTasks();
-		 
 		 
 		 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
 			 onboardTasks.setTaskName(jsonObj.getString("taskName"));
