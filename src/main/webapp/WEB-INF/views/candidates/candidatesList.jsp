@@ -39,34 +39,34 @@
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
-<jsp:include page="requirementHistory.jsp"></jsp:include>
+ <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
-<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+ <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
  
-<script>
-var isAssociate = 'N';
-var sourceleadUrl = "${sourceleadUrl}";
-var _csrfParam = '${_csrf.parameterName}';
-var _csrfToken = '${_csrf.token}';
-var associateFlag = false;
-'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-	associateFlag = true;
-'</sec:authorize>';
-var name1Flag = false;
-'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-name1Flag = true;
-'</sec:authorize>';
-var name2Flag = false;
-'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-name2Flag = true;
-'</sec:authorize>';
- window.onload = function() {
-	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
-};
-</script>
+	<script>
+	var isAssociate = 'N';
+	var sourceleadUrl = "${sourceleadUrl}";
+	var _csrfParam = '${_csrf.parameterName}';
+	var _csrfToken = '${_csrf.token}';
+	var associateFlag = false;
+	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+		associateFlag = true;
+	'</sec:authorize>';
+	var name1Flag = false;
+	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	name1Flag = true;
+	'</sec:authorize>';
+	var name2Flag = false;
+	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+	name2Flag = true;
+	'</sec:authorize>';
+	 window.onload = function() {
+		 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
+	};
+	</script>
 
 <style type="text/css">
 .candidate_wrap_table table tr td:first-child {
