@@ -1024,11 +1024,10 @@ function getTemplateDetails(){
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(data) {
-	        	 var json = JSON.parse(data);
+	        success: function(json) {
 	        	
-	        	 $("input[name=templateName]").val(json['templateName']);
-	        	 $("textarea[name=description]").val(json['description']);
+	        	 $("input[name=templateName]").val(json.templateName);
+	        	 $("textarea[name=description]").val(json.description);
 	        	 
 	        	 $("#onboardTasksList").empty();
 		        

@@ -144,60 +144,23 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/createNewOnBoardingTemplate" , method = RequestMethod.POST)
-	 public @ResponseBody  String createNewOnBoardingTemplate(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  Long createNewOnBoardingTemplate(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
 		
-		 String resultJson;
 		 JSONObject jsonObj = new JSONObject(jsonPayload);
-		 OnBoardingTemplate onBoardingTemplate = null;
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	 
-	 	 if(jsonObj.has("templateId") && !isNullOrEmpty(jsonObj.getString("templateId"))){
-	 		onBoardingTemplate = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-	 		onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-		 	onBoardingTemplate.setDescription(jsonObj.getString("description"));
-		 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
-		 	onBoardingTemplate.setUpdatedDate(new Date());
-	 	 
-	 	 }else{
-	 		 onBoardingTemplate = new OnBoardingTemplate();
-		 	 onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-		 	 onBoardingTemplate.setDescription(jsonObj.getString("description"));
-		 	 onBoardingTemplate.setOrgLocationId(orgLocations);
-		 	
-		 	 StringBuilder userName = new StringBuilder();
-			if(!isNullOrEmpty(user.getLastName())){
-				onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			}else{
-				onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).toString());
-			}
-			onBoardingTemplate.setTemplateStatus("Draft");
-			onBoardingTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
-			onBoardingTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		 	onBoardingTemplate.setCreatedBy(user.getUserCode());
-		 	onBoardingTemplate.setCreatedDate(new Date());
-		 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
-		 	onBoardingTemplate.setUpdatedDate(new Date());
-	 	 }
-	 	 
-	 	
-	 	onBoardingTemplate = onBoardingTemplateService.saveOnBoardingTemplate(onBoardingTemplate);
-		
-	 	resultJson = commonUtil.toJSON(Long.valueOf(onBoardingTemplate.getId()));
-		return resultJson;
-	   }
+	 	 OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardTemplateDetails(jsonObj, user, orgLocations);
+		 return onBoardingTemplate.getId();
+	  
+	}
 	
 	
 	
 	@RequestMapping(value = "/getOnboardTemplateById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody OnBoardingTemplate getOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
 		
-		String resultJson;
-	 	 
  	    OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardingTemplateById(templateId);
-		
-	 	resultJson = commonUtil.toJSON(onBoardingTemplate);
-		return resultJson;
+		return onBoardingTemplate;
 	   }
 	
 	
@@ -252,178 +215,15 @@ public class CandidateOnBoardRestController {
 	   
 	}
 	
-	
-	
-	
-	
-	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
 	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam("json") String jsonPayload,
 			MultipartHttpServletRequest request) throws Exception {
-		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
 		JSONObject jsonObj = new JSONObject(jsonPayload);
-		
-		//save  mutliple attachment for contracts Documents.
-		if ((jsonObj.has("contractsAttcahmentMaxRowNumber"))){
-	    	String contractsAttcahmentMaxRowNumber = jsonObj.getString("contractsAttcahmentMaxRowNumber");
-			int contractsAttcahmentMaxRowNumberCount = Integer.parseInt(contractsAttcahmentMaxRowNumber);
-			
-			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-			
-	    	for (int a = 0; a < contractsAttcahmentMaxRowNumberCount; a++) {
-				   
-				   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-				   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-       		       final Map files = multiRequest.getFileMap();
-       		       
-       		       documents.setOnboardingTemplateId(template);
-                   MultipartFile  multiFile = (MultipartFile)files.get(a+"contractsdocFile");
-                   if(multiFile != null && !multiFile.isEmpty()){
-                	   documents.setDocFile(multiFile.getBytes());
-                	   documents.setFileName(multiFile.getOriginalFilename());
-                       
-                       if(multiFile.getContentType()!=null){
-                    	   documents.setFileContentType(multiFile.getContentType());
-                       }
-                       documents.setDocumentType("Contracts");
-                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-                       documents.setCreatedDate(CommonUtil.currentDate());
-                       documents.setCreatedBy(loginUser.getUserCode());
-                       documents.setUpdatedDate(CommonUtil.currentDate());
-                       documents.setUpdatedBy(loginUser.getUserCode());
-                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-					   
-                   }
-                 
-	    	}
-		}
-		
-		
-		
-		//save  mutliple attachment for forms Documents.
-				if ((jsonObj.has("formsAttcahmentMaxRowNumber"))){
-			    	String formsAttcahmentMaxRowNumber = jsonObj.getString("formsAttcahmentMaxRowNumber");
-					int formsAttcahmentMaxRowNumberCount = Integer.parseInt(formsAttcahmentMaxRowNumber);
-					
-					OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-					
-			    	for (int a = 0; a < formsAttcahmentMaxRowNumberCount; a++) {
-						   
-						   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-		       		       final Map files = multiRequest.getFileMap();
-		       		       
-		       		       documents.setOnboardingTemplateId(template);
-		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"formsdocFile");
-		                   if(multiFile != null && !multiFile.isEmpty()){
-		                	   documents.setDocFile(multiFile.getBytes());
-		                	   documents.setFileName(multiFile.getOriginalFilename());
-		                       
-		                       if(multiFile.getContentType()!=null){
-		                    	   documents.setFileContentType(multiFile.getContentType());
-		                       }
-		                       documents.setDocumentType("Forms");
-		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                       documents.setCreatedDate(CommonUtil.currentDate());
-		                       documents.setCreatedBy(loginUser.getUserCode());
-		                       documents.setUpdatedDate(CommonUtil.currentDate());
-		                       documents.setUpdatedBy(loginUser.getUserCode());
-		                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-							   
-		                   }
-		                 
-			    	}
-				}
-		
-		
-		//save  mutliple attachment for policies Documents.
-		if ((jsonObj.has("policiesAttcahmentMaxRowNumber"))){
-	    	String policiesAttcahmentMaxRowNumber = jsonObj.getString("policiesAttcahmentMaxRowNumber");
-			int policiesAttcahmentMaxRowNumberCount = Integer.parseInt(policiesAttcahmentMaxRowNumber);
-			
-			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-			
-	    	for (int a = 0; a < policiesAttcahmentMaxRowNumberCount; a++) {
-				   
-				   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-				   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-       		       final Map files = multiRequest.getFileMap();
-       		       
-       		       documents.setOnboardingTemplateId(template);
-                   MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
-                   if(multiFile != null && !multiFile.isEmpty()){
-                	   documents.setDocFile(multiFile.getBytes());
-                	   documents.setFileName(multiFile.getOriginalFilename());
-                       
-                       if(multiFile.getContentType()!=null){
-                    	   documents.setFileContentType(multiFile.getContentType());
-                       }
-                       documents.setDocumentType("Policies");
-                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-                       documents.setCreatedDate(CommonUtil.currentDate());
-                       documents.setCreatedBy(loginUser.getUserCode());
-                       documents.setUpdatedDate(CommonUtil.currentDate());
-                       documents.setUpdatedBy(loginUser.getUserCode());
-                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-					   
-                   }
-                   
-                 
-	    	}
-		}
-		
-		
-		
-		
-		
-		
-		//save  mutliple attachment for supported Documents.
-				if ((jsonObj.has("supportingAttcahmentMaxRowNumber"))){
-			    	String supportingAttcahmentMaxRowNumber = jsonObj.getString("supportingAttcahmentMaxRowNumber");
-					int supportedAttcahmentMaxRowNumberCount = Integer.parseInt(supportingAttcahmentMaxRowNumber);
-					
-					OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-					
-			    	for (int a = 0; a < supportedAttcahmentMaxRowNumberCount; a++) {
-						   
-						   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-		       		       final Map files = multiRequest.getFileMap();
-		       		       
-		       		       documents.setOnboardingTemplateId(template);
-		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"supportingdocFile");
-		                   if(multiFile != null && !multiFile.isEmpty()){
-		                	   documents.setDocFile(multiFile.getBytes());
-		                	   documents.setFileName(multiFile.getOriginalFilename());
-		                       
-		                       if(multiFile.getContentType()!=null){
-		                    	   documents.setFileContentType(multiFile.getContentType());
-		                       }
-		                       documents.setDocumentType("Supported");
-		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                       documents.setCreatedDate(CommonUtil.currentDate());
-		                       documents.setCreatedBy(loginUser.getUserCode());
-		                       documents.setUpdatedDate(CommonUtil.currentDate());
-		                       documents.setUpdatedBy(loginUser.getUserCode());
-		                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-							   
-		                   }
-		                   
-		                 
-			    	}
-				}
-		
+		onBoardingTemplateDocumentsService.storeOnBoardTemplateDocuments(jsonObj, loginUser, request);
 		return "success";
 			
 	}
-	
-	
 	
 	@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
     public void downloadTemplateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
