@@ -6,9 +6,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <link rel="stylesheet" href="resources/css/style.css" />
-
+<link href="resources/css/summernote.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css">
  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script> 
+ <script src="resources/js/summernote.js"></script>
 
 <!-- newly added end -->
 
@@ -461,7 +462,17 @@ function addEmailtemplate(requirementId){
                     $("#submitToClientDiv").empty();
                     $("#emailTemplateDiv").empty();
                     $("#emailTemplateDiv").append(result);
-					$("#compose-textarea").wysihtml5();
+                    $('#compose-textarea').summernote({
+  					  toolbar: [
+  					    // [groupName, [list of button]]
+  					    ['style', ['bold', 'italic', 'underline', 'clear']],
+  					    ['font', ['strikethrough', 'superscript', 'subscript']],
+  					    ['fontsize', ['fontsize']],
+  					    ['color', ['color']],
+  					    ['para', ['ul', 'ol', 'paragraph']],
+  						['table',['table']],
+  					    ['height', ['height']]
+    					]});
 					$("#create-signature").wysihtml5();
                     $('#mailsTagit').tagit({
                         singleField: true,
