@@ -1,19 +1,30 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OnBoardingTemplateDao;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
-
+	
 	@Autowired
 	OnBoardingTemplateDao onBoardingTemplateDao;
+	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
 
 	@Override
 	public List<OnBoardingTemplate> getOnBoardingTemplatesList(Long orgLocationId) throws Exception {
@@ -46,6 +57,43 @@ public class OnBoardingTemplateServiceImpl implements OnBoardingTemplateService{
 		return onBoardingTemplateDao.getOnBoardingFinishedTemplatesList(orgLocationId);
 	}
 	
-	
+
+	@Override
+	public OnBoardingTemplate getOnBoardTemplateDetails(JSONObject jsonObj, User user, OrgLocations orgLocations)
+			throws Exception {
+		
+		 OnBoardingTemplate onBoardingTemplate = null;
+		
+		 if(jsonObj.has("templateId") && !isNullOrEmpty(jsonObj.getString("templateId"))){
+		 		onBoardingTemplate = getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
+		 		onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
+			 	onBoardingTemplate.setDescription(jsonObj.getString("description"));
+			 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
+			 	onBoardingTemplate.setUpdatedDate(new Date());
+		 	 
+		 	 }else{
+		 		 onBoardingTemplate = new OnBoardingTemplate();
+			 	 onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
+			 	 onBoardingTemplate.setDescription(jsonObj.getString("description"));
+			 	 onBoardingTemplate.setOrgLocationId(orgLocations);
+			 	
+			 	 StringBuilder userName = new StringBuilder();
+				if(!isNullOrEmpty(user.getLastName())){
+					onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).toString());
+				}
+				onBoardingTemplate.setTemplateStatus("Draft");
+				onBoardingTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+				onBoardingTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			 	onBoardingTemplate.setCreatedBy(user.getUserCode());
+			 	onBoardingTemplate.setCreatedDate(new Date());
+			 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
+			 	onBoardingTemplate.setUpdatedDate(new Date());
+		 	 }
+		 
+		        onBoardingTemplate = saveOnBoardingTemplate(onBoardingTemplate);
+		        return onBoardingTemplate;
+		}
 
 }
