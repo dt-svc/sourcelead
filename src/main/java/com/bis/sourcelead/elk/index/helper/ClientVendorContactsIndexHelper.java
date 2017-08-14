@@ -8,6 +8,7 @@ import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class ClientVendorContactsIndexHelper {
@@ -15,6 +16,9 @@ public class ClientVendorContactsIndexHelper {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	
 	public ClientVendorContactsIndex getClientVendorContactIndexFromSpoc(OrgSpoc orgSpoc) throws Exception{
@@ -35,8 +39,8 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setStatus(orgSpoc.getStatus());
 			User ownerUser = userService.getUserById(orgSpoc.getVendorUser().getId());
 			
-			clientVendorContactsIndex.setCreatedDate(Constants.DF_YMD.format(orgSpoc.getCreatedDate()));
-			clientVendorContactsIndex.setUpdatedDate(Constants.DF_YMD.format(orgSpoc.getUpdatedDate()));
+			clientVendorContactsIndex.setCreatedDate(commonUtil.elkDateFormatter(orgSpoc.getCreatedDate()));
+			clientVendorContactsIndex.setUpdatedDate(commonUtil.elkDateFormatter(orgSpoc.getUpdatedDate()));
 			
 			
 			if(null != ownerUser){
