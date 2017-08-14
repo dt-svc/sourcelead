@@ -1739,10 +1739,10 @@ public class UsersListRestController {
 
 		Projects projects = projectsService.getProjectById(projectId);
 		if (projects.getStartDate() != null) {
-			projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
+			projects.setStartDateStr(commonUtil.elkDateFormatter(projects.getStartDate()));
 		}
 		if (projects.getEndDate() != null) {
-			projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
+			projects.setEndDateStr(commonUtil.elkDateFormatter(projects.getEndDate()));
 		}
 
 		resultJson = toJSON(projects);

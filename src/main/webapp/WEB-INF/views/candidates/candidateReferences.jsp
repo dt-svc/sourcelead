@@ -331,6 +331,10 @@
 				+ ' <option id="workRelated" valeu="Work Related">Work Related</option>';
 		result = result
 				+ '<option  id="familyRelated" value="Family Related">Family Related</option>';
+		result = result
+				+ '<option  id="friend" value="Friend">Friend</option>';
+		result = result
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
 		result = result + ' </select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -696,6 +700,18 @@
 												+ (json.relation == "Family Related" ? "selected"
 														: '')
 												+ '>Family Related</option>';
+										
+										result = result
+												+ '<option  '
+												+ (json.relation == "Friend" ? "selected"
+														: '')
+												+ '>Friend</option>';
+												
+										result = result
+												+ '<option  '
+												+ (json.relation == "Neighbour" ? "selected"
+														: '')
+												+ '>Neighbour</option>';
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';
@@ -796,7 +812,7 @@
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
-		} else {
+		}else {
 			$("#dvDesignationEdit").hide();
 			$("#designationVal").remove();
 			$('#dvDesignation').find('p.jquery_form_error_message').remove();

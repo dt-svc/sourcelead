@@ -8,6 +8,8 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.RequirementSearchDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -111,7 +113,7 @@ public interface RequirementService {
 	
 	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
 
-	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
+	public ResponseList<Requirement> searchRequirement(OrgLocations orgLocation, RequirementSearchDTO requirementSearchDTO, Org org, String userRole, User user)throws Exception;
 
 	public Long getRequirementsListById(Long requirementId) throws Exception;
 	

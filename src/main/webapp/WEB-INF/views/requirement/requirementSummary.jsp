@@ -4406,7 +4406,7 @@ function requirementRecommendations(requirementId){
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
-		    alert("report.currentResumeName :"+report.currentResumeName);
+		   
 		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
 			 var file =  report.currentResumeName;
 			  var fileName = file.substr(0,5);
@@ -6295,9 +6295,11 @@ function deleteImage(candidateId){
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
 	        	 $("#popUp").empty();

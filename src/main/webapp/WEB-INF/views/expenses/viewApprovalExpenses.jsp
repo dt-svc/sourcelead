@@ -122,7 +122,7 @@
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+						<strong>Amount:</strong><span>${expenses.totalAmountRoundoffValue}</span><div class="clearfix"></div>
 					</div>
 					
 					<div class="project_details_cta">

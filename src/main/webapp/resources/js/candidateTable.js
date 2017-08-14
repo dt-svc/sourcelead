@@ -3,8 +3,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		$("#dataTableSearch").val(searchValue);
 		candidateList();
 	} else if(candidateKeyword == "candidateSearch"){
-		candidateSideBar(candidateIdSearchId);
-		candidateQuickViewProfile(candidateIdSearchId);
+		/*candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);*/
 		candidateList();
 		$("#upcandidateStatus").val('');
 	} else {
@@ -91,7 +91,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
           result = result +"    <th>&nbsp;</th>";
-          /*result = result +"    <th>Generated ID</th>";*/ 
+          result = result +"    <th>Generated ID</th>";
           result = result +"    <th>Name</th>"; 
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
@@ -123,7 +123,7 @@ function cpagination(url){
         }),
         "columns": [
             { "data": "isAssociate" },
-            /*{ "data": "generatedId"},*/
+            { "data": "generatedId"},
             { "data": "firstName"},
             { "data": "primarySkill" },
             { "data": "designationType"},
@@ -160,7 +160,7 @@ function cpagination(url){
 		              result = result +"</div>";
 		              return  result;
 	    	  	}
-	      },/*{
+	      },{
 	    	  "targets": colIndex++,
               "data": "generatedId",
               "render": function ( data, type, full, meta ) {
@@ -173,7 +173,7 @@ function cpagination(url){
   	             	}
   	              return result;
               }
-	          }*/{
+	          },{
             "targets": colIndex++,
             "data": "firstName",
             "render": function ( data, type, full, meta ) {
@@ -270,7 +270,7 @@ function cpagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[7,'desc']],
+	    	"aaSorting": [[8,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

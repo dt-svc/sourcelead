@@ -38,7 +38,7 @@ public interface TimesheetSubmissionsDao {
     
     public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
-    public Date getNextMondayByProjectMemberId(Long pojectMemberId); 
+    public Date getNextMondayByProjectMemberId(Long pojectMemberId) throws Exception; 
     
     Date getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(Long userId,Date currentStartDate);
     

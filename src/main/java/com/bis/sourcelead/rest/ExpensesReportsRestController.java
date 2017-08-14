@@ -570,8 +570,8 @@ public class ExpensesReportsRestController {
 	
 
 	@RequestMapping(value = "/getYearsAndQuartersComboList")
-	public String[] getYearsAndQuartersComboList(HttpServletRequest request) throws Exception {
-		Map<String, Map<String,String>> quarterlyDateList = expensesReportService.getYearsAndQuartersComboList();
+	public String[] getYearsAndQuartersComboList(HttpServletRequest request,@RequestParam(value="dateFormat", required=false) String dateFormat) throws Exception {
+		Map<String, Map<String,String>> quarterlyDateList = expensesReportService.getYearsAndQuartersComboList(dateFormat);
 		String resultJson = commonUtil.toJSON(getCurrentYearAndCurrentQuater());
 		String resultJson1 = commonUtil.toJSON(quarterlyDateList);
 		String[] output = new String[2];

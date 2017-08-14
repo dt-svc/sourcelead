@@ -146,7 +146,7 @@ public class TimesheetSubmissionListController {
 				    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
 				    	 if(actualStartDate != null && actualEndDate != null){
 				    	 LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-				    		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate), commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+				    		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate), commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate),loginOrgLocations.getDateFormat());
 							if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 								for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 						    		 String  k = entry.getKey();

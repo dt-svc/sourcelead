@@ -83,7 +83,7 @@
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+						<strong>Amount:</strong><span>${expenses.totalAmontRoundOffValue}</span><div class="clearfix"></div>
 					</div>	 
 					<div class="project_details_cta">
 						<strong>Exp Created By:</strong><span>${expenses.expCreatedBy}</span><div class="clearfix"></div>
@@ -110,7 +110,7 @@
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.expenseDate}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			        </tr>
@@ -122,7 +122,7 @@
 								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
 								<li><strong>Description :</strong><span title="${entry.description}">${entry.description}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.amount}</span><div class="clearfix"></div></li>
+								<li><strong>Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
 								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
