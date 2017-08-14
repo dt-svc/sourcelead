@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -30,7 +31,9 @@ import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -75,6 +78,12 @@ public class TimesheetEntriesRestController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	private EmployeesService employeesService; 
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	/**
 	 * @author naresh bolisetty and sarath
 	 * @param request
@@ -107,7 +116,9 @@ public class TimesheetEntriesRestController {
 																				 @RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String result = timesheetEntriesService.dynamicTimesheetpopUp(user, employeeId, startDate, endDate);
+		Employees employees = employeesService.getEmployee(employeeId.toString());
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(employees.getOrgLocations().getId());
+		String result = timesheetEntriesService.dynamicTimesheetpopUp(user, employeeId, startDate, endDate,orgLocations);
 		return result;
 	}
 	/**

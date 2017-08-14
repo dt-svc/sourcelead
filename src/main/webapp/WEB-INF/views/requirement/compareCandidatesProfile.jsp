@@ -122,13 +122,13 @@ function compareRecommendedUsersdiv(data,requirementId){
     result = result +'<div class="resumeFields">';
     result = result +'<ul>';
     result = result +'<li><label>Score : </label><span>100%</span></li>';
-	result = result +'<li><label>Rate : </label><span>'+rate+'</span></li>';
-	result = result +'<li><label>Experience : </label><span>'+minexp+''+maxexp+'Year(s)</span></li>';
-	result = result +'<li><label>Notice Period : </label><span>'+jobNoticePeriod+'</span></li>';
-	result = result +'<li class="MultLi"><label>Location : </label><span>'+jobLocation+'</span></li>';
-	result = result +'<li class="MultLi"><label>Education : </label><span>'+jobEducation+'</span></li>';
-	result = result +'<li class="MultLi"><label>Visa : </label><span>'+jobVisa+'</span></li>';
-	result = result +'<li class="MultLi"><label>Skills : </label><span>'+jobSkills+'</span></li>';
+	result = result +'<li><label>Rate : </label><span title="'+rate+'">'+rate+'</span></li>';
+	result = result +'<li><label>Experience : </label><span title="'+minexp+'-'+maxexp+'">'+minexp+'-'+maxexp+'Year(s)</span></li>';
+	result = result +'<li><label>Notice Period : </label><span title="'+jobNoticePeriod+'">'+jobNoticePeriod+'</span></li>';
+	result = result +'<li class="MultLi"><label>Location : </label><span title="'+jobLocation+'">'+jobLocation+'</span></li>';
+	result = result +'<li class="MultLi"><label>Education : </label><span title="'+jobEducation+'">'+jobEducation+'</span></li>';
+	result = result +'<li class="MultLi"><label>Visa : </label><span title="'+jobVisa+'">'+jobVisa+'</span></li>';
+	result = result +'<li class="MultLi"><label>Skills : </label><span title="'+jobSkills+'">'+jobSkills+'</span></li>';
     result = result +'</ul>';
     result = result +'</div>';
     result = result +'</div>';
@@ -251,7 +251,7 @@ function prepareCandidateGrid(data,requirementId){
 				    }
 			    	var rate ="";
 				    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
-				    	rate = report.expectedRate + ' ' + report.rateType;
+				    	rate = report.expectedRate + ' / ' + report.rateType;
 				    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 				    	rate = report.expectedRate;
 				    }else{
@@ -324,7 +324,7 @@ function prepareCandidateGrid(data,requirementId){
 				    }
 				    opt = opt +'</div>';
 				    opt = opt +'<div class="comUseDeta">';
-				    opt = opt +'<p>';
+				    opt = opt +'<p title="'+firstName+' '+lastName+'">';
 				    opt = opt +'<strong>'+firstName+' '+lastName+'</strong>';
 				    opt = opt +'</p>';
 				    
@@ -340,9 +340,9 @@ function prepareCandidateGrid(data,requirementId){
 					opt = opt+'   </div>  ';
 					opt = opt+' </div>                 ';                                                                                                                                                      
 		
-				    opt = opt +'<p><i class="fa fa-briefcase" title="Primary Skill"></i><span>'+primarySkill+'</span></p>';
-				    opt = opt +'<p><i class="fa fa-envelope" title="Email"></i><span>'+email+'</span></p>';
-				    opt = opt +'<p><i class="fa fa-phone-square" title="Mobile"></i><span>'+mobile+'</span></p>';
+				    opt = opt +'<p><i class="fa fa-briefcase" title="'+primarySkill+'"></i><span>'+primarySkill+'</span></p>';
+				    opt = opt +'<p><i class="fa fa-envelope" title="'+email+'"></i><span>'+email+'</span></p>';
+				    opt = opt +'<p><i class="fa fa-phone-square" title="'+mobile+'"></i><span>'+mobile+'</span></p>';
 				    opt = opt +'</div>';
 				    opt = opt +'</div>';
 				    
@@ -350,14 +350,14 @@ function prepareCandidateGrid(data,requirementId){
 		    	    opt = opt +'<!-- profile_personalInfo -->';
 		    	    opt = opt +'<div class="profile_personalInfo">';
 		    	    opt = opt +'<ul class="list-unstyled clearfix">';
-		    	    opt = opt +'<li>'+report.finalScore+'%</li>';
-    	    		opt = opt +'<li>'+rate+'</li>';
-    	    		opt = opt +'<li>'+totalExp+'</li>';
-    	    		opt = opt +'<li>'+noticePriod+'</li>';
-    	    		opt = opt +'<li class="MultLi">'+location+'</li>';
-    	    		opt = opt +'<li class="MultLi">'+candieducation+'</li>';
-    	    		opt = opt +'<li class="MultLi">'+candivisaType+'</li>';
-    	    		opt = opt +'<li class="MultLi">'+skillsName+'</li>';
+		    	    opt = opt +'<li title="'+report.finalScore+'%">'+report.finalScore+'%</li>';
+    	    		opt = opt +'<li title="'+rate+'">'+rate+'</li>';
+    	    		opt = opt +'<li title="'+totalExp+'">'+totalExp+'</li>';
+    	    		opt = opt +'<li title="'+noticePriod+'">'+noticePriod+'</li>';
+    	    		opt = opt +'<li title="'+location+'" class="MultLi">'+location+'</li>';
+    	    		opt = opt +'<li title="'+candieducation+'" class="MultLi">'+candieducation+'</li>';
+    	    		opt = opt +'<li title="'+candivisaType+'" class="MultLi">'+candivisaType+'</li>';
+    	    		opt = opt +'<li title="'+skillsName+'" class="MultLi">'+skillsName+'</li>';
 	    	    	opt = opt +'</ul>';
 	    	    	opt = opt +'<div class="comBtns mt10">';
 	    	    	if(report.currentResumeUUID != null && report.currentResumeUUID != '' && report.currentResumeUUID != 'undefined'){
@@ -415,7 +415,6 @@ function getCandidatetoCompare(div,requirementId){
 		candidateId = $("#compareCandidateList4").val();
 		$("#loading4").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	}
-	alert(candidateId)
 	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
@@ -460,7 +459,7 @@ function candidateDiv(report,div,requirementId){
 	    
 	   	var rate ="";
 	    if((report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined') && (report.rateType != null && report.rateType != '' && report.rateType != 'undefined')){
-	    	rate = report.expectedRate + ' ' + report.rateType;
+	    	rate = report.expectedRate + ' / ' + report.rateType;
 	    }else if(report.expectedRate != null && report.expectedRate != '' && report.expectedRate != 'undefined'){
 	    	rate = report.expectedRate;
 	    }else{
@@ -552,7 +551,7 @@ function candidateDiv(report,div,requirementId){
 	   
 	   opt = opt +'</div>';
 	   opt = opt +'<div class="comUseDeta">';
-	   opt = opt +'<p>';
+	   opt = opt +'<p title="'+firstName+' '+lastName+'">';
 	   opt = opt +'<strong>'+firstName+' '+lastName+'</strong>';
 	   opt = opt +'</p>';
 	   
@@ -568,9 +567,9 @@ function candidateDiv(report,div,requirementId){
 		opt = opt+'   </div>  ';
 		opt = opt+' </div>                 ';                                                                                                                                                      
 		
-	   opt = opt +'<p><i class="fa fa-briefcase" title="Primary Skill"></i><span>'+primarySkill+'</span></p>';
-	   opt = opt +'<p><i class="fa fa-envelope" title="Email"></i><span>'+email+'</span></p>';
-	   opt = opt +'<p><i class="fa fa-phone-square" title="Mobile"></i><span>'+mobile+'</span></p>';
+	   opt = opt +'<p><i class="fa fa-briefcase" title="'+primarySkill+'"></i><span>'+primarySkill+'</span></p>';
+	   opt = opt +'<p><i class="fa fa-envelope" title="'+email+'"></i><span>'+email+'</span></p>';
+	   opt = opt +'<p><i class="fa fa-phone-square" title="'+mobile+'"></i><span>'+mobile+'</span></p>';
 	   opt = opt +'</div>';
 	   opt = opt +'</div>';
 	   
@@ -578,17 +577,17 @@ function candidateDiv(report,div,requirementId){
 	   opt = opt +'<div class="profile_personalInfo">';
 	   opt = opt +'<ul class="list-unstyled clearfix">';
 	   if(report.candidateScore != null && report.candidateScore !='' && report.candidateScore !='undefined'){
-	   		opt = opt +'                <li>'+parseFloat(report.candidateScore)+'%</li>';
+	   		opt = opt +'                <li title="'+parseFloat(report.candidateScore)+'%">'+parseFloat(report.candidateScore)+'%</li>';
 	   	 }else{
 	   		opt = opt +'                <li>0%</li>';
 	   	 }
-	   opt = opt +'<li>'+rate+'</li>';
-	   opt = opt +'<li>'+totalExp+'</li>';
-	   opt = opt +'<li>'+noticePriod+'</li>';
-	   opt = opt +'<li class="MultLi">'+location+'</li>';
-	   opt = opt +'<li class="MultLi">'+candieducation+'</li>';
-	   opt = opt +'<li class="MultLi">'+candivisaType+'</li>';
-	   opt = opt +'<li class="MultLi">'+skillsName+'</li>';
+	   opt = opt +'<li title="'+rate+'">'+rate+'</li>';
+	   opt = opt +'<li title="'+totalExp+'">'+totalExp+'</li>';
+	   opt = opt +'<li title="'+noticePriod+'">'+noticePriod+'</li>';
+	   opt = opt +'<li title="'+location+'" class="MultLi">'+location+'</li>';
+	   opt = opt +'<li title="'+candieducation+'" class="MultLi">'+candieducation+'</li>';
+	   opt = opt +'<li title="'+candivisaType+'" class="MultLi">'+candivisaType+'</li>';
+	   opt = opt +'<li title="'+skillsName+'" class="MultLi">'+skillsName+'</li>';
 	   opt = opt +'</ul>';
 	   opt = opt +'<div class="comBtns mt10">';
 	   if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){

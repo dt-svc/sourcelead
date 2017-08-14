@@ -592,15 +592,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 	
-	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency,String dateFormat) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
 		
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",dateFormat);
 		
 		Calendar previousFriday = CalendarUtil.getDateIncrementByincrement(startMonday,-3);
 		Date previousDateFri = previousFriday.getTime();

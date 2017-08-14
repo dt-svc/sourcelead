@@ -62,7 +62,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails">
+            <select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="validate_email" data-validation-optional="true" name="Toemails">
 
             </select>
             <span class="select-multiple" data-target="#multiplemail" onclick="listChange();" data-toggle="modal"><i class="fa fa-list-alt" title="Multiple Mail"></i></span> 
@@ -100,7 +100,7 @@ display: none;
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-warning small">Others</label>
           <div class="col-md-10 email-icon positionRelative disable-choosen-dropdown">
-                <select multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" class="chosen-select form-control" name="otherEmails" id="otherEmails" >
+                <select multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" data-validation="validate_email" data-validation-optional="true" class="chosen-select form-control" name="otherEmails" id="otherEmails" >
                 </select>
           </div>
         </div>
@@ -783,7 +783,7 @@ function getCandidates(candidatesListType){
 function candidatePagenation(){
     $("#candidates").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 10, 15, -1], [10, 10, 15, "All"]],
+    	"lengthMenu": [[10, 10, 15, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[1,'desc']],

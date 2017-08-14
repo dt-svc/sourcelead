@@ -477,7 +477,7 @@ function candidateSideBar(candidateId){
 			             result = result + '<div id="tab-10" class="project_tabs_inn">';
 			             result = result+'     </div>';
 						 
-						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
+						 result = result + '<div id="tab-8" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
@@ -625,9 +625,11 @@ function deleteImage(candidateId){
 <script type="text/javascript">
 function deleteProfileImage(candidateId){   
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId,
+            url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
 	        success: function(data) {
 	        	 var result = data;
 	        	 $("#popUp").empty();
