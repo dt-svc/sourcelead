@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +31,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +52,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
+import com.bis.sourcelead.dto.RequirementSearchDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -80,6 +85,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -193,7 +199,8 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
@@ -1391,12 +1398,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user,String userRoleName) throws Exception {
 		return requirementDao.getRequirementListByOrgLocationID(orgLocationId,status,clients,user,userRoleName);
-	}
-
-	
-	@Override
-	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User  user,String userRoleName,int start,int length) throws Exception {
-		return requirementDao.getRequirementListByOrgLocationIDWithMaxResults(orgLocationId,status,clients,user,userRoleName,start,length);
 	}
 	
 	/**
@@ -2625,6 +2626,9 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 			 writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString()); 
  		}
+		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
+			 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate())); 
+		}
 		return createExcelsheet;
 	}
 
@@ -2843,7 +2847,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				}
 				req.setCreatedByName(req.getCreatedBy().getFirstName()+lastName);
 			}
-			req.setRequirementCreatedDateToString(Constants.DF_YMD.format(req.getCreatedDate()));
+			req.setRequirementCreatedDateToString(commonUtil.elkDateFormatter(req.getCreatedDate()));
 		}
 			
 		return list;
@@ -3054,256 +3058,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		
 	}
 */
-	@Override
-
-	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj,Org org,String userRole,User user) throws Exception {
-		
-		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		 
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-		 
-		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
-	   	 //Exclude Keyword
-//		 if(jsonObj.has("excludeKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("excludeKeyWord"))){
-//			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
-//			 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
-//			 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
-//				 for(String keywd : excludeKeyWordArray){
-//					 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
-//					ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-//					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-//						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-//							excludeBoolSubQueryBuilder.should(matchQueryBuilder);
-//						}
-//						excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
-//					}
-//				}
-//				 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
-//			  } 
-//		 }
-			
-			//Any Keyword
-//		 if(jsonObj.has("anyKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("anyKeyWord"))){
-//			 ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "anyKeyWord");
-//				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-//					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-//					 for(String keywd : anyKeyWordArray){
-//						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-//						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-//								anyBoolSubQueryBuilder.should(matchQueryBuilder);
-//							}
-//							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-//						}
-//					}
-//					 boolQueryBuilder.must(anyBoolQueryBuilder);
-//				} 
-//		 }
-		
-		//All Keywords
-//		 if(jsonObj.has("allKeyWord") && !"".equalsIgnoreCase(jsonObj.getString("allKeyWord"))){
-//				ArrayList<String> allKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "allKeyWord");
-//				if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
-//					 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
-//					 for(String keywd : allKeyWordArray){
-//						 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
-//						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
-//						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-//							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-//								allBoolSubQueryBuilder.should(matchQueryBuilder);
-//							}
-//							allBoolQueryBuilder.must(allBoolSubQueryBuilder);
-//						}
-//					}
-//					 boolQueryBuilder.must(allBoolQueryBuilder);
-//				}
-//		 }
-			
-			
-			//Requirement Title
-			if(jsonObj.has("requirementTitle") && !"".equalsIgnoreCase(jsonObj.getString("requirementTitle"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", jsonObj.getString("requirementTitle")));
-		    }
-			// jobId
-			if(jsonObj.has("jobId") && !"".equalsIgnoreCase(jsonObj.getString("jobId"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("jobId", jsonObj.getString("jobId")));
-		    }
-		 //Country
-			if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("country", jsonObj.getString("country")));
-		    }
-			 //State
-			if(jsonObj.has("state") && !"".equalsIgnoreCase(jsonObj.getString("state"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("state", jsonObj.getString("state")));
-		    }
-			//City
-			if(jsonObj.has("city")  && !"".equalsIgnoreCase(jsonObj.getString("city"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("city", jsonObj.getString("city")));
-		    }
-			
-			if(jsonObj.has("noticePeriod") && !"".equalsIgnoreCase(jsonObj.getString("noticePeriod"))){
-				ArrayList<String> noticePeriodArray = getSearchKeywordsFromChosenSelectField(jsonObj, "noticePeriod");
-				if(noticePeriodArray != null && !noticePeriodArray.isEmpty()){
-					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
-					for(String keywd : noticePeriodArray){
-						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("noticePeriod", keywd));
-					}
-					boolQueryBuilder.must(edunBoolQueryBuilder);
-				} 
-			}
-			
-			
-			
-			// currency
-//		    if(jsonObj.has("currencyCode") && !"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
-//				boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jsonObj.getString("currencyCode")));
-//		    }
-		    
-		     //rate
-//		    if(jsonObj.has("rate") && !"".equalsIgnoreCase(jsonObj.getString("rate"))){
-//		    	String rate= jsonObj.getString("rate").replaceAll("[^0-9\\.]+", "");
-//		    	try{
-//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("rate").gte(new Float(rate)));
-//		    	}
-//		    	catch(NumberFormatException e){}
-//		    }
-			
-			
-		   //Rate Type
-//			if(jsonObj.has("rateType") && !"".equalsIgnoreCase(jsonObj.getString("rateType"))){
-//				boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jsonObj.getString("rateType")));
-//		    }
-			
-			
-			//minExpYears && maxExpYears
-//		    if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp")) && jsonObj.has("maxExp")  && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
-//		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
-//		    	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
-//		    	try{
-//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)).lte(new Integer(maxYears)));
-//		    	}
-//		    	catch(NumberFormatException e){}
-//		    }
-			//minExpYears
-//		    else if(jsonObj.has("minExp") && !"".equalsIgnoreCase(jsonObj.getString("minExp"))){
-//		    	String minYears= jsonObj.getString("minExp").replaceAll("[^0-9\\.]+", "");
-//		    	try{
-//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(new Integer(minYears)));
-//		    	}
-//		    	catch(NumberFormatException e){}
-//		    }
-		    //maxExpYears
-//		    else if(jsonObj.has("maxExp") && !"".equalsIgnoreCase(jsonObj.getString("maxExp"))){
-//           	String maxYears= jsonObj.getString("maxExp").replaceAll("[^0-9\\.]+", "");
-//           	try{
-//		    		boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").lte(new Integer(maxYears)));
-//		    	}
-//		    	catch(NumberFormatException e){}
-//		    }
-			
-		    //requirementStatu
-			if(jsonObj.has("requirementStatus") && !"".equalsIgnoreCase(jsonObj.getString("requirementStatus"))){
-				boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", jsonObj.getString("requirementStatus")));
-		    }
-			
-			if(jsonObj.has("updatedOn") && !"".equalsIgnoreCase(jsonObj.getString("updatedOn"))){
-				String updatedOn =  jsonObj.getString("updatedOn");
-				String upOn = UpdateOnToDate(updatedOn);
-				if(!Constants.ALL_RECORDS.equalsIgnoreCase(upOn)){
-				 RangeQueryBuilder qb = QueryBuilders.rangeQuery("createdDate").gte(upOn);
-				boolQueryBuilder.must(qb);
-				}
-			}
-			//Educations
-//			if(jsonObj.has("education") && !"".equalsIgnoreCase(jsonObj.getString("education"))){
-//				ArrayList<String> educationArray = getSearchKeywordsFromChosenSelectField(jsonObj, "education");
-//				if(educationArray != null && !educationArray.isEmpty()){
-//					BoolQueryBuilder edunBoolQueryBuilder = new BoolQueryBuilder();
-//					for(String keywd : educationArray){
-//						edunBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("education", keywd));
-//					}
-//					boolQueryBuilder.must(edunBoolQueryBuilder);
-//				} 
-//			}
-			
-			//client
-			if(jsonObj.has("client") && !"".equalsIgnoreCase(jsonObj.getString("client"))){
-				ArrayList<String> employerArray = getSearchKeywordsFromChosenSelectField(jsonObj, "client");
-				if(employerArray != null && !employerArray.isEmpty()){
-					BoolQueryBuilder employerBoolQueryBuilder = QueryBuilders.boolQuery();
-					for(String keywd : employerArray){
-						employerBoolQueryBuilder.should(QueryBuilders.matchQuery("client", keywd));
-					}
-					boolQueryBuilder.must(employerBoolQueryBuilder);
-				}
-			}
-			//Requirement Skills
-//			if(jsonObj.has("skills") && !"".equalsIgnoreCase(jsonObj.getString("skills"))){
-//				ArrayList<String> candidateSkillsArray = getSearchKeywordsFromChosenSelectField(jsonObj, "skills");
-//				if(candidateSkillsArray != null && !candidateSkillsArray.isEmpty()){
-//					BoolQueryBuilder skillBoolQueryBuilder = QueryBuilders.boolQuery();
-//					for(String keywd : candidateSkillsArray){
-//						skillBoolQueryBuilder.should(QueryBuilders.matchQuery("skills", keywd));
-//					}
-//					boolQueryBuilder.must(skillBoolQueryBuilder);
-//				} 	
-//			}
-			
-			SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-			List<Requirement>   reqList = new ArrayList<>();
-			if(searchHits != null && searchHits.length >0){
-				for (SearchHit hit : searchHits) {
-					String sourceAsString = hit.getSourceAsString();
-					ObjectMapper mapper = new ObjectMapper();
-					if (sourceAsString != null) {
-						Requirement requirement = null;
-						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
-		            	{
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-		            			)){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
-		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()) || "SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-		            			)){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		//&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	
-		            	if(requirement !=null){
-		            		reqList.add(requirement);
-		            	}
-		            }
-				}
-			}
-		return reqList;
-		
-	}
-	 private Requirement getData(RequirementIndex requirementIndex, User user) throws Exception {
+	
+	 private Requirement getData(RequirementIndex requirementIndex, User user,OrgLocations orgLocations) throws Exception {
 		 Requirement requirement = new Requirement();
 		requirement.setId(requirementIndex.getRequirementId());
      	requirement.setJobId(requirementIndex.getJobId());
@@ -3314,13 +3070,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	
      	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 
      	Date elkDate = elkFormat.parse(convertedStirng);
-     	
-     	/*String convertedStirngArray[]  = convertedStirng.split("-");
-     	StringBuilder dateString = new StringBuilder();
-     	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
-     	*/
-     	
-     	requirement.setPostedDateStr(LoginSessionController.DATEFORMAT.format(elkDate));
+     	requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),elkDate));
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
@@ -3331,6 +3081,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	if(requirementIndex.getMaxExperience() !=null){
      		requirement.setMaxExp(requirementIndex.getMaxExperience().toString());
      	}
+     	requirement.setPostedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),elkDate));
      	requirement.setClientName(requirementIndex.getClient());
      	requirement.setCountry(requirementIndex.getCountry());
      	requirement.setState(requirementIndex.getState());
@@ -3341,23 +3092,18 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
      	}
      	requirement.setManager(requirementIndex.getManager());
-     	if(requirementIndex.getRequirementStatus() !=null && !"".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
+     	if(StringUtils.isNotEmpty(requirementIndex.getRequirementStatus())){
          	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
      	}
      	Boolean isLoginUserAsTeamMember =  requirementAssignToService.checkLoginUserIsRequirementAssignedToByRequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
 		requirement.setIsLoginUserAsTeamMember(isLoginUserAsTeamMember.toString());
 
-       if(null != requirementIndex.getReleasedBy() && !"".equalsIgnoreCase(requirementIndex.getReleasedBy())){
+       if(StringUtils.isNotEmpty(requirementIndex.getReleasedBy())){
 			List<Long> userId = new ArrayList<Long>();
 			for (String s : requirementIndex.getReleasedBy().split(",")){
 				userId.add(Long.parseLong(s));
 			 }
-			boolean flag = userId.contains(user.getId());
-     		if(flag == true){
-     			requirement.setIsRequirementReleasedByuser("Y");
-     		}else{
-     			requirement.setIsRequirementReleasedByuser("N");
-     		}
+     		requirement.setRequirementReleasedUserIds(userId);
 		}
        if(null != requirementIndex.getRequirementUUID()){
    		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());	
@@ -3374,26 +3120,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return str.substring(0, str.length()-1);
 	}
 
-	private ArrayList<String> getSearchKeywordsFromChosenSelectField(JSONObject jsonObj,String param) throws Exception {
-		 ArrayList<String> keyWordList = null;
-		 if(jsonObj.has(param)){
-			 String searchKeywordString = null;
-			 try{
-	   		   JSONArray jsonArray = jsonObj.getJSONArray(param);
-	   		   searchKeywordString = jsonArray.toString();
-		   	  }
-		   	  catch(JSONException e){
-		   		  searchKeywordString= jsonObj.getString(param);
-		   	  }
-			 
-		     searchKeywordString = searchKeywordString.replaceAll("\\[", "").replaceAll("\\]","");
-		     keyWordList = new ArrayList<String>(Arrays.asList(searchKeywordString.split(",")));
-		 }
-		 else{
-			 keyWordList = new ArrayList<String>();
-		 }
-         return keyWordList;
-     }
+	
 	 
 	private ArrayList<String> getSearchValuesFromChosenSelectField(String searchValue) {
 		 ArrayList<String> keyWordList = null;
@@ -3404,39 +3131,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
          return keyWordList;
 	}
 	
-	
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
-		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
-			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactName", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("clientContactEmail", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("manager", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("numberOfPositions", keywd));
-			
-			
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-			}
-
-				
-			return matchQueryBuilderList; 
-	 }
 
 
 	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderListForUniversalSearch(String keywd){
@@ -3457,8 +3151,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
 				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
 			}
-
-				
 			return matchQueryBuilderList; 
 	 }
 
@@ -3493,86 +3185,6 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
  
 	 
 
-	@Override
-	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocation, String searchValue,String userRole, User user) throws Exception {
-
-		List<Object>   searchList = new ArrayList<>();
-		 Long maxResults = requirementDao.getRequirementListByOrgLocationID(orgLocation.getId());
-		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
-		 if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
-				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
-					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					 for(String keywd : anyKeyWordArray){
-						 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderListForUniversalSearch(keywd);
-						if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-							for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-								anyBoolSubQueryBuilder.should(matchQueryBuilder);
-							}
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
-					}
-					 boolQueryBuilder.must(anyBoolQueryBuilder);
-				} 
-		 }
-		 
-		 
-		 
-		 
-		 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-			
-			if(searchHits != null && searchHits.length >0){
-				for (SearchHit hit : searchHits) {
-					String sourceAsString = hit.getSourceAsString();
-					ObjectMapper mapper = new ObjectMapper();
-					if (sourceAsString != null) {
-						Requirement requirement = null;
-						RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
-		            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
-		            	{
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	else if((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-		            			||((requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString()))
-		            			&& ("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel1ApproverStatus()) || "OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-		            			)){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	else if(requirementIndex.getReqLevel2ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel2ApproverUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())
-		            			&&(requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())&&"APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus()))
-		            			|| (requirementIndex.getReqLevel1ApproverUserId()!=null&&Arrays.asList(requirementIndex.getReqLevel1ApproverUserId()).contains(user.getId().toString())
-		            			&&("APPROVED".equalsIgnoreCase(requirementIndex.getReqLevel2ApproverStatus())||"OPEN".equalsIgnoreCase(requirementIndex.getRequirementStatus()))
-		            			)){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	else if(requirementIndex.getManagerUserId().equalsIgnoreCase(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	
-		            	else if(requirementIndex.getTeamOwnerUserId()!=null&&Arrays.asList(requirementIndex.getTeamOwnerUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	else if(requirementIndex.getTeamAssignUserId()!=null&&Arrays.asList(requirementIndex.getTeamAssignUserId()).contains(user.getId().toString())&&!"DRAFT".equalsIgnoreCase(requirementIndex.getRequirementStatus())&&!"SUBMITTED".equalsIgnoreCase(requirementIndex.getRequirementStatus())){
-		            		requirement = getData(requirementIndex,user);
-		            	}
-		            	if(null != requirementIndex.getRequirementUUID()){
-		            		requirement.setRequirementUUID(requirementIndex.getRequirementUUID());
-		            	}
-		            	searchList.add(requirement);
-		            }
-				}
-			}
-			
-		return searchList;
-	
-	}
 
 	@Override
 	public Long getRequirementsListById(Long orgLocationId) throws Exception {

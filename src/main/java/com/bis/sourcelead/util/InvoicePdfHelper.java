@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -87,6 +88,7 @@ public class InvoicePdfHelper {
 	@Autowired
 	TimeZoneService timeZoneService;
 
+	OrgLocationService orgLocationService;
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,
 			String invoiceType, String vendorCurrencyCode, String loginOrgCurrencyCode) throws IOException, Exception {
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
@@ -835,7 +837,9 @@ public class InvoicePdfHelper {
 	}
 
 	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName, InvoiceAmount totalStagesAmount,
-			String exportStartDate, String exportEndDate, String invoiceType) throws Exception {
+			String exportStartDate, String exportEndDate, String invoiceType,OrgLocations locations) throws Exception {
+		
+//		 OrgLocations orglo = orgLocationService.getOrgLocations(locations.getId());
 
 		String[] headers = null;
 		if (Constants.Payables.equalsIgnoreCase(invoiceType)) {
@@ -844,14 +848,14 @@ public class InvoicePdfHelper {
 			headers = Constants.BILLING_HEADERS;
 		}
 		Document document = new Document(PageSize.LETTER.rotate());
-		DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 
 		StringBuilder sbReq = new StringBuilder();
-		sbReq.append(orgName).append(Constants.BILLING).append(dateFormat.format(new Date()));
+		sbReq.append(orgName).append(Constants.BILLING).append(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),new Date()));
 
 		StringBuilder fileSB = new StringBuilder();
 		File file = File.createTempFile(
-				fileSB.append(orgName).append(Constants.BILLING).append(dateFormat.format(new Date())).toString(),
+				fileSB.append(orgName).append(Constants.BILLING).append(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),new Date())).toString(),
 				".pdf");
 
 		file.setReadable(true);
@@ -921,7 +925,7 @@ public class InvoicePdfHelper {
 			table.completeRow();
 			java.util.List<String[]> invoices = new ArrayList<>();
 			for (Invoice invoice : invoiceList) {
-				invoices.add(prepareBillingToArray(invoice));
+				invoices.add(prepareBillingToArray(invoice,locations));
 			}
 
 			for (String[] invoiceArray : invoices) {
@@ -957,7 +961,7 @@ public class InvoicePdfHelper {
 		cell.setBorderWidthBottom(2f);
 	}
 
-	private String[] prepareBillingToArray(Invoice invoice) {
+	private String[] prepareBillingToArray(Invoice invoice, OrgLocations locations) throws Exception {
 
 		String billingArray[] = new String[Constants.BILLING_HEADERS.length];
 
@@ -968,6 +972,8 @@ public class InvoicePdfHelper {
 		}
 
 		OrgLocations orgLocations = null;
+		
+//		 OrgLocations orglo = orgLocationService.getOrgLocations(invoice.getOrgLocation().getId());
 		if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId()
 				.longValue()) {
 			orgLocations = invoice.getOrgRelationID().getLocationId();
@@ -1019,14 +1025,14 @@ public class InvoicePdfHelper {
 		}
 
 		if (null != invoice.getInvoiceDate()) {
-			String invoiceDate = LoginSessionController.DATEFORMAT.format(invoice.getInvoiceDate());
+			String invoiceDate = commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),invoice.getInvoiceDate());
 			billingArray[5] = invoiceDate;
 		} else {
 			billingArray[5] = "--";
 		}
 
 		if (null != invoice.getDueDate()) {
-			String dueDate = LoginSessionController.DATEFORMAT.format(invoice.getDueDate());
+			String dueDate = commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),invoice.getDueDate());
 			billingArray[6] = dueDate;
 		} else {
 			billingArray[6] = "--";

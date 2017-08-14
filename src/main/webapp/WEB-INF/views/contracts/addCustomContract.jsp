@@ -1459,6 +1459,7 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
+		var locationId = '${SourceLeadWeb_orgLocationId}';
 		if(sowType!="Full time offer"){
 			$("#flatReward").val("");
 		    $("#billingRateType").val('${currencyCode}').trigger('change');
@@ -1466,7 +1467,7 @@ function hideCommonSOWFields(){
 		}
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,     
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);

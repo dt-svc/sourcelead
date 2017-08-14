@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -26,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.MasterCandidateDao;
+import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -33,8 +37,11 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
@@ -114,6 +121,16 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	MasterCandidateDao masterCandidateDao;
+	
+	@Autowired
+	OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
+	OrgSpocDao orgSpocDao;
+
+	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
 		
@@ -141,12 +158,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					
 					     for(int i=0 ;i<applicants.length;i++ ){
 					    	     requirementOffers  = new RequirementOffers();
-								RequirementSubmission submission = new RequirementSubmission();
-								submission.setId(Long.parseLong(applicants[i].replace("\"", "")));
+								RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 								requirementOffers.setSubmissionId(submission);
 								
 								if(jsonObj.has(c+"joiningDate") && jsonObj.getString(c+"joiningDate") != null && !"".equalsIgnoreCase(jsonObj.getString(c+"joiningDate"))){
-									requirementOffers.setDateOfJoining(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(c+"joiningDate")));
+									requirementOffers.setDateOfJoining(commonUtil.orgLocationDateFormat(submission.getOrgLocations().getDateFormat(),jsonObj.getString(c+"joiningDate")));
 								}
 								
 								if(jsonObj.has(c+"PaymentType") && !jsonObj.getString(c+"PaymentType").isEmpty()){
@@ -186,7 +202,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                                
                                 requirementOffers.setOfferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
-								requirementOffers.setOfferStatus(Constants.OFFERMADE);
+								 if(jsonObj.has("isClientOffer")){
+									 requirementOffers.setOfferStatus(Constants.CLIENT_OFFERMADE);
+								 }else{
+									 requirementOffers.setOfferStatus(Constants.OFFERMADE);
+								 }
+								
 								requirementOffers.setCreatedDate(new Date());
 								requirementOffers.setCreatedBy(loginUser.getUserCode());
 								requirementOffers.setUpdatedDate(new Date());
@@ -209,12 +230,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           //to save offer history
 					           RequirementOfferHistory offerHistory = new RequirementOfferHistory();
 					           offerHistory.setOfferId(updateOffer);
-					           offerHistory.setSubmissionId(submission);
 					           offerHistory.setOrgLocationId(orgLocations);
-					           if(jsonObj.has("isClientOffer")){
+					           if(jsonObj.has("isClientOffer") && submission.getSourceSubmission() != null){
 					        	   offerHistory.setOfferSourceType(Constants.CLIENT_OFFERMADE);
+					        	   offerHistory.setNotifyToVendor(Constants.NO);
+					        	   offerHistory.setSubmissionId(submission.getSourceSubmission());
 					           }else{
 					        	   offerHistory.setOfferSourceType(Constants.OFFERMADE);
+					        	   offerHistory.setSubmissionId(submission);
 					           }
 					           if(jsonObj.has("notifyToApplicant") && !jsonObj.getString("notifyToApplicant").isEmpty()){
 					        	   offerHistory.setNotifyToApplicant(jsonObj.getString("notifyToApplicant"));
@@ -229,6 +252,19 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           offerHistory.setUpdatedDate(new Date());
 					           offerHistory.setUpdatedBy(loginUser.getUserCode());
 					           requirementOfferHistoryService.storeRequirementOfferHistory(offerHistory);
+					           
+					           if(jsonObj.has("isClientOffer") && submission.getSourceSubmission() != null){
+					        	   RequirementOfferHistory clientOfferHistory = new RequirementOfferHistory();
+					        	   clientOfferHistory.setOfferId(updateOffer);
+					        	   clientOfferHistory.setOrgLocationId(submission.getOrgLocations());
+					        	   clientOfferHistory.setOfferSourceType(Constants.OFFERMADE);
+					        	   clientOfferHistory.setSubmissionId(submission);
+					        	   clientOfferHistory.setNotifyToVendor(Constants.YES);
+					        	   clientOfferHistory.setNotifyToApplicant(Constants.YES);
+					        	   clientOfferHistory.setStatus(Constants.RECORD_ACTIVE);
+					        	   clientOfferHistory.setCreatedDate(new Date());
+						           requirementOfferHistoryService.storeRequirementOfferHistory(clientOfferHistory);
+					           }
 					           
 					           
 					           
@@ -485,7 +521,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
             EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_EMAIL);
-            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+//            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
             // covert subject,body and signature
@@ -494,8 +530,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
             String url = sourceleadUrl;
             
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
-            notificationScenario.setSubject(notificationbody);
+//            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
+//            notificationScenario.setSubject(notificationbody);
 
 
             // construct HTML template using required data
@@ -512,9 +548,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		} catch (UnsupportedEncodingException e) {
     			logger.error(ExceptionUtils.getFullStackTrace(e));
     		}
-            String actionLink="";
-            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
+//            String actionLink="";
+//            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
+//			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
             
             
     }
@@ -766,13 +802,30 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				  }
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
-		    	if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() == orgLocations.getId().longValue()){
-		    		Candidate candidate = candidateService.getCandidateByCandidateId(requirementOffers.getSubmissionId().getCandidate().getId());
-			    	candidate.setIsAssociate(Constants.YES);
-			    	candidate.setUpdatedBy(loginUser.getUserCode());
-			    	candidate.setUpdatedDate(commonUtil.currentDate());
-			    	
+		    	if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() == orgLocations.getId().longValue()){
+		    		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),orgLocations.getId());
+			    	if(candidate != null){
+			    		candidate.setIsAssociate(Constants.YES);
+				    	candidate.setUpdatedBy(loginUser.getUserCode());
+				    	candidate.setUpdatedDate(commonUtil.currentDate());	
+			    	}else{
+			    		candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    		candidate.setCreatedBy(loginUser.getUserCode());
+			    		candidate.setUpdatedBy(loginUser.getUserCode());
+			    	}
 			    	candidateService.saveOrUpdateCandidate(candidate);
+			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			    	
+			    	if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+			    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+			    		   addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    	}
+			    	
+		    	}else{
+		    		Candidate candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+		    		candidate.setCreatedBy(loginUser.getUserCode());
+		    		candidate.setUpdatedBy(loginUser.getUserCode());
+		    		candidateService.saveOrUpdateCandidate(candidate);
 			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		    	}
 		    	
@@ -1213,6 +1266,94 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			offer.setOrgRelationId(offer.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
 		}
 		return offerList;
+	}
+
+
+	@Override
+	public Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception {
+		
+		RequirementSubmission clientSubmission = null;
+		Candidate candidate = null; 
+		
+		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
+			candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+		}else{
+			candidate = candidateService.findByCandidateEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
+		}
+		
+		if(candidate == null){
+			candidate = new Candidate();
+			MasterCandidate masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
+    		if(masterCandidte != null){
+    			candidate.setMasterCandidateId(masterCandidte);
+    		}
+    		
+    		
+    		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOffers.getSubmissionId().getId());
+    		Set<RequirementSubmissionTemplateFields> submissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
+    		if(submissionTemplateFieldsList != null){
+    			for(RequirementSubmissionTemplateFields templateFields : submissionTemplateFieldsList){
+    				candidate.setFirstName(templateFields.getFirstName());
+		    		candidate.setLastName(templateFields.getLastName());
+		    		candidate.setEmail(templateFields.getEmailId());
+		    		candidate.setMobilePhone(templateFields.getPhoneNumber());
+		    		candidate.setCountry(templateFields.getCountry());
+		    		candidate.setState(templateFields.getState());
+		    		candidate.setCity(templateFields.getCity());
+		    		candidate.setZipCode(templateFields.getZipCode());
+		    		candidate.setExperienceYears(templateFields.getCandidateWorkExperienceYears().toString());
+		    		candidate.setExperienceMonths(templateFields.getCandidateWorkExperienceMonths().toString());
+    			}
+    		}
+    		
+    		candidate.setCandidateType("Candidate");
+    		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+    		candidate.setDesignationType("C2C");
+    		
+    		if(requirementSubmission.getSourceSubmission() != null){
+    			OrgRelations orgRelations = orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(requirementOffers.getSubmissionId().getVendorLocationId().getId(), orgLocations.getId());
+        		if(orgRelations != null){
+        			candidate.setOrgRelationId(orgRelations);
+        			Set<OrgSpoc> orgSpocList = orgRelations.getOrgSpocList();
+        			if(orgSpocList != null){
+        				for(OrgSpoc orgSpoc : orgSpocList){
+        					if(orgSpoc.getVendorUser().getUserCode().equalsIgnoreCase(requirementOffers.getSubmissionId().getCreatedBy())){
+        						candidate.setSpocId(orgSpoc);
+        					}
+        				}
+        			}
+        		}
+        		candidate.setOrgLocationId(orgLocations);
+        		candidate.setIsAssociate(Constants.YES);
+    		}else{
+    			candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
+    			candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
+    			candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+    			candidate.setIsAssociate(Constants.NO);
+    		}
+    		
+    		
+    		
+    		candidate.setCreatedDate(new Date());
+    		candidate.setUpdatedDate(new Date());
+    		candidateService.saveOrUpdateCandidate(candidate);
+	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+	    	
+	    	if(requirementSubmission.getSourceSubmission() != null){
+	    		requirementSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+		    	requirementSubmission.setCandidate(candidate);
+		    	requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+	    	}else{
+	    		clientSubmission.setVendorCandidateId(requirementSubmission.getCandidate());
+	    		clientSubmission.setCandidate(candidate);
+	    		requirementSubmissionService.storeRequirementSubmission(clientSubmission);
+	    	}
+    		
+		}
+		return candidate;
+		
 	}
 
 

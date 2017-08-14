@@ -1815,41 +1815,6 @@ function  removeValiationVendorContact() {
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
-		
-		//Adding Customized Visa to the list
-        var select, chosen;
-	    select = $("#visaName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
-	    chosen = select.data('chosen');
-	    
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var visaArray = this.value.split(",");
-				    	 if(visaArray.length > 1){
-			        		 for (var i=0; i < visaArray.length; i++) {
-			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
-			 	        		 $("#visaName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newVisa = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newVisa).text(newVisa);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#visaName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#visaName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	});
-	    
 	    
 	    //Adding Customized Skills to the list
 	}

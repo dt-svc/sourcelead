@@ -1938,7 +1938,15 @@ public class InvoiceRestController {
 		return expensesEntriesDTOList;
 	}
 	
-	
+	/**
+	 * To get peoject assigned vendor members
+	 * @param projectId
+	 * @param orgRelationId
+	 * @param userId
+	 * @param orgLocationId
+	 * @return List<ProjectMembers>
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getVendorAssignedMembersForProjects", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(
@@ -1947,7 +1955,7 @@ public class InvoiceRestController {
 			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-		List<ProjectMembers> associatesList = projectMembersService.getProjectsAssignedMembersForExpenses(projectId);
+		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId,orgLocationId,orgRelationId);
 		return associatesList;
 	}
 	

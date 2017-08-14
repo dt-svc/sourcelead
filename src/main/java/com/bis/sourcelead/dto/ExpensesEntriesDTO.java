@@ -1,7 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.enums.PaymentModes;
@@ -34,6 +34,8 @@ public class ExpensesEntriesDTO implements Serializable {
 	private String subTotal;
 	
 	private String category;
+	
+	private BigDecimal amountRoundOff;
 
 	public Long getId() {
 		return id;
@@ -140,6 +142,14 @@ public class ExpensesEntriesDTO implements Serializable {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public BigDecimal getAmountRoundOff() {
+		return amountRoundOff;
+	}
+
+	public void setAmountRoundOff(BigDecimal amountRoundOff) {
+		this.amountRoundOff = amountRoundOff;
 	}
 
 	
