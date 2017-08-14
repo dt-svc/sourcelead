@@ -48,6 +48,10 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 			phoneNumber = jsonObj.getString("phoneNumber");
 		}
 		
+		if(jsonObj.has("userEmail") && !isNullOrEmpty(jsonObj.getString("userEmail"))){
+			email = jsonObj.getString("userEmail");
+		}
+		
 		
 		// Tihs for add applicant
 		if(jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
