@@ -218,35 +218,40 @@ public class ClientRestController {
 			return commonUtil.toJSON(orgLocations);
 			
 		}
-	
-	 @PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
-		@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
-			public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
-					@RequestParam(value = "responderType", required = false) String responderType,
-					@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-					HttpServletRequest request) throws Exception {
+	/**
+	 * Register client along with contact(spoc)
+	 * @param json
+	 * @param responderType
+	 * @param orgLocationId
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_CLIENT','ROLE_CREATE_VENDOR')")
+	@RequestMapping(value = "/saveClient", method = RequestMethod.POST)
+	@ResponseBody
+	public String saveClient(@RequestParam(value = "json", required = false) String json,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
 
-				String json1 = "{" + json + "}";
-				JSONObject jsonObj = new JSONObject(json1);
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-					if(null != orgLocationId){
-						jsonObj.put("orgLocationId", orgLocationId);
-					}
-					
-					clientService.storeClient(jsonObj, user, orgLocation,responderType,org);
-				 	if(responderType.equalsIgnoreCase("Vendor")){
-				 		SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg",
-								"Success!! New Vendor created");
-				 	}else if(responderType.equalsIgnoreCase("Client")){
-				 		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg",
-								"Success!! New client created");
-				 	}
-					return "clientDashboard";
-			} 
-		
+		JSONObject jsonObj = new JSONObject(json);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		if (null != orgLocationId) {
+			jsonObj.put("orgLocationId", orgLocationId);
+		}
+
+		clientService.storeClient(jsonObj, user, orgLocation, responderType, org);
+		if (responderType.equalsIgnoreCase("Vendor")) {
+			SourceLeadSessionManager.setSessionAttribute(request, "vendorCreateMsg", "Success!! New Vendor created");
+		} else if (responderType.equalsIgnoreCase("Client")) {
+			SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Success!! New client created");
+		}
+		return "clientDashboard";
+	}
 		
 		
 		 @RequestMapping(value = "/validateClientOrVendorEmail",  method = RequestMethod.POST)
@@ -604,10 +609,11 @@ public class ClientRestController {
 				@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		
 		    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    
 	       String json1 = "{" + json + "}";
 	       JSONObject jsonObj = new JSONObject(json1);
-	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId());
+	       clientService.updateClientDetails(jsonObj, orgRelationId,clientLocationId, orgLocation.getId(),user);
 	       
 	       StringBuilder editClientMsg = new StringBuilder();
 		   SourceLeadSessionManager.setSessionAttribute(request, "editClient", editClientMsg.append("Success !! ").append(jsonObj.getString("clientName")).append(" details updated.").toString());
@@ -822,22 +828,23 @@ public class ClientRestController {
 	 * @param json
 	 * @param vendorLocationId
 	 * @param orgRelationId
-	 * @return
+	 * @return String
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/vendorDetailsUpdateUsingId", method = RequestMethod.POST)
 	public String vendorDetailsUpdateUsingId(@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "vendorLocationId", required = false) Long vendorLocationId,
 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
-		
-	      String  json1 = "{" + json + "}";
-	       JSONObject jsonObj = new JSONObject(json1);
-	
-	       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	       clientService.updateVendorDetails(jsonObj, orgRelationId,vendorLocationId, orgLocation.getId());
-	       
-	       StringBuilder editVendorMsg = new StringBuilder();
-		   SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ").append(jsonObj.getString("vendorName")).append(" details updated.").toString());
+
+		JSONObject jsonObj = new JSONObject(json);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, orgLocation.getId(), user);
+
+		StringBuilder editVendorMsg = new StringBuilder();
+		SourceLeadSessionManager.setSessionAttribute(request, "editVendor", editVendorMsg.append("Success !! ")
+				.append(jsonObj.getString("vendorName")).append(" details updated.").toString());
 
 		return "success";
 	}
