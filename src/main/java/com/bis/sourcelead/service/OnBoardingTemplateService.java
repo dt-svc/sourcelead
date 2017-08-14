@@ -2,7 +2,11 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bis.sourcelead.entity.OnBoardingTemplate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface OnBoardingTemplateService {
 
@@ -17,4 +21,6 @@ public interface OnBoardingTemplateService {
 	OnBoardingTemplate getOnBoardingTemplateByTemplateUUID(String templateUUID) throws Exception;
 	
 	List<OnBoardingTemplate> getOnBoardingFinishedTemplatesList(Long orgLocationId) throws Exception;
+	
+	OnBoardingTemplate getOnBoardTemplateDetails(JSONObject jsonObj,User user,OrgLocations orgLocations) throws Exception;
 }
