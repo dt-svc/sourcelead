@@ -375,9 +375,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientContactEmail;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsTeamMember;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsApprover;
 	
 	@Transient
@@ -424,6 +426,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	private String isRequirementReleasedByuser;
+	
+	@Transient
+	@JsonProperty
+	private String isRequirementReleased;
 	
 	@Transient
 	private String orgcode;
@@ -1613,8 +1619,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public List<Long> getRequirementReleasedUserIds() {
-		requirementReleasedUserIds = new ArrayList<>();
-		if(StringUtils.isNotEmpty(releasedBy)){
+		if(StringUtils.isNotEmpty(releasedBy) && requirementReleasedUserIds != null){
 			for (String s : releasedBy.split(",")){
 				requirementReleasedUserIds.add(Long.parseLong(s));
 			 }
@@ -1626,8 +1631,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getPostedOnStr() {
-		if(createdDate != null){
+		if(createdDate != null && orgLocationId != null){
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			if(dateFormat != null)
 			postedOnStr = dateFormat.format(createdDate);	
 		}
 		return postedOnStr;
@@ -1649,6 +1655,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setIsRequirementRelesedToPublic(String isRequirementRelesedToPublic) {
 		this.isRequirementRelesedToPublic = isRequirementRelesedToPublic;
+	}
+
+	public String getIsRequirementReleased() {
+		return isRequirementReleased;
+	}
+
+	public void setIsRequirementReleased(String isRequirementReleased) {
+		this.isRequirementReleased = isRequirementReleased;
 	}
 
 	
