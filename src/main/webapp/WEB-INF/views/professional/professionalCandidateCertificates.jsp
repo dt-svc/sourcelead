@@ -275,24 +275,16 @@ function candidateCertificateList(candidateId){
 	                    	 
 	                    	 if(window.candidateStatusGlobal == '0'){
 	                    		 if(candidateType == "Candidates"){
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }else{
-	                    			 result = result +'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-		                    		 result = result +' </sec:authorize>';
 	                    		 }
 	                    		 
 	                    	 }else{
 	                    		 if(candidateType == "Candidates"){
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
 	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	 	                    		result = result +' </sec:authorize>';
 	                    		 }else{
-	                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
 	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	 	                    		result = result +' </sec:authorize>';
 	                    		 }
 	                    		
 	                    	 }
