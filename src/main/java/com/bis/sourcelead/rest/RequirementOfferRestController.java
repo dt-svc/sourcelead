@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -131,8 +132,22 @@ public class RequirementOfferRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		String resultJson = null;
-	
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole);
+		List<RequirementSubmission> shortListCandidatesList = null;
+		
+		if(isClientOffer.equalsIgnoreCase(Constants.YES)){
+			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			if(requirement.getParentRequirement() != null){
+				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(requirement.getParentRequirement().getOrgLocationId(), requirement.getParentRequirement().getId(),existingApplicantsIds,isClientOffer);
+			}else{
+				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole);
+				
+			}
+		}else{
+			shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole);
+			
+		}
+		
+		
 		for (RequirementSubmission requirementSubmission : shortListCandidatesList) {
 			 StringBuilder nameBuilder = new StringBuilder();
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -145,41 +160,6 @@ public class RequirementOfferRestController {
 		resultJson = commonUtil.toJSON(shortListCandidatesList);
 		return resultJson;
 		
-		//commented by prasad salina
-	    /*List<RequirementSubmission>  list = new ArrayList<RequirementSubmission>();
-		for (RequirementSubmission sub : shortListCandidatesList) {
-			 RequirementAssignTo  requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementId(sub.getRequirement().getId());
-			 
-			  * Offer can be shown to either loggedin user is admin of org  or 
-			  *                                               manager of  requirement or 
-			  *                                               requirement assigned to owner or
-			  *                                               requirement team lead
-			  *                                               
-			  
-			 String loginUserType =  (String) SourceLeadSessionManager.getSessionAttribute(request, "userType");
-			if(requirementAssignTo != null && 
-					 (sub.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) 
-					   || (sub.getRequirement().getManagerUserId().getId() == loginUser.getId())
-					   || (StringUtils.isNotEmpty(loginUserType) && loginUserType.equalsIgnoreCase(Constants.ADMIN)) 
-					   || ( requirementAssignTo.getTeamId() !=null && requirementAssignTo.getTeamId().getOwnerUserId().getId() == loginUser.getId())
-					  )
-					){
-						
-							String candidateName = "";
-				 		   if(StringUtils.isNotEmpty(sub.getCandidate().getFirstName())){
-				 			   candidateName = sub.getCandidate().getFirstName();
-				 		   }
-				 		   if(StringUtils.isNotEmpty(sub.getCandidate().getLastName()) && StringUtils.isNotBlank(sub.getCandidate().getLastName())){
-				 			   candidateName = candidateName+" "+sub.getCandidate().getLastName();
-				 		   }
-				 		  sub.setCandidateName(candidateName);
-				 		 list.add(sub);
-					 
-			 }
-			 
-		}
-		resultJson = commonUtil.toJSON(list);
-		return resultJson;*/
 	}
 	
 	

@@ -16,7 +16,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
-import org.opengis.referencing.operation.ConcatenatedOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementReportServiceImpl implements RequirementReportService {
@@ -71,7 +70,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	@Override
 	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user, String reportType, String customStartDate, String customEndDate) throws Exception
 	{
-		
+		//SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
@@ -111,8 +110,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
 					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.getDateFormat(customStartDate);
-					Date endTime = commonUtil.getDateFormat(customEndDate);
+					Date startTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+					Date endTime = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 					String customStartTimeStr = TZ_DF_CSD.format(startTime);
 					String customEndTimeStr = TZ_DF_CED.format(endTime);
 					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -124,8 +123,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		}
 		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user, filterDate, startDateUTC, endDateUTC);
 		for (Requirement requirement : requirementList) {
-			String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
-			requirement.setPostedDateStr(postedDate);
+			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
+			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
@@ -241,6 +240,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
+		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&& !"".equalsIgnoreCase(reportType) ){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -266,8 +266,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -363,6 +363,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
+		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -388,8 +389,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -469,6 +470,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
+	//	 SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&& !"".equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -494,8 +497,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -538,6 +541,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
+		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		 Date startDateUTC = null;
 		    int applicantsSum = 0;
 			int requestSentSum = 0;
@@ -572,8 +576,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -648,6 +652,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
+		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&& !"".equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -673,8 +678,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -766,7 +771,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
-		
+		 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -792,8 +798,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -889,7 +895,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			int offeredCount = 0;
 			int rejectedCount = 0;	
 			 
-			
+	//		 SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+
 		 if(!"undefined".equals(json)){
 			 String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
@@ -945,8 +952,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 						 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 							DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-							Date startTime =  commonUtil.getDateFormat(customStartDate);
-							Date endTime =  commonUtil.getDateFormat(customEndDate);
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 							String customEndTimeStr = TZ_DF_CED.format(endTime);  
 							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1034,6 +1041,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 Date endDateUTC =null ;
 		 String filterDate = null;
 		 Date startDateUTC = null;
+		 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -1060,8 +1068,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1122,7 +1130,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				
 				if (requirementSubmission.getCreatedDate() != null) {
 					requirementSubmission
-							.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
+							.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementSubmission.getCreatedDate()));
 				}
 				submissionList.add(requirementSubmission);
 			}
@@ -1141,6 +1149,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		 Date endDateUTC =null ;
 		 String filterDate = null;
 		 Date startDateUTC = null;
+		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
+
 		 ApplicantReport applicantReport = new ApplicantReport();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
@@ -1167,8 +1177,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.getDateFormat(customStartDate);
-						Date endTime =  commonUtil.getDateFormat(customEndDate);
+						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
 						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);

@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -72,6 +74,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 
 /**
@@ -86,6 +89,9 @@ public class UserServiceImpl implements UserService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
+	
 	@Autowired
 	private UserDao userDao;
 	
@@ -149,6 +155,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	MasterCandidateService masterCandidateService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -509,8 +518,11 @@ public class UserServiceImpl implements UserService {
 		
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
-				   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-				   employees.setHireDate(sdf.parse(jsonObj.getString("dateofJoin")));
+				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+						 //SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
+						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), jsonObj.getString("dateofJoin")));
+				  
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}
@@ -1206,7 +1218,7 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("qa@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy(user.getUserCode());
 		// StringBuilder msgBuild = new StringBuilder();
 		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());

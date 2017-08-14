@@ -3,8 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
 <style type="text/css">
@@ -399,12 +397,12 @@
           </thead>
           <tbody id="addTaxTbl">
           
-   				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
+   				<tr><td><strong>Name</strong></td><td><strong>Attachment</strong></td><td><strong>Doc Type</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
 		
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
                 </c:forEach>
-          <tr id="divTaxTsRow0">
+          <tr id="divTaxRow0">
           </tr>
           </tbody>
           </table>
@@ -590,30 +588,49 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 
 <script>
 	$(function() {
-
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatExistedContractSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatExistedContractSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatExistedContractSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatExistedContractSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatExistedContractSave = 'yy-dd-mm'; 
+		  }
 		$('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatExistedContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
-                  var dt = toDate("#startDate");
-                  dt.setDate(dt.getDate() + 1);
-                  $("#endDate").datepicker("option", "minDate", dt);
+            	 var dt = $(this).datepicker('getDate', '+1d');
+  	            dt.setDate(dt.getDate() + 1);
+  	            $("#endDate").datepicker("option", "minDate", dt);
                   removeValid();  
             }
         });
         
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatExistedContractSave,
             changeMonth: true,
               changeYear: true,
               onSelect: function (selected) {
-                  var dt = toDate("#endDate");
+            	  var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
-        
+        $('#joinDate').datepicker({
+            dateFormat: finalDateFormatExistedContractSave,
+            changeMonth: true,
+              changeYear: true,
+            onSelect: function (selected) {
+                  var dt = toDate("#joinDate");
+                  dt.setDate(dt.getDate() + 1);
+                  removeValid();
+              }
+        });
         document.getElementById("uploadBtn").onchange = function () {
     	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
     	    };

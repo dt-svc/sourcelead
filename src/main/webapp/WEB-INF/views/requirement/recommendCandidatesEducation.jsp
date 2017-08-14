@@ -2,13 +2,6 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
-<!-- these files for autocomplete with tagit -->
-
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%-- 
@@ -60,6 +53,18 @@ function candidateEducation(candidateId){
 function candidateEducationList(candidateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  candEduListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  candEduListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  candEduListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  candEduListDate = 'YYYY-DD-MM'; 
+	  }
+	 
+	 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -79,10 +84,10 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+candEduListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+candEduListDate+'</small>)</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -292,19 +297,31 @@ function addEducation(candidateId) {
 	function educationStartDate(){
 	}
 	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecoEduSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecoEduSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecoEduSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecoEduSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecoEduSave = 'yy-dd-mm'; 
+	  }
+	
 	$('#startDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduSave,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	    	  	var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduSave,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	        	var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
@@ -529,19 +546,31 @@ function EditEducation(candidateId,candidateEducationId) {
 	function educationStartDate(){
 	}
 	
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecoEduEdit = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecoEduEdit = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecoEduEdit = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecoEduEdit = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecoEduEdit = 'yy-dd-mm'; 
+	  }
+	
 	$('#startDateEdit').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduEdit,
 	      onSelect: function (selected) {
-	            var dt = new Date(selected);
+	    	  var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDateEdit").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDateEdit').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecoEduEdit,
 	        onSelect: function (selected) {
-	            var dt = new Date(selected);
+	        	var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#startDateEdit").datepicker("option", "maxDate", dt);
 	        }
@@ -634,6 +663,30 @@ function candidateEducationStore(candidateId){
 				               			 location.replace(sourceleadUrl+"/errorPage");
 				               		}
 				               		else{
+				               			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+				            			 if(data<50){
+				            			   $("#perVal").removeClass('progress-bar-success');
+				            			   $("#perVal").addClass("progress-bar-danger");
+				            			 }
+				            			 if(data>=50){
+				            				 $("#perVal").removeClass("progress-bar-danger");
+				            				 $("#perVal").addClass("progress-bar-success");
+				            			 }
+				            			 $("#disVal").empty();
+				            			$("#disVal").append(data+'%');
+				            			// for quick view bar update
+				            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+					          			 if(data<50){
+						          			   $("#quickPerVal").removeClass('progress-bar-success');
+						          			   $("#quickPerVal").addClass("progress-bar-danger");
+						          			 }
+						          			 if(data>=50){
+						          				 $("#quickPerVal").removeClass('progress-bar-danger');
+						          				 $("#quickPerVal").addClass("progress-bar-success");
+						          			 }
+
+				            			$("#quickDisVal").empty();
+				            			$("#quickDisVal").append(data+'%');
 				               			 $("#popUpDiv").removeClass("edit-details-active");
 				               			 candidateEducationList(candidateId);
 							    	}
@@ -687,9 +740,11 @@ $('body').on('blur', '#education_form', function() {
 <script>
 function removeEducation(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
+ var loginUserId = '${SourceLeadWeb_userId}';
+ var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
+          url: sourceleadUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(data) {
 
 				if(data != null && data != 'undefined' && data != ""){
@@ -698,6 +753,28 @@ function removeEducation(candidateEducationId,candidateId){
 			    	}else if (data.indexOf('exception') >= 0) {
              			 location.replace(sourceleadUrl+"/errorPage");
              		}else{
+             			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+              			 if(data<50){
+              			  /* $("#perVal").removeClass("progress-bar-success"); */
+              			   $("#perVal").removeClass('progress-bar-success')
+              			   $("#perVal").addClass("progress-bar-danger");
+              			 }
+              			 if(data>=50){
+              				 $("#perVal").removeClass('progress-bar-danger');
+              				 $("#perVal").addClass("progress-bar-success");
+              			 }
+              			 $("#disVal").empty();
+              			$("#disVal").append(data+'%');
+              			
+              			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+            			 if(data<50){
+   	          			   $("#quickPerVal").removeClass('progress-bar-success');
+   	          			   $("#quickPerVal").addClass("progress-bar-danger");
+   	          			 }
+   	          			 if(data>=50){
+   	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+   	          				 $("#quickPerVal").addClass("progress-bar-success");
+   	          			 }
              			 $("#popUpDiv").removeClass("edit-details-active");
              			candidateEducationList(candidateId);
 			    	}
@@ -849,7 +926,6 @@ function clearSearchKey() {
  }
  </script>     
  
-
 
 
 

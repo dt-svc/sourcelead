@@ -6,7 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .edit-details {
@@ -161,6 +160,16 @@ function vendorContractsList(orgRelationId){
 		contractStatus.push($(this).val());
     });
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+ 	  if(locationList.match("yyyy-MM-dd")){
+ 		  contractVendorDatePattern = 'YYYY-MM-DD';
+ 	  }if(locationList.match("dd-MM-yyyy")){
+ 		 contractVendorDatePattern = 'DD-MM-YYYY'; 
+ 	  }if(locationList.match("MM-dd-yyyy")){
+ 		 contractVendorDatePattern = 'MM-DD-YYYY'; 
+ 	  }if(locationList.match("yyyy-dd-MM")){
+ 		 contractVendorDatePattern = 'YYYY-DD-MM'; 
+ 	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
@@ -185,7 +194,7 @@ function vendorContractsList(orgRelationId){
 	                		result = result + '    <th>Type</th>';
 	                		result = result + '    <th>Owner</th>';
 	                		result = result + '    <th>Vendor Contact</th>';
-	                		result = result + '    <th>Duration</th>';
+	                		result = result + '    <th>Duration <br>(<small class="custom-small">'+contractVendorDatePattern+'</small>)</th>';
 	                		result = result + '    <th>Req.Docs</th>';
 	                		result = result + '    <th>Status</th>'; 
 	                		result = result + '    <th>Action</th>';
@@ -280,9 +289,9 @@ function vendorContractsList(orgRelationId){
 	                	       			if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                	     	     		if(report.typeOfContract == "New"){
-	                	     	     			result = result + '<div class="pull-left ml10" href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+	                	     	     			result = result + '<div class="pull-left ml10"><a href="/sourcelead/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}else if(report.typeOfContract == "Custom"){
-	                	     	     			result = result + '<div class="pull-left" href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="/sourcelead/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}
 	                	       			'</sec:authorize>';
 	                	       			}

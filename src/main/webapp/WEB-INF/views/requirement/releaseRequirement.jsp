@@ -4,7 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -272,6 +271,7 @@ function getPercentageValue(){
 	}else{
 		 $("#releaseToCWBtn").removeAttr("disabled");
 		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageRewardValue').find('p.jquery_form_error_message').remove(); 
 		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
 		 $( "#releaseToCWBtn" ).removeAttr("style");
 		 $( "#releaseToCWBtn" ).click(function() {
@@ -427,12 +427,10 @@ function releaseToOneVendor(vendorcheckboxId){
 
 <script type="text/javascript">
  function releaseToCrowdSourcing() {
-	 
 	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
 		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
-	        
 	        //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 	        
@@ -992,6 +990,10 @@ function isCrowd(){
 	        
 	        document.getElementById("crowd_rate").style.display="";
 	        
+	        
+	        $('#percentageRewardValue').removeAttr("data-validation-optional"); 
+		    $('#percentageRewardValue').attr("data-validation","required");
+		       
 	        var rewardType = '${rewardType}';
 	        if('${rewardType}' != null && '${rewardType}' != '' && '${rewardType}' != 'undefined'){
 	        	 getRewardType('${rewardType}')
@@ -1000,9 +1002,16 @@ function isCrowd(){
 	        }
 	       
 	    }else{
-	        $("#isCrowdScourcingId").val('N');
+	       
+	    	$("#isCrowdScourcingId").val('N');
 	        $("#isCrowdScourcingGlobel").val('N');
+	        // here validation remove and data-validation-optional equal to true.
+	        $('#percentageRewardValue').find('jquery_form_error_message').remove();
+	        $('#percentageRewardValue').attr("data-validation-optional","true"); 
+	        $('#percentageRewardValue').removeAttr('data-validation');
+	        
 	        document.getElementById("crowd_rate").style.display="none";
+	        
 	    }
 }
 </script>

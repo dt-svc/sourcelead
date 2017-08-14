@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
@@ -51,7 +58,6 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
@@ -78,9 +84,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -101,8 +104,6 @@ public class UserRestController {
 	@Autowired
 	private ProjectsService projectsService;
 	
-	@Autowired
-	private ProjectMembersService projectMembersService;
 	
 	@Autowired
 	private ProjectMembersHistoryService projectMembersHistoryService;
@@ -162,6 +163,8 @@ public class UserRestController {
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	/**
 	 * To get All Approvers
@@ -641,7 +644,7 @@ public class UserRestController {
 					 if(null != pmh.getProjectMemberId()){
 						 user = userService.getUserById(projectApproverHierarchy.getApproverUserId().getId());
 				}
-				 
+				 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 				 EmailMessage emailMessage = new EmailMessage();
 				 emailMessage.setFirstName(user.getFirstName());
 				 emailMessage.setLastName(user.getLastName());
@@ -653,7 +656,7 @@ public class UserRestController {
 				// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				//setting the class filed values
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+				 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 				 
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -752,7 +755,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 //SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
+			 
+			 String statrDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 			 
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
@@ -775,7 +781,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 }
 			 
 			 if(null != pmh.getProjectAssignedDate()){
-				 globalVarsMap.put("Project StartDate",pmh.getProjectAssignedDate().toString());
+				 globalVarsMap.put("Project StartDate",statrDate);
 			 }else{
 				 globalVarsMap.put("Project StartDate", "--");
 			 }
@@ -871,27 +877,27 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
 					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					//SimpleDateFormat sdf = orgLocations.getLocFullFormDateFormatter();
 					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
 							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
 						}
-						Date endDate1=sdf.parse(endDate);
+						Date endDate1=commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 						if(pmh.getProjectTerminationDate()== null){
 							/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 						}
 
-						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
+						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate)) != 0) {
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
 							
 						}
 						// mail forward to members inline end date edit
 						projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
 						
-						Date terminationDate = sdf.parse(endDate);
+						Date terminationDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 						Date currentDate = new  Date();
 						
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
@@ -990,7 +996,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		}
 		
 		 
-		 @RequestMapping(value = "/rest/", method = RequestMethod.GET)
+		 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 		 public void authenticate() {
 		 }
 		 
@@ -1097,19 +1103,29 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 			 if(StringUtils.isNotEmpty(json)){
 				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
+				 //TODO remove this sysout. Just for rest call testing purpose
+				 System.out.println("sourceleadURL =======> "+sourceleadUrl);
 				 JSONObject jsonObject = new JSONObject(json);
 				 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
 				    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))
 				 { 		
-					 Client client = Client.create();
-					 WebResource webResource = client.resource(sourceleadUrl+"/rest/");
-					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
-					 int status = response.getStatus();
+					 final String uri = sourceleadUrl+"/rest/";
+	                    RestTemplate restTemplate = new RestTemplate();
+	                    HttpHeaders headers = new HttpHeaders();
+	                    headers.add("X-Username", jsonObject.getString("username"));
+	                    headers.add("X-Password", jsonObject.getString("password"));
+	                    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+	                    HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+	                    ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+	                     int status = response.getStatusCode().value();
+
 					 if(status == HttpServletResponse.SC_OK){
 						 String header = response.getHeaders().get("X-CustomToken").toString();
 						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");
 						 resResponsetUtil.setToken(token);
 						 resResponsetUtil.setLoginResponse("Valid User");
+						 //TODO remove this sysout. Just for rest call testing purpose
+						 System.out.println("##### in ServletRESPONSE OK =======> ");
 						 return resResponsetUtil;
 					 }
 					
@@ -1216,9 +1232,10 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
+			//SimpleDateFormat dateFormat=orgLocations.getLocFullFormDateFormatter();
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();    
-			 String startDate = Constants.DMY.format(pmh.getProjectAssignedDate());
-			 String endDate = Constants.DMY.format(pmh.getProjectTerminationDate());
+			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 			 if(null!= pmh.getProjectMemberId().getEmployee()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 					 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
@@ -1412,4 +1429,22 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
+	 
+	 
+	/**
+	 * To get the assigned projects list for user based on userId and
+	 * OrgLocationId
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return json object
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAssignedProjectsListForUser",
+			"/rest/getAssignedProjectsListForUser" }, method = RequestMethod.GET)
+	public @ResponseBody List<ProjectMembers> getAssignedProjectsListForUser(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	{
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllAssignedProjectsForUser(userId, orgLocationId);
+		return projectMembersList;
+	}
 }

@@ -3,28 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
-<%-- <link
-	href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900"
-	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
- <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- --%>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/register-style.css" rel="stylesheet">
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
- -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
- 
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -60,10 +39,21 @@ min-height: 65px;
 <script> 
 $(document).ready(function(){
 	 var userId = '${userId}';
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
 	 getUserSummaryDetails(userId);
 	 $('body').on('focus', '#DateofJoin', function() {
 		 $('#DateofJoin').datepicker({
-			 dateFormat: 'dd-mm-yy',
+			 dateFormat: finalDateFormat,
 			 changeMonth: true,
 			 changeYear: true, 
 			});
@@ -88,6 +78,8 @@ $(document).ready(function(){
 	 result  = result + '</div>';
 	 result = result + '    <ul class="project-tabs-menu">';
 	 result = result + '       <li class="current"><a href="#tab-1" onClick="userDetails('+userId+');" >Details</a></li>';
+	 
+	 result = result + '       <li><a href="#tab-2" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
 	/*  if(timesheet == 'Y' && (loginUserRole == 'ROLE_ADMIN' || loginUserRole == 'SOURCELEAD_ADMIN')){
 	     result = result + '        <li><a href="#tab-2" onClick="userProjectDetails('+userId+',\'All\');">Projects</a></li>';
 	 } */
@@ -96,11 +88,13 @@ $(document).ready(function(){
 	 
 	 
 	 result = result + '<div class="project_tabs">';
-	  	result = result + ' <div id="tab-1" class="project_tabs_inn">';
-	  	result = result + '</div>';
+	 result = result + ' <div id="tab-1" class="project_tabs_inn">';
+	 result = result + '</div>';
 	  	
-	  	result = result + '<div id="tab-2" class="project_tabs_inn">';
-	  	 result = result + '<div class="timesheet_head">';
+	 result = result + '<div id="tab-2" class="project_tabs_inn project_tabs_inn_table datatable_filter dataTablesFilter-relative">';
+	 result = result + '</div>';
+	  	
+	  	/*  result = result + '<div class="timesheet_head">';
 	     result = result + '  	<ul>';
 	     result = result + '          <li><i class="fa fa-filter"></i><span>All</span><i class="glyphicon glyphicon-play" id="appro-pop" onclick="filter();"></i>|';
 		   result = result + '         	<div class="approved_pop" id="radioFilter">';
@@ -120,10 +114,11 @@ $(document).ready(function(){
 	     result = result +'<div id="projectList_User"></div>'; 
 	     result = result + '     </div>';
 	  	
+	  	result = result + '</div>'; */
+	  	
+	  	
 	  	result = result + '</div>';
-	  	
-	  	
-	  	
+	  	result = result + '</div>';
 	  	result = result + '</div>'; 
 	  	$("#projectSideDiv").empty(); 
 	    $("#projectSideDiv").append(result);  	
@@ -894,7 +889,7 @@ function getChangeRole(userId,userRoleId){
 </body>
 
 
-
+<jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="../masterFooter.jsp" />
 
 <script type="text/javascript">
@@ -2177,6 +2172,7 @@ function getStartandEndDate(){
 
 <script>
 function date() {
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	
 	  if($("#EndDate").val()==""){
 		  var selected = $("#StartDate").val();
@@ -2231,8 +2227,9 @@ function date() {
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	   */
+	   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $('#StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() + 1);
@@ -2241,7 +2238,7 @@ function date() {
 	  });
 	  
 	  $('#EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	        onSelect: function (selected) {
 	            var dt = new Date(selected);
 	            dt.setDate(dt.getDate() - 1);
@@ -2432,12 +2429,12 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
    var reStatertDate = $('#Re-StartDate').val();
    
 		  
-   
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
+
   var reStatertDate = $('#Re-StartDate').val()
   if(projectEndDateStr != null && projectEndDateStr != "" && projectEndDateStr != 'undefined'){
-	
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 		  minDate:endDate,
 		  maxDate:projectEndDateStr,
 	      onSelect: function (selected) {
@@ -2448,7 +2445,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	  });
 	  
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	      minDate:endDate,
 	      maxDate:projectEndDateStr,
 	        onSelect: function (selected) {
@@ -2461,7 +2458,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
   else{
 	  
 	  $('#Re-StartDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 		  minDate:endDate,
 	      onSelect: function (selected) {
 	            var dt = new Date(selected);
@@ -2473,7 +2470,7 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	  
 	
 	  $('#Re-EndDate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: locationDate,
 	      minDate:endDate,
 	      maxDate:reStatertDate,
 	        onSelect: function (selected) {

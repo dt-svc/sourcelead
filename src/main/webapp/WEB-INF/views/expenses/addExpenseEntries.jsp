@@ -35,8 +35,10 @@
  position: relative !important;
  }
  </style>
+ 
 <script>
 function hideAndShowDetailsRow(rowId,type){
+	$(".fa-plus-square-o").toggleClass("closExp");
 	if ($('#add_expenses_form').validate(false, validationSettings)){
 		var validation_required = "true";
 		var entityId = parseInt(rowId-1);
@@ -181,7 +183,7 @@ function addAttachment(entityRowId,from){
 <div id="divAttachmentTd1" style="display: none; float: left;">
 	   <div id='REPLACEROWIDdocFileuploadFileGroupENTITYROWID'>
  			<input type='file' name='REPLACEROWIDdocFileENTITYROWID' id='REPLACEROWIDdocFileENTITYROWID' VALIDATIONCONDITION  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID,ENTITYROWID)'> 
- 			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID,ENTITYROWID);"></i>
+ 			<i class="fa fa-times Cred" onclick="removeAttachmentRow(REPLACEROWID,ENTITYROWID);"></i>
  		</div>
  </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
@@ -191,7 +193,7 @@ function addAttachment(entityRowId,from){
     <div id="categoryTypeDivREPLACEROWID">--</div>
 </div>
 <div id="divAddRowTr1Td3" style="display: none; float: left;">
-   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot-me">--</div>
 </div>
 <div id="divAddRowTr1Td4" style="display: none; float: left;">
     <div id="expenseAmountDivREPLACEROWID">--</div>
@@ -204,8 +206,8 @@ function addAttachment(entityRowId,from){
 </div>
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
-			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
-			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
+			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
+			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
 		</div>
 </div>
 <div id="divAddRowTr2" style="display: none; float: left;">
@@ -276,13 +278,28 @@ function addAttachment(entityRowId,from){
 						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);calculateTotalamount(REPLACEROWID)">
 						      </div>
 					      </div>
-						 <div class="clearfix"></div>
+		 
+		 <div class="clearfix" style="position: static;"></div>
+
 		   </div>
 </div>
 
 <script>
 function addExpenseRow(){ 
 	if ($('#add_expenses_form').validate(false, validationSettings)){
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateExpenseEntrie = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateExpenseEntrie = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateExpenseEntrie = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateExpenseEntrie = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateExpenseEntrie = 'yy-dd-mm'; 
+		  }
+		
 		   var maxRecCount = $("#maxRecCount").val();
 		   for(var i = 2; i < maxRecCount; i=i+2){
 			   if($("#divEntityTsRow"+i).is(':visible'))
@@ -359,7 +376,7 @@ function addExpenseRow(){
 			if((projectStartDate != null && projectStartDate != '' && projectStartDate != 'undefined') || 
 				(projectEndDate != null && projectEndDate != '' && projectEndDate != 'undefined')){
 					$('#categoryDate'+maxRowNum).datepicker({
-						dateFormat : 'dd-mm-yy',
+						dateFormat : finalDateExpenseEntrie,
 						changeMonth : true,
 						changeYear : true,
 						minDate : projectStartDate,
@@ -428,7 +445,8 @@ function addExpenseRow(){
 			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
 			var paymentMode = $("#paymentMode"+entityId).val();
 			var expenseRateType = $("#expenseRateType"+entityId).val();
-			var expenseAmount = $("#expenseAmount"+entityId).val();
+			var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
+			
 			var descriptions = $("#entryDes"+entityId).val();
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);

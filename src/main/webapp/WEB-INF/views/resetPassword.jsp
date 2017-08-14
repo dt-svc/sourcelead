@@ -23,7 +23,7 @@
 <body>
   
 <div class="regis_bg">
-	<div class="regis_logo"><img src="resources/images/SourceLead-logo-white.png" alt=""/></div>
+	<div class="regis_logo"><img src="resources/images/SourceLead-logo.png" alt=""/></div>
     <div class="regis_wrap">
      <div id="loading"></div> 
     	<div class="signin_wrap reset_wrap_a" id="signin">
@@ -61,8 +61,8 @@
 </div>  
 <input id="autocomplete"/>&nbsp;<input id="submit" type="submit"/>
   
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+	<script src="resources/js/jquery.min.js"></script>
+    <script src="resources/js/jquery-ui.js"></script>
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/jquery-fun.js"></script> 
     <script src="resources/js/formvalidator.js"></script>

@@ -69,12 +69,13 @@ function getQuaters(){
 <script>
  function getYearsAndQuartersComboList(){
 		var sourceleadUrl = '${sourceleadUrl}';
+		var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 		$.ajax({
    	        type : "POST",
     	    contentType : 'application/json; charset=utf-8',
     	    enctype: 'multipart/form-data',
     	    dataType : 'json',
-			url : sourceleadUrl+"/getYearsAndQuartersComboList?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+"/getYearsAndQuartersComboList?${_csrf.parameterName}=${_csrf.token}&dateFormat="+dateFormat,
 			success : function(data) {
 				var result = "";
 				var json = JSON.parse(data[0]);
@@ -598,7 +599,7 @@ $.ajax({
  
  <script>
 function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	//$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#expensesReportsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

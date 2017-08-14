@@ -476,7 +476,7 @@ public class BackOfficeRestController {
 			assetCategory.setCreatedUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			assetCategory.setOrgLocationId(assetCategory.getOrgLocations().getId());
 			 if(assetCategory.getUpdatedDate() != null){
-				 assetCategory.setDateStr(Constants.DF_DMY.format(assetCategory.getUpdatedDate()));
+				 assetCategory.setDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),assetCategory.getUpdatedDate()));
 			    }
 		}
 		

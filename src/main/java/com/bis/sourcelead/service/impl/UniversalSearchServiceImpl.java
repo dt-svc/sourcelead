@@ -134,7 +134,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 			            		requirement = getData(requirementIndex,user);
 			            	}
-			            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+			            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 			            	{
 			            		requirement = getData(requirementIndex,user);
 			            	}
@@ -216,6 +216,24 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 		if(searchType !=null && !"".equalsIgnoreCase(searchType)&&(Constants.CLIENT.equalsIgnoreCase(searchType)||Constants.VENDOR.equalsIgnoreCase(searchType)))
 		{
 			String responderType = null;
+			
+			 
+		/*	 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+			 
+			 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
+			 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+			 
+			 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", orgLocation.getId()));
+			 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+			 
+			 combinedQueryBuilder.should(initiatorQueryBuilder);
+			 combinedQueryBuilder.should(responderQueryBuilder);
+			 boolQueryBuilder.must(combinedQueryBuilder);*/
+			
+			BoolQueryBuilder boolQueryBuilderClientVendor = new BoolQueryBuilder();
+			 
 			if(Constants.VENDOR.equalsIgnoreCase(searchType)){
 				 responderType = Constants.CLIENT;
 			 }else if(Constants.CLIENT.equalsIgnoreCase(searchType)){
@@ -235,9 +253,10 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 			 combinedQueryBuilder.should(initiatorQueryBuilder);
 			 combinedQueryBuilder.should(responderQueryBuilder);
 			 
-			 boolQueryBuilder.must(combinedQueryBuilder);
-			
-			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
+			 boolQueryBuilderClientVendor.must(combinedQueryBuilder);
+			 
+			 Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,0,boolQueryBuilderClientVendor).getTotalHits();
+//			 Integer maxResults = orgRelationsService.getAllVendorsCountByOrgLocationId(orgLocation.getId(),responderType);
 				//Any Keywords
 			 ArrayList<String> anyKeyWordArray = getSearchValuesFromChosenSelectField(searchValue);
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
@@ -257,7 +276,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
-				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilderClientVendor).getHits();
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
@@ -558,7 +577,7 @@ public class UniversalSearchServiceImpl implements UniversalSearchService{
 					            	if(userRole != null&&( "ROLE_ADMIN".equalsIgnoreCase(userRole) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRole))){
 					            		requirement = getData(requirementIndex,user);
 					            	}
-					            	else if(requirementIndex.getReqCreatedBy().equalsIgnoreCase(user.getUserCode()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
+					            	else if(requirementIndex.getReqCreatedBy().equals(user.getId()) && requirementIndex.getIsTemplate()!=null && requirementIndex.getIsTemplate().equalsIgnoreCase("Y"))
 					            	{
 					            		requirement = getData(requirementIndex,user);
 					            	}

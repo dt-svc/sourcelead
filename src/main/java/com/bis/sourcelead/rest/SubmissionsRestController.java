@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,7 +30,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.RequirementIndex;
-import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -54,6 +56,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.service.RecommendationsService;
+import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
@@ -65,6 +69,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -121,8 +126,14 @@ public class SubmissionsRestController {
 	@Autowired
 	RequirementElkUtil requirementElkUtil;
 	
-	 @Autowired
-	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	@Autowired
+	private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RecommendedCustomizeScoreService recommendedCustomizeScoreService;
+	
+	@Autowired
+	RecommendationsService recommendationsService;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -145,10 +156,13 @@ public class SubmissionsRestController {
 	}
 
 	@RequestMapping(value = "/getCandidateDetails")
+	@ResponseBody
 	public String getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "requirementId", required = false) Long requirementId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
 
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
 		String resultJson = null;
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
@@ -159,6 +173,24 @@ public class SubmissionsRestController {
 			}
 			
 			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
+		}
+		
+		//this block of code is added to get customized score for candidate. -- pavan jampana
+		if(requirementId != null){
+			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+			RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+			String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+			if(score != null && !"".equalsIgnoreCase(score)){
+				candidate.setCandidateScore(score);
+			}
+		}
+		int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+		candidate.setProfilePercentage(percentage);
+		
+		CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
+		if(candidateResume != null){
+			candidate.setResumeUUID(candidateResume.getResumeUUID());
+			candidate.setCandidateResumeName(candidateResume.getFileName());
 		}
 		
 		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
@@ -285,6 +317,25 @@ public class SubmissionsRestController {
 		return "success";
 
 	}
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/editSubmisionDetails", method = RequestMethod.POST)
+	public String editSubmisionDetails(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request)
+			throws Exception {
+		
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.editRequirementSubmission(jsonObj, user, orgLocations, con);
+		return "success";
+		
+	}
 
 	@RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody
@@ -348,7 +399,7 @@ public class SubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		
+		//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
 		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
@@ -385,8 +436,7 @@ public class SubmissionsRestController {
 			}
 			
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -423,7 +473,8 @@ public class SubmissionsRestController {
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
 				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-
+		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
@@ -457,8 +508,7 @@ public class SubmissionsRestController {
 			}
 	
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(Constants.DF_DMY.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -533,7 +583,7 @@ public class SubmissionsRestController {
 			HttpServletRequest request) throws Exception {
 
 		String resultJson = null;
-
+	
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		StringBuilder skillsList = new StringBuilder();
@@ -566,10 +616,28 @@ public class SubmissionsRestController {
 		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
 		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
 		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
+		submission.setResumeId(submission.getCandidateResumes().getId());
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
+		submission.setProfilePercentage(percentage);
 		resultJson = toJSON(submission);
 		return resultJson;
 
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
+	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
+		return requirementSubmissionTemplateFields;
+	}
+	
+	
 
 	/**
 	 * 
@@ -606,9 +674,9 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		// requirementSubmissionService.sendRejectionMailToVendorContact(user,
-		// requirementSubmission.getRejectedReason(), submissionId,
-		// orgLocations);
+		 requirementSubmissionService.sendRejectionMailToVendorContact(user,
+		 requirementSubmission.getRejectedReason(), submissionId,
+		 orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		return "success";
 	}

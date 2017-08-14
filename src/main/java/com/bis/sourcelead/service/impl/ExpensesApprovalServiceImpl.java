@@ -39,7 +39,6 @@ import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -50,6 +49,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -102,21 +102,21 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception {
 		Date endDateUTC = null;
 		Date startDateUTC = null;
-		
+	//	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 		DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-		if(StringUtils.isNotEmpty(startDate)){
-			Date startTime = commonUtil.getDateFormat(startDate);
+		if(StringUtils.isNotEmpty(startDate) && !startDate.equalsIgnoreCase("undefined")){
+			Date startTime = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
 			String customStartTimeStr = TZ_DF_CSD.format(startTime);
 			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 			startDateUTC = TZ_DF_TS.parse(startDateString);
 		}
 		
-		if(StringUtils.isNotEmpty(endDate)){
-			Date endTime = commonUtil.getDateFormat(endDate);
+		if(StringUtils.isNotEmpty(endDate) && !startDate.equalsIgnoreCase("undefined")){
+			Date endTime =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endDate);
 			String customEndTimeStr = TZ_DF_CED.format(endTime);
 			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 			endDateUTC = TZ_DF_TS.parse(endDateString);
@@ -125,10 +125,10 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
-				expensesApproverHierarchy.setExpenseStartDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
-				expensesApproverHierarchy.setExpenseEndDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getEndDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseEndDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getEndDate()));
 			}else{
-				expensesApproverHierarchy.setExpenseStartDateString(Constants.DMY.format(expensesApproverHierarchy.getExpenseId().getStartDate()));
+				expensesApproverHierarchy.setExpenseStartDateString(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expensesApproverHierarchy.getExpenseId().getStartDate()));
 			}
 			
 			if (null != expensesApproverHierarchy.getExpenseId()) {
@@ -238,7 +238,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
-	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers);
+	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers,orgLoc);
 	        if(expenseList != null && expenseList.size() >0){
 	        	for (String[] expenseArray: expenseList) {
 	        		for (int i = 0; i < expenseArray.length; i++) {
@@ -263,7 +263,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	    }
 		return file;
 	}
-private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers) {
+private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers,OrgLocations orgLoc) {
 	
 	List<String[]> arrayList = new ArrayList<>();
 	for(ExpensesApproverHierarchy ex:expApperoverHierarchy){
@@ -273,9 +273,14 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
+						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+							StringBuffer sb = new StringBuffer();
+							expenseArray[0] = sb.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString();
+						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
 							expenseArray[0] = expenseId.getProjectMembers().getEmployee().getUser().getFirstName();
-						}else{
+						}
+						else
+						{
 							expenseArray[0] = "--";
 						}
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
@@ -331,14 +336,14 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}
 			
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
 				expenseArray[8] = expenseId.getStartDateStr();
 			}else{
 				expenseArray[8] = "--";
 			}
 			
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
 				expenseArray[9] = expenseId.getEndDateStr();
 			}else{
 				expenseArray[9] = "--";
@@ -410,7 +415,7 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 		int column = 0;
 		for (ExpensesApproverHierarchy expensesList : expApperoverHierarchy) {
 			writeRow = createExcelsheet.createRow(column+1);
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList,orgLoc);
 			column++;
 		}
 		 try {
@@ -440,16 +445,26 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	return createExcelsheet;
 }
 
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex,OrgLocations orgLoc) {
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
+						
+						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+							StringBuffer sb = new StringBuffer();
+							writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(expenseId.getProjectMembers().getEmployee().getUser().getLastName()).toString());
+							createExcelsheet.autoSizeColumn(0);
+						}else if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
 							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
 							createExcelsheet.autoSizeColumn(0);
 						}
+						
+						/*if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName() && null != expenseId.getProjectMembers().getEmployee().getUser().getLastName()){
+							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+							createExcelsheet.autoSizeColumn(0);
+						}*/
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
 							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getEmail());
 							createExcelsheet.autoSizeColumn(1);
@@ -488,12 +503,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				createExcelsheet.autoSizeColumn(7);
 			}
 			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
 			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}
@@ -558,9 +573,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 emailMessage.setLastName(reopenedUser.getLastName());
 				 emailMessage.setToEmail(reopenedUser.getEmail());
 				 
-				 emailMessage.setFromEmail(loginUser.getEmail());
+				 emailMessage.setFromEmail(orgLoc.getUser().getEmail());
 				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 emailMessage.setFromName(loginUser.getFullName());
+				 emailMessage.setFromName(orgLoc.getUser().getFirstName());
 				 
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -571,12 +586,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				 
 				 Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("employeeUser",expenses.getProjectMembers().getEmployee().getUser().getFirstName());
-				 globalVarsMap.put("approverUser",reopenedUser.getFirstName());
+				 globalVarsMap.put("approverUser",orgLoc.getUser().getFirstName());
 				 globalVarsMap.put("reopenUser",reopenedUser.getFirstName());
 				 globalVarsMap.put("projectName", projectName);
 				 globalVarsMap.put("clientName",expenses.getClientName());
+				 
+				 if(null != expenses.getExpenseId()){
+					 if(null != expenses.getStartDate()){
+						 expenses.setStartDateStr(expenses.getStartDate().toString());
 				 globalVarsMap.put("startDate",expenses.getStartDateStr());
+					 }
+				 }	 
+				 if(null != expenses.getExpenseId()){
+					 if(null != expenses.getEndDate()){
+						 expenses.setEndDateStr(expenses.getEndDate().toString());
 				 globalVarsMap.put("endDate",expenses.getEndDateStr());
+					 }
+				 }
+				 globalVarsMap.put("amount",Float.toString(expenses.getTotalAmount()));
 				 globalVarsMap.put("reason",reason);
 				 
 				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
@@ -589,8 +616,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
 					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }if(null != type && "reject".equalsIgnoreCase(type)){
-					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
-					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_APPROVED_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION); 
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REOPEN_REJECT_EXPENSES_EMAIL_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION); 
 				 }
 				 
 				
@@ -612,7 +639,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLoc, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, orgLoc.getUser(), reopenedUser, orgLoc, notificationScenario);
 
 		}
 

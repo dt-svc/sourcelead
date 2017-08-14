@@ -15,6 +15,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class ClientVendorIndexHelper {
@@ -33,6 +34,9 @@ public class ClientVendorIndexHelper {
 	@Autowired
 	OrgService orgService;
 	
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	public ClientVendorIndex getClientVendorIndexFromCandidate(Org org,OrgLocations clientOrgLocations, String responderType,
 			OrgSpoc orgSpoc, OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate) throws Exception{
@@ -153,8 +157,8 @@ public class ClientVendorIndexHelper {
 				clientVendorIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			}
 			
-			clientVendorIndex.setCreatedDate(Constants.DF_YMD.format(orgRelationsList.getCreatedDate()));
-			clientVendorIndex.setUpdatedDate(Constants.DF_YMD.format(orgRelationsList.getUpdatedDate()));
+			clientVendorIndex.setCreatedDate(commonUtil.elkDateFormatter(orgRelationsList.getCreatedDate()));
+			clientVendorIndex.setUpdatedDate(commonUtil.elkDateFormatter(orgRelationsList.getUpdatedDate()));
 		}
 		return clientVendorIndex;
 	}

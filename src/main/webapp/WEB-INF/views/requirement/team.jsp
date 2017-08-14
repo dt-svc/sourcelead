@@ -4,15 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
-
 <style type="text/css">
 .teamEditDetails {
 margin-bottom: 50px;
@@ -1165,7 +1156,7 @@ function getCandidateListForTeam(teamId,teamName){
 		                	 $("#teamSideDiv").empty();
 		                	 var result = "";
 		                	 result = result +"    <div class='clearfix'>";
-		                	 result = result +"    <p><strong>"+teamName+" (Candidate / Consultant)</strong></p>";
+		                	 result = result +"    <p><strong>"+teamName+" (Associate)</strong></p>";
 		                	 result = result +"    </div>";
 		                	 result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 		                     result = result +"<thead>"; 

@@ -8,8 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
 
@@ -117,5 +117,10 @@ public class OrgServiceImpl implements OrgService {
 		return orgDao.isLoginUserIsSuperAdmin(userId,orgId);
 	}
 	
+	@Override
+	public List<UserDTO> getUserListForOrgChart(Long orgLocationId) throws Exception
+	{
+		return orgDao.getuserListForOrgChart(orgLocationId);
+	}
 	
 }

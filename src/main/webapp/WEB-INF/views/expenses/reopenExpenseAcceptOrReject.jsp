@@ -30,7 +30,7 @@
 			var type  = '${type}';
 			if(type == 'accept'){     
 				$("#accept").removeAttr("style");
-			}else if(type == 'reject'){
+			}else if(type == 'rejecting'){
 				$("#reject").removeAttr("style");
 			}
 		});
@@ -72,14 +72,44 @@ width: auto;
   <!-- Content Area -->
   <section class="container">
 		<div class="row">
-		  		<div id="accept" style="display:none">
+		
+		<c:choose>
+		    <c:when test="${isSubmittedForApproval eq 'submitted for approval'}">
+		        <div id="accept" style="display:none">
+				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
+					          <i class="fa fa-check-circle fa-3x"></i>
+							  <p class="reason-msg">Already Performed Action </p>
+							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+						  </div>
+		  		</div>
+		    </c:when>    
+		    <c:otherwise>
+		        <div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
 							  <p class="reason-msg">Successfully Employee Expense can be edited</p>
 							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 						  </div>
 		  		</div>
-		  		<div id="reject" style="display:none">
+		    </c:otherwise>
+		</c:choose>
+		
+		<c:choose>
+		    <c:when test="${isSubmittedForApproval eq 'submitted for approval'}">
+		        <div id="reject" style="display:none">
+		  			<form id="reject_form" name="reject_form" method="post" >
+					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
+								  <div class="col-md-6">
+									  <i class="fa fa-ban fa-3x"></i>
+									  <p class="reason-msg">Your decision is already submitted once </p>
+							  		  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+								  </div>
+							  </div>
+					</form>							  
+		  		</div>
+		    </c:when>    
+		    <c:otherwise>
+		        <div id="reject" style="display:none">
 		  			<form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
@@ -97,6 +127,11 @@ width: auto;
 							  </div>
 					</form>							  
 		  		</div>
+		    </c:otherwise>
+		</c:choose>
+		
+		
+		  		
 		 </div>
   </section>
   <!-- Footer Area -->
@@ -117,7 +152,7 @@ width: auto;
 			var sourceleadUrl = '${sourceleadUrl}';
 			var expenseId = '${expenseId}';
 			var reOpenedUserId = '${reOpenedUserId}';
-			var type = '${type}';
+			var type = 'reject';
 			var reason = '${reason}';
 			var frm = $('#reject_form').serializeFormJSON();
 			var con = JSON.stringify(frm);

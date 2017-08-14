@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,6 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -80,6 +79,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -87,6 +87,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsServiceImpl.class);
 
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -159,7 +161,31 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private UniversalSearchHelper universalSearchHelper;
-
+    
+	 
+	 
+/*	 @Override
+		public String getProjectId(OrgLocations orgLocations) {
+			
+	    	Long number = 000000001L;
+			String candidateId = null;
+			Projects checkNumber = projectsDao.checkProjectIdNumberInDatebase(orgLocations.getId());
+			if(checkNumber == null || checkNumber.getGeneratedId().isEmpty()){
+				candidateId = number.toString();
+			}else{
+			String canIdNumber = checkNumber.getGeneratedId();
+			String canIdNum = canIdNumber.substring(2, canIdNumber.length());
+			Long canId = Long.parseLong(canIdNum)+1;
+				candidateId = canId.toString();
+			}
+			
+	        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+	        String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
+	        StringBuffer sb = new StringBuffer();
+			return sb.append(Constants.PROJECT_ENTITY).append(ConvetredCandidatesId).toString();
+			
+		}*/
+	 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
@@ -298,9 +324,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	 	String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	// 	String pattern = "dd-MM-yyyy";
+        //SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 	 	
+        
+        
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
@@ -310,11 +338,11 @@ public class ProjectsServiceImpl implements ProjectsService{
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
     	}
     	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-    		Date startDate = format.parse(jsonObj.getString("StartDate"));
+    		Date startDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("StartDate"));
 	    	projects.setStartDate(startDate);
     	}
     	if(!jsonObj.getString("EndDate").isEmpty()){
-    		Date endDate = format.parse(jsonObj.getString("EndDate"));
+    		Date endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("EndDate"));
 	    	projects.setEndDate(endDate);
     	}
     	
@@ -362,7 +390,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
 		}
 		
-		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects)).collect(Collectors.toList());
+		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects,bo.getStatus())).collect(Collectors.toList());
 		
 		projects.getProjectDocuments().addAll(projDocDBList);
 	
@@ -417,10 +445,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 		/*tasksService.*/
     	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
     	
-		Set<ProjectTasks>  projectTasksList = projectTasksService.prepareProjectTasksListByJson(jsonObj, request, projects);
+    	//save the default tasks
+		Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
 		projects.setProjectTasks(projectTasksList);
-		//prepare projectmembers list...
 		
+		// generated id for project
+		
+		//projects.setGeneratedId(getProjectId(loginOrgLocation));
+		
+		//prepare projectmembers list...
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -466,7 +499,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 */
 		
 		//send mail to assigned team members
-		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("on".equals(jsonObj.getString("isMailToTeamMembers")))){
 			
 			User  approverUserId2  = null;
 			User  approverUserId1 = null;
@@ -497,7 +530,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}
 		
 		
-		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+		
+		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("on".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
 				String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
@@ -529,17 +563,45 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 	
+	/**
+	 * @author Laxman
+	 * setting default tasks for every project
+	 * @param projects
+	 * @return set
+	 */
+	private Set<ProjectTasks> getDefaultTasksForProject(Projects projects) {
+		Set<ProjectTasks> set = new HashSet<>();
+		String[] defaultTasks = Constants.DEFAULT_TASKS;
+		for (String taskName : defaultTasks) {
+			ProjectTasks projectTasks = new ProjectTasks();
+			projectTasks.setTaskName(taskName);
+			projectTasks.setDescription(taskName);
+			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName)) {
+				projectTasks.setBillableType(Constants.TASK_NON_BILLABLE);
+			} else {
+				projectTasks.setBillableType(Constants.TASK_BILLABLE);
+			}
+			projectTasks.setCreatedDate(new Date());
+			projectTasks.setUpdatedDate(new Date());
+			projectTasks.setProjectId(projects);
+			set.add(projectTasks);
+		}
+		return set;
+	}
+
 	@Override
 	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status,Long orgLocationsId) throws Exception {
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
     	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
-		 for (Projects projects :projectList ){
-	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
-	    	    projects.setEmployeeStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+    	 OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationsId);
+         //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+    	for (Projects projects :projectList ){
+	    	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
-			    	 projects.setEmployeeEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
 			    }
 			    
 			    if(null != projects.getOrgRelationId()){
@@ -552,11 +614,22 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-			    	StringBuilder projectStringBuilder=new StringBuilder();
 			    	if(approverHierarchy.getLevel()==1){
-			    		projects.setManagerLevel1(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+			    		StringBuilder manager1 = new StringBuilder();
+			    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+			    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+			    		}else{
+			    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+			    		}
+			    		
 			    	}else if(approverHierarchy.getLevel()==2){
-			    		projects.setManagerLevel2(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+			    		StringBuilder manager2 = new StringBuilder();
+			    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+			    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+			    		}else{
+			    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+			    		}
+			    		
 			    	}
 			    }
 	    }
@@ -609,7 +682,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 StringBuilder fromNameSB = new StringBuilder();
 		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -764,15 +837,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		String resultJson =null;
 		
+		//SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
+		
 		if(projects.getCreatedDate() != null){
-			projects.setCreatedDateStr(Constants.DF_DMY.format(projects.getCreatedDate()));	
+			projects.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
 		}
-	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getStartDate()));
 	    if(projects.getEndDate() != null){
-	    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+	    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getEndDate()));
 	    }
 	    if(projects.getUpdatedDate() != null){
-	    	projects.setUpdatedDateStr(Constants.DF_DMY.format(projects.getUpdatedDate()));
+	    	projects.setUpdatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getUpdatedDate()));
 	    }
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
@@ -912,11 +987,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 //SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 		 
-		 
-		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
+		    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),changedEndDate));
 		    }
 			
 		    
@@ -984,11 +1059,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 //SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 
-		 
-		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
+		    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),changedEndDate));
 		    }
 			
 		    
@@ -1047,7 +1122,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-
+	 	//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
@@ -1062,14 +1137,60 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	if(jsonObj.getString("description") != null){
 		    		projects.setDescription(jsonObj.getString("description"));
 		    	}
+		    	
+		    	if(jsonObj.has("isAllowFreelanceDevelopers") && StringUtils.isNotEmpty(jsonObj.getString("isAllowFreelanceDevelopers"))){
+					projects.setAllowFreeLance(BooleanUtils.toBoolean(jsonObj.getString("isAllowFreelanceDevelopers"),"Y",""));
+				}else{
+					projects.setAllowFreeLance(null);
+				}
+				if(jsonObj.has("isAllowRemoteWork") && StringUtils.isNotEmpty(jsonObj.getString("isAllowRemoteWork"))){
+					projects.setAllowRemote(BooleanUtils.toBoolean(jsonObj.getString("isAllowRemoteWork"),"Y",""));
+				}else{
+					projects.setAllowRemote(null);
+				}
+				
+				if(jsonObj.has("isAllowOverTime") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOverTime"))){
+					projects.setAllowOvertime(BooleanUtils.toBoolean(jsonObj.getString("isAllowOverTime"),"Y",""));
+				}else{
+					projects.setAllowOvertime(null);
+				}
+				if(jsonObj.has("isAllowOffshoreResource") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOffshoreResource"))){
+					projects.setAllowOffShore(BooleanUtils.toBoolean(jsonObj.getString("isAllowOffshoreResource"),"Y",""));
+				}else{
+					projects.setAllowOffShore(null);
+				}
+				if(jsonObj.has("isTimeEntryAfterDeadline") && StringUtils.isNotEmpty(jsonObj.getString("isTimeEntryAfterDeadline"))){
+					projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(jsonObj.getString("isTimeEntryAfterDeadline"),"Y",""));
+				}else{
+					projects.setAllowTimeEntryAfterDeadLine(null);
+				}
+				if(jsonObj.has("isAllowBidding") && StringUtils.isNotEmpty(jsonObj.getString("isAllowBidding"))){
+					projects.setAllowBidding(BooleanUtils.toBoolean(jsonObj.getString("isAllowBidding"),"Y",""));
+				}else{
+					projects.setAllowBidding(null);
+				}
+				
+				if(jsonObj.has("flatPercentage") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentage"))){
+					projects.setFlatPercent(jsonObj.getDouble("flatPercentage"));
+				}else{
+					projects.setFlatPercent(null);
+				}
+				
+				if(jsonObj.has("flatPercentageId") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentageId"))){
+					projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
+				}else{
+					projects.setOvertimeRateType(null);
+				}
+		    	
+		    	
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
-			    		String pattern = "dd-MM-yyyy";
-			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
+//			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
-					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+					    		Date endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("endDateStr1"));
 					    		//this method is used to send email for edit project end date
 								
 					    		 if(projects.getEndDate() != null ){		
@@ -1245,9 +1366,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
-	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getEndDate()));
 			    }
 				
 			    
@@ -1536,6 +1657,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
+		//SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
@@ -1550,14 +1672,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
@@ -1615,6 +1737,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
+		//SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
+		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
@@ -1631,14 +1755,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(Constants.DF_DMY.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(Constants.DF_DMY.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(Constants.DF_DMY.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
@@ -2076,7 +2200,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
-			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values

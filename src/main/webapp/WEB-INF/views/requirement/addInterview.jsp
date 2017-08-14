@@ -5,7 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 <style type="text/css">
 .addinterTable .chosen-container{
@@ -388,10 +387,22 @@ function validateTimeZone(){
 		
 		//$("#timezoneid").trigger("chosen:updated");
 		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatInterview = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatInterview = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatInterview = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatInterview = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatInterview = 'yy-dd-mm'; 
+		  }
+		
 		cell2.innerHTML = text;
 		//$(".Datepicker").datepicker();
 		$(".Datepicker").datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatInterview,
 			changeMonth: true,
 			 changeYear: true, 
 		      minDate: 0  ,

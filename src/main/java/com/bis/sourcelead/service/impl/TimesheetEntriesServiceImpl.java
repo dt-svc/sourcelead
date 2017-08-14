@@ -1,6 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -27,7 +27,6 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -41,6 +40,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -53,6 +53,7 @@ import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -98,6 +99,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 
 	 /**
 	  * 
@@ -123,6 +127,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 		Boolean isExportMyTimeSheet = commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 		/**
 		  * Get Logged-in Employee startDate and endDate range across Various Projects(which are assigned to respective employee)
 		  * @ Hint: Submission Table Records are already availble
@@ -141,8 +146,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(commonUtil.currentDate());
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
-		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN");
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN",orgLocations.getDateFormat());
 		
 		
 		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-42);
@@ -173,8 +178,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		  StringBuilder startDateBuilder = new StringBuilder();
 		  StringBuilder endDateBuilder = new StringBuilder();
 		 
-		  String pattern = "dd-MM-yyyy";
-          SimpleDateFormat format = new SimpleDateFormat(pattern);
+		  //String pattern = "dd-MM-yyyy";
+          //DateFormat format = LoginSessionController.DATEFORMAT;
           Date currentStartDate = null;
           Date currentEndDate = null;
           Calendar startCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
@@ -183,7 +188,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 * startDate == null means current week timesheets should be shown
 		   */
 		   if(startDate == null || startDate.equalsIgnoreCase("undefined") || startDate.isEmpty() ){  
-			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON");
+			      Date currentWeekStartDate = CalendarUtil.getCurrentWeekDayForTimesheets("MON",orgLocations.getDateFormat());
 			      if(currentWeekStartDate.equals(employeeStartDate)|| (currentWeekStartDate.before(employeeEndDate) && currentWeekStartDate.after(employeeStartDate))){
 			    	  startCal.setTime(currentWeekStartDate);
 			      }
@@ -201,7 +206,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 * startDate comes from ui screen when << or >> links clicked
 		   */
 		  else{
-			  Date sDate  =  Constants.DMY.parse(startDate);
+			  Date sDate  =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
               if(sDate != null && employeeEndDate.before(sDate)){
            	      Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			    	  endCal.setLenient(false);
@@ -212,22 +217,22 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
            	   startCal.setTime(sDate);
               }
 		  }
-		 String weekStartDate = format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime());
-		 startDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime()));
-         endDateBuilder.append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime()));
+		 String weekStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime());
+		 startDateBuilder.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime()));
+         endDateBuilder.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime()));
          sb1.append("<th>Mon<i>").append(startDateBuilder).append("</i></th>"); 
-         sb1.append("<th>Tue<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE").getTime())).append("</i></th>"); 
-         sb1.append("<th>Wed<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED").getTime())).append("</i></th>"); 
-         sb1.append("<th>Thu<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU").getTime())).append("</i></th>"); 
-         sb1.append("<th>Fri<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI").getTime())).append("</i></th>"); 
-         sb1.append("<th>Sat<i>").append(format.format(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT").getTime())).append("</i></th>"); 
+         sb1.append("<th>Tue<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"TUE",orgLocations.getDateFormat()).getTime())).append("</i></th>"); 
+         sb1.append("<th>Wed<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"WED",orgLocations.getDateFormat()).getTime())).append("</i></th>"); 
+         sb1.append("<th>Thu<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"THU",orgLocations.getDateFormat()).getTime())).append("</i></th>"); 
+         sb1.append("<th>Fri<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"FRI",orgLocations.getDateFormat()).getTime())).append("</i></th>"); 
+         sb1.append("<th>Sat<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SAT",orgLocations.getDateFormat()).getTime())).append("</i></th>"); 
          sb1.append("<th>Sun<i>").append(endDateBuilder).append("</i></th>");
          
          
          
-         timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime(), user.getId());
-         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON").getTime();
-         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN").getTime();
+         timesheetSubmissionsList = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissions(CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime(),CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime(), user.getId());
+         currentStartDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"MON",orgLocations.getDateFormat()).getTime();
+         currentEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(startCal,"SUN",orgLocations.getDateFormat()).getTime();
         
 		StringBuilder sb = new StringBuilder();	
 		sb.append("	<div class='timesheet_head'>");
@@ -250,7 +255,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	    */
 		Date leftNavStartDate = timesheetSubmissionsService.getLeftNavStartDateForEmployeeBasedOnCurrentStartDate(user.getId(), currentStartDate);
 		if(leftNavStartDate != null && (leftNavStartDate.after(employeeStartDate) || leftNavStartDate.equals(employeeStartDate))){
-			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+format.format(leftNavStartDate)+"\");'></i>");
+			sb.append("       	<i class='glyphicon glyphicon-chevron-left' onclick='dynamicTimesheet(\"left\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),leftNavStartDate)+"\");'></i>");
 		}
 		sb.append("            <span class='res_date'><i class='fa fa-calendar'></i>").append(startDateBuilder).append(" To ").append(endDateBuilder).append("</span>");
 		
@@ -262,9 +267,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	    Calendar rightCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);	
 		rightCal.setLenient(false);
 		rightCal.setTime(rightNavStartDate);
-		Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN");
+		Calendar rightNavEndDate = CalendarUtil.getCurrentWeekDayByCalendarForTimesheets(rightCal, "SUN",orgLocations.getDateFormat());
 		if((rightNavEndDate.getTime().before(employeeEndDate) || employeeEndDate.equals(rightNavEndDate.getTime()))){
-			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+format.format(rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
+			sb.append("           <i class='glyphicon glyphicon-chevron-right' onclick='dynamicTimesheet(\"right\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rightNavStartDate)+"\");'></i><abbr>|</abbr> ");	
 		}
 		}               
 		sb.append("           </li><div class='clearfix'></div>");
@@ -331,23 +336,23 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				disbleCondition1 = "disabled";
 			}
 			String disbleCondition2 = "";
-            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition2 = "disabled";
 			}
 			String disbleCondition3 = "";
-            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition3 = "disabled";
 			}
 			String disbleCondition4 = "";
-            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition4 = "disabled";
 			} 
 			String disbleCondition5 = "";
-            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition5 = "disabled";
 			}
 			String disbleCondition6 = "";
-            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+            if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
             	disbleCondition6 = "disabled";
 			}
 			String disbleCondition7 = "";
@@ -536,7 +541,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 							        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 							        	sb.append("<b class='proj_process'>").append(submissionStatus).append("</b>");
 							        	if(isSah == null && isModifyMyTimeSheet){
-							                String startDateStr = format.format(ts.getStartDate());
+							                String startDateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),ts.getStartDate());
 							        		sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 							        	}
 							        }
@@ -660,7 +665,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 								        	sb.append("<b class='proj_process'>").append(submissionStatus).append("</b>");
 								        	if(isSah == null && isModifyMyTimeSheet){
-								        		String startDateStr = format.format(ts.getStartDate());
+								        		String startDateStr = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),ts.getStartDate());
 								        	    sb.append("<b class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+ts.getId()+"\",\""+startDateStr+"\");' >Modify</b>");
 								        	}
 								        }
@@ -850,14 +855,14 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 
 	@Override
-	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate)
+	public String dynamicTimesheetpopUp(User user, Long employeeId, String startDate, String endDate,OrgLocations orgLocations)
 			throws Exception {
 		
 		Boolean isFillMemberTimeSheet = commonUtil.hasRole("ROLE_FILL_MEMBER_TIMESHEETS");
 		
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date sDate  =  Constants.DMY.parse(startDate);
+		//String pattern = "dd-MM-yyyy";
+        //DateFormat format = LoginSessionController.DATEFORMAT;
+        Date sDate  =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
         Long employeeUserId = null;
         Long projectMemberId = null;
 		Collection<TimesheetSubmissions>  timesheetSubmissionsList = timesheetSubmissionsService.getTimesheetSubmissionsByAproverId(employeeId, user.getId(),sDate);
@@ -882,13 +887,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
         sb.append("<th> ");
         sb.append(" <table id='1' cellpadding='0' cellspacing='0'>");
         sb.append("<th>Tasks </th>");
-        sb.append("<th>Mon<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())).append("</i></th>"); 
-        sb.append("<th>Tue<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,1).getTime())).append("</i></th>"); 
-        sb.append("<th>Wed<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,2).getTime())).append("</i></th>"); 
-        sb.append("<th>Thu<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,3).getTime())).append("</i></th>"); 
-        sb.append("<th>Fri<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,4).getTime())).append("</i></th>"); 
-        sb.append("<th>Sat<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,5).getTime())).append("</i></th>"); 
-        sb.append("<th>Sun<i>").append(format.format(CalendarUtil.getDateIncrementByincrement(startCal,6).getTime())).append("</i></th>");
+        sb.append("<th>Mon<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())).append("</i></th>"); 
+        sb.append("<th>Tue<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,1).getTime())).append("</i></th>"); 
+        sb.append("<th>Wed<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,2).getTime())).append("</i></th>"); 
+        sb.append("<th>Thu<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,3).getTime())).append("</i></th>"); 
+        sb.append("<th>Fri<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,4).getTime())).append("</i></th>"); 
+        sb.append("<th>Sat<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,5).getTime())).append("</i></th>"); 
+        sb.append("<th>Sun<i>").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,6).getTime())).append("</i></th>");
         sb.append("         </table>");
         sb.append("        </th> ");
         sb.append("<th>Status</th>");
@@ -917,23 +922,23 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				disbleCondition1 = "disabled";
 			}
 			String disbleCondition2 = "";
-           if( (!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
+           if( (!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition2 = "disabled";
 			}
 			String disbleCondition3 = "";
-           if((!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) )){
+           if((!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) )){
            	disbleCondition3 = "disabled";
 			}
 			String disbleCondition4 = "";
-           if((!isFillMemberTimeSheet) || ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
+           if((!isFillMemberTimeSheet) || ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime()) || (!isNullOrEmpty(submissionStatusStr) &&  submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition4 = "disabled";
 			} 
 			String disbleCondition5 = "";
-           if((!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
+           if((!isFillMemberTimeSheet) ||  ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) ) ){
            	disbleCondition5 = "disabled";
 			}
 			String disbleCondition6 = "";
-           if((!isFillMemberTimeSheet) || ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) )){
+           if((!isFillMemberTimeSheet) || ( !pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime()) || (!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())) )){
            	disbleCondition6 = "disabled";
 			}
 			String disbleCondition7 = "";
@@ -1318,9 +1323,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 								documentBuffer.append("</a>");
 								
 
-								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-							    String startDate1  =  sdf.format(tsFirst.getStartDate());
-							    String endDate1  =  sdf.format(tsFirst.getEndDate());
+								//DateFormat sdf = LoginSessionController.DATEFORMAT;
+							    String startDate1  =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsFirst.getStartDate());
+							    String endDate1  =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsFirst.getEndDate());
 							    if( (!isFillMemberTimeSheet ) ||  (!isNullOrEmpty(approvalStatus) && approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("approved").getValue()) )){ 
 								}else{
 									documentBuffer.append("<input class='dele' type='button'  onClick='deleteSubmissionDocument(\""+tsd.getId()+"\",\""+tsFirst.getProjectMembers().getEmployee().getId()+"\",\""+startDate1+"\",\""+endDate1+"\");'>");
@@ -1353,7 +1358,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				if(!isNullOrEmpty(approvalStatus) && (approvalStatus.equalsIgnoreCase(Submission_ApprovalStatus.getNameByValue("submitted for approval").getValue())) ){
 					   sb.append("	<div class='clearfix'></div>");
 					   sb.append("	<div class='timesheet_button'>");
-					   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Update' class='time_btn'>");
+					   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Update' class='time_btn'>");
 					   /*sb.append("        <input type='button' value='Clear' class='time_btn time_cancel'>");*/
 					   sb.append("    </div>");
 					   sb.append("</div>");
@@ -1367,8 +1372,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				else{
 					   sb.append("	<div class='clearfix'></div>");
 					   sb.append("	<div class='timesheet_button'>");
-					   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Save' class='time_btn time_dra'>");
-					   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+format.format(CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Submit' class='time_btn'>");
+					   sb.append("	       <input type='button' name='submit'  onClick='saveMyTimesheet(\"Draft\",\"approver\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Save' class='time_btn time_dra'>");
+					   sb.append("        <input type='button' onClick='saveMyTimesheet(\"Submit\",\"approver\",\""+commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),CalendarUtil.getDateIncrementByincrement(startCal,0).getTime())+"\","+employeeUserId+","+projectMemberId+","+employeeId+");' value='Submit' class='time_btn'>");
 					   sb.append("        <input type='button' onClick='clearTimesheet();' value='Clear' class='time_btn time_cancel'>");
 					   
 					   sb.append("");
@@ -1702,9 +1707,8 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
     	
 		/*result =  "success";*/
 		/*resultJson = toJSON(startDateResult);*/
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        String startDateStr = format.format(startDate);
+		//String pattern = "dd-MM-yyyy";
+        String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),startDate);
 		return startDateStr;
 		
 	}
@@ -1882,10 +1886,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			 String pattern = "dd-MM-yyyy";
-	         SimpleDateFormat format = new SimpleDateFormat(pattern);
-	         String startDateStr = format.format(timesheetSubmissions.getStartDate());
-	         String endDateStr = format.format(timesheetSubmissions.getEndDate());
+			 //String pattern = "dd-MM-yyyy";
+	         //DateFormat format = LoginSessionController.DATEFORMAT;
+	         String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),timesheetSubmissions.getStartDate());
+	         String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),timesheetSubmissions.getEndDate());
 
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();

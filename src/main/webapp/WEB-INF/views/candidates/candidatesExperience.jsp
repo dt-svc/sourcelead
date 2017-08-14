@@ -117,6 +117,32 @@ function closeCertificatePopup(){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl  + "/errorPage");
 								} else {
+									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+			            			 if(data<50){
+			            			   $("#perVal").removeClass('progress-bar-success');
+			            			   $("#perVal").addClass("progress-bar-danger");
+			            			 }
+			            			 if(data>=50){
+			            				 $("#perVal").removeClass("progress-bar-danger");
+			            				 $("#perVal").addClass("progress-bar-success");
+			            			 }
+			            			 $("#disVal").empty();
+			            			$("#disVal").append(data+'%');
+			            			
+			            			// for quick view bar update
+			            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+				          			 if(data<50){
+					          			   $("#quickPerVal").removeClass('progress-bar-success');
+					          			   $("#quickPerVal").addClass("progress-bar-danger");
+					          			 }
+					          			 if(data>=50){
+					          				 $("#quickPerVal").removeClass('progress-bar-danger');
+					          				 $("#quickPerVal").addClass("progress-bar-success");
+					          			 }
+
+			            			$("#quickDisVal").empty();
+			            			$("#quickDisVal").append(data+'%');
+			            			
 									$("#popUpDivEmp").removeClass("edit-details-active");
 			            			$("#selector3").removeAttr("style");
 			            			$("#selector3").css({ display: "block" });
@@ -436,6 +462,16 @@ function closeCertificatePopup(){
 		 var candidateType = '${candidateType}';
 		var sourceleadUrl = '${sourceleadUrl}';
 		
+		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  candExpListDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  candExpListDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  candExpListDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  candExpListDate = 'YYYY-DD-MM'; 
+		  }
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -467,8 +503,8 @@ function closeCertificatePopup(){
 								result = result	+ '           <th>Employer</th>';
 								result = result	+ '           <th>Designation</th>';
 								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start date</th>';
-								result = result	+ '           <th>End date</th>';
+								result = result	+ '           <th>Start date<br>(<small class="custom-small">'+candExpListDate+'</small>)</th>';
+								result = result	+ '           <th>End date<br>(<small class="custom-small">'+candExpListDate+'</small>)</th>';
 								result = result + '           <th>Action</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";
@@ -609,9 +645,11 @@ function removeEmployer(candidateemployerId, candidateId){
 	function deleteSelectedEmployer(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
+		var loginUserId = '${SourceLeadWeb_userId}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -620,6 +658,33 @@ function removeEmployer(candidateemployerId, candidateId){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+		            			 if(data<50){
+		            			  /* $("#perVal").removeClass("progress-bar-success"); */
+		            			   $("#perVal").removeClass('progress-bar-success');
+		            			   $("#perVal").addClass("progress-bar-danger");
+		            			 }
+		            			 if(data>=50){
+		            				 $("#perVal").removeClass('progress-bar-danger');
+		            				 $("#perVal").addClass("progress-bar-success");
+		            			 }
+		            			 $("#disVal").empty();
+		            			$("#disVal").append(data+'%');
+		            			
+		            			
+		            			// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+			          			 if(data<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(data>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(data+'%');
 			        			 $("#selector3").removeAttr("style");
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");

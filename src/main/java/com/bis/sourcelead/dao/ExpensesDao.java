@@ -3,7 +3,9 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.OrgLocations;
 
 /**
  * @author Pradeep Kumar Reddy
@@ -17,6 +19,7 @@ public interface ExpensesDao<Expenses> {
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 	public Expenses getExpenseByExpenseId(long expenseId);
     public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationID)throws Exception;
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType);
 	}
 	
 

@@ -3,9 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
@@ -101,6 +98,16 @@ window.onload = function () {
 			getSubmissionDetailsSideBar('${publicRequirementTitle}','${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
 		}else{
 			applyToJob('${publicRequirementTitle}','${publicRequirementId}','${publicReferId}');
+			
+			var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+			
+			if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+				selectRequirementType('OpenJobs');
+			}else{
+				selectRequirementType('CrowdSourcingJobs');
+			}
+			
+			
 		}
 	}else{
 		requirementsList(0);
@@ -381,6 +388,8 @@ window.onload = function () {
             </div>    
             
 		  <div class="clearfix"></div>
+		  
+		 
 	  </section>
 	   <br/>
 	   <input type="hidden" name="requirementOffset" id="requirementOffset" value="0"/>
@@ -443,11 +452,12 @@ function minMaxExperienceOfProfessional(){
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	var anyofKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
 		            select.append(option);
@@ -464,11 +474,12 @@ function minMaxExperienceOfProfessional(){
 		    selectone = $("#allReqKeyWord");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var allofKeyWord = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
 		        {
+		        	preventTabkey(e1); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(allofKeyWord).text(allofKeyWord);
 		            selectone.append(option);
@@ -486,11 +497,12 @@ function minMaxExperienceOfProfessional(){
 		    selecttwo = $("#excludeReqKeyWord");
 		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
+		    chosentwo.search_field.on('keydown keyup', function(e2)
 		    {
 		    	var excludeKeyWord = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
+		        if (tagItBykeyForSkills(e2) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
 		        {
+		        	preventTabkey(e2); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
 		            selecttwo.append(option);
@@ -524,6 +536,47 @@ function minMaxExperienceOfProfessional(){
 		        }
 		    });
 		    
+		    
+		  //Adding Customized Skills to the list
+		       var selectfour, chosenfour;
+			    selectfour = $("#skills");
+			    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Email:' });
+			    chosenfour = selectfour.data('chosen');
+			    chosenfour.search_field.on('keyup', function(e)
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 selectfour.append(option);
+			 		             selectfour.find(option).prop('selected', true);
+			 		             selectfour.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#skills").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+								 var isNewSkill = true;
+								 $("#skills option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										 //alert(newSkill);
+										 isNewSkill = false;
+										 return false;
+									 }
+			                    
+			                   });
+								if(isNewSkill){
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+								 selectfour.append(option);
+			                     selectfour.find(option).prop('selected', true);
+								}
+				               $("#skills").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+			    });
+			    
 		 // here call experience validation
 		       $("#maxExp").on('change', function (e) {
 		    	   minMaxExperienceOfProfessional();
@@ -804,7 +857,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
-			 				result = result +'<b><i class="fa fa-plane" title="Industry"></i>'+visaType+'</b>';
+			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
@@ -1864,6 +1917,9 @@ function createAlert(requirementUUID){
 					        	  
 					        	 result = "";
 					        	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+					        	 result = result +' 	  <div class="success_pop" id="selector4" style="display: none;">';
+					        	 result = result +'   <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+					        	 result = result +'   </div>';
 					        	 result = result +'	 <div class="modal-dialog modal-lg">';
 					        	 result = result +'     <div class="modal-content">';
 					        	 result = result +'       <div class="modal-header">';
@@ -2080,7 +2136,7 @@ function createAlert(requirementUUID){
 					        	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
 					        	 result = result +'       </div>';
 					        	 result = result +'     </div>';
-					        	 result = result +'   </div>';	
+					        	 result = result +'   </div>';
 					        	 result = result +'</form>';
 					         $("#createAlertPopUpDiv").empty();
 					         $("#createAlertPopUpDiv").append(result);
@@ -2226,7 +2282,13 @@ var validationSettings = {
         					type : "POST",
         					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         					success : function(result) {
+        						alert("hello");
+	        					    $("#selector4").removeAttr("style");
+			            			$("#selector4").css({ display: "block" });
+			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
+			            			alertMsgFadeinFunction();
         							location.replace(sourceleadUrl+"/professionalRequirements");
+        						 
         					},
         				});
                 
@@ -2243,7 +2305,12 @@ var validationSettings = {
         	});
          
 	</script>
-	
+	<script>
+	function alertMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4s').delay(50000).fadeOut('slow');
+	}
+</script>
 	
 	<script type="text/javascript">
 function getAllCountriesJObalert(country){

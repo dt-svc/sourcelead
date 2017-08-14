@@ -76,7 +76,7 @@
 					<div class="col-md-9" id="errProject">
 
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
-							<c:if test="${fn:length(expEntry.projectMembersList) gt 1}">
+							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
@@ -109,10 +109,10 @@
 	</div>
 </div>
 <div class="expensHead">
-<div class="form-group">
-<span class="col-md-3">Expenses Amount Total:</span>
-<div class="col-md-9">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmount > 0 ? expenses.totalAmount : 00.00 }" class="ReadTextFli valid" readonly="readonly">
+<div class="form-group col-md-6 mt5 mb5 noPad">
+<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<div class="col-md-6">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${expenses.totalAmontRoundOffValue > 0 ? expenses.totalAmontRoundOffValue : '00.00' }" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
 	<div class="pull-left" id="exceedSpan"></div>
@@ -139,13 +139,13 @@
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}" title="${entry.expensesCategoryId.expensesName}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me" title="${entry.description}">${entry.description}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
 			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
-			                <i class="glyphicon glyphicon-trash" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
+			                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
 			        </tr>
@@ -266,9 +266,6 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			$("#submitForApprovalExpensesId").prop('disabled', true);
-			$("#draftForApprovalExpensesId").prop('disabled', true);
-			$("#cancelForApprovalExpensesId").prop('disabled', true);
 			
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
@@ -285,6 +282,10 @@
 				return false;
 			}
 			else{
+				$("#submitForApprovalExpensesId").prop('disabled', true);
+				$("#draftForApprovalExpensesId").prop('disabled', true);
+				$("#cancelForApprovalExpensesId").prop('disabled', true);
+				
 				var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];
@@ -359,10 +360,11 @@
 <script>
 function getClientBasedOnSelectedProject(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId,       
+	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId+"&locationId="+locationId,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);
@@ -388,10 +390,23 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormataddExpense= '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormataddExpense = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormataddExpense = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormataddExpense = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormataddExpense = 'yy-dd-mm'; 
+		  }
+		
 		$("#projectStartDateExpensesId").datepicker("destroy");
 		$("#projectEndDateExpensesId").datepicker("destroy");
 		$('#projectStartDateExpensesId').datepicker({
-					dateFormat : 'dd-mm-yy',
+					dateFormat : finalDateFormataddExpense,
 					changeMonth : true,
 					changeYear : true,
 					minDate : projectStartDate,
@@ -402,7 +417,7 @@ function getClientBasedOnSelectedProject(){
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
-					dateFormat : 'dd-mm-yy',
+					dateFormat : finalDateFormataddExpense,
 					changeMonth : true,
 					changeYear : true,
 					minDate : projectStartDate,

@@ -43,14 +43,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.dto.ExpensesDTO;
-import com.bis.sourcelead.dto.helper.ExpensesDTOConverter;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
-import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,9 +56,9 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -72,8 +68,8 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
-import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -125,6 +121,9 @@ public class ContractRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Autowired
 	ContractRequestDocumentsService contractRequestDocumentsService;
@@ -452,6 +451,8 @@ public class ContractRestController {
 			 parentContractsHistory.setCreatedBy(user.getUserCode());
 			 parentContractsHistory.setUpdatedBy(user.getUserCode());
 			contractsTemplateDao.saveContractsHistory(parentContractsHistory);
+			
+			contractsTemplateService.sendFinalisedMailToReceiver(contracts,orgLocation,user);
 		}
 		
 		
@@ -533,16 +534,35 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/getSubmissionOfferForSOWByRequirementSubmissionId", method = RequestMethod.GET)
-	public @ResponseBody String getSubmissionOfferForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getSubmissionOfferForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, @RequestParam(value = "locationId", required = false) Long locationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		RequirementOffers requirementOffers = null;
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
 			if(requirementOffers != null){
-				requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
+				requirementOffers.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
 			}
 		}
 		return commonUtil.toJSON(requirementOffers);
 	}
+	
+	@RequestMapping(value = "/validateRequirementSubmission", method = RequestMethod.GET)
+	public @ResponseBody Boolean validateRequirementSubmission(@RequestParam(value = "reqSubId", required = false) String reqSubId,@RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		Contracts contract = null;
+		Boolean flag= false;
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
+			contract = contractsTemplateService.getContractByReqSubmissionSowTypeAndOrgLocId(Long.parseLong(reqSubId),loginOrgLocation,contractType);
+		}
+		if(contract!=null){
+			flag = true;
+		}
+		return flag;
+	}
+	
+	
+	
 	
 	@RequestMapping(value = "/approveContract", method = RequestMethod.POST)
 	@ResponseBody
@@ -734,19 +754,19 @@ public class ContractRestController {
 		 	
 		 	DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+			 //SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
 			if(null != contract && null != contract.getStartDate()){
 				String currentTimeStr = Constants.TZ_DF.format(contract.getStartDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
+				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 				contract.setStartDateStr(currentDateInTimezone);
 			}
 			if(null != contract && null != contract.getEndDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getEndDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
 			
@@ -754,7 +774,7 @@ public class ContractRestController {
 				String endTimeStr = Constants.TZ_DF.format(contract.getJoinDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				contract.setJoinedDateStr(endDateInTimezone);
 			}
 			
@@ -762,14 +782,14 @@ public class ContractRestController {
 				String currentTimeStr = Constants.TZ_DF.format(contract.getCreatedDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-				currentDateInTimezone = standardFormat.format(converteDate);
+				currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 				contract.setCreatedDateStr(currentDateInTimezone);
 			}
 			if(null != contract && null != contract.getUpdatedDate()){
 				String endTimeStr = Constants.TZ_DF.format(contract.getUpdatedDate());  
 				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
-				endDateInTimezone = standardFormat.format(endconverteDate);
+				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				contract.setUpdatedDateStr(endDateInTimezone);
 			}
 			
@@ -830,12 +850,14 @@ public class ContractRestController {
 			return commonUtil.toJSON(contractRequestDocumentsList);
 		}
 	 @RequestMapping(value = "/saveDocContracts", method = RequestMethod.POST)
-		public @ResponseBody String saveDocContracts(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+		public @ResponseBody String saveDocContracts(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, MultipartHttpServletRequest request) throws Exception {
 
 			String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			 final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			final Map files = multiRequest.getFileMap();
 			int maxCount = Integer.parseInt(jsonObj.getString("maxDocCount"));
@@ -852,7 +874,9 @@ public class ContractRestController {
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-						contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
+						if(contractRequestDocuments.getContractId().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
+							contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
+						}
 					}
 				}
 			}
@@ -922,8 +946,9 @@ public class ContractRestController {
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
 		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 	//SimpleDateFormat dateFormat=orgLocation.getLocFullFormDateFormatter();
 		 	if(!"".equalsIgnoreCase(endDate) && endDate != null){
-		 		Date endTimeStr = commonUtil.getDateFormat(endDate);  
+		 		Date endTimeStr = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),endDate);  
 				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDateStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -974,10 +999,17 @@ public class ContractRestController {
 			 	}
 			 	
 			 // updating contract end date 
+			 	Date previousEndDate = contracts.getEndDate();
 			 	contracts.setEndDate(convertedEndDate);
 			 	contracts.setUpdatedDate(new Date());
 			 	contracts.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveNewContract(contracts);
+				if(contracts.getContractType().equalsIgnoreCase(Constants.CLIENT_MSA) || contracts.getContractType().equalsIgnoreCase(Constants.VENDOR_MSA)){
+				contractsTemplateService.sendMSAEndDateModifiedMail(contracts,orgLocation,previousEndDate);
+				}
+				if(contracts.getContractType().equalsIgnoreCase(Constants.Client_SOW) || contracts.getContractType().equalsIgnoreCase(Constants.Vendor_SOW)){
+				contractsTemplateService.sendSOWEndDateModifiedMail(contracts,orgLocation);
+				}
 		 	}
 			
 			return "success";

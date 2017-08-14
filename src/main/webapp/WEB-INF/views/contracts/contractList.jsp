@@ -4,25 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
-
-<!-- these files for export -->
-<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<!-- <script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- ends files of export -->
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -213,6 +194,7 @@ padding: 2px 300px 2px 0px;
 	        var jsonData = encodeURIComponent(con);
 	        var form = $('#contractDoc_form')[0];
  	 	    var formData = new FormData(form); 
+ 	 	 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_Doc").attr("disabled", "disabled");
 			$("#contractDoc_form").attr("disabled", "disabled");
@@ -225,7 +207,7 @@ padding: 2px 300px 2px 0px;
 		         processData: false,
 		         contentType:false,
 			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId,
 						success : function(result) {
 							location.replace(sourceleadUrl+"/contractListbyStatus");
 						},
@@ -381,6 +363,16 @@ function preparedContractListDraft(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  } 
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableDraft" class="display" cellspacing="0" width="100%" >';
@@ -391,7 +383,7 @@ function preparedContractListDraft(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -476,7 +468,7 @@ function preparedContractListDraft(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -557,7 +549,7 @@ function preparedContractListDraft(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Action</th>';
@@ -771,6 +763,16 @@ function preparedContractListWFA(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  }
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWFA" class="display" cellspacing="0" width="100%" >';
@@ -781,7 +783,7 @@ function preparedContractListWFA(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Approver</th>';
 		result = result + '    <th>Action</th>';
@@ -888,7 +890,7 @@ function preparedContractListWFA(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '     <th>Req Docs</th>'; 
 	opt = opt + '    <th>Approver</th>';
 	opt = opt + '    <th>Action</th>';
@@ -995,7 +997,7 @@ function preparedContractListWFA(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Approver</th>';
@@ -1088,7 +1090,7 @@ function preparedContractListWFA(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
+	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Waiting ('+approveCount+')');
 	
 	
     $("#vendorContractsList").empty();
@@ -1225,6 +1227,16 @@ function preparedContractListWTS(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  } 
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTS" class="display" cellspacing="0" width="100%" >';
@@ -1235,7 +1247,7 @@ function preparedContractListWTS(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
@@ -1315,7 +1327,7 @@ function preparedContractListWTS(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '    <th>Req Docs</th>';
 	opt = opt + '    <th>Status</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -1399,7 +1411,7 @@ function preparedContractListWTS(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Status</th>';
@@ -1608,6 +1620,17 @@ function preparedContractListWTV(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
+    
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  } 
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
@@ -1618,7 +1641,7 @@ function preparedContractListWTV(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Billing Cycle</th>';
 		result = result + '    <th>Status</th>';
@@ -1714,7 +1737,7 @@ function preparedContractListWTV(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Billing Cycle</th>';
 	opt = opt + '    <th>Status</th>';
@@ -1806,7 +1829,7 @@ function preparedContractListWTV(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Status</th>';
@@ -1890,7 +1913,7 @@ function preparedContractListWTV(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
+	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Counter sign ('+verifyCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -2023,6 +2046,16 @@ function preparedContractListFinalize(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  } 
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableFinalize" class="display" cellspacing="0" width="100%" >';
@@ -2033,7 +2066,7 @@ function preparedContractListFinalize(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -2108,7 +2141,7 @@ function preparedContractListFinalize(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 // 	opt = opt + '    <th>Finalized On</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -2190,7 +2223,7 @@ function preparedContractListFinalize(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Action</th>';
@@ -2262,7 +2295,7 @@ function preparedContractListFinalize(data){
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
 	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
-	$("#finalised").html('Finalized ('+finalisedCount+')');
+	$("#finalised").html('Completed ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -2394,6 +2427,17 @@ function preparedContractListExpired(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
+    
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  } 
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableEXP" class="display" cellspacing="0" width="100%" >';
@@ -2404,7 +2448,7 @@ function preparedContractListExpired(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>';  
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -2471,7 +2515,7 @@ function preparedContractListExpired(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -2541,7 +2585,7 @@ function preparedContractListExpired(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Action</th>';
@@ -2738,6 +2782,17 @@ function preparedContractListRejected(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
+    
+    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationDate = 'YYYY-DD-MM'; 
+	  } 
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableREJ" class="display" cellspacing="0" width="100%" >';
@@ -2748,7 +2803,7 @@ function preparedContractListRejected(data){
 		result = result + '    <th>Signing Authority</th>';
 		result = result + '    <th>Contact</th>';
 		result = result + '    <th>Vendor</th>';
-		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		result = result + '    <th>Req Docs</th>'; 
 // 		result = result + '    <th>Rejected By</th>'; 
 		result = result + '    <th>Action</th>';
@@ -2829,7 +2884,7 @@ function preparedContractListRejected(data){
 	opt = opt + '    <th>Signing Authority</th>';
 	opt = opt + '    <th>Contact</th>';
 	opt = opt + '    <th>Client</th>';
-	opt = opt + '   <th>Start | End date</th>';
+	opt = opt + '   <th>Start | End date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 	opt = opt + '    <th>Req Docs</th>';
 // 	opt = opt + '    <th>Rejected By</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -2911,7 +2966,7 @@ function preparedContractListRejected(data){
 		res = res + '    <th>Type</th>';
 		res = res + '    <th>Signing Authority</th>';
 		res = res + '    <th>Employee Name</th>';
-		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Join date <br>(<small class="custom-small">'+locationDate+'</small>)</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
 		res = res + '    <th>Action</th>';
@@ -3331,16 +3386,16 @@ function getStageCounts(){
     		   $("#draft").html('Draft ('+json.totalDraftCount+')');
     	   }
     	   if(json.totalWTACount != null && json.totalWTACount != "" && json.totalWTACount != 'undefined'){
-    		   $("#approve").html('Approve ('+json.totalWTACount+')');
+    		   $("#approve").html('Waiting ('+json.totalWTACount+')');
     	   }
     	   if(json.totalWTSCount != null && json.totalWTSCount != "" && json.totalWTSCount != 'undefined'){
     		   $("#sign").html('Sign ('+json.totalWTSCount+')');
     	   }
     	   if(json.totalWTVCount != null && json.totalWTVCount != "" && json.totalWTVCount != 'undefined'){
-    		   $("#verify").html('Verify ('+json.totalWTVCount+')');
+    		   $("#verify").html('Counter sign ('+json.totalWTVCount+')');
     	   }
     	   if(json.totalFinalizedCount != null && json.totalFinalizedCount != "" && json.totalFinalizedCount != 'undefined'){
-    		   $("#finalised").html('Finalized ('+json.totalFinalizedCount+')');
+    		   $("#finalised").html('Completed ('+json.totalFinalizedCount+')');
     	   }
     	   if(json.totalExpiredCount != null && json.totalExpiredCount != "" && json.totalExpiredCount != 'undefined'){
     		   $("#expired").html('Expired ('+json.totalExpiredCount+')');

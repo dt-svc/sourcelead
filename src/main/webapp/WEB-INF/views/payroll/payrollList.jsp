@@ -3,13 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
 <script>
 window.onload = function () {
 	loadEmployeePayrollCost();
@@ -27,41 +20,80 @@ window.onload = function () {
   </div>
        
   <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
+ <a href="<c:url value='/uploadDocuments'/>" class="btn btn-primary btn-sm ml10 mt5" id="uloadDocs" title="upload documents">Upload Files</a>
 </section>
 
 
 <section class="contrHead">
 		<ul id="parentUl">
-			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
+			<li title="Employer Payroll Cost"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
+				<li title="Employee list"><a id="empList" onclick="getEmployeeList();">Employee List</a></li>
 			<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
 			<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
-			<li title="Paylist"><a id="paylistLi" onclick="runPayrollCycles('main');">Run Payroll</a></li>
+			<li title="HR Deductions"><a id="BisChecks" onclick="bisChecksList();">Bis Checks</a></li>
+			<li title="Paylist"><a id="paylistLi" onclick="showPayrollDiv();">Run Payroll</a></li>
 			<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 		</ul>
 		<div class="clearfix"></div>
 	</section>
 	
 <div class="content-area content-new clearfix">
- <div class="project_wrap">
+ <!-- <div class="project_wrap"> -->
+ <div class="clearfix">
 	<div class="clearfix">
 	
 <div class="timesheet_head clearfix">
 
 <div class="pull-left mr">
 
-<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
+<a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5 hidden" title="User Mapping" onClick="userMaping();">User Mapping </a>
 
+<!--  Runpayroll div -->
+<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
+                  <div class="col-md-4 mt" id="addPayrollDiv" style='width:600px; right: 0px; top:0px; padding:10px 0 display:none;'>
+                    <div class="form-horizontal clearfix row">
+                        <div class="col-md-6 dropdown-select paddingRight" id="payrollCycleDiv">
+							<select class="chosen-select" id="payrollCycle" name="payrollCycle"  field-name="Payroll Cycle"  data-validation="required">
+							<option value="">---Select Payroll Cycle---</option>
+							<option value="2">Mar 1st - Mar 15th</option>
+							<option value="3_FIRST">Mar 15th - April 1st</option>
+							<option value="3">April 1st - April 15th</option>
+							<option value="4_FIRST">April 15th - May 1st</option>
+							<option value="4">May 1st - May 15th</option>
+							<option value="5_FIRST">May 15th - June 1st</option>
+							<option value="5">June 1st - June 15th</option>
+							<option value="6_FIRST">June 15th - July 1st</option>
+							<option value="6">July 1st - July 15th</option>
+							<option value="7_FIRST">July 15th - Aug 1st</option>
+							<option value="7">Aug 1st - Aug 15th</option>
+							<option value="8_FIRST">Aug 15th - Sep 1st</option>
+							<option value="8">Sep 1st - Sep 15th</option>
+							<option value="9_FIRST">Sep 15th - Oct 1st</option>
+							<option value="9">Oct 1st - Oct 15th</option>
+							<option value="10_FIRST">Oct 15th - Nov 1st</option>
+							<option value="10">Nov 1st - Nov 15th</option>
+							<option value="11_FIRST">Nov 15th - Dec 1st</option>
+							<option value="11">Dec 1st - Dec 15th</option>
+							</select>
+                        </div>
+                      <div class="col-md-2 paddingLeft">
+                        <button type="button" class="btn btn-primary" id="runPayrollCycle" onclick="runPayrollCycles();">Run Payroll</button>
+                      </div>
+                      <div id="payScale" class="col-md-4 mt5" style="display:none;">
+						<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
+						</div>
+                      </div>
+                      
+                    </div>
+</form:form>
+<!--  Runpayroll div -->
 </div>
 
-<div id="payScale" class="pull-left mt10" style="display:none;">
-<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
-</div>
-
-     <ul class="pull-right">
+     <%-- <ul class="pull-right">
      <li>
      <a href="javascript:void(0)" onclick="flushValues();" class="addcon-pop">
-      	<i class="glyphicon glyphicon-plus paddingRight" ></i>Add Document</a>
+      	<i class="glyphicon glyphicon-plus paddingRight" ></i>Import File</a>
                   <!-- Popup Div -->
                  <form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
                   <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div" onclick="flushValues();"></i>
@@ -86,6 +118,7 @@ window.onload = function () {
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="HR_DEDUCTIONS">HR Deductions</option>
                              <option value="BIS_USERS">BIS Users</option>
+                             <option value="BIS_CHECKS">BIS Checks</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
@@ -176,7 +209,7 @@ window.onload = function () {
 
                     <!--  Run Payroll Html Ends -->
                     
-                  </ul>
+                  </ul> --%>
                   </div>
                   <!-- End -->
                   
@@ -185,15 +218,17 @@ window.onload = function () {
                   <!-- Popup Div --> 
                 
                 </div>
-    <div class="project_tabs_inn_table vendor_wrap_inn_table">
+    
+    <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
     	<div id="loading"></div>
     	<div id="employerCostDiv" class="datatable_filter"></div>
     	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
     	<div id="accountDeductionsListDiv" class="datatable_filter"></div> 
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
-    	<div id="finalPayrollReportDiv" class="repoPositiAs repoPositiRunPay"></div>
+    	<div id="checksListDiv" class="datatable_filter"></div>
+    	<div id="employeeListDiv" class="datatable_filter"></div>
+    	<div id="finalPayrollReportDiv" class="dtbuttonShow movetopDiv"></div>
 	</div>
-	
  </div>
  <div id="popUp">
 </div>
@@ -287,6 +322,7 @@ function flush(){
 
 <script>
 function loadEmployeePayrollCost(){
+	$("#addPayrollDiv").hide();
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
@@ -351,7 +387,9 @@ function loadEmployeePayrollCost(){
 						$("#accountDeductionsListDiv").empty();
 						$("#hrDeductionsListDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
+						$("#checksListDiv").empty();
 						$("#finalPayrollReportDiv").empty();
+						$("#employeeListDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
 						$('#payScale').css('display','none');
@@ -377,7 +415,7 @@ function employeePayrollCostPagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#EmployeePayrollCostTable").wrap("<div class='overflow_Auto'></div>")
+    $("#EmployeePayrollCostTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
 
@@ -445,97 +483,13 @@ $(".addcon-pop").click(function() {
 	
 	
 	
-	/* $('html').click(function() {
-		$(".collapse-div-adduser").removeClass("show-div");
-		$(".collapse-div").removeClass("show-div");
-	}); */
 </script>
 
 <!-- Added By Rajashekar  -->
-<script type="text/javascript">
-	function uploadBulkPayrollDocument() {
-		 if ($('#upload_bulk_payroll_form').validate(false, validationSettings)) { 
-			$('#addbulkDiv').removeClass("show-div");
-		var frm = $('#upload_bulk_payroll_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
-		var form = $('#upload_bulk_payroll_form')[0];
-		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
-					type : "POST",
-					data : formData,
-					contentType : 'application/json; charset=utf-8',
-					enctype : 'multipart/form-data',
-					processData : false,
-					contentType : false,
-					dataType : 'json',
-					url : sourceleadUrl
-							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
-							+ jsonData,
-					success : function(result) {
-					/* 	var json = JSON.parse(result); */
-						$("#loading").removeAttr('style');
-						$("#selector1").removeAttr("style");
-		    			$("#selector1").css("display", "block");
-		    			$("#msgDiv").html(result+" Records Imported Successfully.");
-						msgFadein();
-						wagesAndTaxList();
-					},
-				});
-		
-		}  
-	}
-	
-</script>
+
 
 
 <script type="text/javascript">
-	function uploadPayrollDocument() {
-		if ($('#upload_payroll_form').validate(false, validationSettings)) { 
-			$('#adddocDiv').removeClass("show-div");
-			var payrollType = $("#payrollType").val();
-		var frm = $('#upload_payroll_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
-		var form = $('#upload_payroll_form')[0];
-		var formData = new FormData(form);
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var sourceleadUrl = '${sourceleadUrl}';
-		$
-				.ajax({
-					type : "POST",
-					data : formData,
-					contentType : 'application/json; charset=utf-8',
-					enctype : 'multipart/form-data',
-					processData : false,
-					contentType : false,
-					dataType : 'json',
-					url : sourceleadUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-					success : function(result) {
-						/* var json = JSON.parse(result); */
-						if(result == 0){
-							$("#loading").removeAttr('style');
-							showAlertMessage();
-						}else{
-							$("#loading").removeAttr('style');
-							$("#selector1").removeAttr("style");
-			    			$("#selector1").css("display", "block");
-			    			$("#msgDiv").html(result+" Records Imported Successfully.");
-							msgFadein();
-							listRedirectBasedOnPayrollType(payrollType);
-							
-						}
-					},
-				});
-		
-		} 
-	}
-	
 	function listRedirectBasedOnPayrollType(payrollType){
 		if(payrollType == "EMPLOYEE_PAYROLL"){
 			$("#empPayrollCostLi").addClass('wVer');
@@ -543,6 +497,7 @@ $(".addcon-pop").click(function() {
 			$("#accountDedLi").removeClass('wVer');
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			loadEmployeePayrollCost();
 		}else if(payrollType == "WAGE_TAX"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -550,6 +505,7 @@ $(".addcon-pop").click(function() {
 			$("#accountDedLi").removeClass('wVer');
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			wagesAndTaxList();
 		}else if(payrollType == "ACCOUNT_DEDUCTIONS"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -557,15 +513,26 @@ $(".addcon-pop").click(function() {
 			$("#accountDedLi").addClass('wVer');
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			accountDeductionsList();
 		}else if(payrollType == "HR_DEDUCTIONS"){
 			$("#empPayrollCostLi").removeClass('wVer');
 			$("#WageTaxSummaryLi").removeClass('wVer');
 			$("#accountDedLi").removeClass('wVer');
 			$("#paylistLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
 			$("#HrdedLi").addClass('wVer');
 			hrDeductionsList();
+		}else if(payrollType == "BIS_CHECKS"){
+			$("#empPayrollCostLi").removeClass('wVer');
+			$("#WageTaxSummaryLi").removeClass('wVer');
+			$("#accountDedLi").removeClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").addClass('wVer');
+			bisChecksList();
 		}
+		
 	}
 	
 </script>
@@ -671,9 +638,25 @@ function cancel(){
 }
 </script>
 
+<script>
+function showPayrollDiv(){
+	$("#addPayrollDiv").show();
+	$("#employerCostDiv").empty();
+	$("#wagesAndTaxListDiv").empty();
+	$("#accountDeductionsListDiv").empty();
+	$("#hrDeductionsListDiv").empty();
+	$("#checksListDiv").empty();
+	$("#employeeListDiv").empty();
+	runPayrollCycles();
+	
+}
+</script>
+
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />
 <jsp:include page="hrDeductionsList.jsp" />
 <jsp:include page="finalPayrollReport.jsp" />
+<jsp:include page="checksList.jsp" />
+<jsp:include page="employeesList.jsp" />
 <jsp:include page="../masterFooter.jsp" />

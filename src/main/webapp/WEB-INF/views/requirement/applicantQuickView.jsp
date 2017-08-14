@@ -3,18 +3,11 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 <%-- 
      @author : Pavan Kumar Jampana.
      this script is for quick view of Candidate.
 --%>
-
 <script>
 function applicantQuickViewProfile(submissionId,candidateId){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -141,9 +134,28 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					result = result+'<p title="'+candidateSummary+'"><i class="fa fa-quote-left text-muted"></i>'+candidateSummary+'</p>';
 					result = result+'      </div>';
 					result = result+'                </div>                                                                                                                                        ';
-					result = result+'                <div class="media-right">                                                                                                                     ';
+					result = result+'                <div class="media-right positionRelative">                                                                                                                     ';
 					result = result+'<img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class="media-object" style="width:65px">';
-					result = result+'                </div>                                                                                                                                        ';
+					  if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
+						  if(json.candidateScore >=50){ 
+						 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success ProImgPosit"></i>';        
+						  }
+					  }
+					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+					 result = result+' <div class="progress nomr">  ';
+						if(json.profilePercentage>=50){ 
+							result = result+'   <div class="progress-bar  progress-bar-success  ';
+						}
+						else{
+							result = result+'   <div class="progress-bar  progress-bar-danger  ';
+						}
+					result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+					result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+					result = result+'   </div>  ';
+					result = result+' </div>                 ';                                                                                                                                                      
+					result = result+' </div> ';
+					
+					result = result+'                </div> ';
 					result = result+'            </div>                                                                                                                                            ';
 					result = result+'        </div>                                                                                                                                                ';
 					result = result+'          <div class="col-md-5">                                                                                                                              ';

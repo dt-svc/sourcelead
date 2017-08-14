@@ -33,7 +33,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
-import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -41,7 +40,6 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -75,6 +73,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
@@ -110,6 +111,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
+	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
 		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
@@ -130,10 +133,10 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
 	}
 	if (jsonObj.has("startDateExpense") && !(jsonObj.getString("startDateExpense").isEmpty())){
-		expenses.setStartDate(Constants.DMY.parse(jsonObj.getString("startDateExpense")));
+		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("startDateExpense")));
 	}
 	if (jsonObj.has("endDateExpense") && !(jsonObj.getString("endDateExpense").isEmpty())){
-		expenses.setEndDate(Constants.DMY.parse(jsonObj.getString("endDateExpense")));
+		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("endDateExpense")));
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
@@ -238,7 +241,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	 }
 }
 
-private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
+@Override
+public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
 	
 	 
 	
@@ -297,12 +301,17 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 		 globalVarsMap.put("totalAmount",Float.toString(expenses.getTotalAmount()));
 		 
 		 
+
+			StringBuilder stringBuildforLink = new StringBuilder();
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+
+		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
-		
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -316,6 +325,11 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		//calling the sendNotification method of emailScenerioUtil
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario);
 	}
 }
 	 

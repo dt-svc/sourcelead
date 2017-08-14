@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,8 +34,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
-import com.itextpdf.text.log.SysoLogger;
 
 @Service
 public class RecommendationsServiceImpl implements RecommendationsService{
@@ -48,6 +47,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	 @Autowired
 	 private CandidateService candidateService;
+	 
+	 @Autowired
+	 private CommonUtil commonUtil;
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -77,7 +79,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@Override
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception {
 		Requirement requirement = recommendationsDao.getRequirementByRequirementId(requirementId);
-		requirement.setRequirementCreatedDateToString(Constants.DF_YMD.format(requirement.getCreatedDate()));
+		requirement.setRequirementCreatedDateToString(commonUtil.elkDateFormatter(requirement.getCreatedDate()));
 		return requirement;
 	}
 
@@ -799,7 +801,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
 					if(null != candidateIndex.getUpdatedDate()){
 						Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
-						String  strDate = new SimpleDateFormat("dd-MM-yyyy").format(date1);
+						String  strDate = new SimpleDateFormat(recommendedCustomizeScore.getOrgLocationId().getDateFormat()).format(date1);
 						candidateIndex.setUpdatedDate(strDate);	
 					}
 					
@@ -854,21 +856,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getVisaTypePercentage(Set<String> set, float visaTypePercentage, int matchedSkillCount, String visaType) {
-
 		float visaPer = 0;       
        if(visaType !=null){
     	   if(set != null && set.size() >0){
    			for(String visa : set){
    					if(visaType.contains(visa)){
-   						return 10;
-//   						matchedSkillCount++;
+   						return visaPer = 10;
    					}
    			}
    		}
    
        }
-//				return matchedSkillCount*visaTypePercentage;
-	return 0;
+	return visaPer;
 		
 	}
 	
@@ -882,19 +881,18 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 */
 	
 	private float getEducationPercentage(Set<String> set, float educationPercentage, int matchedSkillCount, String education) {
-
-		if(set != null && set.size() >0){
-			for(String edu : set){
-					if(education.contains(edu)){
-						return 10;
-//						matchedSkillCount++;
+		float eduPer = 0; 
+		if(education !=null){
+				if(set != null && set.size() >0){
+					for(String edu : set){
+							if(education.contains(edu)){
+								return eduPer = 10;
+							}
+						}
 					}
-				}
-			}
-//		return matchedSkillCount*educationPercentage;
-		return 0;
-		
-	}
+		 }
+		return eduPer;
+}
 	
 	
 	/**

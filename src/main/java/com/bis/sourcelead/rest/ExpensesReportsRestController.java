@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class ExpensesReportsRestController {
@@ -64,9 +66,8 @@ public class ExpensesReportsRestController {
 		String[] dates = datequarterly.split("TO");
 		String startDate = dates[0];
 		String  endtDate = dates[1];
-		 
-		Date convertedStartDate = Constants.DMY.parse(startDate);
-		Date convertedEndDate = Constants.DMY.parse(endtDate);
+		Date convertedStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
+		Date convertedEndDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endtDate);
 		LinkedHashSet<String> dateList = CalendarUtil.getMonthStringsFromStartDateAndEndDate(convertedStartDate, convertedEndDate);
 		 DateFormat format =Constants.Y;
 		 String year = format.format(convertedEndDate);
@@ -569,8 +570,8 @@ public class ExpensesReportsRestController {
 	
 
 	@RequestMapping(value = "/getYearsAndQuartersComboList")
-	public String[] getYearsAndQuartersComboList(HttpServletRequest request) throws Exception {
-		Map<String, Map<String,String>> quarterlyDateList = expensesReportService.getYearsAndQuartersComboList();
+	public String[] getYearsAndQuartersComboList(HttpServletRequest request,@RequestParam(value="dateFormat", required=false) String dateFormat) throws Exception {
+		Map<String, Map<String,String>> quarterlyDateList = expensesReportService.getYearsAndQuartersComboList(dateFormat);
 		String resultJson = commonUtil.toJSON(getCurrentYearAndCurrentQuater());
 		String resultJson1 = commonUtil.toJSON(quarterlyDateList);
 		String[] output = new String[2];

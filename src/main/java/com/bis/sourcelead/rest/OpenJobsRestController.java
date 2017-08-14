@@ -41,6 +41,7 @@ import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -592,11 +593,12 @@ public class OpenJobsRestController {
 	 }
 	 
 	 @RequestMapping(value = "/openRequirementsSummary")
-	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception{
+	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID,@RequestParam(value = "locationCode", required = false) String locationCode) throws Exception{
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
+		 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
 		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
-		 requirementDeatilsSummary.setRequirementCreatedDateToString(Constants.DMY.format(requirementDeatilsSummary.getCreatedDate()));
+		 requirementDeatilsSummary.setRequirementCreatedDateToString(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),requirementDeatilsSummary.getCreatedDate()));
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
 	 }

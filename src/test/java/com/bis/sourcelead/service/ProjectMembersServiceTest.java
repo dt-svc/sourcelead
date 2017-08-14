@@ -158,7 +158,7 @@ public class ProjectMembersServiceTest {
 	}
 	@Test
 	public void getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId() throws Exception{
-		List<ProjectMembers> getAllProjectMembersIdsByTimesheet = projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(1l);
+		List<ProjectMembers> getAllProjectMembersIdsByTimesheet = projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(1l,null);
 		logger.info("getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId added successfully"+getAllProjectMembersIdsByTimesheet.size());
 	}
 	@Test

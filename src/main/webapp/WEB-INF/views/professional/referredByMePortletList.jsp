@@ -2,19 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-
-<!-- these files for export -->
-<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
-
-
  <style type="text/css">
  .require_wrap_details_cta b {
     width: 110px;
@@ -160,9 +147,10 @@ function portletListFilter(requirementStatus){
   <script type="text/javascript">
   function professionalDashboardPortletList(startDate,endDate,requirementStatus){
 	  var sourceleadUrl = '${sourceleadUrl}';
+	  var locationCode ='${SourceLeadWeb_locationCode}'; 
 	  $.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus,
+		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortletList?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&requirementStatus="+requirementStatus+"&locationCode="+locationCode,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 

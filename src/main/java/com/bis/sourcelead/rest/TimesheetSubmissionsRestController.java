@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,8 +49,10 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController 
 public class TimesheetSubmissionsRestController {
@@ -78,6 +81,10 @@ public class TimesheetSubmissionsRestController {
 	
 	@Autowired
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	
 
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
@@ -175,8 +182,10 @@ public class TimesheetSubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-        Date sDate  =  Constants.DMY.parse(startDate);
-        Date eDate  =  Constants.DMY.parse(endDate);
+	 //	SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+	 	//DateFormat  sdf = LoginSessionController.DATEFORMAT;
+        Date sDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate);
+        Date eDate  =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate);
         submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId, user.getId(), sDate,eDate,approvalStatus, rejectedReason);
         
        sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus, rejectedReason, loginOrgLocation, loginOrgCode);
@@ -202,11 +211,11 @@ public class TimesheetSubmissionsRestController {
 		
 			 //Employees emp = employeesService.getEmployee(empId.toString());
 	 	 
-			 
+			// SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 			 ProjectMembers projectMembers = projectMembersService.getProjectMemberById(pmId);
-			 DateFormat format = Constants.DF_DMY;
-			 Date frequencyStartDate = format.parse(startDate.replaceAll("/", "-"));
-			 Date frequencyEndDate = format.parse(endDate.replaceAll("/", "-"));
+			// DateFormat format = Constants.DF_DMY;
+			 Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+			 Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
 		 
 			 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, pmId);
 			 Submission_Status submissionStatus = sah.getSubmissionStatus();
@@ -233,7 +242,8 @@ public class TimesheetSubmissionsRestController {
 				 globalVarsMap.put("employeeFirstName",projectMembers.getEmployee().getUser().getFirstName());
 				 globalVarsMap.put("employeeLastName",projectMembers.getEmployee().getUser().getLastName());
 				 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
-				 
+				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
 				 StringBuilder timeFrequencySB = new StringBuilder();
 				 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
 				 

@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -21,9 +20,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
-import com.bis.sourcelead.entity.InvoiceLineItems;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -31,10 +27,11 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -48,7 +45,6 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.html.WebColors;
-import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -68,21 +64,25 @@ public class PdfUtil {
 	@Autowired
 	EmployeesService employeesService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
+	@Autowired
+	 CommonUtil commonUtil;
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState, String orgName) throws Exception{
+			String userState, OrgLocations orgLocations) throws Exception{
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	    //DateFormat dateFormat =LoginSessionController.DATEFORMAT;
 
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("users_").append(dateFormat.format(new Date()));
+	    sbUser.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("users_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    
@@ -95,11 +95,11 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgName).append(" ").append("Users");
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Users");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgName).toString());
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocations.getOrgLocationName()).toString());
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        
@@ -196,7 +196,7 @@ public class PdfUtil {
 				 userArray[0] = "--";
 			 }
 			 if(empl.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
+				 String dateOfJoin = commonUtil.dateStrFromOrgDateFormatter(empl.getOrgLocations().getDateFormat(),empl.getHireDate());
 				 userArray[5] = dateOfJoin;
 			 }else{
 				 userArray[5] = "--";
@@ -526,10 +526,10 @@ public class PdfUtil {
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
-	        cell1.setColspan(13);
+	        cell1.setColspan(14);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5});
+            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -647,6 +647,12 @@ public class PdfUtil {
 			requirementArray[12] = requirement.getRequirementSubmissionStatus().toString();
 		}else{
 			requirementArray[12] = "--";
+		}
+		
+		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
+			requirementArray[13] = commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate());
+		}else{
+			requirementArray[13] = "--";
 		}
 		return requirementArray;
 	}
@@ -873,14 +879,15 @@ public class PdfUtil {
 			Projects project, String projectManager) throws DocumentException, IOException {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	    //SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
+	   // DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 	    /*File file = new File(projectName+"_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbpe = new StringBuilder();
-	    sbpe.append(projectName).append("_").append(dateFormat.format(new Date()));
+	    sbpe.append(projectName).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(projectName).append("_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append(projectName).append("_").append(commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    try {
@@ -910,11 +917,11 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("Manager :"+projectManager));
 	        if(project.getStartDate()!=null && project.getEndDate() !=null){
 	        	StringBuilder dateSB = new StringBuilder();
-	        	String convertedStartDate = dateFormat.format(project.getStartDate());
-	        	String convertedEndDate = dateFormat.format(project.getEndDate());
+	        	String convertedStartDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getStartDate());
+	        	String convertedEndDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getEndDate());
 	        	orderedList.add(new ListItem("Date :"+dateSB.append(convertedStartDate).append(" to ").append(convertedEndDate).toString()));
 			 }else{
-				 String convertedStartDate = dateFormat.format(project.getStartDate());
+				 String convertedStartDate = commonUtil.dateStrFromOrgDateFormatter(project.getOrgLocationsId().getDateFormat(),project.getStartDate());
 				 orderedList.add(new ListItem("Date :"+convertedStartDate));
 			 }
 	        document.add(orderedList);

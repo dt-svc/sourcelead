@@ -2,8 +2,10 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -17,6 +19,8 @@ public interface RequirementDao {
 	public Requirement storeRequirement(Requirement requirement) throws Exception;
 	
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User user, String userRoleName) throws Exception;
+	
+	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
@@ -72,8 +76,6 @@ public interface RequirementDao {
     
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
-	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
-	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
 	
 	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
@@ -114,6 +116,7 @@ public interface RequirementDao {
 	
 	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
 
+	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId);
 	
 	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
 	

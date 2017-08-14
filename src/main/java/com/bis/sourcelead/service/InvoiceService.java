@@ -48,7 +48,7 @@ public interface InvoiceService {
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
-	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType) throws Exception;
+	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType,OrgLocations orgLocations) throws Exception;
 
 	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
 
@@ -67,5 +67,17 @@ public interface InvoiceService {
 	void saveInvocePojo(Invoice invoice)throws Exception;
 
 	BillingReportDTO getBillingReports(String billingReportType, String invoiceType, String startDate, String endDate, OrgLocations orgLocation, User user, Long loginUserRoleId)throws Exception;
+
+	void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception;
+
+	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
+
+	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
+
+	Invoice saveExpenseInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType,List<MultipartFile> attachedfileList, String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+
+	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
+
+	
 
 }

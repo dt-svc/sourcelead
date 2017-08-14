@@ -3,8 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
+
 
 
 <style type="text/css">
@@ -483,7 +482,7 @@
 	                     <td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td>
 	                     </tr>
                 </c:forEach>
-          <tr id="divTaxTsRow0">
+          <tr id="divTaxRow0">
           </tr>
           </tbody>
           </table>
@@ -601,32 +600,43 @@
 
 <script>
 	$(function() {
-
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatCustomContractSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatCustomContractSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatCustomContractSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatCustomContractSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatCustomContractSave = 'yy-dd-mm'; 
+		  }
 		$('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatCustomContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
-                  var dt = toDate("#startDate");
-                  dt.setDate(dt.getDate() + 1);
-                  $("#endDate").datepicker("option", "minDate", dt);
+            	 var dt = $(this).datepicker('getDate', '+1d');
+ 	            dt.setDate(dt.getDate() + 1);
+ 	            $("#endDate").datepicker("option", "minDate", dt);
                   removeValid();
               }
         });
         
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatCustomContractSave,
             changeMonth: true,
               changeYear: true,
               onSelect: function (selected) {
-                  var dt = toDate("#endDate");
+            	  var selected = $("#startDate").val();
+       		   var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
         
         $('#joinDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatCustomContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
@@ -864,7 +874,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="none";
  	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="block";
@@ -877,7 +886,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -890,7 +898,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		//document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -903,7 +910,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		//document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -916,7 +922,6 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -929,7 +934,6 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
 		document.getElementById("offerRateDiv").style.display="none";
-		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -1455,6 +1459,7 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
+		var locationId = '${SourceLeadWeb_orgLocationId}';
 		if(sowType!="Full time offer"){
 			$("#flatReward").val("");
 		    $("#billingRateType").val('${currencyCode}').trigger('change');
@@ -1462,7 +1467,7 @@ function hideCommonSOWFields(){
 		}
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,     
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);

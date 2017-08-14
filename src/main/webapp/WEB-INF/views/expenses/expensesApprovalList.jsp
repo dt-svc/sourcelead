@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script type="text/javascript">
 		window.onload = function () {
 			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
@@ -113,7 +114,7 @@ margin-top: 3px;
 		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
 		   		</sec:authorize>
 				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
-					<li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					<li title="Export" id="hideExportIfDataEmptyId"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">
 						   <ul class="ul_padding">
 						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
@@ -159,19 +160,34 @@ $('input:checkbox[name=expenseStatus]:checked').each(function()
 {
 	expenseStatus.push($(this).val());
 });
+
+
+var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+if(locationList.match("yyyy-MM-dd")){
+	expensesApprvListDate = 'YYYY-MM-DD';
+}if(locationList.match("dd-MM-yyyy")){
+	expensesApprvListDate = 'DD-MM-YYYY'; 
+}if(locationList.match("MM-dd-yyyy")){
+	expensesApprvListDate = 'MM-DD-YYYY'; 
+}if(locationList.match("yyyy-dd-MM")){
+	  expensesApprvListDate = 'YYYY-DD-MM'; 
+}
+
+
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
+    
 	result = result+' <table id="example">';
 	result = result+' <thead>';
 	result = result+' <tr>';
 	result = result+' <th>Employee</th>';
 	result = result+' <th>EmploymentType</th>';
 	result = result+' <th>Project</th>';
-	result = result+' <th>Start Date</th>';
-	result = result+' <th>End Date</th>';
+	result = result+' <th>Start Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
+	result = result+' <th>End Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
 	result = result+' <th>No of Items</th>';
 	result = result+' <th>Amount</th>';
 	result = result+' <th>Status</th>';
@@ -179,8 +195,7 @@ $.ajax({
 	result = result+' </tr>';
 	result = result+' </thead>';
 	result = result+' <tbody>';
-	
-	if(data !=''){
+	if(data !='' && data !=[] && data !='[]'){
 	var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
@@ -214,12 +229,12 @@ $.ajax({
 
 	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
 
-	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount+'">';
+	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
 	'</sec:authorize>';
-	
-	result = result+ data.expenseId.totalAmount;
+	 var  numb = data.expenseId.totalAmount.toFixed(2);
+	result = result+numb;
 	
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'</a>';
@@ -245,7 +260,7 @@ $.ajax({
     	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
     	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
 	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
-	 	 result = result+" </i><br>By : "+data.actionPerformedBy;
+	 	 result = result+" </i><br><p title='"+data.actionPerformedBy+"'>By : "+data.actionPerformedBy+"</p>";
 	 	 result = result+" </div>";
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
@@ -262,13 +277,15 @@ $.ajax({
 	 result = result+' </tr>';
 	 }
 	 $("#temp").val("temp");
-	  }else{
-	  }
 	result = result+' </tbody>';
 	result = result+' </table>';
+	}else{ 
+		$('#hideExportIfDataEmptyId').hide();
+	}
 	$("#approverDataExpensesDiv").empty();
 	$("#approverDataExpensesDiv").append(result);
 	pagination();
+	
   }
 });
 }
@@ -416,9 +433,10 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 <script>
 function prepareCategoryDivForApprovalPopUp(expenseId){
 	 var sourceleadUrl = '${sourceleadUrl}';
+	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId,       
+         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&locationCode="+locationCode,       
          success :function(data) {
         		var jsonList = JSON.parse(data);
         		var result = '';
@@ -596,23 +614,41 @@ function exportToPdf(type){
 
 <script>
 	$(function() {
+		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatexpApprvList = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatexpApprvList = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatexpApprvList = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatexpApprvList = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatexpApprvList = 'yy-dd-mm'; 
+		  }
 		$('#filterStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
-			onSelect : function(selected) {
-				$("#filterEndDate").datepicker("option", "minDate", selected);
-			}
+			dateFormat : finalDateFormatexpApprvList,
+			onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#filterEndDate").datepicker("option", "minDate", dt);
+	        }
 		
 		});
 		
 		$('#filterEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
-			onSelect : function(selected) {
-				$("#filterStartDate").datepicker("option", "maxDate", selected);
-			}
+			dateFormat : finalDateFormatexpApprvList,
+			onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#filterStartDate").datepicker("option", "maxDate", dt);
+	        }
 		});
 		
 	});

@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.CandidateHotList;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -1035,6 +1036,80 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.orgRelationId.id = :orgRelationId and candidate.isAssociate = 'Y'";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+	}
+
+
+	@SuppressWarnings("null")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getRequestedCandidatesList(Long orgLocationsId, List<Long> roleIds,
+			String resourceType,List<Long> associatesIds,Long projectId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery1 = "";
+		String subQuery2 = "";
+		String subQuery3 = "";
+		String subQuery4 = "";
+		
+		if(associatesIds != null && associatesIds.size() == 0){
+			associatesIds = null;
+		}
+		
+		if(roleIds != null){
+			subQuery1 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.roles.id IN (:roleIds) )"; 
+		}
+		
+		if(!isNullOrEmpty(resourceType)){
+			String[] type = resourceType.split(",");
+			if(type.length > 1){
+				subQuery2 = " and ((candidate.isFavouriteAssociate = '1') OR (candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))))";
+			}else{
+				if(type[0].equalsIgnoreCase("hotlist")){
+				subQuery2 = " and candidate.isFavouriteAssociate = '1' ";
+				}else{
+					subQuery2 = " and candidate.consultantUser.id IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.status = '1' ))  and candidate.orgLocationId.id = :orgLocationsId ";
+				}
+			}
+		}
+		
+		subQuery3 = " and candidate.consultantUser.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations.id = :orgLocationsId and userRole.userState = 'ACTIVE')";
+		
+		if(associatesIds != null){
+			subQuery4 = " and candidate.id NOT IN (:associatesIds)";
+		}
+		
+		String subQuery5 = " and candidate.consultantUser.id NOT IN (select employees.user.id from Employees employees where employees.orgLocations.id = :orgLocationsId and employees.id IN (select pm.employee.id from ProjectMembers pm where pm.projects.orgLocationsId.id = :orgLocationsId and pm.projects.id = :projectId and pm.status = '1' )) and candidate.orgLocationId.id = :orgLocationsId ";
+		
+		String subQuery6 = " and candidate.consultantUser.id NOT IN (select pah.approverUserId.id from ProjectApproverHierarchy pah where pah.projectId.id = :projectId) and candidate.orgLocationId.id = :orgLocationsId ";
+		
+		String query = "from Candidate candidate  where candidate.status = '1' and candidate.isAssociate = 'Y' and candidate.orgLocationId.id = :orgLocationsId "+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" ";
+        
+		if(roleIds != null && associatesIds == null){
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setCacheable(true).list();
+		}
+		else if(associatesIds != null && roleIds == null){
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+		}
+		else if(associatesIds != null && roleIds != null){
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setParameterList("roleIds", roleIds).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+		}
+		else{
+			return  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("projectId", projectId).setCacheable(true).list();
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.id =(SELECT MAX(candi.id) FROM Candidate candi where candi.orgLocationId.id =:orgLocationId)";  
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(candidate.isEmpty()){
+			return null;
+		}
+		return candidate.iterator().next();	
 	}
 }
 

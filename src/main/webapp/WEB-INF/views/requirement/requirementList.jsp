@@ -5,28 +5,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
-
-
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%-- 
      @author : David Raju.
      this script is to get filter popup
      1.usage     : onclick on requirementList() ; 
      
 --%>
-
-
 <script>
 $(document).ready(function() {
 	 $("#filter1ApprovePop").click(function(){
@@ -53,66 +38,6 @@ $(document).ready(function() {
 }); 
 
 </script>
-
-
-
-<script type="text/javascript">
-function requirementListIndividualStatusCounts(){
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getRequirementListCountBasedOnStatus",
-		        success: function(data) {
-		        	
-		        	var json = JSON.parse(data);
-		        	
-		        	var  newRequirementCount = json.newRequirementCount;
-		        	var  draftRequirementCount =json.draftRequirementCount;
-		        	var  submittedRequirementCount =json.submittedRequirementCount;
-		        	var  openRequirementCount = json.openRequirementCount; 
-		        	var  onHoldRequirementCount =json.onHoldRequirementCount;
-		        	var  cancelRequirementCount = json.cancelRequirementCount;
-		        	
-		        	
-		        	if(newRequirementCount>0){
-	                      $("#newRequirementCount").text(("("+newRequirementCount+")"));
-	                  }else{
-	                      $("#newRequirementCount").html("(0)");
-	                  }
-		        	if(draftRequirementCount>0){
-	                      $("#draftRequirementCount").text("("+draftRequirementCount+")");
-	                  }else{
-	                      $("#draftRequirementCount").html("(0)");
-	                  }
-		        	if(submittedRequirementCount>0){
-	                      $("#submittedRequirementCount").text("("+submittedRequirementCount+")");
-	                  }else{
-	                      $("#submittedRequirementCount").html("(0)");
-	                  }
-		        	if(openRequirementCount>0){
-	                      $("#openRequirementCount").text("("+openRequirementCount+")");
-	                  }else{
-	                      $("#openRequirementCount").html("(0)");
-	                  }
-		        	if(onHoldRequirementCount>0){
-	                      $("#onHoldRequirementCount").text("("+onHoldRequirementCount+")");
-	                  }else{
-	                      $("#onHoldRequirementCount").html("(0)");
-	                  }
-		        	if(cancelRequirementCount>0){
-	                      $("#cancelRequirementCount").text("("+cancelRequirementCount+")");
-	                  }else{
-	                      $("#cancelRequirementCount").html("(0)");
-	                  }
-		        },
-		        error: function(e){
-		            
-		        }
-		    });
-} 
-</script>
-
 
 
 <style>
@@ -152,1149 +77,23 @@ max-width:220px;
 	width: 100% !important;
 }
 </style>
-
-
-
-<!-- my scripts -->
-
 <script>
  window.onload = function() { 
- 	requirementListCheck("${serachValue}","${universalRequirementList}");
- 	// requirementListIndividualStatusCounts();
+ 	requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
 };
 </script>
 
-
-<script>
-function requirementListCheck(serachValue,universalRequirementSearchList){
-if(universalRequirementSearchList=="universalRequirementList")	 {
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-         type : "POST",
-          url: sourceleadUrl+"/getUniversalRequirementsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&serachValue="+serachValue,       
-          success :function(data) {
-        	  prepareRequirementData(data);
-         },
-          
-     }); 
-  }
-	 else{
-		  	$("#c6").prop("checked", true);
-		  	$("#c8").prop("checked", true);
-		 	$("#c9").prop("checked", true);
-		 	requirementList();
-		
-	} 
-  }
-  </script>
-
-<%-- 
-     @author : sarath kumar.
-     this script is for get candidate list.
-     1.usage     : onload.
-     2.parameter : csrf token .
-     3.ajax url implementation in requirementListRestController.
---%>
-<input type="hidden" name="noReq" id="noReq" />
-<input type="hidden" id="requirementEmptyListMessage"
-	name="requirementEmptyListMessage" />
-<div id="popUp"></div>
-<script>
-function requirementList(){  
-	
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
-			status.push($(this).val());
-	    });
-	 var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() 
-	    {
-			clients.push($(this).val());
-	    });
-	var orgATS = '${SourceLeadWeb_ats}';
-	var orgVMS = '${SourceLeadWeb_vms}';
-	$("#requirementList").empty();
-	 $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getRequirementListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients,    
-            success :function(data) {
-                 /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-					prepareRequirementData(data);
-					/* } else{
-                	 $("#requirementList").empty();
-                	 $("#requirementList").removeAttr("style");
-                	 $("#requirementEmptyListMessage").val("noJobs");
-  	    	         var result ="";
-		    	    
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Jobs Found</p>";
-					 result = result+"			 </div>";
-					$("#requirementList").empty();
-				    $("#requirementList").append(result); 
-                } */
-          },
-            
-       }); 
-  } 
-</script>
-
-<%-- 
-     @author : sarath kumar.
-     this script is for prepare pagination to requirementList.
-     1.usage     : used in candidateList() function.
---%>
-
-<script>
-function prepareRequirementData(data){
-	var orgATS = '${SourceLeadWeb_ats}';
-	var orgVMS = '${SourceLeadWeb_vms}';
-	 $("#requirementList").removeAttr("style");
-	 $("#requirementList").empty();
-	 
-	var result = "";
-	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
-    result = result +"<thead>"; 
-    result = result +"  <tr>"; 
-    result = result +"    <th>ID</th>"; 
-    result = result +"    <th>Title</th>"; 
-    result = result +"    <th>Client</th>"; 
-    result = result +"    <th>Type</th>"; 
-    result = result +"    <th>Location</th>"; 
-    result = result +"    <th>Applicants</th>"; 
-    result = result +"    <th>Owner</th>"; 
-    result = result +"    <th>Posted On</th>";
-    result = result +"    <th>Status</th>"; 
-       result = result +"<th>Actions</th>";
-//     result = result +"    <th>Release</th>"; 
-    result = result +"  </tr>"; 
-    result = result +"</thead>";
-    result = result +"<tbody>"; 
-        
-    result = result + '<div class="new_side_wrap">';
-	result = result + '<div class="new_side_wrap_inn">';
-	result = result + '<div class="new_side_wrap_cta">';
-	result = result +'<div id="addApplicantDiv"></div>';
-	result = result +'</div>';
-	result = result +'</div>';
-	result = result +'</div>';
-	
-    var json = JSON.parse(data);
-    
-    for (var i = 0; i < json.length; i++) { 
-    	
-   	 var opt = json[i]; 
-        	
-   	 result = result +"<tr>"; /*  onclick='sideBar("+opt.id+");' */
-   	 
-   	result = result +"<td>";
-   	if(opt.jobId != '' && opt.jobId != null){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-   	 if(opt.jobId != '' && opt.jobId != null){
-   	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-        '</sec:authorize>';
-        '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-        '</sec:authorize>';
-   	 }else{
-   		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-            '</sec:authorize>';
-            '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-            '</sec:authorize>';
-   	 }
-        if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-       	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
-        }else{
-       	 result = result +"<td><div>-----</div></td>";
-        }
-        
-       /*  if(opt.jobType!=null && opt.jobType !='' && opt.jobType !='undefined'){
-       	 if(opt.jobType=='Other'){
-       		if(opt.otherJobType != null && opt.otherJobType !='' && opt.otherJobType !='undefined'){
-       			result = result +"<td><div>"+opt.otherJobType+"</div></td>";
-       		}else{
-       			result = result +"<td><div>-----</div></td>";
-       		}
-       	 }else{
-       		 result = result +"<td><div>"+opt.jobType+"</div></td>";
-       	 }
-        }else{
-       	 result = result +"<td><div>-----</div></td>";
-        } */
-        
-        
-      if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
-    	 {
-   	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
-          result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
-    	 }else{
-    		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
-    	 }
-    	 }else{
-    		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
-    	 }
-       
-        if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
-        }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-
-        }else{
-            result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-        }
-       /*  if(opt.positions!=null && opt.positions !='' && opt.positions !='undefined'){
-       	 result = result +"<td><div>"+opt.positions+"</div></td>";
-        }else{
-       	 result = result +"<td><div>----</div></td>";
-        } */
-       /*  if(opt.totalApplicantsForRequirement!=null && opt.totalApplicantsForRequirement!='' && opt.totalApplicantsForRequirement!='undefined'){ */
-       	result = result +"<td><a href='<c:url value='/requirementSummary?type=applicants&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
-       	/* } else{
-       	 result = result +"<td><div>0</div></td>";
-        } */
-        if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-       	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
-        }else{
-       	 result = result +"<td><div>----</div></td>";
-        }
-        if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-          	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
-           }else{
-          	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
-           }
-          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+",\""+opt.requirementSubmissionStatus+"\");'  id='changeStatusId"+opt.id+"'>";
-           if(opt.requirementSubmissionStatus == "DRAFT"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-	
-				result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-			}else if(opt.requirementSubmissionStatus == "CLOSED"){
-				result = result +"<option disabled selected >CLOSED</option>";
-
-			}
-			else if(opt.requirementSubmissionStatus == "CANCEL"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-
-			}else if(opt.requirementSubmissionStatus == "OPEN"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-			}
-			else if(opt.requirementSubmissionStatus == "NEW"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				result = result +"<option value='OPEN'>OPEN</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-				result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-			'</sec:authorize>';
-			'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-				result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-			'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-				
-			}
-			else if(opt.requirementSubmissionStatus == "REJECTED"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-				
-			}
-			
-			else if(opt.requirementSubmissionStatus == "SUBMITTED"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-					result = result +"<option value='CANCEL'>CANCEL</option>";
-				'</sec:authorize>';
-				
-			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-				
-				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='OPEN'>OPEN</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-					'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-					'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}
-				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='DRAFT'>DRAFT</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}
-				if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}if(opt.requirementSubmissionPreviousStatus == "NEW"){
-					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-					result = result +"<option value='OPEN'>OPEN</option>";
-					'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-						result = result +"<option value='ONHOLD'>ONHOLD</option>";
-					'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-				'</sec:authorize>';
-				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-				'</sec:authorize>';
-					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-						result = result +"<option value='CANCEL'>CANCEL</option>";
-					'</sec:authorize>';
-				}
-				 
-			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
-				result = result +"<option value='OPEN'>OPEN</option>";
-				
-			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-				
-			}
-
-			result = result +" </select>";	
-           result = result +" </div></td>";
-           result = result +" <td><div class='widthIcon'>";
-           
-	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
-	        
-	        '</sec:authorize>';
-	        
-	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-	        	if(opt.isRequirementReleasedByuser == 'Y'){
-	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
-
-			   	 }else{	
-					result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
-			   	 }
-        }
-		else{
-           result = result +"<div>--</div>";
-       }    '</sec:authorize>';    
-		result = result +"</div></td>";
-        result = result +"</tr>";
-        result = result +"</tr>";
-       
-    }
-    
-    result = result +" </tbody>";
-    result = result +"</table>"; 
-    $("#noReq").val('');
-    $("#requirementList").append(result); 
-    $("#requirementEmptyListMessage").val(json.length);
-    for (var i = 0; i < json.length; i++) { 
-      	 var opt = json[i];
-      	statusvalidating(opt.id);
-    }
-    
-    pagination(); 
-    msgFadein1(); 
-}
-</script>
-<script>
- $('#requirementPagination').DataTable( { 
-	"autoWidth": false,
-	"scrollX": true,
-}); 
-function pagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
-    $('#requirementPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"aaSorting": [[7,'desc']],
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    } );
-}
-</script>
 <script>
 function statusvalidating(id){
 	changeStatusAuthorisation(id);
 }
 </script>
-
-<%-- 
-     @author : sarath kumar.
-     this script is for show side bar when you click on the candidate name.
-     1.usage     : called at candidateList() function.
-     2.parameter : csrf token , candidateId .
-     3.ajax url implementation in CandidateListRestController.
---%>
-
-<script>
-function sideBar(requirementId){
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-          type : "POST",
-           url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
-           success :function(data) {  
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
-              			 
-              			 var result = '';
-				        result = result+'    <div class="profile_details requirement_details clearfix">';
-				        result = result+'    <div class="col-md-9">';
-				        result = result+'      <div class="row">';
-				        result = result+'        <div class="col-md-3">';
-				        result = result+'          <div class="company-logo">';
-				        result = result+'            <div class="imageParent"> <img onerror="predefineOrgImage(this);" src="${sourceleadUrl}/displayOrgImage/'+json.orgLocationId.org.orgCode+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
-				        result = result+'            <span class="hidden"> TATA Consulting Private Limited, Hyderebad. </span> </div>';
-				        result = result+'        </div>';
-				        result = result+'        <div class="col-md-9">';
-				        result = result+'          <div class="canDetails clearfix">';
-				        result = result+'            <h4>SL 201 - Business Analyst - Full Time</h4>';
-				        result = result+'            <div class="row">';
-				        result = result+'              <div class="col-md-6">';
-				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'&& json.minExp != null && json.minExp != '')
-				        	{
-				       	result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.maxExp+' years</span></li>';
-				        	}
-					    else if(json.minExp != null && json.minExp != '' && json.minExp !='undefined'){
-						result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : '+json.minExp+' years</span></li>';
-	
-					        }
-				        else{
-					    result = result+'                  <li><i class="fa fa-black-tie"></i><span>Experience : --</span></li>';
-				        }
-				        
-				        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined')
-				    	   {
-				        result = result+'                  <li><i class="fa fa-rupee"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
-				    	   }
-				       else if(json.currencyCode  == 'USD' && json.currencyCode  == 'AUD'  && json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
-					   result = result+'                  <li><i class="fa fa-dollar"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
-   
-				       }
-				       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
-					   result = result+'                  <li><i class="fa fa-eur"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
-   
-				       }
-				       else if(json.currencyCode  == 'GPB' && json.currencyCode  !='' && json.currencyCode  !='undefined'){
-					   result = result+'                  <li><i class="fa fa-gbp"></i><span>'+json.rate+', '+json.rateType+'</span></li>';
-  
-				       }
-				       
-				        if(json.state !='' && json.state != 'undefined' && json.city !='' && json.city != 'undefined')
-				        	{
-				        result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+', '+json.city+'</span></li>';
-				        	}
-				        else if(json.state !='' && json.state != 'undefined')
-				        	{
-					    result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+', '+json.state+'</span></li>';
-
-				        	}
-				        else{
-					     result = result+'                  <li><i class="fa fa-map-marker"></i><span>'+json.country+'</span></li>';
-
-				        }
-				        result = result+'                </ul>';
-				        result = result+'              </div>';
-				        result = result+'              <div class="col-md-6">';
-				        result = result+'                <ul class="list-unstyled can-perdt">';
-				        result = result+'                  <li> <i class="fa fa-user"></i><span id="canName">'+json.manager+'</span></li>';
-				        result = result+'                  <li><i class="fa fa-clock-o"></i><span>'+json.requirementCreatedDateToString+'</span></li>';
-				        result = result+'                  <li><i class="fa fa-flag"></i><span>Select Priority</span>';
-				         result = result+'                     </li>';
-				        result = result+'                </ul>';
-				        result = result+'              </div>';
-				        result = result+'            </div>';
-				        result = result+'          </div>';
-				        result = result+'          <div class="pro-detials">';
-				        result = result+'            <div class="professinal-details">';
-				        result = result+'              <ul class="list-inline list-unstyled">';
-				        var skills = [];
-			           if(skills != null && skills != '' && skills != 'undefined'){
-			        	   skills = json.skiills.split(",");
-					        result = result+'                <li>'+skills[0]+'</li>';
-					        result = result+'                <li>'+skills[1]+'</li>';
-					        result = result+'                <li>'+skills[2]+'</li>';
-					        result = result+'                <li>'+skills[3]+'</li>';
-					        result = result+'                <li>'+skills[4]+'</li>';
-					        result = result+'              </ul>';
-			           }
-				        result = result+'            </div>';
-				        result = result+'          </div>';
-				        result = result+'        </div>';
-				        result = result+'      </div>';
-				        result = result+'    </div>';
-				        result = result+'    <div class="col-md-3">';
-				        result = result+'      <select class="selectpicker pull-right">';
-				        result = result+'        <option>Open</option>';
-				        result = result+'        <option>Draft</option>';
-				        result = result+'        <option>Filled Closed</option>';
-				        result = result+'        <option>Unfilled</option>';
-				        result = result+'        <option>On Hold</option>';
-				        result = result+'        <option>Cancel</option>';
-				        result = result+'      </select>';
-				        result = result+'    </div>';
-				        result = result+'  </div>';
-				        
-					    result = result+'  <div class="proj_close"></div>';
-					    result = result+'  <div class="project_side_wrap_inn_tabs">';
-					    result = result+'    <ul class="project-tabs-menu">';
-					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
-					    result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+');">Pipeline</a></li>';
-					    result = result+'      <div class="clearfix"></div>';
-					    result = result+'    </ul>';
-					    result = result+'    <div class="project_tabs">';
-						    result = result+' <div id="tab-1" class="project_tabs_inn">';
-						    result = result+'</div>';
-						    result = result+' <div id="tab-2" class="project_tabs_inn">';
-						    result = result+'</div>';
-					    result = result+'</div>';
-					    result = result+'</div>';
-					    
-			             $("#requirementSideDiv").empty();  
-			 		     $("#requirementSideDiv").append(result);  
-				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
-						 $(".side_mask").fadeIn(200);
-						 $("body").css('overflow-y', 'hidden');
-						 requirementDetails(requirementId);
-						 $(".proj_close, .side_mask").click(function(){
-								$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-								$(".side_mask").fadeOut(200);
-								$("body").css('overflow-y', 'auto');
-						 });	
-			 			 
-			    	} 
-                }else{
-               	 $("#requirementSideDiv").removeAttr("style");
- 	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidates Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#requirementSideDiv").empty();
-				    $("#requirementSideDiv").append(result); 
-                }
-         },
-           
-      }); 
-				
-}
-</script>
-
-<script>
-	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
-	}
-</script>
-
-
-<%-- 
-     @author : sarath kumar.
-     this script is for edit Candidate.
-     1.usage     :  used in candidateList.jsp.
-     2.parameter : csrf token .
-     3.ajax url implementation in CandidateListRestController.
---%>
-<script>  
-function requirementDetails(requirementId){ 
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{    
-							var result ="";
-				            result = result +' <div class="require_wrap_details">';
-				            result = result +' <a href="<c:url value="/requirement?requirementId='+requirementId+'"/>"><button  class="btn btn-primary pull-right" type="button">Edit</button></a>';
-				            result = result +'   <h1>Description:</h1>';
-				            if(json.description != null && json.description != '' && json.description != 'undefined'){
-					            result = result +'   <textarea placeholder="Enter description">'+json.description+'</textarea>';
-					            }
-					            else{
-					            result = result +'   <textarea placeholder="Enter description"> NO DATA</textarea>';
-					            }
-				            result = result +'   <h2>Other details:</h2>';
-				            result = result +'   <div class="require_one">';
-				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
-				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+json.positions+'</span>';
-				            }
-				            else{
-				            result = result +'<div class="require_wrap_details_cta"> <b>No. of positions:</b> <span> -- </span>';	
-				            }
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            if(json.education != null && json.education != '' && json.education != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Education:</b> <span>'+json.education+'</span>';
-					            }else{
-					           	result = result +'<div class="require_wrap_details_cta"> <b>Education:</b> <span> -- </span>';
-					            }
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Attachment:</b> <span>'+json.fileName+'<i class="glyphicon glyphicon-save"></i></span>';
-					            }
-					            else{
-					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
-					            }				            
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
-				            result = result +'   <h2>Client details:</h2>';
-				            result = result +'   <div class="require_one">';
-				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
-				            	
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> '+json.spocName+' </span>';
-				            }
-				            else{
-					        result = result +'     <div class="require_wrap_details_cta"> <b>Client contact:</b> <span class="pull-left"> -- </span>';
-
-				            }
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>'; 
-				            if(json.spocEmail != '' && json.spocEmail !=null && json.spocEmail != 'undefined'){
-						    result = result +'     <div class="require_wrap_details_cta"> <b>Email:</b> <span>'+json.spocEmail+'</span>';
-				            }
-				            else{
-							result = result +'     <div class="require_wrap_details_cta" style="display:none"> <b>Email:</b> <span></span>';
-	
-				            }
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>'; 
-				            if(json.spocMobilePhone != '' && json.spocMobilePhone !=null && json.spocMobilePhone != 'undefined'){
-					        result = result +'     <div class="require_wrap_details_cta"> <b>Phone No:</b> <span>'+json.spocMobilePhone+'</span>';
-				            }
-				            else{
-						    result = result +'     <div class="require_wrap_details_cta" style="display:none"> <b>Phone No:</b> <span></span>';
-
-				            }
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Bill rate/salary:</b> <span><i class="fa fa-inr"></i>300</span>';
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Submission Form:</b> <span>Submission Form</span>';
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
-				            result = result +'   <h2>Internal details:</h2>';
-				            result = result +'   <div class="require_one">';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="require_wrap_details_cta"> <b>Application form:</b> <span>Business Analyst </span>';
-				            result = result +'       <div class="clearfix"></div>';
-				            result = result +'     </div>';
-				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
-				            result = result +' </div>';
-							$("#tab-1").empty();
-							$("#tab-2").empty(); 
-							$("#tab-1").append(result); 
-							    
-							$("#tab-1").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-            		 }
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-       	    	         var result ="";
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-               }
-               },
-                 
-            }); 
-}
-</script>
-
-<%-- 
-     @author : sarath kumar.
-     this script is for edit Candidate.
-     1.usage     :  used in candidateList.jsp.
-     2.parameter : csrf token .
-     3.ajax url implementation in CandidateListRestController.
---%>
-<script>  
-function requirementPipeline(requirementId){
-	  var sourceleadUrl = '${sourceleadUrl}';
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{ 
-							var result ="";
-							
-				            result = result +'<div class="graf_icon"><i class="fa fa-area-chart"></i>Report</div>';
-				            result = result +'<div class="pipeline_graf"><img src="images/bargraph.jpg" alt=""/></div>';
-				            result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
-				            result = result +'  <ul>';
-				            result = result +'    <li class="li-vendor">';
-				            result = result +'      <input type="text" class="vendorfild" placeholder="Search">';
-				            result = result +'      <i class="fa fa-search"></i></li>';
-				            result = result +'    <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play"></i>';
-				            result = result +'      <div class="export_pop">';
-				            result = result +'        <ul>';
-				            result = result +'          <li>PDF<i class="fa fa-file-pdf-o"></i></li>';
-				            result = result +'          <li>Excel<i class="fa fa-file-excel-o"></i></li>';
-				            result = result +'          <li>Word<i class="fa fa-file-word-o"></i></li>';
-				            result = result +'        </ul>';
-				            result = result +'      </div>';
-				            result = result +'    </li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-envelope"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-mail-forward"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-upload"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title=""><i class="fa fa-download"></i></a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a></li>';
-				            result = result +'    <li><a href="javascript:void(0)" title="" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Add Interview</a></li>';
-				            result = result +'    <li> <a href="javascript:void(0)" title="" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Add Offer</a> </li>';
-				            result = result +'    <div class="clearfix"></div>';
-				            result = result +'    <div class="collapseDiv_add collapseDiv_styles col-xs-4 addOffer-Req"> <i class="fa fa-close close-div"></i>';
-				            result = result +'     <div class="form-horizontal clearfix">';
-				            result = result +'       <div class="row">';
-				            result = result +'         <div class="col-md-12 mb10">';
-				            result = result +'           <label>Candiate</label>';
-				            result = result +'           <select class="form-control selectpicker">';
-				            result = result +'             <option>Rameshkumar Korrapati</option>';
-				            result = result +'             <option>Prasanth Korrapati</option>';
-				            result = result +'             <option>Muralimohan Korrapati</option>';
-				            result = result +'             <option>Sarathkumar Korrapati</option>';
-				            result = result +'           </select>';
-				            result = result +'         </div>';
-				            result = result +'         <div class="col-md-12 mb10">';
-				            result = result +'           <label>Date of Joining</label>';
-				            result = result +'           <div class="positionRelative">';
-				            result = result +'             <input type="text" value="" class="form-control input-sm">';
-				            result = result +'             <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>';
-				            result = result +'         </div>';
-				            result = result +'         <div class="col-md-12 mb10">';
-				            result = result +'           <label>Rate / Salary</label>';
-				            result = result +'           <div class="row div-padding">';
-				            result = result +'             <div class="col-md-4">';
-				            result = result +'               <select class="form-control selectpicker">';
-				            result = result +'                 <option>Rupee</option>';
-				            result = result +'                 <option>Dollar</option>';
-				            result = result +'                 <option>Rupee</option>';
-				            result = result +'               </select>';
-				            result = result +'             </div>';
-				            result = result +'             <div class="col-md-4">';
-				            result = result +'               <input type="text" value="" class="form-control">';
-				            result = result +'             </div>';
-				            result = result +'             <div class="col-md-4">';
-				            result = result +'               <select class="form-control selectpicker">';
-				            result = result +'                 <option>Yearly</option>';
-				            result = result +'                 <option>Monthly</option>';
-				            result = result +'               </select>';
-				            result = result +'             </div>';
-				            result = result +'           </div>';
-				            result = result +'         </div>';
-				            result = result +'         <div class="col-md-12 mb10">';
-				            result = result +'           <label>Position Type</label>';
-				            result = result +'           <select class="form-control selectpicker">';
-				            result = result +'             <option>Full Type</option>';
-				            result = result +'             <option>C2C</option>';
-				            result = result +'             <option>Parttime</option>';
-				            result = result +'           </select>';
-				            result = result +'         </div>';
-				            result = result +'         <div class="col-md-12 mb10">';
-				            result = result +'           <label>Attachment</label>';
-				            result = result +'           <div class="input-group">';
-				            result = result +'             <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-				            result = result +'               <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">';
-				            result = result +'               </span> </label>';
-				            result = result +'             <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">';
-				            result = result +'           </div>';
-				            result = result +'         </div>';
-				            result = result +'         <div class="col-md-12 mb10 hidden">';
-				            result = result +'           <button type="button" class="btn btn-danger"><i class="fa fa-pulse"></i>Add</button>';
-				            result = result +'         </div>';
-				            result = result +'       </div>';
-				            result = result +'       <div class="clearfix mt10">';
-				            result = result +'         <div class="pull-right">';
-				            result = result +'           <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>';
-				            result = result +'           <button type="submit" class="btn btn-sm btn-default">Cancel</button>';
-				            result = result +'         </div>';
-				            result = result +'       </div>';
-				            result = result +'     </div>';
-				            result = result +'   </div>';
-				            result = result +' <div class="collapseDiv_add col-xs-4 collapseDiv_styles addInterview-Re"> <i class="fa fa-close close-div"></i>';
-				            result = result +'   <div class="form-horizontal clearfix">';
-				            result = result +'     <div class="row">';
-				            result = result +'       <div class="col-md-12 mb10">';
-				            result = result +'         <label>Candiate</label>';
-				            result = result +'         <select class="form-control selectpicker">';
-				            result = result +'           <option>Rameshkumar Korrapati</option>';
-				            result = result +'           <option>Prasanth Korrapati</option>';
-				            result = result +'           <option>Muralimohan Korrapati</option>';
-				            result = result +'           <option>Sarathkumar Korrapati</option>';
-				            result = result +'         </select>';
-				            result = result +'       </div>';
-				            result = result +'       <div class="col-md-12 mb10">';
-				            result = result +'         <div class="positionRelative date" id="datetimepicker3">';
-				            result = result +'           <input type="text" value="" class="form-control input-sm" placeholder="Date of Joining">';
-				            result = result +'           <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span> </div>';
-				            result = result +'       </div>';
-				            result = result +'       <div class="col-md-12 mb10">';
-				            result = result +'         <div class="row div-padding">';
-				            result = result +'           <div class="col-md-4">';
-				            result = result +'             <label>Start Time</label>';
-				            result = result +'             <div class="positionRelative">';
-				            result = result +'               <input type="text" value="" class="form-control input-sm">';
-				            result = result +'               <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span> </div>';
-				            result = result +'           </div>';
-				            result = result +'           <div class="col-md-4">';
-				            result = result +'             <label>End Time</label>';
-				            result = result +'             <div class="positionRelative">';
-				            result = result +'               <input type="text" value="" class="form-control input-sm">';
-				            result = result +'               <span class="input-group-addon input-groupAddon"><i class="fa fa-clock-o"></i></span> </div>';
-				            result = result +'           </div>';
-				            result = result +'           <div class="col-md-4">';
-				            result = result +'             <label>Inteview Type</label>';
-				            result = result +'             <select class="form-control selectpicker">';
-				            result = result +'               <option>F2F</option>';
-				            result = result +'               <option>Telephonic</option>';
-				            result = result +'               <option>Skype Call</option>';
-				            result = result +'             </select>';
-				            result = result +'           </div>';
-				            result = result +'         </div>';
-				            result = result +'       </div>';
-				            result = result +'       <div class="col-md-12 mb10">';
-				            result = result +'         <input type="text" value="" class="form-control input-sm" placeholder="Location">';
-				            result = result +'       </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-				           result = result + '               <label>Interviewer</label>';
-				           result = result + '               <select class="form-control selectpicker">';
-				           result = result + '                 <option>Hyderabad</option>';
-				           result = result + '                 <option>Visakhapatnam</option>';
-				           result = result + '                 <option>Pune</option>';
-				           result = result + '               </select>';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-				           result = result + '               <label>';
-				           result = result + '               Set Reminder &nbsp;<i class="fa fa-gear reminder" title="Click here"></i>';
-				           result = result + '               <div class="reminder-div col-sm-7">';
-				           result = result + '                 <div class="row mb10">';
-				           result = result + '                   <div class="col-md-12">';
-				           result = result + '                     <input type="text" class="form-control input-sm" value="" placeholder="Remind before">';
-				           result = result + '                   </div>';
-				           result = result + '                 </div>';
-				           result = result + '                 <div class="row mb10">';
-				           result = result + '                   <div class="col-md-12">';
-				           result = result + '                     <input type="text" class="form-control input-sm" value="" placeholder="Frequency">';
-				           result = result + '                   </div>';
-				           result = result + '                 </div>';
-				           result = result + '                 <div class="row mb10">';
-				           result = result + '                   <div class="col-md-12">';
-				           result = result + '                     <input type="text" class="form-control input-sm" value="" placeholder="Notify to">';
-				           result = result + '                   </div>';
-				           result = result + '                 </div>';
-				           result = result + '                 <div class="row">';
-				           result = result + '                   <div class="pull-right mr">';
-				           result = result + '                     <button type="button" class="btn btn-sm btn-success">Set</button>';
-				           result = result + '                   </div>';
-				           result = result + '                 </div>';
-				           result = result + '               </div>';
-				           result = result + '               </label>';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12 mb10 hidden">';
-				           result = result + '               <button type="button" class="btn btn-danger"><i class="fa fa-pulse"></i>Add</button>';
-				           result = result + '             </div>';
-				           result = result + '           </div>';
-				           result = result + '           <div class="clearfix mt10">';
-				           result = result + '             <div class="pull-right">';
-				           result = result + '               <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>';
-				           result = result + '               <button type="submit" class="btn btn-sm btn-default">Cancel</button>';
-				           result = result + '             </div>';
-				           result = result + '           </div>';
-				           result = result + '         </div>';
-				           result = result + '       </div>';
-				           result = result + '       <div class="collapseDiv_add col-xs-4 collapseDiv_styles addApplicant-Re"> <i class="fa fa-close close-div"></i>';
-				           result = result + '         <div class="form-horizontal clearfix">';
-				           result = result + '           <div class="row">';
-				           result = result + '             <div class="col-md-12 mb10">';
-				           result = result + '               <label>Select Candiate</label>';
-				           result = result + '               <select class="form-control selectpicker">';
-				           result = result + '                 <option>Rameshkumar Korrapati</option>';
-				           result = result + '                 <option>Prasanth Korrapati</option>';
-				           result = result + '                 <option>Muralimohan Korrapati</option>';
-				           result = result + '                 <option>Sarathkumar Korrapati</option>';
-				           result = result + '               </select>';
-				           result = result + '             </div>';
-				           result = result + '             <div class="clearfix text-center text-info mb10">';
-				           result = result + '           -------------------------------- OR --------------------------------';
-				           result = result + '              </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-						   result = result + '		 <input type="text" value="" class="form-control input-sm" placeholder="First Name *">';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-						   result = result + '		 <input type="text" value="" class="form-control input-sm" placeholder="Last Name">';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-						   result = result + '		 <input type="text" value="" class="form-control input-sm" placeholder="Email*">';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-						   result = result + '		 <input type="text" value="" class="form-control input-sm" placeholder="Phone">';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-						   result = result + '		 <input type="text" value="" class="form-control input-sm" placeholder="Experience">';
-				           result = result + '             </div>';
-				           result = result + '             <div class="col-md-12">';
-				           result = result + '             <div class="panel-border">';
-				           result = result + '             <div class="col-md-12">';
-				           result = result + '               <div class="input-group">';
-				           result = result + '                 <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-				           result = result + '                   <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">';
-				           result = result + '                   </span> </label>';
-				           result = result + '                 <input type="text" class="form-control" readonly id="uploadFile" placeholder="Upload Resume *">';
-				           result = result + '               </div>';
-				           result = result + '             </div>';
-				           result = result + '       <div class="col-md-12 mt10 mb10 clearfix text-center text-info">';
-				           result = result + '           -------------------------------- OR --------------------------------';
-				           result = result + '       </div>';
-				           result = result + '       <div class="col-md-12">';
-				           result = result + '               <select class="form-control selectpicker">';
-				           result = result + '                 <option>Select</option>';
-				           result = result + '                 <option>Prasanth Korrapati</option>';
-				           result = result + '                 <option>Muralimohan Korrapati</option>';
-				           result = result + '                 <option>Sarathkumar Korrapati</option>';
-				           result = result + '               </select>';
-				           result = result + '             </div>';
-				           result = result + '             </div></div>';
-				           result = result + '             <div class="col-md-12 mb10">';
-				           result = result + '               <label>Expected Rate / Salary <span class="text-danger">*</span></label>';
-				           result = result + '               <div class="row div-padding">';
-				           result = result + '                 <div class="col-md-4">';
-				           result = result + '                   <select class="form-control selectpicker">';
-				           result = result + '                     <option>Rupee</option>';
-				           result = result + '                     <option>Dollar</option>';
-				           result = result + '                     <option>Rupee</option>';
-				           result = result + '                   </select>';
-				           result = result + '                 </div>';
-				           result = result + '                 <div class="col-md-4">';
-				           result = result + '                   <input type="text" value="" class="form-control input-sm">';
-				           result = result + '                 </div>';
-				           result = result + '                 <div class="col-md-4">';
-				           result = result + '                   <select class="form-control selectpicker">';
-				           result = result + '                     <option>Yearly</option>';
-				           result = result + '                     <option>Monthly</option>';
-				           result = result + '                   </select>';
-				           result = result + '                 </div>';
-				           result = result + '               </div>';
-				           result = result + '             </div>';
-				           result = result + '           </div>';
-				           result = result + '           <div class="clearfix mt10">';
-				           result = result + '             <div class="pull-right">';
-				           result = result + '               <button type="submit" class="btn btn-sm btn-primary mr">Submit</button>';
-				           result = result + '               <button type="submit" class="btn btn-sm btn-default">Cancel</button>';
-				           result = result + '             </div>';
-				           result = result + '           </div>';
-				           result = result + '         </div>';
-				           result = result + '       </div>';
-				           result = result + '     </ul>';
-				           result = result + '     <div class="clearfix"></div>';
-				           result = result + '   </div>';
-				           result = result + '   <div class="require_wrap_table">';
-				           result = result + '     <table>';
-				           result = result + '       <tbody>';
-				           result = result + '       <thead>';
-				           result = result + '         <tr>';
-				           result = result + '           <th><input type="checkbox" id="checkbox1"/></th>';
-				           result = result + '           <th>Name</th>';
-				           result = result + '           <th>Email</th>';
-				           result = result + '           <th>Ph. No</th>';
-				           result = result + '           <th>Resume</th>';
-				           result = result + '           <th>Applied on</th>';
-				           result = result + '           <th>Rate</th>';
-				           result = result + '           <th>Source</th>';
-				           result = result + '           <th>Experince</th>';
-				           result = result + '           <th>Status</th>';
-				           result = result + '         </tr>';
-				           result = result + '       </thead>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>9000 000 000</span></div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div><span>Careers</span></div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span>';
-				           result = result + '             <select>';
-				           result = result + '               <option>Interview</option>';
-				           result = result + '               <option>Submit</option>';
-				           result = result + '               <option>Joined</option>';
-				           result = result + '               <option>Screening</option>';
-				           result = result + '               <option>Offer</option>';
-				           result = result + '             </select>';
-				           result = result + '             </span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div>9000 000 000</div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div>Careers</div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       <tr>';
-				           result = result + '         <td><input type="checkbox" id="checkbox1"/></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div><span>Vannam vannam vannam vannam</span></div></td>';
-				           result = result + '         <td><div>9000 000 000</div></td>';
-				           result = result + '         <td><div><a href="javascript:void(0)"><i class="glyphicon glyphicon-list-alt"></i></a></div></td>';
-				           result = result + '         <td><div><span>08/08/2016</span></div></td>';
-				           result = result + '         <td><div><span>12345678</span></div></td>';
-				           result = result + '         <td><div>Careers</div></td>';
-				           result = result + '         <td><div>3.4 Years</div></td>';
-				           result = result + '         <td><div><span><b class="proj_process">Interview</b><i class=" fa fa-edit"></i></span></div></td>';
-				           result = result + '       </tr>';
-				           result = result + '       </tbody>';
-				           result = result + '     </table>';
-				           result = result + '   </div>';
-				           result = result + '   <nav>';
-				           result = result + '     <ul id="paging" class="pagination">';
-				           result = result + '       <li><a href="#">Previous</a></li>';
-				           result = result + '       <li><a href="#">2</a></li>';
-				           result = result + '       <li><a href="#">3</a></li>';
-				           result = result + '       <li class="disabled"><a href="#">6</a></li>';
-				           result = result + '       <li data-page="last"><a href="#">Next</a></li>';
-				           result = result + '     </ul>';
-				           result = result + '     <div class="clearfix"></div>';
-				           result = result + '   </nav>';
-				            
-				            
-							$("#tab-1").empty();
-							$("#tab-2").empty(); 
-							$("#tab-2").append(result);  
-							    
-							$("#tab-2").show();
-							$(".project-tabs-menu a").click(function(event) {
-							     event.preventDefault();
-							     $(this).parent().addClass("current");
-							     $(this).parent().siblings().removeClass("current");
-							     var tab = $(this).attr("href");
-							     $(".project_tabs_inn").not(tab).css("display", "none");
-							     $(tab).fadeIn();
-							 });
-            		 }
-              }else{
-                     	 $("#requirementSideDiv").removeAttr("style");
-       	    	         var result ="";
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#requirementSideDiv").empty();
-      				    $("#requirementSideDiv").append(result); 
-                      }
-               },
-                 
-            }); 
-}
-</script>
-
-
-
+<jsp:include page="requirementTable.jsp" />
+<!-- <script type="text/javascript" src="resources/js/requirementTable.js"></script> -->
+<input type="hidden" name="noReq" id="noReq" />
+<input type="hidden" id="requirementEmptyListMessage"
+	name="requirementEmptyListMessage" />
+<div id="popUp"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<c:if test="${!empty msg}">
@@ -1312,22 +111,7 @@ function requirementPipeline(requirementId){
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo; Job List
 		</div>
-		<%-- <div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
-			<div class="RePop">
-				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
-					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
-				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
-				</ul>
-			</div>
-		</div>   --%>
 	</section>
-
-
 	<div class="clearfix">
 		<div class="pull-left cand-advsrch advsrch_chosen">
 			<a href="javascript:void(0)" class="btn btn-primary btn-sm"
@@ -1418,9 +202,6 @@ function requirementPipeline(requirementId){
 									</select>
 								</div>
 							</div>
-
-
-
 						</div>
 						<div class="clearfix">
 							<div class="col-md-4">
@@ -1459,22 +240,6 @@ function requirementPipeline(requirementId){
 							</div>
 						</div>
 						<div class="clearfix">
-							<%--   <div class="col-md-4">
-                  <label>Education</label>
-                  <div class="clearfix">
-                    <select class="chosen-select" id="education" name="education" data-placeholder="Education" multiple>
-                      <c:forEach var="edu" items="${educationsList}">
-                		  <c:if test="${fn:contains(requirement.reqEducationListString, edu.name)}">
-                		  	 <option  selected value="${edu.name}">${edu.name}</option>
-                		  </c:if>
-                		  <c:if test="${!fn:contains(requirement.reqEducationListString, edu.name)}">
-                		  	 <option  value="${edu.name}">${edu.name}</option>
-                		  </c:if>
-                </c:forEach>
-                    </select>
-                  </div>
-                </div> --%>
-
 							<div class="col-md-4 hidden">
 								<label>Client</label>
 								<div class="clearfix">
@@ -1497,8 +262,6 @@ function requirementPipeline(requirementId){
 								</div>
 							</div>
 						</div>
-
-
 						<div class="col-md-4">
 							<label>Notice Period</label>
 							<div class="clearfix">
@@ -1519,36 +282,13 @@ function requirementPipeline(requirementId){
 								</select>
 							</div>
 						</div>
-
-
-
-						<%--    <div class="clearfix">
-                <div class="col-md-12">
-                  <label>Skills</label>
-                  <div class="clearfix">
-                    <select class="chosen-select"  id="skills" name="skills" multiple data-placeholder="Select Skills">
-                      <c:forEach var="skill" items="${skillsList}">
-             				 <c:if test="${fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  selected value="${skill}">${skill}</option>
-	                		 </c:if>
-	                		 <c:if test="${!fn:contains(requirement.reqSkillsListString, skill)}">
-	                		  	 <option  value="${skill}">${skill}</option>
-	                		 </c:if>
-                    </c:forEach>
-                    </select>
-                  </div>
-                </div>
-              </div> --%>
 					</div>
 					<div class="row form-footer">
 						<div class="pull-right mr">
-							<!-- <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> 
-              <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>  -->
 							<input type="button" value="Search" id="search_requiremet"
-								onclick="searchRequirement();" class="btn btn-sm btn-success" />
+								onclick="requirementListCheck('','','advanceSearch','${sourceleadUrl}');" class="btn btn-sm btn-success" />
 							<input type="button" value="Clear" id="clear_search"
 								onclick="clearSearch();" class="btn btn-sm btn-primary" />
-							<!--    <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						</div>
 					</div>
 				</div>
@@ -1556,38 +296,32 @@ function requirementPipeline(requirementId){
 
 		</div>
 	</div>
-
 	<div class="timesheet_out">
 		<div class="vendor_wrap">
 			<div class="timesheet_head timesheetHead_Custom topfilters">
-
 				<ul>
 					<sec:authorize
 						access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
-
-						<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i
-							class="glyphicon glyphicon-play" id="clientsList"></i>
 							<div id="filter1ApprovedPop" class="approved_pop">
 								<ul>
 									<c:forEach var="report" items="${add_clientList}">
 										<c:if test="${report.locationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList();" type="checkbox"><label
+												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
 											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
 										</c:if>
 										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList();" type="checkbox"><label
+												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
 											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
 										</c:if>
 									</c:forEach>
 								</ul>
-							</div></li>
-
+						 </div>
 						<!-- for status counts add this function to below.. onClick ="requirementListIndividualStatusCounts();" -->
 						<li><b id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i
 								class="glyphicon glyphicon-play"></i></b>
@@ -1595,50 +329,49 @@ function requirementPipeline(requirementId){
 								<ul>
 									<li><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"
-										onclick="requirementList();"><label for="c6">New<span
+										onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');"><label for="c6">New<span
 											id="newRequirementCount"></span></label></li>
 									<li><input id="c7" name="requirementStatus"
-										type="checkbox" value="Draft" onclick="requirementList();"><label
+										type="checkbox" value="DRAFT" onclick="requirementList('list','${sourceleadUrl}');"><label
 										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
 									<li><input id="c8" type="checkbox"
-										name="requirementStatus" type="checkbox" value="submitted"
-										onclick="requirementList();"><label for="c8">Submitted
+										name="requirementStatus" type="checkbox" value="SUBMITTED"
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c8">Submitted
 											<span id="submittedRequirementCount"></span>
 									</label></li>
 									<li><input id="c9" type="checkbox"
-										name="requirementStatus" type="checkbox" value="open"
-										onclick="requirementList();"><label for="c9">Open
+										name="requirementStatus" type="checkbox" value="OPEN"
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c9">Open
 											<span id="openRequirementCount"></span>
 									</label></li>
 									<li><input id="c10" type="checkbox"
-										name="requirementStatus" type="checkbox" value="onhold"
-										onclick="requirementList();"><label for="10">On
+										name="requirementStatus" type="checkbox" value="ONHOLD"
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CANCEL"
-										onclick="requirementList();"><label for="c11">Cancel
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Cancel
 											<span id="cancelRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="FILLEDCLOSED"
-										onclick="requirementList();"><label for="c11">Filled
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Filled
 											Closed<span id="filledClosedRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox"
-										value="UNFILLEDCLOSED" onclick="requirementList();"><label
+										value="UNFILLEDCLOSED" onclick="requirementList('list','${sourceleadUrl}');"><label
 										for="c11">UnFilled Closed<span
 											id="unFilledClosedRequirementCount"></span></label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="REJECTED"
-										onclick="requirementList();"><label for="c11">Rejected<span
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Rejected<span
 											id="rejectedRequirementCount"></span></label></li>
 									<li><input id="c12" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CLOSED"
-										onclick="requirementList();"><label for="c12">Closed<span
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">Closed<span
 											id="closedRequirementCount"></span></label></li>
-
 								</ul>
 							</div></li>
 					</sec:authorize>
@@ -1685,189 +418,20 @@ function requirementPipeline(requirementId){
 
 					<div class="clearfix"></div>
 				</ul>
-				<div class="clearfix"></div>
+				 <div class="clearfix"></div>
+		        <div class='remove_search'>
+		        		<input type='text' placeholder='search' id='dataTableSearch'/>
+		        </div>
 			</div>
-
-			<!--  <div id="loadingDiv"></div> -->
-
-			<!-- list requirement -->
 			<div class="require_wrap_table datatable_filter">
 				<div id="requirementList"></div>
 			</div>
 		</div>
-		<div class="side_mask">
-			<div class="proj_close"></div>
-		</div>
-		<div class="clients_side_wrap">
-			<div class="clients_side_wrap_inn">
-				<div id="requirementSideDiv"></div>
-			</div>
-			<div id="msgDiv"></div>
-		</div>
-		<!-- Project -->
 	</div>
 </section>
 
 <jsp:include page="addApplicantFromRequirementList.jsp" />
-
-<!--   Error Message   -->
-<div class="vendor_wrap_mask"></div>
-<div class="vendor_error">
-	<p>Delete conformation message....</p>
-	<textarea placeholder="Enter message"></textarea>
-	<a class="close_color" href="javascript:void(0)">Yes</a><a
-		href="javascript:void(0)">No</a>
-</div>
-
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script>
-<script type="text/javascript">
-		/* 	var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-			}); */
-			$('#np').trigger("chosen:updated");
-			
-			
- 		</script>
-<script>
-$('#selector').delay(2000).fadeOut('slow');
-// Error pop
-$(document).ready(function() {
-    $(".glyphicon-trash").click(function(){
-		$(".vendor_error").slideToggle(200);
-		$(".vendor_wrap_mask").fadeIn(200);
-	});
-	$(".vendor_error a").click(function(){
-		$(".vendor_error").slideUp(200);
-		$(".vendor_wrap_mask").fadeOut(200);
-	});
-});	
-
-// Approved Popup
-$(document).ready(function() {
-    $("#appro-pop").click(function(){
-		$(".approved_pop").slideToggle(200);
-	});
-    $("html").click(function() {
-        $(".approved_pop").slideUp(200);
-    });
-    $(".approved_pop, #appro-pop").click(function(e) {
-        e.stopPropagation();
-    });	
-});
-
-// project side bar
-$(document).ready(function() {
-    $(".proj_show").click(function(){
-		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".side_mask").fadeIn(200);
-		$("body").css('overflow-y', 'hidden');
-	});
-    $(".proj_close, .side_mask").click(function(){
-		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
-		$(".side_mask").fadeOut(200);
-		$("body").css('overflow-y', 'auto');
-	});	
-});
-
-// project side bar tabs
-$(document).ready(function() {
-	$("#tab-1").show()
-    $(".project-tabs-menu a").click(function(event) {
-        event.preventDefault();
-        $(this).parent().addClass("current");
-        $(this).parent().siblings().removeClass("current");
-        var tab = $(this).attr("href");
-        $(".project_tabs_inn").not(tab).css("display", "none");
-        $(tab).fadeIn();
-    });
-});
-
-// Bar chat pop
-$(document).ready(function() {
-    $(".graf_icon").click(function(){
-		$(".pipeline_graf").slideToggle(200);
-	});
-$( "ul#canName-ch li").click(function(){
-   var m = $(this).text();
-  $("#canName").text(m);
-});
-});
-</script>
-<script>
-$( "#pri-ch li").click(function(){
-   var m = $(this).text();
-    var mid = $(this).attr('id');
-    $("#pri-val").text(m);
-     if('h' === $(this).attr("id")){
-          $("#pri-val").removeClass("text-warning text-primary").addClass("text-danger");
-     }else if('m' === $(this).attr("id")){
-        $("#pri-val").removeClass("text-danger text-warning").addClass("text-primary");
-     }else{
-      $("#pri-val").removeClass("text-danger text-primary").addClass("text-warning");
-     }   
-});
-</script>
-<script>
-$(document).ready(function(){
-	// Levels adding script
-$(".add-offer").click(function(){
-	 $(".addOffer-Req").toggleClass("show-div");
-	 $(".addInterview-Re").removeClass("show-div");
-	 $(".addApplicant-Re").removeClass("show-div");
- });
-$(".add-interview").click(function(){
-	 $(".addInterview-Re").toggleClass("show-div");
-	 $(".addOffer-Req").removeClass("show-div");
-	 $(".addApplicant-Re").removeClass("show-div");
- });
-$(".add-applicant").click(function(){
-	 $(".addApplicant-Re").toggleClass("show-div");
-	 $(".addOffer-Req").removeClass("show-div");
-	 $(".addInterview-Re").removeClass("show-div");
- });
-$(".reminder").click(function(){
-	 $(".reminder-div").toggleClass("reminder-div-active");
- });
-
- $(".close-div").click(function(){
-	 $(this).parent().toggleClass("show-div");
-	 });
- $(".div-close").click(function(){
-	 $(this).parent().toggleClass("showDiv");
-	 });
-
- $(".reminder").click(function(e){
-	 e.stopPropagation();
- });
- $('html').click(function(){
-    $("").removeClass("show-div");
-   });	
-   $("#endDate").click(function(){
-	   $(".endDate").toggle(200);
-   });
-   });
-</script>
-
-
-
+<!-- 
 
 <script type="text/javascript">
 function changeStatusAuthorisation(requirementId){
@@ -1890,15 +454,12 @@ function changeStatusAuthorisation(requirementId){
 }); 
 }
 </script>
-
-
-
+ -->
 
 
 <script type="text/javascript">
 function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
-	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var userId ='${SourceLeadWeb_userId}';
          if(requirementStatus == "DRAFT"){
@@ -1922,28 +483,7 @@ function changeStatus(requirementId, requirementStatus){
          }
 	}
 </script>
-
-
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker5').datetimepicker({
-					locale: 'ru'
-                });
-            });
-        </script>
-<!-- <div class="theme-color"> <span class="icon-theme" title="click here"><i class="fa fa-gears"></i></span>
-  <ul class="list-unstyled">
-    <li><a href="#" class="" id="btn1"><span class="dark-blue"></span><span class="light-grey"></span></a></li>
-    <li><a href="#" class="" id="btn2"><span class="flat-green"></span><span class="dark-purle"></span></a></li>
-    <li><a href="#" class="" id="btn3"><span class="hdr-blue"></span><span class="sidenav-blue"></span></a></li>
-  </ul>
-</div> -->
-</body>
-</html>
-
-
 <script>
-
 $('#mypop').click(function(){
 		$("#exportPop").toggle();
 		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
@@ -1955,7 +495,6 @@ $('#mypop').click(function(){
      e.stopPropagation();
  });
 </script>
-
 <script>
 function exportToPdf(){
 	var req = $("#noReq").val();
@@ -1987,7 +526,6 @@ function exportToPdf(){
 		}
 }
 </script>
-
 <script>
 function exportToExcel(){
 	var req = $("#noReq").val();
@@ -2017,9 +555,7 @@ function exportToExcel(){
 				$("#empty_requirement_pop").slideDown(200);
 				$(".project_inn_mask").fadeIn(200);
 		}
-		
 }
-
 </script>
 <script type="text/javascript">
 function cancel(){
@@ -2058,120 +594,8 @@ function getActions(){
 	</script>
 
 
-<script>
-function searchRequirement(){
-	var validationSettings = {
-	        errorMessagePosition : 'element',
-	        borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-         }; 
- if ($('#requirement_form').validate(false, validationSettings)){  
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#requirement_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
-			var form = $('#requirement_form')[0];
-   		   var formData = new FormData(form); 
-			//It will escape all the special characters
-			$("#search_requiremet").attr("disabled", "disabled");
-			$("#search_requiremet").addClass('button').val('Processing..');
-
-			$.ajax({
-						type : "GET",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchRequiremet?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-						success : function(data) {
-							$("#search_requiremet").addClass('button').val('Search');
-							$("#search_requiremet").removeAttr("disabled");
-							closePop();
-							/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-								clearAlldata();
-			                	 prepareRequirementData(data);
-/* 		                 }else{
-		                	 $("#requirementList").empty();
-		                	 $("#requirementList").removeAttr("style");
-		                	 $("#requirementEmptyListMessage").val("noRequirement");
-		  	    	         var result ="";
-				    	    
-							 result = result+"			<div class='blank-pages'>";
-							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-							 result = result+"			        <p>No Jobs Found1111</p>";
-							 result = result+"			 </div>";
-							$("#requirementList").empty();
-						    $("#requirementList").append(result); 
-		                }
- */						},
-					}); 
-			return true;
-		}else{ 
-				return false;
-		 }
-	} 
-$('body').on('blur', '#requirement_form', function() {
-	$("#requirement_form").showHelpOnFocus();
-	$("#requirement_form").validateOnBlur(false, validationSettings);
-});
-</script>
-
-<script type="text/javascript">	
-	function clearAlldata(){
-	 
-	    $("#requirementStatu").val('').trigger("chosen:updated");
-	    $("#updatedOn").val('').trigger("chosen:updated");
-	    $("#client").val('').trigger("chosen:updated");
-	  /*   $("#country").val('').trigger("chosen:updated"); */
-	    $("#state").val('').trigger("chosen:updated");
-	    $("#statusAdvanced").val('').trigger("chosen:updated");
-	    $("#invitationAdvanced").val('').trigger("chosen:updated");
-	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
-	    $("#emailAdvanced").val('').trigger("chosen:updated");
-	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
-	    $("#noticePeriod").val('').trigger("chosen:updated");
-	  
-	    $("#requirementTitle").empty();
-	    $("#jobId").empty();
-	  
-	}
-</script>
 
 <script type="text/javascript">
-	(function($) {
-		$.fn.serializeFormJSON = function() {
-
-			var o = {};
-			var a = this.serializeArray();
-			$.each(a, function() {
-				if (o[this.name]) {
-					if (!o[this.name].push) {
-						o[this.name] = [ o[this.name] ];
-					}
-					o[this.name].push(this.value || '');
-				} else {
-					o[this.name] = this.value || '';
-				}
-			});
-			return o;
-		};
-	})(jQuery);
-</script>
-
-
-<script type="text/javascript">
-    	   /*  var config = {
-    				  '.chosen-select'           : {},
-    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    				  '.chosen-select-width'     : {width:"95%"}
-    	   }  */
-			
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#requirementTitle");
@@ -2234,10 +658,8 @@ $('body').on('blur', '#requirement_form', function() {
 
 <script>
 function loadChosenRequirementScripts(){
-	
      $("#city").empty();
 	 $("#city").val('').trigger("chosen:updated");
-  
 	 $("#requirementTitle").val('').trigger("chosen:updated");
 	 $("#rate").val('').trigger("chosen:updated");
 	 $("#minExp").val('').trigger("chosen:updated");
@@ -2285,13 +707,10 @@ function getStates(){
 	}
 }
 </script>
-
-
 <script>
 function getCities(){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
@@ -2316,19 +735,4 @@ function getCities(){
 	}
 }
 </script>
-<script>
-function clearSearch(){
-	document.getElementById("requirement_form").reset();
-	$('#requirementStatu').val('').trigger('chosen:updated');
-	$('#updatedOn').val('').trigger('chosen:updated');
-	$('#client').val('').trigger('chosen:updated');
-	/* $('#country').val('').trigger('chosen:updated'); */
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
-	$('#noticePeriod').val('').trigger('chosen:updated');
-	$('#requirementTitle').val('').trigger('chosen:updated');
-	$('#jobId').val('').trigger('chosen:updated');
-}
-</script>
-
 <jsp:include page="../masterFooter.jsp" />

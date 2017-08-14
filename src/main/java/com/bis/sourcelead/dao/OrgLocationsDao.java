@@ -2,7 +2,10 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 public interface OrgLocationsDao {
 
@@ -34,5 +37,9 @@ public interface OrgLocationsDao {
 	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception;
 	
 	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception;
+
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation) throws SourceLeadConstraintViolationException;
+
+	public boolean validateOrgShortCode(String orgShortId);
     
 }

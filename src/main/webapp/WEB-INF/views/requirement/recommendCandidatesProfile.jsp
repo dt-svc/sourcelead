@@ -575,12 +575,14 @@ function removeCandidateAlertMessage(candidateId){
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to ReActivate the Candidate");
 	if (message == true) {
 		var reactivate = '1';
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            		 if( data.indexOf('Sign In') >= 0){
@@ -892,19 +894,22 @@ function candidateProfile(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
-              }
+            	  //candidateProfile(candidateId);
+            	  //candidateQuickViewProfile(candidateId);
+            	  clientSideBar(candidateId);
+            	  $("#loading").removeAttr('style');
        },
          
     }); 
@@ -1960,43 +1965,6 @@ function employementType(){
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
-		
-		//Adding Customized Visa to the list
-        var select, chosen;
-	    select = $("#visaName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
-	    chosen = select.data('chosen');
-	    
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var visaArray = this.value.split(",");
-				    	 if(visaArray.length > 1){
-			        		 for (var i=0; i < visaArray.length; i++) {
-			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
-			 	        		 $("#visaName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newVisa = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newVisa).text(newVisa);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#visaName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#visaName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	});
-	    
-	    
-	    //Adding Customized Skills to the list
 	}
 
 	function saveVisa(candidateId){
@@ -2023,20 +1991,22 @@ function employementType(){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
-            	  candidateQuickViewProfile(candidateId);
-              }
+           	  	 // candidateProfile(candidateId);
+            	//  candidateQuickViewProfile(candidateId);
+            	  clientSideBar(candidateId);
+            	  $("#loading").removeAttr('style');
        },
          
     }); 

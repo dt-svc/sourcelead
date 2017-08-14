@@ -3,17 +3,10 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript"
-	charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript"
-	charset="utf-8"></script>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
 <style>
 .addUser-org {
 	overflow-x: auto;
@@ -84,7 +77,7 @@
 				+ '     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
 		result = result
-				+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+				+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 
 		result = result + '   <div id="candidateReferencesList" ></div>';
 		result = result + '   </div>';
@@ -104,7 +97,6 @@
 		candReferencesList(candidateId);
 	}
 </script>
-
 <script>
 	function candReferencesList(candidateId) {
 		var candidateType = '${candidateType}';
@@ -142,7 +134,7 @@
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
 								result = result
-										+ "  <td><div title='"+opt.name+"'>"
+										+ "  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"
 										+ opt.name + "</div></td>";
 							} else {
 								result = result + "  <td><div>----</div></td>";
@@ -197,14 +189,18 @@
 								result = result
 										+ '<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 							} else {
-								if(candidateType == "Candidates"){
-									result = result +' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
-									result = result + '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('+ candidateId + ',' + opt.id + ');" title= "Remove"></i></sec:authorize>';
-                   			 }else{
-                   				result = result +' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_ASSOCIATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
-								result = result + '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_ASSOCIATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('+ candidateId + ',' + opt.id + ');" title= "Remove"></i></sec:authorize>';
-                   			 }
-								
+								result = result
+										+ ' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
+										+ candidateId
+										+ ','
+										+ opt.id
+										+ ');editRelation(this);" title="Edit"></a></sec:authorize>';
+								result = result
+										+ '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('
+										+ candidateId
+										+ ','
+										+ opt.id
+										+ ');" title= "Remove"></i></sec:authorize>';
 							}
 
 						}
@@ -243,10 +239,14 @@
 	function candidateReferencesPagination() {
 		$('#candidateReferencesPagination').DataTable({
 			"scrollCollapse" : false,
-			"lengthMenu" : [ [ 5, 15, 20, -1 ], [ 5, 15, 20, "All" ] ],
-			"bLengthChange" : false,
+			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+			"bLengthChange" : true,
 			"bDestroy" : true,
-			"ordering" : false,
+			"ordering" : true,
+			"aoColumnDefs" : [ {
+				'bSortable' : false,
+				'aTargets' : 5
+			} ],
 			"oLanguage" : {
 				"sSearch" : "",
 				"sZeroRecords" : "",
@@ -268,6 +268,23 @@
 	}
 </script>
 
+<script>
+	$(function() {
+		$("#relation").change(function() {
+			$('#row_dim').hide();
+			if (this.options[this.selectedIndex].value == "Work Related") {
+				$("#row_dim").show();
+			}
+		});
+	});
+
+	/* $(function() {
+	 $('#relation').change(function(){
+	 alert("X");
+	 $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
+	 });
+	 }); */
+</script>
 <%-- 
      @author : prasad K.
      this script is for shown popUp.
@@ -310,18 +327,23 @@
 		result = result
 				+ '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="getRelation();">';
 		result = result + '<option value="">--Select Relation--</option>';
-		result = result + ' <option value="Work Related">Work Related</option>';
 		result = result
-				+ '<option  value="Family Related">Family Related</option>';
+				+ ' <option id="workRelated" valeu="Work Related">Work Related</option>';
+		result = result
+				+ '<option  id="familyRelated" value="Family Related">Family Related</option>';
+		result = result
+				+ '<option  id="friend" value="Friend">Friend</option>';
+		result = result
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
 		result = result + ' </select>';
 		result = result + '</div>';
 		result = result + '</div>';
 
 		result = result
 				+ '<div class="clearfix mb10" id="dvDesignation" style="display: none;">';
-		result = result + '<div class="col-md-12">';
+		result = result + '<div class="col-md-12" >';
 		result = result
-				+ '<input class="form-control width100percnt" type="text" name="designation" id="designationVal" field-name="Designation"  placeholder="Designation *">';
+				+ '<input type="text" name="designation" id="designationVal" field-name="Designation"  class="form-control input-sm" value="" placeholder="Designation *">';
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -389,7 +411,7 @@
      this script is for saving document
      1.usage     : onclick
      2.parameter : candidateId.
-     3.ajax url implementation in CandidateDocumentRestController.
+     3.ajax url implementation in CandidateReferencesRestController.
 --%>
 <script type="text/javascript">
 	function storeCandidateReferences(candidateId) {
@@ -507,13 +529,15 @@
 <script>
 	function deleteReference(candidateId, refId) {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var loginUserId = '${SourceLeadWeb_userId}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
 		var userCode = '${SourceLeadWeb_userCode}';
 		$
 				.ajax({
 					type : "POST",
 					url : sourceleadUrl
-							+ "/terminateReference?${_csrf.parameterName}=${_csrf.token}&candidateId="
+							+ "/terminateReference?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="
 							+ candidateId + "&refId=" + refId + "&userCode="
 							+ userCode,
 					success : function(data) {
@@ -544,6 +568,7 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		
 		if ($('#canReferenceEdit_form').validate(false, validationSettings)) {
 
 			var frm = $('#canReferenceEdit_form').serializeFormJSON();
@@ -597,6 +622,7 @@
 
 <script>
 	function editCandidateReference(candidateId, refId) {
+
 		var sourceleadUrl = '${sourceleadUrl}';
 		$
 				.ajax(
@@ -606,10 +632,11 @@
 									+ "/getCandidateReferencesByCandidateIdAndReferenceId?${_csrf.parameterName}=${_csrf.token}&candidateId="
 									+ candidateId + "&refId=" + refId,
 							success : function(data) {
-								var json = JSON.parse(data);
 
 								if (data != null && data != 'undefined'
 										&& data != "") {
+
+									var json = JSON.parse(data);
 
 									if (data.indexOf('Sign In') >= 0) {
 										location.replace(sourceleadUrl);
@@ -651,7 +678,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -660,7 +687,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<select class="form-control width100percnt" id="relationEdit" name="relation" field-name="Relation" onChange="editRelation(this);">';
+												+ '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);" onkeyup="editRelation(this);">';
 										result = result
 												+ '<option value="">--Select Relation--</option>';
 										result = result
@@ -673,12 +700,24 @@
 												+ (json.relation == "Family Related" ? "selected"
 														: '')
 												+ '>Family Related</option>';
+										
+										result = result
+												+ '<option  '
+												+ (json.relation == "Friend" ? "selected"
+														: '')
+												+ '>Friend</option>';
+												
+										result = result
+												+ '<option  '
+												+ (json.relation == "Neighbour" ? "selected"
+														: '')
+												+ '>Neighbour</option>';
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';
 
 										result = result
-												+ '<div class="clearfix mb10" id="dvDesignationEdit">';
+												+ '<div class="clearfix mb10" id="dvDesignationEdit" style="display:none">';
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
@@ -739,48 +778,71 @@
 													e.stopPropagation();
 												});
 
+										/* if(json.relation == "Family Related"){
+										    $("#dvDesignationEdit").remove();
+											$("#dvDesignationEdit").css("display", "none");
+											$("#designationValEdit").removeAttr("data-validation");
+											$("#designationValEdit").attr("data-validation-optional", "true");
+										} */
+
 									}
 
 								}
 							},
+
 						}).done(function() {
-					getRelationEdit();
+					editRelation(this);
 				});
+
 	}
 </script>
 
-<script>
-	function editRelation(e) {
-		if (e.value == "Work Related") {
-			document.getElementById("dvDesignationEdit").style.display = "block";
-		} else {
-			document.getElementById("dvDesignationEdit").style.display = "none";
-		}
-	}
-</script>
 <!-- If Selected value is Work Related then Designation text box will appear -->
 <script type="text/javascript">
 	function getRelation() {
 		var relation = $("#relation").val();
+		
 		if (relation == 'Work Related') {
 			$('#designationVal').val('');
 			$('#designationVal').attr("data-validation",
 					"required validate_Space validate_length length2-100");
 			$("#dvDesignation").show();
 		} else if (relation == 'Family Related') {
+
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
+		}else {
+			$("#dvDesignationEdit").hide();
+			$("#designationVal").remove();
+			$('#dvDesignation').find('p.jquery_form_error_message').remove();
+			$('#designationVal').removeAttr("data-validation");
 		}
 	}
 </script>
 
 <script>
 	function editRelation(e) {
-		if (e.value == "Work Related") {
+		if (e.value == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
-		} else {
+			$("#designationValEdit").removeAttr("data-validation-optional");
+			$('#designationValEdit').attr("data-validation",
+					"required validate_Space validate_length length2-100"); 
+			$("#designationValEdit").show();
+		} else if (e.value == 'Family Related') {
 			document.getElementById("dvDesignationEdit").style.display = "none";
+
+			$("#designationValEdit").val('');
+			$('#designationValEdit').find('p.jquery_form_error_message')
+					.remove();
+			$('#designationValEdit').removeAttr("data-validation");
+		} else {
+			$("#dvDesignationEdit").removeAttr("style");
+			$("#dvDesignationEdit").hide();
+			$("#designationValEdit").val('');
+			$('#dvDesignationEdit').find('p.jquery_form_error_message')
+					.remove();
+			$('#designationValEdit').removeAttr("data-validation");
 		}
 	}
 </script>

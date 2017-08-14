@@ -85,6 +85,32 @@ function closeCertificatePopup(){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl  + "/errorPage");
 								} else {
+									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+			            			 if(data<50){
+			            			   $("#perVal").removeClass('progress-bar-success');
+			            			   $("#perVal").addClass("progress-bar-danger");
+			            			 }
+			            			 if(data>=50){
+			            				 $("#perVal").removeClass("progress-bar-danger");
+			            				 $("#perVal").addClass("progress-bar-success");
+			            			 }
+			            			 $("#disVal").empty();
+			            			$("#disVal").append(data+'%');
+			            			
+			            			// for quick view bar update
+			            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+				          			 if(data<50){
+					          			   $("#quickPerVal").removeClass('progress-bar-success');
+					          			   $("#quickPerVal").addClass("progress-bar-danger");
+					          			 }
+					          			 if(data>=50){
+					          				 $("#quickPerVal").removeClass('progress-bar-danger');
+					          				 $("#quickPerVal").addClass("progress-bar-success");
+					          			 }
+
+			            			$("#quickDisVal").empty();
+			            			$("#quickDisVal").append(data+'%');
+									
 									$("#popUpDivEmp").removeClass(
 											"edit-details-active");
 									candidateEmployersList(candidateId);
@@ -632,10 +658,11 @@ function employeePagination(){
 	function removeEmployer(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
-		
+		var loginUserId = '${SourceLeadWeb_userId}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -644,6 +671,33 @@ function employeePagination(){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+		            			 if(data<50){
+		            			  /* $("#perVal").removeClass("progress-bar-success"); */
+		            			   $("#perVal").removeClass('progress-bar-success');
+		            			   $("#perVal").addClass("progress-bar-danger");
+		            			 }
+		            			 if(data>=50){
+		            				 $("#perVal").removeClass('progress-bar-danger');
+		            				 $("#perVal").addClass("progress-bar-success");
+		            			 }
+		            			 $("#disVal").empty();
+		            			$("#disVal").append(data+'%');
+		            			
+		            			
+		            			// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+			          			 if(data<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(data>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(data+'%');
 								$("#popUpDivEmp").removeClass(
 										"edit-details-active");
 								candidateEmployersList(candidateId);

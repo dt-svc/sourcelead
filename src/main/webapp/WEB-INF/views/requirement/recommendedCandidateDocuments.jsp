@@ -1,12 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<!-- these files for autocomplete with tagit -->
-
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -391,6 +385,32 @@ function getDocumentType(documentType){
 						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
+								
+								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
+			          			 $("#disVal").empty();
+			          			$("#disVal").append(result+'%');
+			          			
+			          		// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(result>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(result+'%');
 		             			candDocumentsList(candidateId);
 						 		resMsgFadein();
 		            		 
@@ -469,13 +489,41 @@ function getDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+        			  /* $("#perVal").removeClass("progress-bar-success"); */
+        			   $("#perVal").find('progress-bar-success').remove();
+        			   $("#perVal").addClass("progress-bar-danger");
+        			 }
+        			 if(data>=50){
+        				 $("#perVal").find('progress-bar-danger').remove();
+        				 $("#perVal").addClass("progress-bar-success");
+        			 }
+        			 $("#disVal").empty();
+        			$("#disVal").append(data+'%');
+        			// for quick view bar update
+       			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+         			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+       			$("#quickDisVal").empty();
+       			$("#quickDisVal").append(data+'%');
+   		    		
         			 $("#selector9").removeAttr("style");
          			 $("#selector9").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");

@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
-import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -89,6 +88,8 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
 
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
 	
 	@Autowired
 	private OrgService orgService;
@@ -463,13 +464,14 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setZipCode(registration.getZipCode());
 		orgLocations.setOrg(org);
 		orgLocations.setUser(user);
+		orgLocations.setDateFormat(registration.getDateFormat());
 		orgLocations.setStatus(Status.ACTIVE);
 		Countries countries = countriesService.getCountriesByCountryName(registration.getCountry());
 		orgLocations.setLocationCode(SourceLeadRandomCodeHelper.generateRandomOrgLocationCode());
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName());
-		orgLocations.setWebsite(registration.getWebsite());
+		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);
@@ -712,7 +714,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setFromName("SourceLead");
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
@@ -753,7 +755,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setFromName("SourceLead");
 		 
 		//setting the class filed values
@@ -833,7 +835,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(null == orgUser){
 			orgUser = new User();
 			orgUser.setFirstName(jsonObj.getString("firstName"));
-			orgUser.setLastName(jsonObj.getString("lastName"));
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				orgUser.setLastName(jsonObj.getString("lastName"));
+			}
 			orgUser.setEmail(jsonObj.getString("userEmail"));
 			orgUser.setCreatedBy(user.getUserCode());
 			orgUser.setCreatedDate(new Date());
@@ -875,6 +879,36 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employees.setUpdatedBy(user.getUserCode());
 		employees.setUpdatedDate(new Date());
 		employeesService.addEmployee(employees);
+		
+		 MasterCandidate masterCandidate = null; 
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 if(null == masterCandidate){
+		    masterCandidate = new MasterCandidate();
+			masterCandidate.setFirstName(jsonObj.getString("firstName"));
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				masterCandidate.setLastName(jsonObj.getString("lastName"));
+			}
+			masterCandidate.setEmail(jsonObj.getString("userEmail"));
+			masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+			masterCandidate.setCreatedBy(user.getUserCode());
+			masterCandidate.setCreatedDate(commonUtil.currentDate());
+			masterCandidate.setUpdatedBy(user.getUserCode());
+			masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		 }
+		
+		try {
+			masterCandidateService.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Candidate candidate = getCandidateDetails(orgUser,orgLocations,masterCandidate);
+		try {
+			Candidate savedCandidate = candidateService.addCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		if(null == orgLocations.getUser()){
 			Org org = orgLocations.getOrg();
@@ -1116,7 +1150,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1317,7 +1351,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		//setting the class filed values

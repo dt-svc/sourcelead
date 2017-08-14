@@ -17,6 +17,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -113,13 +114,14 @@ public class AddElkRequirement {
 				requirementIndex.setLocation(rs.getString("LOCATION"));
 				requirementIndex.setLocation(rs.getString("LOCATION"));
 				requirementIndex.setZipCode(rs.getString("ZIPCODE"));
-				requirementIndex.setReqCreatedBy(rs.getString("CREATED_BY"));
+				requirementIndex.setReqCreatedBy(rs.getLong("CREATED_BY"));
 				requirementIndex.setReqUpdatedBy(rs.getString("UPDATED_BY"));
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				requirementIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
+				requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
 				List<String> lavel1User = new ArrayList<String>();
 				List<String> lave21User = new ArrayList<String>();
@@ -512,12 +514,12 @@ public class AddElkRequirement {
 		try {
 		    entityInJson = toJSON(requirementIndex);
 		    client.prepareUpdate(index, type,requirementId).setDoc(entityInJson).get();
-		    logger.info(type+" has been updated.");
+		   // logger.info(type+" has been updated.");
 		} 
         catch(DocumentMissingException e){
         	client.prepareIndex(index, type,requirementId)
 		    .setSource(entityInJson).execute().actionGet();
-		    logger.info(type+" has been indexed.");
+		   // logger.info(type+" has been indexed.");
 		}
 		catch (Exception e) {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());

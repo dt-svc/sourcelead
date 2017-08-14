@@ -18,8 +18,10 @@ import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgDocumentsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 
 
 /**
@@ -41,6 +43,9 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	public void saveDocument(JSONObject jsonObj, MultipartFile multiFile, String responderLocationId,String docId, OrgLocations orgLocation,User user, String sourceType) throws  Exception {
@@ -69,8 +74,7 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		}
 		
 		
-		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
+		//SimpleDateFormat formatter = orgLocation.getLocFullFormDateFormatter();
         
         orgDocuments.setSourceType(sourceType);
 		
@@ -109,11 +113,11 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 			}
 		}
 		if(jsonObj.has("startDate") && StringUtils.isNotBlank(jsonObj.getString("startDate")) && StringUtils.isNotEmpty(jsonObj.getString("startDate"))){
-			Date startDate = format.parse(jsonObj.getString("startDate"));
+			Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("startDate"));
 			orgDocuments.setStartDate(startDate);
 		}
 		if(jsonObj.has("endDate") && StringUtils.isNotBlank(jsonObj.getString("endDate")) && StringUtils.isNotEmpty(jsonObj.getString("endDate"))){
-			Date endDate = format.parse(jsonObj.getString("endDate"));
+			Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("endDate"));
 			orgDocuments.setEndDate(endDate);
 		}
 		
@@ -143,14 +147,14 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 		 List<Long> managerUserIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
 		
          List<OrgDocuments> documentsList = orgDocumentsDao.getOrgDocumentsListByResponderLocationIdAndOrgLocationIdAndSourceType(responderLocationId, loginUserId, managerUserIds, orgLocationId,sourceType);
-		
-        
+         OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationId);
+         //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
 		for(OrgDocuments documents :documentsList){
 			if(documents.getStartDate() != null){
-			    documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+			    documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
 			}
 			if(documents.getEndDate() != null){
-			   documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+			   documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
 			}
 			if(documents.getSpocUser() != null){
 				StringBuilder docSB=new StringBuilder();
@@ -169,22 +173,33 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	public List<OrgDocuments> getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(Long responderLocationId,
 			Long orgLocationId, Long spocUserId) {
 		 List<OrgDocuments> documentsList = orgDocumentsDao.getclientDocumentsListByResponderLocationIdAndSpocUserIdOrgLocationID(responderLocationId, orgLocationId,spocUserId);
-		 for(OrgDocuments documents :documentsList){
-				if(documents.getStartDate() != null){
-				    documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+		
+		 OrgLocations orglo;
+		try {
+			orglo = orgLocationService.getOrgLocations(orgLocationId);
+			//SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+			
+		       
+			 for(OrgDocuments documents :documentsList){
+					if(documents.getStartDate() != null){
+					    documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
+					}
+					if(documents.getEndDate() != null){
+					   documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
+					}
+					if(documents.getSpocUser() != null){
+						StringBuilder spocNameSB=new StringBuilder();
+						documents.setSpocName(spocNameSB.append(documents.getSpocUser().getFirstName()).append(" ").append(documents.getSpocUser().getLastName()).toString());
+					}
+					if(documents.getOwnerUser() != null){
+						StringBuilder ownerNameSB=new StringBuilder();
+						documents.setOwnerName(ownerNameSB.append(documents.getOwnerUser().getFirstName()).append(" ").append(documents.getOwnerUser().getLastName()).toString());
+					}
 				}
-				if(documents.getEndDate() != null){
-				   documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
-				}
-				if(documents.getSpocUser() != null){
-					StringBuilder spocNameSB=new StringBuilder();
-					documents.setSpocName(spocNameSB.append(documents.getSpocUser().getFirstName()).append(" ").append(documents.getSpocUser().getLastName()).toString());
-				}
-				if(documents.getOwnerUser() != null){
-					StringBuilder ownerNameSB=new StringBuilder();
-					documents.setOwnerName(ownerNameSB.append(documents.getOwnerUser().getFirstName()).append(" ").append(documents.getOwnerUser().getLastName()).toString());
-				}
-			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		 return documentsList;
 	}
 	
@@ -192,11 +207,12 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
     public OrgDocuments getOrgDocumentsById(Long Id) throws Exception {
         logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsById(Id);
+        OrgLocations orglo = orgLocationService.getOrgLocations(documents.getLocationId().getId());
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+           documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
@@ -212,14 +228,16 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
     }
 
 	@Override
-	public OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId) {
+	public OrgDocuments getOrgDocumentsByIdAndSpocId(Long docId, Long userId,OrgLocations orgLocations) {
 		logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
         OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByIdAndSpocId(docId,userId);
+        
+        //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
         if(documents.getStartDate() != null){
-            documents.setStartDateStr(Constants.DF_DMY.format(documents.getStartDate()));
+            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),documents.getStartDate()));
         }
         if(documents.getEndDate() != null){
-           documents.setEndDateStr(Constants.DF_DMY.format(documents.getEndDate()));
+           documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),documents.getEndDate()));
         }        
         if(documents.getOwnerUser() != null){
         	documents.setOwnerId(documents.getOwnerUser().getId());
@@ -237,6 +255,25 @@ public class OrgDocumentsServiceImpl implements OrgDocumentsService{
 	public List<OrgDocuments> getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(Long userId, Long orgLocationId,
 			String sourceType) throws Exception {
 		return orgDocumentsDao.getOrgDocumentsListByUserIdAndOrgLocationIdAndSourceType(userId, orgLocationId, sourceType);
+	}
+
+	@Override
+	public OrgDocuments getOrgDocumentsByDocIdAndLocationId(Long Id, Long locationId) throws Exception
+	{
+		 logger.debug("In OrgDocumentsServiceImpl class getOrgDocumentsById method...");
+	        OrgDocuments documents = orgDocumentsDao.getOrgDocumentsByDocIdAndLocationId(Id, locationId);
+	        OrgLocations orglo = orgLocationService.getOrgLocations(locationId);
+	        //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+	        if(documents.getStartDate() != null){
+	            documents.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getStartDate()));
+	        }
+	        if(documents.getEndDate() != null){
+	           documents.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),documents.getEndDate()));
+	        }        
+	        if(documents.getOwnerUser() != null){
+	        	documents.setOwnerId(documents.getOwnerUser().getId());
+	        }
+	        return documents;
 	}
 	
 }

@@ -8,4 +8,6 @@ public interface UserLoginLogoutSessionDao {
 	
 	UserLoginLogoutSession getLastLoginRecord(Long userId);
 	
+	UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId);
+	
 }

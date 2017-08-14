@@ -133,6 +133,9 @@ public class EMailJobScheduler {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;	
+	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -338,15 +341,15 @@ public class EMailJobScheduler {
 	@Async
 	private void sendCronRemainderForProjectMember(ProjectMembers projectMember,UserRole userRole,String frequency) throws Exception{
 			String level ="";
-			DateFormat format = Constants.DF_DMY;
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(userRole.getOrgLocations().getId());
 			Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"employeeScheduler");
 			LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 			if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 				    String key = entry.getKey();
 				    String value =entry.getValue();
-				    Date frequencyStartDate = format.parse(key.replaceAll("/", "-"));
-					Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+				    Date frequencyStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+					Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 					
 					Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 					currentCal.setLenient(false);
@@ -488,7 +491,6 @@ public class EMailJobScheduler {
 	private void level1ORLevel2ManagersCronRemainder(String invoiceFrequency, int managerLevel) throws Exception {
 		List<Org> orgList = orgService.getOrgs();
 		Map<String,String>  timesheetFrequencyMap = null;
-		DateFormat format = Constants.DF_DMY;
 		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
@@ -530,7 +532,7 @@ public class EMailJobScheduler {
 													    String key = entry.getKey();
 													    String value =entry.getValue();
 													    
-														Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
 														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 														currentCal.setLenient(false);
 														currentCal.setTime(CommonUtil.currentDate());
@@ -627,7 +629,6 @@ public class EMailJobScheduler {
 	private void adminCronRemainder(String invoiceFrequency) throws Exception {
 		List<Org> orgList = orgService.getOrgs();
 		Map<String,String>  timesheetFrequencyMap = null;
-		DateFormat format = Constants.DF_DMY;
 		for (Org org : orgList) {
 				StringBuilder tempHTML = new StringBuilder();
 				int count=0;
@@ -663,7 +664,7 @@ public class EMailJobScheduler {
 													    String key = entry.getKey();
 													    String value =entry.getValue();
 													    
-														Date frequencyEndDate = format.parse(value.replaceAll("/", "-"));
+														Date frequencyEndDate = commonUtil.orgLocationDateFormat(ol.getDateFormat(),value.replaceAll("/", "-"));
 														Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 														currentCal.setLenient(false);
 														currentCal.setTime(CommonUtil.currentDate());
@@ -853,7 +854,7 @@ public class EMailJobScheduler {
 					  					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					  					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
 					  					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
-					  					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+					  					interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),interviewConverteDate);
 					  					dateOfInterviewStr = interviewDateInTimezone;
 				  			  		    candidatesHotListDummy.setProjectEndDate(dateOfInterviewStr);
 				  			  		   hotlist1.add(candidatesHotListDummy);
@@ -983,7 +984,8 @@ public class EMailJobScheduler {
 		}
 		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail("info@sourcelead.com");
+		// emailMessage.setFromEmail("info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("");
 		 emailMessage.setFromName("Sourcelead Team");
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1146,7 +1148,7 @@ public class EMailJobScheduler {
 				        				}
 				        				}
 				        				//this method is used to send the email when receiver signed the contract
-				        				contractSignedByReceiver(childContarct);
+				        				contractSignedByReceiver(contracts);
 				        			}
 				            	}
 				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!Constants.EXPIRED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
@@ -1266,7 +1268,7 @@ public class EMailJobScheduler {
 					 }
 			
 			 if(contracts.getContractOrgLocationId() != null){
-				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getLocationCode());
+				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
 				 }else{
 					 globalVarsMap.put("receiverOrg","--");
 				 }
@@ -1274,6 +1276,10 @@ public class EMailJobScheduler {
 			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
+			 
+			 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
 
 			
 			 //covert subject,body and signature
@@ -1291,7 +1297,8 @@ public class EMailJobScheduler {
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 String actionLink="";
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+			 
+		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario);
 		
 	}
 	
@@ -1386,6 +1393,7 @@ public class EMailJobScheduler {
 	private void contractExpiryRemainderMail(Contracts contracts, int days) throws Exception
 	{
 			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(contracts.getOrgLocationId().getId());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(owner.getFirstName());
 			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
@@ -1395,12 +1403,12 @@ public class EMailJobScheduler {
 				 emailMessage.setLastName("");
 			 }
 			 emailMessage.setToEmail(owner.getEmail());
-			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy("sladmin");
 			 emailMessage.setFromName("SourceLead Admin"); 
 			 
-			 String endDate = Constants.DMY.format(contracts.getEndDate());
-			 String startDate = Constants.DMY.format(contracts.getStartDate());
+			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
+			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
 			 String dayCount = String.valueOf(days);
 			 
 			//setting the class filed values
@@ -1700,7 +1708,7 @@ public class EMailJobScheduler {
 		 
 		 emailMessage.setToEmail(jobAlert.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

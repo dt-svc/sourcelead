@@ -66,15 +66,15 @@ public class RequirementListController {
 	
 	@RequestMapping(value = "/requirementList")
 	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
-			,@RequestParam(value="serachValue", required=false)String serachValue) throws Exception {
+			,@RequestParam(value="searchValue", required=false)String searchValue) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalRequirementList")){
+		if(searchResult != null && !searchResult.equalsIgnoreCase("undefined") && searchResult.equalsIgnoreCase("universalRequirementSearchList")){
 		    model.addObject("universalRequirementList", "universalRequirementList");
-		    model.addObject("serachValue",serachValue);
+		    model.addObject("searchValue",searchValue);
 		    model.addObject("searchType","Requirement");
 		}
 		
@@ -153,7 +153,6 @@ public class RequirementListController {
 		return false;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_RELEASE_REQUIREMENT')")
 	@RequestMapping(value = "/releaseRequirementToClientOrVendors")
 	public ModelAndView releaseRequirementToClientOrVendors(String requirementUUID,HttpServletRequest request) throws Exception {
 		

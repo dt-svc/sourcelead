@@ -22,6 +22,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
 @Table(name = "INVOICE", catalog = "sourcelead")
@@ -34,8 +36,6 @@ public class Invoice {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
-	
-	
 	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
@@ -88,6 +88,9 @@ public class Invoice {
 	
 	@Column(name = "BILLING_ADDRESS",columnDefinition = "TEXT default NULL")
 	private String billingAddress;
+	
+	@Column(name = "ACCOUNT_DETAILS",columnDefinition = "TEXT default NULL")
+	private String accountDetails;
 	
 	@Column(name = "DISCOUNT_AMOUNT")
 	private String discountAmount;
@@ -158,11 +161,30 @@ public class Invoice {
 	@Column(name = "INVOICE_FREQUENCY")
 	private String invoiceFrequency;
 	
+	@Column(name = "PREVIOUS_INVOICE_STATUS")
+	private String previousInvoiceStatus;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	
 	@Lob private byte[] docFile;
 	@Column(name = "DOC_FILENAME") private String fileName; 
 	
+	@Column(name = "SUBMISSION_APPROVER_HIERARCHY_ID")
+	private String submissionApproverHierarchyId;
+	
+	@Column(name = "INVOICE_CATEGORY")
+	private String invoiceCategory;
+	
+	@Column(name = "EXPENSES_INVOICES")
+	private String expensesInvoices;
+	
+	@ManyToOne
+    @JoinColumn(name="EXPENSES_ID", nullable=true) 
+	private Expenses expensesId;
+	
+	@ManyToOne
+    @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
+	private ProjectMembers projectMemberId;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
@@ -259,6 +281,22 @@ public class Invoice {
 	
 	@Transient
 	private String clientCurrency;
+	
+	@Transient
+	@JsonProperty
+	private String projectMemberName;
+	
+	@Transient
+	@JsonProperty
+	private String memberId;
+	
+	@Transient
+	@JsonProperty
+	private String expensesFrequency;
+	
+	@Transient
+	@JsonProperty
+	private String expId;
 	
 	
 	public Long getId()
@@ -904,6 +942,104 @@ public class Invoice {
 	public void setClientCurrency(String clientCurrency) {
 		this.clientCurrency = clientCurrency;
 	}
+
+	public String getAccountDetails() {
+		return accountDetails;
+	}
+
+	public void setAccountDetails(String accountDetails) {
+		this.accountDetails = accountDetails;
+	}
+
+	public String getPreviousInvoiceStatus()
+	{
+		return previousInvoiceStatus;
+	}
+
+	public void setPreviousInvoiceStatus(String previousInvoiceStatus)
+	{
+		this.previousInvoiceStatus = previousInvoiceStatus;
+	}
+
+	public String getSubmissionApproverHierarchyId()
+	{
+		return submissionApproverHierarchyId;
+	}
+
+	public void setSubmissionApproverHierarchyId(String submissionApproverHierarchyId)
+	{
+		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
+	}
+
+	public static long getSerialversionuid()
+	{
+		return serialVersionUID;
+	}
+
+	public String getInvoiceCategory() {
+		return invoiceCategory;
+	}
+
+	public void setInvoiceCategory(String invoiceCategory) {
+		this.invoiceCategory = invoiceCategory;
+	}
+
+	public String getExpensesInvoices() {
+		return expensesInvoices;
+	}
+
+	public void setExpensesInvoices(String expensesInvoices) {
+		this.expensesInvoices = expensesInvoices;
+	}
+
+	public Expenses getExpensesId() {
+		return expensesId;
+	}
+
+	public void setExpensesId(Expenses expensesId) {
+		this.expensesId = expensesId;
+	}
+
+	public ProjectMembers getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(ProjectMembers projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+
+	public String getProjectMemberName() {
+		return projectMemberName;
+	}
+
+	public void setProjectMemberName(String projectMemberName) {
+		this.projectMemberName = projectMemberName;
+	}
+
+	public String getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getExpensesFrequency() {
+		return expensesFrequency;
+	}
+
+	public void setExpensesFrequency(String expensesFrequency) {
+		this.expensesFrequency = expensesFrequency;
+	}
+
+	public String getExpId() {
+		return expId;
+	}
+
+	public void setExpId(String expId) {
+		this.expId = expId;
+	}
+
 	
 	
 }

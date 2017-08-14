@@ -28,7 +28,7 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
-	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation) throws Exception;
+	List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId, User user, OrgLocations loginOrgLocation,String loginUserRole) throws Exception;
 
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId)throws Exception;
 	
@@ -97,7 +97,7 @@ public interface RequirementSubmissionDao {
 	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
 
 	List<RequirementSubmission> getSubmissionsByRequirementIdandStatus(Long requirementId, User user,
-			OrgLocations loginOrgLocation, String submissionType)throws Exception;
+			OrgLocations loginOrgLocation, String submissionType,String loginUserRole)throws Exception;
 	
 	RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId);
 
@@ -197,4 +197,8 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation);
 
 	List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate);
+	
+	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception;
+	
+	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
 }

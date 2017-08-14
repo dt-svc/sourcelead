@@ -2,10 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
@@ -22,6 +19,9 @@ margin-bottom: 0;
 .timesheet_week_comm.invoiceDocs_add span .fa-times {
     margin: 6px;
 }
+.project_wrap_table table i{
+    font-size: 13px;
+}    
 </style>
 
 
@@ -56,7 +56,7 @@ function errRemoveClientContact(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Custom Based Invoice</h2>
+			<h2>Custom Invoice</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
 	</section>
@@ -131,6 +131,13 @@ function errRemoveClientContact(){
 									name="billingAddress" placeholder="Invoice Address"></textarea>
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-md-3">Account Details</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="2" id="accountDetails"
+									name="accountDetails" placeholder="Account Details"></textarea>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -173,6 +180,13 @@ function errRemoveClientContact(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
+	<div class="tbldata-dotdot select-field">
+		<textarea type="text" class="form-control input-sm" placeholder="Description" id="REPLACEROWIDDescription" name="REPLACEROWIDDescription"
+			data-validation="validate_length length1-100" field-name="Description"></textarea>
+	</div>
+</div>
+
+<div id="divTaskTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 select-field">
 		<select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow" onchange="getSowRate(REPLACEROWID);">
 			<option value=''>-Select sow-</option>
@@ -180,8 +194,8 @@ function errRemoveClientContact(){
 	</div>
 </div>
 
-<div id="divTaskTd4" style="display: none; float: left;">
-	<div class="tbldata-dotdot-100">
+<div id="divTaskTd5" style="display: none; float: left;">
+	<div class="tbldata-dotdot_80">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
@@ -189,23 +203,23 @@ function errRemoveClientContact(){
 	</div>
 </div>
 
-<div id="divTaskTd5" style="display: none; float: left;">
+<div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">
-		<input type="text" class="form-control input-sm inline_field"
-			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
-			name="REPLACEROWIDtotalHours"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+		<input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);validationHours(REPLACEROWID);">
+			<input type="hidden" id="REPLACEROWIDhiddenHours" name="REPLACEROWIDhiddenHours">
+<!-- 			<i class=" text-info fa fa-info-circle" title="Before Assinging Team Project Start Date &amp; Manager is Mandatory"></i> -->
+			<u id="REPLACEROWIDerrMsg" style="display: none;"><i class=" text-info fa fa-info-circle" >Avg Hours</i></u>
 	</div>
 </div>
 
-<div id="divTaskTd6" style="display: none; float: left;">
+<div id="divTaskTd7" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm text-right">
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
 			placeholder="00:00" class="ReadTextFli" readonly>
 	</div>
 </div>
 
-<div id="divTaskTd7" style="display: none; float: left;">
+<div id="divTaskTd8" style="display: none; float: left;">
 	<a class="text-danger tblminwidth-50" title="Remove row"
 		id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i
 		class="fa fa-remove"></i></a>
@@ -217,13 +231,14 @@ function errRemoveClientContact(){
 		var clientCurrency = $("#clientCurrency").val(); 
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
-		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
+		 result = result +'  <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">';
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
 		 result = result +'  <tr id="divTsRow0">';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
+		 result = result +'  <th>Description</th>';
 		 result = result +'  <th>SOW</th>';
 		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
@@ -234,7 +249,7 @@ function errRemoveClientContact(){
            
 		 result = result +'  <tfoot class="table_footer">';
 		 result = result +'  <tr>';
-		 result = result +'  <td colspan="4"></td>';
+		 result = result +'  <td colspan="5"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
 		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
@@ -244,7 +259,7 @@ function errRemoveClientContact(){
 		 result = result +'  </table>';
 		 result = result +'  </div>';
          
-         result = result +'  <div class="clearfix invoice_other">';
+         result = result +'  <div class="clearfix invoice_other mt">';
          result = result +'  <div class="col-md-5">';
          result = result +'  <div class="clearfix mb">';
          result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
@@ -406,7 +421,9 @@ function errRemoveClientContact(){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	
+		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		           		$("#accountDetails").val(json['accountDetails']);
+		           	}
 		           	buildLineItemAndTaxAddRows();
 		           	
 		           	editInvoice(json['invoiceLineItemsList']);
@@ -602,21 +619,35 @@ function errRemoveClientContact(){
 				cell0.innerHTML = text;
 				
 				
+				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				   var finalDateFormatInvoiceEdit = '';
+				  if(locationDate.match("yyyy-MM-dd")){
+					  finalDateFormatInvoiceEdit = 'yy-mm-dd';
+				  }if(locationDate.match("dd-MM-yyyy")){
+					  finalDateFormatInvoiceEdit = 'dd-mm-yy'; 
+				  }if(locationDate.match("MM-dd-yyyy")){
+					  finalDateFormatInvoiceEdit = 'mm-dd-yy'; 
+				  }if(locationDate.match("yyyy-dd-MM")){
+					  finalDateFormatInvoiceEdit = 'yy-dd-mm'; 
+				  } 
+				
 				$( "#"+maxRowNum+"sdate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
 				$( "#"+maxRowNum+"edate-input" ).datepicker({
 					  changeMonth: true,
 				      changeYear: true,
-				      dateFormat : 'dd-mm-yy',
+				      dateFormat : finalDateFormatInvoiceEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
@@ -628,28 +659,33 @@ function errRemoveClientContact(){
 				cell1.innerHTML = divTsTd2Str;
 				
 				var cell1 = row.insertCell(2);
-				var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+				var divTsTd10Str = document.getElementById("divTaskTd3").innerHTML;
+				divTsTd10Str = divTsTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd10Str;
+				
+				var cell1 = row.insertCell(3);
+				var divTsTd3Str = document.getElementById("divTaskTd4").innerHTML;
 				divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd3Str;
 				
-				var cell1 = row.insertCell(3);
-				var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+				var cell1 = row.insertCell(4);
+				var divTsTd4Str = document.getElementById("divTaskTd5").innerHTML;
 				divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd4Str;
 				
-				var cell1 = row.insertCell(4);
-				var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+				var cell1 = row.insertCell(5);
+				var divTsTd5Str = document.getElementById("divTaskTd6").innerHTML;
 				divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd5Str;
 				
 				
-				var cell1 = row.insertCell(5);
-				var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+				var cell1 = row.insertCell(6);
+				var divTsTd6Str = document.getElementById("divTaskTd7").innerHTML;
 				divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd6Str;
 				
-				var cell1 = row.insertCell(6);
-				var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+				var cell1 = row.insertCell(7);
+				var divTsTd7Str = document.getElementById("divTaskTd8").innerHTML;
 				divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd7Str;
 				
@@ -658,13 +694,14 @@ function errRemoveClientContact(){
 				
 				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
 				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
+				$('#'+maxRowNum+'Description').val(opt.inlineDescription);
 				$('#'+maxRowNum+'lineItemId').val(opt.id);
 				
 				$('#'+maxRowNum+'rate').val(opt.rate);
 				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
-				
+				editHoursValidations(opt.startDateStr,opt.endDateStr,maxRowNum);
 	 			getSow(opt.candidateId,maxRowNum,opt.contractId);
 				maskme();  
 		 }
@@ -768,25 +805,47 @@ function cancel(){
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			   var finalDateFormatInvoiceSave = '';
+			  if(locationDate.match("yyyy-MM-dd")){
+				  finalDateFormatInvoiceSave = 'yy-mm-dd';
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  finalDateFormatInvoiceSave = 'dd-mm-yy'; 
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  finalDateFormatInvoiceSave = 'mm-dd-yy'; 
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  finalDateFormatInvoiceSave = 'yy-dd-mm'; 
+			  } 
+			  
 			$( "#"+maxRowNum+"sdate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"sdate-input");
+					  var dt = $(this).datepicker('getDate', '+1d');
+			            dt.setDate(dt.getDate() + 1);
+			            $("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+			            getEstimatedHours(maxRowNum);
+			            
+					  /* var dt = toDate("#"+maxRowNum+"sdate-input");
 						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt); */
 			 	  }
 			    });
 			
 			$( "#"+maxRowNum+"edate-input" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
-			      dateFormat : 'dd-mm-yy',
+			      dateFormat : finalDateFormatInvoiceSave,
 				  onSelect : function(selected) {
-					  var dt = toDate("#"+maxRowNum+"edate-input");
+					  
+					  var dt = $(this).datepicker('getDate', '-1d');
+			            dt.setDate(dt.getDate() - 1);
+			            $("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+			            getEstimatedHours(maxRowNum);
+					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
 			 	  }
 			    });
 			
@@ -798,28 +857,33 @@ function cancel(){
 			cell1.innerHTML = divTsTd2Str;
 			
 			var cell1 = row.insertCell(2);
-			var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+			var divTsTd10Str = document.getElementById("divTaskTd3").innerHTML;
+			divTsTd10Str = divTsTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd10Str;
+			
+			var cell1 = row.insertCell(3);
+			var divTsTd3Str = document.getElementById("divTaskTd4").innerHTML;
 			divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd3Str;
 			
-			var cell1 = row.insertCell(3);
-			var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+			var cell1 = row.insertCell(4);
+			var divTsTd4Str = document.getElementById("divTaskTd5").innerHTML;
 			divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd4Str;
 			
-			var cell1 = row.insertCell(4);
-			var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+			var cell1 = row.insertCell(5);
+			var divTsTd5Str = document.getElementById("divTaskTd6").innerHTML;
 			divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd5Str;
 			
 			
-			var cell1 = row.insertCell(5);
-			var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+			var cell1 = row.insertCell(6);
+			var divTsTd6Str = document.getElementById("divTaskTd7").innerHTML;
 			divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd6Str;
 			
-			var cell1 = row.insertCell(6);
-			var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+			var cell1 = row.insertCell(7);
+			var divTsTd7Str = document.getElementById("divTaskTd8").innerHTML;
 			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd7Str;
 			
@@ -1317,7 +1381,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
-			$("#discountTotal").val(subTotal);
+			$("#discountTotal").val("00.00");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1558,12 +1622,23 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->
 <script>
 	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEndDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEndDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEndDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEndDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEndDate = 'yy-dd-mm'; 
+		  }
 		$('#invoiceDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#invoiceDate");
+			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
@@ -1571,11 +1646,11 @@ function calculateTaxDiscount(){
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-			var dt = toDate("#dueDate");
+			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#invoiceDate").datepicker("option", "maxDate", dt);
 				errDueDate();
@@ -1604,6 +1679,7 @@ function errDueDate(){
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
 	var sourceleadUrl ='${sourceleadUrl}';
+	if(contractId !='' && contractId != 'undefined' && contractId != null){
 	$.ajax({
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
@@ -1616,6 +1692,10 @@ function getSowRate(id){
         },
         
     });
+}else{
+	$ ('#'+id+'rate').val(0);
+	totalHoursCalculateAmount(id);
+}
 }
 </script>
 
@@ -1628,10 +1708,22 @@ function getSowRate(id){
 	    });
 	  }); */
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEndDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEndDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEndDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEndDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEndDate = 'yy-dd-mm'; 
+	  }
+	  
 	  $( "#0sdate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
-	      dateFormat : 'dd-mm-yy',
+	      dateFormat : finalDateFormatEndDate,
 	      minDate: 0  ,
 		  onSelect : function(selected) {
 	 	  }
@@ -1640,7 +1732,7 @@ function getSowRate(id){
 	$( "#0edate-input" ).datepicker({
 		  changeMonth: true,
 	      changeYear: true,
-	      dateFormat : 'dd-mm-yy',
+	      dateFormat : finalDateFormatEndDate,
 	      minDate: 0  ,
 		  onSelect : function(selected) {
 	 	  }
@@ -1741,7 +1833,7 @@ function getClientContacts(clientContactId){
 	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
 		selected = 'selected';
 	}
-	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"("+opt.spocName+")</option>";
 	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	
@@ -1793,14 +1885,14 @@ function getPaymentTerms(){
 function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
-	
+	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate+"&locationCode="+locationCode,
 			success :function(dueDateStr) {
 				
 				$("#dueDate").val(dueDateStr);
@@ -1833,9 +1925,7 @@ function saveInvoice(saveType){
 				  }
 			  }
 		  }
-         
-         
-         if ($('#invoice_form').validate(false, validationSettings)){  
+		  if ($('#invoice_form').validate(false, validationSettings)){  
  		    var frm = $('#invoice_form').serializeFormJSON();
  	        var con = JSON.stringify(frm);
  	        con = con.replace(/[{}]/g, "");
@@ -1942,5 +2032,77 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
+<script>
+function getEstimatedHours(rowId){
+	var startDate = document.getElementById(rowId+"sdate-input").value;
+	var endDate = document.getElementById(rowId+"edate-input").value;
+	var locationId = '${SourceLeadWeb_orgLocationId}';
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
+		        success: function(estimatedHours) {
+		        	$('#'+rowId+'totalHours').val(estimatedHours);
+		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
+		        	totalHoursCalculateAmount(rowId);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+function editHoursValidations(startDate,endDate,rowId){
+	if(startDate && endDate){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var locationId = '${SourceLeadWeb_orgLocationId}';
+		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getTotalHosursForBilling?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId,
+		        success: function(estimatedHours) {
+		        	$('#'+rowId+'hiddenHours').val(estimatedHours);
+		        	totalHoursCalculateAmount(rowId);
+		        	 $("#resourceListLoading").removeAttr("style"); 
+		        	
+		        }
+		        
+		 });
+	}
+}
+</script>
+<script>
+function validationHours(rowId){
+	 var hiddenHours = $('#'+rowId+'hiddenHours').val();
+	  var split1 = hiddenHours.split(':');
+	  var splitHours1 = split1[0];
+	  var minute1 = split1[1];
+	  var hourminits1 = splitHours1 * 60;
+	  var hiddenFinalmin1 = parseInt(hourminits1) + parseInt(minute1);
+	    
+	  var totalHours = $("#"+rowId+"totalHours").val();
+	  var split2 = totalHours.split(':');
+	  var splitHours2 = split2[0];
+	  var minute2 = split2[1];
+	  var hourminits2 = splitHours2 * 60;
+	  var totalHoursFinalmin2 = parseInt(hourminits2) + parseInt(minute2);
+	 
+	 if(hiddenHours != null && hiddenHours != ""){
+		 if(hiddenFinalmin1 < totalHoursFinalmin2){
+			 document.getElementById(""+rowId+"errMsg").style.display="block";
+		 }else{
+			 document.getElementById(""+rowId+"errMsg").style.display="none";
+		 }
+	 }
+	 
+	
+}
 
+
+
+</script>
 <jsp:include page="../masterFooter.jsp" />
