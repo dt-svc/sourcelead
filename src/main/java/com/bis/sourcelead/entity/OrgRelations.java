@@ -3,7 +3,9 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -206,6 +209,9 @@ public class OrgRelations implements Serializable{
 	@Transient
 	@JsonProperty
 	private String clientName;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
+	private Set<OrgSpoc> orgSpocList;
 	
 	public String getStringDate()
 	{
@@ -681,5 +687,13 @@ public class OrgRelations implements Serializable{
 	public void setOrgLocationId(Long orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
+	}
+
+	public Set<OrgSpoc> getOrgSpocList() {
+		return orgSpocList;
+	}
+
+	public void setOrgSpocList(Set<OrgSpoc> orgSpocList) {
+		this.orgSpocList = orgSpocList;
 	}
 }
