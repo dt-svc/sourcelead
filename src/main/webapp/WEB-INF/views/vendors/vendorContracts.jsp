@@ -853,15 +853,28 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function editOne(startDate,endDate){
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateeditOneSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateeditOneSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateeditOneSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateeditOneSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateeditOneSave = 'yy-dd-mm'; 
+	  }
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateeditOneSave,
         changeMonth: true,
           changeYear: true,
           minDate: startDate,
           onSelect: function (selected) {
-              var dt = toDate("#endDate");
-              dt.setDate(dt.getDate() - 1);
+             // var dt = toDate("#endDate");
+        	  var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
           }
     });
 }
