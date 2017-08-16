@@ -8,6 +8,12 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
+<style>
+.timesheet_week_comm strong input.dele  {
+width : 6% !important;
+}
+</style>
+
 <section class="content-wraper">
     <div id="loading"></div>
     <section class="content-header clearfix">
@@ -29,7 +35,7 @@
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="getTemplateDetails();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
               <small>Template details</small> </a> </li>
-            <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
+            <li onclick="getTemplatePolicyDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
@@ -793,13 +799,15 @@ function createTemplate(saveType){
          }; 
 	
 	  if ($('#onboardTemplate_form').validate(false, validationSettings)){ 
-		    var frm = $('#onboardTemplate_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
+		   
+			var frm = $('#onboardTemplate_form').serializeFormJSON();
+ 			var jsonData = JSON.stringify(frm);
+ 		
+ 			
+ 			var form = $('#onboardTemplate_form')[0];
+ 		    var formData = new FormData(form);
+ 		  	formData.append("json",jsonData);
+		  
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
 	    	$("#save_button").attr("disabled", "disabled");
@@ -808,8 +816,13 @@ function createTemplate(saveType){
 	       
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	        	type : "POST",
+  	    	    data: formData,
+  	    	    contentType : 'application/json; charset=utf-8',
+  		        processData: false,
+  		        contentType:false, 
+  	    	    dataType : 'json',
+		    	 url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(templateId) {
 		        	
 		        	if(saveType == 'saveAndContinue'){
@@ -817,9 +830,9 @@ function createTemplate(saveType){
 		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 		     	        document.getElementById("templateDocs").disabled = false;
 		     	        getTemplatePolicyDocumentsDetails(templateId);
-		     	        getTemplateSupportingDocumentsDetails(templateId);
+		     	       /*  getTemplateSupportingDocumentsDetails(templateId);
 		     	        getTemplateContractsDocumentsDetails(templateId);
-		     	        getTemplateFormsDocumentsDetails(templateId);
+		     	        getTemplateFormsDocumentsDetails(templateId); */
 		        	}
 		        	
 	     	        $("#templateId").val(templateId);
@@ -857,28 +870,25 @@ function createTemplateDocs(saveType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
-		  var frm = $('#templateDocuments_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#templateDocuments_form')[0];
-		   var formData = new FormData(form); 
+			var frm = $('#templateDocuments_form').serializeFormJSON();
+ 			var jsonData = JSON.stringify(frm);
+ 			var form = $('#templateDocuments_form')[0];
+ 		    var formData = new FormData(form);
+ 		  	formData.append("json",jsonData);
+		   
+		   
 		   $("#save_doc_button").attr("disabled", "disabled");
 		   $("#save_continue_doc_button").attr("disabled", "disabled");
 		
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
-	        type : "POST",
-		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+		      type : "POST",
+    	      data: formData,
+    	      contentType : 'application/json; charset=utf-8',
+	          processData: false,
+	          contentType:false, 
+    	      dataType : 'json',
+	    	  url: sourceleadUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(result) {
 		    	  
 		    	  if(saveType == 'saveAndContinue'){
@@ -889,9 +899,9 @@ function createTemplateDocs(saveType){
 		     	        getOnboardingTasksList();
 		        	}else{
 		        		getTemplatePolicyDocumentsDetails();
-		        		getTemplateSupportingDocumentsDetails();
+		        		/* getTemplateSupportingDocumentsDetails();
 		        		getTemplateContractsDocumentsDetails();
-		        		getTemplateFormsDocumentsDetails();
+		        		getTemplateFormsDocumentsDetails(); */
 		        	}
 		    	  
 		    	  $("#save_doc_button").removeAttr("disabled");
@@ -928,20 +938,26 @@ function saveOnboardTask(){
          }; 
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
-		    var frm = $('#addonboardTask_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
 	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	    	var frm = $('#addonboardTask_form').serializeFormJSON();
+ 			var jsonData = JSON.stringify(frm);
+ 			var form = $('#addonboardTask_form')[0];
+ 		    var formData = new FormData(form);
+ 		  	formData.append("json",jsonData);
+	        
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
 	       
 	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+	        	type : "POST",
+  	    	    data: formData,
+  	    	    contentType : 'application/json; charset=utf-8',
+  		        processData: false,
+  		        contentType:false, 
+  	    	    dataType : 'json',
+		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	
 		        	if(result == 'success'){
@@ -1014,11 +1030,10 @@ function getTemplateDetails(){
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(data) {
-	        	 var json = JSON.parse(data);
+	        success: function(json) {
 	        	
-	        	 $("input[name=templateName]").val(json['templateName']);
-	        	 $("textarea[name=description]").val(json['description']);
+	        	 $("input[name=templateName]").val(json.templateName);
+	        	 $("textarea[name=description]").val(json.description);
 	        	 
 	        	 $("#onboardTasksList").empty();
 		        
@@ -1040,9 +1055,8 @@ function getTemplatePolicyDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1066,7 +1080,9 @@ function getTemplatePolicyDocumentsDetails(templateId){
                 	 $("#savedPociliesAttachments").append(result);
                 	 $("#onboardTasksList").empty();
                 	 
-                	 
+               	    getTemplateSupportingDocumentsDetails(templateId);
+	     	        getTemplateContractsDocumentsDetails(templateId);
+	     	        getTemplateFormsDocumentsDetails(templateId);
 			        
 		        },
 		    });
@@ -1086,9 +1102,8 @@ function getTemplateSupportingDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1131,9 +1146,8 @@ function getTemplateContractsDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1175,9 +1189,8 @@ function getTemplateFormsDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
@@ -1384,7 +1397,6 @@ function saveAndFinishOnboardTemplate(templateId){
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(data) {
 	    	 $("#finish_task").removeAttr("disabled");
-	    	 $("#loading").removeAttr("style");
 	    	 location.replace(sourceleadUrl+"/onboardingTemplatesList"); 
 	    }
   }); 
