@@ -91,14 +91,11 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.TeamMembersService;
-import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -135,9 +132,6 @@ public class RequirementServiceImpl implements RequirementService {
 	private RequirementAssignToService requirementAssignToService;
 	
 	@Autowired
-	private TeamService teamService;
-	
-	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
 	@Autowired
@@ -161,15 +155,9 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private UserRoleService userRoleService;
 	
-    @Autowired
-    private ProjectsService projectsService;
-	
 	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
-	 
-	 /*@Autowired
-	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -195,8 +183,6 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
-	@Autowired
-	private TeamMembersService teamMembersService;
 	
 	@Autowired
 	TimeZoneService timeZoneService;
@@ -234,7 +220,7 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
-	    	Long number = 000000001L;
+	    	Long number = 1L;
 			String requirementId = null;
 			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
 			if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
@@ -253,7 +239,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirementId = reqId.toString();
 			}
 			
-			final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+			final DecimalFormat decimalFormat = new DecimalFormat("0");                
 	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
 	        StringBuffer sb = new StringBuffer();
 	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
@@ -871,7 +857,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 * System Generated Id For Job
 			 */
 			
-		//requirement.setGeneratedId(getRequirementId(orgLocations));
+		 requirement.setGeneratedId(getRequirementId(orgLocations));
 		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
