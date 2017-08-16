@@ -3365,7 +3365,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			        StringBuffer sb = new StringBuffer();
 			        finalJobsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredjobsId).toString();
 			        req.setGeneratedId(finalJobsGeneratedId);
-			        requirementDao.storeRequirement(req);
+			         Requirement savedRequirement = requirementDao.storeRequirement(req);
+			        requirementElkUtil.saveElkRequirement(savedRequirement, null);
 			        data =  true;
 				}
 			}
@@ -3381,7 +3382,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			        StringBuffer sb = new StringBuffer();
 			        finalCandidatesGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredjobsId).toString();
 			        candidate.setGeneratedId(finalCandidatesGeneratedId);
-			        candidateDao.storeCandidate(candidate);
+			        Candidate savedCanddidate =  candidateDao.storeCandidate(candidate);
+			        candidateService.saveOrUpdateCandidateElkDocument(savedCanddidate);
 			        data =  true;
 				}
 			}
@@ -3397,7 +3399,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			        StringBuffer sb = new StringBuffer();
 			        finalProjectsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.PROJECT_ENTITY).append(ConvetredjobsId).toString();
 			        projects.setGeneratedId(finalProjectsGeneratedId);
-			        projectsDao.updateProject(projects);
+			        Projects savedProjects = projectsDao.updateProject(projects);
+			        projectsService.saveOrUpdateProjectElkDocument(savedProjects);
 			        data =  true;
 				}
 			}
