@@ -113,7 +113,7 @@ public class ClientServiceTest {
 		 Long vendorLocationId = 8l;
 		 Long loginOrgLocationId = 3l;
 		 
-		 clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, loginOrgLocationId);
+		 clientService.updateVendorDetails(jsonObj, orgRelationId, vendorLocationId, loginOrgLocationId,new User());
 		 logger.info("Vendor details updated sucessfully sucessfully...");
 	}
 	
