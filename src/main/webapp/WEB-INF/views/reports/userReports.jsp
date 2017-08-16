@@ -448,8 +448,8 @@ function reportpagination(){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				//var dt = toDate("#billingReportStartDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#billingReportEndDate").datepicker("option", "minDate", dt);
+				/* dt.setDate(dt.getDate() + 1); */
+				$("#billingReportEndDate").datepicker("option", "minDate", selected);
 				addBillingValidClass();
 			}
 		
@@ -465,9 +465,9 @@ function reportpagination(){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				//var dt = toDate("#billingReportEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#billingReportStartDate").datepicker("option", "maxDate", dt);
-				 $( "#billingReportStartDate" ).datepicker({  maxDate: new Date() });
+				//dt.setDate(dt.getDate() - 1);
+				$("#billingReportStartDate").datepicker("option", "maxDate", selected);
+				// $( "#billingReportStartDate" ).datepicker({  maxDate: new Date() });
 				addBillingValidClass();
 			}
 		});
@@ -507,10 +507,11 @@ function reportpagination(){
 			changeYear: true, 
 			dateFormat : finalDateFormatRepo,
 			onSelect : function(selected) {
-				var dt = new Date(selected);
+				/* var dt = new Date(selected);
 				//var dt = toDate("#ReportStartDate");
 				dt.setDate(dt.getDate() + 1);
-				$("#ReportEndDate").datepicker("option", "minDate", dt);
+				$("#ReportEndDate").datepicker("option", "minDate", dt); */
+				$("#ReportEndDate").datepicker("option", "minDate", selected);
 				addValidClass();
 			}
 		
@@ -525,10 +526,11 @@ function reportpagination(){
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				//var dt = toDate("#ReportEndDate");
+				/* //var dt = toDate("#ReportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ReportStartDate").datepicker("option", "maxDate", dt);
-				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() });
+				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
+				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
 				addValidClass();
 			}
 		});
