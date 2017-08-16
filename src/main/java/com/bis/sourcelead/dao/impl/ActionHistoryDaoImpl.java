@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 
 	@Override
+	@Async
 	@Transactional(rollbackFor = { Exception.class })
 	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
