@@ -104,7 +104,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"<tbody>"; 
           result = result +" </tbody>";
           result = result +"</table>";
-          $("#noCandidates").val('');
+          $("#noCandidates").val(1);
           $("#candidateList").append(result);
           cpagination(url); 
   }

@@ -91,8 +91,7 @@ function statusvalidating(id){
 <jsp:include page="requirementTable.jsp" />
 <!-- <script type="text/javascript" src="resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
-<input type="hidden" id="requirementEmptyListMessage"
-	name="requirementEmptyListMessage" />
+<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
 <div id="popUp"></div>
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -811,6 +810,7 @@ function jpagination(url){
             "targets": colIndex++,
             "data": "jobTitle",
             "render": function ( data, type, opt, meta ) {
+            	 $("#requirementEmptyListMessage").val(1);
             		var result = "";
             		 if(opt.jobId != '' && opt.jobId != null){
             		  	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
