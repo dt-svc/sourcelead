@@ -67,6 +67,7 @@ function prepareRequirementData(url){
 	 result = result +"<table id='requirementPagination' class='display' cellspacing='0' width='100%' >"; 
    result = result +"<thead>"; 
    result = result +"  <tr>"; 
+   result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>ID</th>"; 
    result = result +"    <th>Title</th>"; 
    result = result +"    <th>Client</th>"; 
@@ -140,6 +141,7 @@ function jpagination(url){
            pages: 1
        }),
        "columns": [
+    	   { "data": "generatedId"},
            { "data": "jobId" },
            { "data": "jobTitle"},
            { "data": "clientName"},
@@ -151,7 +153,24 @@ function jpagination(url){
            { "data": "requirementSubmissionStatus" },
            { "data": "requirementUUID" }
        ],
-       "columnDefs": [ {
+	       "columnDefs": [ {
+	   	  	"targets": colIndex++,
+		  	"data": "generatedId",
+		  	"sortable": false,
+		  	"render": function(data, type, opt, meta) {
+		  		 var result = "";
+		  		 result = result +"<td>";
+		  		 alert("AA"+opt.generatedId);
+		  	  	 if(opt.generatedId != '' && opt.generatedId != null){
+		  	  		
+		  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
+		  	    	}else{
+		  	  		 result = result +"<div>-----</div>";
+		  	  	 }
+		  		 result = result +"</td>";
+	             return  result;
+		  	}
+	        },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "jobId",
 	    	  	"sortable": false,
@@ -470,7 +489,7 @@ function jpagination(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[7,'desc']],
+	    	"aaSorting": [[8,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
