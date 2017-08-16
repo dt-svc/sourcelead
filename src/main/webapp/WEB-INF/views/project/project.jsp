@@ -604,6 +604,8 @@ function getStatus(){
 				}
 			}
 			
+			getProjectDetails();
+			
 		}else{
 			var assignedMembers = document.getElementById("assignedMembers");
 			if(assignedMembers){

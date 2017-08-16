@@ -131,6 +131,7 @@ public class ProjectsController {
 				if(!isNullOrEmpty(projectUUID)){
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 					if(projects != null){
+						model.addObject("projectUUID", projects.getProjectUUID());
 						model.addObject("savedProjectId", projects.getId());
 						model.addObject("isProjectDetailsFilled", projects.getIsProjectDetailsFilled());
 						model.addObject("isProjectMembersFilled", projects.getIsProjectMembersFilled());
