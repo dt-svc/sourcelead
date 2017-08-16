@@ -608,22 +608,40 @@ function previewContractDoc(docId,fileName){
 </script>
 <script>
 function editOne(startDate,endDate){
+	 var contractEffectiveEndDate = startDate.split("-");
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEditOneSave = '';
+	  var d2 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEditOneSave = 'yy-mm-dd';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEditOneSave = 'dd-mm-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEditOneSave = 'mm-dd-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[0])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEditOneSave = 'yy-dd-mm';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[2])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateFormatEditOneSave,
         changeMonth: true,
           changeYear: true,
-          minDate: startDate,
+          minDate: d2,
           onSelect: function (selected) {
-              var dt = toDate("#endDate");
-              dt.setDate(dt.getDate() - 1);
+//               var dt = toDate("#endDate");
+//               dt.setDate(dt.getDate() - 1);
+
+        	    var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
           }
     });
 }
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
+
 
 function editClo(contractId,startDate){
 	$('.editNewDat').hide();
