@@ -309,9 +309,9 @@ public class AddExpensesRestController {
 		     	 emailMessage.setFirstName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());
 			 	 emailMessage.setLastName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			 	 
-			 	OrgLocations ol = orgLocationsDao.getOrgLocations(orgLoc.getId());
+			// 	OrgLocations ol = orgLocationsDao.getOrgLocations(orgLoc.getId());
 			 	 
-			 	 emailMessage.setToEmail(ol.getUser().getEmail());
+			 	 emailMessage.setToEmail(orgLoc.getUser().getEmail());
 			 	 emailMessage.setFromEmail(loginUser.getEmail());
 			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 	 
@@ -334,9 +334,9 @@ public class AddExpensesRestController {
 				 
 				 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
 //					 StringBuilder manager =new StringBuilder();
-					 globalVarsMap.put("superUser", ol.getUser().getFullName());
+					 globalVarsMap.put("superUser", orgLoc.getUser().getFullName());
 				 }else{
-					 globalVarsMap.put("superUser",ol.getUser().getFullName());
+					 globalVarsMap.put("superUser",orgLoc.getUser().getFullName());
 				 }
 				 
 				 if(null != sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName())){
@@ -435,7 +435,7 @@ public class AddExpensesRestController {
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink,loginUser,ol.getUser(), orgLoc, notificationScenario) ;
+				emailScenerioUtil.sendNotification(actionLink,loginUser,orgLoc.getUser(), orgLoc, notificationScenario) ;
 		 	   
 			
 		}

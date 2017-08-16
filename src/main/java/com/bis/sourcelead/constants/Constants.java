@@ -783,30 +783,35 @@ public class Constants {
 	public static final String EXPENSES_ACTION_ICON_CLASS = "fa fa-calculator bgLime";
 	
 	
-	public static final String CANDIDATE_ADDED_MANUALLY = "has added manually";
-	public static final String CANDIDATE_EDITTED = "has updated profile";
-	public static final String CANDIDATE_DELETED = "has deleted profile";
-	public static final String CANDIDATE_REACTIVATED = "has reactivated profile";
-	public static final String CANDIDATE_DELETED_RESUME = "has deleted resume";
-	public static final String CANDIDATE_DELETED_EMPLOYER = "has deleted employer";
-	public static final String CANDIDATE_DELETED_EDUCATION = "has deleted education";
-	public static final String CANDIDATE_DELETED_CERTIFICATION = "has deleted certification";
-	public static final String CANDIDATE_DELETED_DOCUMENTS = "has deleted document";
-	public static final String CANDIDATE_DELETED_REFERENCES = "has deleted reference";
-	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "has uploaded new profile image";
-	public static final String CANDIDATE_SKILL_UPDATED = "has updated skills";
-	public static final String CANDIDATE_VISA_UPDATED = "has updated immigration status";
-	public static final String CANDIDATE_RESUME_UPDATED = "has updated resume";
-	public static final String CANDIDATE_EMPLOYERS_UPDATED = "has updated employers information";
-	public static final String CANDIDATE_EDUCATION_UPDATED = "has updated education details";
-	public static final String CANDIDATE_CERTIFICATION_UPDATED = "has updated certification";
-	public static final String CANDIDATE_DOCUMENTS_UPDATED = "has updated documents";
-	public static final String CANDIDATE_REFERENCES_UPDATED = "has updated references";
-	public static final String CANDIDATE_COMMENTS_NEW = "has posted new comment";
-	public static final String CANDIDATE_ADDED_FROM_JOB = "has added candidate through ";
+	public static final String CANDIDATE_ADDED_MANUALLY = "added manually";
+	public static final String CANDIDATE_EDITTED = "updated profile";
+	public static final String CANDIDATE_DELETED = "deleted profile";
+	public static final String CANDIDATE_REACTIVATED = "reactivated profile";
+	public static final String CANDIDATE_DELETED_RESUME = "deleted resume";
+	public static final String CANDIDATE_DELETED_EMPLOYER = "deleted employer";
+	public static final String CANDIDATE_DELETED_EDUCATION = "deleted education";
+	public static final String CANDIDATE_DELETED_CERTIFICATION = "deleted certification";
+	public static final String CANDIDATE_DELETED_DOCUMENTS = "deleted document";
+	public static final String CANDIDATE_DELETED_REFERENCES = "deleted reference";
+	public static final String CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE = "uploaded new profile image";
+	public static final String CANDIDATE_DELETED_PROFILE_IMAGE = "deleted profile image";
+	public static final String CANDIDATE_SKILL_UPDATED = "updated skills";
+	public static final String CANDIDATE_VISA_UPDATED = "updated immigration status";
+	public static final String CANDIDATE_RESUME_UPDATED = "updated resume";
+	public static final String CANDIDATE_EMPLOYERS_UPDATED = "updated employers information";
+	public static final String CANDIDATE_EDUCATION_UPDATED = "updated education details";
+	public static final String CANDIDATE_CERTIFICATION_UPDATED = "updated certification";
+	public static final String CANDIDATE_DOCUMENTS_UPDATED = "updated documents";
+	public static final String CANDIDATE_REFERENCES_UPDATED = "updated references";
+	public static final String CANDIDATE_COMMENTS_NEW = "posted new comment";
+	public static final String CANDIDATE_ADDED_FROM_JOB = "added candidate through ";
+	public static final String CANDIDATE_REQUEST_DOCUMENTS = "requested for documents";
+	public static final String CANDIDATE_ACCEPT_REQUEST_DOCUMENTS = "accepted documents";
+	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
+	public static final String GUEST = "Guest";
 	
 
 }

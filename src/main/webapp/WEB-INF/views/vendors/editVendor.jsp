@@ -234,8 +234,10 @@
 				        $("#editVendorDetailsDiv").append(result);
 				        if(json.orgType == 'Company'){
 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite');
+				        	zipcodeMask(country,'existingZipCode');
 				        }else{
-				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');				        	
+				        	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','','','invite');	
+				        	zipcodeMask(country,'clientZipCode');
 				        }
 				        
 				        
@@ -283,12 +285,20 @@
          if ($('#editClient_form').validate(false, validationSettings)){
     		 var frm = $('#editClient_form').serializeFormJSON();
              var con = JSON.stringify(frm);
-             con = con.replace(/[{}]/g, "");
+ 		    var form = $('#client_form')[0];
+ 		    var formData = new FormData(form);
+ 		  	formData.append("json",con)
+             
+            // con = con.replace(/[{}]/g, "");
              //It will escape all the special characters
-             var jsonData = encodeURIComponent(con);
+            // var jsonData = encodeURIComponent(con);
              var sourceleadUrl ='${sourceleadUrl}';
 	 	 $.ajax({
-			   	type: "POST",
+			   	 type: "POST",
+			     contentType : 'application/json; charset=utf-8',
+ 		         processData: false,
+ 		         contentType:false, 
+ 	    	     dataType : 'json',
 			    url: sourceleadUrl+"/vendorDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId, 	   
 	   		    success: function(data) {
 	   		    	vendorDetailsbyLocationId(vendorLocationId,orgRelationId);

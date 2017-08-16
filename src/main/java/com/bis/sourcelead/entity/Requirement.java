@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,7 +23,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
@@ -375,9 +375,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientContactEmail;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsTeamMember;
 	
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsApprover;
 	
 	@Transient
@@ -424,6 +426,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	private String isRequirementReleasedByuser;
+	
+	@Transient
+	@JsonProperty
+	private String isRequirementReleased;
 	
 	@Transient
 	private String orgcode;
@@ -842,11 +848,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public Date getCreatedDate() {
-		String postedOnStr = "";
-		if(createdDate != null){
-			postedOnStr = Constants.DF_DMY.format(createdDate);
-		}
-		setPostedOnStr(postedOnStr);
+		
 		return createdDate;
 	}
 
@@ -1617,16 +1619,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public List<Long> getRequirementReleasedUserIds() {
-		requirementReleasedUserIds = new ArrayList<>();
-		if(StringUtils.isNotEmpty(releasedBy)){
+		if(StringUtils.isNotEmpty(releasedBy) && requirementReleasedUserIds != null){
 			for (String s : releasedBy.split(",")){
 				requirementReleasedUserIds.add(Long.parseLong(s));
 			 }
 		}
 		return requirementReleasedUserIds;
 	}
-	
+	public void setRequirementReleasedUserIds(List<Long> requirementReleasedUserIds) {
+		this.requirementReleasedUserIds = requirementReleasedUserIds;
+	}
+
 	public String getPostedOnStr() {
+		if(createdDate != null && orgLocationId != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			if(dateFormat != null)
+			postedOnStr = dateFormat.format(createdDate);	
+		}
 		return postedOnStr;
 	}
 
@@ -1646,6 +1655,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setIsRequirementRelesedToPublic(String isRequirementRelesedToPublic) {
 		this.isRequirementRelesedToPublic = isRequirementRelesedToPublic;
+	}
+
+	public String getIsRequirementReleased() {
+		return isRequirementReleased;
+	}
+
+	public void setIsRequirementReleased(String isRequirementReleased) {
+		this.isRequirementReleased = isRequirementReleased;
 	}
 
 	

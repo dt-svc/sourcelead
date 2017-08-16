@@ -4896,6 +4896,7 @@ margin:0 0 15px 0;
 .resumeFields ul li, .profile_personalInfo ul li {
     line-height: 28px; min-height: 38px; transition: all 0.3s linear; padding: 6px 10px; clear: both; position: relative;
     margin: 0; width: 100%; list-style-type: none; border: 1px solid #ededed; border-top: none; font-size: 13px;
+	max-height: 38px; overflow: hidden; 
 }
 .resumeFields ul li.MultLi, .profile_personalInfo ul li.MultLi {
 	min-height: 55px; max-height: 55px; overflow: hidden; line-height: 22px; padding: 5px 10px; 
@@ -6203,8 +6204,23 @@ background-position: center; background-size: 200px; position: relative;top:-8px
 	padding:3px 6px;
 }
 .grid-fil.gridFil {
-	right:0;
+       right:0;
 }
+.project_inn_mask.projectMask-zindex {
+z-index: 5000;
+}
+/* Questionay styles */
+.questionaryHeader h2{
+    font-size: 18px;
+}
+.questionaryHeader p{
+    font-size: 15px;
+}
+.questionary-content {
+    background-color: #ededed; padding: 10px 5px;
+}
+/* Questionay styles */
+
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

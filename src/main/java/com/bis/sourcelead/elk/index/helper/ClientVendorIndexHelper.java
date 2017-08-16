@@ -1,5 +1,7 @@
 package com.bis.sourcelead.elk.index.helper;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class ClientVendorIndexHelper {
@@ -34,15 +38,21 @@ public class ClientVendorIndexHelper {
 	OrgService orgService;
 	
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
 	public ClientVendorIndex getClientVendorIndexFromCandidate(Org org,OrgLocations clientOrgLocations, String responderType,
-			OrgSpoc orgSpoc, OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate) throws Exception{
+			OrgSpoc orgSpoc, OrgRelations orgRelations, SubmissionTemplate submissionTemplate, User loginUser, OrgLocations loginOrgLoctn) throws Exception{
 		
 		ClientVendorIndex clientVendorIndex = new ClientVendorIndex();
 		
 		if(null != clientOrgLocations){
 			
 			// this is to setting values for Initiator Details
-			OrgLocations initiatorLocation = orgLocationService.getOrgLocations(orgRelationsList.getLocationId().getId());
+			OrgLocations initiatorLocation = orgLocationService.getOrgLocations(orgRelations.getLocationId().getId());
 			
 					if(!"".equalsIgnoreCase(initiatorLocation.getCountry())){
 						clientVendorIndex.setInitiatorCountry(initiatorLocation.getCountry());
@@ -90,7 +100,7 @@ public class ClientVendorIndexHelper {
 					
 				// this is to setting values for ResponderLocationId
 				       
-				OrgLocations  responderorgLocation = orgLocationService.getOrgLocations(orgRelationsList.getResponderLocationId().getId());
+				OrgLocations  responderorgLocation = orgLocationService.getOrgLocations(orgRelations.getResponderLocationId().getId());
 				if(null !=responderorgLocation){
 					
 					if(!"".equalsIgnoreCase(responderorgLocation.getCountry())){
@@ -135,26 +145,28 @@ public class ClientVendorIndexHelper {
 			
 		}
 		
-		if(null != orgRelationsList){
-			clientVendorIndex.setOrgRelationId(orgRelationsList.getId());
-			clientVendorIndex.setResponderType(orgRelationsList.getResponderType());
-			clientVendorIndex.setInitiatorType(orgRelationsList.getInitiatorType());
-			clientVendorIndex.setResponderLocationId(orgRelationsList.getResponderLocationId().getId());
-			clientVendorIndex.setOrgLocationId(orgRelationsList.getLocationId().getId());
-			clientVendorIndex.setInitiatorLevel(orgRelationsList.getInitiatorLevel());
-			clientVendorIndex.setResponderLevel(orgRelationsList.getResponderLevel());
+		if(null != orgRelations){
+			clientVendorIndex.setOrgRelationId(orgRelations.getId());
+			clientVendorIndex.setResponderType(orgRelations.getResponderType());
+			clientVendorIndex.setInitiatorType(orgRelations.getInitiatorType());
+			clientVendorIndex.setResponderLocationId(orgRelations.getResponderLocationId().getId());
+			clientVendorIndex.setOrgLocationId(orgRelations.getLocationId().getId());
+			clientVendorIndex.setInitiatorLevel(orgRelations.getInitiatorLevel());
+			clientVendorIndex.setResponderLevel(orgRelations.getResponderLevel());
 			
-			clientVendorIndex.setStatus(orgRelationsList.getStatus());
-			clientVendorIndex.setCreatedByUserCode(orgRelationsList.getCreatedBy());
+			clientVendorIndex.setStatus(orgRelations.getStatus());
+			clientVendorIndex.setCreatedByUserCode(orgRelations.getCreatedBy());
 			
-			User user = userService.getUserByUserCode(orgRelationsList.getCreatedBy());
+			User user = userService.getUserByUserCode(orgRelations.getCreatedBy());
 			if(null != user){
 				StringBuilder sb = new StringBuilder();
 				clientVendorIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			}
 			
-			clientVendorIndex.setCreatedDate(Constants.DF_YMD.format(orgRelationsList.getCreatedDate()));
-			clientVendorIndex.setUpdatedDate(Constants.DF_YMD.format(orgRelationsList.getUpdatedDate()));
+			 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgRelations.getId(), loginUser.getId(), loginOrgLoctn.getId(), responderType);
+			 clientVendorIndex.setNoContacts((long)orgSpocsList.size());
+			 clientVendorIndex.setCreatedDate(commonUtil.elkDateFormatter(orgRelations.getCreatedDate()));
+			clientVendorIndex.setUpdatedDate(commonUtil.elkDateFormatter(orgRelations.getUpdatedDate()));
 		}
 		return clientVendorIndex;
 	}

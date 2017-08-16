@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,7 +42,6 @@ import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -58,6 +56,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -77,7 +76,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
  
@@ -153,18 +151,23 @@ public class TimesheetRestController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	
 	@RequestMapping(value = "/timesheetEntriesDivByProjectMemberId", method = RequestMethod.POST ) 
 	public @ResponseBody String timesheetEntriesDivByProjectMemberId(HttpServletRequest request,
 			@RequestParam(value="projectMemberId", required=false) String projectMemberId,
-			@RequestParam(value="from", required=false) String from) throws Exception {
+			@RequestParam(value="from", required=false) String from,
+			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		
 		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
 		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 	    	StringBuilder projectDiv = new StringBuilder("");
 		    if(StringUtils.isNotEmpty(projectMemberId)){
-		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser);
+		    	 projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,projectMemberId,from,superUserId,isSuperUser,orgLocations);
 		    }
 		    return projectDiv.toString();
 	}
@@ -173,17 +176,19 @@ public class TimesheetRestController {
 	public @ResponseBody String timesheetDivByFrequency(HttpServletRequest request,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
-			@RequestParam(value="from", required=false) String from) throws Exception {
+			@RequestParam(value="from", required=false) String from,
+			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		
 		Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
 		Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		StringBuilder frequencyBasedDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 		 	 String[] frequency = timesheetFrequency.split("To");
 		 	 String weekStartDate = frequency[0].trim();
 		  	 String weekEndDate = frequency[1].trim();
-			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser);
+			 frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,weekStartDate,weekEndDate,projectMemberId,from,superUserId,isSuperUser,orgLocations);
 		}
 		
 		return frequencyBasedDiv.toString();
@@ -196,12 +201,14 @@ public class TimesheetRestController {
 			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 			@RequestParam(value="approvalStatus", required=false) String approvalStatus,
-			@RequestParam(value="from", required=false) String from) throws Exception {
+			@RequestParam(value="from", required=false) String from,
+			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		    StringBuilder tabDiv = new StringBuilder("");
+		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		     if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			  	 String weekEndDate = frequency[1].trim();
-				  tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,weekEndDate,approvalStatus,from);
+				  tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,weekEndDate,approvalStatus,from,orgLocations);
 		    }
 		    return tabDiv.toString();
 	}
@@ -214,25 +221,27 @@ public class TimesheetRestController {
 			@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
 			@RequestParam(value="approvalStatus", required=false) String approvalStatus,
-			@RequestParam(value="from", required=false) String from) throws Exception {
+			@RequestParam(value="from", required=false) String from,
+			@RequestParam(value="locationCode") String locationCode) throws Exception {
 		
 		    Long superUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "superUserId");
 		    Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
 		    StringBuilder tabDiv = new StringBuilder("");
 		    StringBuilder statusDiv = new StringBuilder("");
 		    Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
+		    OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		    HashMap<String,String> result = new HashMap<>();
 		     if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String actualStartDate = frequency[0].trim();
 			  	 String actualEndDate = frequency[1].trim();
-				 tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,actualEndDate,approvalStatus,from);
+				 tabDiv =  projectTabDataByDates(startDate, endDate,projectMemberId,actualEndDate,approvalStatus,from,orgLocations);
 				 result.put("TabDiv",tabDiv.toString());
 				 
 				 //DateFormat format = Constants.DF_DMY;
-				 DateFormat  format = LoginSessionController.DATEFORMAT;
-				 Date frequencyStartDate = format.parse(actualStartDate.replaceAll("/", "-"));
-				 Date frequencyEndDate = format.parse(actualEndDate.replaceAll("/", "-"));
+				 //DateFormat  format = LoginSessionController.DATEFORMAT;
+				 Date frequencyStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),actualStartDate.replaceAll("/", "-"));
+				 Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),actualEndDate.replaceAll("/", "-"));
 				  
 				 SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
 				 Submission_Status submissionStatus = sah.getSubmissionStatus();
@@ -333,7 +342,7 @@ public class TimesheetRestController {
 			
 				timesheetEntriesDiv.append("					<div id='timesheetEntriesDivByProjectMemberId'>");
 				if(initialProjectMemberId != null){
-					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,initialProjectMemberId.toString(),from,superUserId,isSuperUser);
+					 StringBuilder projectDiv = timesheetEntriesDivByProjectMemberId(loginUser,initialProjectMemberId.toString(),from,superUserId,isSuperUser,orgLoc);
 					 timesheetEntriesDiv.append(projectDiv);		 
 				}
 				timesheetEntriesDiv.append("		            </div>");	
@@ -347,7 +356,7 @@ public class TimesheetRestController {
 		}
 	}
 	
-	public StringBuilder timesheetEntriesDivByProjectMemberId(User loginUser,String projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
+	public StringBuilder timesheetEntriesDivByProjectMemberId(User loginUser,String projectMemberId,String from,Long superUserId,boolean isSuperUser,OrgLocations orgLocations) throws Exception{
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		if(StringUtils.isNotEmpty(projectMemberId)){
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
@@ -362,12 +371,12 @@ public class TimesheetRestController {
 				StringBuilder selectedEndDate =  new StringBuilder("");
 				int count = 1;
 				 //DateFormat format = Constants.DF_DMY;
-				DateFormat  format = LoginSessionController.DATEFORMAT;
+				//DateFormat  format = LoginSessionController.DATEFORMAT;
 				for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
 					    String key = entry.getKey();
 					    String value =entry.getValue();
-					    Date currentStartDate = format.parse(key.replaceAll("/", "-"));
-					    Date currentEndDate = format.parse(value.replaceAll("/", "-"));
+					    Date currentStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+					    Date currentEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 					    HashSet<Date> pmhDateList =  projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), currentStartDate, currentEndDate);
 					    if(pmhDateList.isEmpty() || pmhDateList == null)
 					    continue;
@@ -376,7 +385,7 @@ public class TimesheetRestController {
 					    	selectedStartDate.append(key.replaceAll("/", "-"));
 					    	selectedEndDate.append(value.replaceAll("/", "-"));
 					    }
-					    if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
+					    if(CalendarUtil.isCurrentDateBetweenDateRange(key, value,orgLocations.getDateFormat())){
 					    	selectedStartDate.setLength(0);
 					    	selectedEndDate.setLength(0);
 					    	isSelected.append("selected='selected'");
@@ -392,7 +401,7 @@ public class TimesheetRestController {
 				timesheetEntriesDiv.append("		            </div> ");
 				
 				timesheetEntriesDiv.append("			<div id='timesheetDivByFrequency'> ");
-					StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from,superUserId,isSuperUser);
+					StringBuilder frequencyBasedDiv = timesheetEntriesDivByFrequnecy(loginUser,selectedStartDate.toString(),selectedEndDate.toString(),projectMember.getId(),from,superUserId,isSuperUser,orgLocations);
 					timesheetEntriesDiv.append(frequencyBasedDiv);
 				timesheetEntriesDiv.append("		            </div> ");
 				
@@ -408,33 +417,33 @@ public class TimesheetRestController {
 	@PreAuthorize("hasRole('ROLE_MODIFY_MY_TIMESHEETS')")
 	@RequestMapping(value = "/withDrawTimesheet", method = RequestMethod.POST)
 	public @ResponseBody void withDrawTimesheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
-			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency) throws Exception {
-			
+			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
+			@RequestParam(value="dateFormat", required=false) String dateFormat) throws Exception {
 			//DateFormat format = Constants.DF_DMY;
-		DateFormat  format = LoginSessionController.DATEFORMAT;
+		//DateFormat  format = LoginSessionController.DATEFORMAT;
 			if(StringUtils.isNotEmpty(timesheetFrequency)){
 			 	 String[] frequency = timesheetFrequency.split("To");
 			 	 String weekStartDate = frequency[0].trim();
 			  	 String weekEndDate = frequency[1].trim();
-			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-				 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
+			  	 Date startDate = commonUtil.orgLocationDateFormat(dateFormat,weekStartDate.replaceAll("/", "-"));
+				 Date endDate = commonUtil.orgLocationDateFormat(dateFormat,weekEndDate.replaceAll("/", "-"));
 			  	submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDate(projectMemberId, startDate, endDate, Submission_Status.DRAFT.getValue());;
 			}
 		
 	}
 	
-	public StringBuilder timesheetEntriesDivByFrequnecy(User loginUser,String weekStartDate,String weekEndDate,Long projectMemberId,String from,Long superUserId,boolean isSuperUser) throws Exception{
+	public StringBuilder timesheetEntriesDivByFrequnecy(User loginUser,String weekStartDate,String weekEndDate,Long projectMemberId,String from,Long superUserId,boolean isSuperUser,OrgLocations orgLocations) throws Exception{
 		
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		
 		StringBuilder timesheetEntriesDiv = new StringBuilder();
 		//DateFormat format = Constants.DF_DMY;
-		DateFormat  format = LoginSessionController.DATEFORMAT;
+		//DateFormat  format = LoginSessionController.DATEFORMAT;
 		if(!isNullOrEmpty(weekStartDate) && !isNullOrEmpty(weekEndDate)){
 			
 		
-		Date frequencyStartDate = format.parse(weekStartDate.replaceAll("/", "-"));
-		Date frequencyEndDate = format.parse(weekEndDate.replaceAll("/", "-"));
+		Date frequencyStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+		Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 		 
 		SubmissionApproverHierarchy sah = null;
 		if(from != null && !from.isEmpty() && from.equalsIgnoreCase("user")){
@@ -485,7 +494,7 @@ public class TimesheetRestController {
 	      timesheetEntriesDiv.append("					</div>   ");
 		  timesheetEntriesDiv.append("					<div class='clearfix'></div>   ");
 		StringBuilder tabData = new StringBuilder();
-		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate);
+		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(weekStartDate, weekEndDate,orgLocations.getDateFormat());
 		timesheetEntriesDiv.append("			<div class='timesheetNewTabs'> ");
 		timesheetEntriesDiv.append("			<div class='project_side_wrap_inn_tabs'> ");
 		timesheetEntriesDiv.append("			    <ul class='project-tabs-menu'> ");
@@ -498,15 +507,15 @@ public class TimesheetRestController {
 			     String key = entry.getKey();
 			     String value = entry.getValue();
 			     
-				 Date startDate = format.parse(key.replaceAll("/", "-"));
-				 Date endDate = format.parse(value.replaceAll("/", "-"));
+				 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),key.replaceAll("/", "-"));
+				 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 			    DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 			    StringBuilder isActive = new StringBuilder("");
 			    
 			    TimesheetSubmissions ts =timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(startDate, endDate, projectMemberId);
 			    
-			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate)){  
-			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value)){
+			    if(CalendarUtil.isCurrentDateBetweenDateRange(weekStartDate, weekEndDate,orgLocations.getDateFormat())){  
+			    	if(CalendarUtil.isCurrentDateBetweenDateRange(key, value,orgLocations.getDateFormat())){
 			    		   isActive.append("class='current'");
 			    		   if(ts != null && !isNullOrEmpty(submissionStatusStr) && !submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())){
 			    			    isActive.delete(0, isActive.length());
@@ -559,9 +568,9 @@ public class TimesheetRestController {
 				    	}
 			    }
 			    count++;
-			    timesheetFrequencyEndDate = format.format(endDate);
+			    timesheetFrequencyEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate);
 			}
-			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue(),from);
+			tabData =	projectTabDataByDates(currentStartDate.toString(), currentEndDate.toString(),projectMemberId,timesheetFrequencyEndDate,submissionStatus.getValue(),from,orgLocations);
 		}
 		
 		String exportPdf = "pdf";
@@ -601,7 +610,7 @@ public class TimesheetRestController {
 		   String submissionStatusStr = submissionStatus.getValue();
 		   StringBuilder timesheetEntriesDiv = new StringBuilder();
 		  // DateFormat format = Constants.DF_DMY;
-		   DateFormat  format = LoginSessionController.DATEFORMAT;
+		   //DateFormat  format = LoginSessionController.DATEFORMAT;
 		   Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		   String acSubmissionStatusStr = null;
 		   if(!isNullOrEmpty(submissionStatusStr) && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())){
@@ -679,7 +688,7 @@ public class TimesheetRestController {
 	        return timesheetEntriesDiv;
 	}
 	
-	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus,String from) throws Exception{
+	public StringBuilder projectTabDataByDates(String startDate ,String endDate,Long projectMemberId,String timesheetFrequencyEndDate,String approvalStatus,String from,OrgLocations orgLocations) throws Exception{
 		
 		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
@@ -716,13 +725,13 @@ public class TimesheetRestController {
 		
 		
 		//DateFormat format = Constants.DF_DMY;
-		DateFormat  format = LoginSessionController.DATEFORMAT;
-		Date actualStartDate = format.parse(startDate.replaceAll("/", "-"));
-	    Date actualEndDate = format.parse(endDate.replaceAll("/", "-"));
-		int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(format.parse(startDate));
+		//DateFormat  format = LoginSessionController.DATEFORMAT;
+		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate.replaceAll("/", "-"));
+	    Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate.replaceAll("/", "-"));
+		int dayOfTheDateWithStartDate = CalendarUtil.getDayOfTheDate(	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate));
 		String weekStartDate = startDate;
 		switch (dayOfTheDateWithStartDate) {
-	        case 1:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,6);
+	        case 1:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,6,orgLocations.getDateFormat());
 	                 disbleCondition1.setLength(0);
 	                 disbleCondition2.setLength(0);
 	                 disbleCondition3.setLength(0);
@@ -736,19 +745,19 @@ public class TimesheetRestController {
 	                 disbleCondition5.append("disabled");
 	                 disbleCondition6.append("disabled");
 	                 break;
-	        case 2:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0);
+	        case 2:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0,orgLocations.getDateFormat());
 	                 break;
-	        case 3:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,1);
+	        case 3:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,1,orgLocations.getDateFormat());
 	                  disbleCondition1.setLength(0);
 	                 disbleCondition1.append("disabled");
 	             break;
-	        case 4:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,2);
+	        case 4:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,2,orgLocations.getDateFormat());
 	                 disbleCondition1.setLength(0);
                      disbleCondition2.setLength(0);
 			         disbleCondition1.append("disabled");
 		             disbleCondition2.append("disabled");
 	            break;
-	        case 5: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,3);
+	        case 5: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,3,orgLocations.getDateFormat());
 			        disbleCondition1.setLength(0);
 		            disbleCondition2.setLength(0);
 		            disbleCondition3.setLength(0);
@@ -756,7 +765,7 @@ public class TimesheetRestController {
 		            disbleCondition2.append("disabled");
 		            disbleCondition3.append("disabled");
 	            break;
-	        case 6:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,4);
+	        case 6:  weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,4,orgLocations.getDateFormat());
 			         disbleCondition1.setLength(0);
 		             disbleCondition2.setLength(0);
 		             disbleCondition3.setLength(0);
@@ -766,7 +775,7 @@ public class TimesheetRestController {
 		             disbleCondition3.append("disabled");
 		             disbleCondition4.append("disabled");
 	              break;
-	        case 7: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,5);
+	        case 7: weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,5,orgLocations.getDateFormat());
 			        disbleCondition1.setLength(0);
 		            disbleCondition2.setLength(0);
 		            disbleCondition3.setLength(0);
@@ -778,10 +787,10 @@ public class TimesheetRestController {
 		            disbleCondition4.append("disabled");
 		            disbleCondition5.append("disabled");
 	             break;
-	        default:   weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0);
+	        default:   weekStartDate = CalendarUtil.getPreviousDateByDecrementor(startDate,0,orgLocations.getDateFormat());
 	                 break;
        }
-		int dayOfTheDateWithEndDate = CalendarUtil.getDayOfTheDate(format.parse(endDate));
+		int dayOfTheDateWithEndDate = CalendarUtil.getDayOfTheDate(	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate));
 		switch (dayOfTheDateWithEndDate) {
 			case 2:   
 			           disbleCondition2.setLength(0);
@@ -839,24 +848,24 @@ public class TimesheetRestController {
 	                 break;
         }
 		
-		Date actualWeekStartDate = format.parse(weekStartDate.replaceAll("/", "-"));
+		Date actualWeekStartDate = 	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDate.replaceAll("/", "-"));
 		tabDiv.append("			                        <th>Mon<i>").append(weekStartDate).append("</i></th>");
-		String tuesDayDate =  CalendarUtil.getNextDate(weekStartDate);
+		String tuesDayDate =  CalendarUtil.getNextDate(weekStartDate,orgLocations.getDateFormat());
 		tabDiv.append("			                        <th>Tue<i>").append(tuesDayDate).append("</i></th>");
 		
-		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate);
+		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate,orgLocations.getDateFormat());
 		tabDiv.append("			                        <th>Wed<i>").append(WednesDayDate).append("</i></th>");
 		
-		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate);
+		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate,orgLocations.getDateFormat());
 		tabDiv.append("			                        <th>Thu<i>").append(ThursDayDate).append("</i></th>");
 		
-		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate);
+		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate,orgLocations.getDateFormat());
 		tabDiv.append("			                        <th>Fri<i>").append(FriDayDate).append("</i></th>");
 		
-		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate);
+		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate,orgLocations.getDateFormat());
 		tabDiv.append("			                        <th>Sat<i>").append(SaturdayDate).append("</i></th>");
 		
-		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate);
+		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate,orgLocations.getDateFormat());
 		tabDiv.append("			                        <th>Sun<i>").append(SundayDate).append("</i></th>");
 		
 		tabDiv.append("			                    </tr>");
@@ -877,27 +886,27 @@ public class TimesheetRestController {
 			disbleCondition1.setLength(0);
 			disbleCondition1.append("disabled");
 		}
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE").getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"TUE",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition2.setLength(0);
         	disbleCondition2.append("disabled");
 		}
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED").getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"WED",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition3.setLength(0);
         	disbleCondition3.append("disabled");
 		}
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU").getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"THU",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition4.setLength(0);
         	disbleCondition4.append("disabled");
 		} 
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI").getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"FRI",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition5.setLength(0);
         	disbleCondition5.append("disabled");
 		}
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT").getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SAT",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition6.setLength(0);
         	disbleCondition6.append("disabled");
 		}
-        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN").getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
+        if((!isFillMyTimeSheet) || (!pmhDateList.contains(CalendarUtil.getCurrentWeekDayByCalendar(currentCal,"SUN",orgLocations.getDateFormat()).getTime())) || !isNullOrEmpty(approvalStatus) && ((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()) && from.equalsIgnoreCase("user"))|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue()))){
         	disbleCondition7.setLength(0);
         	disbleCondition7.append("disabled");
 		} 
@@ -1212,7 +1221,7 @@ public class TimesheetRestController {
 				tabDiv.append("		    	<div class='timesheet_week_comm'>");
 				/*if(projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != 0){*/
 				if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
-					Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+					Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),timesheetFrequencyEndDate.replaceAll("/", "-"));
 					if(frequencyEndDate.equals(actualEndDate)){
 						StringBuilder attachmentDiv = attachmentsAndComments(approvalStatus,startDate, endDate,ts,projectMember.getProjects().getIsTimesheetAttachmentRequired(),from);
 						  tabDiv.append(attachmentDiv);
@@ -1272,7 +1281,7 @@ public class TimesheetRestController {
 	    	tabDiv.append("		        	<input type='button' onClick='newSaveTimesheet(\"Draft\",\""+from+"\");'  value='Save' class='time_btn time_dra' />");	
 			
 			if(StringUtils.isNotEmpty(timesheetFrequencyEndDate)){
-				Date frequencyEndDate = format.parse(timesheetFrequencyEndDate.replaceAll("/", "-"));
+				Date frequencyEndDate = 	commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),timesheetFrequencyEndDate.replaceAll("/", "-"));
 				if(frequencyEndDate.equals(actualEndDate))
 				tabDiv.append("		            <input type='button' onClick='newSaveTimesheet(\"Submitted\",\""+from+"\");'  value='Submit' class='time_btn' />");	
 			}

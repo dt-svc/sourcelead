@@ -229,7 +229,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields mt10">';
-							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"></input>';
+							result = result + '<input class="form-control input-sm" id="pfZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter your Zip code" type="text" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true" readonly></input>';
 							result = result + '</div>';
 							
 
@@ -475,7 +475,7 @@ function editCandidate(candidateId){
 --%>
 <script>
 function professionalProfile(candidateId){
-	  var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  
 	  $.ajax({
@@ -1449,7 +1449,7 @@ function makeAsPublicVisibility(){
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 		
-		//Adding Customized Visa to the list
+		/* //Adding Customized Visa to the list
         var select, chosen;
 	    select = $("#visaName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
@@ -1481,7 +1481,7 @@ function makeAsPublicVisibility(){
 			                }
 					       
 		    	         }
-	    	});
+	    	}); */
 	    
 	    
 	    //Adding Customized Skills to the list

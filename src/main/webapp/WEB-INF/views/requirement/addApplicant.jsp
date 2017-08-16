@@ -894,7 +894,7 @@ function discordApplicant(){
 	 $("input[name=PhoneNumber]").val('');
 	 $("input[name=Designation]").val('');
 	 $("select[name=NoticePeriod]").val('');
-	 $("select[name=WorkExperience]").val(0);
+	 $("select[name=WorkExperience]").val('');
 	 $("input[name=ExpectedCTC]").val('');
 	 $("input[name=CurrentCTC]").val('');
 	 $("input[name=Education]").val('');

@@ -10,11 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -38,6 +41,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
@@ -100,9 +104,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 @Autowired
 	 private ProjectApproverHierarchyService projectApproverHierarchyService;
 	
-	 
 	 @Autowired
 	 private ExpensesReportService expensesReportService;
+	 
+	 @Autowired
+	 CandidateService candidateService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -157,8 +163,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	
 	
 	@Override
-	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
-		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId);
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId,OrgLocations orgLocations) throws Exception {
+		List<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(userId,orgLocations);
 		return projectMembersList;
 		
 	}
@@ -769,6 +775,36 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			pm.setEmpName(sb.toString());
 		});
 		return (List<ProjectMembers>) projectMemberList;
+	}
+
+	@Override
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
+			Long orgRelationId) throws Exception {
+
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersByProjectId(projectId);
+
+		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
+				.filter(item -> item.getEmployee().getUser().getCandidateSet().stream()
+						.filter(predicate -> predicate.getOrgRelationId().getId().longValue() == orgRelationId)
+						.findAny().isPresent())
+				.collect(Collectors.toList());
+		projectMemberList.forEach(pm -> {
+			try {
+				StringBuilder sb = new StringBuilder();
+				if (pm.getEmployee().getUser().getLastName() != null) {
+					sb.append(pm.getEmployee().getUser().getFirstName()).append(" ")
+							.append(pm.getEmployee().getUser().getLastName());
+				} else {
+					sb.append(pm.getEmployee().getUser().getFirstName());
+				}
+				pm.setEmpName(sb.toString());
+
+			} catch (Exception exception) {
+				logger.error(ExceptionUtils.getFullStackTrace(exception));
+			}
+
+		});
+		return projectMemberfilteredList;
 	}
 
 }

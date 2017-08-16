@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -80,6 +81,7 @@ import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -97,7 +99,6 @@ import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -204,8 +205,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	@Autowired
     CandidateActivityCommonUtil candidateActivityCommonUtil;
 	
+	@Autowired
+	private  MasterCandidateService masterCandidateService;
+	
 	@Value("${env}")
 	private String environment;
+	
+	
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -379,6 +385,14 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("primarySkill") && !isNullOrEmpty(jsonObj.getString("primarySkill"))){
 						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 					}
+					
+					
+					MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+					}
+					candidate.setMasterCandidateId(masterCandidate);
 					 
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);
@@ -2992,7 +3006,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
 					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 					Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-					currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+					currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),converteDate);
 					reqsub.setSubmittedOn(currentDateInTimezone);
 				}
 		    }
@@ -3467,6 +3481,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			    if(jsonObj.has("primarySkill") && !isNullOrEmpty(jsonObj.getString("primarySkill"))){
 					 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 				 }
+			    
+			    MasterCandidate masterCandidate = null;
+				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+				if(null == masterCandidate){
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+				}
+				candidate.setMasterCandidateId(masterCandidate);
 			    
 			    candidateDao.storeCandidate(candidate);
 				CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
@@ -4614,6 +4635,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		
 		return requirementSubmission;
+	}
+
+	@Override
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(
+			OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer)
+			throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(orgLocations, requirementId, existingApplicantsIds, isClientOffer);
+	}
+
+	@Override
+	public RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId,
+			Long vendorLocationId) throws Exception {
+		return requirementSubmissionDao.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(sourceSubmissionId, vendorLocationId);
 	}
 
 }

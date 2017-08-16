@@ -81,12 +81,12 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	}
 
 	@Override
-	public Map<String, Map<String,String>> getYearsAndQuartersComboList() throws JSONException, ParseException {
+	public Map<String, Map<String,String>> getYearsAndQuartersComboList(String dateFormat) throws JSONException, ParseException {
 		 LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(1);
 		 Map<String, Map<String,String>> yearsAndQuartersComboList = new LinkedHashMap<String, Map<String,String>>();
 		 if(tsrYearsList != null && !tsrYearsList.isEmpty()){
 			 for(String year : tsrYearsList){
-				 Map<String, String> quarterlyDate = getStartAndEndDate(Integer.parseInt(year));
+				 Map<String, String> quarterlyDate = getStartAndEndDate(Integer.parseInt(year),dateFormat);
 				 yearsAndQuartersComboList.put(year, quarterlyDate);
 			 }
 		 }
@@ -94,7 +94,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	}
 	
 	
-	private Map<String, String> getStartAndEndDate(int years) {
+	private Map<String, String> getStartAndEndDate(int years,String dateFormat) {
 		      Map<String, String> startEndDate = new LinkedHashMap<>();
 		      int count = 1;
 		     Calendar YearStartDate = Calendar.getInstance();
@@ -116,12 +116,12 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 			    if(count==4)
 			    YearEndDate = Q1EndDate;
 			    
-			    String StartDate = LoginSessionController.DATEFORMAT.format(Q1StartDate.getTime());
-			    String endDate = LoginSessionController.DATEFORMAT.format(Q1EndDate.getTime());
+			    String StartDate = commonUtil.dateStrFromOrgDateFormatter(dateFormat,Q1StartDate.getTime());
+			    String endDate = commonUtil.dateStrFromOrgDateFormatter(dateFormat,Q1EndDate.getTime());
 			    startEndDate.put("Q"+count,StartDate+" TO "+endDate);
 			    count++;
 		   }
-		    startEndDate.put("All",LoginSessionController.DATEFORMAT.format(YearStartDate.getTime())+" TO "+LoginSessionController.DATEFORMAT.format(YearEndDate.getTime()));
+		    startEndDate.put("All",commonUtil.dateStrFromOrgDateFormatter(dateFormat,YearStartDate.getTime())+" TO "+commonUtil.dateStrFromOrgDateFormatter(dateFormat,YearEndDate.getTime()));
 			return startEndDate;
 		
 	}

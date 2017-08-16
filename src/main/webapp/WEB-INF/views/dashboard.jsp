@@ -55,7 +55,12 @@ width: 11.5%;
    right: 10px;
    top: 4px;
 } */
-
+.pdleft{
+padding-left:0;
+}
+.pdRight{
+padding-right:0;
+}
 </style>
 
  <style type="text/css">
@@ -201,7 +206,6 @@ overflow-x: auto;
 		     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 	    </div>
 	 </sec:authorize>  	
-	 
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -212,9 +216,10 @@ overflow-x: auto;
 					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
 					
-					<jsp:include page="resourceRequest.jsp"></jsp:include> 
+					<!-- Don't delete this commented code. Functionality is in progress -->
+					<%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
 					
-			    <div class="clearfix row mb"> 
+			    <div class="col-md-6 mb pdleft"> 
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 			   	 	 </sec:authorize>
@@ -223,11 +228,13 @@ overflow-x: auto;
 			    	 </sec:authorize> --%>
 			    </div>
 		    </c:if>
-		     <div class="clearfix row mb"> 
+		     <div class="col-md-6 mb pdRight"> 
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
 		     </div>
+		     
+		     <div class="clearfix"></div>
 	    
 	    
 	   
