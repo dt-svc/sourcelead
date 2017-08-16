@@ -1047,7 +1047,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 
 <script>
 function getPostedOrgJobs(id){
-	if(id !=null && id != '' && id !='undefined'){
+	if(id !=null && id !='undefined' && id>=0){
 		var locationId = $("#"+id+"locationId").val();
 		 $("#postedOrg").val(locationId);
 	}else{
