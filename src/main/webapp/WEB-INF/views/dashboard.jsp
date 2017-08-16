@@ -365,6 +365,11 @@ function checkForOldrecords(){
 	               	  result=result+'<div class="sideMask" style="display:none"></div>';
 	               	  $("#configurePopUpDiv").empty();
 	               	  $("#configurePopUpDiv").append(result);
+	        	}else{
+	        		  var result = '';
+	               	  result=result+'<div class="sideMask" style="display:none"></div>';
+	               	  $("#configurePopUpDiv").empty();
+	               	  $("#configurePopUpDiv").append(result);
 	        	}
 	        }
 	 }); 
