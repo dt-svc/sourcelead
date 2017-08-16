@@ -347,7 +347,7 @@ public class OrgDaoImpl implements OrgDao {
 			String query = "select u.id, u.FIRST_NAME, u.last_name, u.doc_file, r.display_name, ur.reporting_manager_id, o.primary_contact_user_id " + 
 					" from user u, user_role ur, roles r, org o, org_locations ol " + 
 					" where r.id = ur.role_id and u.id = ur.user_id and ur.org_locations_id = "+orgLocationId.longValue() + 
-					" and o.id = ol.org_id and ol.id = ur.org_locations_id order by ur.reporting_manager_id;";
+					" and o.id = ol.org_id and ol.id = ur.org_locations_id order by ur.reporting_manager_id;".toUpperCase();
 			List<Object[]> result = session.createSQLQuery(query).list();
 			for(Object[] record : result) {
 				UserDTO user = new UserDTO();
@@ -370,7 +370,7 @@ public class OrgDaoImpl implements OrgDao {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORG"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(noRecords,"ORG"));
 			throw new SourceLeadObjectNotFoundException(message.toString());	
 		} finally {
 			session.close();
