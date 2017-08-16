@@ -811,6 +811,7 @@ public class Constants {
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
+	public static final String GUEST = "Guest";
 	
 
 }

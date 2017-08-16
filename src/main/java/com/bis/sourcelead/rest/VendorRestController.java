@@ -1185,7 +1185,7 @@ public class VendorRestController {
 				
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
-				 String type= responderType;
+//				 String type= responderType;
 				 if("Vendor".equalsIgnoreCase(responderType)){
 					 responderType = "Client";
 				 }else if("Client".equalsIgnoreCase(responderType)){
@@ -1224,22 +1224,11 @@ public class VendorRestController {
 						//  This is to get the number of Contacts based  on Org Relation Id
 						 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
 						 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
-						 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(clientVendor.getOrgRelationId(), loginUser.getId(),loginOrgLocation.getId(),type);
-						if(!orgSpocsList.isEmpty()){
-							 Long contactSize = (long) orgSpocsList.size();
-							 clientVendor.setNoContacts(contactSize);
-						}
-						else{
-							clientVendor.setNoContacts(0L);
-						}
-						/* Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
-						 clientVendor.setNoContacts(numberOfContacts);*/
-						 
-						
-						List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(clientVendor.getOrgLocationId(),clientVendor.getId(),loginUser,loginOrgLocation);
-						if(vendorReleasedJobsList != null && vendorReleasedJobsList.size()>0){
-							
-						}
+						 if(clientVendor.getNoContacts() !=null) {
+							 clientVendor.setNoContacts(clientVendor.getNoContacts());
+						 }else {
+							 clientVendor.setNoContacts(0L);
+						 }
 						
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
