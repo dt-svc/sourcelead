@@ -27,3 +27,7 @@ ALTER TABLE `sourcelead`.`PROJECT_APPROVER_HIERARCHY` ADD FOREIGN KEY FK1_PROJEC
 
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_CLIENT_PROJECT','VARCHAR(10) NULL AFTER `PROJECT_SEQUENCE_NUMBER`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','PROJECT_MODE','VARCHAR(10) NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PROJECT_DETAILS_FILLED','VARCHAR(10) NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PROJECT_MEMBERS_FILLED','VARCHAR(10) NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PROJECT_ADDITIONAL_DETAILS_FILLED','VARCHAR(10) NULL');

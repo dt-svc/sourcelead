@@ -317,10 +317,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String storeProject(JSONObject jsonObj, List<ProjectDocumentBO> projectDocumentBOList) throws Exception {
+	public Long storeProject(JSONObject jsonObj, List<ProjectDocumentBO> projectDocumentBOList) throws Exception {
 		    
 		  
-		String resultJson = null;
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
@@ -457,6 +456,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		projects.setIsClientProject(Constants.YES);
+		projects.setProjectMode("Draft");
+		projects.setIsProjectDetailsFilled(Constants.YES);
+		projects.setIsProjectMembersFilled(Constants.NO);
+		projects.setIsProjectAdditionalDetailsFilled(Constants.NO);
 		Projects updatedProjects = saveProject(projects);
 		
 		/*
@@ -557,8 +561,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 		}
 		 
-	  SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
-	  return "projectDashboard";
+	  //SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");
+	  return updatedProjects.getId();
 		 
 		
 	}

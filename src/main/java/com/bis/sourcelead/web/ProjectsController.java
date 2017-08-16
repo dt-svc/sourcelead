@@ -73,9 +73,14 @@ public class ProjectsController {
 	 @Autowired
 	 CountriesService countriesService;
 	 
-		@Autowired
-		CommonUtil commonUtil;
+	 @Autowired
+	 CommonUtil commonUtil;
 	 
+	 protected boolean isNullOrEmpty(String str)
+	 {
+		return (str == null || "".equals(str.trim()));
+	 }
+ 
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -85,11 +90,10 @@ public class ProjectsController {
 	 
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/project")
-		public ModelAndView projects(HttpServletRequest request) throws Exception {
+		public ModelAndView projects(@RequestParam(value="projectUUID", required=false) String projectUUID,HttpServletRequest request) throws Exception {
 		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   
 				ModelAndView model = new ModelAndView();
 				
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -101,7 +105,7 @@ public class ProjectsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 				
-				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
+				/*Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
 				for(OrgRelations ocl :orgClientList){
 					if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 						if(ocl.getResponderLocationId() != null){
@@ -119,10 +123,20 @@ public class ProjectsController {
 			    model.addObject("add_clientList", orgClientList);
 			    
 				Collection<Org> orgsList = orgService.getOrgs();
-				model.addObject("add_client", orgsList);
+				model.addObject("add_client", orgsList);*/
 				
                 Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 				model.addObject("user_List", userList);
+				
+				if(!isNullOrEmpty(projectUUID)){
+					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+					if(projects != null){
+						model.addObject("savedProjectId", projects.getId());
+						model.addObject("isProjectDetailsFilled", projects.getIsProjectDetailsFilled());
+						model.addObject("isProjectMembersFilled", projects.getIsProjectMembersFilled());
+					}
+					
+				}
 				
 				model.setViewName("project/project");
 				model.addObject("sourceleadUrl", sourceleadUrl);

@@ -153,6 +153,19 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+    
+    @Column(name = "PROJECT_MODE")
+    private String projectMode;
+    
+    @Column(name = "IS_PROJECT_DETAILS_FILLED")
+    private String isProjectDetailsFilled;
+    
+    @Column(name = "IS_PROJECT_MEMBERS_FILLED")
+    private String isProjectMembersFilled;
+    
+    @Column(name = "IS_PROJECT_ADDITIONAL_DETAILS_FILLED")
+    private String isProjectAdditionalDetailsFilled;
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
@@ -763,6 +776,38 @@ public class Projects implements Serializable{
 
 	public void setIsClientProject(String isClientProject) {
 		this.isClientProject = isClientProject;
+	}
+
+	public String getProjectMode() {
+		return projectMode;
+	}
+
+	public void setProjectMode(String projectMode) {
+		this.projectMode = projectMode;
+	}
+
+	public String getIsProjectDetailsFilled() {
+		return isProjectDetailsFilled;
+	}
+
+	public void setIsProjectDetailsFilled(String isProjectDetailsFilled) {
+		this.isProjectDetailsFilled = isProjectDetailsFilled;
+	}
+
+	public String getIsProjectMembersFilled() {
+		return isProjectMembersFilled;
+	}
+
+	public void setIsProjectMembersFilled(String isProjectMembersFilled) {
+		this.isProjectMembersFilled = isProjectMembersFilled;
+	}
+
+	public String getIsProjectAdditionalDetailsFilled() {
+		return isProjectAdditionalDetailsFilled;
+	}
+
+	public void setIsProjectAdditionalDetailsFilled(String isProjectAdditionalDetailsFilled) {
+		this.isProjectAdditionalDetailsFilled = isProjectAdditionalDetailsFilled;
 	}
 	
 }

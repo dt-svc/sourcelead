@@ -12,37 +12,24 @@
 
 <script src="resources/js/editor.js"></script>
 <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+
+
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
 }
-</style>
-<script>
-function validateTaskName(){
 
-		var Taskname= $("#taskName").val();
-		var Taskdesc= $("#taskDescription").val();
-		var checkMaxTsRowNum = $("#maxTsRowNum").val();
-		for(i = 1; i<checkMaxTsRowNum;i++){
-			var oldTaskname = $("#" + i + "taskName").val()
-			var oldTaskdesc = $("#" + i + "taskDescription").val()
-			if(oldTaskname == Taskname && oldTaskdesc == Taskdesc){
-// 				$("#save_task").hide();
-				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
-				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
-				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
-				document.getElementById("taskName").setAttribute('record-exist', 'yes');
-				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
-				break;
-			}else{
-				$("#save_task").show();
-				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
-				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
-			}
-			
-		}
+.project_tabs {
+    border:none !important;
+    }
+    
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
 }
-</script>
+</style>
+
 
 <script type="text/javascript">
 	function validateProjectSequeneNumber() {
@@ -117,14 +104,16 @@ function validateTaskName(){
 		<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
    			  <ul class="newPrTabsMenu">
-				<li class="current"><a href="#tab-a">Details</a></li>
-				<li><a href="#tab-b">Assign Members</a></li>
-				<li><a href="#tab-c">Additional Details</a></li>
+				<li class="current" onclick="getProjectDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="assignedMembers" onclick="getAssignedMembers();">Assign Members</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="additionalDetails" onclick="getAdditionalDetails();">Additional Details</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
+			 <input type="hidden" name="projectId" id=projectId value=""/>
 			  <div class="clearfix"></div>
 		
-		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
+		<div class="project_tabs">
+		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
 			<form:form id="project_form" name="project_form" method="post"
 				enctype="multipart/form-data">
 				<div class="row">
@@ -520,9 +509,11 @@ function validateTaskName(){
 
 			</form:form>
 		</div>
-			</div>
-      	</div>
-	</div>
+	   <jsp:include page="projectAssignedMembers.jsp" />
+   </div>
+		</div>
+   	</div>
+</div>
 </section>
 <!-- Content Area Ends-->
 <script>
@@ -585,266 +576,62 @@ function getStatus(){
 </script>
 
 
-<!-- =============================== AddTask Divs  ============================ -->
-<div id="divTaskTd1" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDtaskName"
-		name="REPLACEROWIDtaskName" value="TASKNAMEVALUE" /><span
-		id="REPLACEROWIDtaskNameValue">TASKNAMEVALUE</span>
-</div>
-
-<div id="divTaskTd2" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDtaskBillableType"
-		name="REPLACEROWIDtaskBillableType" value="TASKBILLABLETYPEVALUE" /><span
-		id="REPLACEROWIDtaskBillableTypeValue">TASKBILLABLETYPEVALUE</span>
-</div>
-
-<div id="divTaskTd3" style="display: none; float: left;">
-	<input type="hidden" id="REPLACEROWIDtaskDescription"
-		name="REPLACEROWIDtaskDescription" value="TASKDESCRIPTIONVALUE" /><span
-		id="REPLACEROWIDtaskDescriptionValue">TASKDESCRIPTIONVALUE</span>
-</div>
-
-<div id="divTaskTd4" style="display: none; float: left;">
-	<span><a title="Edit" href="javascript:void(0)"
-		onclick="editTask(REPLACEROWID)"><i class="fa fa-edit"></i></a></span>&nbsp;&nbsp;&nbsp;
-	<span><a title="Remove" href="javascript:void(0)"
-		onclick="removeRow(REPLACEROWID)"><i class="fa fa-close"></i></a></span>
-</div>
-<!-- =============================== AddTask Divs  ============================ -->
-<!-- Add Task Script start -->
-<script type="text/javascript">
-	function addTasks() {
-		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
-		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
-		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
-			if ($('#taskName').val() == '') {
-				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
-			}
-			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
-				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
-			}
-			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
-				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-5000 characters</span>");
-			}
-			return true;
-		} 
-		
-		var tbl = document.getElementById("projectTaskTbl");
-		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-		$("#addTaskCount").html(maxRowNum);
-		var row = tbl.insertRow(maxRowNum);
-		row.setAttribute("id", "divTsRow" + maxRowNum);
-
-		var taskName = $('#taskName').val();
-		var taskDescription = $('#taskDescription').val();
-		var taskBillableType = $('#taskBillableType').val();
-
-		var cell0 = row.insertCell(0);
-		var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
-		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (taskName));
-		cell0.innerHTML = divTsTd1Str;
-		
-		var cell1 = row.insertCell(1);
-		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
-		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,
-				(taskBillableType));
-		cell1.innerHTML = divTsTd2Str;
-
-		var cell2 = row.insertCell(2);
-		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
-		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,
-				(taskDescription));
-		cell2.innerHTML = divTsTd3Str;
-
-		var cell3 = row.insertCell(3);
-		var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
-		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell3.innerHTML = divTsTd4Str;
-
-		$("#taskName").val('');
-		$("#taskDescription").val('');
-		$("#taskBillableType").val('Billable');
-		$('#taskBillableType').selectpicker('refresh');
-		addtasksCountafterAddingTask();
-	}
-</script>
-<script type="text/javascript">
-	function removeRow(rowId) {
-		addtasksCountafterRemoving()
-		document.getElementById('divTsRow' + rowId).style.display = 'none';
-		var r = document.getElementById('projectTaskTbl').rows[rowId];
-		var count = 2 * (r.cells.length);
-		for (i = 0; i <= count; i++) {
-			r.deleteCell(0);
-		}
-	}
-</script>
-<script type="text/javascript">
-	function editTask(rowId) {
-		$('#addTask').find('p.jquery_form_error_message').remove();	 	
-		var updateTaskName = $("#" + rowId + "taskName").val();
-		var updateTaskDescription = $("#" + rowId + "taskDescription").val();
-		var updateTaskBillableType = $("#" + rowId + "taskBillableType").val();
-		$("#taskName").val('');
-		$("#taskDescription").val('');
-		$("#taskBillableType").val('Billable');
-		$('#taskBillableType').selectpicker('refresh');
-		$("#addTaskText").html('Update Task');
-		$("#taskName").val(updateTaskName);
-		$("#taskDescription").val(updateTaskDescription);
-		$('#taskBillableType').val(updateTaskBillableType);
-		$('#taskBillableType').selectpicker('refresh');
-		$("#taskId").val(rowId);
-		$("#save_task").removeAttr('onclick');
-		$("#save_task").attr('onclick', 'updateTask(' + rowId + ');');
-	}
-</script>
-
-<script type="text/javascript">
-	function updateTask(rowId) {
-		$("#" + rowId + "taskName").val($("#taskName").val());
-		$("#" + rowId + "taskDescription").val($("#taskDescription").val());
-		$("#" + rowId + "taskBillableType").val($("#taskBillableType").val());
-		
-		$("#" + rowId + "taskNameValue").html($("#taskName").val());
-		$("#" + rowId + "taskDescriptionValue").html($("#taskDescription").val());
-		$("#" + rowId + "taskBillableTypeValue").html($("#taskBillableType").val());
-		
-		$("#taskName").val('');
-		$("#taskDescription").val('');
-		$("#taskBillableType").val('Billable');
-		$('#taskBillableType').selectpicker('refresh');
-		$("#addTaskText").html('Add Task');
-		$("#save_task").removeAttr('onclick');
-		$("#save_task").attr('onclick', 'addTasks();');
-
-	}
-</script>
 <script>
 	$(document).ready(function() {
-		$("#maxTsRowNum").val('6');
-		addSourceleadTasks();
-		document.getElementById("project_form").reset();
 		$('#flatPercentageId').attr('style','visibility:hidden');
 		$('#flatPercentage').attr('style','visibility:hidden');
 		$('#ProjectDescription').summernote({height:300});
+		
+			
+		var savedProjectId = '${savedProjectId}';
+		if(savedProjectId != null && savedProjectId != '' && savedProjectId != 'undefined'){
+			$("#projectId").val(savedProjectId);
+			
+			var isProjectDetailsFilled = '${isProjectDetailsFilled}';
+			if(isProjectDetailsFilled == 'N'){
+				var assignedMembers = document.getElementById("assignedMembers");
+				if(assignedMembers){
+					assignedMembers.href = "#";
+					assignedMembers.className = "disabledLink";
+				}
+			}
+			var isProjectMembersFilled = '${isProjectMembersFilled}';
+			if(isProjectMembersFilled == 'N'){
+				var additionalDetails = document.getElementById("additionalDetails");
+				if(additionalDetails){
+					additionalDetails.href = "#";
+					additionalDetails.className = "disabledLink";
+				}
+			}
+			
+		}else{
+			var assignedMembers = document.getElementById("assignedMembers");
+			if(assignedMembers){
+				assignedMembers.href = "#";
+				assignedMembers.className = "disabledLink";
+			}
+			
+			var additionalDetails = document.getElementById("additionalDetails");
+			if(additionalDetails){
+				additionalDetails.href = "#";
+				additionalDetails.className = "disabledLink";
+			}
+		}
+		
+		$("#tab-a").show()
+	    $(".newPrTabsMenu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("current");
+	        $(this).parent().siblings().removeClass("current");
+	        var tab = $(this).attr("href");
+	        $(".newPrTabs_inn").not(tab).css("display", "none");
+	        $(tab).fadeIn();
+	    });
 	});
 </script>
 
-<script type="text/javascript">
-	function addSourceleadTasks() {
-
-		var checkMaxTsRowNum = $("#maxTsRowNum").val();
-		if (checkMaxTsRowNum == 6) {
-			var tbl = document.getElementById("projectTaskTbl");
-			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-			$("#addTaskCount").html(maxRowNum);
-
-			var sourceleadUrl = '${sourceleadUrl}';
-			$
-					.ajax({
-						type : "GET",
-						url : sourceleadUrl + "/sourceLeadTasks",
-						success : function(data) {
-
-							var json = JSON.parse(data);
-							var output = "";
-							for (var i = 0; i < json.length; i++) {
-								$('taskButton[onclick]').removeAttr('onclick');
-								var opt = json[i];
-								var row = tbl.insertRow(opt.Id);
-								row.setAttribute("id", "divTsRow" + opt.Id);
-								var taskName = opt.taskName;
-								var taskDescription = opt.taskDescription;
-								var cell0 = row.insertCell(0);
-								var divTsTd1Str = document.getElementById("divTaskTd1").innerHTML;
-								divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (opt.Id));
-								divTsTd1Str = divTsTd1Str.replace(/TASKNAMEVALUE/g, (opt.taskName));
-								cell0.innerHTML = divTsTd1Str;
-								
-								var cell1 = row.insertCell(1);
-								var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
-								divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (opt.Id));
-								divTsTd2Str = divTsTd2Str.replace(/TASKBILLABLETYPEVALUE/g,(opt.billableType));
-								cell1.innerHTML = divTsTd2Str;
-								
-								var cell2 = row.insertCell(2);
-								var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
-								divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (opt.Id));
-								divTsTd3Str = divTsTd3Str.replace(/TASKDESCRIPTIONVALUE/g,(opt.description));
-								cell2.innerHTML = divTsTd3Str;
-
-								var cell3 = row.insertCell(3);
-								var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
-								divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (opt.Id));
-								cell3.innerHTML = divTsTd4Str;
-
-							}
-
-						}
-					});
-		}
-
-	}
-</script>
 
 
-<script type="text/javascript">
-	function addtasksCountafterRemoving() {
-
-		var tasksCount = $("#maxTsRowNum").val();
-		var count = tasksCount;
-		var addtaskcount = null;
-		for (i = 0; i < count; i++) {
-
-			if ($('#divTsRow' + i).filter(function() {
-				return $(this).css('display') !== 'none';
-			}).length) {
-				addtaskcount++
-			}
-		}
-		$("#addTaskCount").html(addtaskcount - 2);
-
-	}
-</script>
-
-<script type="text/javascript">
-	function addtasksCountafterAddingTask() {
-
-		var tasksCount = $("#maxTsRowNum").val();
-		var count = tasksCount;
-		var addtaskcount = null;
-		for (i = 0; i < count; i++) {
-
-			if ($('#divTsRow' + i).filter(function() {
-				return $(this).css('display') !== 'none';
-			}).length) {
-				addtaskcount++
-			}
-		}
-		$("#addTaskCount").html(addtaskcount - 1);
-
-	}
-</script>
-
-<!-- Add Task Script Ends -->
-<script type="text/javascript">
-function flushProjectTasks(){
-	$("#taskName").val('');
-	$("#taskDescription").val('');
-	$("#addTaskText").html('Add Task');
-	$("#save_task").removeAttr('onclick');
-	$("#save_task").attr('onclick', 'addTasks();');
-	$("input#taskName").removeClass("error");
-	 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
-	$('#addTask').find('p.jquery_form_error_message').remove();	
-}
-</script>
 
 <script type="text/javascript">
 	function saveProject() {
@@ -886,9 +673,13 @@ function flushProjectTasks(){
 		  	    	     dataType : 'json',
 						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
-							if (result == 'projectDashboard') {
-								location.replace(sourceleadUrl
-										+ "/projectDashboard");
+							if (result == projectId') {
+								 $("#projectId").val(projectId);
+								  $("#loading").removeAttr("style");
+								 var assignedMembers = document.getElementById("assignedMembers");
+								 $("assignedMembers").removeClass("disabledLink");
+								 assignedMembers.href="#tab-b"; 
+								 assignedMembers.click();
 							}
 
 						},
@@ -907,6 +698,46 @@ function flushProjectTasks(){
 	function flushSaveProject() {
 		$("#save_project").removeAttr("disabled");
 	}
+</script>
+
+
+<script>
+function getProjectDetails(){
+	var projectId = document.getElementById("projectId").value;
+	if(projectId){
+		var sourceleadUrl ='${sourceleadUrl}';
+/*         $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
+	        success: function(json) {
+	        	
+	        	 $("input[name=templateName]").val(json.templateName);
+	        	 $("textarea[name=description]").val(json.description);
+	        	 
+	        	 $("#onboardTasksList").empty();
+		        
+	        },
+	    });  */
+	}
+}
+</script>
+
+<script>
+function getAssignedMembers(){
+	var projectId = document.getElementById("projectId").value;
+	if(projectId){
+		
+	}
+}
+</script>
+
+<script>
+function getAdditionalDetails(){
+	var projectId = document.getElementById("projectId").value;
+	if(projectId){
+		
+	}
+}
 </script>
 
 
