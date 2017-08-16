@@ -100,20 +100,6 @@ function validateTaskName(){
 	}
 </script>
 
-
-<!-- <script>
-function isclientChckbox(){
-	if($("#isClinet").val() == "N"){
-		$("#isClinet").val("Y");
-		document.getElementById("selectClient").style.display="block";
-	}else{
-		document.getElementById("selectClient").style.display="none";
-		$("#isClinet").val("N");
-		
-	}
-}
-</script> -->
-
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -122,13 +108,23 @@ function isclientChckbox(){
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a>
-			&raquo;Create Project
+			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
 		<div id="loading"></div>
-		<div
-			class="clearfix form-area form-horizontal toggle-div remove-div mt">
+		
+		<div class="newPrDetails newPrDetailsPMO"> 
+      		<div class="newPrTabs">
+   			  <ul class="newPrTabsMenu">
+				<li class="current"><a href="#tab-a">Details</a></li>
+				<li><a href="#tab-b">Assign Members</a></li>
+				<li><a href="#tab-c">Additional Details</a></li>
+				<div class="clearfix mb"></div>
+			  </ul>
+			  <div class="clearfix"></div>
+		
+		<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<form:form id="project_form" name="project_form" method="post"
 				enctype="multipart/form-data">
 				<div class="row">
@@ -145,28 +141,6 @@ function isclientChckbox(){
 							</div>
 						</div>
 
-						<%-- <div class="form-group">
-							<label class="col-md-3">Is Client project ?</label>
-							<div class="col-md-9">
-								
-								<div class="row">
-									<div class="col-md-1 mt5 paddingRight">
-										<input type="checkbox" name="isclient" value="N" id="isClinet" onclick="isclientChckbox();">
-									</div>
-									<div class="col-md-11 paddingLeft" id="selectClient" style="display: none;">
-									<select class="form-control select-bg chosen-select" name="selectClient" id="addClientId" >
-										<option value=''>-- Select Client --</option>
-										<c:forEach var="option" items="${add_clientList}">
-											<option value="${option.orgLocationId}">${option.orgName}</option>
-										</c:forEach>
-									</select> <span class="hidden">Enter Project Id</span>
-							</div>
-								</div>
-							
-							</div>
-						</div> --%>
-						
-						
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">
@@ -546,6 +520,8 @@ function isclientChckbox(){
 
 			</form:form>
 		</div>
+			</div>
+      	</div>
 	</div>
 </section>
 <!-- Content Area Ends-->
