@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Org;
@@ -61,6 +62,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
+	
 	
 	/**
 	 * used to add spoc for vendor and client
@@ -163,6 +165,8 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 							&& ("Y".equals(jsonObj.getString("isMailSent")))){
 						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation,orgLocations);
 					}
+				  
+				 commonUtil.updateClientVendorElk(orgRelation,orgLocations,user,responderType);
 				  
 				logger.debug("Vendor Contac is added successfully");
 				} 
