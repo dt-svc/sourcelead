@@ -99,7 +99,9 @@ function validateTaskName(){
 		 document.getElementById("FileUploadContainer").removeChild(div.parentNode);
 	}
 </script>
-<script>
+
+
+<!-- <script>
 function isclientChckbox(){
 	if($("#isClinet").val() == "N"){
 		$("#isClinet").val("Y");
@@ -110,7 +112,7 @@ function isclientChckbox(){
 		
 	}
 }
-</script>
+</script> -->
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -143,7 +145,7 @@ function isclientChckbox(){
 							</div>
 						</div>
 
-						<div class="form-group">
+						<%-- <div class="form-group">
 							<label class="col-md-3">Is Client project ?</label>
 							<div class="col-md-9">
 								
@@ -162,7 +164,9 @@ function isclientChckbox(){
 								</div>
 							
 							</div>
-						</div>
+						</div> --%>
+						
+						
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
 							<div class="col-md-9">

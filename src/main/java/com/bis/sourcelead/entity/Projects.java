@@ -50,6 +50,9 @@ public class Projects implements Serializable{
 	@Column(name = "PROJECT_SEQUENCE_NUMBER")
 	private String projectSequeneNumber;
 	
+    @Column(name = "IS_CLIENT_PROJECT")
+    private String isClientProject;
+	
     @Column(name = "PROJECT_NAME")
     private String projectName;
  
@@ -752,6 +755,14 @@ public class Projects implements Serializable{
 	public void setGeneratedId(String generatedId)
 	{
 		this.generatedId = generatedId;
+	}
+
+	public String getIsClientProject() {
+		return isClientProject;
+	}
+
+	public void setIsClientProject(String isClientProject) {
+		this.isClientProject = isClientProject;
 	}
 	
 }

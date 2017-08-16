@@ -72,9 +72,20 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
-				<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
-	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Add Project</a></li>		
-	             </sec:authorize>	
+	             
+	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
+							<a onclick="getActions();" class="action"
+								href="javascript:void(0)">Add Project <i
+								class="fa fa-caret-down"></i>
+							</a>
+							<div class="action-pop">
+								<span> 
+								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
+								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Client Project</a>
+								</span>
+							</div>
+						</sec:authorize></li>
+	             
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -273,7 +284,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
-		 $("#filter2ApprovedPop").slideUp(200);
+		 $("#filter2ApprovedPop,.action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -285,7 +296,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop").slideUp(200);
+		$("#filter1ApprovedPop,.action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -994,5 +1005,20 @@ $(document).ready(function() {
   }
 </script>
 </html>
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(" #filter2ApprovedPop, #filter1ApprovedPop").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />	
