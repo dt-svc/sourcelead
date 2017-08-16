@@ -764,6 +764,7 @@ function jpagination(url){
             pages: 1
         }),
         "columns": [
+        	{ "data": "generatedId" },
             { "data": "jobId" },
             { "data": "jobTitle"},
             { "data": "clientName"},
@@ -776,14 +777,30 @@ function jpagination(url){
             { "data": "requirementUUID" }
         ],
         "columnDefs": [ {
+	   	  	"targets": colIndex++,
+		  	"data": "generatedId",
+		  	"sortable": false,
+		  	"render": function(data, type, opt, meta) {
+		  		 var result = "";
+		  		 result = result +"<td>";
+		  	  	 if(opt.generatedId != '' && opt.generatedId != null){
+		  	  		
+		  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
+		  	    	}else{
+		  	  		 result = result +"<div>-----</div>";
+		  	  	 }
+		  		 result = result +"</td>";
+	             return  result;
+		  	}
+	        },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "jobId",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		 result = result +"<td>";
-	    	  	  	 if(opt.generatedId != '' && opt.generatedId != null){
-	    	  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
+	    	  	  	 if(opt.jobId != '' && opt.jobId != null){
+	    	  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
 	    	  	    	}else{
 	    	  	  		 result = result +"<div>-----</div>";
 	    	  	  	 }
@@ -1069,7 +1086,7 @@ function jpagination(url){
             ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[7,'desc']],
+	    	"aaSorting": [[8,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
