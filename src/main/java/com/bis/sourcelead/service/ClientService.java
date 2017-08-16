@@ -17,16 +17,16 @@ public interface ClientService {
 
 	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org org) throws Exception;
 
-	public void updateClientDetails(JSONObject jsonObj,Long orgRelationId, Long clientLocationId, Long loginLocationId) throws Exception;
+	public void updateClientDetails(JSONObject jsonObj,Long orgRelationId, Long clientLocationId, Long loginLocationId, User user) throws Exception;
 
 
-	public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId, Long loginOrgId) throws JSONException, Exception;
+	public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId, Long loginOrgId, User user) throws JSONException, Exception;
 
 
 	public OrgSpoc updateVendorContactDetails(JSONObject jsonObj, Long spocId, Long id, User loginUser, Long ownerId, Long spocUserId,OrgLocations orgLocation, String type) throws Exception;
 
 	void saveOrUpdateClientVendorElkDocument(Org org,OrgLocations clientOrgLocations, String responderType, OrgSpoc orgSpoc,
-			OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate) throws Exception;
+			OrgRelations orgRelationsList, SubmissionTemplate submissionTemplate, User user,OrgLocations loginOrgId) throws Exception;
 	
 	public void sendAcceptEmailToClientOrVendor(OrgSpoc orgSpoc,User loginUser,OrgLocations orgLocations)throws Exception;
 
@@ -35,4 +35,6 @@ public interface ClientService {
 	List<Object> getAllUniversalSearchVendorList(OrgLocations orgLocation, String searchValue, String searchType) throws Exception;
 	
 	List<Object> getAllUniversalSearchClientList(OrgLocations orgLocations, String serachValue, String searchType) throws Exception;
+
+
 }

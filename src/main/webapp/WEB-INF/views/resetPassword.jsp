@@ -61,7 +61,7 @@
 </div>  
 <input id="autocomplete"/>&nbsp;<input id="submit" type="submit"/>
   
-	<script src="resources/js/jquery.min.js"></script>
+	  <script src="resources/js/jquery-1.11.1.min.js"></script>
     <script src="resources/js/jquery-ui.js"></script>
     <script src="resources/js/bootstrap.min.js"></script>
     <script src="resources/js/jquery-fun.js"></script> 
