@@ -167,17 +167,6 @@ public class RequirementIndex {
 	
 	private String generatedId;
 	
-	
-	public String getGeneratedId()
-	{
-		return generatedId;
-	}
-
-	public void setGeneratedId(String generatedId)
-	{
-		this.generatedId = generatedId;
-	}
-
 	public String getManagerUserId() {
 		return managerUserId;
 	}
