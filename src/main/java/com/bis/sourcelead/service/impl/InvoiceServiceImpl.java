@@ -2388,8 +2388,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			List<MultipartFile> attachedfileList, String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory)
 					throws Exception {
 
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
 
 		Invoice invoice = null;
 
@@ -2474,11 +2473,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 
 		if (jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))) {
-			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
+			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
 		}
 		if (jsonObj.has("dueDate") && !"".equalsIgnoreCase(jsonObj.getString("dueDate"))) {
-			Date dueDate = format.parse(jsonObj.getString("dueDate"));
+			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("dueDate"));
 			invoice.setDueDate(dueDate);
 		}
 
@@ -2640,8 +2639,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					throws NumberFormatException, Exception {
 		Set<InvoiceLineItems> expensesinvoicelineitemsSet = new HashSet<>();
 
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		/*String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 
 		List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 
@@ -2667,7 +2666,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					if(jsonObj.has(i + "edate")){
 						if (null != jsonObj.getString(i + "edate")
 								&& !"".equalsIgnoreCase(jsonObj.getString(i + "edate"))) {
-							Date expenseDate = format.parse(jsonObj.getString(i + "edate"));
+							Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i + "edate"));
 							invoiceLineItems.setStartDate(expenseDate);
 						}	
 					}

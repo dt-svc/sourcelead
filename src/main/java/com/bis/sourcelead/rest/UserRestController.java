@@ -933,7 +933,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 		
 		 private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
 			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
-			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			 StringBuilder fromNameBuilder=new StringBuilder();
 		     EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
@@ -946,7 +946,7 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 
-			 globalVarsMap.put("projectStartdate",sdf.format(projects.getStartDate()));
+			 globalVarsMap.put("projectStartdate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 			 globalVarsMap.put("projectEnddate",changedEndDate);
 			 
 			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
@@ -1177,14 +1177,14 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
 					  
 					  pmh.setProjectMemberId(projectMembers);
 			  		  pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
-			  		  String pattern = "dd-MM-yyyy";
-		    	      SimpleDateFormat format = new SimpleDateFormat(pattern);
+			  		  //String pattern = "dd-MM-yyyy";
+		    	     // SimpleDateFormat format = new SimpleDateFormat(pattern);
 		    	      if(jsonObj.has("Re-StartDate") && !isNullOrEmpty(jsonObj.getString("Re-StartDate"))){
-		    	    	  Date startDate = format.parse(jsonObj.getString("Re-StartDate"));
+		    	    	  Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-StartDate"));
 						  pmh.setProjectAssignedDate(startDate);
 		    	      }
 		    	      if(jsonObj.has("Re-EndDate") && !isNullOrEmpty(jsonObj.getString("Re-EndDate"))){
-		    	    	  Date endDate = format.parse(jsonObj.getString("Re-EndDate"));
+		    	    	  Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("Re-EndDate"));
 						  pmh.setProjectTerminationDate(endDate);
 		    	      }
 		    	      pmh.setCreatedDate(commonUtil.currentDate());

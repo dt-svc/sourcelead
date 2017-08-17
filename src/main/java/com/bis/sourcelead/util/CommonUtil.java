@@ -39,7 +39,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -111,6 +114,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
 	
 	
 	/**
@@ -895,5 +901,18 @@ public class CommonUtil {
 			}
 			
 			return actualTimeString;
+		}
+
+		public void updateClientVendorElk(OrgRelations orgRelation, OrgLocations orgLocations, User user, String responderType) {
+			try {
+				  ClientVendorIndex  clientVendorIndex = new ClientVendorIndex();
+				  List<OrgSpoc> orgSpocsList = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), user.getId(), orgLocations.getId(), responderType);
+				  clientVendorIndex.setNoContacts((long)orgSpocsList.size());
+				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			  
+			
 		}
 }

@@ -214,10 +214,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
-            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
-            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+			
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
@@ -533,6 +530,12 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
 			if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
 				candidate = candidateService.getCandidateByConsultantUserId(orgLocations.getUser().getId(), orgLocations.getId());

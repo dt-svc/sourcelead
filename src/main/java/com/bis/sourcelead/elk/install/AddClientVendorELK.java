@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -29,6 +30,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -84,7 +86,7 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
 			    	clientVendorIndex.setOrgRelationId(rs.getLong("ID"));
 			    	clientVendorIndex.setStatus(rs.getString("STATUS"));
-			    	
+			    	clientVendorIndex.setNoContacts(getNumberOfContactsPerClient(rs.getLong("ID")));
 			    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 			    	if(null != rs.getDate("UPDATED_DATE")){
@@ -200,6 +202,33 @@ public class AddClientVendorELK {
 	}
 	
 	
+	private long getNumberOfContactsPerClient(long orgRelationId) {
+		String numberOfContacts = "0";
+		 DataSource dataSource1 = comboPooledDataSource();
+		 Connection conn = null;
+		 Statement stmt = null;
+		 try {
+			  conn = dataSource1.getConnection();
+				String sql = "SELECT  count(*) FROM sourcelead.org_spoc where ORG_RELATION_ID = "+orgRelationId;
+				stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql);
+				while(rs.next()) {
+					numberOfContacts = rs.getString(1);	
+				}
+		 }catch (Exception e) {
+			 e.printStackTrace();
+		}finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return Long.parseLong(numberOfContacts);
+	}
+
 	public void saveOrUpdateElkDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
 		String entityInJson = null;
 		try {

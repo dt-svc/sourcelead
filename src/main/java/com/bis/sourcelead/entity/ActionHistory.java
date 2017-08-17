@@ -6,10 +6,12 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -44,8 +46,8 @@ public class ActionHistory implements Serializable{
 	@JsonProperty
 	private String actionTimeStr;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_LOGIN_LOGOUT_SESSION_ID", nullable=false)
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "USER_LOGIN_LOGOUT_SESSION_ID")
     private UserLoginLogoutSession userLoginLogoutSessionId;
 
 	

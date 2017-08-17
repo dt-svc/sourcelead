@@ -21,6 +21,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -182,6 +184,7 @@ public class Invoice {
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
 	private Expenses expensesId;
 	
+	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
 	private ProjectMembers projectMemberId;

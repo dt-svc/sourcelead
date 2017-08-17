@@ -511,16 +511,25 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			
+			var jsonData = JSON.stringify(frm);
+		    var form = $('#client_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData)
+			
+		//	con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	      //  var jsonData = encodeURIComponent(con);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Client",
+						 type : "POST",
+						 data: formData,
+		  	    	     contentType : 'application/json; charset=utf-8',
+		  		         processData: false,
+		  		         contentType:false, 
+		  	    	     dataType : 'json',
+						url : sourceleadUrl+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Client",
 						success : function(result) {
 							if (result == 'clientDashboard') {
 								location.replace(sourceleadUrl
@@ -553,9 +562,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg',"Email should not your org user email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");

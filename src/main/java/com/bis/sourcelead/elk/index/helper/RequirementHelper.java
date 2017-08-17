@@ -61,6 +61,7 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
+			requirementIndex.setGeneratedId(requirement.getGeneratedId());
 			
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
@@ -117,10 +118,8 @@ public class RequirementHelper {
 				requirementIndex.setManager(sbilder.toString());
 			}
 			
-			
-			
 			// to store approver of the req in elk
-			if(jsonObj.has("parallelApprover")){
+			if(jsonObj.has("parallelApprover") && null !=jsonObj){
 				String parallelApprovers =null;
 				try{
 					JSONArray jsonArray = jsonObj.getJSONArray("parallelApprover");
@@ -134,14 +133,14 @@ public class RequirementHelper {
 			    String[] reqApproverUserId = parallelApprovers.split(",");
 			    requirementIndex.setReqLevel1ApproverUserId(reqApproverUserId);
 			}
-			 if(jsonObj.has("sequentialApprover1")&& jsonObj.getString("sequentialApprover1")!=null && !"".equalsIgnoreCase(jsonObj.getString("sequentialApprover1")) ){
+			 if(null !=jsonObj && jsonObj.has("sequentialApprover1")&& jsonObj.getString("sequentialApprover1")!=null && !"".equalsIgnoreCase(jsonObj.getString("sequentialApprover1")) ){
 				 String sequentialApprovers1 = jsonObj.getString("sequentialApprover1");
 				 String sequentialApprovers2 =jsonObj.getString("sequentialApprover2");
 				 requirementIndex.setReqLevel1ApproverUserId(sequentialApprovers1.split(","));
 				 requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			 }
 			 
-			 	if (jsonObj.has("assignedToMaxCount")&& !"".equalsIgnoreCase(jsonObj.getString("assignedToMaxCount"))){
+			 	if (null !=jsonObj && jsonObj.has("assignedToMaxCount")&& !"".equalsIgnoreCase(jsonObj.getString("assignedToMaxCount"))){
 					String assignedToMaxCount = jsonObj.getString("assignedToMaxCount");
 							if(jsonObj.has("assignedTeamId") && StringUtils.isNotEmpty(jsonObj.getString("assignedTeamId")) && !"undefined".equalsIgnoreCase(jsonObj.getString("assignedTeamId"))){
 								String assignedTeamId = jsonObj.getString("assignedTeamId");
@@ -166,7 +165,6 @@ public class RequirementHelper {
 								requirementIndex.setTeamAssignUserId(teamAssignUserId);
 							}
 				}
-			
 			
 			//requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());
 			requirementIndex.setIsTemplate(requirement.getIsTemplate());
@@ -301,8 +299,11 @@ public class RequirementHelper {
 				String[] visaTypes = requirement.getVisaType().split(",");
 				requirementIndex.setVisaTypes(visaTypes);
 			}
-
+			if (null != requirement.getGeneratedId() && !"".equalsIgnoreCase(requirement.getGeneratedId())) {
+				requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			}
 		}
+		
 		return requirementIndex;
 	}
 

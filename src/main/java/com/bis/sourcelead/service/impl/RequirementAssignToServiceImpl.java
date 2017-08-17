@@ -9,8 +9,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -37,6 +36,12 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	
 	@Autowired
 	RequirementAssignToDao  requirementAssignToDao;
+	
+	@Autowired
+	 private OrgLocationService orgLocationService;
+	
+	 @Autowired
+	 private CommonUtil commonUtil;
 
 	@Override
 	public List<RequirementAssignTo> getRequirementAssignToListByRequirementId(Long requirementId) throws Exception {
@@ -87,6 +92,7 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	@Override
 	public List<AssignedRequirementReports> getAllAssignedRequirementByOrglocationId(Long orgLocationId,Timezone timezone) throws Exception {
 		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		List<RequirementAssignTo> reqAssignToList = requirementAssignToDao.getAllAssignedRequirementByOrglocationId(orgLocationId);
 		List<AssignedRequirementReports> astoList = null;
 		if(null != reqAssignToList){
@@ -95,7 +101,7 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 				StringBuilder sb = new StringBuilder();
 				AssignedRequirementReports assignedRequirementReports = new AssignedRequirementReports();
 				assignedRequirementReports.setJobTitle(rato.getRequirementId().getJobTitle());
-				assignedRequirementReports.setPostedOn(getDateStr(rato.getRequirementId().getUpdatedDate(),timezone));
+				assignedRequirementReports.setPostedOn(getDateStr(rato.getRequirementId().getUpdatedDate(),timezone,orgLocations.getDateFormat()));
 				if(rato.getRequirementId().getManagerUserId() != null){
 					if(rato.getRequirementId().getManagerUserId().getFirstName() !=null && rato.getRequirementId().getManagerUserId().getLastName() !=null){
 						sb.append(rato.getRequirementId().getManagerUserId().getFirstName()).append(" ").append(rato.getRequirementId().getManagerUserId().getLastName());
@@ -122,7 +128,7 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 					}
 				}
 				assignedRequirementReports.setAssignedUser(assignUserName.toString());
-				assignedRequirementReports.setAssignedOn(getDateStr(rato.getUpdatedDate(), timezone));
+				assignedRequirementReports.setAssignedOn(getDateStr(rato.getUpdatedDate(), timezone,orgLocations.getDateFormat()));
 				assignedRequirementReports.setOffered(0);
 				if(rato.getTeamId() !=null){
 					assignedRequirementReports.setTeamName(rato.getTeamId().getName());
@@ -152,13 +158,12 @@ public class RequirementAssignToServiceImpl implements RequirementAssignToServic
 	 * @return String
 	 * @throws ParseException
 	 */
-private String getDateStr(Date date, Timezone timezone) throws ParseException {
+private String getDateStr(Date date, Timezone timezone,String dateFormat) throws ParseException {
 	 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-	 DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
 	String currentTimeStr = Constants.TZ_DF.format(date);  
 	String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 	Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-	return currentDateInTimezone = standardFormat.format(converteDate);
+	return currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(dateFormat,converteDate);
 	
 }
 	
