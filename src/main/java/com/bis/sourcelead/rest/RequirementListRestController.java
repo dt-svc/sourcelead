@@ -1612,6 +1612,7 @@ public class RequirementListRestController {
       private Requirement getData(RequirementIndex requirementIndex, User user,OrgLocations orgLocations) throws Exception {
  		 Requirement requirement = new Requirement();
  		requirement.setId(requirementIndex.getRequirementId());
+ 		requirement.setDt_RowId("Row_"+requirementIndex.getRequirementId());
       	requirement.setJobId(requirementIndex.getJobId());
       	requirement.setJobType(requirementIndex.getJobType());
       	requirement.setOtherJobType(requirementIndex.getOtherJobType());
