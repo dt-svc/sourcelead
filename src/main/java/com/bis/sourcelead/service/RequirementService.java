@@ -159,5 +159,9 @@ public interface RequirementService {
 	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
 
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
+
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception;
+
+	/*public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception;*/
 	
 }
