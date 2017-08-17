@@ -455,7 +455,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	    		String levelManager[] = jsonObj.getString("level1Manager").split(",");
 	    		Boolean isAdmin = userRoleService.isUserAdmin(Long.parseLong(levelManager[0]));
 				if(!isAdmin){
-					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager[0]));
+					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager[0],locations));
 				}
 	    	}
     	}
@@ -465,7 +465,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 				String levelManager = jsonObj.getString("level2Manager");
 				Boolean isAdmin = userRoleService.isUserAdmin(Long.parseLong(levelManager));
 				if(!isAdmin){
-					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager));
+					projectMemberList.add(saveManagersAsProjectMembers(jsonObj, projects, user, levelManager,locations));
 				}
 				
 			}
@@ -480,10 +480,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	* @author  venkatKesav
 	* @since   2016-07-25
 	*/
-	public ProjectMembers saveManagersAsProjectMembers(JSONObject jsonObj,Projects projects, User user, String levelManager){
-			String pattern = "dd-MM-yyyy";
+	public ProjectMembers saveManagersAsProjectMembers(JSONObject jsonObj,Projects projects, User user, String levelManager,OrgLocations orgLocations){
+			/*String pattern = "dd-MM-yyyy";
 	        SimpleDateFormat format = new SimpleDateFormat(pattern);
-		
+		*/
 			ProjectMembers pm = new ProjectMembers();
 			HashSet<ProjectMembersHistory> pmhList = new HashSet<ProjectMembersHistory>();
 			ProjectMembersHistory pmh = new ProjectMembersHistory();
@@ -492,25 +492,25 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			pmh.setStatus(Constants.PROJECT_MEMBER_HISTORY_OPEN);
 	        try {
 				if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-					Date startDate = format.parse(jsonObj.getString("StartDate"));
+					Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("StartDate"));
 					pmh.setProjectAssignedDate(startDate);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	        try {
 				if(!jsonObj.getString("EndDate").isEmpty()){
-				    Date endDate = format.parse(jsonObj.getString("EndDate"));
+				    Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("EndDate"));
 				    pmh.setProjectTerminationDate(endDate);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
