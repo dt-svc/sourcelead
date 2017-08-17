@@ -199,8 +199,8 @@ function cpagination(SourceLeadWeb_loginOrg){
 				var dt = new Date(selected);
 				//var dt = toDate("#ExportStartDate");
 				//var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate() + 1);
-				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				//dt.setDate(dt.getDate() + 1);
+				$("#ExportEndDate").datepicker("option", "minDate", selected);
 				addValidClass();
 			}
 		
@@ -217,8 +217,8 @@ function cpagination(SourceLeadWeb_loginOrg){
 				var dt = new Date(selected);
 				//var dt = toDate("#ExportEndDate");
 				//var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate() - 1);
-				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+			//	dt.setDate(dt.getDate() - 1);
+				$("#ExportStartDate").datepicker("option", "maxDate", selected);
 				addValidClass();
 			}
 		});
