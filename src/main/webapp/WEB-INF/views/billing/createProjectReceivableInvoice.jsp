@@ -117,17 +117,17 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             </div> -->
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Address</label>
+              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
                 <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress"
-                    name="billingAddress" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
+                    name="billingAddress" data-validation="required" field-name="Invoice Address"></textarea>
               </div>
             </div>
             <div class="form-group">
-							<label class="col-md-3">Account Details</label>
+							<label class="col-md-3">Account Details<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+									name="accountDetails" placeholder="Account Details" data-validation="required" field-name="Account Details"></textarea>
 							</div>
 			</div>
           </div>
