@@ -1,4 +1,4 @@
-package com.bis.sourcelead;
+package com.bis.sourcelead.orgShortCodeIdForOldOrgs;
 
 
 import java.beans.PropertyVetoException;
@@ -60,8 +60,7 @@ public class OrgAndUserInactiveForUnwantedOrgs {
 					while (rs2.next()) {
 						Long orgLocId = rs2.getLong("ID");
 						// userrole list
-						String userRole = "SELECT * FROM sourcelead.USER_ROLE userRole where userRole.ORG_LOCATIONS_ID ="
-								+ orgLocId + "";
+						String userRole = "SELECT * FROM sourcelead.USER_ROLE userRole where userRole.ORG_LOCATIONS_ID ="+ orgLocId + "";
 						stmt1 = conn.createStatement();
 						ResultSet rs3 = stmt1.executeQuery(userRole);
 						while (rs3.next()) {
@@ -94,6 +93,17 @@ public class OrgAndUserInactiveForUnwantedOrgs {
 
 					}
 				}
+				String query5 = "UPDATE sourcelead.ORG set STATUS = ?  where ID = ? ";
+				PreparedStatement pstmt5 = conn.prepareStatement(query5);
+				pstmt5.setString(1, "INACTIVE");
+				pstmt5.setLong(2, orgIds1);
+				pstmt5.executeUpdate();
+				
+				String query6 = "UPDATE sourcelead.ORG_LOCATIONS set STATUS = ?  where ORG_ID = ? ";
+				PreparedStatement pstmt6 = conn.prepareStatement(query6);
+				pstmt6.setString(1, "INACTIVE");
+				pstmt6.setLong(2, orgIds1);
+				pstmt6.executeUpdate();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

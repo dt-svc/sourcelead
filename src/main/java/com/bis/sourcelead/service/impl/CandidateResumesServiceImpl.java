@@ -209,7 +209,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		// return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
+		
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 			for(CandidateResumes canResumes :candidateResumesList){
