@@ -1332,8 +1332,8 @@ public class InvoiceRestController {
 					if (!"".equalsIgnoreCase(exportStartDate) && !"".equalsIgnoreCase(exportEndDate) && !"undefined".equalsIgnoreCase(exportStartDate) && !"undefined".equalsIgnoreCase(exportEndDate)) {
 							DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 							DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-							Date startTime = commonUtil.getDateFormat(exportStartDate);
-							Date endTime = commonUtil.getDateFormat(exportEndDate);
+							Date startTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),exportStartDate);
+							Date endTime = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),exportEndDate);
 							String customStartTimeStr = TZ_DF_CSD.format(startTime);
 							String customEndTimeStr = TZ_DF_CED.format(endTime);
 							String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
@@ -1350,8 +1350,8 @@ public class InvoiceRestController {
 			InvoiceAmount totalStagesAmount = getTotalAmountInBilling(invoiceList);
 			
 			File file= null;
-			String convertedExportStartDate = conversionUtil.getDateAsString(startDateUTC);
-			String convertedExportEndDate = conversionUtil.getDateAsString(endDateUTC);
+			String convertedExportStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDateUTC);
+			String convertedExportEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDateUTC);
 			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrgLocationName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType,orgLocations);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

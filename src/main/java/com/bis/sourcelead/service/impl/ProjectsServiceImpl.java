@@ -1419,11 +1419,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			//  This is to send mail to managers TeamMembers when project end Date is Edited
 			  Date previousEndDate = null;
 				if(jsonObj.has("endDateStr1")){
-		    		String pattern = "dd-MM-yyyy";
-		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    		/*String pattern = "dd-MM-yyyy";
+		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 		    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 				    		previousEndDate = projects.getEndDate();
-				    		Date changedEndDate = format.parse(jsonObj.getString("endDateStr1"));
+				    		Date changedEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("endDateStr1"));
 							 
 				    		if(projects.getEndDate() != null ){
 				    			projects.getEndDate();

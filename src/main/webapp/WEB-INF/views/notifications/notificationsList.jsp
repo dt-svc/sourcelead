@@ -150,7 +150,7 @@ function getNotificationtLists(){
 					result = result +'			</div>';
 				    result = result +'   </td>';
 				    
-				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' </div></td>';
+				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm" title="'+report.calDays+'">'+report.calDays+' </div></td>';
 				    
 				    result = result +'   <td><div class="notiRej">';
 				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){

@@ -21,8 +21,8 @@
  
 <section class="landTemp">
 	<div class="landTempCta">
-		<h2>Submission Template</h2>
-		<p>Manage your Submission Templates</p>
+		<h2>Applicant Template</h2>
+		<p>Manage your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 			<a href="<c:url value="/orgSubmissionTemplate" />">Add Template</a> | &nbsp; 
