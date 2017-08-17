@@ -1298,8 +1298,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
 	}
 	
-	if(null != invoice.getLinkInvoiceReferenceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))){
-		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceReferenceId()));
+	if(null != invoice.getLinkInvoiceRefInvoiceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()))){
+		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()));
 	}
 		
 	return createExcelsheet;
@@ -1329,7 +1329,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell3.setCellStyle(style);
 
 	Cell cell4 = writeRow.createCell(1);
-	cell4.setCellValue(exportStartDate +" - "+exportEndDate);
+	cell4.setCellValue(exportStartDate+ " - " +exportEndDate);
 	cell4.setCellStyle(style);
 
 	writeRow = createExcelsheet.createRow(3);
