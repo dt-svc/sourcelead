@@ -77,6 +77,9 @@
 }
 </style>
 <script type="text/javascript" src="resources/js/candidateTable.js"></script>
+
+<input type="hidden" id="noCandidates" name="noCandidates" />
+
 <%-- 
      @author : sarath kumar.
      this script is for show side bar when you click on the candidate name.
@@ -1213,10 +1216,9 @@ function cancel(candidateId){
         		<input type='text' placeholder='search' id='dataTableSearch'/>
         </div>
       </div>
-      
+      <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
-        <div id="emptyPopup"></div>
       </div>
     </div>
     

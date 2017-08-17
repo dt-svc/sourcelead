@@ -79,13 +79,15 @@ actionHistoryList(userSessionId);
 function actionHistoryList(userSessionId){  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $("#actionHistoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getRestActionHistoryList?userSessionId="+userSessionId,    
             success :function(json) {
-            	
-			    	     $("#actionHistoryLoading").removeAttr("style");
+            	     if(json.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	 }
+            	     else{
+            	    	 $("#actionHistoryLoading").removeAttr("style");
 	                	 $("#actionHistoryList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='actionHistoryPagenation' class='display ' cellspacing='0' width='100%' >"; 
@@ -129,8 +131,8 @@ function actionHistoryList(userSessionId){
 	                     result = result +"</table>"; 
 	                     $("#actionHistoryLoading").removeAttr("style");
 	                     $("#actionHistoryList").append(result); 
-	                     
 	                     actionHistoryPagenation(); 
+            	     }
                     
           },
             

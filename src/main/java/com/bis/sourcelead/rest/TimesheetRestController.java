@@ -1901,10 +1901,10 @@ public class TimesheetRestController {
 			 emailMessage.setCreatedBy(loginUser.getUserCode());
 //			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
 			 
-			 String pattern = "dd-MM-yyyy";
-	         SimpleDateFormat format = new SimpleDateFormat(pattern);
-	         String startDateStr = format.format(frequencyStartDate);
-	         String endDateStr = format.format(frequencyEndDate);
+			 /*String pattern = "dd-MM-yyyy";
+	         SimpleDateFormat format = new SimpleDateFormat(pattern);*/
+	         String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
+	         String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
 
 			 //setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();

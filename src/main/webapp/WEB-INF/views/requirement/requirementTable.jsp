@@ -160,7 +160,6 @@ function jpagination(url){
 		  	"render": function(data, type, opt, meta) {
 		  		 var result = "";
 		  		 result = result +"<td>";
-		  		 alert("AA"+opt.generatedId);
 		  	  	 if(opt.generatedId != '' && opt.generatedId != null){
 		  	  		
 		  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
