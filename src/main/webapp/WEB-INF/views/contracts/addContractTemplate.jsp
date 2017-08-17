@@ -437,7 +437,13 @@
     ['para', ['ul', 'ol', 'paragraph']],
 	['link',['link','insert','unlink']],
     ['height', ['height']]
-  ]
+  ],
+  callbacks:{
+	  onImageUpload: function (data) {
+		             	data.pop();
+                   	}
+	  
+  	}
 });
 </script>
 
