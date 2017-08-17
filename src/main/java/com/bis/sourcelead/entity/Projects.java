@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -178,6 +179,10 @@ public class Projects implements Serializable{
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ProjectClients> projectClients;
+    
   
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
@@ -252,6 +257,10 @@ public class Projects implements Serializable{
     
     @Transient
     Collection<User> managersListwithoutManager1;
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectApproverHierarchy>  approverHierarchyList;
     
     @Transient
     private String employeeStartDateStr;
@@ -808,6 +817,36 @@ public class Projects implements Serializable{
 
 	public void setIsProjectAdditionalDetailsFilled(String isProjectAdditionalDetailsFilled) {
 		this.isProjectAdditionalDetailsFilled = isProjectAdditionalDetailsFilled;
+	}
+
+	public Set<ProjectClients> getProjectClients() {
+		return projectClients;
+	}
+
+	public void setProjectClients(Set<ProjectClients> projectClients) {
+		this.projectClients = projectClients;
+	}
+
+	public Set<ProjectApproverHierarchy> getApproverHierarchyList() {
+	   /*  if(projectClients != null){
+	    	 for(ProjectClients projectClients : projectClients){
+	    		 if(projectClients.getProjectApproverHierarchyList() != null && 
+	    				 !projectClients.getProjectApproverHierarchyList().isEmpty()){
+	    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+	    			 for(ProjectApproverHierarchy hierarcy : projectClients.getProjectApproverHierarchyList()){
+	    				 hirearchySet.add(hierarcy);
+		    		 }
+	    			 if(hirearchySet != null && !hirearchySet.isEmpty()){
+	    				 approverHierarchyList = hirearchySet;
+	    			 }
+	    		 }
+	    	 }
+	     }*/
+		return approverHierarchyList;
+	}
+
+	public void setApproverHierarchyList(Set<ProjectApproverHierarchy> approverHierarchyList) {
+		this.approverHierarchyList = approverHierarchyList;
 	}
 	
 }

@@ -10,7 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
@@ -143,6 +145,14 @@ public class ProjectsController {
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
+	 
+	 
+	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
+		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			return userList;
+		}
 	 
 	 
 	 @RequestMapping(value = "/projectSummary")

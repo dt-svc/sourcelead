@@ -13,8 +13,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.servlet.ServletOutputStream;
@@ -53,6 +56,8 @@ import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -195,6 +200,27 @@ public class ProjectsDashboardRestController {
 		     String ProjectDetails=projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
 		   
 			 return ProjectDetails;
+	  }
+	 
+	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
+	 @RequestMapping(value = "/getProjectDetailsByProjectId", method = RequestMethod.POST)
+	 public @ResponseBody Projects getProjectDetailsByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
+		   
+		     Projects projects = projectsService.getProjectById(projectId);
+		     Set<ProjectClients> projectClientsList = projects.getProjectClients();
+		     if(projectClientsList != null){
+		    	 for(ProjectClients projectClients : projectClientsList){
+		    		 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
+		    		 if(approverHierarchiesList != null){
+		    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+		    			 for(ProjectApproverHierarchy hierarcy : approverHierarchiesList){
+		    				 hirearchySet.add(hierarcy);
+			    		 }
+		    			 projects.setApproverHierarchyList(hirearchySet);
+		    		 }
+		    	 }
+		     }
+			 return projects;
 	  }
 	 
 	 /**

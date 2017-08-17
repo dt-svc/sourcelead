@@ -22,6 +22,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectApproverHierarchy")

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -88,7 +89,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 
 	@Override
 	public Set<ProjectApproverHierarchy> prepareProjectApproverHierarchyListByJson(JSONObject jsonObj, HttpServletRequest request,
-			Projects projects) throws Exception {
+			Projects projects,ProjectClients projectClients) throws Exception {
 		    
 		    Long[] ids = new Long[1000];
 			HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
@@ -98,6 +99,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			    		
 			    		ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
 				    	pah1.setProjectId(projects);
+				    	pah1.setProjectClientsId(projectClients);
 				    	User approverUserId1 = new User();
 				    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
 			    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
@@ -114,6 +116,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					User approverUserId2 = new User();
 					ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
 					pah2.setProjectId(projects);
+					pah2.setProjectClientsId(projectClients);
 					approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 					pah2.setApproverUserId(approverUserId2);
 					pah2.setLevel(2);

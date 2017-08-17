@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,10 +13,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "PROJECT_CLIENTS")
@@ -30,7 +37,8 @@ public class ProjectClients implements Serializable{
 	
     @ManyToOne
     @JoinColumn(name = "PROJECT_ID")
-    private OrgRelations projectId;
+	@JsonBackReference
+    private Projects projectId;
 	
     @ManyToOne
     @JoinColumn(name = "ORG_RELATION_ID")
@@ -60,6 +68,11 @@ public class ProjectClients implements Serializable{
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
+
 	
 
 	public Long getId() {
@@ -70,11 +83,12 @@ public class ProjectClients implements Serializable{
 		this.id = id;
 	}
 
-	public OrgRelations getProjectId() {
+
+	public Projects getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(OrgRelations projectId) {
+	public void setProjectId(Projects projectId) {
 		this.projectId = projectId;
 	}
 
@@ -140,5 +154,13 @@ public class ProjectClients implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Set<ProjectApproverHierarchy> getProjectApproverHierarchyList() {
+		return projectApproverHierarchyList;
+	}
+
+	public void setProjectApproverHierarchyList(Set<ProjectApproverHierarchy> projectApproverHierarchyList) {
+		this.projectApproverHierarchyList = projectApproverHierarchyList;
 	}
 }

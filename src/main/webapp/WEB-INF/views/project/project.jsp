@@ -154,11 +154,11 @@
 							<div class="col-md-9 select-field">
 								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();" field-name="Status" data-validation="required">
 									<option value="">Select Status</option>
-									<option>Not Started</option>
-									<option>In-Progress</option>
-									<option>Completed</option>
-									<option>On-Hold</option>
-									<option>Dropped</option>
+									<option value="NOTSTARTED">Not Started</option>
+									<option value="INPROGRESS">In-Progress</option>
+									<option value="COMPLETED">Completed</option>
+									<option value="ONHOLD">On-Hold</option>
+									<option value="DROPPED">Dropped</option>
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
@@ -183,7 +183,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y" name="isAllowFreelanceDevelopers"> Allow Freelance Developers </label>
+									<label> <input type="checkbox" value="Y" name="isAllowFreelanceDevelopers" id="isAllowFreelanceDevelopers" > Allow Freelance Developers </label>
 								</div>
 							</div>
 						</div>
@@ -192,7 +192,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y" name="isAllowRemoteWork"> Allow Remote Work </label>
+									<label> <input type="checkbox" value="Y" name="isAllowRemoteWork" id="isAllowRemoteWork" > Allow Remote Work </label>
 								</div>
 							</div>
 						</div>
@@ -212,7 +212,7 @@
 							<div class="col-md-9">
 								<div class="input-group">
 									<div class="input-group-btn selp-custom-min tblminwidth-125" id="flatPercentageId" >
-										<select class="form-control chosen-select"  name="flatPercentageId">
+										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId">
 											<option value="flat">FLAT</option>
 											<option value="percentage">PERCENTAGE</option>
 										</select>
@@ -256,10 +256,10 @@
 											name="level1Manager" id="level1Manager" field-name="Manager"
 											data-validation="required" onchange="getLevel2Approvers();">
 											<option value="">-- Select Level1 Manager --</option>
-											<c:forEach var="option" items="${user_List}">
+											<%-- <c:forEach var="option" items="${user_List}">
 												<option value="${option.id},${option.userType}">${option.firstName}
 													${option.lastName}</option>
-											</c:forEach>
+											</c:forEach> --%>
 										</select> <span class="btn btn-default formic1 addLevel"
 											id="level2Toggle" onclick="getLevel2Approvers();">Add
 											Level-II</span>
@@ -276,62 +276,7 @@
 								</div>
 							</div>
 						</c:if>
-
-						<sec:authorize
-							access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')">
-							<div class="form-group">
-								<label class="col-md-3">Assign Team &nbsp;<i
-									class=" text-info fa fa-info-circle"
-									title="Before Assinging Team Project Start Date & Manager is Mandatory"></i></label>
-
-								<div id="assignTeamSavingDiv" style="display: none;"></div>
-								<input type="hidden" name="team" value="" />
-
-								<div class="col-md-9">
-									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="" placeholder="Select Team"
-										id="assignTeamModal" class="form-control"
-										data-target="#assignTeam" data-toggle="modal"
-										onclick="getTeamMembers();" readonly="readonly">
-									</span> <span data-target="#addTeam" data-toggle="modal"> </span> <span
-										class="hidden">Select Team</span>
-									<!-- Modal content Assign Team-->
-									<div role="dialog" id="assignTeam" class="modal fade">
-										<div class="modal-dialog modal-lg">
-											<div class="modal-content">
-												<div class="modal-header">
-													<button data-dismiss="modal" class="close" type="button">x</button>
-													<h4 class="modal-title">Assign Employees</h4>
-												</div>
-												<div class="modal-body clearfix">
-													<div class="form-horizontal row custom-form hidden">
-														<div class="col-xs-12 col-md-12 col-lg-12">
-															<div class="input-group">
-																<input type="search" class="form-control"
-																	placeholder="Name / Email" id="searchByName"> <span
-																	class="input-group-addon bt-primary"
-																	onclick="getTeamMembers();"><i
-																	class="fa fa-search"></i></span>
-															</div>
-														</div>
-													</div>
-													<div class="modal-body-custom mt clearfix over"
-														id="employeesList"></div>
-												</div>
-												<div class="modal-footer">
-													<button data-dismiss="modal" class="btn btn-primary"
-														type="button" onclick="assignEmployee();">Assign</button>
-													<button data-dismiss="modal" class="btn btn-default"
-														type="button" onclick="assignEmployeeCancel();">Cancel</button>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- Assign Team modal popup ends -->
-								</div>
-							</div>
-						</sec:authorize>
-
+						
 						<div class="form-group">
 							<label class="col-md-3">Invoice Frequency <span
 								class="text-danger">*</span></label>
@@ -352,7 +297,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y" name="isTimesheetAttachmentRequired"> Timesheet Attachment Required </label>
+									<label> <input type="checkbox" value="Y" name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired"> Timesheet Attachment Required </label>
 								</div>
 							</div>
 						</div>
@@ -361,7 +306,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y" name="isAllowOffshoreResource"> Allow Offshore Resource </label>
+									<label> <input type="checkbox" value="Y" name="isAllowOffshoreResource" id="isAllowOffshoreResource"> Allow Offshore Resource </label>
 								</div>
 							</div>
 						</div>
@@ -370,7 +315,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y" name="isTimeEntryAfterDeadline"> Time Entry after Deadline </label>
+									<label> <input type="checkbox" value="Y" name="isTimeEntryAfterDeadline" id="isTimeEntryAfterDeadline"> Time Entry after Deadline </label>
 								</div>
 							</div>
 						</div>
@@ -379,7 +324,7 @@
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
-									<label> <input type="checkbox" value="Y" name="isAllowBidding"> Allow Bidding </label>
+									<label> <input type="checkbox" value="Y" name="isAllowBidding" id="isAllowBidding"> Allow Bidding </label>
 								</div>
 							</div>
 						</div>
@@ -462,10 +407,12 @@
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description</h5>
-						<textarea id="txtEditor" name="ProjectDescription" value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="ProjectDescription"  id="projectDescription"  value="" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 <!-- 						<textarea maxlength="5000" cols="80" rows="10" id="ProjectDescription" name="ProjectDescription"></textarea> -->
 
 					</div>
+					
+					<div id="savedProjectDocuments"></div>
 
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -618,6 +565,7 @@ function getStatus(){
 				additionalDetails.href = "#";
 				additionalDetails.className = "disabledLink";
 			}
+			getProjectLevel1Approvers();
 		}
 		
 		$("#tab-a").show()
@@ -674,15 +622,13 @@ function getStatus(){
 		  		         contentType:false, 
 		  	    	     dataType : 'json',
 						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
-						success : function(result) {
-							if (result == projectId') {
+						success : function(projectId) {
 								 $("#projectId").val(projectId);
-								  $("#loading").removeAttr("style");
+								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 $("assignedMembers").removeClass("disabledLink");
 								 assignedMembers.href="#tab-b"; 
 								 assignedMembers.click();
-							}
 
 						},
 					});
@@ -708,18 +654,85 @@ function getProjectDetails(){
 	var projectId = document.getElementById("projectId").value;
 	if(projectId){
 		var sourceleadUrl ='${sourceleadUrl}';
-/*         $.ajax({
+        $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
+	    	 url: sourceleadUrl+"/getProjectDetailsByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
 	        success: function(json) {
 	        	
-	        	 $("input[name=templateName]").val(json.templateName);
-	        	 $("textarea[name=description]").val(json.description);
+	        	var level1ApproverUser = '';
+	        	
+	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
+	        		 $("input[name=ProjectSequeneNumber]").val(json.projectSequeneNumber);
+	        		 $("input[name=ProjectSequeneNumber]").attr("readonly","readonly");
+	        		 $('#ProjectSequeneNumber').removeAttr('onblur');
+	        	}
+	        	
+	        	 $("input[name=ProjectName]").val(json.projectName);
+	        	 $("input[name=StartDate]").val(json.startDateStr);
+	        	 $("input[name=EndDate]").val(json.endDateStr);
 	        	 
-	        	 $("#onboardTasksList").empty();
+	        	   for(var i=0; i<json.approverHierarchyList.length; i++){
+	        		  var opt = json.approverHierarchyList[i];
+	        		  if(opt.level == '1'){
+	        			  getProjectLevel1Approvers(opt.approverUserId.id);
+	        			  level1ApproverUser = opt.approverUserId.id;
+	        		  }
+	        		  
+	        		  if(opt.level == '2'){
+	        				$("#level2Manager").empty();    
+	        				$('#level2Manager').val('').trigger('chosen:updated');
+	        				$("#level2Toggle").hide();   
+	        				 document.getElementById('level2Div').className = 'form-group level-second level-second-active'
+	        				 getChildLevel1Approvers(level1ApproverUser,opt.approverUserId.id);
+	        		  }
+	        		  
+	        	  }  
+	        	   
+        	   $("select[name=Satatus]").val(json.projectStatus);
+        	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
+        	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
+        	   
+        	   if(json.allowFreeLance == '1'){
+        		   document.getElementById("isAllowFreelanceDevelopers").checked = true;
+        	   }
+        	   
+        	   if(json.allowRemote == '1'){
+        		   document.getElementById("isAllowRemoteWork").checked = true;
+        	   }
+        	   
+        	   if(json.allowOvertime == '1'){
+        		   document.getElementById("isAllowOverTime").checked = true;
+        		   $('#flatPercentageId').attr('style','visibility:visible');
+        		   $('#flatPercentage').attr('style','visibility:visible');
+        		   $('#flatPercentId').val(json.overtimeRateType).trigger('chosen:updated');
+        		   $("input[name=flatPercentage]").val(json.flatPercent);
+        		   
+        	   }
+        	   
+        	   if(json.isTimesheetAttachmentRequired == '1'){
+        		   document.getElementById("isTimesheetAttachmentRequired").checked = true;
+        	   }
+        	   
+        	   if(json.allowOffShore == '1'){
+        		   document.getElementById("isAllowOffshoreResource").checked = true;
+        	   }
+        	   
+        	   if(json.allowTimeEntryAfterDeadLine == '1'){
+        		   document.getElementById("isTimeEntryAfterDeadline").checked = true;
+        	   }
+        	   
+        	   if(json.allowBidding == '1'){
+        		   document.getElementById("isAllowBidding").checked = true;
+        	   }
+        	   
+        	   
+        	   /* $("#projectDescription").Editor();
+        	   $('#projectDescription').summernote(json.description);
+        	   */
+        	   
 		        
 	        },
-	    });  */
+	    });  
 	}
 }
 </script>
@@ -1125,9 +1138,14 @@ function assignEmployeeCancel(){
 	}
 </script>
 <script type="text/javascript">
-function getLevel2Approvers(){
+function getLevel2Approvers(level1ApproverUser){
+	var currentApproverId = '';
 	$('#chosen-level1Manager').find('p.jquery_form_error_message').remove();
-	var currentApproverId = document.getElementById("level1Manager").value;
+	if(level1ApproverUser != null && level1ApproverUser != '' && level1ApproverUser != 'undefined'){
+		currentApproverId = level1ApproverUser;
+	}else{
+		currentApproverId = document.getElementById("level1Manager").value;
+	}
 	var currentUser = currentApproverId.split(',');
 	var currentUserId = currentUser[0];
 	var currentUserType = currentUser[1];
@@ -1152,8 +1170,9 @@ function getLevel2Approvers(){
 	
 } 
 </script>
+
 <script type="text/javascript">
-function getChildLevel1Approvers(currentApproverId){
+function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(currentApproverId != null && currentApproverId != ''  && currentApproverId != 'undefined'){
 		 $.ajax({
@@ -1166,7 +1185,11 @@ function getChildLevel1Approvers(currentApproverId){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		var selected = '';
+			        		if(level2ApproverUserId != null && level2ApproverUserId != 'undefied' && level2ApproverUserId != '' && level2ApproverUserId == opt.id){
+			        			selected = "selected";
+			        		}
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
 					}
 		        	$("#level2Manager").empty();
 			        $("#level2Manager").append(output);
@@ -1181,6 +1204,32 @@ function getChildLevel1Approvers(currentApproverId){
 		
 	 }
 } 
+</script>
+
+
+<script type="text/javascript">
+function getProjectLevel1Approvers(approverUserId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        success: function(json) {
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var selected = "";
+		        		var opt = json[i];
+		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
+		        			selected = "selected";
+		        		}
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.firstName+" "+opt.lastName+"</option>";
+					}
+		        	
+			        $("#level1Manager").append(output);
+			        $('#level1Manager').trigger("chosen:updated");
+		        }
+		    });
+	 }
 </script>
 
 <script type="text/javascript">

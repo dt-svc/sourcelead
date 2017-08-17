@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -436,10 +437,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
 	    }
 
-    	//prepare ProjectApproverHierarchy
-    	Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects);
-    	projects.setProjectApprovers(projectApproverHierarchyList);
-		
 		//prepare project task set...
 		/*tasksService.*/
     	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
@@ -452,9 +449,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		//projects.setGeneratedId(getProjectId(loginOrgLocation));
 		
-		//prepare projectmembers list...
-		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
+		/*Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
+		*/
+		
+		Set<ProjectClients> projectClientsList = getProjectClientsForProject(jsonObj,projects,loginOrgLocation,user);
+		projects.setProjectClients(projectClientsList);
+		
 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		projects.setIsClientProject(Constants.YES);
 		projects.setProjectMode("Draft");
@@ -514,7 +515,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		      approverUserId2 =   userService.getUserById(Long.valueOf(jsonObj.getString("level2Manager")));
 			}
 			
-			for(ProjectMembers projectMembers : projectMemberList){
+			/*for(ProjectMembers projectMembers : projectMemberList){
 				if(null != projectMembers.getEmployee()){
 					Employees emp = projectMembers.getEmployee();
 						
@@ -529,7 +530,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 					}   
 						
 					}
-				}
+				}*/
+			
 			}
 		}
 		
@@ -591,6 +593,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 			set.add(projectTasks);
 		}
 		return set;
+	}
+	
+	
+	private Set<ProjectClients> getProjectClientsForProject(JSONObject jsonObj,Projects projects,OrgLocations orglocations,User user) throws Exception {
+		Set<ProjectClients> projectClientsSet = new HashSet<>();
+		ProjectClients projectClients = new ProjectClients();
+		projectClients.setProjectId(projects);
+		projectClients.setOrgLocationsId(orglocations);
+		projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		projectClients.setStatus(1);
+		projectClients.setCreatedDate(new Date());
+		projectClients.setUpdatedDate(new Date());
+		projectClients.setCreatedBy(user);
+		projectClients.setUpdatedBy(user);
+		
+		//prepare ProjectApproverHierarchy
+		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects,projectClients);
+		projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+    	projectClientsSet.add(projectClients);
+		return projectClientsSet;
 	}
 
 	@Override
