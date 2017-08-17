@@ -175,7 +175,6 @@ public class ClientServiceImpl implements ClientService{
 	@SuppressWarnings("unused")
 	@Override
 	public void storeClient(JSONObject jsonObj,User user,OrgLocations orgLocations,String responderType,Org loginOrg) throws Exception {
-			
 			HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 			OrgLocations clientOrgLocations = null;
 			Set<OrgRelations> orgRelationsList = null;
@@ -282,6 +281,7 @@ public class ClientServiceImpl implements ClientService{
 			
 			if(jsonObj.has("email")){
 				spocUser = userService.storeUser(jsonObj,user,clientOrgLocations,"CREATEUSER",responderType,loginOrg);
+				
 			}
 			
 			if(jsonObj.has("owner")){
@@ -349,7 +349,7 @@ public class ClientServiceImpl implements ClientService{
 			}
 
 			// store default submission template in guest
-			if(org.getOrgType().equalsIgnoreCase("Guest")){
+			if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())){
 				submissionTemplate = new SubmissionTemplate();
 				sourceLeadDefaultTemplate = submissionTemplateService.getSubmissionTemplateById(1L);
 				StringBuilder nameBuilder=new StringBuilder();
@@ -431,7 +431,7 @@ public class ClientServiceImpl implements ClientService{
 			
 			for(OrgRelations orgRelation :orgRelationsList){
 				
-				saveOrUpdateClientVendorElkDocument(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
+				saveOrUpdateClientVendorElkDocument(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate,user,orgLocations);
 
 			}
 		}
@@ -670,11 +670,11 @@ public class ClientServiceImpl implements ClientService{
 
 
 		@Override
-		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId,Long loginLocationId) throws Exception {
+		public void updateClientDetails(JSONObject jsonObj, Long orgRelationId, Long clientLocationId,Long loginLocationId,User user) throws Exception {
 			
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(clientLocationId,orgRelationId);
 			String level = "level";
-			
+			OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(loginLocationId);
 			OrgLocations orgLocationForELk = null;
 			Org orgForElk = null;
 			OrgRelations orgRelationsForElk =null;
@@ -723,6 +723,9 @@ public class ClientServiceImpl implements ClientService{
 				}else{
 					orgLocations.setCity("");
 				}
+				if(jsonObj.has("companyWebsite") && jsonObj.getString("companyWebsite") != null && !jsonObj.getString("companyWebsite").isEmpty()){
+					orgLocations.setWebsite(jsonObj.getString("companyWebsite"));
+				}
 				if(jsonObj.has("clientState") && jsonObj.getString("clientState") != null && !jsonObj.getString("clientState").isEmpty()){
 					orgLocations.setState(jsonObj.getString("clientState"));
 				}else{
@@ -749,24 +752,13 @@ public class ClientServiceImpl implements ClientService{
 			    	 
 			    	 orgLocations.setZipCode("");
 			     }
-				/*if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") !=null && !jsonObj.getString("EmailId").isEmpty()){
-					orgLocations.setEmail(jsonObj.getString("EmailId"));
-				}else{
-					
-					orgLocations.setEmail("");
-				}*/
-				/*if(jsonObj.has("clientPhoneNumber") && jsonObj.getString("clientPhoneNumber") != null && !jsonObj.getString("clientPhoneNumber").isEmpty()){
-					orgLocations.setPhone(jsonObj.getString("clientPhoneNumber"));
-				}else{
-					orgLocations.setPhone("");
-				}*/
 			orgLocationForELk = 	orgLocationService.updateOrgLocations(orgLocations);
 			}else{
 				StringBuilder message= new StringBuilder(MessageFormat.format(statusUpdate,"ORG RELATIONS"));
 				throw new SourceLeadObjectNotFoundException(message.toString());
 			}
 			
-			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationForELk,null,null,orgRelationsForElk,null);
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationForELk,null,null,orgRelationsForElk,null,user,loginOrgLocations);
 
 		      //  This to update  the client/vendor details in ELK
 			
@@ -779,7 +771,7 @@ public class ClientServiceImpl implements ClientService{
 
 		
 		@Override
-		public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId,Long loginOrgId) throws Exception {
+		public void updateVendorDetails(JSONObject jsonObj, Long orgRelationId, Long vendorLocationId,Long loginOrgId,User user) throws Exception {
 			
 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(vendorLocationId,orgRelationId);
 			String vendorName = "vendorName";
@@ -794,7 +786,7 @@ public class ClientServiceImpl implements ClientService{
 			OrgRelations orgRelationsForElk  = null;
 			Org orgForElk  = null;
 			OrgLocations orgLocationsForElk  = null;
-			
+			OrgLocations loginOrgLocation  = orgLocationService.getOrgLocations(loginOrgId);
 			
 			//String emailId = "EmailId";
 			String level = "level";
@@ -877,7 +869,7 @@ public class ClientServiceImpl implements ClientService{
 			}
 
 			
-			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null);
+			saveOrUpdateClientVendorElkDocument(orgForElk,orgLocationsForElk,null,null,orgRelationsForElk,null,user,loginOrgLocation);
 			
 		//  This to update  the client/vendor details in ELK
 			
@@ -1127,10 +1119,10 @@ public class ClientServiceImpl implements ClientService{
 		
 		
 		@Override
-		public void saveOrUpdateClientVendorElkDocument(Org org, OrgLocations clientOrgLocations,String responderType,OrgSpoc orgSpoc,OrgRelations orgRelation, SubmissionTemplate submissionTemplate) throws Exception{
+		public void saveOrUpdateClientVendorElkDocument(Org org, OrgLocations clientOrgLocations,String responderType,OrgSpoc orgSpoc,OrgRelations orgRelation, SubmissionTemplate submissionTemplate, User user, OrgLocations loginOrgLocation) throws Exception{
 			
 			         //Elastic Search Document Saving
-			       ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate);
+			       ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(org,clientOrgLocations,responderType,orgSpoc,orgRelation,submissionTemplate,user,loginOrgLocation);
 			       sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
 
 		}

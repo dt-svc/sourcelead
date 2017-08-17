@@ -729,6 +729,12 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
+				result = result +	'	</div>';
+			}
 			result = result +	'<div class="clearfix"/>';
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
@@ -853,15 +859,35 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function editOne(startDate,endDate){
+	var contractEffectiveEndDate = startDate.split("-");
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateeditOneSave = '';
+	  var d2 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateeditOneSave = 'yy-mm-dd';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateeditOneSave = 'dd-mm-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateeditOneSave = 'mm-dd-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[0])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateeditOneSave = 'yy-dd-mm';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[2])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }
+	
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateeditOneSave,
         changeMonth: true,
           changeYear: true,
-          minDate: startDate,
+          minDate:  d2,
           onSelect: function (selected) {
-              var dt = toDate("#endDate");
-              dt.setDate(dt.getDate() - 1);
+             // var dt = toDate("#endDate");
+        	  var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
           }
     });
 }
