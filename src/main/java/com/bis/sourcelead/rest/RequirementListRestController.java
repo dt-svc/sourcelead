@@ -1364,7 +1364,7 @@ public class RequirementListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
+		String[] tableColumns = {"", "generatedId","jobTitle", "client", "jobType", "country", "", "manager", "createdDate", "", ""};
 		
 		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
@@ -1612,11 +1612,12 @@ public class RequirementListRestController {
       private Requirement getData(RequirementIndex requirementIndex, User user,OrgLocations orgLocations) throws Exception {
  		 Requirement requirement = new Requirement();
  		requirement.setId(requirementIndex.getRequirementId());
- 		requirement.setDt_RowId("Row_"+requirementIndex.getRequirementId());
       	requirement.setJobId(requirementIndex.getJobId());
+		requirement.setDt_RowId("Row_"+requirementIndex.getRequirementId());
       	requirement.setJobType(requirementIndex.getJobType());
       	requirement.setOtherJobType(requirementIndex.getOtherJobType());
       	requirement.setJobTitle(requirementIndex.getJobTitle());
+      	requirement.setGeneratedId(requirementIndex.getGeneratedId());
       	String convertedStirng = requirementIndex.getCreatedDate();
       	
       	DateFormat elkFormat = new SimpleDateFormat("yyyy-MM-dd"); 

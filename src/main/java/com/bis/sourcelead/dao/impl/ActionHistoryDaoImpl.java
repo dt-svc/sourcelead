@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
@@ -79,8 +81,8 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 					session.saveOrUpdate(actionHistory);
 				}
 			} catch (Exception exception) {
-				//					    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"expenses"));
-				//						throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ActionHistory"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 			}
 
 

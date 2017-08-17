@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,14 +29,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,23 +42,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
-import com.bis.sourcelead.dto.RequirementSearchDTO;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
-import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -94,8 +86,6 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.TeamMembersService;
-import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -103,7 +93,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * 
@@ -133,9 +122,6 @@ public class RequirementServiceImpl implements RequirementService {
 	private RequirementAssignToService requirementAssignToService;
 	
 	@Autowired
-	private TeamService teamService;
-	
-	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
 	@Autowired
@@ -159,15 +145,9 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private UserRoleService userRoleService;
 	
-    @Autowired
-    private ProjectsService projectsService;
-	
 	
 	 @Autowired
 	 private  RequirementSubmissionService requirementSubmissionService;
-	 
-	 /*@Autowired
-	 private CandidateSkillsService candidateSkillsService;*/
 	 
 	 @Autowired
 	 private CandidateResumesService candidateResumeSerivce;
@@ -185,7 +165,7 @@ public class RequirementServiceImpl implements RequirementService {
 	 private RequirementElkUtil requirementElkUtil;
 	 
 	 @Autowired
-	 private SourceleadELKBaseIndexer<RequirementIndex> sourceleadELKBaseIndexer;
+	 private ProjectsService projectsService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -193,14 +173,18 @@ public class RequirementServiceImpl implements RequirementService {
 	@Autowired
 	private RecommendedCustomizeScoreService recommendedCustomizeScoreService;
 	
-	@Autowired
-	private TeamMembersService teamMembersService;
 	
 	@Autowired
 	TimeZoneService timeZoneService;
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	private CandidateDao candidateDao;
+	
+	@Autowired
+	private ProjectsDao projectsDao;
 	
 	/* @Override
 		public String getRequirementId(OrgLocations orgLocations) {
@@ -226,7 +210,7 @@ public class RequirementServiceImpl implements RequirementService {
 	 
 	 public String getRequirementId(OrgLocations orgLocations) {
 	    	String companyShortCode = null;
-	    	Long number = 000000001L;
+	    	Long number = 1L;
 			String requirementId = null;
 			Requirement checkNumber = requirementDao.checkRequirementIdNumberInDatebase(orgLocations.getId());
 			if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
@@ -245,7 +229,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirementId = reqId.toString();
 			}
 			
-			final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+			final DecimalFormat decimalFormat = new DecimalFormat("0");                
 	        String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
 	        StringBuffer sb = new StringBuffer();
 	        if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
@@ -863,7 +847,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 * System Generated Id For Job
 			 */
 			
-		//requirement.setGeneratedId(getRequirementId(orgLocations));
+		 requirement.setGeneratedId(getRequirementId(orgLocations));
 		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
 		
@@ -3325,4 +3309,79 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getAllRequirementVisaByRequirementI(requirementId);
 	}
 
+	@Override
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception {
+		  boolean flag = requirementDao.checkForOldrecordsUsingOrgLocationid(orglocationId,"");
+		  if(flag){
+			 flag = addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		  }
+		  return flag;
+	}
+
+	public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception {
+		List<Requirement> requirementList =  requirementDao.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		List<Candidate> candidateList =  requirementDao.addGeneratedIdRecordsToCandidatesForOldRecords(orglocationId);
+		List<Projects> projectList =  requirementDao.addGeneratedIdRecordsToProjectsForOldRecords(orglocationId);
+		boolean data = false ;
+		int jobsGeneratedId = 0;
+		int candidateGeneratedId = 0;
+		int projectsGeneratedId = 0;
+		String finalJobsGeneratedId = null;
+		String finalCandidatesGeneratedId = null;
+		String finalProjectsGeneratedId = null;
+		// for jobs
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orglocationId);
+		if(!requirementList.isEmpty() && requirementList!= null){
+		 for(Requirement req:requirementList){
+			if(req.getGeneratedId() == null){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					jobsGeneratedId = jobsGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(jobsGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalJobsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredjobsId).toString();
+			        req.setGeneratedId(finalJobsGeneratedId);
+			         Requirement savedRequirement = requirementDao.storeRequirement(req);
+			        requirementElkUtil.saveElkRequirement(savedRequirement, null);
+			        data =  true;
+				}
+			}
+		}
+		 System.out.println("Requirement data successfully");
+	 }if(!candidateList.isEmpty() && candidateList!= null){
+		for(Candidate candidate:candidateList){
+			if(candidate.getGeneratedId() == null){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					candidateGeneratedId = candidateGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(candidateGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalCandidatesGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredjobsId).toString();
+			        candidate.setGeneratedId(finalCandidatesGeneratedId);
+			        Candidate savedCanddidate =  candidateDao.storeCandidate(candidate);
+			        candidateService.saveOrUpdateCandidateElkDocument(savedCanddidate);
+			        data =  true;
+				}
+			}
+		}
+		System.out.println("candidate data successfully");
+	}if(!projectList.isEmpty() && projectList!= null){
+		for(Projects projects:projectList){
+			if(projects.getGeneratedId() == null){
+				if(orgLocation.getGeneratedUserId()!= null && !orgLocation.getGeneratedUserId().equalsIgnoreCase("")){
+					projectsGeneratedId = projectsGeneratedId + 1;
+					final DecimalFormat decimalFormat = new DecimalFormat("0");                
+			        String ConvetredjobsId = decimalFormat.format(projectsGeneratedId);
+			        StringBuffer sb = new StringBuffer();
+			        finalProjectsGeneratedId = sb.append(orgLocation.getGeneratedUserId().toUpperCase()).append(Constants.PROJECT_ENTITY).append(ConvetredjobsId).toString();
+			        projects.setGeneratedId(finalProjectsGeneratedId);
+			        Projects savedProjects = projectsDao.updateProject(projects);
+			        projectsService.saveOrUpdateProjectElkDocument(savedProjects);
+			        data =  true;
+				}
+			}
+		} 
+	}
+		return data;
+   }
 }
