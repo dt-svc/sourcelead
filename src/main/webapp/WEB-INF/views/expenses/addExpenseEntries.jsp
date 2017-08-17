@@ -255,7 +255,7 @@ function addAttachment(entityRowId,from){
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
@@ -283,6 +283,15 @@ function addAttachment(entityRowId,from){
 
 		   </div>
 </div>
+
+
+<script type="text/javascript">
+function removeWhiteSpacesAdd(rowCount){
+	var el = document.getElementsByName("entryDes"+rowCount)[0];
+	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
+	$("#entryDes"+rowCount).val(val);
+}
+</script>
 
 <script>
 function addExpenseRow(){ 
