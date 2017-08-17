@@ -114,8 +114,8 @@ function candidateSideBar(candidateId){
 			            var state = '';
 			            var city = '';
 			            var currencyCodes = '';
+			            var generatedId = '';
 			            
-			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
@@ -208,12 +208,11 @@ function candidateSideBar(candidateId){
          			 		mobilePhone = '';
          			 	 }
          			 	 
-         			 	/*  if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
-         			 		generatedId =json.generatedId;
+         			 	  if(json.generatedId != null && json.generatedId != '' && json.generatedId != 'undefined'){
+         			 		generatedId ='Generated ID'+ ' - '+json.generatedId;
           			 	 }else{
-          			 		 
           			 		generatedId = '';
-          			 	 } */
+          			 	 } 
          			 	 
 	                	 var result = "";
 	                	 result = result+'<div id="popUp" ></div>  ';
@@ -293,7 +292,11 @@ function candidateSideBar(candidateId){
 			             
                          
 			             result = result+'                       </ul>';
-
+                         
+			             result = result+' <ul class="list-unstyled">';
+						 result = result+'<li>'+generatedId+'</li>';
+						 result = result+'</ul>';
+			             
 			             result = result+' <ul class="list-unstyled mrng0" >';
 						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';

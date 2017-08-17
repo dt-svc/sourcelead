@@ -134,7 +134,7 @@ function cpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	/*"className": "tbldata-dotdot_50",*/
+	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {

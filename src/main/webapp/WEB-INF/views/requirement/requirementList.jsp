@@ -126,7 +126,16 @@ function statusvalidating(id){
 
 					<div class="row">
 						<div class="clearfix">
-							<div class="col-md-8">
+							<div class="col-md-4">
+								<label>Generated ID</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Generated ID" id="generatedId" name="generatedId">
+									</select>
+								</div>
+							</div>
+							
+							<div class="col-md-4">
 								<label>Title</label>
 								<div class="clearfix">
 									<select class="chosen-select form-control input-sm" multiple
@@ -135,6 +144,7 @@ function statusvalidating(id){
 									</select>
 								</div>
 							</div>
+							
 							<div class="col-md-4">
 								<label>Id</label>
 								<div class="clearfix">
@@ -640,6 +650,28 @@ function getActions(){
 		        }
 		    });
 		    
+		    var selecttwo, chosentwo;
+		    selecttwo = $("#generatedId");
+		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:' });
+		    chosentwo = selecttwo.data('chosen');
+		    chosentwo.search_field.on('keydown keyup', function(e1)
+		    {
+		    	var genId = this.value.replace(",","");
+		        if (tagItBykeyForSkills(e1) && (genId != null  && genId != '' && genId != 'undefined'))
+		        {
+		        	preventTabkey(e1); 
+		        	var par = this.parent;
+		            var option = $("<option>").val(genId).text(genId);
+		            selecttwo.append(option);
+		            selecttwo.find(option).prop('selected', true);
+                    $("#generatedId option").each(function(){
+                          $(this).siblings("[value='"+ this.value+"']").remove();
+                    });
+	        		$("#generatedId").trigger("chosen:updated");
+	        		
+		        }
+		    });
+		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       }); 
@@ -747,6 +779,7 @@ function clearSearch(){
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
+	$('#generatedId').val('').trigger('chosen:updated');
 }
 </script>
 
