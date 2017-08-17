@@ -23,6 +23,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
@@ -69,6 +70,11 @@ public class ProjectApproverHierarchy implements Serializable{
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
+    
+    @Transient
+    @JsonProperty
+    private Long  projectApproverUserId;
+    
     
     @Transient
     private String fullName;
@@ -169,6 +175,17 @@ public class ProjectApproverHierarchy implements Serializable{
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public Long getProjectApproverUserId() {
+		if(approverUserId != null){
+			projectApproverUserId = approverUserId.getId();
+		}
+		return projectApproverUserId;
+	}
+
+	public void setProjectApproverUserId(Long projectApproverUserId) {
+		this.projectApproverUserId = projectApproverUserId;
 	}
 	
 	

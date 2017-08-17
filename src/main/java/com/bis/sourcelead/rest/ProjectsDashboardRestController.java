@@ -220,6 +220,18 @@ public class ProjectsDashboardRestController {
 		    		 }
 		    	 }
 		     }
+		     
+		     Set<ProjectDocuments> projectDocumentsList = projects.getProjectDocuments();
+		     if(projectDocumentsList != null){
+		    	 Set<ProjectDocuments> documentsList =  new LinkedHashSet<ProjectDocuments>();
+		    	 for(ProjectDocuments projectDocuments : projectDocumentsList){
+		    		 if(projectDocuments.getStatus().equals(1)){
+		    			 documentsList.add(projectDocuments);
+		    		 }
+		    	 }
+		    	 projects.setProjectDocumentsList(documentsList);
+		     }
+		     
 			 return projects;
 	  }
 	 

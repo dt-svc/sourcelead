@@ -412,7 +412,13 @@
 
 					</div>
 					
-					<div id="savedProjectDocuments"></div>
+					<div id="timesheetDocumentsId">
+			       		<div class="timesheet_week_comm invoiceDocs clearfix">
+			       			<span>
+			         			 <div id="savedProjectDocuments" class="col-md-6 mt"></div>
+			         		</span>
+			           </div>
+			         </div>
 
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -533,6 +539,7 @@ function getStatus(){
 		var savedProjectId = '${savedProjectId}';
 		if(savedProjectId != null && savedProjectId != '' && savedProjectId != 'undefined'){
 			$("#projectId").val(savedProjectId);
+			getProjectDetails();
 			
 			var isProjectDetailsFilled = '${isProjectDetailsFilled}';
 			if(isProjectDetailsFilled == 'N'){
@@ -550,8 +557,6 @@ function getStatus(){
 					additionalDetails.className = "disabledLink";
 				}
 			}
-			
-			getProjectDetails();
 			
 		}else{
 			var assignedMembers = document.getElementById("assignedMembers");
@@ -653,6 +658,7 @@ function getStatus(){
 function getProjectDetails(){
 	var projectId = document.getElementById("projectId").value;
 	if(projectId){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
@@ -660,6 +666,7 @@ function getProjectDetails(){
 	        success: function(json) {
 	        	
 	        	var level1ApproverUser = '';
+	        	var level2ApproverUser = '';
 	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
 	        		 $("input[name=ProjectSequeneNumber]").val(json.projectSequeneNumber);
@@ -671,36 +678,20 @@ function getProjectDetails(){
 	        	 $("input[name=StartDate]").val(json.startDateStr);
 	        	 $("input[name=EndDate]").val(json.endDateStr);
 	        	 
-	        	   for(var i=0; i<json.approverHierarchyList.length; i++){
-	        		  var opt = json.approverHierarchyList[i];
-	        		  if(opt.level == '1'){
-	        			  getProjectLevel1Approvers(opt.approverUserId.id);
-	        			  level1ApproverUser = opt.approverUserId.id;
-	        		  }
-	        		  
-	        		  if(opt.level == '2'){
-	        				$("#level2Manager").empty();    
-	        				$('#level2Manager').val('').trigger('chosen:updated');
-	        				$("#level2Toggle").hide();   
-	        				 document.getElementById('level2Div').className = 'form-group level-second level-second-active'
-	        				 getChildLevel1Approvers(level1ApproverUser,opt.approverUserId.id);
-	        		  }
-	        		  
-	        	  }  
-	        	   
+	        	 
         	   $("select[name=Satatus]").val(json.projectStatus);
         	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
         	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
         	   
-        	   if(json.allowFreeLance == '1'){
+        	   if(json.allowFreeLance == 1){
         		   document.getElementById("isAllowFreelanceDevelopers").checked = true;
         	   }
         	   
-        	   if(json.allowRemote == '1'){
+        	   if(json.allowRemote == 1){
         		   document.getElementById("isAllowRemoteWork").checked = true;
         	   }
         	   
-        	   if(json.allowOvertime == '1'){
+        	   if(json.allowOvertime == 1){
         		   document.getElementById("isAllowOverTime").checked = true;
         		   $('#flatPercentageId').attr('style','visibility:visible');
         		   $('#flatPercentage').attr('style','visibility:visible');
@@ -709,31 +700,87 @@ function getProjectDetails(){
         		   
         	   }
         	   
-        	   if(json.isTimesheetAttachmentRequired == '1'){
+        	   
+        	   if(json.isTimesheetAttachmentRequired == 1){
         		   document.getElementById("isTimesheetAttachmentRequired").checked = true;
         	   }
         	   
-        	   if(json.allowOffShore == '1'){
+        	   if(json.allowOffShore == 1){
         		   document.getElementById("isAllowOffshoreResource").checked = true;
         	   }
         	   
-        	   if(json.allowTimeEntryAfterDeadLine == '1'){
+        	   if(json.allowTimeEntryAfterDeadLine == 1){
         		   document.getElementById("isTimeEntryAfterDeadline").checked = true;
         	   }
         	   
-        	   if(json.allowBidding == '1'){
+        	   if(json.allowBidding == 1){
         		   document.getElementById("isAllowBidding").checked = true;
         	   }
-        	   
         	   
         	   /* $("#projectDescription").Editor();
         	   $('#projectDescription').summernote(json.description);
         	   */
         	   
+        	   
+        	   if(json.projectDocumentsList.length > 0){
+        		   var result = '';
+        		   for(var i=0; i<json.projectDocumentsList.length; i++){
+        			   var opt = json.projectDocumentsList[i];
+        			  
+        			     result = result +"<strong id='projectDocument"+opt.id+"'>";
+      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadProjectDoc?porjectDocumentId="+opt.id+"\"></a></i>";
+      					 result = result +"<input type='button' value='"+opt.fileName+"'>";
+      					 result = result +"</a>";
+      					 result = result +"<input class='dele' type='button' onClick='removeProjectDocuments("+opt.id+","+json.id+");' >";
+      					 result = result +"</strong>";
+        		   }
+        		   
+        		   
+        		   $("#savedProjectDocuments").empty();
+      			   $("#savedProjectDocuments").append(result);
+      			   
+      			   for(var i=0; i<json.approverHierarchyList.length; i++){
+	        		  var opt = json.approverHierarchyList[i];
+	        		  if(opt.level == "1"){
+	        			  level1ApproverUser = opt.projectApproverUserId;
+	        			  getProjectLevel1Approvers(opt.projectApproverUserId);
+	        		  }
+	        		  
+	        		  if(opt.level == "2"){
+	        				 $("#level2Toggle").hide(); 
+	        				 document.getElementById("level2Div").removeAttribute("class");
+	        				 document.getElementById('level2Div').className = 'form-group level-second level-second-active';
+	        				 level2ApproverUser = opt.projectApproverUserId;
+	        		  }
+	        	  }  
+      			   
+      			   if(level1ApproverUser != '' && level2ApproverUser != ''){
+      				  getChildLevel1Approvers(level1ApproverUser,level2ApproverUser);
+      			   }
+      			 
+      			   
+      			   $("#loading").removeAttr("style");
+      			 
+        	   }
+        	   
 		        
 	        },
 	    });  
 	}
+}
+</script>
+
+<script>
+function removeProjectDocuments(documentId,projectId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/terminateProjectDoc?${_csrf.parameterName}=${_csrf.token}&porjectDocumentId="+documentId, 	   
+		    success: function(data) {
+		    	projectDocuments(projectId);
+		    },
+     });
+
 }
 </script>
 

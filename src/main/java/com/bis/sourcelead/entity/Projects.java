@@ -33,6 +33,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -186,6 +187,7 @@ public class Projects implements Serializable{
   
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectDocuments> projectDocuments = new HashSet<>();
     
     
@@ -276,6 +278,10 @@ public class Projects implements Serializable{
 
     @Transient
     private String expensesClientName;
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectDocuments>  projectDocumentsList;
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -847,6 +853,14 @@ public class Projects implements Serializable{
 
 	public void setApproverHierarchyList(Set<ProjectApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Set<ProjectDocuments> getProjectDocumentsList() {
+		return projectDocumentsList;
+	}
+
+	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
+		this.projectDocumentsList = projectDocumentsList;
 	}
 	
 }
