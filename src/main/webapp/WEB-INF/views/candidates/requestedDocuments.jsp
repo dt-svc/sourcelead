@@ -93,7 +93,7 @@ top: 20%; right: auto; left: 40%;
 								    <td class="text-center">
 								    <div class="width300px mt5">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validatedoc">
+								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
