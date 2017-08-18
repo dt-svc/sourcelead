@@ -441,12 +441,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }
     	}
 	    
-	    if((jsonObj.has("isMailToTeamMembers") && StringUtils.isNotEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
-			projects.setIsMailToTeamMembers(Status.Y);
-		}else{
-			projects.setIsMailToTeamMembers(Status.N);
-		}
-	    
 	    if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotEmpty(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
 		  projects.setIsMailToProjectManager(Status.Y);
 		}else{

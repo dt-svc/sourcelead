@@ -437,8 +437,7 @@
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
 					<div class="clearfix col-md-12">
-						<span class="paddingRight"><input type="checkbox" id="isMailToTeamMembers" name="isMailToTeamMembers">&nbsp;Mail to team members</span> 
-						<span class="paddingLeft"><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
+						<span><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
 					</div>
 					
 
@@ -447,15 +446,11 @@
 				<!--  div row end -->
 
 
-				<div class="form-footer clearfix row mt">
+				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Save" id="save_project"
-								onclick="saveProject();flushSaveProject()"
-								class="btn btn-primary"> <input type="button"
-								value="Cancel"
-								onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'"
-								class="btn btn-default ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
 				</div>

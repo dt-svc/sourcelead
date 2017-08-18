@@ -17,6 +17,9 @@
 	
 <div class="form-footer clearfix miniFoot">
   <div class="col-lg-12">
+  <span class="pull-left" id="mailToMembers" style="display: none;">
+  	<input type="checkbox" id="mailToTeamMembers" onclick="checkMailToTeamMembers();" name="mailToTeamMembers" value="" checked>&nbsp; Mail to team members
+  </span>
 	<div class="pull-right">
 	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'"  class="btn btn-danger">
 	  <input type="button" value="Save & Continue" onClick="assignMembers()" class="btn btn-primary ml10">
@@ -61,6 +64,7 @@
                   <div class="pull-left inputRate">
                       <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="REPLACEROWIDpayRate" field-name="Pay Rate" data-validation="required validate_Space validate_int validate_length length1-15">
                   </div>
+                  
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDpayRateRateType" name="REPLACEROWIDpayRateRateType">
 	                    <option value="Hourly">Hourly</option>
@@ -280,7 +284,6 @@ function getAssociatesFilter(){
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result +'<th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates();"></th>';
-	        	/* result = result +'<th>ID</th>'; */
 	        	result = result +'<th>Name</th>';
 	        	result = result +'<th>Primary Skill</th>';
 	        	result = result +'<th>Rate</th>';
@@ -411,6 +414,21 @@ function getAssociatesFilter(){
 }
 </script>
 
+<script>
+	function toggleAssociates() {
+	var checked = document.getElementById("checkAllAssociates").checked  
+	    if(checked) {
+	        $('.myCheckbox').each(function() {
+	            this.checked = true;   
+	        });
+	    }else{
+	        $('.myCheckbox').each(function() {
+	            this.checked = false;      
+	        });         
+	    } 
+	}
+</script>
+
 
 
 <script type="text/javascript">
@@ -539,9 +557,8 @@ function getAssociatesFilter(){
 			divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
 			cell7.innerHTML = divTaskTd8Str;
 			
-			
-			
 			 $("#norecordsfound").empty();
+			 document.getElementById("mailToMembers").style.display="";
 			
 			
 		   });
@@ -674,6 +691,20 @@ function emptyRecordsList(){
 	 
 	 $("#norecordsfound").empty();
      $("#norecordsfound").append(result);
+     document.getElementById("mailToMembers").style.display="none";
+     $("#mailToTeamMembers").val("Y");
+     document.getElementById("mailToTeamMembers").checked = true;
+}
+</script>
+
+<script>
+function checkMailToTeamMembers(){
+	var checked = document.getElementById("mailToTeamMembers").checked
+	if(checked == true){
+		$("#mailToTeamMembers").val("Y");
+	}else{
+		$("#mailToTeamMembers").val("N");
+	}
 }
 </script>
 
@@ -820,6 +851,4 @@ function cancel(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-
-        
 </script>
