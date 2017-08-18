@@ -181,15 +181,19 @@ public class VendorRestController {
 	    
 	    List<Requirement> vendorReleasedJobsList = null;
 	    if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-	    	vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+	    	if(orgRelation !=null) {
+	    		vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+	    	}
 	    }else{
 	    	List<Requirement> reqlist = requirementService.getAllReleasedJobsBasedOnUserIdAndLocationId(user,orgLocations);
 		    List<Long> parentreqIds = new ArrayList<>();
 		    for(Requirement req : reqlist){
 		    	parentreqIds.add(req.getId());
 		    }
+		    if(orgRelation !=null) {
 		    vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds,orgRelation.getId());
-	    }
+		    }
+		    }
 		
 		if(null != vendorReleasedJobsList ){
 			
