@@ -211,7 +211,7 @@ public class ClientRestController {
 			
 			Org org = orgService.getOrgByOrgName(orgName);
 			OrgLocations orgLocations = null;
-			if(org != null){
+			if(org != null && orgLocationId != null){
 				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
 			}
@@ -640,12 +640,12 @@ public class ClientRestController {
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
 			for(OrgRelations orgRelations : relationsList){
 				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
+					if(clientName.trim().equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
 						flag = true;
 					}
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
+					if(clientName.trim().equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
 						flag = true;
 					}
 					
