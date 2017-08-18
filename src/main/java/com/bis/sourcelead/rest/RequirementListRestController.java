@@ -1400,7 +1400,12 @@ public class RequirementListRestController {
 				} 
 		 }
 		 
-			
+		
+		//Generated Id
+		if(StringUtils.isNotEmpty(search.getGeneratedId())){
+			boolQueryBuilder.must(QueryBuilders.matchQuery("generatedId", search.getGeneratedId()));
+	    }
+		
 		//Requirement Title
 		if(StringUtils.isNotEmpty(search.getRequirementTitle())){
 			boolQueryBuilder.must(QueryBuilders.matchQuery("jobTitle", search.getRequirementTitle()));
@@ -1575,6 +1580,7 @@ public class RequirementListRestController {
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("client", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
 			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(matcher.find()){
 				Float expYears = Float.valueOf(matcher.group());

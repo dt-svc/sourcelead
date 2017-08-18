@@ -279,7 +279,7 @@ window.onload = function () {
                 <div class="form-group" id="userRoleDiv" style="display: none;">
 					<label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
 					<div class="col-md-9">
-					<input type="text" class="form-control" id="userRoleText"  readonly="readonly">
+					<input type="text" class="form-control" id="userRoleText"  name="userRoleText" readonly="readonly">
 					<input type="hidden" id="userRole" name="roleTypeId" value="" />
 					
 				   </div>
@@ -515,7 +515,7 @@ function getRolesList(){
 			var jsonData = JSON.stringify(frm);
 		    var form = $('#client_form')[0];
 		    var formData = new FormData(form);
-		  	formData.append("json",jsonData)
+		  	formData.append("json",jsonData);
 			
 		//	con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters

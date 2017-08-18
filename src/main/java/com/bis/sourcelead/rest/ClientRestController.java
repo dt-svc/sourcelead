@@ -5,17 +5,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +39,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.ClientVendorDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Contracts;
@@ -68,6 +80,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -1157,5 +1170,267 @@ public class ClientRestController {
 		List<Contracts> clientcontractsList = contractsTemplateService.getAllClientOrVendorContractsBasedOnLocationId(orgLocations,responderType,user,userRoleName,contractStatus,orgRelationId);
 		return commonUtil.toJSON(clientcontractsList);
 	 }
+	
+	@RequestMapping(value = "/searchClientDetails")
+	public ResponseList<ClientVendorIndex> searchClientDetails(ClientVendorDTO clientVendorDTO, HttpServletRequest request)
+			throws Exception {
+		/*
+		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
+		 */
+		String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+	     int sortColumnIndex = 4; //by default sorting using updated date
+		boolean sortColumnOrder = false; //by default descending order
+		if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(clientVendorDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = !clientVendorDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+		}
+		
+		
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");		  
+		 
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		 
+		 String responderType= "";
+		 if(Constants.VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			 responderType = Constants.CLIENT;
+		 }else if(Constants.CLIENT.equalsIgnoreCase(clientVendorDTO.getResponderType())){
+			 responderType = Constants.VENDOR; 
+		 }
+		 
+		 BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
+		 
+		 BoolQueryBuilder initiatorQueryBuilder = QueryBuilders.boolQuery();
+		 initiatorQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+		 initiatorQueryBuilder.must(QueryBuilders.matchQuery("initiatorType", responderType));
+		 
+		 BoolQueryBuilder responderQueryBuilder = QueryBuilders.boolQuery();
+		 responderQueryBuilder.must(QueryBuilders.matchQuery("responderLocationId", loginOrgLocation.getId()));
+		 responderQueryBuilder.must(QueryBuilders.matchQuery("responderType", responderType));
+		 
+		 combinedQueryBuilder.should(initiatorQueryBuilder);
+		 combinedQueryBuilder.should(responderQueryBuilder);
+		 
+		 boolQueryBuilder.must(combinedQueryBuilder);
+		 
+		 // filter based on client level
+		 List<String> clientLevelArray = clientVendorDTO.getValues(); // 
+			if(clientLevelArray != null && !clientLevelArray.isEmpty()){
+				BoolQueryBuilder clientLevelBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(String keywd : clientLevelArray){
+					clientLevelBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorLevel", keywd));
+					clientLevelBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderLevel", keywd));
+				}
+				boolQueryBuilder.must(clientLevelBoolQueryBuilder);
+			}
+		 
+		
+		 
+		 // Rajashekar
+		//Exclude Keyword
+		 List<String> excludeKeyWordArray = clientVendorDTO.getExcludeKeyWord();// getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
+		 if(excludeKeyWordArray != null && !excludeKeyWordArray.isEmpty()){
+		 	 BoolQueryBuilder excludeBoolQueryBuilder = QueryBuilders.boolQuery();
+			 for(String keywd : excludeKeyWordArray){
+				 BoolQueryBuilder excludeBoolSubQueryBuilder = QueryBuilders.boolQuery();
+				ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+				if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+					for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+						excludeBoolSubQueryBuilder.should(matchQueryBuilder);
+					}
+					excludeBoolQueryBuilder.should(excludeBoolSubQueryBuilder);
+				}
+			}
+			 boolQueryBuilder.mustNot(excludeBoolQueryBuilder);
+		  }
+			
+			//Any Keyword
+			List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword(); // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+			if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
+				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : anyKeyWordArray){
+					 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							anyBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.must(anyBoolQueryBuilder);
+			}
+			
+			//All Keywords
+			List<String> allKeyWordArray = clientVendorDTO.getAllKeywords();//getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
+			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
+				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
+				 for(String keywd : allKeyWordArray){
+					 BoolQueryBuilder allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+					ArrayList<MatchQueryBuilder> matchQueryBuilderList =getMatchQueryBuilderList(keywd);
+					if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+						for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+							allBoolSubQueryBuilder.should(matchQueryBuilder);
+						}
+						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
+					}
+				}
+				 boolQueryBuilder.must(allBoolQueryBuilder);
+			}
+			
+			//vendorName
+			List<String> vendorNameArray = clientVendorDTO.getOrgNameAdvanced(); // getSearchKeywordsFromChosenSelectField(jsonObj, "orgNameAdvanced");
+			if(vendorNameArray != null && !vendorNameArray.isEmpty()){
+				BoolQueryBuilder vendorNameBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(String keywd : vendorNameArray){
+					vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorOrgName", keywd));
+					vendorNameBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderOrgName", keywd));
+				}
+				boolQueryBuilder.must(vendorNameBoolQueryBuilder);
+			}
+			
+			 //Country
+			if(clientVendorDTO.getCountry() !=null){
+				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderCountry", clientVendorDTO.getCountry()));
+				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorCountry", clientVendorDTO.getCountry()));
+		    }
+			
+			
+			 //State
+			if(clientVendorDTO.getState() !=null){
+				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderState", clientVendorDTO.getState()));
+		    }
+			if(clientVendorDTO.getState() !=null){
+				boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorState", clientVendorDTO.getState()));
+		    }
+			
+			//City
+			if(clientVendorDTO.getCity() !=null){
+				boolQueryBuilder.should(QueryBuilders.matchQuery("initiatorCity", clientVendorDTO.getCity()));
+		    }
+			if(clientVendorDTO.getCity() !=null){
+				boolQueryBuilder.should(QueryBuilders.matchQuery("responderCity", clientVendorDTO.getCity()));
+		    }
+			
+				
+			//CreatedBy
+			List<String> createdByArray = clientVendorDTO.getCreatedByAdvanced(); // getSearchKeywordsFromChosenSelectField(jsonObj, "createdByAdvanced");
+			if(createdByArray != null && !createdByArray.isEmpty()){
+				BoolQueryBuilder createdByBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(String keywd : createdByArray){
+					createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+				}
+				boolQueryBuilder.must(createdByBoolQueryBuilder);
+			}
+			
+			//tierAdvanced
+			List<String> tierAdvancedByArray = clientVendorDTO.getTierAdvanced();// getSearchKeywordsFromChosenSelectField(jsonObj, "tierAdvanced");
+			if(tierAdvancedByArray != null && !tierAdvancedByArray.isEmpty()){
+				BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
+				for(String keywd : tierAdvancedByArray){
+					tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+					//tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+				}
+				boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
+			}
+			
+		 // Rajashekar end
+			 // to   get the number of Vendor/Clients 
+		/*Long maxResults = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
+				clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC,boolQueryBuilder).getTotalHits();*/
+			SearchResponse searchResponse = sourceleadELKBaseIndexer
+					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
+							clientVendorDTO.getStart(), clientVendorDTO.getLength(), tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+			
+			SearchHit searchHits[] = searchResponse.getHits().getHits();
+		 
+		List<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		ResponseList<ClientVendorIndex> response = new ResponseList<>();
+//		SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
+		if(searchHits != null && searchHits.length >0){
+			ObjectMapper mapper = new ObjectMapper();
+			for (SearchHit hit : searchHits) {
+			String	json = hit.getSourceAsString();
+				mapper.setDateFormat(df);
+				ClientVendorIndex clientVendor = mapper.readValue(json, ClientVendorIndex.class);
+				
+				//  This is to get the number of Contacts based  on Org Relation Id
+				 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
+				 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
+				 if(clientVendor.getNoContacts() !=null) {
+					 clientVendor.setNoContacts(clientVendor.getNoContacts());
+				 }else {
+					 clientVendor.setNoContacts(0L);
+				 }
+				
+				if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
+					
+					clientVendor.setWebsite(clientVendor.getResponderWebSite());
+					clientVendor.setOrgName(clientVendor.getResponderOrgName());
+					clientVendor.setCountry(clientVendor.getResponderCountry());
+					clientVendor.setState(clientVendor.getResponderState());
+					clientVendor.setCity(clientVendor.getResponderCity());
+					if(clientVendor.getInitiatorLevel()!=null){
+						clientVendor.setInitiatorLevel(clientVendor.getInitiatorLevel());
+					}
+					clientVendor.setResponderLocationId(clientVendor.getResponderLocationId());
+				}
+			  if(null != clientVendor.getResponderLocationId()  && clientVendor.getResponderLocationId().longValue() == loginOrgLocation.getId().longValue()){
+				 
+				  clientVendor.setWebsite(clientVendor.getInitiatorWebSite());
+				  clientVendor.setOrgName(clientVendor.getInitiatorOrgName());
+				  clientVendor.setCountry(clientVendor.getInitiatorCountry());
+				  clientVendor.setState(clientVendor.getInitiatorState());
+				  clientVendor.setCity(clientVendor.getInitiatorCity());
+				  clientVendor.setResponderLocationId(clientVendor.getOrgLocationId());
+				  if(clientVendor.getResponderLevel()!=null){
+					  clientVendor.setInitiatorLevel(clientVendor.getResponderLevel());
+				  }
+				}
+			  if(!responderType.isEmpty() &&  Constants.VENDOR.equalsIgnoreCase(responderType)){
+				  if(!"".equals(clientVendor.getCreatedBy())){
+					  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
+				  }
+			  }
+		     clientVendorList.add(clientVendor);
+				
+			}
+			response.setRecordsFiltered(searchHits.length);
+			SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+					.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,
+							0, 10, "createdBy", SortOrder.DESC, boolQueryBuilder);
+			
+			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+		}
+		response.setData(clientVendorList);
+		 return response;
 
+	}
+	
+	
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		    ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		   
+		    //Vendor Search 
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorOrgName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("responderOrgName", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCountry", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderState", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("responderCity", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCountry", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorState", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("initiatorCity", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("responderWebSite", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchPhrasePrefixQuery("initiatorWebSite", keywd));
+			
+			return matchQueryBuilderList; 
+	 }
 }
