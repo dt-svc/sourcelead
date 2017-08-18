@@ -44,9 +44,8 @@
         </section>
         
 		<!-- Timesheet -->
-
+<div id="emptyPopup"></div>
 <div class="timesheet_out">
-
 <div class="project_wrap">
 	<div class="timesheet_head">
         	<ul>
@@ -239,8 +238,8 @@ function getExpensesList(){
 			        	  }
 		        		  $("#temp").val("temp");
 		        	  }else{
-		        		  /* $("#temp").val(''); */
-						  $('#hideExportExpenseLink').hide();
+		        		   $("#temp").val(''); 
+// 						  $('#hideExportExpenseLink').hide();
 		        	  }
 	        	 
    			
@@ -524,8 +523,9 @@ function getEditExpense(eId){
 	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
 }
 </script>
+
 <script>
-function exportToPdf(type){
+function exportToPdf(type){                                                                        
 	var temp = $("#temp").val();
 	if(temp != null && temp != ''){
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -541,17 +541,27 @@ function exportToPdf(type){
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>Candidate List is Empty</p>";
+		result = result +"		<p>Expenses List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='text-center width100percnt' value='Ok' onclick='expensesCancel();'></b>";
 		result = result +"	</div>";
 		$("#emptyPopup").append(result);
 		$("#expensesListDiv").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
 	}
-	
 }
 </script>
+
+
+
+<script type="text/javascript">
+function expensesCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
