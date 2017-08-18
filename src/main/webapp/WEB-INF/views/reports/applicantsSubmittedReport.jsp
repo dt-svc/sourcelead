@@ -160,9 +160,9 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				dt.setDate(dt.getDate() + 1);
-				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				/* var dt = new Date(selected);
+				dt.setDate(dt.getDate() + 1); */
+				$("#ExportEndDate").datepicker("option", "minDate", selected);
 				addValidClass();
 			}
 		
@@ -176,9 +176,9 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				dt.setDate(dt.getDate() - 1);
-				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+			/* 	var dt = new Date(selected);
+				dt.setDate(dt.getDate() - 1); */
+				$("#ExportStartDate").datepicker("option", "maxDate", selected);
 				addValidClass();
 			}
 		});
