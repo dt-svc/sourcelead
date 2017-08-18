@@ -96,7 +96,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               </div>
             </div>
            <div class="form-group">
-              <label class="col-md-3">Frequency</label>
+              <label class="col-md-3">Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
                 <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
                  <!--  <option value=''>--Select Payment Term--</option>

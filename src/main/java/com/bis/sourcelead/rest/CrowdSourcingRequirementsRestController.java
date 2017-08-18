@@ -265,7 +265,7 @@ public class CrowdSourcingRequirementsRestController {
 	   //for jobs filter when clicked on org name 
 		if(postedOrgName != null && !"".equalsIgnoreCase(postedOrgName) && !"undefined".equalsIgnoreCase(postedOrgName)){
 			BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
-			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
+			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("orgLocationId", postedOrgName));
 			boolQueryBuilder.must(postedOrgJobsBuilder);
 		}
 		 

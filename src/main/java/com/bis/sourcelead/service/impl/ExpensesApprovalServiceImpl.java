@@ -132,12 +132,19 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 			}
 			
 			if (null != expensesApproverHierarchy.getExpenseId()) {
+				
+				if(expensesApproverHierarchy.getExpenseId().getPurpose()!=null){
+					expensesApproverHierarchy.setExpensesApproverHierarchyPurpose(expensesApproverHierarchy.getExpenseId().getPurpose());
+				}else{
+					expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("--");
+				}
 				if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers()) {
 							if(null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects()){
 								expensesApproverHierarchy.setExpensesProjectName(expensesApproverHierarchy.getExpenseId().getProjectMembers().getProjects().getProjectName());
 							}else{
 								expensesApproverHierarchy.setExpensesProjectName("--");
 							}
+							
 					
 					if (null != expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee()) {
 						
@@ -168,6 +175,14 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 							}
 								expensesApproverHierarchy.setExpenseEmpUserEmail(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getEmail());
 								expensesApproverHierarchy.setExpensesUserid(expensesApproverHierarchy.getExpenseId().getProjectMembers().getEmployee().getUser().getId());
+						}
+						
+						if (null != expensesApproverHierarchy.getExpenseId()) {
+							if(null != expensesApproverHierarchy.getExpenseId().getPurpose()){
+								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose(expensesApproverHierarchy.getExpenseId().getPurpose());
+							}else{
+								expensesApproverHierarchy.setExpensesApproverHierarchyPurpose("-----");
+							}
 						}
 					}
 				}
