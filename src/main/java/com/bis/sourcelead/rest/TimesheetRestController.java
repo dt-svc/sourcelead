@@ -575,6 +575,8 @@ public class TimesheetRestController {
 		
 		String exportPdf = "pdf";
 		String exportExcel = "excel";
+		 Boolean isExportMyTimeSheet= commonUtil.hasRole("ROLE_EXPORT_MY_TIMESHEETS");
+		if(isExportMyTimeSheet){
 		timesheetEntriesDiv.append("					<div class='export dropdown'> ");
 		timesheetEntriesDiv.append("						<p class='dropdown-toggle' data-toggle='dropdown'><i class='glyphicon glyphicon-export'></i>Export<i class='fa fa-caret-down'></i></p> ");
 		timesheetEntriesDiv.append("							<ul id='exporrtEntries' class='dropdown-menu dropdown-menu-right'> ");
@@ -585,7 +587,7 @@ public class TimesheetRestController {
 		timesheetEntriesDiv.append("					</div> ");
 		timesheetEntriesDiv.append("			        <div class='clearfix'></div> ");
 		timesheetEntriesDiv.append("			    </ul> "); 
-		
+		}
 		
 	    timesheetEntriesDiv.append(tabData);
 		
@@ -635,9 +637,10 @@ public class TimesheetRestController {
         		}
 	        	timesheetEntriesDiv.append("<b class='proj_draft "+pullRightClass+"'>").append(submissionStatus).append("</b>");
 	        }
+	        
 	        if(!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))){
 	        	timesheetEntriesDiv.append("<b "+innerStyleWidth+"  class='proj_process "+pullRightClass+" '>").append(submissionStatus).append("</b>");
-	        	if(isSahApproved && isModifyMyTimeSheet && from.equalsIgnoreCase("user")){
+	        	if(isSahApproved && isModifyMyTimeSheet && from.equalsIgnoreCase("user") && isModifyMyTimeSheet){
 	                timesheetEntriesDiv.append("&nbsp;&nbsp;<b "+innerStyleWidth+" class='proj_withdraw'  onClick='withdrawMyTimesheet(\""+projectMemberId+"\",\""+weekStartDate+"To"+weekEndDate+"\");' >Modify</b>");
 	        	}
 	        }
