@@ -729,6 +729,12 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
+				result = result +	'	</div>';
+			}
 			result = result +	'<div class="clearfix"/>';
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){

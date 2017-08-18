@@ -496,8 +496,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedResourceRequests = new ArrayList<Long>();
 		 
-		 String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		/* String pattern = "dd-MM-yyyy";
+	     SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 		 
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
 		 
@@ -558,14 +558,14 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 }
 				 
 				 if(jsonObj.has(i+"requestStartDate") && !isNullOrEmpty(jsonObj.getString(i+"requestStartDate"))){
-					 Date requestStartDate = format.parse(jsonObj.getString(i+"requestStartDate"));
+					 Date requestStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(i+"requestStartDate"));
 					 resourceRequest.setStartDate(requestStartDate);
 				 }else{
 					 resourceRequest.setStartDate(null);
 				 }
 				 
 				 if(jsonObj.has(i+"requestEndDate") && !isNullOrEmpty(jsonObj.getString(i+"requestEndDate"))){
-					 Date requestEndDate = format.parse(jsonObj.getString(i+"requestEndDate"));
+					 Date requestEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(i+"requestEndDate"));
 					 resourceRequest.setEndDate(requestEndDate);
 				 }else{
 					 resourceRequest.setEndDate(null);

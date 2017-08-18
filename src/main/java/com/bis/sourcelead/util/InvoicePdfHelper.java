@@ -880,7 +880,7 @@ public class InvoicePdfHelper {
 			Paragraph p = new Paragraph("Company Name :" + orgName);
 			p.add(new Chunk(glue));
 			p.setIndentationLeft(0);
-			p.add("Duration  :" + exportStartDate + " - " + exportEndDate);
+			p.add("Duration  :" +exportStartDate+ " - " +exportEndDate);
 			p.setIndentationRight(223);
 			document.add(p);
 
@@ -1070,9 +1070,9 @@ public class InvoicePdfHelper {
 			billingArray[11] = "--";
 		}
 
-		if (null != invoice.getLinkInvoiceReferenceId()
-				&& !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))) {
-			billingArray[12] = String.valueOf(invoice.getLinkInvoiceReferenceId());
+		if (null != invoice.getLinkInvoiceRefInvoiceId()
+				&& !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()))) {
+			billingArray[12] = String.valueOf(invoice.getLinkInvoiceRefInvoiceId());
 		} else {
 			billingArray[12] = "--";
 		}

@@ -818,7 +818,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			    	
 			    	if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
 			    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
-			    		   addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    		RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
+			    		if(clientSubmission != null){
+			    			addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+			    		}
+			    		
 			    	}
 			    	
 		    	}else{
@@ -1278,7 +1282,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
     			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
 			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
-			candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+			if(clientSubmission != null){
+				candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+			}
 		}else{
 			candidate = candidateService.findByCandidateEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
 		}
@@ -1303,8 +1309,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		candidate.setState(templateFields.getState());
 		    		candidate.setCity(templateFields.getCity());
 		    		candidate.setZipCode(templateFields.getZipCode());
-		    		candidate.setExperienceYears(templateFields.getCandidateWorkExperienceYears().toString());
-		    		candidate.setExperienceMonths(templateFields.getCandidateWorkExperienceMonths().toString());
+		    		if(templateFields.getCandidateWorkExperienceYears() != null){
+		    			candidate.setExperienceYears(templateFields.getCandidateWorkExperienceYears().toString());
+		    		}
+		    		if(templateFields.getCandidateWorkExperienceMonths() != null){
+		    			candidate.setExperienceMonths(templateFields.getCandidateWorkExperienceMonths().toString());
+		    		}
+		    		
     			}
     		}
     		
