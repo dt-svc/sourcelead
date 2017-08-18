@@ -456,13 +456,14 @@ function addExpenseRow(){
 			var expenseRateType = $("#expenseRateType"+entityId).val();
 			var expenseAmount = parseFloat($("#expenseAmount"+entityId).val());
 			
+			var expenseRoundOffAmount = expenseAmount.toFixed(2);
 			var descriptions = $("#entryDes"+entityId).val();
 			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
 			$("#categoryDateDiv"+entityId).html(categoryDate);
 			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
 			$("#paymentModeDiv"+entityId).html(paymentMode);
 			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
-			$("#expenseAmountDiv"+entityId).html(expenseAmount);
+			$("#expenseAmountDiv"+entityId).html(expenseRoundOffAmount);
 			$("#entryDesDiv"+entityId).html(descriptions);
 			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			
