@@ -1043,7 +1043,7 @@ function candidateProfile(candidateId,candidateType){
 				        {
 		    				 preventTabkey(e);
 							var isNewSkill = true;
-		                     $("#v option:selected").each(function(){
+		                     $("#skillName option:selected").each(function(){
 								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
 										isNewSkill = false;
 										return false;
