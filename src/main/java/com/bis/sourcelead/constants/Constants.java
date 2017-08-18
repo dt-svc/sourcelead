@@ -406,6 +406,10 @@ public class Constants {
 	public static final String SKILLS = "Skills";
 	public static final String VISA = "VisaCategory";
 	
+	public static final String TASKTYPE = "TaskType";
+	public static final String TASKSEVERITY = "TaskSeverity";
+	public static final String TASKPRIORITY = "TaskPriority";
+	public static final String TASKSTATUS = "TaskStatus";
 	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	

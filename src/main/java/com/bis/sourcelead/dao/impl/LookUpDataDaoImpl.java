@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -128,4 +129,20 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	    return visaList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LookUpData getTasksById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LookUpData> tasks = new ArrayList<LookUpData>();
+		tasks = session.createQuery("from LookUpData lookupdata where lookupdata.id = :id").setCacheable(true).setLong( "id",id ).setCacheable(true).list();
+		logger.debug("getUserById end");
+		if (tasks.size() > 0) {
+			return tasks.get(0);
+		} else {
+			return null;
+		}		
+	}
+
+ 
 }

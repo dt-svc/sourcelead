@@ -21,5 +21,5 @@ public interface LookUpDataService {
 
 	public List<String> getAllVisaByCategory()throws Exception;
 	
-
+	LookUpData getTasksById(Long id) throws Exception;
 }
