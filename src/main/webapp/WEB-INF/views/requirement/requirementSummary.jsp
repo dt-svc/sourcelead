@@ -5890,12 +5890,17 @@ function customizeScore(requirementId){
 		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		    				                {
 		    				    				 preventTabkey(e);
-		    				    				 var option = $("<option>").val(newSkill).text(newSkill);
-		    				                     select.append(option);
-		    				                     select.find(option).prop('selected', true);
-		    				                     $("#customizeSkills option").each(function(){
-		    				                         $(this).siblings("[value='"+ this.value+"']").remove();
+		    				    				 var isNewSkill = true;
+		    				                     $("#customizeSkills option:selected").each(function(){
+		    										 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+		    												isNewSkill = false;
+		    												return false;
+		    										 }
 		    				                   });
+		    								   if(isNewSkill){
+		    										select.append(option);
+		    								   }
+		    				    				 
 		    				                   $("#customizeSkills").trigger("chosen:updated");
 		    				                }
 		    						       
