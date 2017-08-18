@@ -467,8 +467,8 @@ function getAssociatesFilter(){
 			
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
-			startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input"  name="'+maxRowNum+'requestStartDate" >';
+			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" id="'+maxRowNum+'sdate-input"  name="'+maxRowNum+'requestStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -501,6 +501,7 @@ function getAssociatesFilter(){
 					  var dt = $(this).datepicker('getDate', '+1d');
 						dt.setDate(dt.getDate() + 1);
 						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+						removeStartDateValidation(maxRowNum);
 						getEstimatedHours(maxRowNum)
 			 	  }
 			    });
@@ -570,6 +571,12 @@ function pagination(){
      	}
     });
     $('#associatesListPagination').wrap("<div class='overflow_Auto'></div>");
+}
+</script>
+
+<script>
+function removeStartDateValidation(rowId){
+	$('#'+rowId+'startDate').find('p.jquery_form_error_message').remove();
 }
 </script>
 
