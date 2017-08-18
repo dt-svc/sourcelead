@@ -170,20 +170,23 @@ public class Projects implements Serializable{
     
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectMembers> projectMembers;
     
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectApproverHierarchy> projectApprovers;
     
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectTasks> projectTasks;
     
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectClients> projectClients;
-    
   
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)

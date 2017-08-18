@@ -159,15 +159,11 @@ public class ProjectPlanningRestController {
 	 
 	 
 	 @RequestMapping(value = "/getOrgLocationRoles", method = RequestMethod.GET)
-	 public @ResponseBody String  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
+	 public @ResponseBody List<Roles>  getOrgLocationRoles(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
 		 
-		 String resultJson;
 		 String[] orgLocationId = orgLocations.split(",");
-		
 		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocationId[0]));
-		 
-		 resultJson = commonUtil.toJSON(rolesList);
-		 return resultJson;
+		 return rolesList;
 	  }
 	 
 	 

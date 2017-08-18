@@ -797,9 +797,7 @@ function getOrgLocationRoles(){
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
-	        success: function(data) {
-	        	
-	        	var json = JSON.parse(data);
+	        success: function(json) {
 	        	var output = "";
 	        	for (var i=0; i<json.length; i++)
 				{

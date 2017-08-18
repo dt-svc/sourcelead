@@ -118,7 +118,7 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
-	public @ResponseBody Long storeProject(@RequestParam("project_files") MultipartFile[] files,
+	public @ResponseBody Projects storeProject(@RequestParam("project_files") MultipartFile[] files,
 			@RequestParam("json") String jsonPayload) throws Exception {
 		JSONObject jsonObj = new JSONObject(jsonPayload);
 		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().filter(p->!p.isEmpty()).map(file -> {
@@ -130,8 +130,8 @@ public class ProjectsRestController {
 			return null;
 		}).collect(Collectors.toList());
 
-		Long projectId = projectsService.storeProject(jsonObj, projectDocuments);
-		return projectId;
+		Projects projects = projectsService.storeProject(jsonObj, projectDocuments);
+		return projects;
 
 	}
 

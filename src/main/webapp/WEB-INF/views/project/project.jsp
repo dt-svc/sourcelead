@@ -130,6 +130,7 @@
 						</div>
 						
 						 <input type="hidden" name="projectId" id=projectId value=""/>
+						 <input type="hidden" name="projectUUID" id="projectUUID" value=""/>
 
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
@@ -538,8 +539,11 @@ function getStatus(){
 		
 			
 		var savedProjectId = '${savedProjectId}';
+		var projectUUID = '${projectUUID}';
 		if(savedProjectId != null && savedProjectId != '' && savedProjectId != 'undefined'){
 			$("#projectId").val(savedProjectId);
+			$("#projectUUID").val(projectUUID);
+			
 			getProjectDetails();
 			
 			var isProjectDetailsFilled = '${isProjectDetailsFilled}';
@@ -629,8 +633,9 @@ function getStatus(){
 		  		         contentType:false, 
 		  	    	     dataType : 'json',
 						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
-						success : function(projectId) {
-								 $("#projectId").val(projectId);
+						success : function(Projects) {
+								 $("#projectId").val(Projects.id);
+								 $("#projectUUID").val(Projects.projectUUID);
 								 $("#loading").removeAttr("style");
 								 var assignedMembers = document.getElementById("assignedMembers");
 								 $("assignedMembers").removeClass("disabledLink");
@@ -741,7 +746,6 @@ function getProjectDetails(){
         	   $('#projectDescription').summernote(json.description);
         	   */
         	   
-        	   
         	   if(json.projectDocumentsList.length > 0){
         		   var result = '';
         		   for(var i=0; i<json.projectDocumentsList.length; i++){
@@ -758,6 +762,7 @@ function getProjectDetails(){
         		   
         		   $("#savedProjectDocuments").empty();
       			   $("#savedProjectDocuments").append(result);
+        	   }
       			   
       			   for(var i=0; i<json.approverHierarchyList.length; i++){
 	        		  var opt = json.approverHierarchyList[i];
@@ -781,7 +786,7 @@ function getProjectDetails(){
       			   
       			   $("#loading").removeAttr("style");
       			 
-        	   }
+        	
         	   
 		        
 	        },
@@ -801,15 +806,6 @@ function removeProjectDocuments(documentId,projectId){
 		    },
      });
 
-}
-</script>
-
-<script>
-function getAssignedMembers(){
-	var projectId = document.getElementById("projectId").value;
-	if(projectId){
-		
-	}
 }
 </script>
 
@@ -1283,6 +1279,7 @@ function getProjectLevel1Approvers(approverUserId){
 		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(json) {
 		        	var output = "";
+		        	output = output + "<option value=''>-- Select Level1 Manager --</option>";
 		        	for (var i=0; i<json.length; i++)
 					{
 		        		var selected = "";
