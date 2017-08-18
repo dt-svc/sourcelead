@@ -317,8 +317,8 @@ function vendorSpocReportPagination(){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				//var dt = toDate("#vendorStartDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#vendorEndDate").datepicker("option", "minDate", dt);
+				//dt.setDate(dt.getDate() + 1);
+				$("#vendorEndDate").datepicker("option", "minDate", selected);
 				addValidClass();
 			}
 		
@@ -334,8 +334,8 @@ function vendorSpocReportPagination(){
 			onSelect : function(selected) {
 				var dt = new Date(selected);
 				//var dt = toDate("#vendorEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#vendorStartDate").datepicker("option", "maxDate", dt);
+				//dt.setDate(dt.getDate() - 1);
+				$("#vendorStartDate").datepicker("option", "maxDate", selected);
 				addValidClass();
 			}
 		});
