@@ -37,7 +37,7 @@ public class ProjectDocuments implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
-	private Projects projects;
+	private Projects projectId;
 	
 	@Lob
     @Column(name="FILE_CONTENTS",length=100000)
@@ -75,12 +75,14 @@ public class ProjectDocuments implements Serializable {
 		this.fileType = fileType;
 	}
 
-	public Projects getProjects() {
-		return projects;
+	
+
+	public Projects getProjectId() {
+		return projectId;
 	}
 
-	public void setProjects(Projects projects) {
-		this.projects = projects;
+	public void setProjectId(Projects projectId) {
+		this.projectId = projectId;
 	}
 
 	public byte[] getFileContents() {
@@ -101,7 +103,7 @@ public class ProjectDocuments implements Serializable {
 		this.fileType = fileType;
 		this.fileContents = fileContents;
 		this.status = Constants.CANDIDATE_ACTIVE;
-		this.projects = projects;
+		this.projectId = projects;
 	}
 
 	public String getDescription() {

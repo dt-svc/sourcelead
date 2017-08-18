@@ -109,7 +109,6 @@
 				<li><a href="#tab-c" data-toggle="tab" id="additionalDetails" onclick="getAdditionalDetails();">Additional Details</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
-			 <input type="hidden" name="projectId" id=projectId value=""/>
 			  <div class="clearfix"></div>
 		
 		<div class="project_tabs">
@@ -129,6 +128,8 @@
 									onblur="validateProjectSequeneNumber();">
 							</div>
 						</div>
+						
+						 <input type="hidden" name="projectId" id=projectId value=""/>
 
 						<div class="form-group">
 							<label class="col-md-3"> Date <span class="text-danger">*</span></label>
@@ -154,11 +155,11 @@
 							<div class="col-md-9 select-field">
 								<select class="form-control" name="Satatus" id="Satatus" onchange="getStatus();" field-name="Status" data-validation="required">
 									<option value="">Select Status</option>
-									<option value="NOTSTARTED">Not Started</option>
-									<option value="INPROGRESS">In-Progress</option>
-									<option value="COMPLETED">Completed</option>
-									<option value="ONHOLD">On-Hold</option>
-									<option value="DROPPED">Dropped</option>
+									<option value="Not Started">Not Started</option>
+									<option value="In-Progress">In-Progress</option>
+									<option value="Completed">Completed</option>
+									<option value="On-Hold">On-Hold</option>
+									<option value="Dropped">Dropped</option>
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
@@ -590,7 +591,10 @@ function getStatus(){
 
 <script type="text/javascript">
 	function saveProject() {
-		validateProjectSequeneNumber();
+		var savedProjectId = '${savedProjectId}';
+		if(savedProjectId == null || savedProjectId == '' || savedProjectId == 'undefined'){
+			validateProjectSequeneNumber();
+		}
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -614,8 +618,6 @@ function getStatus(){
 		//	var jsonData = encodeURIComponent(con);
 			
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_project").attr("disabled", "disabled");
-			$("#save_project").addClass('button').val('Processing..');
      		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 
@@ -658,6 +660,8 @@ function getStatus(){
 function getProjectDetails(){
 	var projectId = document.getElementById("projectId").value;
 	if(projectId){
+		$("#FileUploadContainer").empty();
+		
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
@@ -679,7 +683,23 @@ function getProjectDetails(){
 	        	 $("input[name=EndDate]").val(json.endDateStr);
 	        	 
 	        	 
-        	   $("select[name=Satatus]").val(json.projectStatus);
+	        	 
+	           var projectStatus = '';
+	           if(json.projectStatus == 'NOTSTARTED'){
+	        	   projectStatus = "Not Started"
+	           }else if(json.projectStatus == 'INPROGRESS'){
+	        	   projectStatus = "In-Progress"
+	           }else if(json.projectStatus == 'COMPLETED'){
+	        	   projectStatus = "Completed"
+	           }else if(json.projectStatus == 'ONHOLD'){
+	        	   projectStatus = "On-Hold"
+	           }else if(json.projectStatus == 'DROPPED'){
+	        	   projectStatus = "Dropped"
+	           }
+	           
+	           
+        	   $("select[name=Satatus]").val(projectStatus);
+        	   
         	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
         	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
         	   
@@ -1257,6 +1277,7 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 <script type="text/javascript">
 function getProjectLevel1Approvers(approverUserId){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#level1Manager").empty();
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",

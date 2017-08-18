@@ -324,13 +324,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	// 	String pattern = "dd-MM-yyyy";
-        //SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
-	 	
         
-        
-    	Projects projects = new Projects();
-    	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
+	 	Projects projects = null;
+	 	if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
+	 		projects =  projectsDao.getProjectById(Long.parseLong(jsonObj.getString("projectId")));
+	 	}else{
+	 		projects =  new Projects();
+	 		projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
+	 	}
+    	
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
     	
     	
@@ -365,21 +367,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		if(jsonObj.has("isAllowFreelanceDevelopers") && StringUtils.isNotEmpty(jsonObj.getString("isAllowFreelanceDevelopers"))){
 			projects.setAllowFreeLance(BooleanUtils.toBoolean(jsonObj.getString("isAllowFreelanceDevelopers"),"Y",""));
+		}else{
+			projects.setAllowFreeLance(null);
 		}
 		if(jsonObj.has("isAllowRemoteWork") && StringUtils.isNotEmpty(jsonObj.getString("isAllowRemoteWork"))){
 			projects.setAllowRemote(BooleanUtils.toBoolean(jsonObj.getString("isAllowRemoteWork"),"Y",""));
+		}else{
+			projects.setAllowRemote(null);
 		}
 		if(jsonObj.has("isAllowOverTime") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOverTime"))){
 			projects.setAllowOvertime(BooleanUtils.toBoolean(jsonObj.getString("isAllowOverTime"),"Y",""));
-		}
-		if(jsonObj.has("isAllowOffshoreResource") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOffshoreResource"))){
-			projects.setAllowOffShore(BooleanUtils.toBoolean(jsonObj.getString("isAllowOffshoreResource"),"Y",""));
-		}
-		if(jsonObj.has("isTimeEntryAfterDeadline") && StringUtils.isNotEmpty(jsonObj.getString("isTimeEntryAfterDeadline"))){
-			projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(jsonObj.getString("isTimeEntryAfterDeadline"),"Y",""));
-		}
-		if(jsonObj.has("isAllowBidding") && StringUtils.isNotEmpty(jsonObj.getString("isAllowBidding"))){
-			projects.setAllowBidding(BooleanUtils.toBoolean(jsonObj.getString("isAllowBidding"),"Y",""));
+		}else{
+			projects.setAllowOvertime(null);
 		}
 		
 		if(jsonObj.has("flatPercentage") && StringUtils.isNotEmpty(jsonObj.getString("flatPercentage"))){
@@ -390,9 +389,32 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setOvertimeRateType(jsonObj.getString("flatPercentageId"));
 		}
 		
-		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects,bo.getStatus())).collect(Collectors.toList());
+		if(jsonObj.has("isAllowOffshoreResource") && StringUtils.isNotEmpty(jsonObj.getString("isAllowOffshoreResource"))){
+			projects.setAllowOffShore(BooleanUtils.toBoolean(jsonObj.getString("isAllowOffshoreResource"),"Y",""));
+		}else{
+			projects.setAllowOffShore(null);
+		}
+		if(jsonObj.has("isTimeEntryAfterDeadline") && StringUtils.isNotEmpty(jsonObj.getString("isTimeEntryAfterDeadline"))){
+			projects.setAllowTimeEntryAfterDeadLine(BooleanUtils.toBoolean(jsonObj.getString("isTimeEntryAfterDeadline"),"Y",""));
+		}else{
+			projects.setAllowTimeEntryAfterDeadLine(null);
+		}
+		if(jsonObj.has("isAllowBidding") && StringUtils.isNotEmpty(jsonObj.getString("isAllowBidding"))){
+			projects.setAllowBidding(BooleanUtils.toBoolean(jsonObj.getString("isAllowBidding"),"Y",""));
+		}else{
+			projects.setAllowBidding(null);
+		}
 		
-		projects.getProjectDocuments().addAll(projDocDBList);
+		
+		
+		Set<ProjectDocuments> projDocDBList = new HashSet<>();
+		
+		for(ProjectDocumentBO bo :projectDocumentBOList){
+			ProjectDocuments projectDocuments = new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects,bo.getStatus());
+			projDocDBList.add(projectDocuments);
+		}
+		
+		projects.setProjectDocuments(projDocDBList);
 	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
@@ -437,13 +459,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projects.setIsTimesheetAttachmentRequired(Constants.RECORD_INACTIVE);
 	    }
 
-		//prepare project task set...
-		/*tasksService.*/
-    	/*User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");*/
     	
     	//save the default tasks
-		Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
-		projects.setProjectTasks(projectTasksList);
+	    if(projects.getId() == null){
+	    	Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
+			projects.setProjectTasks(projectTasksList);
+	    }
 		
 		// generated id for project
 		
@@ -598,15 +619,25 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	private Set<ProjectClients> getProjectClientsForProject(JSONObject jsonObj,Projects projects,OrgLocations orglocations,User user) throws Exception {
 		Set<ProjectClients> projectClientsSet = new HashSet<>();
-		ProjectClients projectClients = new ProjectClients();
-		projectClients.setProjectId(projects);
-		projectClients.setOrgLocationsId(orglocations);
-		projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		projectClients.setStatus(1);
-		projectClients.setCreatedDate(new Date());
-		projectClients.setUpdatedDate(new Date());
-		projectClients.setCreatedBy(user);
-		projectClients.setUpdatedBy(user);
+		ProjectClients projectClients = null;
+		if(projects.getId() == null){
+			projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(user);
+			projectClients.setUpdatedBy(user);
+		}else{
+			Set<ProjectClients> projectClientsList = projects.getProjectClients();
+			if(projectClientsList != null){
+				for(ProjectClients projClients : projectClientsList){
+					projectClients = projClients;
+				}
+			}
+		}
 		
 		//prepare ProjectApproverHierarchy
 		Set<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.prepareProjectApproverHierarchyListByJson(jsonObj,request,projects,projectClients);

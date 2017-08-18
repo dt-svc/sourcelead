@@ -94,59 +94,91 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 		    Long[] ids = new Long[1000];
 			HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
 	    	
-	        if(jsonObj.has("level1Manager")){
-			    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
-			    		
-			    		ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
-				    	pah1.setProjectId(projects);
-				    	pah1.setProjectClientsId(projectClients);
-				    	User approverUserId1 = new User();
-				    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
-			    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
-				    	pah1.setApproverUserId(approverUserId1);
-				    	pah1.setLevel(1);
-				    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-				    	ids[0] = approverUserId1.getId();
-				    	projectMemberList.add(pah1);
+			if(projectClients.getId() == null){
+				
+				  if(jsonObj.has("level1Manager")){
+				    	if(jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+				    		
+				    		ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
+					    	pah1.setProjectId(projects);
+					    	pah1.setProjectClientsId(projectClients);
+					    	User approverUserId1 = new User();
+					    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+				    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
+					    	pah1.setApproverUserId(approverUserId1);
+					    	pah1.setLevel(1);
+					    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
+					    	ids[0] = approverUserId1.getId();
+					    	projectMemberList.add(pah1);
+				    	}
 			    	}
-		    	}
-	    	//send mail to assigned Project Manager
-			if(jsonObj.has("level2Manager")){ 	
-				if(!jsonObj.getString("level2Manager").isEmpty()){
-					User approverUserId2 = new User();
-					ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
-					pah2.setProjectId(projects);
-					pah2.setProjectClientsId(projectClients);
-					approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
-					pah2.setApproverUserId(approverUserId2);
-					pah2.setLevel(2);
-					//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
-					ids[1] = approverUserId2.getId();
-					projectMemberList.add(pah2);
+		    	//send mail to assigned Project Manager
+				if(jsonObj.has("level2Manager")){ 	
+					if(!jsonObj.getString("level2Manager").isEmpty()){
+						User approverUserId2 = new User();
+						ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+						pah2.setProjectId(projects);
+						pah2.setProjectClientsId(projectClients);
+						approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+						pah2.setApproverUserId(approverUserId2);
+						pah2.setLevel(2);
+						//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+						ids[1] = approverUserId2.getId();
+						projectMemberList.add(pah2);
+					}
+				 }
+			}else{
+				Set<ProjectApproverHierarchy> approverHierarchyList = projectClients.getProjectApproverHierarchyList();
+				for(ProjectApproverHierarchy approverHierarchy : approverHierarchyList){
+					 if(jsonObj.has("level1Manager") && jsonObj.getString("level1Manager") != null && !jsonObj.getString("level1Manager").isEmpty()){
+						 
+						 if(approverHierarchy.getLevel().equals(1)){
+							 approverHierarchy.setProjectId(projects);
+							    approverHierarchy.setProjectClientsId(projectClients);
+						    	User approverUserId1 = new User();
+						    	String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
+					    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
+					    		approverHierarchy.setApproverUserId(approverUserId1);
+					    		approverHierarchy.setLevel(1);
+						    	ids[0] = approverUserId1.getId();
+						    	projectMemberList.add(approverHierarchy);
+						 }
+						   
+					 }
+					 
+					 if(approverHierarchy.getLevel().equals(2)){
+						 if(jsonObj.getString("level2Manager") == null || jsonObj.getString("level2Manager").isEmpty()){
+							 projectApproverHierarchyDao.deleteProjectApproverHierarchy(approverHierarchy);
+						 }else{
+							    User approverUserId2 = new User();
+							    approverHierarchy.setProjectId(projects);
+							    approverHierarchy.setProjectClientsId(projectClients);
+								approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+								approverHierarchy.setApproverUserId(approverUserId2);
+								approverHierarchy.setLevel(2);
+								ids[1] = approverUserId2.getId();
+								projectMemberList.add(approverHierarchy);
+						 }
+					 }
 				}
-			 }
-		 
-		//admin as approver hierarchy ..
-		/*Collection<User> uLsit = userService.getUsersByUserRoles(loginOrgLocation.getId());
-		CopyOnWriteArrayList<User> userLsit = new CopyOnWriteArrayList<User>(uLsit);
-		if(userLsit != null && !userLsit.isEmpty()){
-			for(User userRole : userLsit){
-				  if(ids[0] != null &&  ids[0].equals(userRole.getId())){
-					  userLsit.remove(userRole);
-				  }
-				  else if (ids[1] != null && ids[1].equals(userRole.getId())) {
-					  userLsit.remove(userRole);
-				  }else{
-					    ProjectApproverHierarchy pah3 = new ProjectApproverHierarchy();
-					    pah3.setProjectId(projects);
-						pah3.setApproverUserId(userRole);
-						pah3.setLevel(2);
-						projectMemberList.add(pah3);
-					    //ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah3);
-				  } 
-				  
+				
+				if(approverHierarchyList.size() == 1){
+					if(jsonObj.has("level2Manager") && !jsonObj.getString("level2Manager").isEmpty()){ 	
+						User approverUserId2 = new User();
+						ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+						pah2.setProjectId(projects);
+						pah2.setProjectClientsId(projectClients);
+						approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
+						pah2.setApproverUserId(approverUserId2);
+						pah2.setLevel(2);
+						ids[1] = approverUserId2.getId();
+						projectMemberList.add(pah2);
+					}
+				}
 			}
-		}*/
+	      
+		 
+		
 		return projectMemberList;
 	}
 
