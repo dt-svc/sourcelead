@@ -1038,56 +1038,26 @@ function candidateProfile(candidateId,candidateType){
 	                 }
 		    	 }else{
 			    	var newSkill = this.value.replace(","," ");
-			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-			        		 select.append(option);
-			        		 select.find(option).prop('selected', true);
-				        		$("#skillName").trigger("chosen:updated");
-				        		
-				        		
-			        }
+			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				        {
+		    				 preventTabkey(e);
+							var isNewSkill = true;
+		                     $("#skillName option:selected").each(function(){
+								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										isNewSkill = false;
+										return false;
+								 }
+		                   });
+						   if(isNewSkill){
+								select.append(option);
+						   }
+		                   $("#skillName").trigger("chosen:updated");
+		                }
 		    	 }
 		    });
 		    
-		    
-		    
-		
-       /*  var select, chosen;
-	    select = $("#skillName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#skillName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#skillName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#skillName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	}); */
-	    
+		  
 	    
 	    //Adding Customized Skills to the list
 	}
@@ -1142,24 +1112,6 @@ function candidateProfile(candidateId,candidateType){
        },
          
     }); 
-	 
-	 
-	 
-/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({  
-	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
-	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //candidateProfile(candidateId);
-	               }
-	        },
-	          
-	     }); 
-	 }else{
-		 
-	 } */
 	 
  }  
 </script>
