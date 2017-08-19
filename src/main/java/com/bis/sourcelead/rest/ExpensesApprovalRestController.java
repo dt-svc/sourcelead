@@ -168,7 +168,7 @@ public class ExpensesApprovalRestController {
 						 userLevel = eah.getHierarchyId().getLevel();
 					 }
 				 }
-				 if(maxLevel.equals(userLevel)){
+				 if(maxLevel.equals(userLevel) || ((userLevel == 1) && (approvalStatus.equalsIgnoreCase("REJECTED")))){
 					 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode());
 				 }
 			 }

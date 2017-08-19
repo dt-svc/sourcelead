@@ -62,7 +62,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * This class is used for...
@@ -824,7 +823,7 @@ public class DashboardRestController {
 			
 			String status =  "myTask";
 			if(!"".equalsIgnoreCase(dateRange)){
-				Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(dateRange);
+				Date date1 = commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 				taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 				taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
 				converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
@@ -940,5 +939,18 @@ public class DashboardRestController {
 		List<RequirementOffers> offerList = requirementOffersService.getOfferAcceptedVendorCandidatesByOrgLocationId(locationId);
 		return offerList;
 	}
+	
+	@RequestMapping(value = "/checkForOldrecords", method = RequestMethod.POST)
+	public boolean checkForOldrecords(@RequestParam(value = "orglocationId", required = false) Long orglocationId) throws Exception
+	{
+		boolean generationIdStatus  = requirementService.checkForOldrecordsUsingOrgLocationid(orglocationId);
+		return generationIdStatus;
+	}
+	
+	/*@RequestMapping(value = "/addGeneratedIdRecordsToDataBaseForOldRecords", method = RequestMethod.POST)
+	public boolean addGeneratedIdRecordsToJobsForOldRecords(@RequestParam(value = "orglocationId", required = false) Long orglocationId) throws Exception{
+		boolean generationIdStatus  = requirementService.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		return generationIdStatus;
+	}*/
 		
 }

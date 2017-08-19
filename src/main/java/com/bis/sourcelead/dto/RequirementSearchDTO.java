@@ -12,6 +12,11 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String requirementStatus;
 	private String updatedOn;
 	private String client;
+	private String searchType;
+	
+	private String filterStatus;
+	private String filterClients;
+	private String generatedId;
 	
 	public String getStatus() {
 		return status;
@@ -27,6 +32,14 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	}
 	public String getRequirementTitle() {
 		return requirementTitle;
+	}
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
 	}
 	public void setRequirementTitle(String requirementTitle) {
 		this.requirementTitle = requirementTitle;
@@ -60,6 +73,24 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	}
 	public void setClient(String client) {
 		this.client = client;
+	}
+	public String getFilterStatus() {
+		return filterStatus;
+	}
+	public void setFilterStatus(String filterStatus) {
+		this.filterStatus = filterStatus;
+	}
+	public String getFilterClients() {
+		return filterClients;
+	}
+	public void setFilterClients(String filterClients) {
+		this.filterClients = filterClients;
+	}
+	public String getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
 	}
 	
 

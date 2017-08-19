@@ -113,9 +113,6 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	CandidateDocumentsService candidateDocumentsService;
 	
-	/*@Autowired
-	CandidateSkillsService candidateSkillsService;*/
-	
 	@Autowired @Lazy
 	CandidateResumesService candidateResumesService;
 	
@@ -172,7 +169,7 @@ public class CandidateServiceImpl implements CandidateService {
     
 	public String getCandidateId(OrgLocations orgLocations) {
     	String companyShortCode = null;
-    	Long number = 000000001L;
+    	Long number = 1L;
 		String candidateId = null;
 		Candidate checkNumber = candidateDao.checkCandidateIdNumberInDatebase(orgLocations.getId());
 		if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
@@ -191,7 +188,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidateId = canId.toString();
 		}
 		
-        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+        final DecimalFormat decimalFormat = new DecimalFormat("0");                
         String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
         StringBuffer sb = new StringBuffer();
         if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
@@ -524,12 +521,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * System Generated Id For Candidate
 		 */
-		/*String entityGenId = RandomStringUtils.randomNumeric(9);
-		StringBuffer sb = new StringBuffer();
-		candidate.setSystemGeneratedId(Constants.CANDIDATE_ENTITY);
-		candidate.setGeneratedId(sb.append(candidate.getSystemGeneratedId()).append(entityGenId).toString());*/
-		
-		/*candidate.setGeneratedId(getCandidateId(orgLocations));*/
+		candidate.setGeneratedId(getCandidateId(orgLocations));
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		candidateActivityCommonUtil.storeCandidateHistory(savedCandidate, user);

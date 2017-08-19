@@ -14,6 +14,7 @@
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
 <jsp:include page="clientNotes.jsp" /> 
+<jsp:include page="clientList.jsp" />
 
 <style type="text/css">
 clients_wrap {
@@ -223,9 +224,6 @@ overflow-x: auto;
 										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
 											<option value="Active">Active</option>
 											<option value="In-Active">In-Active</option>
-											<!-- <option value="New">New</option>
-											<option value="Negotiation">Negotiation</option>
-											<option value="Contract">Contract</option> -->
 									</select>
 						 </div>  
               	</div>
@@ -247,9 +245,8 @@ overflow-x: auto;
             </div>
             <div class="row form-footer mt">
               <div class="pull-right mr"> 
-              	<input type="button" value="Search" id="search_client" onclick="searchClient();" class="btn btn-sm btn-success"/>
+              	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
               	   <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
-              	<!-- <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
             </div>
           </div>
           </form:form>
@@ -260,24 +257,12 @@ overflow-x: auto;
 <!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
  -->				<div class="timesheet_head datatbl-filters topfilters">
 					<ul>
-		                  <%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
-		                	<div id="filter1ApprovedPop" class="approved_pop">
-		                    	<ul>
-		                    	  <c:forEach var="report" items="${clientsList}">  
-		                        	<li><input  id="clientName${report.id}" name="clientNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label title="${report.clientName}">${report.clientName}</label></li>
-								  </c:forEach>
-		                        </ul>
-		                    </div>                	
-		                </li> --%>
 	               
 		                <li  id="filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
 								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
-								<!-- <li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
-								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -297,11 +282,11 @@ overflow-x: auto;
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getClientDetails();"><label>Tier-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getClientDetails();"><label>Tier-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getClientDetails();"><label>Tier-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getClientDetails();"><label>Tier-4</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"  onclick="getClientDetails();"><label>Tier-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getClientList();"><label>Tier-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getClientList();"><label>Tier-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getClientList();"><label>Tier-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getClientList();"><label>Tier-4</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"  onclick="getClientList();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>
@@ -342,6 +327,9 @@ overflow-x: auto;
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
+					 <div class='remove_search'>
+        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+                </div> 
 				</div>
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
@@ -353,20 +341,6 @@ overflow-x: auto;
 				</div>
 				<div id="popUp"></div>
 			</div>
-			<%-- <c:if test="${empty clientsList}">
-				<div class="row mt">
-					<div class="col-lg-12">
-						<div class="content-area clearfix">
-							<div class="blank-pages">
-								<p>
-									<i class="fa fa-5x fa-users"></i>
-								</p>
-								<p>No Client for organisation... Add Clients</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</c:if> --%>
 		</div>
 
 
@@ -387,9 +361,12 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
-	clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");
+	/* clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");  */
+	 loadClientDatatable("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}"); 
  };
 </script>
+
+
 
 <script type="text/javascript">
 function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
@@ -407,7 +384,7 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 			//getVendorContactListsELK();
 			getClientDetailsELK();
 		}
-		 listChange("listbyVendor");
+		listChange("listbyVendor");
 		document.getElementById('listOfVendors').value = 'listbyVendor';
 	}
 	
@@ -728,13 +705,6 @@ function clearSearch(){
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 		}
 	    
-	   /*  $('#countrySearch').val(''); 
-	    $('#stateSearch').val(''); 
-	    $('#citySearch').val(''); 
-	    
-	    $("#stateSearch").val('').trigger("chosen:updated");
-	    $("#citySearch").val('').trigger("chosen:updated");
-	     */
 	    
 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
@@ -834,26 +804,11 @@ function clearSearch(){
     		}
     		result = result +'<td><div><span class="tblminwidth-125" title='+report.vendorCreateduserName+'>'+report.vendorCreateduserName+'</span></div></td>';
     		result = result +'<td><div>'+report.noOfContatcs+'</div></td>';
-    		/* result = result +'<td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
     		result = result +'</tr>';
     		
 		}
     	
     	result = result +'</tbody>';
-    	/* }else{
-    		result = result +'<div class="row mt">';
-    		result = result +'<div class="col-lg-12">';
-    		result = result +'<div class="content-area clearfix">';
-    		result = result +'<div class="blank-pages">';
-    		result = result +'<p>';
-    		result = result +'<i class="fa fa-5x fa-users"></i>';
-    		result = result +'</p>';
-    		result = result +'<p>No Clients for organisation... Add Clients</p>';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    	} */
 	    $("#clientList").empty();  
 	    $("#clientList").append(result)
 	    $("#emptyClientList").val(json.length);
@@ -901,8 +856,6 @@ function getClientDetailsELK(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getVendorFilterListsElK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&values="+values, 	   
    		    success: function(data) {
-   		    	/* preparedClientDetails(data); */
-   		    	
    		    	preparedClientListFromElk(data);
    		    }
 	 }); 
@@ -1088,9 +1041,6 @@ function preparedClientContacts(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 					result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
-					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1130,8 +1080,6 @@ function preparedClientContacts(data){
 		   		      result = result +' <b class="proj_closed">'+report.invitationStatus+'</b>';
 		   		   }
 		   		result = result + ' </div></td>';
-		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
 		   		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')"; title="Remove client contact"></i></div></td>';
@@ -1215,9 +1163,6 @@ function preparedClientContactListFromElk(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 	    			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
-					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1257,8 +1202,6 @@ function preparedClientContactListFromElk(data){
 		 			result = result +' <b class="proj_closed">'+report.invitationStatus+'</b>';
 		 		}
 		 		result = result + ' </div></td>';
-		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
-		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
 		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove client contact"></i></div></td>';
 		   	 '</sec:authorize>';
@@ -1330,8 +1273,6 @@ function preparedClientListFromElk(data){
 					result = result +'</div>';
 					result = result +'</td>';
 				'</sec:authorize>';
-				
-				
 		   		if( report.website != null && report.website != '' && report.website != 'undefined'){
 		   			result = result +'<td>';
 		   			result = result +'<div>';
@@ -1363,7 +1304,6 @@ function preparedClientListFromElk(data){
 		   	result = result +'<td><div >'+report.noContacts+'</div></td>';
 
 		   	
-				/* result = result +' <td><div><i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		result = result +'</tr>';
 				}
 		   	
@@ -1442,7 +1382,6 @@ function getVendorContactListsELK(){
 		   	type: "POST",
 		    url: sourceleadUrl+"/getVendorContactListsELK?${_csrf.parameterName}=${_csrf.token}&responderType="+responderType+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
-   		    	/* preparedClientContacts(data); */
    		    	preparedClientContactListFromElk(data);
    		    }
 	 });
@@ -1549,8 +1488,6 @@ function updateSpocStatus(spocId){
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
 		
-		/* $("#clientNameDiv").empty();
-		$("#clientNameDiv").append(spocName); */
 		
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
@@ -1593,13 +1530,14 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 
 		/*  getClientDetails(); */
-		 getClientDetailsELK();
+		 /* getClientDetailsELK(); */
+		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("clientList").style.display="none";
-		 document.getElementById("clientList_wrapper").style.display="none";
+		/*  document.getElementById("clientList_wrapper").style.display="none"; */
 // 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 // 		 document.getElementById("clientsList").style.display="block";
@@ -1882,7 +1820,8 @@ function getEndDatePickerById(projectId,localFieldName){
 			if(vendorCont == "listbyContact"){
 				getVendorContactListsELK();
 			}if(vendorCont == "listbyVendor" ){
-				getClientDetailsELK();
+				/* getClientDetailsELK(); */
+				getClientList();
 	   		}
 		});
 	});
@@ -2045,7 +1984,6 @@ function exportClientToPdf(){
     {
 			values.push($(this).val());
     });
-	emptyClientList
 	var emptyClientList = $("#emptyClientList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(emptyClientList > 0){
@@ -2228,72 +2166,6 @@ $('#selector').delay(2000).fadeOut('slow');
 		}
 </script>
 	
-<!-- 
-<script type="text/javascript">
-	function searchClient() {
-		var minRate = $('#minRate').val(); 
-		var maxRate = $('#maxRate').val();
-		 if((minRate != null && minRate != "" && minRate !='undefined') || (maxRate != null && maxRate != "" && maxRate !='undefined')){
-			 $('#rateType').removeAttr('data-validation-optional');
-			 $('#rateType').attr("data-validation","required"); 
-			 
-			 $('#currency').removeAttr('data-validation-optional');
-			 $('#currency').attr("data-validation","required"); 
-		 }else{
-			 $('#rateType').removeAttr('data-validation');
-			 $('#rateType').attr("data-validation-optional","true"); 
-			 
-			 $('#currency').removeAttr('data-validation');
-			 $('#currency').attr("data-validation-optional","true"); 
-		 }
-		var validationSettings = {
-				errorMessagePosition : 'element',
-				borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd'
-			};
-		
-		 if ($('#clientlist_form').validate(false, validationSettings)){ 
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#clientlist_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
-			var form = $('#clientlist_form')[0];
-      		var formData = new FormData(form); 
-			//It will escape all the special characters
-			$("#search_candidate").attr("disabled", "disabled");
-			$("#search_candidate").addClass('button').val('Processing..');
-
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-						success : function(data) {
-							$("#search_candidate").addClass('button').val('Search');
-							$("#search_candidate").removeAttr("disabled");
-							closePop();
-							prepareCandidateList(data);
-						},
-					}); 
-			return true;
-		 }else{ 
-				return false;
-		 } 
-	} 
-	
-	$('body').on('blur', '#clientlist_form', function() {
-		$("#clientlist_form").showHelpOnFocus();
-		$("#clientlist_form").validateOnBlur(false, validationSettings);
-	});
-</script>
- -->
  
  <script type="text/javascript">	
 	function clearSearchKeys(){
@@ -2309,8 +2181,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    $("#emailAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
 	    $('#createdByAdvanced').val('').trigger('chosen:updated');
-/* 	    $('#countrySearch').val('').trigger('chosen:updated');
- */	    $('#stateSearch').val('').trigger('chosen:updated');
+ 	    $('#stateSearch').val('').trigger('chosen:updated');
 	    $('#citySearch').val('').trigger('chosen:updated');
 	    $("#citySearch").empty();
 	   
