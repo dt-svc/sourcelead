@@ -218,6 +218,7 @@ public class Candidate implements Serializable{
 	private String userRole;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
@@ -396,6 +397,12 @@ public class Candidate implements Serializable{
 	 @Transient
 	 @JsonProperty
 	 private String candLocation;
+	 
+	 @Transient
+	 private Long relationId;
+	 
+	 @Transient
+	 private Long venSpocId;
  
 		 
 	public int getProfilePercentage()
@@ -1535,6 +1542,25 @@ public class Candidate implements Serializable{
 		this.candLocation = candLocation;
 	}
 
+	public Long getRelationId()
+	{
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId)
+	{
+		this.relationId = relationId;
+	}
+
+	public Long getVenSpocId()
+	{
+		return venSpocId;
+	}
+
+	public void setVenSpocId(Long venSpocId)
+	{
+		this.venSpocId = venSpocId;
+	}
 
 }
 
