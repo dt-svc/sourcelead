@@ -305,7 +305,7 @@ function errRemoveVendorContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOvere="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -350,7 +350,7 @@ function errRemoveVendorContact(){
          result = result +'  <tr>';
          result = result +'  <th colspan="5">';
          result = result +'  Add Tax';
-         result = result +'  <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()" id="addTaxDiv" disabled="disabled">';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()" id="addTaxDiv">';
          result = result +'  <i class="fa fa-plus"></i></button>';
          result = result +'  </th>';
          result = result +'  </tr>';
@@ -390,7 +390,11 @@ function errRemoveVendorContact(){
 	}
 	
 	</script>
-
+<script>
+function remove(){
+	$('#0invoicedocFile').val("");
+}
+</script>
 
 
 <script>
@@ -1442,7 +1446,7 @@ function calculateDiscount(){
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
 				onchange='validateContractsUploadFile(REPLACEROWID)'> <i
-				class="fa fa-times"
+				class="fa fa-times" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
 		</div>
