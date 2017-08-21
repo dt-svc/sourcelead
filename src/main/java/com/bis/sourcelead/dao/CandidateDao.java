@@ -105,5 +105,7 @@ public interface CandidateDao {
 
 	public Candidate checkCandidateIdNumberInDatebase(Long orgLocationId);
 
+	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
+
 
 }

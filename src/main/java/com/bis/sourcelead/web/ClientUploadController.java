@@ -73,7 +73,7 @@ public class ClientUploadController {
 	 * @param response
 	 * @throws Exception 
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')")
+	@PreAuthorize("hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_VENDOR_BULK_IMPORTS')")
 	@RequestMapping(value = "/downloadClientTemplate", method = RequestMethod.GET)
 	public void downloadClientTemplate(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws Exception{
 		logger.debug("download template is for : "+ name);
@@ -212,7 +212,7 @@ public class ClientUploadController {
 	 * @throws Exception 
 	 */
 	
-	@PreAuthorize("hasAnyRole('ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
+	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_CLIENT_BULK_IMPORTS')")
 	@RequestMapping(value = "/downloadVendorTemplate", method = RequestMethod.GET)
 	public void downloadVendorTemplate(HttpServletRequest request,HttpServletResponse response,@RequestParam(value = "name", required = false) String name) throws Exception{
 		logger.debug("download template is for : "+ name);

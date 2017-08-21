@@ -271,4 +271,5 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception;
 	
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
+
 }
