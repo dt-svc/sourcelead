@@ -224,7 +224,7 @@ public class ClientRestController {
 			
 			Org org = orgService.getOrgByOrgName(orgName);
 			OrgLocations orgLocations = null;
-			if(org != null){
+			if(org != null && orgLocationId != null){
 				orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				orgLocations.setWebsite(orgLocations.getOrg().getWebSite());
 			}
@@ -653,12 +653,12 @@ public class ClientRestController {
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
 			for(OrgRelations orgRelations : relationsList){
 				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
+					if(clientName.trim().equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
 						flag = true;
 					}
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
+					if(clientName.trim().equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
 						flag = true;
 					}
 					
@@ -1246,7 +1246,13 @@ public class ClientRestController {
 		  }
 			
 			//Any Keyword
-			List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword(); // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+		 List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
+			if(anyKeyWordArray == null)
+				anyKeyWordArray = new ArrayList<>();
+			if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
+				anyKeyWordArray.add(clientVendorDTO.getSearchValue());
+			}
+			 // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 			if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : anyKeyWordArray){
@@ -1263,6 +1269,8 @@ public class ClientRestController {
 			}
 			
 			//All Keywords
+			
+			
 			List<String> allKeyWordArray = clientVendorDTO.getAllKeywords();//getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
 			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();

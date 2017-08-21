@@ -5222,5 +5222,8 @@ padding: 0px 10px 0px 25px !important;
     background-color: #fff; height: 500px; background-image: url(../images/norecords.jpg);
     background-repeat: no-repeat; background-position: center; background-size: 190px; display: block;
 }
+.paddingLi{
+	padding: 5px 10px !important;
+}
 
 

@@ -1504,5 +1504,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
+	@Override
+	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType)
+	{
+		List<Candidate> associateList = candidateDao.getAssociatesListForSow(locationId,sowType);
+		for(Candidate can :associateList){
+			StringBuilder sb = new StringBuilder();
+			if(can.getLastName() != null && !"".equalsIgnoreCase(can.getLastName()))
+				can.setCandidateName(sb.append(can.getFirstName()).append(" ").append(can.getLastName()).toString());
+			else
+				can.setCandidateName(can.getFirstName());
+		}
+		return associateList;
+	}
 
 }
