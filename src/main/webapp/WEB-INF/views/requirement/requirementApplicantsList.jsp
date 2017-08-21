@@ -77,7 +77,14 @@
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
              <%--  <td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td> --%>
-              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>
+              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
+              </c:if>
+              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	--
+              </c:if>
+              </span></div></td>
               <td><div><span>${reqSub.submissionId.candidate.email}</span></div></td>
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidate.mobilePhone}">
