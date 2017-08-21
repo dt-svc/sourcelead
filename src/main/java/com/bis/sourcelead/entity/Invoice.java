@@ -189,6 +189,9 @@ public class Invoice {
     @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
 	private ProjectMembers projectMemberId;
 	
+	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
+	private String isAutomaticGenerateInvoice;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
@@ -1041,6 +1044,14 @@ public class Invoice {
 
 	public void setExpId(String expId) {
 		this.expId = expId;
+	}
+
+	public String getIsAutomaticGenerateInvoice() {
+		return isAutomaticGenerateInvoice;
+	}
+
+	public void setIsAutomaticGenerateInvoice(String isAutomaticGenerateInvoice) {
+		this.isAutomaticGenerateInvoice = isAutomaticGenerateInvoice;
 	}
 
 	
