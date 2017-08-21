@@ -54,7 +54,7 @@ window.onload = function () {
 									name="orgName" value="${orgName}" onclick="getOrgName();"
 									onblur="getOrgDetails(); validateClientName();"
 									field-name="Vendor Name"
-									data-validation="required validate_Space validate_length length2-250"
+									data-validation="required validate_length length2-250"
 									value=""> <input type="hidden" id="orgLocationId" /> <span
 									class="hidden">Enter Vendor Name</span>
 							</div>

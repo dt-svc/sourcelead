@@ -599,10 +599,44 @@ function EditEducation(candidateId,candidateEducationId) {
 	function educationStartDate(){
 	}
 	
-	/* var projectStartDate = $("#startDateEdit").val();
-	var projectEndDate = $("#endDateEdit").val(); */
+	 var proEduStartDate = $("#startDateEdit").val();
+	var proEduEndDate = $("#endDateEdit").val(); 
 	
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	var proEduStartDateSplit = proEduStartDate.split("-");
+	 var proEduEndDateSplit = proEduEndDate.split("-");
+	 
+	 var finalDateFormatEduEditOneSave = '';
+	  var eduStartDateEdit = '';
+	  var eduEndDateEdit = '';
+	  
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[1])-parseInt(1), parseInt(proEduStartDateSplit[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+		  eduStartDateEdit = new Date(proEduStartDateSplit[2], parseInt(proEduStartDateSplit[0])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+		  eduStartDateEdit = new Date(proEduStartDateSplit[0], parseInt(proEduStartDateSplit[2])-parseInt(1), parseInt(proEduStartDateSplit[1])+parseInt(1));
+	  }
+	  
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[2])-parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[1])-parseInt(1), parseInt(proEduEndDateSplit[0])-parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+		  eduEndDateEdit = new Date(proEduEndDateSplit[2], parseInt(proEduEndDateSplit[0])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+		  eduEndDateEdit = new Date(proEduEndDateSplit[0], parseInt(proEduEndDateSplit[2])-parseInt(1), parseInt(proEduEndDateSplit[1])-parseInt(1));
+	  }
 	  var finalDateFormat3 = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormat3 = 'yy-mm-dd';
@@ -613,16 +647,17 @@ function EditEducation(candidateId,candidateEducationId) {
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormat3 = 'yy-dd-mm'; 
 	  }
-	var datepickerStartDate = toDate("#startDateEdit");
+	/* var datepickerStartDate = toDate("#startDateEdit");
 	datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 	
 	var datepickerEndDate = toDate("#endDateEdit");
-	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+	datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
 	  
 	  $('#startDateEdit').datepicker({
 	      dateFormat: finalDateFormat3,
 	      changeMonth: true,
 	  	  changeYear: true,
+	  	  maxDate: eduEndDateEdit,
 	      onSelect: function (selected) {
 	            var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
@@ -634,6 +669,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	      dateFormat: finalDateFormat3,
 	      changeMonth: true,
 	  	  changeYear: true,
+	  	  minDate: eduStartDateEdit,
 	        onSelect: function (selected) {
 	            var dt = $(this).datepicker('getDate', '-1d');
 	            dt.setDate(dt.getDate() - 1);
