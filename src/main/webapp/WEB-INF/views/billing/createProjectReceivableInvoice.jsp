@@ -32,12 +32,18 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
+                 <c:if test="${isGenerateAutomaticInvoice == 'Y'}">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client" disabled>
                    <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
                   </c:forEach> --%>
                 </select>
+                </c:if>
+                <c:if test="${empty isGenerateAutomaticInvoice}">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
+               </select>
+               </c:if>
               </div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="clientCurrency" id="clientCurrency">
@@ -86,19 +92,26 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field"> 
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
+              <div class="col-md-9 select-field">
+               <c:if test="${isGenerateAutomaticInvoice == 'Y'}"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name" disabled> 
                   <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="projects" items="${projectsList}">
                          <option value="${projects.id}">${projects.projectName}</option>
                   </c:forEach> --%>
                   </select>
+                  </c:if>
+                  <c:if test="${empty isGenerateAutomaticInvoice}"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name">
+              </select>
+                  </c:if>
               </div>
             </div>
            <div class="form-group">
               <label class="col-md-3">Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
+               <c:if test="${isGenerateAutomaticInvoice == 'Y'}"> 
+                <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();" disabled>
                  <!--  <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
@@ -106,6 +119,11 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                   <option>30 days</option>
                   <option>60 days</option>-->
                   </select> 
+                  </c:if>
+                  <c:if test="${empty isGenerateAutomaticInvoice}"> 
+                <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
+              </select> 
+                  </c:if>
               </div>
             </div>
 <!-- 	   
