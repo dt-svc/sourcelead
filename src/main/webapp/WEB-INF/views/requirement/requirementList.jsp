@@ -469,7 +469,7 @@ function changeStatus(requirementId, requirementStatus){
         	 url: sourceleadUrl+"/saveChangedStatusFromDraft?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&userId="+userId,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	  //location.replace(sourceleadUrl+"/requirementList");
+	           	  location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }else{
@@ -478,11 +478,11 @@ function changeStatus(requirementId, requirementStatus){
         	 url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,
 	        	 success :function(data) {
 	       		  $("#changeStatusId" +requirementId).val(status);
-	           	 // location.replace(sourceleadUrl+"/requirementList");
+	           	 location.replace(sourceleadUrl+"/requirementList");
 	         	}
         	});
          }
-	 var statusArray = [];
+	 /* var statusArray = [];
 	 $("input:checkbox[name=requirementStatus]:checked").each(function () {
 		 statusArray.push($(this).val());
      });
@@ -491,7 +491,7 @@ function changeStatus(requirementId, requirementStatus){
 	 }else{
 		 var table = $('#requirementPagination').DataTable();
 		 $('#Row_'+requirementId).remove();
-	 }
+	 } */
      
 	}
 </script>
