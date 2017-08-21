@@ -1246,7 +1246,13 @@ public class ClientRestController {
 		  }
 			
 			//Any Keyword
-			List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword(); // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
+		 List<String> anyKeyWordArray = clientVendorDTO.getAnyOfKeyword();
+			if(anyKeyWordArray == null)
+				anyKeyWordArray = new ArrayList<>();
+			if(StringUtils.isNotEmpty(clientVendorDTO.getSearchValue())) {
+				anyKeyWordArray.add(clientVendorDTO.getSearchValue());
+			}
+			 // getSearchKeywordsFromChosenSelectField(jsonObj, "anyOfKeyword");
 			if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 				 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 				 for(String keywd : anyKeyWordArray){
@@ -1263,6 +1269,8 @@ public class ClientRestController {
 			}
 			
 			//All Keywords
+			
+			
 			List<String> allKeyWordArray = clientVendorDTO.getAllKeywords();//getSearchKeywordsFromChosenSelectField(jsonObj, "allKeywords");
 			if(allKeyWordArray != null && !allKeyWordArray.isEmpty()){
 				 BoolQueryBuilder allBoolQueryBuilder = QueryBuilders.boolQuery();
