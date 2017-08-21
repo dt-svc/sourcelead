@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
@@ -288,6 +291,15 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
 				wts.setSsnNumber(sb.toString());
 			}
+			
+			Collections.sort(wagesAndTaxList, new Comparator() {  
+	            @Override  
+	            public int compare(Object obj1, Object obj2) {  
+	            	WageTaxSummary wageTaxSummary1 = (WageTaxSummary)obj1;  
+	            	WageTaxSummary wageTaxSummary2 = (WageTaxSummary)obj2; 
+	            	return wageTaxSummary1.getEmployeeName().compareToIgnoreCase(wageTaxSummary2.getEmployeeName());  
+	            }  
+	        });
 		}
 		return wagesAndTaxList;
 	}

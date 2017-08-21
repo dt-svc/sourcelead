@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.UserPayrollDao;
 import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
@@ -103,6 +104,19 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		List<Checks> checkslList = null;
 		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
 		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if (checkslList != null && checkslList.size() > 0) {
+			return checkslList;
+		}
+		return checkslList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Checks> checkslList = null;
+		String query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
+		checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
 		if (checkslList != null && checkslList.size() > 0) {
 			return checkslList;
 		}

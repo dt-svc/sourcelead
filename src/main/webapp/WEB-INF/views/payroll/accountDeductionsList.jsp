@@ -106,6 +106,7 @@ function accountDeductionsList(){
 						$("#employeeListDiv").empty();
 						$("#checksListDiv").empty();
 						$("#finalPayrollReportDiv").empty();
+						$("#invoiceDataDiv").empty();
 						$("#accountDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
 						$('#payScale').css('display','none');

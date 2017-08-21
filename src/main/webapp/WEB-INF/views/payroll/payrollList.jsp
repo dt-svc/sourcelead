@@ -20,7 +20,10 @@ window.onload = function () {
   </div>
        
   <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
- <a href="<c:url value='/uploadDocuments'/>" class="btn btn-primary btn-sm ml10 mt5" id="uloadDocs" title="upload documents">Upload Files</a>
+  <div class="pull-left ml generateButtons">
+ <a href="<c:url value='/uploadDocuments'/>" class="ml10 mt5" id="uloadDocs" title="upload documents">Upload Files</a>
+ <a href="<c:url value='/payrollReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Generate Report</a>
+ </div>
 </section>
 
 
@@ -107,6 +110,7 @@ window.onload = function () {
     	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
     	<div id="checksListDiv" class="datatable_filter"></div>
     	<div id="employeeListDiv" class="datatable_filter"></div>
+    	<div id="invoiceDataDiv" class="datatable_filter"></div>
     	<div id="finalPayrollReportDiv" class="dtbuttonShow movetopDiv"></div>
 	</div>
  </div>
@@ -270,6 +274,7 @@ function loadEmployeePayrollCost(){
 						$("#checksListDiv").empty();
 						$("#finalPayrollReportDiv").empty();
 						$("#employeeListDiv").empty();
+						$("#invoiceDataDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
 						$('#payScale').css('display','none');
@@ -299,11 +304,7 @@ function employeePayrollCostPagination(){
 }
 </script>
 
-<script>
-function getInvoiceDetails(){
-	alert("Hi");
-}
-</script>
+
 
 
 <script>
@@ -384,6 +385,7 @@ $(".addcon-pop").click(function() {
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
+			$("#invoiceData").removeClass('wVer');
 			loadEmployeePayrollCost();
 		}else if(payrollType == "WAGE_TAX"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -392,6 +394,7 @@ $(".addcon-pop").click(function() {
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
+			$("#invoiceData").removeClass('wVer');
 			wagesAndTaxList();
 		}else if(payrollType == "ACCOUNT_DEDUCTIONS"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -400,6 +403,7 @@ $(".addcon-pop").click(function() {
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
+			$("#invoiceData").removeClass('wVer');
 			accountDeductionsList();
 		}else if(payrollType == "HR_DEDUCTIONS"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -408,6 +412,7 @@ $(".addcon-pop").click(function() {
 			$("#paylistLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
 			$("#HrdedLi").addClass('wVer');
+			$("#invoiceData").removeClass('wVer');
 			hrDeductionsList();
 		}else if(payrollType == "BIS_CHECKS"){
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -416,7 +421,17 @@ $(".addcon-pop").click(function() {
 			$("#paylistLi").removeClass('wVer');
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").addClass('wVer');
+			$("#invoiceData").removeClass('wVer');
 			bisChecksList();
+		}else if(payrollType == "INVOICE"){
+			$("#empPayrollCostLi").removeClass('wVer');
+			$("#WageTaxSummaryLi").removeClass('wVer');
+			$("#accountDedLi").removeClass('wVer');
+			$("#paylistLi").removeClass('wVer');
+			$("#HrdedLi").removeClass('wVer');
+			$("#BisChecks").removeClass('wVer');
+			$("#invoiceData").addClass('wVer');
+			getInvoiceDetails();
 		}
 		
 	}
@@ -544,5 +559,6 @@ function showPayrollDiv(){
 <jsp:include page="hrDeductionsList.jsp" />
 <jsp:include page="finalPayrollReport.jsp" />
 <jsp:include page="checksList.jsp" />
+<jsp:include page="invoiceData.jsp" />
 <jsp:include page="employeesList.jsp" />
 <jsp:include page="../masterFooter.jsp" />

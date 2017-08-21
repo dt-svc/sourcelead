@@ -80,7 +80,7 @@ window.onload = function () {
                         </div>
                      
                         <div class="form-group" id="batchNumberDiv">
-                          <label class="col-md-3">Batch Name</label>
+                          <label class="col-md-3">Batch Number</label>
                           	<div class="col-md-9">
                           		<input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         	</div>

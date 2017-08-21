@@ -21,7 +21,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.File;
 import com.bis.sourcelead.payroll.entity.PayrollFileValidator;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -44,6 +46,9 @@ public class PayrollController {
 	
 	@Autowired
 	private BisUserMappingService bisUserMappingService;
+	
+	@Autowired
+	WageTaxSummaryService wageTaxSummaryService;
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -122,4 +127,29 @@ public class PayrollController {
 			
 	       return model;
 	}
+	
+	 @RequestMapping(value = "/payrollReport")
+		public ModelAndView payrollReport(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		 ModelAndView model = new ModelAndView();	
+		 if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAYROLL);
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
+			if(wageTaxSummaryList !=null){
+				model.addObject("wageTaxSummaryList", wageTaxSummaryList);
+			}
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+			model.setViewName("payroll/payrollReport");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+
 }

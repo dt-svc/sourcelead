@@ -44,6 +44,7 @@ import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.InvoiceDataService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -80,6 +81,9 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	InvoiceDataService invoiceDataService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -372,4 +376,52 @@ public class EmployeePayrollRestController {
 			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
 			return bisUsersList;
 		}
+	 
+	 /**
+	  * Get Invoice Data Details
+	  * @param userId
+	  * @param orgLocationId
+	  * @return 
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.GET)
+		public List<InvoiceData> getInvoiceDetails(@RequestParam(value = "userId", required = false) Long userId,
+				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)throws Exception {
+			List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetails(userId, orgLocationId);
+			return invoiceDataList;
+		}
+		
+	 
+	/**
+	 * Get Invoice Data Details
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return List<InvoiceData>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getInvoiceDetailsByEmpId"}, method = RequestMethod.GET)
+	public List<InvoiceData> getInvoiceDetailsByEmpId(@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<InvoiceData> invoiceDataList = null;
+		if(empId !=null){
+			 invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
+		}
+		
+		return invoiceDataList;
+	}
+	
+	
+	@RequestMapping(value = { "/getChecksListByEmployeeId"}, method = RequestMethod.GET)
+	public List<Checks> getChecksListByEmployeeId(@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<Checks> checksList = null;
+		if(empId !=null){
+			checksList =userPayrollService.getChecksListByEmployeeId(empId, orgLocations);
+		}
+		
+		return checksList;
+	}
 }

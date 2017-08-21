@@ -11,11 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "INVOICE_DATA", catalog = "sourcelead")
@@ -95,6 +97,42 @@ public class InvoiceData implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String dateStr;
+	
+	public String getDateStr() {
+		return dateStr;
+	}
+
+	public void setDateStr(String dateStr) {
+		this.dateStr = dateStr;
+	}
+
+	public String getLastModifiedStr() {
+		return lastModifiedStr;
+	}
+
+	public void setLastModifiedStr(String lastModifiedStr) {
+		this.lastModifiedStr = lastModifiedStr;
+	}
+
+	public String getDueDateStr() {
+		return dueDateStr;
+	}
+
+	public void setDueDateStr(String dueDateStr) {
+		this.dueDateStr = dueDateStr;
+	}
+
+	@Transient
+	@JsonProperty
+	private String lastModifiedStr;
+	
+	@Transient
+	@JsonProperty
+	private String dueDateStr;
 
 	public Long getId() {
 		return id;
