@@ -184,10 +184,10 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               	<label><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 " >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -256,6 +256,12 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
      </div>
     </div>
   </section>
+  
+  <script>
+  function remove(){
+	  $('#0invoicedocFile').val("");
+  }
+  </script>
     
 <!-- Diplays client contacts details when clien selected -->
 
@@ -271,7 +277,7 @@ function getProjectsList(projectName){
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value=''>Select Project</option>";
+	output = output + "<option value=''>--Select Project--</option>";
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
@@ -294,12 +300,12 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
+	$('#frequency').val('').trigger('chosen:updated');
 	var projectId = null;
 	projectId = $("#projectId").val();
 	if(projectId == null){
 	projectId = '${projectId}';
 	}
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
@@ -319,6 +325,7 @@ function getProjectFrequency(invoiceFrequency){
 		}
 		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
 		}
+		
 		$("#frequency").empty();
 		$("#frequency").append(output);
 		$('#frequency').trigger("chosen:updated");
@@ -1141,11 +1148,11 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 ">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
-               		    <i class="fa fa-times" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
+               		    <i class="fa fa-times mt5" mouseOver="Delete" title="Delete" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
                		   </span>
                 </div>
              </div>
