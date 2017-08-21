@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script src="resources/js/addRowToJson.js"></script>
+
 <div id="tab-b" class="newPrTabs_inn">
   <div id="choicepopUp"></div>
   <div id="associateRequestLoading"></div>
@@ -36,13 +38,10 @@
 		</div>
 		
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateFullName" name="REPLACEROWIDcandidateFullName" />
-		
-		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidateId" />
 		
 		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDresourceRequestId" name="REPLACEROWIDresourceRequestId">
+			id="REPLACEROWIDprojectMemberId" name="REPLACEROWIDprojectMemberId">
 		</input>
 		
 	</div>
@@ -463,7 +462,6 @@ function getAssociatesFilter(){
 			
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
 			$('#'+maxRowNum+'candidateName').html(checkbox_value[1]);
-			$('#'+maxRowNum+'candidateFullName').val(checkbox_value[1]);
 			
 			
 			var cell1 = row.insertCell(1);
@@ -472,10 +470,19 @@ function getAssociatesFilter(){
 			divTaskTd2Str = divTaskTd2Str.replace(/PRICECALCULATION/g,("")); 
 			cell1.innerHTML = divTaskTd2Str;
 	
+			if(checkbox_value[3] != null && checkbox_value[3] != '' && checkbox_value[3] != 'undefined'){
+				$('#'+maxRowNum+'payRateCurrency').val(checkbox_value[3]);
+			}
 			
-			$('#'+maxRowNum+'payRateCurrency').val(checkbox_value[3]);
-			$('#'+maxRowNum+'payRate').val(checkbox_value[2]);
-			$('#'+maxRowNum+'payRateRateType').val(checkbox_value[4]);
+			if(checkbox_value[2] != null && checkbox_value[2] != '' && checkbox_value[2] != 'undefined'){
+				$('#'+maxRowNum+'payRate').val(checkbox_value[2]);
+			}
+			
+			
+			if(checkbox_value[4] != null && checkbox_value[4] != '' && checkbox_value[4] != 'undefined'){
+				$('#'+maxRowNum+'payRateRateType').val(checkbox_value[4]);
+			}
+			
 			
 			var cell2 = row.insertCell(2);
 			var divTaskTd3Str = document.getElementById("divTaskTd3").innerHTML;
@@ -486,7 +493,7 @@ function getAssociatesFilter(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" id="'+maxRowNum+'sdate-input"  name="'+maxRowNum+'requestStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" id="'+maxRowNum+'sdate-input"  name="'+maxRowNum+'memberStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -494,7 +501,7 @@ function getAssociatesFilter(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input"  name="'+maxRowNum+'requestEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input"  name="'+maxRowNum+'memberEndDate" >';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
@@ -654,7 +661,7 @@ function getAssignedMembers(){
 	 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 	 result = result +'  <input type="hidden" id="associatesRowsCount" name="associatesRowsCount" value="0" />';
 	 result = result +'  <input type="hidden" id="estimatedBudgetCurrencyType" name="estimatedBudgetCurrencyType" value="${SourceLeadWeb_currencyCode}" />';
-	 result = result +'<table>';
+	 result = result +'<table id="projectAssignedMembers">';
 	 result = result +'<thead id="addRequestTbl">';
 	 result = result +'<tr id="divTsRow0">';
 	 result = result +'<th>Name</th>';
@@ -741,33 +748,44 @@ function assignMembers(){
  			 return false;
  		}else{
  			
- 			var frm = $('#assignMembers_form').serializeFormJSON();
- 			var jsonData = JSON.stringify(frm);
- 		
  			
- 			var form = $('#assignMembers_form')[0];
- 		    var formData = new FormData(form);
- 		  	formData.append("json",jsonData);
+ 			var checkMaxTsRowNum = $("#maxTsRowNum").val();
+ 	      	
+ 	      	var fields = [];
+ 	      	fields.push('candidateId');
+ 	      	fields.push('projectMemberId');
+ 	      	fields.push('payRateCurrency');
+ 	      	fields.push('payRate');
+ 	      	fields.push('payRateRateType');
+ 	      	fields.push('billRateCurrency');
+ 	      	fields.push('billRate');
+ 	      	fields.push('billRateRateType');
+ 	     	fields.push('memberStartDate');
+ 	     	fields.push('memberEndDate');
+ 	     	fields.push('estHours');
+ 	     	fields.push('estBudget');
+ 	      	var projectMembers = $('#projectAssignedMembers').addRowToJSON(fields,checkMaxTsRowNum);
+ 			
+ 			var frm = $('#assignMembers_form').serializeFormJSON();
+ 	      	frm['projectMembers'] = projectMembers;
+ 			var jsonData = JSON.stringify(frm);
  		  	
       		var sourceleadUrl ='${sourceleadUrl}';
       		var projectUUID =  document.getElementById("projectUUID").value;
       		var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
       		
-      		
-      /* 		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
 					type : "POST",
-	  	    	    data: formData,
+	  	    	    data : jsonData,
 	  	    	    contentType : 'application/json; charset=utf-8',
-	  		        processData: false,
-	  		        contentType:false, 
 	  	    	    dataType : 'json',
-					url : sourceleadUrl+"/saveResourceRequest?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&saveType="+saveType+"&userId="+userId+"&orgLocationId="+orgLocationId, 
+					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&tabType=resources");
+
 					},
-				}); */  
+				}); 
       		 return true;
          	   
  		}

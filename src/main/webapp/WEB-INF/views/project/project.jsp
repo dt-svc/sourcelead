@@ -737,9 +737,9 @@ function getProjectDetails(){
         		   document.getElementById("isAllowBidding").checked = true;
         	   }
         	   
-        	   /* $("#projectDescription").Editor();
-        	   $('#projectDescription').summernote(json.description);
-        	   */
+        	   $("textarea[name=ProjectDescription]").val(json.description);
+        	   $(".Editor-editor").val(json.description);
+        	   
         	   
         	   if(json.projectDocumentsList.length > 0){
         		   var result = '';

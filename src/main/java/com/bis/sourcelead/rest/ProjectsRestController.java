@@ -1,14 +1,13 @@
 package com.bis.sourcelead.rest;
 
 import java.io.IOException;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -34,7 +34,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
-
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.model.ProjectDocumentBO;
@@ -134,7 +133,29 @@ public class ProjectsRestController {
 		return projects;
 
 	}
+	
+	
+	
+       @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
+		public  String assignProjectMembersToProject(@RequestBody ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		    
+		    User user = userService.getUserById(userId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		    
+		   // JSONObject jsonObj = new JSONObject(jsonPayload);
+		    //projectPlanningRequestService.saveProjectPlanningRequest(jsonObj, user, orgLocations, projectUUID,saveType);
+		   
+		    return "success";
+	    }
 
+	
+	
+	
+  	
+	
+	
+	
 	/**
 	 * @author shivayogi.
 	 * @Description : this is duplicate method, this method is not used
