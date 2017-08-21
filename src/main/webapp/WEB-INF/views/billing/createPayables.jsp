@@ -152,12 +152,12 @@ function errRemoveVendorContact(){
 
 
 				<footer class="form-footer">
-					<div class="pull-right mr">
-						<button type="button" class="btn btn-sm btn-primary"
+					<div class="pull-right mr mt25">
+						<button type="button" class="btn btn-sm btn-primary pull-left" id="saveInvoiceId" style="display:block;"
 							onclick="saveInvoice('DRAFT')">Save</button>
-						<button type="button" class="btn btn-sm btn-success ml"
+						<button type="button" class="btn btn-sm btn-success ml pull-left" id="sendInvoiceId" style="display:block;"
 							onclick="saveInvoice('SENT')">Send</button>
-						<button type="button" class="btn btn-sm btn-default ml"
+						<button type="button" class="btn btn-sm btn-default ml pull-left"
 							onClick="javascript:window.location.href = '<c:url value='/payablesList'/>'">Cancel</button>
 					</div>
 				</footer>
@@ -452,7 +452,10 @@ function remove(){
 		        	 $("#exchangeRate").html(json['exchangeRate']);
 		        	
 		        	$("#savedInvoiceId").val(json['id']);
-		        	
+		        	if("Rejected" == json['invoiceStatus']){
+			   			 document.getElementById("sendInvoiceId").style.display="none";
+			   			 document.getElementById("saveInvoiceId").style.display="none";
+			       	}
 		        	
 		        	
 		        }
