@@ -348,6 +348,7 @@ public class OrgDaoImpl implements OrgDao {
 					" from USER u, USER_ROLE ur, ROLES r, ORG o, ORG_LOCATIONS ol " + 
 					" where r.id = ur.role_id and u.id = ur.user_id and ur.org_locations_id = "+orgLocationId.longValue() + 
 					" and o.id = ol.org_id and ol.id = ur.org_locations_id order by ur.reporting_manager_id;";
+			
 			List<Object[]> result = session.createSQLQuery(query).list();
 			for(Object[] record : result) {
 				UserDTO user = new UserDTO();
