@@ -35,6 +35,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+	/**
+	 * @author BIS101
+	 *
+	 */
 	@Entity
 	@Table(name = "REQUIREMENT", catalog = "sourcelead")
 	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
@@ -487,6 +491,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String postedOnStr;
+	
+	@Transient
+	@JsonProperty
+	private String DT_RowId;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -1665,5 +1673,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.isRequirementReleased = isRequirementReleased;
 	}
 
+	public String getDT_RowId()
+	{
+		return DT_RowId;
+	}
+
+	public void setDT_RowId(String dT_RowId)
+	{
+		DT_RowId = dT_RowId;
+	}
+
+	
 	
 }
