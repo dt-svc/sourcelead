@@ -648,6 +648,7 @@ function PopUp(contractUUID){
 				}
 				
 			}
+			
 			if(json.contractType =="Full time offer"){
 				if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
 					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -734,6 +735,13 @@ function PopUp(contractUUID){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
 				result = result +	'	</div>';
 			}
 			
