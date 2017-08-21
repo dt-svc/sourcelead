@@ -427,7 +427,7 @@ function getEmploymentType(){
 }
 </script>
 
-
+<!-- getEmployementTye -->
 
 <script>
 function addPoliciesAttachment(){  
@@ -779,6 +779,8 @@ function validateUploadFile(id)
 			    	 $("#city").val(json['city']);
 			    	 $("#zipCode").val(json['zipCode']);
 			    	 
+			    	 $("#employmentType").val(json['designationType']);
+			    	 $("#employmentType").trigger("chosen:updated");
 			    	/*  getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
