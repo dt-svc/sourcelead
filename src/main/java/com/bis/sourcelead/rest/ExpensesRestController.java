@@ -198,6 +198,7 @@ public class ExpensesRestController {
 	public @ResponseBody String storeExpenseEntryDetails(@RequestParam("entryForm") String entryForm, 
 			MultipartHttpServletRequest request) throws Exception
 	{
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		String result = "failure";
 		Expenses expenses = null;
 		ProjectMembers projMembers = null;
@@ -297,7 +298,7 @@ public class ExpensesRestController {
 				expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(), "APPROVED", "");
 			}
 			if (status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())) {
-				addExpensesService.sendExpensesEmailToManager(loginUser, expenses, orgLoc);
+				addExpensesService.sendExpensesEmailToManager(loginUser, expenses, orgLoc,currencyCode);
 			}
 			result = "success";
 		}
