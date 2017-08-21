@@ -4598,7 +4598,7 @@ function requirementRecommendations(requirementId){
 		    	lastName = "";
 		    } 
 		    result = result +'<tr>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+','+report.finalScore+');" class="proj_show tbldata-dotdot-me"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
+		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+','+report.finalScore+');" class="proj_show tbldata-dotdot"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
 		    if(report.finalScore != null && report.finalScore != '' && report.finalScore != 'undefined'){
 				  if(report.finalScore >=50){ 
 				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
@@ -4607,7 +4607,7 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div></td>';
 /* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
 		    if(report.email != null && report.email !='' && report.email !='undefined'){
-		    	result = result +'<td><div title='+report.email+'><span>'+report.email+'</span></div></td>';
+		    	result = result +'<td><div title='+report.email+' class="tbldata-dotdot-sm">'+report.email+'</div></td>';
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
@@ -4635,7 +4635,7 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div></td>';
 		    
 		    if(report.updatedDate != null && report.updatedDate !='' && report.updatedDate !='undefined'){
-		    	result = result +'<td><div><span>'+report.updatedDate+'</span></div></td>';
+		    	result = result +'<td><div class="tblminwidth-100"><span>'+report.updatedDate+'</span></div></td>';
 		    }else{
 		    	result = result +'<td><div><span>--</span></div></td>';
 		    }
@@ -4816,7 +4816,7 @@ function recommendationpagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     });
-    $("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
+    //	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
 }
 </script>
 
