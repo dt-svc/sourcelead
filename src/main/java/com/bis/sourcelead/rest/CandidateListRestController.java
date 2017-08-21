@@ -190,9 +190,9 @@ public class CandidateListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
+		String[] tableColumns = {"", "generatedId","firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
 		
-		int sortColumnIndex = 7; //by default sorting using updated date
+		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
@@ -295,6 +295,9 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(designationBoolQueryBuilder);
 		}
+		
+		
+	
 
 		// Notice_Period
 		List<String> noticePeriodArray = search.getNoticePeriod();
@@ -305,6 +308,11 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 		}
+		
+		// Generated ID
+			if (StringUtils.isNotEmpty(search.getGeneratedId())) {
+				boolQueryBuilder.must(QueryBuilders.matchQuery("generatedId", search.getGeneratedId()));
+			}
 
 		// Country
 		if (StringUtils.isNotEmpty(search.getCountry())) {
@@ -426,6 +434,7 @@ public class CandidateListRestController {
 			} catch (NumberFormatException e) {
 			}
 		}
+		
 
 		// Educations
 		List<String> educationArray = search.getEducation();
@@ -436,7 +445,7 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(edunBoolQueryBuilder);
 		}
-
+		
 		// Exclude Educations
 		List<String> excludeEducationArray = search.getExcludeEducation();
 		if (excludeEducationArray != null && !excludeEducationArray.isEmpty()) {
@@ -581,6 +590,7 @@ public class CandidateListRestController {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {

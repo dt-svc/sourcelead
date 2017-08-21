@@ -121,6 +121,7 @@ public class AddElkRequirement {
 				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
+				requirementIndex.setGeneratedId(rs.getString("GENERATED_ID"));
 				requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
 				ResultSet approverSet = getApproverUserDetails(Long.parseLong(rs.getString("ID")),conn);
 				List<String> lavel1User = new ArrayList<String>();

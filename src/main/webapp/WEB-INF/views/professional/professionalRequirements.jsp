@@ -722,7 +722,8 @@ function getViewMoreSearchRecords(){
 
 <script>
 function getPostedOrgJobs(id){
-	$("#postedOrg").val(id.innerHTML);
+	var locationId = $("#"+id+"locationId").val();
+	 $("#postedOrg").val(locationId);
 	requirementsList('0');
 }
 </script>
@@ -762,7 +763,7 @@ function requirementsList(offset){
 	$("#requirementsListLoading").attr('style','position:absolute; width:100%; height:30%; background-color:rgba(255,255,255,0.8); top:248px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	 $.ajax({ 
-	   	type: "POST",
+		type: "POST",
 	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch+"&postedOrgName="+postedOrgName,
 	   			
 	    success: function(data) {
@@ -847,9 +848,9 @@ function requirementsList(offset){
 			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 					
 			 				}
-			 				
 			 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
-			 				result = result +'<h4 onClick="getPostedOrgJobs(this);" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';
+			 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
+			 				result = result +'<h4 onClick="getPostedOrgJobs('+i+');" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
