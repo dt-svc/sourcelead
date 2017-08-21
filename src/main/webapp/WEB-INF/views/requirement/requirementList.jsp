@@ -437,6 +437,13 @@ function statusvalidating(id){
 			</div>
 		</div>
 	</div>
+	
+	
+	<div class="side_mask">
+  <div class="proj_close" onClick="activeTab();"></div>
+</div>
+	
+	
 </section>
 
 <jsp:include page="addApplicantFromRequirementList.jsp" />
