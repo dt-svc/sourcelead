@@ -154,9 +154,11 @@ public class ExpensesApprovalRestController {
 			 Integer maxLevel = 0;
 			 Integer userLevel = 0;
 			 Boolean isAdmin =  (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
+			 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 			 
+
 			 if(isAdmin){
-				 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode());
+				 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode(),currencyCode);
 			 }
 			 else{
 				 for(ExpensesApproverHierarchy eah :expensesApproverHierarchyList){
@@ -169,7 +171,7 @@ public class ExpensesApprovalRestController {
 					 }
 				 }
 				 if(maxLevel.equals(userLevel) || ((userLevel == 1) && (approvalStatus.equalsIgnoreCase("REJECTED")))){
-					 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode());
+					 sendEmailToExpenseApprovalStatus(expenseId, user,approvalStatus,rejectedReason,orgLoc,orgLoc.getOrg().getOrgCode(),currencyCode);
 				 }
 			 }
 			 
@@ -180,7 +182,7 @@ public class ExpensesApprovalRestController {
     }
 
 
-	private void sendEmailToExpenseApprovalStatus(Long expenseId, User loginUser, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+	private void sendEmailToExpenseApprovalStatus(Long expenseId, User loginUser, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode, String currencyCode) throws Exception {
 		
 		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
 		//SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
@@ -247,7 +249,10 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("endDate", commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),sah.getExpenseId().getEndDate()));
 				 }
 			 }
-			 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));
+			 StringBuilder amountCurrencyType = new StringBuilder();
+			 amountCurrencyType.append(Float.toString(sah.getExpenseId().getTotalAmount())).append(" ").append(currencyCode);
+			 globalVarsMap.put("amount",amountCurrencyType.toString());
+	
 			 
 			Date todayDate = new Date();
 			 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
