@@ -6,6 +6,6 @@ import com.bis.sourcelead.payroll.entity.InvoiceData;
 
 public interface InvoiceDataDao {
 
-	int saveInvoiceData(List<InvoiceData> invoicedatalist);
+	InvoiceData saveInvoiceData(InvoiceData invoiceData);
 
 }

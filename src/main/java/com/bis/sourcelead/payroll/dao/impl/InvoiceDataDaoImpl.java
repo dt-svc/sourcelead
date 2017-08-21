@@ -21,16 +21,15 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 	@Autowired
 	SessionFactory sessionFactory;
 	@Override
-	public int saveInvoiceData(List<InvoiceData> invoicedatalist) {
+	public InvoiceData saveInvoiceData(InvoiceData invoiceData) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.saveOrUpdate(payCycle);
+			session.saveOrUpdate(invoiceData);
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
-		return payCycle;
-		return 0;
+		return invoiceData;
 	}
 
 }
