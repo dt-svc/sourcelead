@@ -218,7 +218,7 @@ $(document).ready(function(){
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
 						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
-						result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
+						result = result + ' <div id="remove_user_id" class="remove_user_pop terminate-popup" >';
 									
 									result = result + '<div class="clearfix assignroles">';
 									result = result + ' <div id="deleteLoading"></div>';
