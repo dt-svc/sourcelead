@@ -2,6 +2,8 @@ package com.bis.sourcelead.elk.index;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -150,6 +152,8 @@ public class RequirementIndex {
 	private Long submissionId;
 	
 	private String reqCoolingOffPeriod;
+	
+	private String releaseJobToAllUsers;
 	
 	private String closedDate;
 	
@@ -687,6 +691,16 @@ public class RequirementIndex {
 	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
 	}
+	public String getReleaseJobToAllUsers()
+	{
+		return releaseJobToAllUsers;
+	}
+
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
+	{
+		this.releaseJobToAllUsers = releaseJobToAllUsers;
+	}
+
 	public String[] getNoticePeriod() {
 		return noticePeriod;
 	}
