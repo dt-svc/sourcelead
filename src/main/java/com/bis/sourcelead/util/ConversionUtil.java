@@ -404,5 +404,17 @@ public class ConversionUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
 		return formatter.format(date);
 	}
+
+	public Date getDateFromMMDDYYY_HHMMSS(String dateStr) {
+        Date date = null;
+		try {
+        	String pattern = "MM/dd/yyyy hh:mm:ss";
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            date =  format.parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
 	
 }

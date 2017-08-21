@@ -34,12 +34,14 @@ import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
+import com.bis.sourcelead.payroll.service.InvoiceDataService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -75,6 +77,9 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	UserPayrollService userPayrollService;
+	
+	@Autowired
+	InvoiceDataService invoiceDataService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -115,6 +120,8 @@ public class EmployeePayrollRestController {
 				isInserted = bisUserMappingService.saveBisUserData(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.BIS_CHECKS.equalsIgnoreCase(payrollType)){
 				isInserted = bisUserMappingService.saveChecksData(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.INVOICE_DATA.equalsIgnoreCase(payrollType)) {
+				isInserted = invoiceDataService.saveInvoiceData(multipartFile,orgLocation,user,jsonObj);
 			}
 		}else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
