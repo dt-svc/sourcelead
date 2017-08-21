@@ -37,7 +37,6 @@
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
 </head>
-<!-- <script src="resources/js/jquery-1.11.1.min.js"></script> -->
 
 
 <!--  Amcharts -->

@@ -7,7 +7,7 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum">Home &raquo; Submission List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Submission List</div>
     </section>
     
     <!-- Project -->
@@ -76,7 +76,14 @@
             <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
-              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>
+              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
+              </c:if>
+              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	--
+              </c:if>
+              </span></div></td>
               <td><div><span>${reqSub.submissionId.createdDateStr}</span></div></td>
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.submittedOn}">

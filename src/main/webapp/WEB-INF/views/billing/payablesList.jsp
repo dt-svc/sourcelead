@@ -748,7 +748,7 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else if(report.invoiceStatus == "DRAFT"){

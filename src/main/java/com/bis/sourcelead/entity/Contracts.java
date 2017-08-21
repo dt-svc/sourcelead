@@ -1045,5 +1045,4 @@ public class Contracts {
 		this.rejectedReason = rejectedReason;
 	}
 
-	
 }
