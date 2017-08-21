@@ -1619,7 +1619,6 @@ public class RequirementListRestController {
  		 Requirement requirement = new Requirement();
  		requirement.setId(requirementIndex.getRequirementId());
       	requirement.setJobId(requirementIndex.getJobId());
-		requirement.setDt_RowId("Row_"+requirementIndex.getRequirementId());
       	requirement.setJobType(requirementIndex.getJobType());
       	requirement.setOtherJobType(requirementIndex.getOtherJobType());
       	requirement.setJobTitle(requirementIndex.getJobTitle());

@@ -1,4 +1,4 @@
-package com.bis.sourcelead.orgShortCodeIdForOldOrgs.forBusinessIntelli;
+package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
+public class JobsGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 
 	private ComboPooledDataSource comboPooledDataSource;
 	
@@ -40,35 +40,35 @@ public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 		try {
 			DataSource dataSource = comboPooledDataSource();
 			conn = dataSource.getConnection();
-			 String finalCandidateGeneratedId = null;
+			 String finalJobsGeneratedId = null;
 				 stmt2 = conn.createStatement();
 				 stmt3 = conn.createStatement();
 				 
 				 
-				 for(Long candidatesOrgLocIds :bisOrgId){
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+candidatesOrgLocIds+" ";
+				 for(Long jobsOrgLocIds :bisOrgId){
+					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+jobsOrgLocIds+" ";
 					 
 					 ResultSet rSetorgShortCode = stmt3.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 System.out.println("orgShortCode :"+orgShortCode);
 						 if(orgShortCode != null && orgShortCode != ""){
-							 String queryOrg = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.ORG_LOCATION_ID= "+candidatesOrgLocIds+"";
+							 String queryOrg = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);
-							 Long candidateGeneratedId = 0L;
+							 Long JobsGeneratedId = 0L;
 							 while(rs2.next()){
-								 Long  candidateId = rs2.getLong("ID");
-								 candidateGeneratedId = candidateGeneratedId + 1;
+								 Long  jobsId = rs2.getLong("ID");
+								 JobsGeneratedId = JobsGeneratedId + 1;
 								 final DecimalFormat decimalFormat = new DecimalFormat("0");                
-							        String ConvetredCandidateId = decimalFormat.format(candidateGeneratedId);
+							        String ConvetredJobId = decimalFormat.format(JobsGeneratedId);
 							        
 							        StringBuffer sb = new StringBuffer();
-							        finalCandidateGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidateId).toString();
+							        finalJobsGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredJobId).toString();
 						    
-									 String query = "update sourcelead.CANDIDATE set GENERATED_ID = ? where ID = ? ";
+									 String query = "update sourcelead.REQUIREMENT set GENERATED_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
-								     pstmt.setString(1,finalCandidateGeneratedId);
-								     pstmt.setLong(2, candidateId);
+								     pstmt.setString(1,finalJobsGeneratedId);
+								     pstmt.setLong(2, jobsId);
 								     pstmt.executeUpdate();
 						   //  conn.commit();
 						}
@@ -103,7 +103,7 @@ public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 		}
 	 
 	public static void main(String[] args) throws IOException, SQLException {
-		CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND dump = new CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND();
+		JobsGeneratedIdpdatedFileForBusinessIntelliUSAndIND dump = new JobsGeneratedIdpdatedFileForBusinessIntelliUSAndIND();
 		dump.addCandidateGeneratedId();
 	}
 }

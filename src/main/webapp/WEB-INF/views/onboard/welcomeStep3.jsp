@@ -21,8 +21,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-
 <style type="text/css">
     .require_wrap_table.overflowVisible{
         overflow: visible !important;
@@ -223,6 +221,7 @@
   <script src="resources/js/bootstrap.min.js"></script> 
   <script src="resources/js/masterHeaderAction.js"></script> 
   <script src="resources/js/chosen.jquery.min.js"></script> 
+  
   <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -283,32 +282,36 @@ function saveOnboardingCandidateDocs(saveType){
          }; 
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  
-	  var frm = $('#onboardCandidateDocs_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
-      
-	   var form = $('#onboardCandidateDocs_form')[0];
-	   var formData = new FormData(form); 
-	
-   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.ajax({
-        type : "POST",
-	      data: formData,
-	      contentType : 'application/json; charset=utf-8',
-	      enctype: 'multipart/form-data',
-          processData: false,
-          contentType:false,
-	      dataType : 'json',
-    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
-	      success :function(result) {
-	    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
-      }
-    	  
-  });
+	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
+		  var frm = $('#onboardCandidateDocs_form').serializeFormJSON();
+	      var con = JSON.stringify(frm);
+	      con = con.replace(/[{}]/g, "");
+	      
+	      //It will escape all the special characters
+	      var jsonData = encodeURIComponent(con);
+	      
+		   var form = $('#onboardCandidateDocs_form')[0];
+		   var formData = new FormData(form); 
+		
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	        type : "POST",
+		      data: formData,
+		      contentType : 'application/json; charset=utf-8',
+		      enctype: 'multipart/form-data',
+	          processData: false,
+	          contentType:false,
+		      dataType : 'json',
+	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
+		      success :function(result) {
+		    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
+	      }
+	    	  
+	  });
+		return true;
+	  }else{
+		  return false;
+	  }
 }
 </script>
 
@@ -408,3 +411,5 @@ function uploadPoliciesFile(id){
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+
+<script src="resources/js/formvalidator.js"></script>
