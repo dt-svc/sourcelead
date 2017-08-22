@@ -39,9 +39,9 @@
 	-ms-border-radius:0 3px 3px 0;
 	border-radius:0 3px 3px 0;
 	}
-	.selp-custom-min .open {
+	/* .selp-custom-min .open {
 	z-index: 999999999 !important;
-	}
+	} */
 	.ratetype p {
 	bottom: -14px;
 	left:0px !important;
@@ -1041,7 +1041,9 @@ function candidateProfile(candidateId,candidateType){
 			    	 
 			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 				        {
-		    				 preventTabkey(e);
+			    		 
+			    		//below code manually enter skills are not taken
+		    				/*  preventTabkey(e);
 							var isNewSkill = true;
 		                     $("#skillName option:selected").each(function(){
 								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
@@ -1052,7 +1054,26 @@ function candidateProfile(candidateId,candidateType){
 						   if(isNewSkill){
 								select.append(option);
 						   }
-		                   $("#skillName").trigger("chosen:updated");
+		                   $("#skillName").trigger("chosen:updated"); */
+		                   
+	                  
+	                   // below code manually enter skills are taken
+	    				  
+	                   var isNewSkill = true;
+						 $("#skillName option:selected").each(function(){
+							 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+								 //alert(newSkill);
+								 isNewSkill = false;
+								 return false;
+							 }
+	                    
+	                   });
+						if(isNewSkill){
+	    				 var option = $("<option>").val(newSkill).text(newSkill);
+						 select.append(option);
+	                     select.find(option).prop('selected', true);
+						}
+		               $("#skillName").trigger("chosen:updated"); 
 		                }
 		    	 }
 		    });
