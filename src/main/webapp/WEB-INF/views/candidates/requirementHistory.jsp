@@ -117,14 +117,13 @@ function requirementHistoryList(candidateId){
 
 <script>
 
-<script>
 function requirementHistoryPagination(){  
     $('#requirementHistoryPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -132,6 +131,7 @@ function requirementHistoryPagination(){
     } );
 }
 </script>
+
 <script>
 	function predefineProfileImage(imageId){   
 		$(imageId).attr('src','resources/images/userprofile-img.png');

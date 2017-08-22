@@ -246,14 +246,34 @@ function getAddApplicant(requirementId){
 			    			var newSkill = this.value.replace(","," ");
 			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				
+			    				 
 			    				 preventTabkey(e);
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			    				/*  var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);
 			                     $("#candidateSkills option").each(function(){
 			                         $(this).siblings("[value='"+ this.value+"']").remove();
 			                   });
-			                   $("#candidateSkills").trigger("chosen:updated");
+			                   $("#candidateSkills").trigger("chosen:updated"); */
+			                   
+			    				 var isNewSkill = true;
+								 $("#candidateSkills option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+										 //alert(newSkill);
+										 isNewSkill = false;
+										 return false;
+									 }
+			                    
+			                   });
+								if(isNewSkill){
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+								 select.append(option);
+			                     select.find(option).prop('selected', true);
+								}
+				               $("#candidateSkills").trigger("chosen:updated"); 
+			                   
+			                   
 			                }
 					       
 		    	         }

@@ -702,7 +702,8 @@ function validate_fileupload(fileName)
 		    	
 		    });
 		    
-		    chosen.search_field.on('keydown keyup', function(e)
+		   // chosen.search_field.on('keyup keydown', function(e)
+		    		chosen.search_field.on('keydown keyup', function(e)
 				    {
 				    	   var skillsArray = this.value.split(",");
 					    	 if(skillsArray.length > 1){
@@ -718,18 +719,42 @@ function validate_fileupload(fileName)
 				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 				                 {
 				    				 preventTabkey(e);
-									var isNewSkill = true;
+				    				 
+				    				 // due to below code manually enter skills are not taken
+				    				 /* var isNewSkill = true;
 				    				 
 				                     $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 alert("isNewSkill"+isNewSkill);
 												isNewSkill = false;
 												return false;
 										 }
 				                   });
 								   if(isNewSkill){
+									   alert("isNewSkill"+isNewSkill);
 										select.append(option);
 								   }
-				                   $("#candidateSkills").trigger("chosen:updated");
+				                   $("#candidateSkills").trigger("chosen:updated");  */
+				                   
+				                  
+				                   // below code manually enter skills are taken
+				    				  
+				                   var isNewSkill = true;
+									 $("#candidateSkills option:selected").each(function(){
+										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+											 //alert(newSkill);
+											 isNewSkill = false;
+											 return false;
+										 }
+				                    
+				                   });
+									if(isNewSkill){
+				    				 var option = $("<option>").val(newSkill).text(newSkill);
+									 select.append(option);
+				                     select.find(option).prop('selected', true);
+									}
+					               $("#candidateSkills").trigger("chosen:updated"); 
+				                   
 				                }
 						       
 			    	         }
