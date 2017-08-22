@@ -19,7 +19,7 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 	
 	private String[] category;
 	
-	private Double timeSize;
+	private Integer timeSize;
 	
 	private String[] frontEnd;
 	
@@ -76,14 +76,13 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 		this.category = category;
 	}
 
-	public Double getTimeSize() {
+	public Integer getTimeSize() {
 		return timeSize;
 	}
 
-	public void setTimeSize(Double timeSize) {
+	public void setTimeSize(Integer timeSize) {
 		this.timeSize = timeSize;
 	}
-
 
 	public String[] getFrontEnd() {
 		return frontEnd;
