@@ -79,8 +79,8 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="approved_pop">
                       <ul>
-                      	  <c:forEach var="report" items="${vendor_list}">  
-	                      	<li><input id="vendorName${report.id}" name="vendorSelected" value ="${report.id}" onclick="getContactsLists();" type="checkbox"><label title="${report.clientName}">&nbsp;&nbsp; ${report.clientName}</label></li>
+                      	  <c:forEach var="venReport" items="${vendor_list}">  
+	                      	<li><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
 						  </c:forEach>
                       </ul>
                     </div>

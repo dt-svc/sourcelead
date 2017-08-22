@@ -174,7 +174,10 @@ public class SubmissionsRestController {
 			
 			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
-		
+		if(candidate.getOrgRelationId() != null && candidate.getSpocId() != null){
+			candidate.setRelationId(candidate.getOrgRelationId().getId());
+			candidate.setVenSpocId(candidate.getSpocId().getId());
+		}
 		//this block of code is added to get customized score for candidate. -- pavan jampana
 		if(requirementId != null){
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
