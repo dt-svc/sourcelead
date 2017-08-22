@@ -149,7 +149,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		List<Expenses> expenses = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
 		Expenses expensesList = null;
 		if (expenses != null && expenses.size() > 0) {
-			expensesList = (Expenses) expenses.iterator().next();
+			expensesList = expenses.get(0);
 		}
 		return expensesList;
 	}

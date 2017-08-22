@@ -107,6 +107,11 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 	}
 
 @Override
+public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
+	return addExpensesDao.storeAddExpensesData(expenses);
+}
+
+@Override
 public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
