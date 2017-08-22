@@ -845,6 +845,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						projectMembers.setBillRateCurrency(projectMembersDTO.getBillRateCurrency());
 						projectMembers.setRateType(projectMembersDTO.getBillRateRateType());
 						
+					}else{
+						projectMembers.setCurrentBillRate(null);
+						projectMembers.setBillRateCurrency(null);
+						projectMembers.setRateType(null);
 					}
 					
 					if(projectMembersDTO.getMemberStartDate() != null && !projectMembersDTO.getMemberStartDate().isEmpty()){
@@ -855,14 +859,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					if(projectMembersDTO.getMemberEndDate() != null && !projectMembersDTO.getMemberEndDate().isEmpty()){
 						Date projectAssignedEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getMemberEndDate());
 						projectMembers.setProjectEndDate(projectAssignedEndDate);
+					}else{
+						projectMembers.setProjectEndDate(null);
 					}
 					
 					if(projectMembersDTO.getEstHours() != null){
 						projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
+					}else{
+						projectMembers.setEstimatedHours(null);
 					}
 					
 					if(projectMembersDTO.getEstBudget() != null){
 						projectMembers.setEstimatedBudget(projectMembersDTO.getEstBudget());
+					}else{
+						projectMembers.setEstimatedBudget(null);
 					}
 					
 					projectMembers.setStatus("1");
@@ -920,11 +930,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		
 		if(projectMembers.getProjectAssignedDate() != null){
 			projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
+		}else{
+			projectMembersHistory.setProjectAssignedDate(null);
 		}
 		
 		if(projectMembers.getProjectEndDate() != null){
 			projectMembersHistory.setProjectTerminationDate(projectMembers.getProjectEndDate());
+		}else{
+			projectMembersHistory.setProjectTerminationDate(null);
 		}
+		
 		projectMembersHistory.setStatus("OPEN");
 		projectMembersHistory.setCreatedBy(user.getUserCode());
 		projectMembersHistory.setUpdatedBy(user.getUserCode());

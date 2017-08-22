@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -78,6 +80,9 @@ public class ProjectsController {
 	 @Autowired
 	 CommonUtil commonUtil;
 	 
+	 @Autowired
+	 LookUpDataService lookUpDataService;
+	 
 	 protected boolean isNullOrEmpty(String str)
 	 {
 		return (str == null || "".equals(str.trim()));
@@ -129,6 +134,13 @@ public class ProjectsController {
 				
                 Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 				model.addObject("user_List", userList);
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				model.addObject("skillsList", skillsList);
+				
+				List<LookUpData> industriesList = lookUpDataService.getLookUpDataByCategory("Industries");
+				model.addObject("industriesList", industriesList);
+				
 				
 				if(!isNullOrEmpty(projectUUID)){
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);

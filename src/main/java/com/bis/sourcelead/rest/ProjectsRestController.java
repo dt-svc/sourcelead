@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
@@ -145,6 +146,21 @@ public class ProjectsRestController {
 		   
 		    return "success";
 	    }
+       
+       
+       @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
+		public  String assignProjectMembersToProject(@RequestBody ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) String projectId,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		    
+		    User user = userService.getUserById(userId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		   
+		    return "success";
+	    }
+      
+       
+       
+       
        
        
        @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
