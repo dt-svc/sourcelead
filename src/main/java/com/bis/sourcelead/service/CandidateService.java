@@ -171,4 +171,6 @@ public interface CandidateService {
 
 	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
 
+	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType);
+
 }

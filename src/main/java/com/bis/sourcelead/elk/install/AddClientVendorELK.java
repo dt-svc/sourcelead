@@ -50,8 +50,8 @@ public class AddClientVendorELK {
 			return (str == null || "".equals(str.trim()));
 		}
 	 
-	public void addCampaignELK() throws IOException, SQLException,Exception{
-		ArrayList<ClientVendorIndex> elkclientVendorIndexList = getElkCampaigns();
+	public void addClientVendorELK() throws IOException, SQLException,Exception{
+		ArrayList<ClientVendorIndex> elkclientVendorIndexList = getElkClientVendors();
 		if(elkclientVendorIndexList != null && !elkclientVendorIndexList.isEmpty()){
 			for (ClientVendorIndex clientVendorIndex :elkclientVendorIndexList) {
 				
@@ -61,7 +61,7 @@ public class AddClientVendorELK {
 		  logger.info("ORG_RELATIONS Successfully Added To Elk");
 	}
 	
-	private ArrayList<ClientVendorIndex> getElkCampaigns() throws Exception{
+	private ArrayList<ClientVendorIndex> getElkClientVendors() throws Exception{
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
 		Connection conn = dataSource.getConnection();
@@ -86,7 +86,7 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
 			    	clientVendorIndex.setOrgRelationId(rs.getLong("ID"));
 			    	clientVendorIndex.setStatus(rs.getString("STATUS"));
-			    	clientVendorIndex.setNoContacts(getNumberOfContactsPerClient(rs.getLong("ID")));
+			    	clientVendorIndex.setNoContacts(getNumberOfContactsPerClient(rs.getLong("ID"), conn));
 			    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 			    	if(null != rs.getDate("UPDATED_DATE")){
@@ -202,16 +202,16 @@ public class AddClientVendorELK {
 	}
 	
 	
-	private long getNumberOfContactsPerClient(long orgRelationId) {
+	private long getNumberOfContactsPerClient(long orgRelationId, Connection conn11) {
 		String numberOfContacts = "0";
-		 DataSource dataSource1 = comboPooledDataSource();
-		 Connection conn = null;
-		 Statement stmt = null;
+		 /*DataSource dataSource1 = comboPooledDataSource();
+		 Connection conn11 = null;*/
+		 Statement stmt11 = null;
 		 try {
-			  conn = dataSource1.getConnection();
-				String sql = "SELECT  count(*) FROM sourcelead.org_spoc where ORG_RELATION_ID = "+orgRelationId;
-				stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql);
+			  //conn11 = dataSource1.getConnection();
+				String sql = "SELECT  count(*) FROM sourcelead.ORG_SPOC where ORG_RELATION_ID = "+orgRelationId;
+				stmt11 = conn11.createStatement();
+				ResultSet rs = stmt11.executeQuery(sql);
 				while(rs.next()) {
 					numberOfContacts = rs.getString(1);	
 				}
@@ -219,8 +219,8 @@ public class AddClientVendorELK {
 			 e.printStackTrace();
 		}finally {
 			try {
-				stmt.close();
-				conn.close();
+				stmt11.close();
+				//conn11.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -290,8 +290,8 @@ public class AddClientVendorELK {
 	public static void main(String[] args) throws IOException {
 			
 		try {
-			   AddClientVendorELK addCampaignELK = new AddClientVendorELK();
-			   addCampaignELK.addCampaignELK();
+			   AddClientVendorELK addClientVendorELK = new AddClientVendorELK();
+			   addClientVendorELK.addClientVendorELK();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

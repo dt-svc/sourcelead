@@ -599,12 +599,17 @@ function validate_fileupload(fileName)
 			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
 			    				 preventTabkey(e);
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#candidateSkills option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			    				 var isNewSkill = true;
+			    				 
+			                     $("#candidateSkills option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+											isNewSkill = false;
+											return false;
+									 }
 			                   });
+							   if(isNewSkill){
+									select.append(option);
+							   }
 			                   $("#candidateSkills").trigger("chosen:updated");
 			                }
 					       
