@@ -493,7 +493,7 @@ function getAssociatesFilter(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" id="'+maxRowNum+'sdate-input"  name="'+maxRowNum+'memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="'+maxRowNum+'memberStartDate" >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -501,7 +501,7 @@ function getAssociatesFilter(){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'edate-input"  name="'+maxRowNum+'memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate"  name="'+maxRowNum+'memberEndDate" >';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
@@ -517,7 +517,7 @@ function getAssociatesFilter(){
 				  finalDateFormatResourceReqSave = 'yy-dd-mm'; 
 			  }
 			
-			$( "#"+maxRowNum+"sdate-input" ).datepicker({
+			$( "#"+maxRowNum+"memberStartDate" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : finalDateFormatResourceReqSave,
@@ -525,13 +525,13 @@ function getAssociatesFilter(){
 				  onSelect : function(selected) {
 					  var dt = $(this).datepicker('getDate', '+1d');
 						dt.setDate(dt.getDate() + 1);
-						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
+						$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 						removeStartDateValidation(maxRowNum);
 						getEstimatedHours(maxRowNum)
 			 	  }
 			    });
 			
-			$( "#"+maxRowNum+"edate-input" ).datepicker({
+			$( "#"+maxRowNum+"memberEndDate" ).datepicker({
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : finalDateFormatResourceReqSave,
@@ -539,7 +539,7 @@ function getAssociatesFilter(){
 				  onSelect : function(selected) {
 					   var dt = $(this).datepicker('getDate', '-1d');
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
+						$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 						getEstimatedHours(maxRowNum)
 			 	  }
 			    });
@@ -579,6 +579,159 @@ function getAssociatesFilter(){
 	}
   </script>
   
+  
+  
+  <script>
+  function loadProjectAssignedMembers(projectId){
+	  var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getProjectAssignedMembesListByProjectId?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+		        success: function(json) {
+		        	if(json.length > 0){
+		        		
+		        		for(var i=0; i<json.length; i++){
+		        			var opt = json[i];
+		        			
+	        			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
+		      				var tbl = document.getElementById("addRequestTbl");
+		      				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+		      				$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+		      				
+		      				var associatesRowsCount = $("#associatesRowsCount").val();
+		      				var rowsCount = parseInt($("input[name = 'associatesRowsCount']").val());
+		      				$("input[name = 'associatesRowsCount']").val(rowsCount + 1);
+		      				
+		      				
+		      				var row = tbl.insertRow(maxRowNum);
+		      				row.setAttribute("id", "divTsRow" + maxRowNum);
+		      				
+		      				var cell0 = row.insertCell(0);
+		      				var divTaskTd1Str = document.getElementById("divTaskTd1").innerHTML;
+		      				divTaskTd1Str = divTaskTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+		      				divTaskTd1Str = divTaskTd1Str.replace(/PRICECALCULATION/g,("")); 
+		      				cell0.innerHTML = divTaskTd1Str;
+		      				
+		      				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
+		      				$('#'+maxRowNum+'candidateName').html(opt.candidateName);
+		      				$('#'+maxRowNum+'projectMemberId').val(opt.id);
+		      				
+		      				var cell1 = row.insertCell(1);
+		      				var divTaskTd2Str = document.getElementById("divTaskTd2").innerHTML;
+		      				divTaskTd2Str = divTaskTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		      				divTaskTd2Str = divTaskTd2Str.replace(/PRICECALCULATION/g,("")); 
+		      				cell1.innerHTML = divTaskTd2Str;
+		      		
+		      				if(opt.payRate != null && opt.payRate != '' && opt.payRate != 'undefined'){
+		      					$('#'+maxRowNum+'payRateCurrency').val(opt.payRateCurrency);
+		      					$('#'+maxRowNum+'payRate').val(opt.payRate);
+		      					$('#'+maxRowNum+'payRateRateType').val(opt.payRateType);
+		      				}
+		      				
+		      				var cell2 = row.insertCell(2);
+		      				var divTaskTd3Str = document.getElementById("divTaskTd3").innerHTML;
+		      				divTaskTd3Str = divTaskTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+		      				divTaskTd3Str = divTaskTd3Str.replace(/PRICECALCULATION/g,("")); 
+		      				cell2.innerHTML = divTaskTd3Str;
+		      				
+		      				if(opt.currentBillRate != null && opt.currentBillRate != '' && opt.currentBillRate != 'undefined'){
+		      					$('#'+maxRowNum+'billRateCurrency').val(opt.billRateCurrency);
+		      					$('#'+maxRowNum+'billRate').val(opt.currentBillRate);
+		      					$('#'+maxRowNum+'billRateRateType').val(opt.rateType);
+		      				}
+		      				
+		      				
+		      				
+		      				var startDateText = "";
+		    				var cell3 = row.insertCell(3);
+		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="'+maxRowNum+'memberStartDate" >';
+		    				startDateText = startDateText+'</div>';
+		    				cell3.innerHTML = startDateText;
+		    				
+		    				
+		    				var endDateText = "";
+		    				var cell4 = row.insertCell(4);
+		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="'+maxRowNum+'memberEndDate" >';
+		    				endDateText = endDateText+'</div>';
+		    				cell4.innerHTML = endDateText;
+		    				
+		    				
+		    				
+		    				$( "#"+maxRowNum+"memberStartDate" ).datepicker({
+		    					  changeMonth: true,
+		    				      changeYear: true,
+		    				      dateFormat : 'dd-mm-yy',
+		    				      minDate : 0,
+		    					  onSelect : function(selected) {
+		    						  var id = $(this).attr('id');
+		    						  var rowId = id.split("memberStartDate")[0];
+		    						  var dt = toDate("#"+rowId+"memberStartDate");
+		    						  dt.setDate(dt.getDate() + 1);
+		    						  $("#"+rowId+"memberEndDate").datepicker("option", "minDate", dt);
+		    						  removeStartDateValidation(maxRowNum);
+		    						  getEstimatedHours(rowId);
+		    				 	  }
+		    				    });
+		    				
+		    				$( "#"+maxRowNum+"memberEndDate" ).datepicker({
+		    					  changeMonth: true,
+		    				      changeYear: true,
+		    				      dateFormat : 'dd-mm-yy',
+		    				      minDate : 0,
+		    					  onSelect : function(selected) {
+		    						  var id = $(this).attr('id');
+		    						  var rowId = id.split("memberEndDate")[0];
+		    						   var dt = toDate("#"+rowId+"memberEndDate");
+		    							dt.setDate(dt.getDate() - 1);
+		    							$("#"+rowId+"memberEndDate").datepicker("option", "maxDate", dt);
+		    							removeStartDateValidation(maxRowNum);
+		    							getEstimatedHours(rowId)
+		    				 	  }
+		    				    });
+		    				
+		    				
+
+		    				var cell5 = row.insertCell(5);
+		    				var divTaskTd6Str = document.getElementById("divTaskTd6").innerHTML;
+		    				divTaskTd6Str = divTaskTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+		    				divTaskTd6Str = divTaskTd6Str.replace(/PRICECALCULATION/g,("")); 
+		    				cell5.innerHTML = divTaskTd6Str;
+		    				
+		    				if(opt.estimatedHours != null && opt.estimatedHours != '' && opt.estimatedHours != 'undefined'){
+		      					$('#'+maxRowNum+'estHours').val(opt.estimatedHours);
+		    				}
+		    				
+		    				var cell6 = row.insertCell(6);
+		    				var divTaskTd7Str = document.getElementById("divTaskTd7").innerHTML;
+		    				divTaskTd7Str = divTaskTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+		    				divTaskTd7Str = divTaskTd7Str.replace(/PRICECALCULATION/g,("")); 
+		    				cell6.innerHTML = divTaskTd7Str;
+		    				
+		    				if(opt.estimatedBudget != null && opt.estimatedBudget != '' && opt.estimatedBudget != 'undefined'){
+		      					$('#'+maxRowNum+'estBudget').val(opt.estimatedBudget);
+		    				}
+		    				
+		    				var cell7 = row.insertCell(7);
+		    				var divTaskTd8Str = document.getElementById("divTaskTd8").innerHTML;
+		    				divTaskTd8Str = divTaskTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
+		    				divTaskTd8Str = divTaskTd8Str.replace(/PRICECALCULATION/g,("")); 
+		    				cell7.innerHTML = divTaskTd8Str;
+		    				
+		    				
+		        		}
+		        		
+		        	}else{
+		        		emptyRecordsList();
+		        	}
+		        }
+		        
+		 });
+	  
+  }
+  </script>
+  
 
 <script>
 function pagination(){  
@@ -615,8 +768,8 @@ function toDate(selector) {
 
 <script>
 function getEstimatedHours(rowId){
-	var startDate = document.getElementById(rowId+"sdate-input").value;
-	var endDate = document.getElementById(rowId+"edate-input").value;
+	var startDate = document.getElementById(rowId+"memberStartDate").value;
+	var endDate = document.getElementById(rowId+"memberEndDate").value;
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	if(startDate && endDate){
 		 var sourceleadUrl ='${sourceleadUrl}';
@@ -641,6 +794,7 @@ function getEstimatedHours(rowId){
 function getAssignedMembers(){
 	
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	var projectId = document.getElementById("projectId").value;
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -682,7 +836,11 @@ function getAssignedMembers(){
 	 $("#searchAssociatesList").empty();
      $("#searchAssociatesList").append(result);
      
-     emptyRecordsList();
+     if(projectId != null){
+    	 loadProjectAssignedMembers(projectId);
+     }
+     
+     
 }
 </script>
 
@@ -784,6 +942,11 @@ function assignMembers(){
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
 
+						$("#associateRequestLoading").removeAttr("style");
+						 var additionalDetails = document.getElementById("additionalDetails");
+						 $("additionalDetails").removeClass("disabledLink");
+						 additionalDetails.href="#tab-c"; 
+						 additionalDetails.click();
 					},
 				}); 
       		 return true;

@@ -509,11 +509,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
+	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception {
 		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         
@@ -935,6 +935,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = "from ProjectMembers pm left join fetch pm.employee emp where emp.id = :employeeId";
 		List<ProjectMembers> allProjectMembersList = session.createQuery(query).setLong("employeeId", employeeId).setCacheable(true).list();
 		return allProjectMembersList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception {
+		
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select pm.id from ProjectMembers pm where pm.projects.id = :projectId" ;
+		List<Long> idsList =session.createQuery(query).setLong("projectId", projectId) 
+			    .setCacheable(true).list(); 
+		return idsList;  
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteProjectMember(ProjectMembers projectMembers) throws Exception {
+		logger.debug("In ProjectMember Save method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(projectMembers != null){
+				session.delete(projectMembers);
+				logger.debug("Project Member deleted successfully..");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ORG"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+		
 	}
 }
 

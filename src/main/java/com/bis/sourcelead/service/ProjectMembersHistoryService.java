@@ -24,4 +24,6 @@ public interface ProjectMembersHistoryService {
 	 ProjectMembersHistory getProjectMembeHistoryForHotlistCandidatesByUsedId(Long projectMemberId) throws Exception;
 
 	ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId)throws Exception;
+	
+	void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception;
 }

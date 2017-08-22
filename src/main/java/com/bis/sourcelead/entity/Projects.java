@@ -188,7 +188,7 @@ public class Projects implements Serializable{
     @JsonBackReference
     private Set<ProjectClients> projectClients;
   
-    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     @JsonBackReference
     private Set<ProjectDocuments> projectDocuments;

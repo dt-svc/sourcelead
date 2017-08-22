@@ -18,6 +18,8 @@ public interface ProjectMembersDao {
     
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception;
 	
+	void deleteProjectMember(ProjectMembers projectMembers) throws Exception;
+	
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
 	public List<ProjectMembers> getAllProjectMembersAssignedOrTerminateDateisGreaterThanProjectEndDate(Long projectId);
@@ -28,7 +30,9 @@ public interface ProjectMembersDao {
 	
 	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
 	
-	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	
+	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
 	List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
 	

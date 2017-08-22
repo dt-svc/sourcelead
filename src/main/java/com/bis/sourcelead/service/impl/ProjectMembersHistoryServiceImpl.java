@@ -66,4 +66,9 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.getProjectMembersAllHistoryByProjectMemberId(projectMemberId);
 	}
 
+	@Override
+	public void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception {
+		projectMembersHistoryDao.deleteProjectMemberHistory(projectMembersHistory);
+	}
+
 }

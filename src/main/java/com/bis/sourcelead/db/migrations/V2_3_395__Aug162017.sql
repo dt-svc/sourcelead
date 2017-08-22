@@ -31,3 +31,18 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','PROJECT_MODE','VAR
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PROJECT_DETAILS_FILLED','VARCHAR(10) NULL');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PROJECT_MEMBERS_FILLED','VARCHAR(10) NULL');
 CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_PROJECT_ADDITIONAL_DETAILS_FILLED','VARCHAR(10) NULL');
+
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_MEMBERS','BILL_RATE_CURRENCY','VARCHAR(20) NULL AFTER `RATE_TYPE`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_MEMBERS','PAY_RATE_CURRENCY','VARCHAR(20) NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_MEMBERS','PAY_RATE','DOUBLE NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_MEMBERS','PAY_RATE_TYPE','VARCHAR(20) NULL');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_MEMBERS','ESTIMATED_HOURS','DOUBLE NULL');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECT_MEMBERS','ESTIMATED_BUDGET','DOUBLE NULL');
+
+ALTER TABLE `sourcelead`.`PROJECT_MEMBERS` 
+CHANGE COLUMN `CURRENT_BILL_RATE` `CURRENT_BILL_RATE` DOUBLE NULL DEFAULT NULL ;
+
+

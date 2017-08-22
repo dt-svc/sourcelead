@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -72,10 +73,28 @@ public class ProjectMembers implements Serializable {
 	private String role;
 
 	@Column(name = "CURRENT_BILL_RATE")
-	private Float currentBillRate;
+	private Double currentBillRate;
 
 	@Column(name = "RATE_TYPE")
 	private String rateType;
+	
+	@Column(name = "BILL_RATE_CURRENCY")
+	private String billRateCurrency;
+	
+	@Column(name = "PAY_RATE")
+	private Double payRate;
+
+	@Column(name = "PAY_RATE_TYPE")
+	private String payRateType;
+	
+	@Column(name = "PAY_RATE_CURRENCY")
+	private String payRateCurrency;
+	
+	@Column(name = "ESTIMATED_HOURS")
+	private Double estimatedHours;
+	
+	@Column(name = "ESTIMATED_BUDGET")
+	private Double estimatedBudget;
 
 	@Column(name = "STATUS")
 	private String status;
@@ -102,8 +121,10 @@ public class ProjectMembers implements Serializable {
 	
 	@Transient
 	private String empEmail;
+	
 	@Transient
 	private String startDate;
+	
 	@Transient
 	private String endDate;
 	
@@ -341,9 +362,11 @@ public class ProjectMembers implements Serializable {
 	private String totalHours;
 
 	@Transient
+	@JsonProperty
 	private String candidateName;
 
 	@Transient
+	@JsonProperty
 	private Long candidateId;
 
 	@Transient
@@ -368,6 +391,14 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String projectUUID;
+	
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -504,11 +535,11 @@ public class ProjectMembers implements Serializable {
 		this.role = role;
 	}
 
-	public Float getCurrentBillRate() {
+	public Double getCurrentBillRate() {
 		return currentBillRate;
 	}
 
-	public void setCurrentBillRate(Float currentBillRate) {
+	public void setCurrentBillRate(Double currentBillRate) {
 		this.currentBillRate = currentBillRate;
 	}
 
@@ -673,6 +704,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getCandidateName() {
+		if(projectMemberCandidteId != null){
+			candidateName = projectMemberCandidteId.getConsultantUser().getFullName();
+		}
 		return candidateName;
 	}
 
@@ -681,6 +715,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Long getCandidateId() {
+		if(projectMemberCandidteId != null){
+			candidateId = projectMemberCandidteId.getId();
+		}
 		return candidateId;
 	}
 
@@ -1264,6 +1301,78 @@ public class ProjectMembers implements Serializable {
 	public void setMemberEnddate(String memberEnddate)
 	{
 		this.memberEnddate = memberEnddate;
+	}
+
+	public String getBillRateCurrency() {
+		return billRateCurrency;
+	}
+
+	public void setBillRateCurrency(String billRateCurrency) {
+		this.billRateCurrency = billRateCurrency;
+	}
+
+	public Double getPayRate() {
+		return payRate;
+	}
+
+	public void setPayRate(Double payRate) {
+		this.payRate = payRate;
+	}
+
+	public String getPayRateType() {
+		return payRateType;
+	}
+
+	public void setPayRateType(String payRateType) {
+		this.payRateType = payRateType;
+	}
+
+	public String getPayRateCurrency() {
+		return payRateCurrency;
+	}
+
+	public void setPayRateCurrency(String payRateCurrency) {
+		this.payRateCurrency = payRateCurrency;
+	}
+
+	public Double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(Double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public Double getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public void setEstimatedBudget(Double estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public String getStartDateStr() {
+		if(projectAssignedDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+				startDateStr = dateFormat.format(projectAssignedDate);	
+		}
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		if(projectEndDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(projectEndDate);	
+		}
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 	
 }

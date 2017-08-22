@@ -251,4 +251,22 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception {
+		logger.debug("In ProjectMembersHistory Update method");
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			if(projectMembersHistory != null){
+				session.delete(projectMembersHistory);
+				logger.info("Record deleted successfully..!");
+			}
+		}catch(ConstraintViolationException exception)
+		{
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECT_MEMBERS_HISTORY"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
+
 }

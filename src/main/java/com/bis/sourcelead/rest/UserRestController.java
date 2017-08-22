@@ -558,7 +558,7 @@ public class UserRestController {
 				pmhList.add(pmh);
 				
 				if (employee.getRate() != null && !"".equalsIgnoreCase(employee.getRate())) {
-					projectMembers.setCurrentBillRate(Float.parseFloat(employee.getRate()));
+					projectMembers.setCurrentBillRate(Double.parseDouble(employee.getRate()));
 				}
 				// need change role
 				projectMembers.setRole(user.getUserType());

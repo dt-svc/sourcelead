@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,19 +141,18 @@ public class ProjectsRestController {
 		    
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    
-		   // JSONObject jsonObj = new JSONObject(jsonPayload);
-		    //projectPlanningRequestService.saveProjectPlanningRequest(jsonObj, user, orgLocations, projectUUID,saveType);
+		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
 		   
 		    return "success";
 	    }
+       
+       
+       @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
+		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId) throws Exception {
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+		   return projectMembersList;
+	    }
 
-	
-	
-	
-  	
-	
-	
 	
 	/**
 	 * @author shivayogi.

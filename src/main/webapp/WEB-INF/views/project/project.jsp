@@ -460,6 +460,7 @@
 			</form:form>
 		</div>
 	   <jsp:include page="projectAssignedMembers.jsp" />
+	   <jsp:include page="projectAdditionalDetails.jsp" />
    </div>
 		</div>
    	</div>

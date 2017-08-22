@@ -24,4 +24,6 @@ public interface ProjectMembersHistoryDao {
 
 	ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId) throws Exception;
 
+	
+	void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception;
 }
