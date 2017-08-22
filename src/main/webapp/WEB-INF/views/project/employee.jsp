@@ -647,18 +647,27 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        assignEmployeespagination();
 	        
 	        //StartDate And EndDate Pickers
-	        
+	     	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  	  var finalDateFormatAssignEmpUpdate = '';
+		  	  if(locationDate.match("yyyy-MM-dd")){
+		  		  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+		  	  }if(locationDate.match("dd-MM-yyyy")){
+		  		finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+		  	  }if(locationDate.match("MM-dd-yyyy")){
+		  		finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+		  	  }if(locationDate.match("yyyy-dd-MM")){
+		  		finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+		  	  }
 	        
 	        var from = startDateStr.split("-");
 	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
 	        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-	        
 		       if(json.length > 0){
 			    	for (var i = 0; i <json.length; i++) {
 						var opt = json[i];
 						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -668,8 +677,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('startDate')[1];
-									var dt = toDate('#startDate'+actualId);
+									//var dt = toDate('#startDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '+1d');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -681,7 +691,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								maxDate:endDateStr,
@@ -691,8 +701,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('endDate')[1];
-									var dt = toDate('#endDate'+actualId);
+								//	var dt = toDate('#endDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '-1d');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -705,7 +716,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							
 						}else{
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -714,8 +725,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('startDate')[1];
-									var dt = toDate('#startDate'+actualId);
+									//var dt = toDate('#startDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '+1d');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -728,7 +740,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								minDate:datepickerStartDate,
@@ -737,8 +749,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('endDate')[1];
-									var dt = toDate('#endDate'+actualId);
+									//var dt = toDate('#endDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '-1d');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];

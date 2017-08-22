@@ -217,10 +217,10 @@ public class RequirementListController {
 			
 			for(OrgRelations orgRelation :vendorsList){
 				if(orgRelation.getLocationId().getId().equals(orgLoc.getId())){
-					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelation.setVendorName(orgRelation.getResponderLocationId().getOrgLocationName());
 				}
 				if(orgRelation.getResponderLocationId().getId().equals(orgLoc.getId())){
-					orgRelation.setClientName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelation.setVendorName(orgRelation.getLocationId().getOrgLocationName());
 				}
 			}
 			model.addObject("vendor_list", vendorsList);

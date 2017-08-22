@@ -27,6 +27,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
@@ -166,6 +167,7 @@ public class RequirementSubmission implements Serializable{
 	private String userName;
     
     @Transient
+    @JsonProperty
 	private String candidateName;
 	
     @Transient
@@ -202,6 +204,7 @@ public class RequirementSubmission implements Serializable{
    	private String resumeName;
     
     @Transient
+    @JsonProperty
    	private String requirementName;
     
     @Transient

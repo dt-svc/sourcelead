@@ -157,6 +157,7 @@ public class BillingPayableController {
 		}else{
 			model.setViewName("billing/createPayables");			
 		}*/
+		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
