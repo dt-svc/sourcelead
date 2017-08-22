@@ -106,7 +106,7 @@
    			  <ul class="newPrTabsMenu">
 				<li class="current" onclick="getProjectDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
 				<li><a href="#tab-b" data-toggle="tab" id="assignedMembers" onclick="getAssignedMembers();">Assign Members</a></li>
-				<li><a href="#tab-c" data-toggle="tab" id="additionalDetails" onclick="getAdditionalDetails();">Additional Details</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="additionalDetails" onclick="getAdditionalDetails();">Questionnaire</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 			  <div class="clearfix"></div>
