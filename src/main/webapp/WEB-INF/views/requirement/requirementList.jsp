@@ -79,7 +79,7 @@ max-width:220px;
 </style>
 <script>
  window.onload = function() { 
- 	requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
+ 	requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch");
 };
 </script>
 
@@ -317,14 +317,14 @@ function statusvalidating(id){
 										<c:if test="${report.locationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
+												onclick="requirementList('list');" type="checkbox"><label
 												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
 											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
 										</c:if>
 										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
+												onclick="requirementList('list');" type="checkbox"><label
 												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
 											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
 										</c:if>
@@ -338,48 +338,48 @@ function statusvalidating(id){
 								<ul>
 									<li><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"
-										onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');"><label for="c6">New<span
+										onclick="requirementList('list');"><label for="c6">New<span
 											id="newRequirementCount"></span></label></li>
 									<li><input id="c7" name="requirementStatus"
-										type="checkbox" value="DRAFT" onclick="requirementList('list','${sourceleadUrl}');"><label
+										type="checkbox" value="DRAFT" onclick="requirementList('list');"><label
 										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
 									<li><input id="c8" type="checkbox"
 										name="requirementStatus" type="checkbox" value="SUBMITTED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c8">Submitted
+										onclick="requirementList('list');"><label for="c8">Submitted
 											<span id="submittedRequirementCount"></span>
 									</label></li>
 									<li><input id="c9" type="checkbox"
 										name="requirementStatus" type="checkbox" value="OPEN"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c9">Open
+										onclick="requirementList('list');"><label for="c9">Open
 											<span id="openRequirementCount"></span>
 									</label></li>
 									<li><input id="c10" type="checkbox"
 										name="requirementStatus" type="checkbox" value="ONHOLD"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="10">On
+										onclick="requirementList('list');"><label for="10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CANCEL"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Cancel
+										onclick="requirementList('list');"><label for="c11">Cancel
 											<span id="cancelRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="FILLEDCLOSED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Filled
+										onclick="requirementList('list');"><label for="c11">Filled
 											Closed<span id="filledClosedRequirementCount"></span>
 									</label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox"
-										value="UNFILLEDCLOSED" onclick="requirementList('list','${sourceleadUrl}');"><label
+										value="UNFILLEDCLOSED" onclick="requirementList('list');"><label
 										for="c11">UnFilled Closed<span
 											id="unFilledClosedRequirementCount"></span></label></li>
 									<li><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="REJECTED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c11">Rejected<span
+										onclick="requirementList('list');"><label for="c11">Rejected<span
 											id="rejectedRequirementCount"></span></label></li>
 									<li><input id="c12" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CLOSED"
-										onclick="requirementList('list','${sourceleadUrl}');"><label for="c12">Closed<span
+										onclick="requirementList('list');"><label for="c12">Closed<span
 											id="closedRequirementCount"></span></label></li>
 								</ul>
 							</div></li>
@@ -784,378 +784,6 @@ function getCities(){
     	$('#city').trigger("chosen:updated");
 	}
 }
-</script>
-
-<script>
-function clearSearch(){
-	document.getElementById("requirement_form").reset();
-	$('#requirementStatu').val('').trigger('chosen:updated');
-	$('#updatedOn').val('').trigger('chosen:updated');
-	$('#client').val('').trigger('chosen:updated');
-	/* $('#country').val('').trigger('chosen:updated'); */
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
-	$('#noticePeriod').val('').trigger('chosen:updated');
-	$('#requirementTitle').val('').trigger('chosen:updated');
-	$('#jobId').val('').trigger('chosen:updated');
-	$('#generatedId').val('').trigger('chosen:updated');
-}
-</script>
-
-<script>
-function jpagination(url){ 
-	var colIndex = 0;
-    $('#requirementPagination').DataTable( { 
-    		"processing": true,
-        "serverSide": true,
-        "searching": false,
-        "ajax": $.fn.dataTable.pipeline( {
-            url: url,
-            method: 'POST',
-            pages: 1
-        }),
-        "columns": [
-        	{ "data": "generatedId" },
-            { "data": "jobId" },
-            { "data": "jobTitle"},
-            { "data": "clientName"},
-            { "data": "jobType" },
-            { "data": "country"},
-            { "data": "totalApplicants" },
-            { "data": "manager" },
-            { "data": "createdDate"},
-            { "data": "requirementSubmissionStatus" },
-            { "data": "requirementUUID" }
-        ],
-        "columnDefs": [ {
-	   	  	"targets": colIndex++,
-		  	"data": "generatedId",
-		  	"sortable": false,
-		  	"render": function(data, type, opt, meta) {
-		  		 var result = "";
-		  		 result = result +"<td>";
-		  	  	 if(opt.generatedId != '' && opt.generatedId != null){
-		  	  		
-		  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.generatedId+"'>"+opt.generatedId+"</span></div>";
-		  	    	}else{
-		  	  		 result = result +"<div>-----</div>";
-		  	  	 }
-		  		 result = result +"</td>";
-	             return  result;
-		  	}
-	        },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "jobId",
-	    	  	"sortable": false,
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		 var result = "";
-	    	  		 result = result +"<td>";
-	    	  	  	 if(opt.jobId != '' && opt.jobId != null){
-	    	  		   	 result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
-	    	  	    	}else{
-	    	  	  		 result = result +"<div>-----</div>";
-	    	  	  	 }
-	    	  		 result = result +"</td>";
-		             return  result;
-	    	  	}
-	      },{
-            "targets": colIndex++,
-            "data": "jobTitle",
-            "render": function ( data, type, opt, meta ) {
-            	 $("#requirementEmptyListMessage").val(1);
-            		var result = "";
-            		 if(opt.jobId != '' && opt.jobId != null){
-            		  	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            		       	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-            		       '</sec:authorize>';
-            		       '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            		       	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-            		       '</sec:authorize>';
-            		  	 }else{
-            		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            		           	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-            		           '</sec:authorize>';
-            		           '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            		           	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
-            		           '</sec:authorize>';
-            		  	 }
-	                return result;
-             }
-            },
-	        {
-	            "targets": colIndex++,
-	            "data": "clientName",
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-            	      	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
-            	       }else{
-            	      	 result = result +"<td><div>-----</div></td>";
-            	       }
-		                return result;
-	             }
-	        },
-        	{
-	            "targets": colIndex++,
-	            "data": "jobType",
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-	            		 if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
-	            	   	 {
-	            	  	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
-	            	         result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
-	            	   	 }else{
-	            	   		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
-	            	   	 }
-	            	   	 }else{
-	            	   		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
-	            	   	 }
-		                return result;
-	             }
-        	},
-         	{
- 	            "targets": colIndex++,
- 	            "data": "country",
- 	            "render": function ( data, type, opt, meta ) {
- 	            		var result = "";
- 	            		if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
- 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
- 	            	    }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
- 	            	           result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
- 	            	    }else{
- 	            	           result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
- 	            	    }
- 		                return result;
- 	             }
-		    },
-		 	{
-		         "targets": colIndex++,
-		         "data": "totalApplicants",
-		     	 "sortable": false,
-		         "render": function ( data, type, opt, meta ) {
-		         		var result = "";
-		         		result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
-			            return result;
-		          }
-		 	 },
-			 {
-			         "targets": colIndex++,
-			         "data": "manager",
-			         "render": function ( data, type, opt, meta ) {
-			         		var result = "";
-			         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+" "+opt.manager+"'>"+opt.manager+"</div></td>";
-		         	        }else{
-		         	      	 result = result +"<td><div>----</div></td>";
-		         	        }
-				            return result;
-			          }
-			 },
-			 {
-			         "targets": colIndex++,
-			         "data": "createdDate",
-			         "render": function (data, type, opt, meta ) {
-		         		   var result = "";
-		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
-		                  	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedOnStr+"</div></td>";
-		                   }else{
-		                  	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
-		                   }
-			               return result;
-			          }
-			 },
-			 {
-			         "targets": colIndex++,
-			         "sortable": false,
-			         "data": "requirementSubmissionStatus",
-			         "render": function (data, type, opt, meta) {
-			         		    var result = "";
-			         		   result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
-			                   if(opt.requirementSubmissionStatus == "DRAFT"){
-			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-			         	
-			         				result = result +"<option value='ONHOLD'>ONHOLD</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         					result = result +"<option value='CANCEL'>CANCEL</option>";
-			         				'</sec:authorize>';
-			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
-			         				result = result +"<option disabled selected >CLOSED</option>";
-
-			         			}
-			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
-			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-
-			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
-			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-			         					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-			         					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-			         					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         					result = result +"<option value='CANCEL'>CANCEL</option>";
-			         				'</sec:authorize>';
-			         			}
-			         			else if(opt.requirementSubmissionStatus == "NEW"){
-			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         				result = result +"<option value='OPEN'>OPEN</option>";
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-			         					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-			         				result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-			         			'</sec:authorize>';
-			         			'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-			         				result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-			         			'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         					result = result +"<option value='CANCEL'>CANCEL</option>";
-			         				'</sec:authorize>';
-			         			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				
-			         			}
-			         			else if(opt.requirementSubmissionStatus == "REJECTED"){
-			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				
-			         			}
-			         			
-			         			else if(opt.requirementSubmissionStatus == "SUBMITTED"){
-			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-			         					result = result +"<option value='ONHOLD'>ONHOLD</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         					result = result +"<option value='CANCEL'>CANCEL</option>";
-			         				'</sec:authorize>';
-			         				
-			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-			         				
-			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
-			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         					result = result +"<option value='OPEN'>OPEN</option>";
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-			         						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-			         					'</sec:authorize>';
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-			         						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-			         					'</sec:authorize>';
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>';
-			         				}
-			         				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
-			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         					result = result +"<option value='DRAFT'>DRAFT</option>";
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>';
-			         				}
-			         				if(opt.requirementSubmissionPreviousStatus == "SUBMITTED"){
-			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         					result = result +"<option value='SUBMITTED'>SUBMITTED</option>";
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>';
-			         				}if(opt.requirementSubmissionPreviousStatus == "NEW"){
-			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
-			         					result = result +"<option value='OPEN'>OPEN</option>";
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
-			         						result = result +"<option value='ONHOLD'>ONHOLD</option>";
-			         					'</sec:authorize>';
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
-			         					result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
-			         				'</sec:authorize>';
-			         				'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
-			         					result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
-			         				'</sec:authorize>';
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>';
-			         				}
-			         				 
-			         			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-			         				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
-			         				result = result +"<option value='OPEN'>OPEN</option>";
-			         				
-			         			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				
-			         			}
-
-			         			result = result +" </select>";	
-			                    result = result +" </div></td>";
-				                return result;
-			          }
-			 },
-			 {
-			         "targets": colIndex++,
-			         "sortable": false,
-			         "data": "requirementUUID",
-			         "render": function ( data, type, opt, meta ) {
-			         		   var result = "";
-			         		  result = result +" <td><div class='widthIcon'>";
-			      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
-			      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
-			      	        '</sec:authorize>';
-			      	        
-			      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-			      					if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			      						   var userRoleName = '${loginUserRole}'; 
-			      						   var userId = '${SourceLeadWeb_user.id}';
-			      						   var contains = false;
-			      						  
-			      						   if(opt.requirementReleasedUserIds != null && opt.requirementReleasedUserIds != '' && opt.requirementReleasedUserIds != 'undefined'){
-			      							  for(var k = 0;k< opt.requirementReleasedUserIds.length ; k++){
-			      								  if(userId == opt.requirementReleasedUserIds[k]){
-			      									  var contains = true;
-			      								  }
-			      							   }
-			      						   }
-			      						 
-			      						   if(contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN'){
-			      				    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
-			      			
-			      						   	 }else{	
-			      								result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
-			      						   	 }
-			      			       }
-			      				   else{
-			      			          result = result +"<div>--</div>";
-			      				   } 
-			                   '</sec:authorize>';    
-			      		       result = result +"</div></td>";
-				              return result;
-			          }
-			 }
-            ],
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[8,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
-    } );
-    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-    $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   requirementList();
-    	   }
-    	});
-  }
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
