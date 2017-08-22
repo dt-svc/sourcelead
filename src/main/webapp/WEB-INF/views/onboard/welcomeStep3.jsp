@@ -182,7 +182,7 @@
 						<p>${policiesDocs.fileName}</p>
 				
 					<div>
-	                    <input id="policyCheck${policiesDocs.id}" class="checkbox-custom" ${policiesDocs.documentStatus  == 'ACCEPTED' ? 'checked' : ''}  onclick="acceptPolicy('${policiesDocs.documentUUID}')" type="checkbox">
+	                    <input id="policyCheck${policiesDocs.id}" class="checkbox-custom" ${policiesDocs.documentStatus  == 'ACCEPTED' ? 'checked' : ''}  onclick="acceptPolicy('${policiesDocs.documentUUID}')" type="checkbox" checked="checked">
 	                    
 	                    <label for="policyCheck${policiesDocs.id}" class="checkbox-custom-label">&nbsp;&nbsp;<b>Accept Policy</b></label>
 	                </div>
