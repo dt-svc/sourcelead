@@ -11,5 +11,7 @@ public interface WageTaxSummaryDao {
 
 	List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation);
 
+	List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
 
 }

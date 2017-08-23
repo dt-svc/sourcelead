@@ -110,6 +110,7 @@ function getClientList(){
 		    	  	/*"className": "tbldata-dotdot_50",*/
 		    	  	"data": "orgName",
 		    	  	"render": function(data, type, report, meta) {
+		    	  		$("#emptyClientList").val(1);
 		    	  		var result = "";
 		    	  		  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 			   			result = result +'<td>';

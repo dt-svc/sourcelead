@@ -3,6 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<script>
+window.onload = function () {
+	getWagesTaxSummaryByEmpId();
+}
+</script>
 
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -26,134 +31,72 @@
             </div>
         </div>
       <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1">Payroll</a></li>
+        <li class="current"><a href="#tab-1" onclick="getWagesTaxSummaryByEmpId();">Wages & Tax Summary</a></li>
         <li><a href="#tab-2" onclick="getIncomeData();">Income</a></li>
         <li><a href="#tab-3" onclick="getChecks();">Manual checks</a></li>
-         <li><a href="#tab-4">HR & Immigration</a></li>
-        <li><a href="#tab-5">Balance</a></li>
+        <li><a href="#tab-4" onclick="getAccontDeductions();">Account Dudections</a></li>
+        <li><a href="#tab-5" onclick="getHRDeductions();">HR Dudections</a></li>
+        <li><a href="#tab-6" onclick="finalBalance();">Balance</a></li>
         <div class="clearfix"></div>
       </ul>
         <div id="loading"></div>
       <div class="project_tabs clearfix pdtop">
-        <div id="tab-1" class="project_tabs_inn" style="display: block">
-          <div class="clearfix">
-            <div class="timesheet_head minHeight">
-              <div class="remove_search">
-                <input placeholder="Search" type="text">
-              </div>
-            </div>
-            <div class="require_wrap_table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Tranfer ID</th>
-                    <th>Baseline</th>
-                    <th>From Location</th>
-                    <th>To Location</th>
-                    <th>No. of Emp.</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div class="tbldata-dotdot-100"> BIS10041 </div>
-                    </td>
-                    <td>
-                      <div title="Rajeshkumar Behara" class="tbldata-dotdot-100"> Exmi project resource request </div>
-                    </td>
-                    <td>
-                      <div title="TCS, Hyderabad" class="tbldata-dotdot-100"> TCS, Hyderabad </div>
-                    </td>
-                    <td>
-                      <div title="TCS, Dalls" class="tbldata-dotdot-100"> TCS, Dalls </div>
-                    </td>
-                    <td>
-                      <div title="10" class="tbldata-dotdot_80"> 10 </div>
-                    </td>
-                    <td>
-                      <div class="tblminwidth-75"> <b>Draft</b> </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div id="tab-1" class="project_tabs_inn  require_wrap_table datatable_filter filter_position" style="display: block">
         </div>
         <div id="tab-2" class="project_tabs_inn require_wrap_table datatable_filter filter_position">
           </div>
         <div id="tab-3" class="project_tabs_inn require_wrap_table datatable_filter filter_position">
           </div>
      
-         <div id="tab-4" class="project_tabs_inn">
-          <div class="clearfix">
-            <div class="timesheet_head minHeight">
-              <div class="remove_search">
-                <input placeholder="Search" type="text">
-              </div>
-            </div>
-            <div class="require_wrap_table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Tranfer ID</th>
-                    <th>Baseline</th>
-                    <th>From Location</th>
-                    <th>To Location</th>
-                    <th>No. of Emp.</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div class="tbldata-dotdot-100"> BIS10041 </div>
-                    </td>
-                    <td>
-                      <div title="Rajeshkumar Behara" class="tbldata-dotdot-100"> Exmi project resource request </div>
-                    </td>
-                    <td>
-                      <div title="TCS, Hyderabad" class="tbldata-dotdot-100"> TCS, Hyderabad </div>
-                    </td>
-                    <td>
-                      <div title="TCS, Dalls" class="tbldata-dotdot-100"> TCS, Dalls </div>
-                    </td>
-                    <td>
-                      <div title="10" class="tbldata-dotdot_80"> 10 </div>
-                    </td>
-                    <td>
-                      <div class="tblminwidth-75"> <b>Draft</b> </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div id="tab-4" class="project_tabs_inn  require_wrap_table datatable_filter filter_position">
         </div>
-        <div id="tab-5" class="project_tabs_inn">
-          <div class="payrollinvoice-generate clearfix col-md-4 col-md-offset-4">
-              <h4 class="clearfix text-center">Income</h4>
-            <ul class="list-unstyled">
-              <li>
-                <dl>
-                  <dt class="mb10">Payroll</dt>
-                    <dd>Line1:<span class="pay-val">2,3456.00</span></dd>
-                  <dd>Line2:<span class="pay-val">2,3456.00</span></dd>
-                  <dd>Line3:<span class="pay-val">2,3456.00</span></dd>
-                  <dd>Line4:<span class="pay-val">2,3456.00</span></dd>
-                </dl>
-              </li>
-              <li>Adanced:<span class="pay-val">2,3456.00</span></li>
-              <li>Genral Employee:<span class="pay-val">2,3456.00</span></li>
-              <li>Vendor Payment:<span class="pay-val">2,3456.00</span></li>
-              <li>Healthcare:<span class="pay-val">2,3456.00</span></li>
-              <li>Abcabcabcabc:<span class="pay-val">2,3456.00</span></li>
-              <li>Balace:<span class="pay-val balance">2,3456.00</span></li>
-            </ul>
+        
+         <div id="tab-5" class="project_tabs_inn  require_wrap_table datatable_filter filter_position">
+        
           </div>
+          
+        <div id="tab-6" class="project_tabs_inn">
+        
+        </div>          
+          
         </div>
-      </div>
+
+     <!--  </div> -->
     </section>
+    
+    <div class="modal modal_Expenses AccountDedu" id="one">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenses();">&times;</button>
+        <h4 class="modal-title" id="empName"></h4>
+      </div>
+      <div class="modal-body project_tabs_inn_table">
+        <div id="accountdeDuctiondetails"></div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+<div class="modal modal_Expenses hrDedu" id="two">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" onClick="closeModalExpenseshr();">&times;</button>
+        <h4 class="modal-title" id="hrEmpName"></h4>
+      </div>
+      <div class="modal-body project_tabs_inn_table">
+        <div id="hrDeductiondetails"></div>
+      </div>
+    </div>
+
+</div>
+</div>
     
   </section>
   
@@ -498,3 +441,598 @@ function empChecksListPagination(){
     $("#empchecksListTable").wrap("<div class='overflow_Auto  width100percnt'></div>")
 }
 </script>
+
+
+
+
+<script>
+function getWagesTaxSummaryByEmpId(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  var sourceleadUrl ='${sourceleadUrl}';
+					  $.ajax({
+					    	type: "GET",
+					    	url: sourceleadUrl+"/getWagesTaxSummaryByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+					        success: function(data) {
+							var result = "";				        	
+							result = result + '<table id="WagesAndTaxEmpTable" class="display" cellspacing="0" width="100%" >';
+							result = result + '<thead>';
+							result = result + '<tr>';
+							result = result + '<th>From Date</th>';
+							result = result + '<th>To Date</th>';
+							result = result + '<th>Employee Id</th>';
+							result = result + '<th>Employee Name</th>';
+							result = result + '<th>SSN</th>';
+							result = result + '<th>Check Date</th>';
+							result = result + '<th>Check No</th>';
+							result = result + '<th>Gross</th>';
+							result = result + '<th>FWT</th>';
+							result = result + '<th>SSEC</th>';
+							result = result + '<th>MED</th>';
+							result = result + '<th>SWT Locals</th>';
+							result = result + '<th>SDI/SUI</th>';
+							result = result + '<th>local</th>';
+							result = result + '<th>DEDS</th>';
+							result = result + '<th>NET</th>';
+							result = result + '<th>Batch Number</th>';
+							result = result + '</tr>';
+							result = result + '</thead>	';
+							result = result + '<tbody>';
+							
+							if(data !=null && data !=''){
+								 for (var i=0; i<data.length; i++)
+									{
+						        		 var opt = data[i];
+						        		    result = result + ' <tr>';
+						        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
+												result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+						        		    
+						        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
+												result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+											result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
+											if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
+												result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.ssnNumber+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
+												result = result + '<td><div class="tblminwidth-50">'+opt.checkDateStr+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.gross+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.fwt+'</div></td>';
+											result = result + ' <td><div class="tblminwidth-75">'+opt.ssec+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.med+'</div></td>';
+											result = result + ' <td><div class="tblminwidth-75">'+opt.swt+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.sdiSui+'</div></td>';
+											result = result + '<td><div class="tblminwidth-75">'+opt.local+'</div></td>';
+											result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds+'</div>';
+											result = result + '<div class="edit-input tblminwidth-125" style="display:none;"><input type="text" class="form-control input-sm tbldata-dotdot-100 pull-left" value="" id=""><small class="fa fa-floppy-o ml10 pull-right mt5"  onClick="saveEdit(this)"></small></div></td>';
+											
+											result = result + '<td><div class="tblminwidth-75">'+opt.net+'</div></td>';
+											if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
+												result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
+											}else{
+												result = result + ' <td><div>--</div></td>';
+											}
+											result = result + ' </tr>';
+									}
+							}
+				        	
+							result = result + '  </tbody>';
+							result = result + ' </table>';
+							$("#tab-2").empty();
+							$("#tab-3").empty();
+							$("#tab-4").empty();
+							$("#tab-5").empty();
+							$("#tab-6").empty();
+							$("#tab-1").empty();
+							$("#tab-1").append(result);
+							$("#loading").removeAttr("style");
+							wagesAndTaxEmpTablePagination();
+					        	
+					        },
+					        
+					    });
+}
+</script>
+
+<script>
+function wagesAndTaxEmpTablePagination(){ 
+    $('#WagesAndTaxEmpTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#WagesAndTaxEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+</script>
+
+<script>
+function getAccontDeductions(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		  var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				    	url: sourceleadUrl+"/getAccontDeductionsByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+				        success: function(data) {
+						var result = "";				        	
+						result = result + '<table id="accontDeductionsEmpTable" class="display" cellspacing="0" width="100%" >';
+						result = result + '<thead>';
+						result = result + '<tr>';
+						result = result + '<th>Employee Id</th>';
+						result = result + '<th>Employee Name</th>';
+						result = result + '<th>From Date</th>';
+						result = result + '<th>To Date</th>';
+						result = result + '<th>Ded. Amount</th>';
+						result = result + '<th>Batch Number</th>';
+						result = result + '<th>Request Sub.Date</th>';
+						result = result + '<th>Request Approved Date</th>';
+						result = result + '<th>Repaid Status</th>';
+						result = result + '</tr>';
+						result = result + '</thead>	';
+						result = result + '<tbody>';
+						if(data != null && data !=''){
+							 for (var i=0; i<data.length; i++)
+								{
+					        		 var opt = data[i];
+					        		    result = result + ' <tr>';
+					        		    
+					        		    if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+					        		    	result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+					        		    }else{
+					        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+					        		    }
+					        		    
+					        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
+					        		    	result = result + '<td><div class="tblminwidth-75" onclick="getEmpAccountDeductionDetails('+opt.id+',\''+opt.employeeName+'\');"><a>'+opt.employeeName+'</a></div></td>';
+					        		    }else{
+					        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+					        		    }
+					        		    
+					        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+					        		    
+					        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+					        		    if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
+						        		    //result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'">'+opt.dedAmount+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+opt.id+','+opt.dedAmount+')"></small></div>';
+											result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>'+opt.dedAmount+'</div>';
+						        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+											result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"></div></td>';
+					        		    }
+					        		    else{
+					        		    	result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>0</div>';
+						        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+											result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"></div></td>';
+										}
+										
+										if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
+											result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.requestSubDate+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.requestApprovedDate+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
+											result = result + '<td><div class="tblminwidth-75">'+opt.repaidStatus+'</div></td>';
+										}else{
+											result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+										}
+										
+										result = result + ' </tr>';
+								} 	
+						}
+			        	
+						result = result + '  </tbody>';
+						result = result + ' </table>';
+						
+						$("#tab-1").empty();
+						$("#tab-2").empty();
+						$("#tab-3").empty();
+						$("#tab-5").empty();
+						$("#tab-6").empty();
+						$("#tab-4").empty();
+						$("#tab-4").append(result);
+						$("#loading").removeAttr("style");
+						accountDeductionsEmpTablePagination();
+				        	
+				        },
+				        
+				    });
+}
+</script>
+
+
+<script>
+function accountDeductionsEmpTablePagination(){ 
+    $('#accontDeductionsEmpTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#accontDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+<script>
+function getEmpAccountDeductionDetails(accountDedId,empName){
+	$(".sideMask").fadeIn("slow");
+	$(".AccountDedu").fadeIn("slow");
+	  var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
+			        success: function(data) {
+					var result = "";				        	
+					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
+					result = result + '<thead>';
+					result = result + '<tr>';
+					result = result + '<th>Pay Cycle Name</th>';
+					result = result + '<th>Ded. Amount per Cycle</th>';
+					result = result + '<th>Paid Status</th>';
+					result = result + '</tr>';
+					result = result + '</thead>	';
+					result = result + '<tbody>';
+					var json = JSON.parse(data);
+		        	 for (var i=0; i<json.length; i++)
+					{
+		        		 var opt = json[i];
+		        		    result = result + ' <tr>';
+		        		    
+		        		    if(opt.payCycleName !=null && opt.payCycleName !='' && opt.payCycleName !='undefined'){
+		        		    	result = result + '<td><div>'+opt.payCycleName+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.dedAmountPerCycle !=null && opt.dedAmountPerCycle !='' && opt.dedAmountPerCycle !='undefined'){
+		        		    	result = result + '<td><div onclick="getEmpAccountDeductionDetails('+opt.id+');">'+opt.dedAmountPerCycle+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.paidStatus !=null && opt.paidStatus !='' && opt.paidStatus !='undefined'){
+								result = result + ' <td><div>'+opt.paidStatus+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+		        		    
+							result = result + ' </tr>';
+					} 
+					result = result + '  </tbody>';
+					result = result + ' </table>';
+					$("#accountdeDuctiondetails").empty();
+					$("#empName").html(empName);
+					$("#accountdeDuctiondetails").append(result);
+					employeeDeductionsListTablePagination();
+			        	
+			        },
+			        
+			    });
+			  
+}
+</script>
+
+<script>
+function employeeDeductionsListTablePagination(){ 
+    $('#employeeDeductionsListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#employeeDeductionsListTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+
+<script>
+function closeModalExpenses(){
+	$(".sideMask").fadeOut("slow");
+	$("#one").fadeOut("slow");	
+}
+</script>
+
+<script>
+function getHRDeductions(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		  var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				    	url: sourceleadUrl+"/getHRDeductionsByEmployeeId?empId="+empId+"&orgLocationId="+orgLocationId,
+				        success: function(data) {
+						var result = "";				        	
+						result = result + '<table id="hrDeductionsEmpTable" class="display" cellspacing="0" width="100%" >';
+						result = result + '<thead>';
+						result = result + '<tr>';
+						result = result + '<th>Employee Id</th>';
+						result = result + '<th>Employee Name</th>';
+						result = result + '<th>From Date</th>';
+						result = result + '<th>To Date</th>';
+						result = result + '<th>Ded. Amount</th>';
+						result = result + '<th>Batch Number</th>';
+						result = result + '<th>Request Sub.Date</th>';
+						result = result + '<th>Request Approved Date</th>';
+						result = result + '<th>Repaid Status</th>';
+						result = result + '</tr>';
+						result = result + '</thead>	';
+						result = result + '<tbody>';
+			        	if(data !=null && data !=''){
+			        		for (var i=0; i<data.length; i++)
+							{
+				        		 var opt = data[i];
+				        		    result = result + ' <tr>';
+				        		    
+				        		    if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
+				        		    	result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+				        		    }else{
+				        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+				        		    }
+				        		    
+				        		    if(opt.employeeName !=null && opt.employeeName !='' && opt.employeeName !='undefined'){
+				        		    	result = result + '<td><div onclick="getHrDeductionDetails('+opt.id+',\''+opt.employeeName+'\');"><a>'+opt.employeeName+'</a></div></td>';
+				        		    }else{
+				        		    	result = result + '<td><div>---</div></td>';
+				        		    }
+				        		    
+				        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+				        		    
+				        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.dedAmount+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
+										result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
+										result = result + '<td><div class="tblminwidth-75">'+opt.requestSubDate+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
+										result = result + '<td><div class="tblminwidth-75">'+opt.requestApprovedDate+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
+										result = result + '<td><div class="tblminwidth-75">'+opt.repaidStatus+'</div></td>';
+									}else{
+										result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+									}
+									
+									result = result + ' </tr>';
+							} 	
+			        	}
+						
+						result = result + '  </tbody>';
+						result = result + ' </table>';
+						$("#tab-1").empty();
+						$("#tab-2").empty();
+						$("#tab-3").empty();
+						$("#tab-4").empty();
+						$("#tab-6").empty();
+						$("#tab-5").empty();
+						$("#tab-5").append(result);
+						$("#loading").removeAttr("style");
+						hrDeductionsEmpTablePagination();
+				        	
+				        },
+				        
+				    });
+}
+</script>
+
+<script>
+function hrDeductionsEmpTablePagination(){ 
+    $('#hrDeductionsEmpTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#hrDeductionsEmpTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+
+
+<script>
+function getHrDeductionDetails(hrDedId,empName){
+	$(".sideMask").fadeIn("slow");
+	$(".hrDedu").fadeIn("slow");
+	  var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
+			        success: function(data) {
+					var result = "";				        	
+					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
+					result = result + '<thead>';
+					result = result + '<tr>';
+					result = result + '<th>Pay Cycle Name</th>';
+					result = result + '<th>Ded. Amount per Cycle</th>';
+					result = result + '<th>Paid Status</th>';
+					result = result + '</tr>';
+					result = result + '</thead>	';
+					result = result + '<tbody>';
+					var json = JSON.parse(data);
+		        	 for (var i=0; i<json.length; i++)
+					{
+		        		 var opt = json[i];
+		        		    result = result + ' <tr>';
+		        		    
+		        		    if(opt.payCycleName !=null && opt.payCycleName !='' && opt.payCycleName !='undefined'){
+		        		    	result = result + '<td><div>'+opt.payCycleName+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.dedAmountPerCycle !=null && opt.dedAmountPerCycle !='' && opt.dedAmountPerCycle !='undefined'){
+		        		    	result = result + '<td><div onclick="getEmpAccountDeductionDetails('+opt.id+');">'+opt.dedAmountPerCycle+'</div></td>';
+		        		    }else{
+		        		    	result = result + '<td><div>---</div></td>';
+		        		    }
+		        		    
+		        		    if(opt.paidStatus !=null && opt.paidStatus !='' && opt.paidStatus !='undefined'){
+								result = result + ' <td><div>'+opt.paidStatus+'</div></td>';
+							}else{
+								result = result + ' <td><div>--</div></td>';
+							}
+		        		    
+							result = result + ' </tr>';
+					} 
+					result = result + '  </tbody>';
+					result = result + ' </table>';
+					$("#hrDeductiondetails").empty();
+					$("#hrEmpName").html(empName);
+					$("#hrDeductiondetails").append(result);
+					employeeHrDeductionsListTablePagination();
+			        	
+			        },
+			        
+			    });
+			  
+}
+function closeModalExpenseshr(){
+	$(".sideMask").fadeOut("slow");
+	$("#two").fadeOut("slow");	
+	
+	
+}
+</script>
+
+
+<script>
+function employeeHrDeductionsListTablePagination(){ 
+    $('#employeeHrDeductionsListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#employeeHrDeductionsListTable").wrap("<div class='overflow_Auto width100percnt'></div>");
+}
+</script>
+
+<script>
+function finalBalance(){
+	 var empId = $("#empId").val();
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "GET",
+			    	url: sourceleadUrl+"/getfinalBalanceByEmpId?empId="+empId+"&orgLocationId="+orgLocationId,
+			        success: function(data) {
+			        	var result = "";
+			        	result = result + ' <div class="payrollinvoice-generate clearfix col-md-4 col-md-offset-4">';
+			        	result = result + ' <p class="clearfix row"><strong class="col-md-8">Income</strong><span class="pull-right col-md-4 text-right">'+data.income+'</span></p>';
+			        	result = result + ' <ul class="list-unstyled">';
+			        	result = result + ' <li>';
+			        	result = result + '  <dl>';
+			        	result = result + '     <dt class="mb10">Payroll</dt>';
+			        	result = result + '     <dd>Direct Deposit:<span class="pay-val">'+data.directDeposit+'</span></dd>';
+			        	result = result + '     <dd>Manual Deposit:<span class="pay-val">'+data.manualDeposit+'</span></dd>';
+			        	result = result + '     <dd>Manual Processed:<span class="pay-val">'+data.manualProcessed+'</span></dd>';
+			        	/* result = result + '     <dd>Line4:<span class="pay-val">2,3456.00</span></dd>'; */
+			        	result = result + '   </dl>';
+			        	result = result + '  </li>';
+			        	result = result + '  <li>Adanced:<span class="pay-val">'+data.advance+'</span></li>';
+			        	result = result + '  <li>Genral Expenses:<span class="pay-val">'+data.generalExpenses+'</span></li>';
+			        	result = result + '  <li>Vendor Payment:<span class="pay-val">'+data.vendorPayment+'</span></li>';
+			        	result = result + '  <li>Healthcare/Insurance:<span class="pay-val">'+data.insurance+'</span></li>';
+			        	result = result + '  <li>Immigration:<span class="pay-val">'+data.immigration+'</span></li>';
+			        	result = result + '  <li>Balace:<span class="pay-val balance">'+data.balance+'</span></li>';
+			        	result = result + '    </ul>';
+			        	result = result + '  </div>';
+			        	
+						$("#tab-1").empty();
+						$("#tab-2").empty();
+						$("#tab-3").empty();
+						$("#tab-4").empty();
+						$("#tab-5").empty();
+						$("#tab-6").empty();
+						$("#tab-6").append(result);
+						$("#loading").removeAttr("style");
+			        },
+			        
+			    });
+}
+</script>
+
