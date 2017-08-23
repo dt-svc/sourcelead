@@ -26,7 +26,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Profile</h2>
       </div>
+       
+       <!-- Redirect to main dashboard -->
        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Update Profile</div>
+   
     </section>
     
   <!-- Profile Content Start-->

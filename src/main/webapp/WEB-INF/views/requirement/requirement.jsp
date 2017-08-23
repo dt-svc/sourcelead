@@ -1866,9 +1866,10 @@ function getCities(){
 	     //Adding Customized Skills to the list
 	       var select, chosen;
 		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skill:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skills:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
+		   /*  chosen.search_field.on('keyup', function(e) */
+		    chosen.search_field.on('keyup  keydown', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -1883,6 +1884,7 @@ function getCities(){
 		    			var newSkill = this.value.replace(","," ");
 		    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
+		    				//skills duplicate check
 							 var isNewSkill = true;
 							 $("#skills option:selected").each(function(){
 								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
