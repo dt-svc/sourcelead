@@ -87,6 +87,8 @@ public class AddElkCandidate{
 					candidateIndex.setLatitude(rs.getString("LATITUDE"));
 					candidateIndex.setLongitude(rs.getString("LONGITUDE"));
 					
+					candidateIndex.setGeneratedId(rs.getString("GENERATED_ID"));
+					
 					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
 						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));
 					}

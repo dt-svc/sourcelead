@@ -209,6 +209,12 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
 			}
 			
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+
+			
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
@@ -333,8 +339,7 @@ public class LoginSessionController {
 			model.addObject("isAdmin",isAdmin);
 			SourceLeadSessionManager.setSessionAttribute(request,"isAdmin",isAdmin);
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-			model.addObject("timezone",timezone.getTimeZoneId());
+			setTimeZone(request,orgLocations, model);
 			
 		}
 		else{
@@ -356,13 +361,13 @@ public class LoginSessionController {
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-			
 			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
 			if(userSpocRolesList.size() > 1){
 				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
@@ -390,7 +395,6 @@ public class LoginSessionController {
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 				StringBuilder redirectUrl = new StringBuilder();
-				
 				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				}
@@ -414,7 +418,6 @@ public class LoginSessionController {
 				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
-				
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
@@ -437,8 +440,7 @@ public class LoginSessionController {
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-			model.addObject("timezone",timezone.getTimeZoneId());
+			setTimeZone(request,orgLocations, model);
 			
 			
 		}
@@ -528,6 +530,12 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
 			if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
 				candidate = candidateService.getCandidateByConsultantUserId(orgLocations.getUser().getId(), orgLocations.getId());
@@ -655,8 +663,7 @@ public class LoginSessionController {
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-			model.addObject("timezone",timezone.getTimeZoneId());
+			setTimeZone(request,orgLocations, model);
 			
 			}
 			else{
@@ -683,6 +690,7 @@ public class LoginSessionController {
 				OrgLocations orgLocations = userRole.getOrgLocations();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 				SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 				
 				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
@@ -738,9 +746,8 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				setTimeZone(request,orgLocations, model);
 				
-				Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-				model.addObject("timezone",timezone.getTimeZoneId());
 			}
 		   
 		}else{
@@ -749,6 +756,13 @@ public class LoginSessionController {
 		
 	    return model;
 		
+	}
+	
+	
+	private void setTimeZone(HttpServletRequest request,OrgLocations orgLocations,ModelAndView model) throws Exception{
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "timezone", timezone);
+		model.addObject("timezone",timezone.getTimeZoneId());
 	}
 	
 	
@@ -763,7 +777,7 @@ public class LoginSessionController {
 		try {
 			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
-			setSessionOrgLocationAttributesDateFormat(orgLocations);
+			//setSessionOrgLocationAttributesDateFormat(orgLocations);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,orgLocations,request);
 			
@@ -947,17 +961,17 @@ public class LoginSessionController {
 		}
 	}
 	
-	public static DateFormat DATEFORMAT;
+	/*public static DateFormat DATEFORMAT;
 	private void setSessionOrgLocationAttributesDateFormat(OrgLocations orgLocations){
 	
 		DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());	
-	}
+	}*/
 	
 	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request)
 	{
 		SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		SourceLeadSessionManager.setSessionAttribute(request, "orgCode", org.getOrgCode());
-		SourceLeadSessionManager.setSessionAttribute(request, "website", org.getWebSite());
+		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
 	}
@@ -965,15 +979,15 @@ public class LoginSessionController {
 	
 	private void getOnboardingDetails(CandidateOnBoarding candidateOnBoarding,User user,OrgLocations orgLocations,HttpServletRequest request) throws Exception {
 
-		
-		candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+		candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateOnBoarding.getStartDate()));
 		
 		if(null != candidateOnBoarding.getEndDate()){
-			candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
+			candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOnBoarding.getEndDate()));
 		}
 		
 		if(null != candidateOnBoarding.getDueDate()){
-			candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+			candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateOnBoarding.getDueDate()));
 		}
 		
 		

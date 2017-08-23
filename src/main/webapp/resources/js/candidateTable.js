@@ -3,8 +3,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		$("#dataTableSearch").val(searchValue);
 		candidateList();
 	} else if(candidateKeyword == "candidateSearch"){
-		candidateSideBar(candidateIdSearchId);
-		candidateQuickViewProfile(candidateIdSearchId);
+		/*candidateSideBar(candidateIdSearchId);
+		candidateQuickViewProfile(candidateIdSearchId);*/
 		candidateList();
 		$("#upcandidateStatus").val('');
 	} else {
@@ -13,7 +13,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	}
  }
  
-  function candidateList(){ 	 
+  function candidateList(){
 	  var candFilterRadio = $('input[name=candidateStatus]');
  	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
@@ -71,6 +71,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
+	  		closePop();
 			return true;
 		 }else{ 
 				return false;
@@ -90,6 +91,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
           result = result +"    <th>&nbsp;</th>";
+          result = result +"    <th>Generated ID</th>";
           result = result +"    <th>Name</th>"; 
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
@@ -102,14 +104,14 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"<tbody>"; 
           result = result +" </tbody>";
           result = result +"</table>";
-          $("#noCandidates").val('');
+          $("#noCandidates").val(1);
           $("#candidateList").append(result);
           cpagination(url); 
   }
 
 function cpagination(url){ 
 	var colIndex = 0;
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#candidatePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -121,6 +123,7 @@ function cpagination(url){
         }),
         "columns": [
             { "data": "isAssociate" },
+            { "data": "generatedId"},
             { "data": "firstName"},
             { "data": "primarySkill" },
             { "data": "designationType"},
@@ -131,7 +134,7 @@ function cpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	/*"className": "tbldata-dotdot_50",*/
+	    	  	"className": "tbldata-dotdot_50",
 	    	  	"data": "isAssociate",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
@@ -157,7 +160,20 @@ function cpagination(url){
 		              result = result +"</div>";
 		              return  result;
 	    	  	}
-	      }, {
+	      },{
+	    	  "targets": colIndex++,
+              "data": "generatedId",
+              "render": function ( data, type, full, meta ) {
+            	  
+              		var result = "";
+              		if(full.generatedId != null && full.generatedId != '' && full.generatedId != "undefined"){
+  	            	  		result = result +"<div><span title='"+full.generatedId+"'>"+full.generatedId+"</span></div>";
+  	              	}else{
+  	            	  		result = result +"<div>----</div>";
+  	             	}
+  	              return result;
+              }
+	          },{
             "targets": colIndex++,
             "data": "firstName",
             "render": function ( data, type, full, meta ) {
@@ -254,14 +270,14 @@ function cpagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[7,'desc']],
+	    	"aaSorting": [[8,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 160px; height: 160px;'/>"
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 

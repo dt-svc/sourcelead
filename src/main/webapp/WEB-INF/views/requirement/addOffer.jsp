@@ -5,7 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
 <script>
@@ -71,8 +70,7 @@ function addOffer(requirementId){
 				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
-					result= result + ' <label>';
-					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">&nbsp;Notify To Vendor</label>';
+					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
 				} 
 				
 				result= result + '</div>';

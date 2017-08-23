@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -41,6 +44,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -95,21 +99,20 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate) throws Exception {
 			Date endDateUTC = null;
 			Date startDateUTC = null;
-			
 			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
 			if(StringUtils.isNotEmpty(startDate)){
-				Date startTime = commonUtil.getDateFormat(startDate);
+				Date startTime = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate);
 				String customStartTimeStr = TZ_DF_CSD.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
 				startDateUTC = TZ_DF_TS.parse(startDateString);
 			}
 			
 			if(StringUtils.isNotEmpty(endDate)){
-				Date endTime = commonUtil.getDateFormat(endDate);
+				Date endTime = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endDate);
 				String customEndTimeStr = TZ_DF_CED.format(endTime);
 				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
 				endDateUTC = TZ_DF_TS.parse(endDateString);
@@ -138,8 +141,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	@Override
-	public Expenses getExpenseByExpenseId(long expenseId) {
-		return expensesDao.getExpenseByExpenseId(expenseId);
+	public Expenses getExpenseById(long id) {
+		return expensesDao.getExpenseById(id);
 	}
 	
 	@Override
@@ -421,7 +424,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType);
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType,orgLoc);
 		int column = 0;
 		
 		List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
@@ -432,7 +435,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			}else if(approverType.equalsIgnoreCase("USER")){
 				writeRow = createExcelsheet.createRow(column + 8);
 			}
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType,orgLoc);
 			column++;
 		}
 
@@ -450,7 +453,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType,OrgLocations orgLocations) {
 		if(null != expEntries.getExpensesCategoryId()){
 			if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
 				writeRow.createCell(0).setCellValue(expEntries.getExpensesCategoryId().getExpensesName());
@@ -459,7 +462,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		}
 		
 	if(null != expEntries.getExpenseDate()){
-		expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+		expEntries.setExpenseDateString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expEntries.getExpenseDate()));
 		writeRow.createCell(1).setCellValue( expEntries.getExpenseDateString());
 		createExcelsheet.autoSizeColumn(1);
 	}
@@ -494,14 +497,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType) {
-		
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType,OrgLocations orgLocations) {
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 		writeRow = createExcelsheet.createRow(0);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 			if(approverType.equalsIgnoreCase("APPROVER")){
-			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style);
+			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style,orgLocations);
 			}else if(approverType.equalsIgnoreCase("USER")){
 		Cell cell1 = writeRow.createCell(0);
 		cell1.setCellValue("Expense id :");
@@ -544,7 +546,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell7.setCellStyle(style);
 
 		Cell cell8 = writeRow.createCell(1);
-		String StrtDate = Constants.DMY.format(exp.getStartDate());
+		String StrtDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),exp.getStartDate());
 		cell8.setCellValue(StrtDate);
 		cell8.setCellStyle(style);
 		
@@ -560,7 +562,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		
 		String EndDate = null;
 		if(null != exp.getEndDate() && !"".equalsIgnoreCase(exp.getEndDate().toString())){
-			EndDate = Constants.DMY.format(exp.getEndDate());	
+			EndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),exp.getEndDate());	
 		}else{
 			EndDate  = ("--");	
 		}
@@ -594,7 +596,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return createExcelsheet;
 	}
 	
-	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style) {
+	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style,OrgLocations orgLocations) {
 		StringBuilder employeeId=new StringBuilder();
 		StringBuilder nameBuilder=new StringBuilder();
 	   	StringBuilder emailBuilder=new StringBuilder();
@@ -658,13 +660,13 @@ public class ExpensesServiceImpl implements ExpensesService{
         	client.append("--").toString();
         }
         if(null != expenseDetails.getStartDate()){
-        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+        	String StartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expenseDetails.getStartDate());
         	StDate.append(StartDate).toString();
         }else{
         	StDate.append("--").toString();
         }
         if(null != expenseDetails.getEndDate()){
-        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+        	String EndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expenseDetails.getEndDate());
         	edDate.append(EndDate).toString();
         }else{
         	edDate.append("--").toString();
@@ -860,7 +862,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
-	        java.util.List<String[]> expenseAllList = prepareExpenseListStringArray(expenseList,headers);
+	        java.util.List<String[]> expenseAllList = prepareExpenseListStringArray(expenseList,headers,orgLoc);
 	        for (String[] expenseArray: expenseAllList) {
                 for (int i = 0; i < expenseArray.length; i++) {
                     String datum = expenseArray[i];
@@ -884,13 +886,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return file;
 	}
 	
-	private List<String[]> prepareExpenseListStringArray(List<Expenses> expList, String[] headers) {
-		
+	private List<String[]> prepareExpenseListStringArray(List<Expenses> expList, String[] headers,OrgLocations orgLocations) {
 		List<String[]> arrayList = new ArrayList<>();
 		for(Expenses ex:expList){
 			String expenseArray[] = new String[headers.length];
 			if(ex.getExpenseId() !=null){
-				Expenses expenseId = getExpenseByExpenseId(ex.getId());
+				Expenses expenseId = getExpenseById(ex.getId());
 				
 							if(null != expenseId.getExpenseId()){
 								expenseArray[0] = expenseId.getExpenseId();
@@ -920,14 +921,14 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}
 							
 							if(null != expenseId.getStartDate()){
-								expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+								expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expenseId.getStartDate()));
 								expenseArray[4] = expenseId.getStartDateStr();
 							}else{
 								expenseArray[4] = "--";
 							}
 							
 							if(null != expenseId.getEndDate()){
-								expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+								expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expenseId.getEndDate()));
 								expenseArray[5] = expenseId.getEndDateStr();
 							}else{
 								expenseArray[5] = "--";
@@ -973,7 +974,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		int column = 0;
 		for (Expenses expensesList : expenseList) {
 			writeRow = createExcelsheet.createRow(column+1);
-			createExcelsheet = createAllXlsSheet(createExcelsheet, writeRow, expensesList);
+			createExcelsheet = createAllXlsSheet(createExcelsheet, writeRow, expensesList,orgLoc);
 			column++;
 		}
 		 try {
@@ -1003,9 +1004,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return createExcelsheet;
 	}
 	
-	private Sheet createAllXlsSheet(Sheet createExcelsheet, Row writeRow, Expenses ex) {
+	private Sheet createAllXlsSheet(Sheet createExcelsheet, Row writeRow, Expenses ex,OrgLocations orgLocations) {
 		if(ex.getExpenseId() !=null){
-			Expenses expenseId =getExpenseByExpenseId(ex.getId());
+			Expenses expenseId =getExpenseById(ex.getId());
 			
 						if(null != expenseId.getExpenseId()){
 							writeRow.createCell(0).setCellValue(expenseId.getExpenseId());
@@ -1028,12 +1029,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 						}
 						
 						if(null != expenseId.getStartDate()){
-							expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+							expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expenseId.getStartDate()));
 							writeRow.createCell(4).setCellValue(expenseId.getStartDateStr());
 							createExcelsheet.autoSizeColumn(4);
 						}
 						if(null != expenseId.getEndDate()){
-							expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+							expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),expenseId.getEndDate()));
 							writeRow.createCell(5).setCellValue(expenseId.getEndDateStr());
 							createExcelsheet.autoSizeColumn(5);
 						}
@@ -1094,5 +1095,41 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, submissionStatus);
 	}
 	
-		
+	@SuppressWarnings("static-access")
+	@Override
+	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType) throws Exception {
+		List<Expenses> expensesList = expensesDao.getExpensesByProjectMemberId(projectMemberId,invoiceType);
+		expensesList.forEach(expense->{
+			StringBuilder sb = new StringBuilder();
+			String startDate  = conversionUtil.getDateAsString(expense.getStartDate());
+			String endDate  = conversionUtil.getDateAsString(expense.getEndDate());
+			sb.append(startDate).append(" / ").append(endDate);
+			if(expense.getPurpose() !=null && !"".equals(expense.getPurpose())) {
+				sb.append("(").append(expense.getPurpose()).append(")");
+			}
+			expense.setDateFrequency(sb.toString());
+		});
+		return expensesList;
+	}
+
+	@Override
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
+
+		Expenses expense = expensesDao.getExpenseById(expenseId);
+		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
+		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
+		float sum = 0;
+		for(ExpensesEntries entries : entriesList){
+			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
+			expensesEntriesDTO.setDate(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+			expensesEntriesDTO.setDescription(entries.getDescription());
+			expensesEntriesDTO.setAmount(entries.getAmount());
+			expensesEntriesDTO.setCategory(entries.getExpensesCategoryId().getExpensesName());
+			sum = sum+entries.getAmount();
+			expensesEntriesDTO.setSubTotal(String.valueOf(sum));
+			expensesEntriesDTOList.add(expensesEntriesDTO);
+		}
+		return expensesEntriesDTOList;
+	}
+	
 }

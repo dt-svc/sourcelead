@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,10 @@ import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ibm.icu.math.BigDecimal;
 
 @Entity
 @Table(name = "EXPENSES", catalog = "sourcelead")
@@ -99,6 +102,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "EXPENSE_STATUS")
 	@Enumerated(EnumType.STRING)
 	private Submission_Status expenseStatus;
+//	  
+	@Column(name = "BILLING_RECIEVABLE_STATUS")
+	private String billingRecievableStatus;
+	
+	@Column(name = "BILLING_PAYABLE_STATUS")
+	private String billingPayableStatus;
 	
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
 	 @JsonBackReference
@@ -139,7 +148,15 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private Map<String,String> monthsStringFormat;
+	
+	@Transient
+	@JsonProperty
+	private String dateFrequency;
     
+
+	@Transient
+	@JsonProperty
+	private BigDecimal totalAmountRoundoffValue;
 	
 	public Long getId() {
 		return id;
@@ -289,7 +306,8 @@ private static final long serialVersionUID = 1L;
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr =	Constants.DF_DMY.format(startDate);
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			startDateStr = dateFormat.format(startDate);
 		}
 		
 		return startDateStr;
@@ -301,7 +319,8 @@ private static final long serialVersionUID = 1L;
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = Constants.DF_DMY.format(endDate);
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);
 		}
 		return endDateStr;
 	}
@@ -361,6 +380,43 @@ private static final long serialVersionUID = 1L;
 	public void setMonthsStringFormat(Map<String, String> monthsStringFormat) {
 		this.monthsStringFormat = monthsStringFormat;
 	}
+
+	public String getDateFrequency() {
+		return dateFrequency;
+	}
+
+	public void setDateFrequency(String dateFrequency) {
+		this.dateFrequency = dateFrequency;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getBillingRecievableStatus() {
+		return billingRecievableStatus;
+	}
+
+	public void setBillingRecievableStatus(String billingRecievableStatus) {
+		this.billingRecievableStatus = billingRecievableStatus;
+	}
+
+	public String getBillingPayableStatus() {
+		return billingPayableStatus;
+	}
+
+	public void setBillingPayableStatus(String billingPayableStatus) {
+		this.billingPayableStatus = billingPayableStatus;
+	}
+
+	public BigDecimal getTotalAmountRoundoffValue() {
+		return totalAmountRoundoffValue;
+	}
+
+	public void setTotalAmountRoundoffValue(BigDecimal totalAmountRoundoffValue) {
+		this.totalAmountRoundoffValue = totalAmountRoundoffValue;
+	}
+
 
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {

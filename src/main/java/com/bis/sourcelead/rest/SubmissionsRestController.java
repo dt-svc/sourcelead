@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
-import org.quartz.impl.jdbcjobstore.CalendarIntervalTriggerPersistenceDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -68,7 +69,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.ibm.icu.text.SimpleDateFormat;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -173,7 +174,10 @@ public class SubmissionsRestController {
 			
 			candidate.setCandidateEdu(education.substring(0,education.length()-2).toString());
 		}
-		
+		if(candidate.getOrgRelationId() != null && candidate.getSpocId() != null){
+			candidate.setRelationId(candidate.getOrgRelationId().getId());
+			candidate.setVenSpocId(candidate.getSpocId().getId());
+		}
 		//this block of code is added to get customized score for candidate. -- pavan jampana
 		if(requirementId != null){
 			Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
@@ -192,11 +196,11 @@ public class SubmissionsRestController {
 			candidate.setCandidateResumeName(candidateResume.getFileName());
 		}
 		
-		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocationId);
+		CandidateEmployers currentEmployer = candidateEmployersService.getCandidateCurrentEmployer(candidateId, orgLocation.getId());
 		if(null != currentEmployer){
 			candidate.setEmployer(currentEmployer.getName());
 		}else{
-			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
+			CandidateEmployers lastCompanyEmployer = candidateEmployersService.getCandidateLastCompanyEmployer(candidateId, orgLocation.getId());
 			if(null != lastCompanyEmployer){
 				candidate.setEmployer(lastCompanyEmployer.getName());
 			}
@@ -316,6 +320,25 @@ public class SubmissionsRestController {
 		return "success";
 
 	}
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
+	@RequestMapping(value = "/editSubmisionDetails", method = RequestMethod.POST)
+	public String editSubmisionDetails(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request)
+			throws Exception {
+		
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.editRequirementSubmission(jsonObj, user, orgLocations, con);
+		return "success";
+		
+	}
 
 	@RequestMapping(value = "/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody
@@ -379,7 +402,7 @@ public class SubmissionsRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
 		
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
@@ -416,8 +439,7 @@ public class SubmissionsRestController {
 			}
 			
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -454,7 +476,8 @@ public class SubmissionsRestController {
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService
 				.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocations, requirement,user,loginUserRole);
 		ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
-		java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmission requirementSubmission : shortlistedList) {
 			
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService
@@ -488,8 +511,7 @@ public class SubmissionsRestController {
 			}
 	
 			if (requirementSubmission.getCreatedDate() != null) {
-				requirementSubmission
-						.setCreatedDateStr(dateFormat.format(requirementSubmission.getCreatedDate()));
+				requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getCreatedDate()));
 			}
 			candidatesList.add(requirementSubmission);
 		}
@@ -597,6 +619,7 @@ public class SubmissionsRestController {
 		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
 		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
 		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
+		submission.setResumeId(submission.getCandidateResumes().getId());
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
@@ -605,6 +628,19 @@ public class SubmissionsRestController {
 		return resultJson;
 
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
+	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
+		
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
+		return requirementSubmissionTemplateFields;
+	}
+	
+	
 
 	/**
 	 * 
@@ -641,9 +677,9 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		// requirementSubmissionService.sendRejectionMailToVendorContact(user,
-		// requirementSubmission.getRejectedReason(), submissionId,
-		// orgLocations);
+		 requirementSubmissionService.sendRejectionMailToVendorContact(user,
+		 requirementSubmission.getRejectedReason(), submissionId,
+		 orgLocations);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		return "success";
 	}

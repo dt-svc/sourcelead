@@ -1,4 +1,5 @@
 package com.bis.sourcelead.rest;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 /**
  * 
  * @author Rajashekar
@@ -96,7 +98,7 @@ public class RequirementReleaseRestController {
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),status, vendorSelectedIds);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<OrgSpoc>  contactsList = null;	
-		
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		Long clientLocationId = null;
 	    if(null != req.getClientId() && "Client".equals(req.getClientId().getInitiatorType())){
@@ -277,7 +279,7 @@ public class RequirementReleaseRestController {
 					if(reqList.size()>0){
 			    	contact.setReleasedRequirement("true");
 			    	for(Requirement req11 : reqList){
-						contact.setStringDate(Constants.DMY.format(req11.getCreatedDate()));
+						contact.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),req11.getCreatedDate()));
 					}
 					}else{
 						contact.setReleasedRequirement("false");	
@@ -320,10 +322,9 @@ public class RequirementReleaseRestController {
 	    Requirement req = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 	    
 	    List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsFilterByOrgLocationId(orgLocations.getId(),vendorStatus,"");
-
+	    //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		CopyOnWriteArrayList<OrgRelations> vandorsListByOrgLocationIdDuplicate = new CopyOnWriteArrayList<>(vandorsListByOrgLocationId);
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
 		    //List<OrgRelations> vandorsListByOrgLocationId = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 	    Long clientLocationId = null;
 	    if(null != req.getClientId() && req.getClientId().getInitiatorType().equals("Client")){
@@ -388,10 +389,10 @@ public class RequirementReleaseRestController {
 								if(reqList.size()>0){
 									orgSpoc.setReleasedRequirement("true");
 										Requirement requi  = reqList.get(0);
-										orgRelation.setStringDate(Constants.DMY.format(requi.getCreatedDate()));	
+										orgRelation.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requi.getCreatedDate()));	
 									
 						    	/*for(Requirement req11 : reqList){
-						    		orgSpoc.setStringDate(Constants.DMY.format(req11.getCreatedDate()));
+						    		orgSpoc.setStringDate(LoginSessionController.DATEFORMAT.format(req11.getCreatedDate()));
 								}*/
 								}else{
 									orgSpoc.setReleasedRequirement("false");	
@@ -399,7 +400,7 @@ public class RequirementReleaseRestController {
 								}
 								
 								/*if(null != req.getParentRequirement().getCreatedDate()){
-								orgRelation.setStringCreatedDate(Constants.DMY.format(req.getParentRequirement().getCreatedDate()));
+								orgRelation.setStringCreatedDate(LoginSessionController.DATEFORMAT.format(req.getParentRequirement().getCreatedDate()));
 								}*/
 							}
 							orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
@@ -441,10 +442,10 @@ public class RequirementReleaseRestController {
 								if(reqList.size()>0){
 									orgSpoc.setReleasedRequirement("true");
 										Requirement requi  = reqList.get(0);
-										orgRelation.setStringDate(Constants.DMY.format(requi.getCreatedDate()));	
+										orgRelation.setStringDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requi.getCreatedDate()));	
 									
 						    	/*for(Requirement req11 : reqList){
-						    		orgSpoc.setStringDate(Constants.DMY.format(req11.getCreatedDate()));
+						    		orgSpoc.setStringDate(LoginSessionController.DATEFORMAT.format(req11.getCreatedDate()));
 								}*/
 								}else{
 									orgSpoc.setReleasedRequirement("false");	
@@ -586,7 +587,7 @@ public class RequirementReleaseRestController {
 		requirement.setOrgLocationId(orgSpoc.getVendorLocationId());
 		requirement.setManagerUserId(orgSpoc.getVendorUser());
 		requirement.setUpdatedBy(orgSpoc.getVendorUser().getUserCode());
-		requirement.setCreatedBy(orgSpoc.getVendorUser().getUserCode());
+		requirement.setCreatedBy(orgSpoc.getVendorUser());
 		
 		requirement.setJobTitle(parentRequirement.getJobTitle());
 		requirement.setJobType(parentRequirement.getJobType());

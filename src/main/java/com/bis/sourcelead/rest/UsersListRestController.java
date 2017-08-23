@@ -209,7 +209,8 @@ public class UsersListRestController {
 			@RequestParam(value = "searchByName", required = false) String searchByName,
 			@RequestParam(value = "userState", required = false) String userState,
 			@RequestParam(value = "loginUserRole", required = false) String loginUserRole,
-			@RequestParam(value = "offset", required = false) Integer offset) throws Exception {
+			@RequestParam(value = "offset", required = false) Integer offset,
+			@RequestParam(value = "viewType", required = false) String viewType) throws Exception {
 
 		String resultJson = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -225,7 +226,7 @@ public class UsersListRestController {
 				 userRoleType = null;
 			}
 			
-			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset);
+			List<UserRole> rolesList  = userRoleService.getUsersListByRoleAndNameAndLocationId(userRoleType, searchByName, orgLocations.getId(),userState,user.getId(),loginUserRole,user.getUserCode(),offset,viewType);
 	
 			if(null != rolesList && rolesList.size() >0){
 				for(UserRole role : rolesList){
@@ -555,7 +556,7 @@ public class UsersListRestController {
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
 		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		userRole.setUserType(userRole.getUserType());
 		
 		if (employee != null) {
@@ -564,7 +565,7 @@ public class UsersListRestController {
 			userRole.setRatePer(employee.getRatePer());
 			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			if (employee.getHireDate() != null) {
-				userRole.setHireDateStr(LoginSessionController.DATEFORMAT.format(employee.getHireDate()));
+				userRole.setHireDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
@@ -1619,7 +1620,7 @@ public class UsersListRestController {
 		JSONObject jsonObj = new JSONObject(json);
 		String password = "";
 		boolean isUserActive = false;
-
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		
 		if (user != null) {
 			user.setFirstName(jsonObj.getString("FirstName"));
@@ -1695,8 +1696,8 @@ public class UsersListRestController {
 			 */
 			if (jsonObj.has("DateofJoin") && !isNullOrEmpty(jsonObj.getString("DateofJoin"))) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					employees.setHireDate(sdf.parse(jsonObj.getString("DateofJoin")));
+					//DateFormat sdf = simpleDateFormat;
+					employees.setHireDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DateofJoin")));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1738,10 +1739,10 @@ public class UsersListRestController {
 
 		Projects projects = projectsService.getProjectById(projectId);
 		if (projects.getStartDate() != null) {
-			projects.setStartDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getStartDate()));
+			projects.setStartDateStr(commonUtil.elkDateFormatter(projects.getStartDate()));
 		}
 		if (projects.getEndDate() != null) {
-			projects.setEndDateStr(com.bis.sourcelead.constants.Constants.DF_YMD.format(projects.getEndDate()));
+			projects.setEndDateStr(commonUtil.elkDateFormatter(projects.getEndDate()));
 		}
 
 		resultJson = toJSON(projects);

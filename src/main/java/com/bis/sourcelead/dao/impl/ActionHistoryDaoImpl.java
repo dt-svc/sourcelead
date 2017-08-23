@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +18,8 @@ import com.bis.sourcelead.dao.ActionHistoryDao;
 import com.bis.sourcelead.dao.ActionRolesDao;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
@@ -58,6 +60,7 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 
 
 	@Override
+	@Async
 	@Transactional(rollbackFor = { Exception.class })
 	public void saveActionHistory(String methodName,UserLoginLogoutSession userLoginLogoutSession) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -78,8 +81,8 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 					session.saveOrUpdate(actionHistory);
 				}
 			} catch (Exception exception) {
-				//					    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"expenses"));
-				//						throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ActionHistory"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 			}
 
 

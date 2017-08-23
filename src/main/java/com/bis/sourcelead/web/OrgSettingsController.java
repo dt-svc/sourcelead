@@ -77,7 +77,7 @@ public class OrgSettingsController {
 		return model;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_APPLICANT_TEMPLATE')")
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')")
 	@RequestMapping(value = "/orgSubmissionTemplate")
 	public ModelAndView orgSubmissionTemplate(HttpServletRequest request)
 	{

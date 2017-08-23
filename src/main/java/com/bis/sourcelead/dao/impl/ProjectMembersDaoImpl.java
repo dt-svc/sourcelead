@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
@@ -512,15 +513,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
         List<ProjectMembers> projectsMembersList = null;
-
-		/* commented by prasad salina 
-		to get userType from userrole
-		
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id and pm.status ='1' "
-				+ "and (emp.user.id IN (select userRole.user.id from UserRole userRole where userRole.userType = 'Employee')) ");*/
-
 		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :id ");
-
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setCacheable(true).list();
 		return projectsMembersList;
         
@@ -556,14 +549,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception {
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId,OrgLocations orgLocations) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		currentCal.setLenient(false);
 		currentCal.setTime(new Date());
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON");
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(currentCal, "MON",orgLocations.getDateFormat());
 		
 		Calendar previousMonday = CalendarUtil.getDateIncrementByincrement(startMonday,-84);
 		Date previousMondayDate = previousMonday.getTime();

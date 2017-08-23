@@ -264,7 +264,7 @@ width: 8%;
   <script>
   function removeRow(rowId){
 	  document.getElementById('divProposeTimeRow' + rowId).style.display = 'none';
-	  var requirementInterviewId = '${requirementInterview.id}';
+	  
 	  var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val());
 	  $("input[name = 'proposeNewTimeRowsNum"+requirementInterviewId+"']").val(rowNum - 1);
 		
@@ -292,8 +292,19 @@ width: 8%;
   }
   </script>
   <script>
+  var locationDate ='${requirementInterview.submissionId.orgLocations.dateFormat}'; 
+  var finalDateFormatEduSave = '';
+  if(locationDate.match("yyyy-MM-dd")){
+	  finalDateFormatEduSave = 'yy-mm-dd';
+  }if(locationDate.match("dd-MM-yyyy")){
+	  finalDateFormatEduSave = 'dd-mm-yy'; 
+  }if(locationDate.match("MM-dd-yyyy")){
+	  finalDateFormatEduSave = 'mm-dd-yy'; 
+  }if(locationDate.match("yyyy-dd-MM")){
+	  finalDateFormatEduSave = 'yy-dd-mm'; 
+  }
   $('#interviewDate0').datepicker({
-		dateFormat : 'dd-mm-yy',
+	  dateFormat : finalDateFormatEduSave,
 		changeMonth: true,
 		changeYear: true, 
 		minDate:0,

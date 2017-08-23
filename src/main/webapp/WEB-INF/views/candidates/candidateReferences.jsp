@@ -77,7 +77,7 @@
 				+ '     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
 		result = result
-				+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+				+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
 
 		result = result + '   <div id="candidateReferencesList" ></div>';
 		result = result + '   </div>';
@@ -134,7 +134,7 @@
 							if (opt.name != null && opt.name != ''
 									&& opt.name != "undefined") {
 								result = result
-										+ "  <td><div title='"+opt.name+"'>"
+										+ "  <td><div class='tbldata-dotdot-me' title='"+opt.name+"'>"
 										+ opt.name + "</div></td>";
 							} else {
 								result = result + "  <td><div>----</div></td>";
@@ -331,6 +331,10 @@
 				+ ' <option id="workRelated" valeu="Work Related">Work Related</option>';
 		result = result
 				+ '<option  id="familyRelated" value="Family Related">Family Related</option>';
+		result = result
+				+ '<option  id="friend" value="Friend">Friend</option>';
+		result = result
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
 		result = result + ' </select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -407,7 +411,7 @@
      this script is for saving document
      1.usage     : onclick
      2.parameter : candidateId.
-     3.ajax url implementation in CandidateDocumentRestController.
+     3.ajax url implementation in CandidateReferencesRestController.
 --%>
 <script type="text/javascript">
 	function storeCandidateReferences(candidateId) {
@@ -486,8 +490,8 @@
 
 <script>
 	function refMsgFadein() {
-		$("#selector7").fadeIn(200);
-		$('#selector7').delay(2000).fadeOut('slow');
+		$("#selector10").fadeIn(200);
+		$('#selector10').delay(2000).fadeOut('slow');
 	}
 </script>
 <!-- End -->
@@ -674,7 +678,7 @@
 										result = result
 												+ '<div class="col-md-12">';
 										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_Space validate_length length1-20" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
 										result = result + '</div>';
 										result = result + '</div>';
 
@@ -696,6 +700,18 @@
 												+ (json.relation == "Family Related" ? "selected"
 														: '')
 												+ '>Family Related</option>';
+										
+										result = result
+												+ '<option  '
+												+ (json.relation == "Friend" ? "selected"
+														: '')
+												+ '>Friend</option>';
+												
+										result = result
+												+ '<option  '
+												+ (json.relation == "Neighbour" ? "selected"
+														: '')
+												+ '>Neighbour</option>';
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';
@@ -796,7 +812,7 @@
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
-		} else {
+		}else {
 			$("#dvDesignationEdit").hide();
 			$("#designationVal").remove();
 			$('#dvDesignation').find('p.jquery_form_error_message').remove();

@@ -6,22 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" > -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-
-<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script>  -->
-
-<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  -->
-
 
 <style type="text/css">
 
@@ -133,9 +118,10 @@ function cancel(){
 <script>
 function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMemberId,from){
 		var sourceleadUrl ='${sourceleadUrl}';
+		var locationCode ='${SourceLeadWeb_locationCode}';
 	    $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from="+from, 	   
+	    url: sourceleadUrl+"/timesheetDivByFrequency?${_csrf.parameterName}=${_csrf.token}&timesheetFrequency="+timesheetFrequency+"&projectMemberId="+projectMemberId+"&from="+from+"&locationCode="+locationCode, 	   
 	    success: function(data) {
 	    		 //$("#timesheetPopUp").removeAttr("style");
  	    	     $("#timesheetPopUp").empty();
@@ -172,13 +158,14 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("[name='projectMemberId']").val();
 	         var timesheetFrequency = $("[name='timesheetFrequency']").val();
+	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         approvalStatus =$("#timesheetSubmissionStatus").val();
 	         $("#timesheetDivByTab").empty();
 	         $("#timesheetDivByTab").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivByTab?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver"+"&locationCode="+locationCode,		
   		          success :function(result) {
   		        	   $("#timesheetDivByTab").removeAttr("style");
   		    	       $("#timesheetDivByTab").empty();
@@ -730,10 +717,11 @@ function clearTimesheet(){
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#frequencyDates").val();
+	         var locationCode ='${SourceLeadWeb_locationCode}';
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
-  	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver",		
+  	      	  	  url: sourceleadUrl+"/timesheetDivAfterSaving?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&approvalStatus="+approvalStatus+"&from=approver"+"&locationCode="+locationCode,		
   		          success :function(result) {
   		        	   if(result != null){
   		        		   $("#timesheetDivByTab").removeAttr("style");

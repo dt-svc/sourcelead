@@ -1,19 +1,3 @@
-<%-- <jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
-
-
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit --> --%>
 
 <script type="text/javascript">
 window.onload = function() { 
@@ -132,17 +116,6 @@ function prepareReportDataDiv(data){
 <script>
 function vendorReportPagination(){
 	$('#vendorReportPagination').DataTable({ 
-		 dom: 'Bfrtip',
-	        buttons: [
-	        	{
-	                extend: 'excel',
-	                title: 'Jobs Posted',
-	            },
-	            {
-	                extend: 'pdf',
-	                title: 'Jobs Posted',
-	            }
-	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -309,17 +282,6 @@ function editCancel(){
 <script>
 function vendorSpocReportPagination(){
 	$('#vendorSpocReportPagination').DataTable({ 
-		 dom: 'Bfrtip',
-	        buttons: [
-	        	{
-	                extend: 'excel',
-	                title: 'Jobs Posted',
-	            },
-	            {
-	                extend: 'pdf',
-	                title: 'Jobs Posted',
-	            }
-	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -337,15 +299,26 @@ function vendorSpocReportPagination(){
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatrepoVendor = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatrepoVendor = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatrepoVendor = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatrepoVendor = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatrepoVendor = 'yy-dd-mm'; 
+		  }
 		$('#vendorStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatrepoVendor,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#vendorStartDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#vendorEndDate").datepicker("option", "minDate", dt);
+				//var dt = toDate("#vendorStartDate");
+				//dt.setDate(dt.getDate() + 1);
+				$("#vendorEndDate").datepicker("option", "minDate", selected);
 				addValidClass();
 			}
 		
@@ -354,15 +327,15 @@ function vendorSpocReportPagination(){
 		$('#vendorEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatrepoVendor,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#vendorEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#vendorStartDate").datepicker("option", "maxDate", dt);
+				//var dt = toDate("#vendorEndDate");
+				//dt.setDate(dt.getDate() - 1);
+				$("#vendorStartDate").datepicker("option", "maxDate", selected);
 				addValidClass();
 			}
 		});

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -142,13 +143,13 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Expenses getExpenseByExpenseId(long expenseId) {
+	public Expenses getExpenseById(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses where expenses.id =:expenseId";
-		List<Expenses> expenses = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		String query = "from Expenses expenses where expenses.id =:id";
+		List<Expenses> expenses = session.createQuery(query).setLong("id", id).setCacheable(true).list();
 		Expenses expensesList = null;
 		if (expenses != null && expenses.size() > 0) {
-			expensesList = (Expenses) expenses.iterator().next();
+			expensesList = expenses.get(0);
 		}
 		return expensesList;
 	}
@@ -165,4 +166,20 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		}
 		return expense;
 	}
+
+	@Override
+	@Transactional
+	public List getExpensesByProjectMemberId(Long projectMemberId,String invoiceType) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery ="";
+		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+			subQuery = "expenses.billingRecievableStatus IS NULL";
+		}else {
+			subQuery = "expenses.billingPayableStatus IS NULL";
+		}
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where pm.id =:projectMemberId and "+subQuery).setLong("projectMemberId", projectMemberId).setCacheable(true).list();
+		
+		return expensesList;
+	}
+
 }

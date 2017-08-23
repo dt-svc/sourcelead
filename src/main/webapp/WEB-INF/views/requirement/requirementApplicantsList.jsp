@@ -3,25 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
-<!-- Bootstrap -->
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum">Home &raquo; Applicant List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Applicant List</div>
     </section>
     
     <!-- Project -->
@@ -90,7 +77,14 @@
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
              <%--  <td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td> --%>
-              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>
+              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
+              </c:if>
+              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	--
+              </c:if>
+              </span></div></td>
               <td><div><span>${reqSub.submissionId.candidate.email}</span></div></td>
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidate.mobilePhone}">

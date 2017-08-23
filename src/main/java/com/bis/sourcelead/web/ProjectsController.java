@@ -33,6 +33,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -71,6 +72,9 @@ public class ProjectsController {
 	 
 	 @Autowired
 	 CountriesService countriesService;
+	 
+		@Autowired
+		CommonUtil commonUtil;
 	 
 	 /**
 	  * This method for get project by id
@@ -132,15 +136,15 @@ public class ProjectsController {
 				ModelAndView model = new ModelAndView();
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 				OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
-				SimpleDateFormat dateFormat=locations.getLocFullFormDateFormatter();
+				//SimpleDateFormat dateFormat=locations.getLocFullFormDateFormatter();
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
 					if(projects.getStartDate() != null){
-						model.addObject("projectStartDate", dateFormat.format(projects.getStartDate()));
+						model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getStartDate()));
 					}
 					if(projects.getEndDate() != null){
-						model.addObject("projectEndDate", dateFormat.format(projects.getEndDate()));
+						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
@@ -168,14 +172,15 @@ public class ProjectsController {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				 Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 				Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 				if(projects != null){
 					model.addObject("projectId", projects.getId());
 					model.addObject("projectName", projects.getProjectName());
 					if(projects.getStartDate() != null){
-						model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+						model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
 					}
 					if(projects.getEndDate() != null){
-						model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+						model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
 					}
 					model.addObject("projectStatus", projects.getProjectStatus());
 				}
@@ -205,14 +210,15 @@ public class ProjectsController {
 	    
 	    ModelAndView model = new ModelAndView();
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(projects != null){
 			model.addObject("projectId", projects.getId());
 			model.addObject("projectName", projects.getProjectName());
 			if(projects.getStartDate() != null){
-				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+				model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
 			}
 			if(projects.getEndDate() != null){
-				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}
@@ -233,17 +239,18 @@ public class ProjectsController {
     @RequestMapping(value = "/editResourceRequest")
 	public ModelAndView editResourceRequest(@RequestParam(value="requestUUID", required=true) String requestUUID,@RequestParam(value="projectUUID", required=true) String projectUUID,HttpServletRequest request) throws Exception {
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-	    
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	  //  SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 	    ModelAndView model = new ModelAndView();
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 		if(projects != null){
 			model.addObject("projectId", projects.getId());
 			model.addObject("projectName", projects.getProjectName());
 			if(projects.getStartDate() != null){
-				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+				model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
 			}
 			if(projects.getEndDate() != null){
-				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}
@@ -266,14 +273,15 @@ public class ProjectsController {
 		 Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
 	    ModelAndView model = new ModelAndView();
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(projects != null){
 			model.addObject("projectId", projects.getId());
 			model.addObject("projectName", projects.getProjectName());
 			if(projects.getStartDate() != null){
-				model.addObject("projectStartDate", Constants.DF_DMY.format(projects.getStartDate()));
+				model.addObject("projectStartDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getStartDate()));
 			}
 			if(projects.getEndDate() != null){
-				model.addObject("projectEndDate", Constants.DF_DMY.format(projects.getEndDate()));
+				model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projects.getEndDate()));
 			}
 			model.addObject("projectStatus", projects.getProjectStatus());
 		}

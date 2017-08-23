@@ -259,7 +259,7 @@ public class OrgDaoImpl implements OrgDao {
 	public List<Org> getEnrolledOrgs(Long orgId,String userState,String searchByName) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		
+		List<Org> orgsList = null;
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
 			userStateSubQuery = "and org.id IN (select orgLoactions.org.id from OrgLocations orgLoactions where orgLoactions.isPrimary = 'Y' and "
@@ -272,11 +272,15 @@ public class OrgDaoImpl implements OrgDao {
 		String orgNameSubQuery = "";
 		
 		if (!isNullOrEmpty(withoutWhitespace)) {
-			orgNameSubQuery = "and ((org.orgName LIKE '" + withoutWhitespace + "%') OR (org.user.email LIKE '" + withoutWhitespace + "')) ";
+			orgNameSubQuery = "and org.orgName LIKE :orgName";
+			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setString("orgName", withoutWhitespace + "%").setCacheable(true).list();
+		}else{
+			String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
+		    orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
 		}
 		
-	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";
-	    List<Org> orgsList = session.createQuery(query.toString()).setLong( "orgId", orgId).setCacheable(true).list();
+	    
         return orgsList;
 	}
 
@@ -341,9 +345,10 @@ public class OrgDaoImpl implements OrgDao {
 		List<UserDTO> userList = new ArrayList<>();
 		try{
 			String query = "select u.id, u.FIRST_NAME, u.last_name, u.doc_file, r.display_name, ur.reporting_manager_id, o.primary_contact_user_id " + 
-					" from user u, user_role ur, roles r, org o, org_locations ol " + 
+					" from USER u, USER_ROLE ur, ROLES r, ORG o, ORG_LOCATIONS ol " + 
 					" where r.id = ur.role_id and u.id = ur.user_id and ur.org_locations_id = "+orgLocationId.longValue() + 
 					" and o.id = ol.org_id and ol.id = ur.org_locations_id order by ur.reporting_manager_id;";
+			
 			List<Object[]> result = session.createSQLQuery(query).list();
 			for(Object[] record : result) {
 				UserDTO user = new UserDTO();
@@ -366,7 +371,7 @@ public class OrgDaoImpl implements OrgDao {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORG"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(noRecords,"ORG"));
 			throw new SourceLeadObjectNotFoundException(message.toString());	
 		} finally {
 			session.close();

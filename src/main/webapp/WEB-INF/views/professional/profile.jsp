@@ -2,11 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
- <link href="resources/css/jquery-ui.css" rel="stylesheet">
- <link href="resources/css/crowdsourcingstyles.css" rel="stylesheet">
-<!-- <script src="resources/js/formvalidator.js"></script>
-<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
-
+<link href="resources/css/crowdsourcingstyles.css" rel="stylesheet">
 <style>
 .margin-down{
     margin-bottom: 100px;
@@ -30,7 +26,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Profile</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Update Profile</div>
+       
+       <!-- Redirect to main dashboard -->
+       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Update Profile</div>
+   
     </section>
     
   <!-- Profile Content Start-->

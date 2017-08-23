@@ -3,9 +3,7 @@
 <meta http-equiv="Expires" content="0">
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
@@ -26,7 +24,7 @@
  </style>
  
       <!-- Modal content Assign Team-->
-           <div role="dialog" id="assignTeam" class="modal fade">
+           <div role="dialog" id="assignTeam" class="modal fade modalAssignTeam">
              <div class="modal-dialog modal-lg">
                <div class="modal-content">
                  <div class="modal-header">
@@ -132,9 +130,12 @@
  
  <script>
  /* function filterStatus() {
-	 $(".export_pipline").toggle();
-	 //$("#exportPop").slideUp();
- }; */
+ $(".export_pipline").toggle();
+ //$("#exportPop").slideUp();
+}; */
+function filterStatus() {
+	$("#exportPop").hide();
+};
  </script>
  
 
@@ -149,7 +150,10 @@
 	   var result = "";
  	 
  	result = result + '    	<div class="col-md-12 mt">';
- 	 result = result + '    	<div class="require_one">';
+ 	
+ 	/* Dont remove this commented code. Need to implement functionality */
+
+ 	/*  result = result + '    	<div class="require_one">';
 	result = result + '       <div class="require_wrap_details_cta noPad">';
 	result = result + '   		<div class="NeDe"><b>Estimated Budget:</b> <span><strong>INR</strong> 250000</span><div class="clearfix"></div></div>';
 	result = result + '        	<div class="NeDe"><b>Estimated Hours:</b> <span>250</span><div class="clearfix"></div></div>';
@@ -160,7 +164,7 @@
 	result = result + '        	<div class="NeDe"><b>Expenses:</b> <span><strong>INR</strong> 50000</span><div class="clearfix"></div></div>';
 	result = result + '       </div>';
 	result = result + '       <div class="clearfix"></div>';
-	result = result + '     </div>';
+	result = result + '     </div>'; */
 	result = result + '     </div>';
 	result = result + '       <div class="clearfix"></div>';
 	
@@ -168,7 +172,10 @@
 result = result + '<div class="newPrTabs col-md-12">';
 result = result + '<ul class="newPrTabsMenu">';
 result = result + '<li class="current"><a href="#tab-a">Resources ('+projectMembersCount+')</a></li>';
-result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>';
+
+/* Dont delete this commented code. Functionality is in progress */
+/* result = result + '<li class=""><a href="#tab-b" id="resourceTab" onclick="resourceRequestsTab();">Resource Requests ('+resourceRequestsCount+')</a></li>'; */
+
 result = result + '<li class=""><a href="#tab-c">Budget Requests (10)</a></li>';
 result = result + '<div class="clearfix"></div>';
 result = result + '</ul>';
@@ -187,7 +194,7 @@ result = result + '<div class="project_tabs mb">';
 	 		result = result +'</li>';
 			} 
 		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
+		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
 			result = result + '       	<ul>';
 			result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
 			result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
@@ -276,7 +283,16 @@ result = result + '<div class="project_tabs mb">';
 	 }else{
 		 values = "Active";
 	 }
-
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  projectempListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  projectempListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  projectempListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  projectempListDate = 'YYYY-DD-MM'; 
+	  }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
 	    	type: "POST",
@@ -296,8 +312,8 @@ result = result + '<div class="project_tabs mb">';
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
 	            result = result + '	 	<th>Emp Role</th>';
-	            result = result + '	     <th>Start Date</th>';
-	            result = result + '	     <th>End Date</th>';
+	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
+	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>Approved hrs</th>';
 	            result = result + '	     <th>Rejected hrs</th>';
 	            result = result + '	     <th>Wait for Approval </th>';
@@ -563,6 +579,18 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 		endDateStr = "";
 	}
 	var searchByName = $("#searchByName").val();
+	
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  teamMembersDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  teamMembersDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  teamMembersDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  teamMembersDate = 'YYYY-DD-MM'; 
+	  }  
+	
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getTeamMembersList?${_csrf.parameterName}=${_csrf.token}&ProjectId="+projectId+"&searchByName="+searchByName, 
@@ -577,8 +605,8 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
             output = output+' <th>Name</th>';
             output = output+' <th>Email</th>';
             output = output+' <th>Role</th>';
-            output = output+' <th>Start Date</th>';
-            output = output+' <th>End Date</th>';
+            output = output+' <th>Start Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
+            output = output+' <th>End Date <br>(<small class="custom-small">'+teamMembersDate+'</small>)</th>';
             output = output+' </tr>';
             output = output+' </thead>';
             output = output+' <tbody>';
@@ -619,18 +647,27 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 	        assignEmployeespagination();
 	        
 	        //StartDate And EndDate Pickers
-	        
+	     	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  	  var finalDateFormatAssignEmpUpdate = '';
+		  	  if(locationDate.match("yyyy-MM-dd")){
+		  		  finalDateFormatAssignEmpUpdate = 'yy-mm-dd';
+		  	  }if(locationDate.match("dd-MM-yyyy")){
+		  		finalDateFormatAssignEmpUpdate = 'dd-mm-yy'; 
+		  	  }if(locationDate.match("MM-dd-yyyy")){
+		  		finalDateFormatAssignEmpUpdate = 'mm-dd-yy'; 
+		  	  }if(locationDate.match("yyyy-dd-MM")){
+		  		finalDateFormatAssignEmpUpdate = 'yy-dd-mm'; 
+		  	  }
 	        
 	        var from = startDateStr.split("-");
 	        var datepickerStartDate =  new Date(from[2], from[1] - 1, from[0]);
 	        datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-	        
 		       if(json.length > 0){
 			    	for (var i = 0; i <json.length; i++) {
 						var opt = json[i];
 						if(endDateStr !=  null && endDateStr != '' && endDateStr != 'undefined'){
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -640,8 +677,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('startDate')[1];
-									var dt = toDate('#startDate'+actualId);
+									//var dt = toDate('#startDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '+1d');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -653,7 +691,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								maxDate:endDateStr,
@@ -663,8 +701,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('endDate')[1];
-									var dt = toDate('#endDate'+actualId);
+								//	var dt = toDate('#endDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '-1d');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -677,7 +716,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							
 						}else{
 							$('#startDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
@@ -686,8 +725,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('startDate')[1];
-									var dt = toDate('#startDate'+actualId);
+									//var dt = toDate('#startDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '+1d');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -700,7 +740,7 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 							});
 
 							$('#endDate'+opt.id).datepicker({
-								dateFormat : 'dd-mm-yy',
+								dateFormat : finalDateFormatAssignEmpUpdate,
 								changeMonth: true,
 								changeYear: true, 
 								minDate:datepickerStartDate,
@@ -709,8 +749,9 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 						        closeText: 'Clear',
 						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('endDate')[1];
-									var dt = toDate('#endDate'+actualId);
+									//var dt = toDate('#endDate'+actualId);
 									var id = $(this).attr('id');
+									  var dt = $(this).datepicker('getDate', '-1d');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
 									var event = arguments.callee.caller.caller.arguments[0];
@@ -1133,7 +1174,6 @@ function toDate(selector) {
 //  New project Tabs
 	$("#tab-a").show();
     $(".newPrTabsMenu a").click(function(event) {
-    	alert("Hi Srinivas");
         event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
@@ -1152,7 +1192,16 @@ function resourceRequestsTab(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var projectUUID = '${projectUUID}';
 	 
-	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  resourceReqListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  resourceReqListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  resourceReqListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  resourceReqListDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getPlanningRequestListByProjectUUID?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID, 
@@ -1177,8 +1226,8 @@ function resourceRequestsTab(){
 	    		result = result + '	             <th>Approver</th>';
 	    		result = result + '	             <th>Req. Resources</th>';
 	    		result = result + '	             <th>Alloted Resources</th>';
-	    		result = result + '	             <th>Estimated Hours</th>';
-	    		result = result + '	             <th>Estimated Budget</th>';
+	    		result = result + '	             <th>Estimated Hours<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
+	    		result = result + '	             <th>Estimated Budget<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Req. On</th>';
 	    		result = result + '	             <th>Req. By</th>';
 	    		result = result + '	             <th>Action</th>';

@@ -231,7 +231,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName, Long locationId,
-			String userState, Long userId,String loginUserRole,String userCode,Integer offset) throws Exception {
+			String userState, Long userId,String loginUserRole,String userCode,Integer offset,String viewType) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
         Map<String, Object> params = new HashMap<String,Object>();
@@ -332,17 +332,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
         }
 		List<UserRole>  list =null;
 		list = query.setCacheable(true).list();
-		if(query.list().size() >= offset){
-			if(query.list().size() > offset + 10){
-				return   list.subList(offset, (offset+10));
-			}else{
-				return   list.subList(offset, (  offset + (query.list().size() - offset)));
-			}
+		if(viewType != null && viewType.equalsIgnoreCase(Constants.VIEW_TYPE)){
+			return list;
 		}else{
-			return  null;
+			if(query.list().size() >= offset){
+				if(query.list().size() > offset + 10){
+					return   list.subList(offset, (offset+10));
+				}else{
+					return   list.subList(offset, (  offset + (query.list().size() - offset)));
+				}
+			}else{
+				return  null;
+			}
 		}
-		
-	 	
 	}
 
 	@Override
@@ -590,15 +592,14 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		}
 	}
 	
-	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
+	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency,String dateFormat) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
 		cal.setTime(new Date());
 		
-		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON");
+		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",dateFormat);
 		
 		Calendar previousFriday = CalendarUtil.getDateIncrementByincrement(startMonday,-3);
 		Date previousDateFri = previousFriday.getTime();

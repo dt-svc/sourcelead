@@ -17,7 +17,6 @@ import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,13 +47,10 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -68,6 +64,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -80,7 +77,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -112,10 +108,10 @@ public class CandidateServiceImpl implements CandidateService {
 	CandidateEmployersService candidateEmployersService;
 	
 	@Autowired
-	CandidateDocumentsService candidateDocumentsService;
+	private OrgLocationService orgLocationService;
 	
-	/*@Autowired
-	CandidateSkillsService candidateSkillsService;*/
+	@Autowired
+	CandidateDocumentsService candidateDocumentsService;
 	
 	@Autowired @Lazy
 	CandidateResumesService candidateResumesService;
@@ -173,7 +169,7 @@ public class CandidateServiceImpl implements CandidateService {
     
 	public String getCandidateId(OrgLocations orgLocations) {
     	String companyShortCode = null;
-    	Long number = 000000001L;
+    	Long number = 1L;
 		String candidateId = null;
 		Candidate checkNumber = candidateDao.checkCandidateIdNumberInDatebase(orgLocations.getId());
 		if(checkNumber == null || checkNumber.getGeneratedId()== null  || checkNumber.getGeneratedId().isEmpty()){
@@ -192,7 +188,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidateId = canId.toString();
 		}
 		
-        final DecimalFormat decimalFormat = new DecimalFormat("000000000");                
+        final DecimalFormat decimalFormat = new DecimalFormat("0");                
         String ConvetredCandidatesId = decimalFormat.format(Long.parseLong(candidateId));
         StringBuffer sb = new StringBuffer();
         if(orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())){
@@ -525,11 +521,6 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * System Generated Id For Candidate
 		 */
-		/*String entityGenId = RandomStringUtils.randomNumeric(9);
-		StringBuffer sb = new StringBuffer();
-		candidate.setSystemGeneratedId(Constants.CANDIDATE_ENTITY);
-		candidate.setGeneratedId(sb.append(candidate.getSystemGeneratedId()).append(entityGenId).toString());*/
-		
 		candidate.setGeneratedId(getCandidateId(orgLocations));
 
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
@@ -638,9 +629,11 @@ public class CandidateServiceImpl implements CandidateService {
 	@Override
 	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception {
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
-			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
+			 can.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),can.getUpdatedDate()));
 			}
 		}
 		return candidateList;
@@ -1176,9 +1169,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
 			List<Candidate> candidateList = candidateDao.getCandidateReportsListByOrgLocationID(orgLocationId,candidateType);
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			for(Candidate can :candidateList){
 				if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),can.getUpdatedDate()));
 				}
 				User user  = userService.getUserByUserCode(can.getCreatedBy());
 				if(!"".equalsIgnoreCase(user.getLastName()) && user.getLastName()!=null && !user.getLastName().isEmpty() ){
@@ -1202,9 +1197,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidateReports(Long orgLocationId, String candidateType, String filterDate,
 			Date startDateUTC, Date endDateUTC,String ownersList) throws Exception {
 		List<Candidate> candidateReportsList = candidateDao.getCandidateReports(orgLocationId, candidateType, filterDate, startDateUTC, endDateUTC,ownersList);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can : candidateReportsList){
 			if(can.getUpdatedDate() != null){
-				 can.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(can.getUpdatedDate()));
+				 can.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),can.getUpdatedDate()));
 				}
 			 Integer requirementSubmissionCount = requirementSubmissionService.getRequirementHistoryCountByCandidateIdAndOrgLocationID(can.getId(), orgLocationId);
 			 can.setCandidateRequiementCount(requirementSubmissionCount);
@@ -1234,9 +1231,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		if(null != candidatesList && candidatesList.size() >0){
 			for(Candidate can  : candidatesList){
-				
+				if(can.getCreatedBy() != null){
 				User usr = userService.getUserByUserCode(can.getCreatedBy());
+				if(usr.getId() != null){
 				tempOwnersIds.add(usr.getId());
+				}
+				}
 			}
 		}
 		
@@ -1356,11 +1356,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
 	{
 		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for (Candidate candidate : candidateList) {
 			StringBuilder sb = new StringBuilder();
 			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
 			candidate.setEmail(candidate.getEmail());
-			candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
+			candidate.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getUpdatedDate()));
 			candidate.setPrimarySkill(candidate.getPrimarySkill());
 			StringBuilder stringBuilder = new StringBuilder();
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
@@ -1408,6 +1410,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setCreatedDate(commonUtil.currentDate());
+			candidate.setUpdatedDate(commonUtil.currentDate());
 		}else{
 			candidate.setConsultantUser(user);
 			candidate.setMasterCandidateId(masterCandidate);
@@ -1481,6 +1484,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				//photo Details - 5 %
 				 if(can.getDocFile()!=null){
 					 percentage = percentage + 5; 
+				 }else if(can.getConsultantUser() != null && can.getConsultantUser().getDocFile() != null){
+					 percentage = percentage + 5; 
 				 }
 
 				//document Details - 10 %
@@ -1499,5 +1504,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getRequestedCandidatesList(orgLocationsId, roleIds, resourceType,associatesIds,projectId);
 	}
 
+	@Override
+	public List<Candidate> getAssociatesListForSow(Long locationId, String sowType)
+	{
+		List<Candidate> associateList = candidateDao.getAssociatesListForSow(locationId,sowType);
+		for(Candidate can :associateList){
+			StringBuilder sb = new StringBuilder();
+			if(can.getLastName() != null && !"".equalsIgnoreCase(can.getLastName()))
+				can.setCandidateName(sb.append(can.getFirstName()).append(" ").append(can.getLastName()).toString());
+			else
+				can.setCandidateName(can.getFirstName());
+		}
+		return associateList;
+	}
 
 }

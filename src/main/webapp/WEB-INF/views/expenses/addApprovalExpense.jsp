@@ -17,6 +17,9 @@
 			else{
 				$('#maxRecCount').val('1');
 			}
+			calculateTotalamount();
+			getMembersForSelectedProject();
+			getClientBasedOnSelectedProject();
 		 };
 </script>
 
@@ -64,7 +67,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
-							 <c:if test="${fn:length(projectsList) gt 1}">
+							 <c:if test="${fn:length(projectsList) gt 0}">
 								<option value="">Select Project</option>
 							</c:if>
 							<c:forEach var="projects" items="${projectsList}">
@@ -108,9 +111,9 @@
 	</div>
 </div>
 <div class="expensHead">
-<div class="form-group">
-<span class="col-md-3">Expenses Amount Total:</span>
-<div class="col-md-9">
+<div class="form-group col-md-6 mt5 mb5 noPad">
+<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<div class="col-md-6">
 <input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
 </div>
 </div>
@@ -137,8 +140,8 @@
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
+			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me">${entry.description}</div></td>
+ 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
@@ -426,9 +429,8 @@ function getMembersForSelectedProject(){
 				return false;
 			}
 			else{
-				$("#submitForApprovalExpensesId").prop('disabled', true);
-				$("#cancelForApprovalExpensesId").prop('disabled', true);
-				
+				//$("#submitForApprovalExpensesId").prop('disabled', true);
+				//$("#cancelForApprovalExpensesId").prop('disabled', true);
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];

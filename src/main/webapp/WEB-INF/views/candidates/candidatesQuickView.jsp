@@ -4,12 +4,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- end files for autocomplete with tagit -->
 <%-- 
      @author : Pavan Kumar Jampana.
      this script is for quick view of Candidate.
@@ -392,7 +386,7 @@ function qwikCertificates(candidateId){
 	                	 var result = "";
 	                	 
 	                	 result = result +'<div class="col-md-12">';
-						 result = result +' <h4>Certificates</h4>';
+						 result = result +' <h4>Certifications</h4>';
 							var json = JSON.parse(data);
 							for (var i = 0; i < json.length; i++) { 
 								if(i < 3){
@@ -413,10 +407,10 @@ function qwikCertificates(candidateId){
 									name = '';
 								}
 								
-								if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-									result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+								if(opt.scoreType == 'Percentage'){
+									result = result +' <h4>'+name+' ('+opt.score+' %) </h4>';
 								}else{
-									result = result +' <h4>'+name+'</h4>';
+									result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
 								}
 								
 								/* result = result +'<div class="description">';

@@ -244,7 +244,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
 		 //DateFormat format = Constants.DF_DMY;
-		 DateFormat format= LoginSessionController.DATEFORMAT;
+		 //DateFormat format= LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
 		  Date startDate = dateList.get("STARTDATE");
@@ -266,7 +266,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	                    <th>Rate</th>            ");
 			
 			LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
@@ -275,8 +275,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				        Date weekStartDate;
 				        Date weekEndDate;
 					try {
-						 weekStartDate = format.parse(k.replaceAll("/", "-"));
-						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+						 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 						 displayWeeksList.put(weekStartDate, weekEndDate);
 						 if(weekStartDate.equals(weekEndDate)){
 							 timesheetApprovalDiv.append("	                    <th>").append(shortormat.format(weekStartDate)).append("</th>  ");
@@ -527,7 +527,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		File file = null;
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
-		 DateFormat  format = LoginSessionController.DATEFORMAT;
+		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
 		  Date startDate = dateList.get("STARTDATE");
@@ -544,7 +544,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 //Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 		 int tdSpanLength = 6;
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();
@@ -553,8 +553,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			        Date weekStartDate;
 			        Date weekEndDate;
 				try {
-					 weekStartDate = format.parse(k.replaceAll("/", "-"));
-					 weekEndDate = format.parse(v.replaceAll("/", "-"));
+					 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+					 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
 						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
@@ -825,7 +825,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
-		 DateFormat  format = LoginSessionController.DATEFORMAT;
+		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
 		  Date startDate = dateList.get("STARTDATE");
@@ -842,7 +842,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 //Date endSundayDate = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN").getTime();
 		 int tdSpanLength = 6;
 		LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
+		Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
 		if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 			for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 	    		 String  k = entry.getKey();
@@ -851,8 +851,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			        Date weekStartDate;
 			        Date weekEndDate;
 				try {
-					 weekStartDate = format.parse(k.replaceAll("/", "-"));
-					 weekEndDate = format.parse(v.replaceAll("/", "-"));
+					 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+					 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
 						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");

@@ -2,8 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png"
-	href="resources/images/fav.png" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec"
@@ -268,7 +266,8 @@ $(document).ready(function(){
 			<div class="col-md-4 mt25">
 				<div class="small-widget bgGreen">
 					<a href="<c:url value='/createPayables'/>"
-						title="Create custom invoice">
+						title="Create Vendor Based Bill">
+
 						<div class="clearfix mb10">
 							<img src="resources/images/invoice_icon.png" class="text-center"
 								alt="create_receivables">
@@ -280,7 +279,7 @@ $(document).ready(function(){
 			<div class="col-md-4 mt25">
 				<div class="small-widget bg-yellow">
 					<a href="<c:url value='/createInvoiceProjectPayableBased'/>"
-						title="Create project based invoice">
+						title="Create Project Based Bill">
 						<div class="clearfix mb10">
 							<!--<i class="fa fa-usd fa-3x"></i>-->
 							<img src="resources/images/invoice_icon.png" class="text-center"
@@ -292,7 +291,7 @@ $(document).ready(function(){
 
 			 <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create project based invoice">
+		            <a href="<c:url value='/createExpensesPayableBill'/>" title="Create Other Bill">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
@@ -318,6 +317,19 @@ $(document).ready(function(){
 		    </script>
 
 <script>
+
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var recievePaymentDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	recievePaymentDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	recievePaymentDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	recievePaymentDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	recievePaymentDate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -384,7 +396,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
-	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
+// 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
 	result = result +'            </div>                                                                ';
@@ -409,7 +421,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : recievePaymentDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
@@ -749,7 +761,7 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else if(report.invoiceStatus == "DRAFT"){
@@ -811,7 +823,7 @@ function getPayableInvoiceList(){
 </script>
 <script>
 function invoicePagination(){ 
-	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -1095,14 +1107,27 @@ function customDate(){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatPayableDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatPayableDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatPayableDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatPayableDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatPayableDate = 'yy-dd-mm'; 
+	  }
+	  
+	
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatPayableDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+		 var dt = $(this).datepicker('getDate', '+1d');
+	      dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -1112,14 +1137,13 @@ function customDate(){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatPayableDate,
 		beforeShow: function(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+			 var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}
@@ -1380,7 +1404,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 
 <script>
 function linkInvoicePayablePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+
     $('#linkInvoicePayable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
@@ -1442,7 +1466,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoic
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='payable_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount.toFixed(2)+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMergeBill("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";

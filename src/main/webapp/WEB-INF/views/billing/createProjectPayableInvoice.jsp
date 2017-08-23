@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="resources/js/jquery.mask.min.js"></script>
@@ -34,9 +32,16 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
+              <c:if test="${isGenerateAutomaticInvoice == 'Y'}">
+								<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
+									data-validation="required" field-name="Vendor" disabled>
+								</select>
+								</c:if>
+								<c:if test="${empty isGenerateAutomaticInvoice}">
 								<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
 									data-validation="required" field-name="Vendor">
 								</select>
+								</c:if>
 							</div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
@@ -85,26 +90,38 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field"> 
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
+              <div class="col-md-9 select-field">
+               <c:if test="${isGenerateAutomaticInvoice == 'Y'}"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name" disabled> 
                   <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="projects" items="${projectsList}">
                          <option value="${projects.id}">${projects.projectName}</option>
                   </c:forEach> --%>
                   </select>
+                  </c:if>
+                   <c:if test="${empty isGenerateAutomaticInvoice}"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name">
+              </select>
+                  </c:if>
               </div>
             </div>
            <div class="form-group">
-              <label class="col-md-3">Frequency</label>
+              <label class="col-md-3">Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
+              <c:if test="${isGenerateAutomaticInvoice == 'Y'}">
+                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();" disabled>
                  <!--  <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
                   <option>20 days</option>
                   <option>30 days</option>
                   <option>60 days</option>-->
-                  </select> 
+                  </select>
+                   </c:if>
+                   <c:if test="${empty isGenerateAutomaticInvoice}">
+                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
+              </select>
+                   </c:if>
               </div>
             </div>
 <!-- 	   
@@ -118,14 +135,15 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" 
+                     name="billingAddress" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
               </div>
             </div>
             <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details"></textarea>
+									name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
 							</div>
 			</div>
             
@@ -166,10 +184,10 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               	<label><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 " >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -238,6 +256,12 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
      </div>
     </div>
   </section>
+  
+  <script>
+  function remove(){
+	  $('#0invoicedocFile').val("");
+  }
+  </script>
     
 <!-- Diplays client contacts details when clien selected -->
 
@@ -253,7 +277,7 @@ function getProjectsList(projectName){
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value=''>Select Project</option>";
+	output = output + "<option value=''>--Select Project--</option>";
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
@@ -276,12 +300,12 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
+	$('#frequency').val('').trigger('chosen:updated');
 	var projectId = null;
 	projectId = $("#projectId").val();
 	if(projectId == null){
 	projectId = '${projectId}';
 	}
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
@@ -301,6 +325,7 @@ function getProjectFrequency(invoiceFrequency){
 		}
 		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
 		}
+		
 		$("#frequency").empty();
 		$("#frequency").append(output);
 		$('#frequency').trigger("chosen:updated");
@@ -1123,11 +1148,11 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 ">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
-               		    <i class="fa fa-times" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
+               		    <i class="fa fa-times mt5" mouseOver="Delete" title="Delete" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
                		   </span>
                 </div>
              </div>

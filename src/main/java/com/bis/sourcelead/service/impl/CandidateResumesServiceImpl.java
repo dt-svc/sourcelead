@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,8 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -43,6 +46,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -199,11 +208,15 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public List<CandidateResumes> getCandidateResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception {
 		// return candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
-	
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
+		
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
 			for(CandidateResumes canResumes :candidateResumesList){
 				if(canResumes.getUpdatedDate() != null){
-					canResumes.setCandidateResumeUpdateDateToString(LoginSessionController.DATEFORMAT.format(canResumes.getUpdatedDate()));
+					canResumes.setCandidateResumeUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canResumes.getUpdatedDate()));
 				}
 			}
 			return candidateResumesList;

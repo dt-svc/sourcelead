@@ -28,7 +28,7 @@ body{
     font-size: 14px;
 }
 .custom-navbar .login-user:hover {
-    background:#5B908D;
+    background:#5c7799;
 }
 .side-bar .user-panel{
 	background:#b5bdbf !important;
@@ -91,6 +91,10 @@ body{
 }
 .side-bar .side-nav ul li ul  li:hover a{
 	color:#333;
+}
+.side-nav i.subMenu {
+    font-style: normal;
+    display: inline-block;
 }
 .timesheet-menu {
     background: #dddddd;
@@ -168,14 +172,10 @@ ul.timesheet-menu li a:hover{
     background: #fff;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
-    border-left: 1px solid #538885;
-    padding: 18.1px 14px;
-    margin: 0;
-    float: left;
+    border-left: 1px solid #556e8d; padding: 18.1px 14px; margin: 0;float: left;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li:hover {
-    background:#5B908D;
-    border-left: 1px solid #e0e0e0;
+    background: #5c7799; border-left: 1px solid #556e8d;
 }
 .search-area .srcbutton {
     color:#fff;
@@ -230,8 +230,8 @@ ul.timesheet-menu li a:hover{
     border: none;
 }
 .user-details ul > li {
-    background: #0cc2aa;
-    border: 1px solid #e65100;
+    background: #6381a7;
+    border: 1px solid #6381a7;
 }
 .user-details ul > li + li:hover {
     background: #eef1fc;
@@ -273,31 +273,61 @@ ul.timesheet-menu li a:hover{
 }
 .dashboard-widget {
     border: 1px solid #c9cec2;
-    /* border: 1px solid #629794; */
 }
 /* Table Header styles */
 .require_wrap_table table tr th, .clients_wrap_table table tr th, .candidate_wrap_table table tr th, .project_wrap_table table tr th,
 .project_tabs_inn_table table tr th {
-  background-color: #6381a7 !important;
-  border-right: 1px solid #6CA19E !important;
-  color: #fff;
+  background-color: #6381a7 !important; border-right: 1px solid #577192 !important;color: #fff;
 }
 /* Table Heaer styels ends */
 /* Orgsetting styles */
 #settingArea .setting-area {
-	background-color: #629794;
+	background-color: #6381a7;
 }
 .setting-area ul li {
-	clear: both; display: inline-block; width:100%; border-bottom:1px solid #e0e0e0;
+	clear: both; display: inline-block; width:100%; border-bottom:1px solid #577293;
 }
 .user_details_cta_img span {
 background-color: #629794;	
 }
 .header-widget {
-	border-top: 4px solid #629794;
+	border-top: 4px solid #6381a7;
 }
 .addTask-widget {
-    background: #629794;
+    background: #6381a7;
+}
+.user-profile {
+border: 1px solid #ddd;    
+}
+.dashboard-widget .nav-tabs li.active > a, .dashboard-widget .nav-tabs li.active > a:focus {
+    background: #a21e23; color: #fff; position: relative;cursor: default;border-radius: 3px 3px 0 0;
+}
+.dashboard-widget .nav-tabs {
+    border-bottom: 1px solid #a21e23;
+}
+.dashboard-widget .nav-tabs > li > a {
+    border-bottom: none; padding: 3px 10px;color: #6381a7;
+}
+.bg-blue {
+    background: #36c7e2; color: #fff;
+}
+.bg-orange {
+    background: #f4c656; color: #fff;
+}
+.bg-green {
+    background: #7db99d; color: #fff;
+}
+.bg-red {
+    background: #e2817b; color: #fff;
+}
+.addTask .icon-addTask {
+    background: -webkit-linear-gradient(#a45053, #84151a);
+    background: -moz-linear-gradient(#a45053, #84151a);
+    background: -o-linear-gradient(#a45053, #84151a);
+    background: linear-gradient(#a45053, #84151a);
+}
+.project-tabs-menu .current a, .canreq-tabs-menu .current a {
+    color: #8f494c;
 }
 @media (max-width: 1024px){
 	.content-wraper, .footer-area {

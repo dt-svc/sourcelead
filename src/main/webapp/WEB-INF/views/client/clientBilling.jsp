@@ -38,18 +38,7 @@ z-index: 9999999;
 }
 </style>
 
-<!-- these files for export -->
-<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<!-- <script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- ends files of export -->
+
 
 
 
@@ -517,13 +506,28 @@ function customDate(orgRelationId,clientLocationId){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatbillingStartDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatbillingStartDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatbillingStartDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatbillingStartDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatbillingStartDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatbillingStartDate,
 		onSelect : function(selected) {
 			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
+			//var dt = toDate("#billingStartDate");
+			   var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
@@ -534,13 +538,14 @@ function customDate(orgRelationId,clientLocationId){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatbillingStartDate,
 		beforeShow: function(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
 			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
+			//var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
@@ -688,6 +693,19 @@ function clientInvoicePagination(){
    <!-- Add invoice Popup End -->
  
 <script>
+
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var recievePaymentPopUpDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	recievePaymentPopUpDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	recievePaymentPopUpDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	recievePaymentPopUpDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	recievePaymentPopUpDate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -781,7 +799,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {

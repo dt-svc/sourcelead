@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -283,6 +281,18 @@ $(document).ready(function(){
 		    </script> 
   
 <script>
+
+var finalDateFormatEduUpdate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	  finalDateFormatEduUpdate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -349,7 +359,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
-	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
+	result = result +'                  <i class="fa fa-times" onClick="remove()"></i></span> </div>';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
 	result = result +'            </div>                                                                ';
@@ -376,7 +386,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatEduUpdate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
@@ -387,7 +397,12 @@ function receivePaymentPop1(invoiceId,total){
     
 }
 
-</script>  
+</script> 
+<script> 
+function remove(){
+	$('#paymentAttachment').val("");
+}
+</script>
 <script>
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
@@ -590,12 +605,12 @@ function getInvoiceList(){
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 					'</sec:authorize>' ;
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 					'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>';				
 					'</sec:authorize>' ;
 				}
 				result = result +'         </td>  ';
@@ -746,7 +761,6 @@ $('#mypop').click(function(){
 
 <script>
 function invoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -1074,14 +1088,29 @@ function customDate(){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatClientInvoiceDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatClientInvoiceDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+			//var dt = new Date(selected);
+			//var dt = toDate("#billingStartDate");
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -1091,14 +1120,15 @@ function customDate(){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatClientInvoiceDate,
 		beforeShow: function(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+// 			var dt = new Date(selected);
+// 			var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}
@@ -1326,7 +1356,7 @@ function linkInvoice(invoiceId,totalAmount){
 
 <script>
 function LinkInvoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+	// $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#linkInvoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
@@ -1412,7 +1442,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoic
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount.toFixed(2)+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMerge("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";

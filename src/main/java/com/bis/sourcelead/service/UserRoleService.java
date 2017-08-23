@@ -29,7 +29,7 @@ public interface UserRoleService {
 	
 	public List<UserRole> getUsersListByUserNameAndLocationId(String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode) throws Exception;
 	
-	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId,String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset) throws Exception;
+	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId,String userName,Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset, String viewType) throws Exception;
 	
 	public List<UserRole> getUsersListByUserStateAndLocationId(String userState,Long locationId,Long userId,String loginUserRole,String userCode) throws Exception;
 
@@ -93,7 +93,7 @@ public interface UserRoleService {
 
 	public File getPdfFile(List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState, String orgName) throws Exception;
+			String userState, OrgLocations orgLocations) throws Exception;
 
 	 UserRole getUserRoleByUserId(Long userId)throws Exception;
 
@@ -112,7 +112,7 @@ public interface UserRoleService {
 	 
 	 List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception;
 
-	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
+	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY,String dateFormat) throws Exception;
 
 	 List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
 	 

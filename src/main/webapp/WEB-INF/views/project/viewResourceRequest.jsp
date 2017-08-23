@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
@@ -103,6 +101,7 @@ function getRequestedAssociatesList(){
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
 				result = result +'                     <th>Name</th>';
+				result = result +'                     <th>Location</th>';
 				result = result +'                     <th>Pay Rate</th>';
 				result = result +'                     <th>Bill Rate</th>';
 				result = result +'                     <th>Start Date</th>';
@@ -124,6 +123,10 @@ function getRequestedAssociatesList(){
 					    result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateName+'">'+opt.candidateName+'</div>';
 						result = result +'</td>'; 
+						
+						result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateLocation+'">'+opt.candidateLocation+'</div>';
+						result = result +'</td>';
 						
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.payRateStr+'">'+opt.payRateStr+'</div>';

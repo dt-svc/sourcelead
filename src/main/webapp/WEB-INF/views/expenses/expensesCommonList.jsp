@@ -86,7 +86,7 @@ function myExpensesListByStage(expenseStatus){
 							 result = result +"<td><div>"+endDateStr+"</div></td>";
 							 result = result +"<td><div>"+noOfExpenses+"</div></td>";
 							 result = result +"<td><div>"+totalAmount+"</div></td>";
-							 result = result +"<td> <div>"+report.expenseStatus+"</div></td>";
+							 result = result +"<td> <div title="+report.expenseStatus+">"+report.expenseStatus+"</div></td>";
 							 result = result +"</tr>";
 		        	  }
 	        		  $("#temp").val("temp");

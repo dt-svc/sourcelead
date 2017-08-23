@@ -2,12 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
-
 <script type="text/javascript">
 window.onload = function () {
 	initLocationAuto('clientLocation','clientCountry','clientState','clientCity','clientZipCode','clientLatitude','clientLongitude','invite');
@@ -60,7 +54,7 @@ window.onload = function () {
 									name="orgName" value="${orgName}" onclick="getOrgName();"
 									onblur="getOrgDetails(); validateClientName();"
 									field-name="Vendor Name"
-									data-validation="required validate_Space validate_length length2-250"
+									data-validation="required validate_length length2-250"
 									value=""> <input type="hidden" id="orgLocationId" /> <span
 									class="hidden">Enter Vendor Name</span>
 							</div>
@@ -154,18 +148,18 @@ window.onload = function () {
 						</div>
 
 						<div class="form-group" id="zipCodeDiv" style="display: block;">
-							<label class="col-md-3">ZipCode</label>
+							<label class="col-md-3">ZipCode1</label>
 							<div class="col-md-9">
 								<input class="form-control" id="clientZipCode" name="zipcode"
-									placeholder="Enter your Zip code" type="text"></input>
+									placeholder="Enter your Zip code" type="text" readonly onclick="zipcodeMask('${loginCountryName}','clientZipCode');"></input>
 							</div>
 						</div>
 
 						<div class="form-group" id="orgZipCodeDiv" style="display: none;">
-							<label class="col-md-3">ZipCode</label>
+							<label class="col-md-3">ZipCode2</label>
 							<div class="col-md-9">
 								<input class="form-control" id="orgZipCode" name="orgZipcode"
-									placeholder="Enter your Zip code" type="text" readonly></input>
+									placeholder="Enter your Zip code" type="text" readonly ></input>
 							</div>
 						</div>
 
@@ -381,7 +375,7 @@ function getOrgName(){
 	$( "#orgLocationId" ).val( '' );
 	
 	$("#webSite").attr("disabled", false);
-	/* $("#webSite" ).val(''); */
+	$("#webSite" ).val(''); 
 	
 	$("#orgCountry").val('');
 	$("#orgState").val('');
@@ -480,7 +474,7 @@ function getOrgDetails()
    	        		}
 		   	        
 			      	if(json['website'] != null && json['website'] != ''){
-			      		$("#webSite").val(json['website']);
+			      		$("#webSite").val("www."+json['website']);
 			      		$("#webSite").attr("disabled", true);
 			      	}
 			      	
@@ -490,14 +484,13 @@ function getOrgDetails()
    	        		document.getElementById("orgLocationDiv").style.display="";
    	        		    $("#orgLocation").val(json['location']);
 			      	}
-			      	
-			      	if(json['zipCode'] != null && json['zipCode'] != ''){
-			      	document.getElementById("zipCodeDiv").style.display="none";
-   	        		document.getElementById("orgZipCodeDiv").style.display="";
-   	        		    $("#orgZipCode").val(json['zipCode']);
+			      	var zipCode = json['zipCode'];
+			      	if(zipCode != null && zipCode != ""){
+			      		document.getElementById("zipCodeDiv").style.display="none";
+	   	        		document.getElementById("orgZipCodeDiv").style.display="";
+	   	        	    $("#orgZipCode").val(json['zipCode']);
 			      	}
-			    	
-			      	 
+			      	
    	        	}
    			 },
    	        error: function(e){
@@ -526,9 +519,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>Email should not your org user email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Email should not your org user email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
@@ -605,16 +598,25 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 			var frm = $('#client_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			/* var con = JSON.stringify(frm); */
+			var jsonData = JSON.stringify(frm);
+		    var form = $('#client_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData);
+			/* con = con.replace(/[{}]/g, ""); */
 			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	       /*  var jsonData = encodeURIComponent(con); */
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 		$.ajax({
 						type : "POST",
+						data: formData,
+		  	    	     contentType : 'application/json; charset=utf-8',
+		  		         processData: false,
+		  		         contentType:false, 
+		  	    	     dataType : 'json',
 						url : sourceleadUrl
-								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Vendor",
+								+ "/saveClient?${_csrf.parameterName}=${_csrf.token}&&orgLocationId="+orgLocationId+"&responderType=Vendor",
 						success : function(result) {
 							if (result == 'clientDashboard') {
 								location.replace(sourceleadUrl

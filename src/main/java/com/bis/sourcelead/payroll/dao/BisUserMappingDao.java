@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.Checks;
 
@@ -19,6 +20,8 @@ public interface BisUserMappingDao {
 	Checks saveChecks(Checks checks)throws Exception;
 
 	List<BisUserMapping> getEmployeeList(Long orgLocationId)throws Exception;
+
+	List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
 
 
 

@@ -39,9 +39,9 @@
 	-ms-border-radius:0 3px 3px 0;
 	border-radius:0 3px 3px 0;
 	}
-	.selp-custom-min .open {
+	/* .selp-custom-min .open {
 	z-index: 999999999 !important;
-	}
+	} */
 	.ratetype p {
 	bottom: -14px;
 	left:0px !important;
@@ -477,10 +477,10 @@ function editCandidate(candidateId){
 							result = result + '		    </div>';
 							result = result + '		  </div>';
 							
-							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
+							zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
 							if(json.designationType == "Other"){
@@ -1038,56 +1038,47 @@ function candidateProfile(candidateId,candidateType){
 	                 }
 		    	 }else{
 			    	var newSkill = this.value.replace(","," ");
-			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-			        		 select.append(option);
-			        		 select.find(option).prop('selected', true);
-				        		$("#skillName").trigger("chosen:updated");
-				        		
-				        		
-			        }
+			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				        {
+			    		 
+			    		//below code manually enter skills are not taken
+		    				/*  preventTabkey(e);
+							var isNewSkill = true;
+		                     $("#skillName option:selected").each(function(){
+								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										isNewSkill = false;
+										return false;
+								 }
+		                   });
+						   if(isNewSkill){
+								select.append(option);
+						   }
+		                   $("#skillName").trigger("chosen:updated"); */
+		                   
+	                  
+	                   // below code manually enter skills are taken
+	    				  
+	                   var isNewSkill = true;
+						 $("#skillName option:selected").each(function(){
+							 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+								 //alert(newSkill);
+								 isNewSkill = false;
+								 return false;
+							 }
+	                    
+	                   });
+						if(isNewSkill){
+	    				 var option = $("<option>").val(newSkill).text(newSkill);
+						 select.append(option);
+	                     select.find(option).prop('selected', true);
+						}
+		               $("#skillName").trigger("chosen:updated"); 
+		                }
 		    	 }
 		    });
 		    
-		    
-		    
-		
-       /*  var select, chosen;
-	    select = $("#skillName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#skillName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#skillName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#skillName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	}); */
-	    
+		  
 	    
 	    //Adding Customized Skills to the list
 	}
@@ -1142,24 +1133,6 @@ function candidateProfile(candidateId,candidateType){
        },
          
     }); 
-	 
-	 
-	 
-/* 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({  
-	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
-	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //candidateProfile(candidateId);
-	               }
-	        },
-	          
-	     }); 
-	 }else{
-		 
-	 } */
 	 
  }  
 </script>
@@ -1815,41 +1788,6 @@ function  removeValiationVendorContact() {
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
-		
-		//Adding Customized Visa to the list
-        var select, chosen;
-	    select = $("#visaName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
-	    chosen = select.data('chosen');
-	    
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var visaArray = this.value.split(",");
-				    	 if(visaArray.length > 1){
-			        		 for (var i=0; i < visaArray.length; i++) {
-			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
-			 	        		 $("#visaName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newVisa = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newVisa).text(newVisa);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#visaName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#visaName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	});
-	    
 	    
 	    //Adding Customized Skills to the list
 	}

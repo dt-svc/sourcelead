@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -83,28 +83,31 @@ public class addExpenseController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User reopenedUser = userService.getUserById(Long.parseLong(reOpenedUserId));
-		if(expenseId != null && null != type){
-			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		  	
-		}/*else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
-			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
-		}*/
-		
-
-		Long expenseID=Long.parseLong(expenseId);
+	    
+	    Long expenseID=Long.parseLong(expenseId);
 		List<ExpensesApproverHierarchy> ls = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expenseID);
 		String isSubmittedForApproval="";
 		for(ExpensesApproverHierarchy expensesApproverHierarchy:ls){
 			isSubmittedForApproval=expensesApproverHierarchy.getExpenseApprovalStatus().getValue();
 				
 		}
+	    
+		Expenses expense = expensesService.getExpenseById(Long.parseLong(expenseId));
+		if(expenseId != null && null != type && !type.equalsIgnoreCase("rejecting")){
+			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+			if(type.equalsIgnoreCase("accept")){
+				expense.setExpenseStatus(Submission_Status.SUBMITTED);
+				addExpensesService.storeAddExpensesData(expense);
+			}
+		}/*else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
+		}*/
 		
 		User superUser = userService.getUserById(Long.parseLong(reOpenedUserId));
-		ProjectMembers projectMembers = projectMembersService.getProjectMemberById(Long.parseLong(expenseId));
-		Expenses expense = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
-		if(StringUtils.isNotEmpty(expenseId) && null != type){
-			//User reopenedUser = expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,superUser,type,Constants.YES);
-			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),type,reopenedUser, projectMembers.getProjects().getProjectName());
+		//ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), Long.parseLong(expenseId));
+		
+		if(StringUtils.isNotEmpty(expenseId) && null != type && !type.equalsIgnoreCase("rejecting")){
+			expensesApprovalService.sendReopenExpenseAcceptOrRejectMail (expense,reason,superUser,orgLoc,type,reopenedUser, expense.getProjectMembers().getProjects().getProjectName());
 		}
 		
 		ModelAndView model = new ModelAndView();
@@ -125,6 +128,7 @@ public class addExpenseController {
 
 		 ExpensesEntryDocuments	expensesEntryDocument =	expensesEntryDocumentsService.getExpensesEntryDocumentById(entryDocumentId);	
 			    
+		 
 		 byte[] pdfBytes = null;
 			if("application/pdf".equalsIgnoreCase(expensesEntryDocument.getFileContentType())){
 				pdfBytes = expensesEntryDocument.getDocFile();

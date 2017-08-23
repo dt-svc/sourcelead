@@ -2,15 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
-<!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
-
-
-
  <!-- Save client Model popup  Start-->
          <div role="dialog" id="selectVendor" class="modal fade">
          <form:form id="vendor_form" name="vendor_form" method="post">
@@ -520,18 +511,28 @@ function validateClientName(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#vendor_form').validate(false, validationSettings)) {
-			var frm = $('#vendor_form').serializeFormJSON();
 			var orgLocationId = document.getElementById("orgLocationId").value;
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			/* var con = JSON.stringify(frm); */
+			var frm = $('#vendor_form').serializeFormJSON();
+		    var jsonData = JSON.stringify(frm);
+		     /* jsonData = jsonData.replace(/[{}]/g, "");  */
+		    var form = $('#vendor_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData);
+			/* con = con.replace(/[{}]/g, "");
 			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	        var jsonData = encodeURIComponent(con); */
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#vendor_form").attr("disabled", "disabled");
 			$("#vendor_form").addClass('button').val('Processing..');
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&orgLocationId="+orgLocationId+"&responderType=Vendor",
+						data: formData,
+		  	    	     contentType : 'application/json; charset=utf-8',
+		  		         processData: false,
+		  		         contentType:false, 
+		  	    	     dataType : 'json',
+						url : sourceleadUrl + "/saveClient?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&responderType=Vendor",
 						success : function(result) {
 							location.replace(sourceleadUrl+ "/addVendorContact");
 						},
@@ -562,9 +563,9 @@ function validateEmail(){
 				var result = data;
 				if(result == 'Invalid Email') {
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					$("input#email").after( "<p class='jquery_form_error_message'>" + email + " should not your org users email</span>");
+					$("input#email").after( "<p class='jquery_form_error_message'>Email  should not your org users email</span>");
 					document.getElementById("email").setAttribute( 'record-exist', 'yes');
-					document.getElementById("email").setAttribute( 'record-exist-errorMsg', email +"  should not your org users email");
+					document.getElementById("email").setAttribute( 'record-exist-errorMsg', "Email should not your org users email");
 					
 				}else if(result == 'Valid Email') {
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");

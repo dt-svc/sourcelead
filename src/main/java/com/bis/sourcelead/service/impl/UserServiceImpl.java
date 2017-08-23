@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
 	MasterCandidateService masterCandidateService;
 	
 	@Autowired
-	private OrgLocationService orgLocationsService;
+	private OrgLocationService orgLocationService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -519,9 +519,9 @@ public class UserServiceImpl implements UserService {
 		if(jsonObj.has("dateofJoin") && !isNullOrEmpty(jsonObj.getString("dateofJoin"))){
 			try {
 				   //SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					 OrgLocations orgLoc = orgLocationsService.getOrgLocations(orgLocationsId);
-						 SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
-						 employees.setHireDate(formatter.parse(jsonObj.getString("dateofJoin")));
+					 OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+						 //SimpleDateFormat formatter = orgLoc.getLocFullFormDateFormatter();
+						 employees.setHireDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), jsonObj.getString("dateofJoin")));
 				  
 				} catch (Exception e) {
 				  e.printStackTrace();

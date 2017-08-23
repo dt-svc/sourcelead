@@ -30,6 +30,8 @@ public class ExpensesCategoryDTO implements Serializable {
 	private String description;
 	
 	private List<String> fileNames;
+	
+	private List<Long> removedFilesIds;
 
 	public Long getId() {
 		return id;
@@ -126,5 +128,14 @@ public class ExpensesCategoryDTO implements Serializable {
 	public void setFileNames(List<String> fileNames) {
 		this.fileNames = fileNames;
 	}
+
+	public List<Long> getRemovedFilesIds() {
+		return removedFilesIds;
+	}
+
+	public void setRemovedFilesIds(List<Long> removedFilesIds) {
+		this.removedFilesIds = removedFilesIds;
+	}
+	
 	
 }

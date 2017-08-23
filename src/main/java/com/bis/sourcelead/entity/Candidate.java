@@ -218,6 +218,7 @@ public class Candidate implements Serializable{
 	private String userRole;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
@@ -393,6 +394,16 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private int profilePercentage;
 	 
+	 @Transient
+	 @JsonProperty
+	 private String candLocation;
+	 
+	 @Transient
+	 private Long relationId;
+	 
+	 @Transient
+	 private Long venSpocId;
+ 
 		 
 	public int getProfilePercentage()
 	{
@@ -1515,6 +1526,41 @@ public class Candidate implements Serializable{
 		this.systemGeneratedId = systemGeneratedId;
 	}
 
+	public String getCandLocation() {
+		StringBuilder loc = new StringBuilder();
+		if(city != null && !city.isEmpty()){
+			candLocation = loc.append(city).append(", ").append(state).append(", ").append(country).toString();
+		}else if(state != null && !state.isEmpty() && city == null){
+			candLocation = loc.append(state).append(", ").append(country).toString();
+		}else{
+			candLocation = loc.append(country).toString();
+		}
+		return candLocation;
+	}
+
+	public void setCandLocation(String candLocation) {
+		this.candLocation = candLocation;
+	}
+
+	public Long getRelationId()
+	{
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId)
+	{
+		this.relationId = relationId;
+	}
+
+	public Long getVenSpocId()
+	{
+		return venSpocId;
+	}
+
+	public void setVenSpocId(Long venSpocId)
+	{
+		this.venSpocId = venSpocId;
+	}
 
 }
 

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -481,7 +482,8 @@ public class Projects implements Serializable{
 
 	public String getStartDateStr() {
 		if(startDate != null){
-			startDateStr = LoginSessionController.DATEFORMAT.format(startDate);
+			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
+			startDateStr = dateFormat.format(startDate);	
 		}
 		return startDateStr;
 	}
@@ -492,7 +494,8 @@ public class Projects implements Serializable{
 
 	public String getEndDateStr() {
 		if(endDate != null){
-			endDateStr = Constants.DMY.format(endDate);
+			SimpleDateFormat dateFormat = orgLocationsId.getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(endDate);
 		}
 		return endDateStr;
 	}

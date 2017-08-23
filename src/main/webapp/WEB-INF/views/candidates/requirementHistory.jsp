@@ -9,12 +9,20 @@
 <script>
 function requirementHistory(candidateId){
 	var result = "";
+	if(window.candidateStatusGlobal == '0'){
+		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
+	}else{
+		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+	}
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
+	
+	/* result  = result + '<div class="success_pop" id="selector8" style="display: none;">'; */
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
 		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
-		result  = result + '   </div>';
+   /* result  = result + '   </div>'; */
+   
 	result = result+'	    </div>';
 	$("#tab-1").empty();
 	$("#tab-2").empty();
@@ -23,6 +31,8 @@ function requirementHistory(candidateId){
 	$("#tab-5").empty();
 	$("#tab-6").empty();
 	$("#tab-7").empty();
+	$("#tab-9").empty();
+	$("#tab-10").empty();
 	$("#tab-8").empty();
     $("#tab-8").append(result);  
 	
@@ -50,9 +60,8 @@ function requirementHistoryList(candidateId){
          url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
          success :function(data) {
         	 var json = JSON.parse(data);
+        	 $("#requirementHistoryDiv").empty();
         	 var result = "";
-     		result = result  +'	    <div class="project_tabs_inn_head">';
-     	    result = result  +'	    <div class="project_tabs_inn_table">';
      	    result = result  +'	      <table id="requirementHistoryPagination" class="display" cellspacing="0" width="100%">';
      		result = result  +'	        <thead>';
      		result = result  +'	          <tr>';
@@ -86,22 +95,19 @@ function requirementHistoryList(candidateId){
            	 }
 	           	result = result  +'	          <tr>';
 	    		result = result  +'	            <td><div><span class="mid-span ReqClick" onclick="requirementHistoryDetails('+candidateId+',\''+report.positionType+'\',\''+report.requirement.id+'\',\''+report.requirement.requirementUUID+'\',\''+report.id+'\');">'+report.positionType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+jobType+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.country+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+jobType+'">'+jobType+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.country+'">'+report.country+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+rate+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.ownerName+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+clientName+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+clientName+'">'+clientName+'</span></div></td>';
 	    		result = result  +'	            <td><div><span class="mid-span">'+report.createdDateStr+'</span></div></td>';
-	    		result = result  +'	            <td><div><span class="mid-span">'+report.submissionStatus+'</span></div></td>';
+	    		result = result  +'	            <td><div><span class="mid-span" title="'+report.submissionStatus+'">'+report.submissionStatus+'</span></div></td>';
 	    		result = result  +'	          </tr>';
            	 
      		}
      		result = result  +'	        </tbody>';
     		result = result  +'	      </table>';
-    		result = result  +'	    </div>';
-    		result = result  +'	    </div>';
     	 
-    	 $("#requirementHistoryDiv").empty();
     	 $("#requirementHistoryDiv").append(result);
     	 requirementHistoryPagination();
      		
@@ -110,7 +116,7 @@ function requirementHistoryList(candidateId){
 }
 </script>
 
-
+<!-- requirementHistoryPagination pagination script -->
 <script>
 function requirementHistoryPagination(){  
     $('#requirementHistoryPagination').DataTable( { 
@@ -126,6 +132,7 @@ function requirementHistoryPagination(){
     } );
 }
 </script>
+
 <script>
 	function predefineProfileImage(imageId){   
 		$(imageId).attr('src','resources/images/userprofile-img.png');
@@ -266,6 +273,16 @@ function getHistoryCandiResume(uuid,title){
 function getRateListDiv(candidateId,submissionId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  reqHistryRateListDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  reqHistryRateListDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  reqHistryRateListDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  reqHistryRateListDate = 'YYYY-DD-MM'; 
+	  }  
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,        
@@ -288,7 +305,7 @@ function getRateListDiv(candidateId,submissionId){
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
 	                     result = result + '        <th>Comment</th>';
-	                     result = result + '        <th>Date</th>';
+	                     result = result + '        <th>Date <br>(<small class="custom-small">'+reqHistryRateListDate+'</small>)</th>';
 	                     result = result + '        <th>Status</th>';
 	                     result = result + '      </tr>';
 	                     result = result + '    </thead>';

@@ -61,10 +61,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateDocuments;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
@@ -87,7 +83,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 /**
  * Handles requests for the Candidate List Service.
  * 
@@ -195,9 +190,9 @@ public class CandidateListRestController {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 		 */
-		String[] tableColumns = {"", "firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
+		String[] tableColumns = {"", "generatedId","firstName", "primarySkill", "designationType", "email", "mobilePhone", "country", "updatedDate"};
 		
-		int sortColumnIndex = 7; //by default sorting using updated date
+		int sortColumnIndex = 8; //by default sorting using updated date
 		boolean sortColumnOrder = false; //by default descending order
 		if(search.getOrder() != null && !search.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(search.getOrder().get(0).get("column"));
@@ -209,7 +204,7 @@ public class CandidateListRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-
+		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
 		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
@@ -300,6 +295,9 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(designationBoolQueryBuilder);
 		}
+		
+		
+	
 
 		// Notice_Period
 		List<String> noticePeriodArray = search.getNoticePeriod();
@@ -310,6 +308,11 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(noticePeriodBoolQueryBuilder);
 		}
+		
+		// Generated ID
+			if (StringUtils.isNotEmpty(search.getGeneratedId())) {
+				boolQueryBuilder.must(QueryBuilders.matchQuery("generatedId", search.getGeneratedId()));
+			}
 
 		// Country
 		if (StringUtils.isNotEmpty(search.getCountry())) {
@@ -431,6 +434,7 @@ public class CandidateListRestController {
 			} catch (NumberFormatException e) {
 			}
 		}
+		
 
 		// Educations
 		List<String> educationArray = search.getEducation();
@@ -441,7 +445,7 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(edunBoolQueryBuilder);
 		}
-
+		
 		// Exclude Educations
 		List<String> excludeEducationArray = search.getExcludeEducation();
 		if (excludeEducationArray != null && !excludeEducationArray.isEmpty()) {
@@ -500,6 +504,16 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(skillBoolQueryBuilder);
 		}
+		
+		List<String> candidateVisaArray = search.getCandidateVisa();
+		if (candidateVisaArray != null && !candidateVisaArray.isEmpty()) {
+			BoolQueryBuilder visaBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : candidateVisaArray) {
+				visaBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("visaType", keywd));
+			}
+			boolQueryBuilder.must(visaBoolQueryBuilder);
+		}
+		
 
 		if (StringUtils.isNotEmpty(search.getIsAssociate())
 				&& search.getIsAssociate().equalsIgnoreCase(Constants.YES)) {
@@ -525,8 +539,8 @@ public class CandidateListRestController {
 					StringBuilder json1 = new StringBuilder(hit.getSourceAsString());
 					CandidateIndex candidateIndex = mapper.readValue(json1.toString(), CandidateIndex.class);
 					if (candidateIndex.getUpdatedDate() != null) {
-						Date date1 = Constants.DF_YMD.parse(candidateIndex.getUpdatedDate());
-						String updatedDate = LoginSessionController.DATEFORMAT.format(date1);
+						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
+						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
 					}
 					candidatesList.add(candidateIndex);
@@ -576,6 +590,7 @@ public class CandidateListRestController {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("resumeContent", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", keywd));
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("generatedId", keywd));
 
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
@@ -738,16 +753,24 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/deleteCandidateImage", method = RequestMethod.GET)
 	public String deleteCandidateImage(@RequestParam(value = "candidateId", required = false) String candidateId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "loginUserId", required = false) Long loginUserId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
 
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		User user = userService.getUserById(loginUserId);
+		StringBuffer activitySummary = new StringBuffer();
 		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 				loginOrgLocation.getId());
 		candidate.setDocFile(null);
 		candidate.setFileContentType(null);
+		activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END);
 		candidate.setFileName(null);
 		candidateService.addCandidate(candidate);
+		
+		candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+		candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
+		
 		return "success";
 
 	}
@@ -1331,6 +1354,7 @@ public class CandidateListRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(skillName)) {
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			can.setSkillsName(skillName);
 			candidateService.saveOrUpdateCandidate(can);
@@ -1339,9 +1363,12 @@ public class CandidateListRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
+			activitySummary.append("Skills").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getSkillsName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(skillName).append(Constants.NEW_VALUE_TAG_END);
 			can.setSkillsName("");
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "failed";
 		}
 	}
@@ -1358,6 +1385,7 @@ public class CandidateListRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != can && StringUtils.isNotEmpty(visaName)) {
+			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
 			can.setVisaType(visaName);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
@@ -1365,8 +1393,12 @@ public class CandidateListRestController {
 			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "success";
 		} else {
+			activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
+			can.setVisaType(null);
 			candidateService.saveOrUpdateCandidate(can);
 			candidateService.saveOrUpdateCandidateElkDocument(can);
+			candidateActivityCommonUtil.storeCandidateHistory(can, user);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED, activitySummary.toString(), "CANDIDATE");
 			return "failed";
 		}
 	}
@@ -1401,6 +1433,7 @@ public class CandidateListRestController {
 				 Date endDateUTC =null ;
 				 String filterDate = null;
 				 Date startDateUTC = null;
+				 //SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
 				 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
 					 String endDate = outputFormatter1.print(zoned);
 					 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
@@ -1443,8 +1476,8 @@ public class CandidateListRestController {
 							 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
 								DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
 								DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-								Date startTime =  commonUtil.getDateFormat(customStartDate);
-								Date endTime =  commonUtil.getDateFormat(customEndDate);
+								Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+								Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
 								String customStartTimeStr = null;
 								String customEndTimeStr = null;
 								if(null !=startTime){
@@ -1487,7 +1520,7 @@ public class CandidateListRestController {
 						}
 						
 						if(null != candidate.getUpdatedDate()){
-							candidate.setCandidateUpdateDateToString(LoginSessionController.DATEFORMAT.format(candidate.getUpdatedDate()));
+							candidate.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),candidate.getUpdatedDate()));
 						}
 						 
 						freshList.add(candidate);

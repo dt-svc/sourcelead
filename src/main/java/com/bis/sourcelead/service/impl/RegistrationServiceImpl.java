@@ -471,7 +471,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setCreatedBy(user.getUserCode());
 		orgLocations.setCreatedDate(new Date());
 		orgLocations.setOrgLocationName(registration.getCompanyName());
-		orgLocations.setWebsite(registration.getWebsite());
+		orgLocations.setWebsite(convertWebsite(registration.getWebsite()));
 		
 		if(isNullOrEmpty(registration.getRegisteredOrgId())){
 			orgLocations.setIsPrimary(Constants.YES);
@@ -835,7 +835,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(null == orgUser){
 			orgUser = new User();
 			orgUser.setFirstName(jsonObj.getString("firstName"));
-			orgUser.setLastName(jsonObj.getString("lastName"));
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				orgUser.setLastName(jsonObj.getString("lastName"));
+			}
 			orgUser.setEmail(jsonObj.getString("userEmail"));
 			orgUser.setCreatedBy(user.getUserCode());
 			orgUser.setCreatedDate(new Date());
@@ -877,6 +879,36 @@ public class RegistrationServiceImpl implements RegistrationService{
 		employees.setUpdatedBy(user.getUserCode());
 		employees.setUpdatedDate(new Date());
 		employeesService.addEmployee(employees);
+		
+		 MasterCandidate masterCandidate = null; 
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 if(null == masterCandidate){
+		    masterCandidate = new MasterCandidate();
+			masterCandidate.setFirstName(jsonObj.getString("firstName"));
+			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
+				masterCandidate.setLastName(jsonObj.getString("lastName"));
+			}
+			masterCandidate.setEmail(jsonObj.getString("userEmail"));
+			masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+			masterCandidate.setCreatedBy(user.getUserCode());
+			masterCandidate.setCreatedDate(commonUtil.currentDate());
+			masterCandidate.setUpdatedBy(user.getUserCode());
+			masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		 }
+		
+		try {
+			masterCandidateService.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Candidate candidate = getCandidateDetails(orgUser,orgLocations,masterCandidate);
+		try {
+			Candidate savedCandidate = candidateService.addCandidate(candidate);
+			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		if(null == orgLocations.getUser()){
 			Org org = orgLocations.getOrg();

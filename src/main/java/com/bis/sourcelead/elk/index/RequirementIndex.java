@@ -2,6 +2,8 @@ package com.bis.sourcelead.elk.index;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 /**
  * 
  * @author Rajashekar and Prasanna
@@ -73,7 +75,7 @@ public class RequirementIndex {
 
     private String createdDate;
 
-	private String reqCreatedBy;
+	private Long reqCreatedBy;
 	
 	private String reqCreatedDate;
 	
@@ -151,6 +153,8 @@ public class RequirementIndex {
 	
 	private String reqCoolingOffPeriod;
 	
+	private String releaseJobToAllUsers;
+	
 	private String closedDate;
 	
 	private String description;
@@ -165,6 +169,7 @@ public class RequirementIndex {
 	
 	private String[] visaTypes;
 	
+	private String generatedId;
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -232,15 +237,14 @@ public class RequirementIndex {
 		this.reqUpdatedDate = reqUpdatedDate;
 	}
 
-	public String getReqCreatedBy() {
+	public Long getReqCreatedBy() {
 		return reqCreatedBy;
 	}
 
-	public void setReqCreatedBy(String reqCreatedBy) {
+	public void setReqCreatedBy(Long reqCreatedBy) {
 		this.reqCreatedBy = reqCreatedBy;
 	}
 
-	
 	public String getReqUpdatedBy() {
 		return reqUpdatedBy;
 	}
@@ -687,6 +691,16 @@ public class RequirementIndex {
 	public void setReqCoolingOffPeriod(String reqCoolingOffPeriod) {
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
 	}
+	public String getReleaseJobToAllUsers()
+	{
+		return releaseJobToAllUsers;
+	}
+
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
+	{
+		this.releaseJobToAllUsers = releaseJobToAllUsers;
+	}
+
 	public String[] getNoticePeriod() {
 		return noticePeriod;
 	}
@@ -826,6 +840,14 @@ public class RequirementIndex {
 	public void setVisaTypes(String[] visaTypes)
 	{
 		this.visaTypes = visaTypes;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 	

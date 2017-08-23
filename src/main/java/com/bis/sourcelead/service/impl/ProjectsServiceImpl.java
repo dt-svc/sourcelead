@@ -40,7 +40,6 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -80,6 +79,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -164,7 +164,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     
 	 
 	 
-	 @Override
+/*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
 			
 	    	Long number = 000000001L;
@@ -184,7 +184,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	        StringBuffer sb = new StringBuffer();
 			return sb.append(Constants.PROJECT_ENTITY).append(ConvetredCandidatesId).toString();
 			
-		}
+		}*/
 	 
 	@Override
 	public Projects saveProject(Projects projects) throws Exception{
@@ -325,7 +325,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 	// 	String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
+        //SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 	 	
         
         
@@ -338,11 +338,11 @@ public class ProjectsServiceImpl implements ProjectsService{
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
     	}
     	if(jsonObj.getString("StartDate") != null && jsonObj.getString("StartDate") != "" && jsonObj.getString("StartDate") != "undefined"){
-    		Date startDate = format.parse(jsonObj.getString("StartDate"));
+    		Date startDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("StartDate"));
 	    	projects.setStartDate(startDate);
     	}
     	if(!jsonObj.getString("EndDate").isEmpty()){
-    		Date endDate = format.parse(jsonObj.getString("EndDate"));
+    		Date endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("EndDate"));
 	    	projects.setEndDate(endDate);
     	}
     	
@@ -451,7 +451,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		// generated id for project
 		
-		projects.setGeneratedId(getProjectId(loginOrgLocation));
+		//projects.setGeneratedId(getProjectId(loginOrgLocation));
+		
 		//prepare projectmembers list...
 		Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 		projects.setProjectMembers(projectMemberList);
@@ -498,7 +499,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 */
 		
 		//send mail to assigned team members
-		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("Y".equals(jsonObj.getString("isMailToTeamMembers")))){
+		if((jsonObj.has("isMailToTeamMembers") && !isNullOrEmpty(jsonObj.getString("isMailToTeamMembers"))) && ("on".equals(jsonObj.getString("isMailToTeamMembers")))){
 			
 			User  approverUserId2  = null;
 			User  approverUserId1 = null;
@@ -529,7 +530,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}
 		
 		
-		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("Y".equals(jsonObj.getString("isMailToProjectManager")))){
+		
+		if((jsonObj.has("isMailToProjectManager") && StringUtils.isNotBlank(jsonObj.getString("isMailToProjectManager"))) && ("on".equals(jsonObj.getString("isMailToProjectManager")))){
 			if(jsonObj.has("level1Manager") && null != jsonObj.getString("level1Manager") && !jsonObj.getString("level1Manager").isEmpty()){
 				User  approverUserId1 =new User();
 				String level1UserDetails[] = jsonObj.getString("level1Manager").split(",");
@@ -593,13 +595,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		logger.debug("In ProjectsServiceImpl class getProjectsBasedOnClientsAndStatusSelectionInFilters method...");
     	List<Projects> projectList = projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(userId,clients,status,orgLocationsId);
     	 OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationsId);
-         SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
+         //SimpleDateFormat formatter = orglo.getLocFullFormDateFormatter();
     	for (Projects projects :projectList ){
-	    	    projects.setStartDateStr(formatter.format(projects.getStartDate()));
-	    	    projects.setEmployeeStartDateStr(formatter.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(formatter.format(projects.getEndDate()));
-			    	 projects.setEmployeeEndDateStr(formatter.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
 			    }
 			    
 			    if(null != projects.getOrgRelationId()){
@@ -612,11 +614,22 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    
 			    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectId(projects.getId());
 			    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
-			    	StringBuilder projectStringBuilder=new StringBuilder();
 			    	if(approverHierarchy.getLevel()==1){
-			    		projects.setManagerLevel1(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+			    		StringBuilder manager1 = new StringBuilder();
+			    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+			    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+			    		}else{
+			    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+			    		}
+			    		
 			    	}else if(approverHierarchy.getLevel()==2){
-			    		projects.setManagerLevel2(projectStringBuilder.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+			    		StringBuilder manager2 = new StringBuilder();
+			    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+			    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+			    		}else{
+			    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+			    		}
+			    		
 			    	}
 			    }
 	    }
@@ -824,17 +837,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		String resultJson =null;
 		
-		SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat=loginOrgLocations.getLocFullFormDateFormatter();
 		
 		if(projects.getCreatedDate() != null){
-			projects.setCreatedDateStr(dateFormat.format(projects.getCreatedDate()));	
+			projects.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getCreatedDate()));	
 		}
-	    projects.setStartDateStr(dateFormat.format(projects.getStartDate()));
+	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getStartDate()));
 	    if(projects.getEndDate() != null){
-	    	 projects.setEndDateStr(dateFormat.format(projects.getEndDate()));
+	    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getEndDate()));
 	    }
 	    if(projects.getUpdatedDate() != null){
-	    	projects.setUpdatedDateStr(dateFormat.format(projects.getUpdatedDate()));
+	    	projects.setUpdatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),projects.getUpdatedDate()));
 	    }
 	    if(projects.getProjectSequeneNumber() != null){
 	    	projects.setProjectSequeneNumber(projects.getProjectSequeneNumber());
@@ -974,11 +987,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+		 //SimpleDateFormat dateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 		 
-		 projects.setStartDateStr(dateFormat.format(projects.getStartDate()));
+		 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(dateFormat.format(changedEndDate));
+		    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),changedEndDate));
 		    }
 			
 		    
@@ -1046,11 +1059,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 //SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 
-		 
-		 projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+		 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 		    if(changedEndDate != null){
-		    	 projects.setEndDateStr(Constants.DF_DMY.format(changedEndDate));
+		    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),changedEndDate));
 		    }
 			
 		    
@@ -1109,7 +1122,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, JSONObject jsonObj) throws Exception {
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-
+	 	//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 Date currentDate = new Date();
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
@@ -1173,11 +1186,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	projects.setProjectStatus(Project_Status.getNameByValue(jsonObj.getString("projectStatusId")));
 		    	
 		    		if(jsonObj.has("endDateStr1")){
-		    			 SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
+		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
 //			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 			    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 					    		previousEndDate = projects.getEndDate();
-					    		Date endDate = format.parse(jsonObj.getString("endDateStr1"));
+					    		Date endDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("endDateStr1"));
 					    		//this method is used to send email for edit project end date
 								
 					    		 if(projects.getEndDate() != null ){		
@@ -1353,9 +1366,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	    /**
 	    	     * To use onclick parameters for emp tab and task tab
 	    	     */
-	    	    projects.setStartDateStr(Constants.DF_DMY.format(projects.getStartDate()));
+	    	    projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getStartDate()));
 			    if(projects.getEndDate() != null){
-			    	 projects.setEndDateStr(Constants.DF_DMY.format(projects.getEndDate()));
+			    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),projects.getEndDate()));
 			    }
 				
 			    
@@ -1380,11 +1393,11 @@ public class ProjectsServiceImpl implements ProjectsService{
 			//  This is to send mail to managers TeamMembers when project end Date is Edited
 			  Date previousEndDate = null;
 				if(jsonObj.has("endDateStr1")){
-		    		String pattern = "dd-MM-yyyy";
-		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
+		    		/*String pattern = "dd-MM-yyyy";
+		    	     SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 		    	     if(!jsonObj.getString("endDateStr1").isEmpty() && jsonObj.getString("endDateStr1") != null && !"NO DATA".equalsIgnoreCase(jsonObj.getString("endDateStr1"))){
 				    		previousEndDate = projects.getEndDate();
-				    		Date changedEndDate = format.parse(jsonObj.getString("endDateStr1"));
+				    		Date changedEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("endDateStr1"));
 							 
 				    		if(projects.getEndDate() != null ){
 				    			projects.getEndDate();
@@ -1644,7 +1657,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
-		SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
 			 if(pm.getEmployee() != null){
@@ -1659,14 +1672,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(dateFormat.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(dateFormat.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(dateFormat.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());
@@ -1724,7 +1737,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Collection<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
-		SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
+		//SimpleDateFormat dateFormat=pr.getOrgLocationsId().getLocFullFormDateFormatter();
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
 		 for(ProjectMembers pm : projectMembersList){
@@ -1742,14 +1755,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(dateFormat.format(pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(dateFormat.format(pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(dateFormat.format(pm.getProjects().getEndDate()));
+	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getEmployee() != null && pm.getEmployee().getUser() != null && pm.getEmployee().getUser().getId() != null){
 	          		pm.setUserId(pm.getEmployee().getUser().getId().toString());

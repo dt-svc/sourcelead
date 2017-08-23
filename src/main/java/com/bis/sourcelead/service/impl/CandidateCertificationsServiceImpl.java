@@ -19,10 +19,10 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.web.LoginSessionController;
@@ -44,6 +44,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private OrgLocationService orgLocationService;
 	 
 	 @Autowired
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
@@ -72,6 +75,7 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 public CandidateCertifications storeCandidateCertifications(JSONObject jsonObject ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 			CandidateCertifications candidatecertificate  = new CandidateCertifications();
 			Candidate can = new Candidate();
+			//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
 			StringBuffer activitySummary = new StringBuffer();
 			 if(candidateId!= null){
 				 if(jsonObject.has("candidatecertificateID")){
@@ -115,10 +119,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				if (jsonObject.has("validFrom") && !(jsonObject.getString("validFrom").isEmpty()) && !" ".equals(jsonObject.get("validFrom"))) {
 					try {
 						
-						String pattern = "dd-MM-yyyy";
-                        SimpleDateFormat format = new SimpleDateFormat(pattern);
+						//String pattern = "dd-MM-yyyy";
+                        //DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validFrom = format.parse(jsonObject.getString("validFrom"));
+                        Date validFrom = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),jsonObject.getString("validFrom"));
                         candidatecertificate.setValidFrom(validFrom);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -131,10 +135,10 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				}
 				if (jsonObject.has("validTo") && !(jsonObject.getString("validTo").isEmpty()) && !" ".equals(jsonObject.get("validTo"))) {
 					try {
-						String pattern = "dd-MM-yyyy";
-                        SimpleDateFormat format = new SimpleDateFormat(pattern);
+						//String pattern = "dd-MM-yyyy";
+						//DateFormat format = LoginSessionController.DATEFORMAT;
                         
-                        Date validTo = format.parse(jsonObject.getString("validTo"));
+                        Date validTo = commonUtil.orgLocationDateFormat(orgLocationId.getDateFormat(),jsonObject.getString("validTo"));
                         candidatecertificate.setValidTo(validTo);
 						
 						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
@@ -190,13 +194,15 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 @Override
 	 public List<CandidateCertifications> getCandidateCertificationListByCandidateIdAndOrgLocationID(Long candidateId,
 				Long orgLocationId) throws Exception {
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter(); 
 			 List<CandidateCertifications> CandidateCertificationsList = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId);
 			 for (CandidateCertifications candidateCertifications :CandidateCertificationsList ){
 				 if(candidateCertifications.getValidFrom() != null){
-					 candidateCertifications.setCandidatevalidFromDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidFrom())); 
+					 candidateCertifications.setCandidatevalidFromDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateCertifications.getValidFrom())); 
 				 }
 				 if(candidateCertifications.getValidTo() != null){
-					 candidateCertifications.setCandidatevalidToDateToString(LoginSessionController.DATEFORMAT.format(candidateCertifications.getValidTo())); 
+					 candidateCertifications.setCandidatevalidToDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidateCertifications.getValidTo())); 
 				 }
 				    }
 			 return CandidateCertificationsList;

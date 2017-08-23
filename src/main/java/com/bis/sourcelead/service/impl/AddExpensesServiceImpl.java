@@ -1,7 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +33,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
-import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -42,7 +40,6 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AddExpensesServiceImpl implements AddExpensesService{
@@ -77,6 +74,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Autowired
+	private CommonUtil commonUtil;
+	
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
 		//String expensesId = SourceLeadRandomCodeHelper.generateRandomExpensesIdCode();
@@ -107,14 +107,19 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 	}
 
 @Override
-public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status) throws NumberFormatException, Exception {
+public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
+	return addExpensesDao.storeAddExpensesData(expenses);
+}
+
+@Override
+public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
-	SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
+	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
-		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
 		 expenses = new Expenses();
 	 }
@@ -133,10 +138,10 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
 	}
 	if (jsonObj.has("startDateExpense") && !(jsonObj.getString("startDateExpense").isEmpty())){
-		expenses.setStartDate(dateFormat.parse(jsonObj.getString("startDateExpense")));
+		expenses.setStartDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("startDateExpense")));
 	}
 	if (jsonObj.has("endDateExpense") && !(jsonObj.getString("endDateExpense").isEmpty())){
-		expenses.setEndDate(dateFormat.parse(jsonObj.getString("endDateExpense")));
+		expenses.setEndDate(commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),jsonObj.getString("endDateExpense")));
 	 }
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
@@ -237,12 +242,12 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
 	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
+		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
 	 }
 }
 
 @Override
-public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
+public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc,String currencyCode) throws Exception {
 	
 	 
 	
@@ -298,7 +303,8 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
-		 globalVarsMap.put("totalAmount",Float.toString(expenses.getTotalAmount()));
+		 StringBuilder currencyType = new StringBuilder();
+		 globalVarsMap.put("totalAmount",currencyType.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode).toString());
 		 
 		 
 

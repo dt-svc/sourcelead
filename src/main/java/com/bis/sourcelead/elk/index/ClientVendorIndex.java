@@ -23,7 +23,7 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String initiatorLevel;
 	
-	private String responderLevel;
+	private String responderLevel ;
 	
 	private String initiatorCountry;
 	
