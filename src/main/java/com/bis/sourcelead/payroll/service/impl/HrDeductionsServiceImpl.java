@@ -305,4 +305,10 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	{
 		return hrDeductionsDao.getHrDeductionsDetailsbyId(hrDeductionId);
 	}
+
+
+	@Override
+	public List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
+		return hrDeductionsDao.getHrDeductionsByEmployeeId(orgLocations,empId);
+	}
 }

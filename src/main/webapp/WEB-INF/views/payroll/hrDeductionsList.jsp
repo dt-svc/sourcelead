@@ -95,6 +95,7 @@ function hrDeductionsList(){
 						$("#wagesAndTaxListDiv").empty();
 						$("#employeeListDiv").empty();
 						$("#checksListDiv").empty();
+						$("#invoiceDataDiv").empty();
 						$("#finalPayrollReportDiv").empty();
 						$("#hrDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");

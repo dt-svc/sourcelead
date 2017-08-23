@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Inet4Address;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,10 +34,19 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AccountDeductionsDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.BisUserMapping;
+import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
+import com.bis.sourcelead.payroll.service.BisUserMappingService;
+import com.bis.sourcelead.payroll.service.InvoiceDataService;
+import com.bis.sourcelead.payroll.service.UserPayrollService;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @Service
@@ -52,6 +62,18 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	
 	@Autowired
 	PayrollHelper payrollHelper;
+	
+	@Autowired
+	InvoiceDataService invoiceDataService;
+	
+	@Autowired
+	WageTaxSummaryService wageTaxSummaryService;
+	
+	@Autowired
+	UserPayrollService userPayrollService;
+	
+	@Autowired
+	BisUserMappingService  bisUserMappingService;
 	
 	@Override
 	public Integer saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
@@ -366,5 +388,79 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	public AccountDeductions saveAccountDeductions(AccountDeductions accountDeductions) throws Exception
 	{
 		return accountDeductionsDao.saveAccountDeductions(accountDeductions);
+	}
+
+
+	@Override
+	public List<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)
+			throws Exception {
+		return accountDeductionsDao.getAccountDeductionsByEmployeeId(orgLocations,empId);
+	}
+
+
+	@Override
+	public PayrollBalance getBalance(Long empId, OrgLocations orgLocations) throws Exception {
+		DecimalFormat df = new DecimalFormat("#.00");
+		double income = 0;
+		double directDeposit = 0;
+		double manualProcessed = 0;
+		double manualDeposit = 0;
+		double advance = 0;
+		double generalExpenses = 0;
+		double vendorPayment = 0;
+		double insurance = 0;
+		double immigration = 0;
+		PayrollBalance payrollBalance = new PayrollBalance();
+		if(empId !=null){
+			 List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
+			 if(invoiceDataList !=null && invoiceDataList.size() >0){
+				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null)).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 payrollBalance.setIncome(Double.parseDouble(df.format(income)));
+			 }
+			 
+			 
+			 List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
+			if(wagesAndTaxList !=null && wagesAndTaxList.size() >0){
+				 for(WageTaxSummary wageTaxSummary : wagesAndTaxList){
+					 if(wageTaxSummary.getCheckNo() !=null && !"".equals(wageTaxSummary.getCheckNo())){
+						if(Constants.DIR_DEP.equalsIgnoreCase(wageTaxSummary.getCheckNo())){
+							directDeposit = directDeposit + wageTaxSummary.getGross();
+							payrollBalance.setDirectDeposit(Double.parseDouble(df.format(directDeposit)));
+						}
+						if(!Constants.DIR_DEP.equalsIgnoreCase(wageTaxSummary.getCheckNo())){
+							manualProcessed = manualProcessed + wageTaxSummary.getGross();
+							payrollBalance.setManualProcessed(Double.parseDouble(df.format(manualProcessed)));
+						}
+					 }
+				 }	
+			}
+			
+			 
+			List<Checks> checksList =userPayrollService.getChecksListByEmployeeId(empId, orgLocations);
+			if(checksList !=null && checksList.size() >0){
+				 manualDeposit = checksList.stream().mapToDouble(c->c.getPayrollChecks()).sum();
+				 advance = checksList.stream().mapToDouble(c->c.getAdvance()).sum();
+				 generalExpenses = checksList.stream().mapToDouble(c->c.getGeneralExpenses()).sum();
+				 vendorPayment = checksList.stream().mapToDouble(c->c.getVendorPayments()).sum();
+				 payrollBalance.setManualDeposit(Double.parseDouble(df.format(manualDeposit)));
+				 payrollBalance.setAdvance(Double.parseDouble(df.format(advance)));
+				 payrollBalance.setGeneralExpenses(Double.parseDouble(df.format(generalExpenses)));
+				 payrollBalance.setVendorPayment(Double.parseDouble(df.format(vendorPayment)));
+			}
+			
+			List<BisUserMapping> masterList = bisUserMappingService.getMasterListByEmpId(empId, orgLocations);
+			if(masterList !=null && masterList.size() >0){
+				 insurance = masterList.stream().mapToDouble(m->m.getInsurance()).sum();
+				 immigration = masterList.stream().filter(m->(m.getImmigration() !=null) ).mapToDouble(m->Double.parseDouble(m.getImmigration())).sum();	
+				 payrollBalance.setInsurance(Double.parseDouble(df.format(insurance)));
+				 payrollBalance.setImmigration(Double.parseDouble(df.format(immigration)));
+			}
+			
+			double totalDebits = directDeposit + manualProcessed + manualDeposit + advance + generalExpenses + vendorPayment + insurance + immigration;
+			 double balance = income - totalDebits;
+			 payrollBalance.setBalance(Double.parseDouble(df.format(balance)));
+		}
+		
+		return payrollBalance;
 	}
 }

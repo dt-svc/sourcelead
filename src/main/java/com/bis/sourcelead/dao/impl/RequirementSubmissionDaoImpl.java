@@ -2488,8 +2488,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Transactional(rollbackFor = { Exception.class })
 		public List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate)
 		{
-					
-			    Session session = this.sessionFactory.getCurrentSession();
+			  Session session = this.sessionFactory.getCurrentSession();
 		        String submissionStages = "";
 		        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
 		        	submissionStages = " and rsh.toStage = 'SUBMISSION'";
@@ -2563,7 +2562,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		        	
 					return reqSubmsHistoryList;
 	        }
-	}
+		}
 
 		@Override
 		@Transactional
