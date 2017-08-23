@@ -132,6 +132,7 @@ function bisChecksList(){
 						$("#finalPayrollReportDiv").empty();
 						$("#employeeListDiv").empty();
 						$("#checksListDiv").empty();
+						$("#invoiceDataDiv").empty();
 						$("#checksListDiv").append(result);
 						$("#loading").removeAttr("style");
 						$('#payScale').css('display','none');

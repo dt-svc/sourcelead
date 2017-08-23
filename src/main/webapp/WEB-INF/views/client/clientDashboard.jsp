@@ -14,8 +14,8 @@
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
 <jsp:include page="clientNotes.jsp" /> 
-<jsp:include page="clientList.jsp" />
-
+<jsp:include page="clientListDatatable.jsp" />
+<jsp:include page="clientContactsDataTable.jsp" />
 <style type="text/css">
 clients_wrap {
 overflow-x: auto;
@@ -1555,6 +1555,7 @@ function listChange(sel){
 		 
 		/*  getVendorContactLists(); */
 		 getVendorContactListsELK();
+		loadVendorDataTable();
 	 }
 	 
 }

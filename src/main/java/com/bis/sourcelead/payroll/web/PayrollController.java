@@ -1,7 +1,19 @@
 package com.bis.sourcelead.payroll.web;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +33,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.File;
 import com.bis.sourcelead.payroll.entity.PayrollFileValidator;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -44,6 +58,9 @@ public class PayrollController {
 	
 	@Autowired
 	private BisUserMappingService bisUserMappingService;
+	
+	@Autowired
+	WageTaxSummaryService wageTaxSummaryService;
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -122,4 +139,59 @@ public class PayrollController {
 			
 	       return model;
 	}
+	
+	 @RequestMapping(value = "/payrollReport")
+		public ModelAndView payrollReport(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		 ModelAndView model = new ModelAndView();	
+		 if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.PAYROLL);
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
+
+			List<WageTaxSummary> av = getUniqueWageTaxSummary(wageTaxSummaryList);
+			
+			if(av !=null){
+				model.addObject("wageTaxSummaryList", av);
+			}
+			request.getSession().setAttribute("sessionData",sessionData);
+			
+			model.setViewName("payroll/payrollReport");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+
+	
+	 private List<WageTaxSummary> getUniqueWageTaxSummary(List<WageTaxSummary> wageTaxSummaryList) {
+		
+		 
+		 int s=0;
+		    List<WageTaxSummary> users=new ArrayList();
+		    for(WageTaxSummary us1 :wageTaxSummaryList){
+		        for(WageTaxSummary us2:users){
+		        if(us1.getEmployeeId().equals(us2.getEmployeeId())){
+		            s=1;
+		        }else{
+		            s=0;
+		        }
+
+		        }   if(s==0){
+		            users.add(us1);
+		        }
+
+		    }
+		    return users;
+		 
+		
+		
+		    
+	}
+
+
 }

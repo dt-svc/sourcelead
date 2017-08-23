@@ -1220,7 +1220,7 @@ public class ClientRestController {
 				BoolQueryBuilder clientLevelBoolQueryBuilder = QueryBuilders.boolQuery();
 				for(String keywd : clientLevelArray){
 					clientLevelBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("initiatorLevel", keywd));
-					clientLevelBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderLevel", keywd));
+//					clientLevelBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("responderLevel", keywd));
 				}
 				boolQueryBuilder.must(clientLevelBoolQueryBuilder);
 			}

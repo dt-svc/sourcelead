@@ -9,6 +9,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 
 public interface AccountDeductionsService {
 
@@ -21,5 +22,9 @@ public interface AccountDeductionsService {
 	AccountDeductions getDeductionsbyId(Long deductionId);
 
 	AccountDeductions saveAccountDeductions(AccountDeductions accountDeductions) throws Exception;
+
+	List<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
+	PayrollBalance getBalance(Long empId, OrgLocations orgLocations)throws Exception;
 
 }
