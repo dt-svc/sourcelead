@@ -63,7 +63,7 @@
                 <th>Source</th>
                 <th>Score</th>
                 <th>Submitted by</th>
-                <th>Current Status</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
