@@ -15,12 +15,14 @@ function requirementHistory(candidateId){
 		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
 	}
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
-	result  = result + '<div class="success_pop" id="selector8" style="display: none;">';
+	
+	/* result  = result + '<div class="success_pop" id="selector8" style="display: none;">'; */
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
 		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
-		result  = result + '   </div>';
+   /* result  = result + '   </div>'; */
+   
 	result = result+'	    </div>';
 	$("#tab-1").empty();
 	$("#tab-2").empty();
@@ -114,9 +116,7 @@ function requirementHistoryList(candidateId){
 }
 </script>
 
-
-<script>
-
+<!-- requirementHistoryPagination pagination script -->
 <script>
 function requirementHistoryPagination(){  
     $('#requirementHistoryPagination').DataTable( { 
@@ -124,7 +124,7 @@ function requirementHistoryPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -132,6 +132,7 @@ function requirementHistoryPagination(){
     } );
 }
 </script>
+
 <script>
 	function predefineProfileImage(imageId){   
 		$(imageId).attr('src','resources/images/userprofile-img.png');
