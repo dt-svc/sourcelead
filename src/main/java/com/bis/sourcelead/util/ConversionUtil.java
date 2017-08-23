@@ -404,5 +404,28 @@ public class ConversionUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
 		return formatter.format(date);
 	}
+
+	public Date getDateFromMMDDYYY_HHMMSS(String dateStr) {
+        Date date = null;
+		try {
+        	String pattern = "MM/dd/yyyy hh:mm:ss";
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            date =  format.parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
+	public static String getMM_DD_YYYAsString(Date date){
+		 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		 return dateFormat.format(date);
+
+	}
+	
+	public static String getDateAsDD_MM_YYYY_HHMMSS(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
+		return formatter.format(date);
+	}
 	
 }

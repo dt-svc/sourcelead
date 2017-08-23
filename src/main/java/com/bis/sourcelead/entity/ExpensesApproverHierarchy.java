@@ -127,7 +127,10 @@ private String expenseEmpUserType;
 private String expensesProjectName; 
 
 @Transient
-private String userTypeVendorName; 
+private String userTypeVendorName;
+
+@Transient
+private String expensesApproverHierarchyPurpose; 
 
 public Long getId()
 {
@@ -338,6 +341,14 @@ public long getExpensesUserid() {
 
 public void setExpensesUserid(long expensesUserid) {
 	this.expensesUserid = expensesUserid;
+}
+
+public String getExpensesApproverHierarchyPurpose() {
+	return expensesApproverHierarchyPurpose;
+}
+
+public void setExpensesApproverHierarchyPurpose(String expensesApproverHierarchyPurpose) {
+	this.expensesApproverHierarchyPurpose = expensesApproverHierarchyPurpose;
 }
 
 
