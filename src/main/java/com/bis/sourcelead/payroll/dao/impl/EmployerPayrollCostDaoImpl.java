@@ -49,4 +49,19 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 		return empCostList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmployerPayrollCost getEmployeePayrollCostById(String EmpId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<EmployerPayrollCost> empCostList = null;
+		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.employeeId =:empId";
+	    empCostList = session.createQuery(query).setString("empId", EmpId).setCacheable(true).list();
+		if(empCostList != null && empCostList.size() >0)
+		{
+			return empCostList.get(0);
+		}
+		return null;
+	}
+
 }
