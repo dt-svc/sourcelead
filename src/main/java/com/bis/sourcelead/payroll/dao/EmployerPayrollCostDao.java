@@ -10,5 +10,7 @@ public interface EmployerPayrollCostDao {
 	EmployerPayrollCost saveEmployerPayrollCost(EmployerPayrollCost employerPayrollCost)throws Exception;
 
 	List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation);
+	
+	EmployerPayrollCost getEmployeePayrollCostById(String EmpId);
 
 }
