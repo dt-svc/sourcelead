@@ -20,4 +20,6 @@ public interface AccountDeductionsDao {
 
 	AccountDeductions getDeductionsbyId(Long deductionId);
 
+	List<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
 }

@@ -18,4 +18,6 @@ public interface HrDeductionsService {
 
 	List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId);
 
+	List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
 }

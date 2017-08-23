@@ -85,4 +85,19 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 		return accountDeductions;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<AccountDeductions> getAccountDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AccountDeductions> accountDeductionslist = null;
+		String query = "from AccountDeductions ad left join fetch ad.orgLocationId where ad.orgLocationId.id =:orgLocationId and ad.employeeId = :empId";
+		accountDeductionslist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
+		if(accountDeductionslist != null && accountDeductionslist.size() >0)
+		{
+			return accountDeductionslist;
+		}
+		return accountDeductionslist;
+	}
+
 }
