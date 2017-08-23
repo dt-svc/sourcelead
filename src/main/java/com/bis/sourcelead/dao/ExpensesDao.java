@@ -17,7 +17,7 @@ public interface ExpensesDao<Expenses> {
 	public List<Expenses> getAllExpenses(Long orgLocId, Long loginUserId, String expenseStatus, Date startDateUTC, Date endDateUTC);
 	public List<Expenses> getIndividualExpense(Long orgLocId,Long loginUserId,String expenseId);
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
-	public Expenses getExpenseByExpenseId(long expenseId);
+	public Expenses getExpenseById(long id);
     public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationID)throws Exception;
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType);
 	}

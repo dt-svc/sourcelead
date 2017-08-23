@@ -92,7 +92,7 @@ public class addExpenseController {
 				
 		}
 	    
-		Expenses expense = expensesService.getExpenseByExpenseId(Long.parseLong(expenseId));
+		Expenses expense = expensesService.getExpenseById(Long.parseLong(expenseId));
 		if(expenseId != null && null != type && !type.equalsIgnoreCase("rejecting")){
 			expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(Long.parseLong(expenseId),reason,loginUser,type,Constants.YES);
 			if(type.equalsIgnoreCase("accept")){
