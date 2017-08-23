@@ -5,20 +5,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
-function clearSearch(){
-	document.getElementById("requirement_form").reset();
-	$('#requirementStatu').val('').trigger('chosen:updated');
-	$('#updatedOn').val('').trigger('chosen:updated');
-	$('#client').val('').trigger('chosen:updated');
-	/* $('#country').val('').trigger('chosen:updated'); */
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
-	$('#noticePeriod').val('').trigger('chosen:updated');
-	$('#requirementTitle').val('').trigger('chosen:updated');
-	$('#jobId').val('').trigger('chosen:updated');
-	$('#generatedId').val('').trigger('chosen:updated');
-}
-function requirementListCheck(searchValue,universalRequirementSearchList,searchType){
+function requirementListCheck(searchValue,universalRequirementSearchList,searchType,sourceleadUrl){
 	 if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
 		 && universalRequirementSearchList=="universalRequirementList")	 {
 		 $("#dataTableSearch").val(searchValue);
@@ -27,23 +14,23 @@ function requirementListCheck(searchValue,universalRequirementSearchList,searchT
 			  	$("#c8").prop("checked", true);
 			 	$("#c9").prop("checked", true);
 		 }
-		 requirementList(searchType);
+		 requirementList(searchType,sourceleadUrl);
 	  }
 	  else if(searchType != null && searchType != '' && searchType != 'undefined'
 		   && searchType=="advanceSearch")	 {
 		   $("#c6").prop("checked", false);
 		   $("#c8").prop("checked", false);
 		   $("#c9").prop("checked", false);
-		   requirementList(searchType);
+		   requirementList(searchType,sourceleadUrl);
 	 }
 	 else{
 		  	$("#c6").prop("checked", true);
 		  	$("#c8").prop("checked", true);
 		 	$("#c9").prop("checked", true);
-		 	requirementList('list');
+		 	requirementList('list',sourceleadUrl);
 	} 
 }
-function requirementList(searchType){  
+function requirementList(searchType,sourceleadUrl){  
 	    var url = '';
 	    if(searchType == 'list' || searchType == 'universalSearch'){
 	    	var filterStatus = [];
@@ -60,10 +47,10 @@ function requirementList(searchType){
 			searchValue = searchValue ? searchValue : "";
 			$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    url = '${sourceleadUrl}'+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue;
+		    url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue;
 	    }
 	    else if(searchType == 'advanceSearch'){
-	    			 url = '${sourceleadUrl}'+"/searchRequirement?searchType="+searchType;
+	    			 url = sourceleadUrl+"/searchRequirement?searchType="+searchType;
 	    			url += "&"+$($('#requirement_form')[0]).serialize();
 	    			closePop();
 	    			clearAlldata();
@@ -350,6 +337,7 @@ function jpagination(url){
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
+			         				result = result +"<option value='OPEN'>OPEN</option>";
 
 			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
 			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -507,8 +495,8 @@ function jpagination(url){
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": ""
-	     		 /* "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>" */
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
    } );
    $("#requirementPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
