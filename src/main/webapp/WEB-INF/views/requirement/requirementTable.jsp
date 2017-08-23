@@ -55,10 +55,10 @@ function requirementList(searchType,sourceleadUrl){
 	    			closePop();
 	    			clearAlldata();
 	    }
-	    prepareRequirementData(url);
+	    prepareRequirementData(url,sourceleadUrl);
  } 
 
-function prepareRequirementData(url){
+function prepareRequirementData(url,sourceleadUrl){
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
@@ -98,7 +98,7 @@ function prepareRequirementData(url){
      	 var opt = json[i];
      	statusvalidating(opt.id);
    } */
-   jpagination(url); 
+   jpagination(url,sourceleadUrl); 
    /* msgFadein1(); */ 
 }
 
@@ -129,7 +129,7 @@ function clearSearch(){
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
 }
-function jpagination(url){ 
+function jpagination(url,sourceleadUrl){ 
 	var colIndex = 0;
    $('#requirementPagination').DataTable( { 
    		"processing": true,
@@ -503,7 +503,7 @@ function jpagination(url){
    $("input[type=search]").hide();
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
-   		 requirementList('list');
+   		 requirementList('list',sourceleadUrl);
    	   }
    	});
  }

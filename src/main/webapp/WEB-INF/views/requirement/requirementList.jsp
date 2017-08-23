@@ -317,14 +317,14 @@ function statusvalidating(id){
 										<c:if test="${report.locationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
+												onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.responderLocationId.org.orgName}">${report.responderLocationId.org.orgName}</label></li>
 											<%-- 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option> --%>
 										</c:if>
 										<c:if test="${report.responderLocationId.id == loginOrgLocId}">
 											<li><input id="clientName${report.id}"
 												name="clientNameById" value="${report.id}"
-												onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');" type="checkbox"><label
+												onclick="requirementList('list','${sourceleadUrl}');" type="checkbox"><label
 												title="${report.locationId.org.orgName}">${report.locationId.org.orgName}</label></li>
 											<%-- 			                  	 	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option> --%>
 										</c:if>
@@ -338,7 +338,7 @@ function statusvalidating(id){
 								<ul>
 									<li><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"
-										onclick="requirementList('list','${sourceleadUrl}','${sourceleadUrl}');"><label for="c6">New<span
+										onclick="requirementList('list','${sourceleadUrl}');"><label for="c6">New<span
 											id="newRequirementCount"></span></label></li>
 									<li><input id="c7" name="requirementStatus"
 										type="checkbox" value="DRAFT" onclick="requirementList('list','${sourceleadUrl}');"><label
