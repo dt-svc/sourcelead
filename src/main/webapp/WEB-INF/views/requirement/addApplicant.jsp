@@ -246,14 +246,34 @@ function getAddApplicant(requirementId){
 			    			var newSkill = this.value.replace(","," ");
 			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 			                {
+			    				
+			    				 
 			    				 preventTabkey(e);
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			    				/*  var option = $("<option>").val(newSkill).text(newSkill);
 			                     select.append(option);
 			                     select.find(option).prop('selected', true);
 			                     $("#candidateSkills option").each(function(){
 			                         $(this).siblings("[value='"+ this.value+"']").remove();
 			                   });
-			                   $("#candidateSkills").trigger("chosen:updated");
+			                   $("#candidateSkills").trigger("chosen:updated"); */
+			                   
+			    				 var isNewSkill = true;
+								 $("#candidateSkills option:selected").each(function(){
+									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
+										 //alert(newSkill);
+										 isNewSkill = false;
+										 return false;
+									 }
+			                    
+			                   });
+								if(isNewSkill){
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+								 select.append(option);
+			                     select.find(option).prop('selected', true);
+								}
+				               $("#candidateSkills").trigger("chosen:updated"); 
+			                   
+			                   
 			                }
 					       
 		    	         }
@@ -2310,19 +2330,27 @@ function setRateTypesByLocation(){
 			        	 $("input[name=EmailId]").val(json.email);
 			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
 			        	 
+			        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
 			        	 $("#candidateSkills").empty();
 			        	 var internalOutput = "";
- 						 <c:forEach var="skill" items="${skillsList}">
- 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
- 	                     </c:forEach>
- 						var skills = json.skills;
- 						if(skills != null && skills != 'undefined' && skills != ''){
- 							var str_array = skills.split(',');
- 							for(var i = 0; i < str_array.length; i++) {
- 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
- 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
- 							}
- 						}
+				        	 var skills = json.skills;
+	 						 <c:forEach var="skill" items="${skillsList}">
+	 						var existed = 0;
+	 						if(skills != null && skills != 'undefined' && skills != ''){
+	 							var str_array = skills.split(',');
+	 							for(var i = 0; i < str_array.length; i++) {
+	 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+	 							  if(str_array[i] == "${skill.name}"){
+	 								 existed = 1;
+	 								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+	 							  }
+	 							}
+	 						}
+	 						if(existed == 0){
+	 							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+			                }
+	 	                     </c:forEach>
+ 						
  						$("#candidateSkills").append(internalOutput);
  		        		$("#candidateSkills").trigger("chosen:updated");
   						
