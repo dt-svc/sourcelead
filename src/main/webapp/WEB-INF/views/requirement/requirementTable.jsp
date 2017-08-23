@@ -55,10 +55,10 @@ function requirementList(searchType,sourceleadUrl){
 	    			closePop();
 	    			clearAlldata();
 	    }
-	    prepareRequirementData(url,sourceleadUrl);
+	    prepareRequirementData(url);
  } 
 
-function prepareRequirementData(url,sourceleadUrl){
+function prepareRequirementData(url){
 	var orgATS = '${SourceLeadWeb_ats}';
 	var orgVMS = '${SourceLeadWeb_vms}';
 	 $("#requirementList").removeAttr("style");
@@ -98,7 +98,7 @@ function prepareRequirementData(url,sourceleadUrl){
      	 var opt = json[i];
      	statusvalidating(opt.id);
    } */
-   jpagination(url,sourceleadUrl); 
+   jpagination(url); 
    /* msgFadein1(); */ 
 }
 
@@ -129,7 +129,7 @@ function clearSearch(){
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
 }
-function jpagination(url,sourceleadUrl){ 
+function jpagination(url){ 
 	var colIndex = 0;
    $('#requirementPagination').DataTable( { 
    		"processing": true,
@@ -337,7 +337,6 @@ function jpagination(url,sourceleadUrl){
 			         			}
 			         			else if(opt.requirementSubmissionStatus == "CANCEL"){
 			         				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
-			         				result = result +"<option value='OPEN'>OPEN</option>";
 
 			         			}else if(opt.requirementSubmissionStatus == "OPEN"){
 			         				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -503,7 +502,7 @@ function jpagination(url,sourceleadUrl){
    $("input[type=search]").hide();
    $("#dataTableSearch").keyup(function(e) {
    	   if(e.which === 13) {
-   		 requirementList('list',sourceleadUrl);
+   		 requirementList('list');
    	   }
    	});
  }
