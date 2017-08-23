@@ -1002,7 +1002,7 @@ function cancel(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 
