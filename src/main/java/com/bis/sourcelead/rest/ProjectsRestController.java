@@ -32,6 +32,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
@@ -166,15 +167,21 @@ public class ProjectsRestController {
 	    }
       
        
-       
-       
-       
-       
        @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId) throws Exception {
     	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
 		   return projectMembersList;
 	    }
+       
+       
+       @RequestMapping(value = "/getProjectQuestionnaireDetails", method = RequestMethod.GET)
+		public  ProjectQuestionnaire getProjectQuestionnaireDetails(@RequestParam(value="projectId", required=true) Long projectId) throws Exception {
+    	   ProjectQuestionnaire projectQuestionnaire = projectQuestionnaireService.getProjectQuestionnaireByProjectId(projectId);
+		   return projectQuestionnaire;
+	    }
+       
+       
+       
 
 	
 	/**

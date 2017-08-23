@@ -80,5 +80,15 @@ FOREIGN KEY(ORG_LOCATIONS_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
 
 
 
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Manual testing','Manual testing','Test Management');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Automation','Automation','Test Management');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Jmeter','Jmeter','Test Management');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Selenium','Selenium','Test Management');
 
 
+
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Scrum','Scrum','Agile Methodologies');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Kanban','Kanban','Agile Methodologies');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Scrumban','Scrumban','Agile Methodologies');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('XP','XP','Agile Methodologies');
+INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('SAFe','SAFe','Agile Methodologies');

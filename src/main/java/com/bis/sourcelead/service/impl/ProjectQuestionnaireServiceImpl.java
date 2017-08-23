@@ -78,7 +78,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getCategory() != null && projectAdditionalDetailsDTO.getCategory().size() > 0){
 	    	StringBuilder categoryBuilder = new StringBuilder();
 	    	for(String category : projectAdditionalDetailsDTO.getCategory()){
-	    		categoryBuilder.append(category).append(",");
+	    		categoryBuilder.append(category.trim()).append(",");
 	    	}
 	    	String categoryStr = categoryBuilder.toString();
 	    	
@@ -95,7 +95,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getFrontEnd() != null && projectAdditionalDetailsDTO.getFrontEnd().size() > 0){
 	    	StringBuilder frontEndBuilder = new StringBuilder();
 	    	for(String frontEnd : projectAdditionalDetailsDTO.getFrontEnd()){
-	    		frontEndBuilder.append(frontEnd).append(",");
+	    		frontEndBuilder.append(frontEnd.trim()).append(",");
 	    	}
 	    	String frontEndStr = frontEndBuilder.toString();
 	    	questionnarie.setFrontEnd(frontEndBuilder.substring(0, frontEndStr.length()-1)); 
@@ -107,7 +107,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getBackEnd() != null && projectAdditionalDetailsDTO.getBackEnd().size() > 0){
 	    	StringBuilder backEndBuilder = new StringBuilder();
 	    	for(String backEnd : projectAdditionalDetailsDTO.getBackEnd()){
-	    		backEndBuilder.append(backEnd).append(",");
+	    		backEndBuilder.append(backEnd.trim()).append(",");
 	    	}
 	    	String backEndStr = backEndBuilder.toString();
 	    	questionnarie.setBackEnd(backEndBuilder.substring(0, backEndStr.length()-1)); 
@@ -118,7 +118,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getProjectDatabase() != null && projectAdditionalDetailsDTO.getProjectDatabase().size() > 0){
 	    	StringBuilder dataBaseBuilder = new StringBuilder();
 	    	for(String database : projectAdditionalDetailsDTO.getProjectDatabase()){
-	    		dataBaseBuilder.append(database).append(",");
+	    		dataBaseBuilder.append(database.trim()).append(",");
 	    	}
 	    	String dataBaseStr = dataBaseBuilder.toString();
 	    	questionnarie.setDataBase(dataBaseBuilder.substring(0, dataBaseStr.length()-1)); 
@@ -131,7 +131,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getOtherTechnologies() != null && projectAdditionalDetailsDTO.getOtherTechnologies().size() > 0){
 	    	StringBuilder otherTechBuilder = new StringBuilder();
 	    	for(String otherTech : projectAdditionalDetailsDTO.getOtherTechnologies()){
-	    		otherTechBuilder.append(otherTech).append(",");
+	    		otherTechBuilder.append(otherTech.trim()).append(",");
 	    	}
 	    	String otherTechStr = otherTechBuilder.toString();
 	    	questionnarie.setOtherTechnologies(otherTechBuilder.substring(0, otherTechStr.length()-1)); 
@@ -143,7 +143,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getTestManagement() != null && projectAdditionalDetailsDTO.getTestManagement().size() > 0){
 	    	StringBuilder testManagementBuilder = new StringBuilder();
 	    	for(String teamManagement : projectAdditionalDetailsDTO.getTestManagement()){
-	    		testManagementBuilder.append(teamManagement).append(",");
+	    		testManagementBuilder.append(teamManagement.trim()).append(",");
 	    	}
 	    	String testManagementStr = testManagementBuilder.toString();
 	    	questionnarie.setTestManagement(testManagementBuilder.substring(0, testManagementStr.length()-1)); 
@@ -161,7 +161,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	   if(projectAdditionalDetailsDTO.getAgileMethodologies() != null && projectAdditionalDetailsDTO.getAgileMethodologies().size() > 0){
 	    	StringBuilder agileMethodologiesBuilder = new StringBuilder();
 	    	for(String agileMethod : projectAdditionalDetailsDTO.getAgileMethodologies()){
-	    		agileMethodologiesBuilder.append(agileMethod).append(",");
+	    		agileMethodologiesBuilder.append(agileMethod.trim()).append(",");
 	    	}
 	    	String ageilMethodsStr = agileMethodologiesBuilder.toString();
 	    	questionnarie.setAgileMethodologies(agileMethodologiesBuilder.substring(0, ageilMethodsStr.length()-1)); 

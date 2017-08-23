@@ -141,6 +141,12 @@ public class ProjectsController {
 				List<LookUpData> industriesList = lookUpDataService.getLookUpDataByCategory("Industries");
 				model.addObject("industriesList", industriesList);
 				
+				List<LookUpData> testManagementList = lookUpDataService.getLookUpDataByCategory("Test Management");
+				model.addObject("testManagementList", testManagementList);
+				
+				List<LookUpData> agileMethodologiesList = lookUpDataService.getLookUpDataByCategory("Agile Methodologies");
+				model.addObject("agileMethodologiesList", agileMethodologiesList);
+				
 				
 				if(!isNullOrEmpty(projectUUID)){
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);

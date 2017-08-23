@@ -120,10 +120,9 @@
 			<h2>10. Test management</h2>
 			<div class="projQueCtaInn wid50">
 			  <select multiple="" class="chosen-select form-control" id="testManagement" name="testManagement">
-				<option value='Manual Testing'>Manual Testing</option>
-				<option value='Automation'>Automation </option>
-				<option value='Jmetter'>Jmetter </option>
-				<option value='Selenium'>Selenium </option>
+				<c:forEach var="testMgmt" items="${testManagementList}">
+	                     <option value="${testMgmt.name}">${testMgmt.name}</option>
+                </c:forEach>
 			  </select>
 			</div>
 		</div>
@@ -142,10 +141,9 @@
 			<h2>Agile Methodologies</h2>
 			<div class="projQueCtaInn wid50">
 			  <select multiple="" class="chosen-select form-control" id="agileMethodologies" name="agileMethodologies">
-				 <option value="Scrum">Scrum</option>
-				 <option value="Kanban">Kanban</option>
-				 <option value="Scrumban">Scrumban</option>
-				 <option value="XP">XP</option>
+				<c:forEach var="agileMethods" items="${agileMethodologiesList}">
+	                     <option value="${agileMethods.name}">${agileMethods.name}</option>
+                </c:forEach>
 			  </select>
 			</div>
 		</div>																		
@@ -166,7 +164,6 @@
   </div>
 </div>
 </form:form>
-
 </div> 
 
 <script>
@@ -238,6 +235,242 @@ $('#projectExecuitionModel input').on('change', function() {
 </script>
 
 
+<script>
+function getAdditionalDetails(){
+	var projectId = document.getElementById("projectId").value;
+	if(projectId){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getProjectQuestionnaireDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId, 
+			        success: function(json) {
+			        	if(json != null){
+			        		if(json.projectLocation != null && json.projectLocation != 'undefined'){
+			        			 $("input[name=projectLocation]").val(json.projectLocation);
+			        		}
+			        		
+			        		if(json.industry != null && json.industry != 'undefined'){
+			        			 $("select[name=industry]").val(json.industry);
+			        			 $("#industry").trigger("chosen:updated");
+			        		}
+			        		
+			        		if(json.industryOtherType != null && json.industryOtherType != 'undefined'){
+			        			 document.getElementById("otherProjectIndustry").style.display="";
+			        			 $("input[name=otherIndustry]").val(json.industryOtherType);
+			        		}
+			        		
+			        		
+			        		if(json.projectScope != null && json.projectScope != 'undefined'){
+			        			$(":radio[value='"+json.projectScope+"']").attr('checked',true);
+			        		}
+			        		
+			        		if(json.projectOtherScope != null && json.projectOtherScope != 'undefined'){
+			        			 document.getElementById("otherProjectScope").style.display="";
+			        			 $("input[name=otherScope]").val(json.projectOtherScope);
+			        		}
+			        		
+			        		if(json.employmentCategory != null && json.employmentCategory != 'undefined'){
+			        			var category = json.employmentCategory.split(',');
+			        			for (var i=0; i<category.length; i++){
+			        				$(":checkbox[value='"+category[i]+"']").prop("checked","true");
+			        			}
+			        		}
+			        		
+			        		if(json.teamSize != null && json.teamSize != 'undefined'){
+			        			$("input[name=teamSize]").val(json.teamSize);
+			        		}
+			        		
+			        		
+			        		if(json.frontEnd != null && json.frontEnd != 'undefined'){
+			        			$("#frontEnd").empty(); 
+			        			
+			        			var internalOutput = "";
+			        			 
+			        			var frontEndTech = json.frontEnd;
+			        			<c:forEach var="skill" items="${skillsList}">
+			        			var existed = 0;
+			        			if(frontEndTech != null && frontEndTech != 'undefined' && frontEndTech != ''){
+				        			var str_array = frontEndTech.split(',');
+				        			for(var i = 0; i < str_array.length; i++) {
+					        			str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+					        			if(str_array[i] == "${skill.name}"){
+						        			existed = 1;
+						        			internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+					        			}
+				        			}
+			        			}
+			        			if(existed == 0){
+			        			internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+			        			}
+			        			</c:forEach>
+	    	                     
+	     							
+	     						$("#frontEnd").append(internalOutput);
+	     		        		$("#frontEnd").trigger("chosen:updated");
+			        		}
+			        		
+			        		if(json.backEnd != null && json.backEnd != 'undefined'){
+			        			$("#backEnd").empty(); 
+			        			
+			        			var internalOutput = "";
+			        			 
+			        			var backEndTech = json.backEnd;
+			        			<c:forEach var="skill" items="${skillsList}">
+			        			var existed = 0;
+			        			if(backEndTech != null && backEndTech != 'undefined' && backEndTech != ''){
+				        			var str_array = backEndTech.split(',');
+				        			for(var i = 0; i < str_array.length; i++) {
+					        			str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+					        			if(str_array[i] == "${skill.name}"){
+						        			existed = 1;
+						        			internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+					        			}
+				        			}
+			        			}
+			        			if(existed == 0){
+			        			internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+			        			}
+			        			</c:forEach>
+	    	                     
+	     							
+	     						$("#backEnd").append(internalOutput);
+	     		        		$("#backEnd").trigger("chosen:updated");
+			        		}
+			        		
+			        
+			        		if(json.dataBase != null && json.dataBase != 'undefined'){
+			        			$("#projectDatabase").empty(); 
+			        			
+			        			var internalOutput = "";
+			        			 
+			        			var dataBase = json.dataBase;
+			        			<c:forEach var="skill" items="${skillsList}">
+			        			var existed = 0;
+			        			if(dataBase != null && dataBase != 'undefined' && dataBase != ''){
+				        			var str_array = dataBase.split(',');
+				        			for(var i = 0; i < str_array.length; i++) {
+					        			str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+					        			if(str_array[i] == "${skill.name}"){
+						        			existed = 1;
+						        			internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+					        			}
+				        			}
+			        			}
+			        			if(existed == 0){
+			        			internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+			        			}
+			        			</c:forEach>
+	    	                     
+	     							
+	     						$("#projectDatabase").append(internalOutput);
+	     		        		$("#projectDatabase").trigger("chosen:updated");
+			        		}
+			        		
+			        		if(json.otherTechnologies != null && json.otherTechnologies != 'undefined'){
+			        			$("#otherTechnologies").empty(); 
+			        			
+			        			var internalOutput = "";
+			        			 
+			        			var otherTech = json.otherTechnologies;
+			        			<c:forEach var="skill" items="${skillsList}">
+			        			var existed = 0;
+			        			if(otherTech != null && otherTech != 'undefined' && otherTech != ''){
+				        			var str_array = otherTech.split(',');
+				        			for(var i = 0; i < str_array.length; i++) {
+					        			str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+					        			if(str_array[i] == "${skill.name}"){
+						        			existed = 1;
+						        			internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+					        			}
+				        			}
+			        			}
+			        			if(existed == 0){
+			        			internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+			        			}
+			        			</c:forEach>
+	    	                     
+	     							
+	     						$("#otherTechnologies").append(internalOutput);
+	     		        		$("#otherTechnologies").trigger("chosen:updated");
+			        		}
+			        		
+			        		if(json.testManagement != null && json.testManagement != 'undefined'){
+			        			$("#testManagement").empty(); 
+			        			
+			        			var internalOutput = "";
+			        			 
+			        			var testManagement = json.testManagement;
+			        			<c:forEach var="testMgmt" items="${testManagementList}">
+			        			var existed = 0;
+			        			if(testManagement != null && testManagement != 'undefined' && testManagement != ''){
+				        			var str_array = testManagement.split(',');
+				        			for(var i = 0; i < str_array.length; i++) {
+					        			str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+					        			if(str_array[i] == "${testMgmt.name}"){
+						        			existed = 1;
+						        			internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+					        			}
+				        			}
+			        			}
+			        			if(existed == 0){
+			        			internalOutput = internalOutput+"<option value='${testMgmt.name}'>${testMgmt.name}</option>";
+			        			}
+			        			</c:forEach>
+	    	                     
+	     							
+	     						$("#testManagement").append(internalOutput);
+	     		        		$("#testManagement").trigger("chosen:updated");
+			        		}
+			        		
+			        		
+			        		if(json.executionModel != null && json.executionModel != 'undefined'){
+			        			$(":radio[value='"+json.executionModel+"']").attr('checked',true);
+			        		}
+			        		
+			        		
+			        		if(json.agileMethodologies != null && json.agileMethodologies != 'undefined'){
+			        			 document.getElementById("agileProjectMethodologies").style.display="";
+			        			$("#agileMethodologies").empty(); 
+			        			
+			        			var internalOutput = "";
+			        			 
+			        			var methodologies = json.agileMethodologies;
+			        			<c:forEach var="methods" items="${agileMethodologiesList}">
+			        			var existed = 0;
+			        			if(methodologies != null && methodologies != 'undefined' && methodologies != ''){
+				        			var str_array = methodologies.split(',');
+				        			for(var i = 0; i < str_array.length; i++) {
+					        			str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+					        			if(str_array[i] == "${methods.name}"){
+						        			existed = 1;
+						        			internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+					        			}
+				        			}
+			        			}
+			        			if(existed == 0){
+			        			internalOutput = internalOutput+"<option value='${methods.name}'>${methods.name}</option>";
+			        			}
+			        			</c:forEach>
+	    	                     
+	     							
+	     						$("#agileMethodologies").append(internalOutput);
+	     		        		$("#agileMethodologies").trigger("chosen:updated");
+			        		}
+			        		
+			        		
+			        		
+			        	}
+			        }
+			        
+			 });
+			 
+			 $("#loading").removeAttr("style");
+	}
+}
+</script>
+
+
 
 <script type="text/javascript">
 	function saveAdditionalDetails(saveType) {
@@ -256,7 +489,7 @@ $('#projectExecuitionModel input').on('change', function() {
 			var formData = $($('#project_additional_form')[0]).serialize();
 	  		
 			var sourceleadUrl = '${sourceleadUrl}';
-     		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 	        var userId = '${SourceLeadWeb_user.id}';
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -268,7 +501,14 @@ $('#projectExecuitionModel input').on('change', function() {
 		  	    	     dataType : 'json',
 						 url : sourceleadUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType,
 						 success : function() {
-								
+							 
+							 if(saveType == "Save"){
+								 $("#loading").removeAttr("style");
+								 getAdditionalDetails();
+							 }else{
+								 location.replace(sourceleadUrl+"/projectDashboard");  
+							 }
+							 
 
 						},
 					});

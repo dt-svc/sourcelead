@@ -806,15 +806,6 @@ function removeProjectDocuments(documentId,projectId){
 }
 </script>
 
-<script>
-function getAdditionalDetails(){
-	var projectId = document.getElementById("projectId").value;
-	if(projectId){
-		
-	}
-}
-</script>
-
 <script type="text/javascript">
 	function flushProject() {
 		$("#save_client").removeAttr("disabled");

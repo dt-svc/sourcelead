@@ -57,6 +57,7 @@ public class ProjectMembers implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	@JsonBackReference
 	private Candidate projectMemberCandidteId;
 
 	/*
