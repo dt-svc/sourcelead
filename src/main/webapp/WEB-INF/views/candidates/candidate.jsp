@@ -786,17 +786,24 @@ function validate_fileupload(fileName)
 	     						validateCandidateEmail();
 	     						$("#candidateSkills").empty();
 	     						 var internalOutput = "";
-	     						 <c:forEach var="skill" items="${skillsList}">
-	     						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-	     	                     </c:forEach>
 	     						var skills = json.skills;
-	     						if(skills != null && skills != 'undefined' && skills != ''){
-	     							var str_array = skills.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
+	     						 <c:forEach var="skill" items="${skillsList}">
+		     						var existed = 0;
+		     						if(skills != null && skills != 'undefined' && skills != ''){
+		     							var str_array = skills.split(',');
+		     							for(var i = 0; i < str_array.length; i++) {
+		     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		     							  if(str_array[i] == "${skill.name}"){
+		     								 existed = 1;
+		     								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		     							  }
+		     							}
+		     						}
+		     						if(existed == 0){
+		     							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+					                }
+	     	                     </c:forEach>
+	     						
 	     						$("#candidateSkills").append(internalOutput);
 	     		        		$("#candidateSkills").trigger("chosen:updated");
 	     		        		$("#candidateEducation").trigger("chosen:updated");
@@ -815,8 +822,6 @@ function validate_fileupload(fileName)
 	     							}
 	     						}
 	     						$("#candidateEducation").append(internalOutput);
-	     		        		
-	     		        		
 	     		        		
 	     						$("#loading").removeAttr("style");
 	     						
