@@ -2538,7 +2538,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setProjectMemberId(pm);
 		}
 		if (jsonObj.has("expensesId") && !"".equalsIgnoreCase(jsonObj.getString("expensesId"))) {
-			Expenses expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expensesId")));
+			Expenses expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expensesId")));
 			invoice.setExpensesId(expenses);;
 		}
 		
