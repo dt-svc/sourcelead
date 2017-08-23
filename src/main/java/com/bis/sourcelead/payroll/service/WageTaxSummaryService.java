@@ -19,4 +19,6 @@ public interface WageTaxSummaryService {
 	List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation);
 
 	Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user) throws Exception;
+
+	List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
 }
