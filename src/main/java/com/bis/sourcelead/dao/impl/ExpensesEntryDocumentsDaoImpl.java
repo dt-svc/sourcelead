@@ -92,7 +92,28 @@ public class ExpensesEntryDocumentsDaoImpl implements ExpensesEntryDocumentsDao 
 		
 	}
 	
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void removeExpensesEntryDocoumentList(List<Long> ids) throws Exception {
+		logger.debug("Deleting ExpenseEntryDocuments");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (null != ids && !ids.isEmpty()) {
+				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed where eed.id IN(:ids)" ).setParameter("ids",ids).setCacheable(true).list();
+				if(null != eedList && !eedList.isEmpty()){
+					for(ExpensesEntryDocuments eed :eedList){
+						session.delete(eed);
+					}
+					
+				}
+			}
+			logger.debug("Successfully deleted..!");
+		} catch (Exception exception) {
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ExpenseEntryDocuments"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
