@@ -782,7 +782,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/loadOffboardingCandidateDetails")
+		 @RequestMapping(value = "/loadOffboardingCandidateDetails", method = RequestMethod.POST)
 		 public String loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,
 				 @RequestParam(value="locationCode") String locationCode) throws Exception {
 
