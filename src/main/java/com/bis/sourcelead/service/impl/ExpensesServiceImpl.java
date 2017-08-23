@@ -141,8 +141,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	@Override
-	public Expenses getExpenseById(long expenseId) {
-		return expensesDao.getExpenseById(expenseId);
+	public Expenses getExpenseByExpenseId(long expenseId) {
+		return expensesDao.getExpenseByExpenseId(expenseId);
 	}
 	
 	@Override
@@ -891,7 +891,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		for(Expenses ex:expList){
 			String expenseArray[] = new String[headers.length];
 			if(ex.getExpenseId() !=null){
-				Expenses expenseId = getExpenseById(ex.getId());
+				Expenses expenseId = getExpenseByExpenseId(ex.getId());
 				
 							if(null != expenseId.getExpenseId()){
 								expenseArray[0] = expenseId.getExpenseId();
@@ -1006,7 +1006,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	private Sheet createAllXlsSheet(Sheet createExcelsheet, Row writeRow, Expenses ex,OrgLocations orgLocations) {
 		if(ex.getExpenseId() !=null){
-			Expenses expenseId =getExpenseById(ex.getId());
+			Expenses expenseId =getExpenseByExpenseId(ex.getId());
 			
 						if(null != expenseId.getExpenseId()){
 							writeRow.createCell(0).setCellValue(expenseId.getExpenseId());
@@ -1113,9 +1113,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public List<ExpensesEntriesDTO> getApprovedExpenses(Long id) throws Exception {
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
 
-		Expenses expense = expensesDao.getExpenseById(id);
+		Expenses expense = expensesDao.getExpenseByExpenseId(expenseId);
 		Set<ExpensesEntries> entriesList = expense.getExpensesEntries();
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
 		float sum = 0;

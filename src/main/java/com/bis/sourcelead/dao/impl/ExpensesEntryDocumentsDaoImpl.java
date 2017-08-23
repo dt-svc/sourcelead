@@ -93,6 +93,7 @@ public class ExpensesEntryDocumentsDaoImpl implements ExpensesEntryDocumentsDao 
 	}
 	
 	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ExpensesEntryDocuments getExpensesEntryDocumentById(Long id) throws Exception {
