@@ -2488,97 +2488,82 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@Transactional(rollbackFor = { Exception.class })
 		public List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate)
 		{
-			Session session = this.sessionFactory.getCurrentSession();
-	        
-			String submissionStages = "";
-	        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
-				 /*submissionStages = "and (rs.submissionStatus = 'SUBMISSION' or rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
-	        	submissionStages = " and rsh.toStage = 'SUBMISSION'";
-			}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
-				 /*submissionStages = "and( rs.submissionStatus = 'SUBMIT_TO_CLIENT' or  (rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
-				submissionStages = " and rsh.toStage = 'SUBMIT_TO_CLIENT'";
-			}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
-				/*submissionStages = "and ((rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'CLIENT_INTERVIEW') or (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERREJECTED' "
-						+ " OR rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED'))";*/
-				submissionStages = " and (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
-			}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
-				submissionStages = "and (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
-						+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
-				//submissionStages = " and rsh.toStage = 'OFFERMADE'";
-			}
-	        
-	        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
-	        	Map<String, Object> params = new HashMap<String,Object>();
-	    		
-	        	String from = "from RequirementSubmissionHistory rsh  ";
-	    		
-	    		//login user as created by
-	    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
-	    		params.put("userId",user.getId());
-	    		
-	    		//login user as a approver for this requirement  or  assigned to.
-	    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) ) ";
-	    		params.put("approverUserId",user.getId());
-	    		params.put("userId",user.getId());
-	    		
-	    		
-	    		//login user as a  manager for this job.
-	    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
-	    		params.put("managerUserId",user.getId());
-	    		
-	    		
-	    		
-	    		String subQuery = "";
-	    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-	    			if(dateRange != null && "today".equals(dateRange)){
-	    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
-	    			}else if(dateRange != null && "previous".equals(dateRange)){
-	    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
-	    			}
-	    			params.put("orgLocationsId",orgLocationsId);
-	    			params.put("startDate",startUTCDate);
-	    			params.put("endDate",endUTCDate);
-	    			//params.put("submissionStatus",submissionStatus);
-	    		}
-	    		String whereCondition = subQuery;
-	    		Query query =  session.createQuery(from+" "+whereCondition+" group by rsh.submissionId");
-	    		
-	    		for (String str : query.getNamedParameters())
-	            {
-	    			if(str.equalsIgnoreCase("orgLocationsId")  || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
-	    				query.setLong(str, (long) params.get( str ));
-	    			}else{
-	    				query.setParameter( str, params.get( str ) );
-	    			}
-	            	
-	            }
-	    		
-	    		List<RequirementSubmissionHistory> reqSubms  = query.setCacheable(true).list();
-				return reqSubms;
-				
-	        }else{
-	        	List<RequirementSubmissionHistory> reqSubms = new ArrayList<>();
-	        	String query = "";
-	        	/*if(dateRange != null && "today".equals(dateRange)){
-	                query ="from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
-	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
-	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
-	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
-	     		}*/
-	        	if(dateRange != null && "today".equals(dateRange)){
-	                query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate group by rsh.submissionId";
-	                reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
-	     		}else if(dateRange != null && "previous".equals(dateRange)){
-	     			query ="from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate group by rsh.submissionId";
-	     			reqSubms =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
-	     		}
-				return reqSubms;
-	        	
+					
+			    Session session = this.sessionFactory.getCurrentSession();
+		        String submissionStages = "";
+		        if(submissionStatus.equalsIgnoreCase("SUBMISSION")){
+		        	submissionStages = " and rsh.toStage = 'SUBMISSION'";
+				}else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+					submissionStages = " and rsh.toStage = 'SUBMIT_TO_CLIENT'";
+				}else if(submissionStatus.equalsIgnoreCase("INTERVIEW")){
+					submissionStages = " and (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
+				}else if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
+					submissionStages = "and (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
+							+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
+				}
+		        
+		        if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+		        	Map<String, Object> params = new HashMap<String,Object>();
+		    		
+		    		String from = " from RequirementSubmissionHistory rsh  ";
+		    		
+		    		//login user as created by
+		    		String subQuery1 = "rsh.submissionId.requirement.id IN (select req.id from Requirement req where req.createdBy =:userId)";
+		    		params.put("userId",user.getId());
+		    		
+		    		//login user as a approver for this requirement  or  assigned to.
+		    		String subQuery2 = "rsh.submissionId.requirement.id IN (select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId )  or (rsh.submissionId.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) ) ";
+		    		params.put("approverUserId",user.getId());
+		    		params.put("userId",user.getId());
+		    		
+		    		
+		    		//login user as a  manager for this job.
+		    		String subQuery3 = "rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId )  ";
+		    		params.put("managerUserId",user.getId());
+		    		
+		    		
+		    		
+		    		String subQuery = "";
+		    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
+		    			if(dateRange != null && "today".equals(dateRange)){
+		    				subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+		    			}else if(dateRange != null && "previous".equals(dateRange)){
+		    			    subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1 and rsh.updatedDate < :startDate and ( ("+subQuery1+") or ("+subQuery2+") or ("+subQuery3+") ) ";
+		    			}
+		    			params.put("orgLocationsId",orgLocationsId);
+		    			params.put("startDate",startUTCDate);
+		    			params.put("endDate",endUTCDate);
+		    		}
+		    		String whereCondition = subQuery;
+		    		Query query =  session.createQuery(from+" "+whereCondition+" ");
+		    		
+		    		for (String str : query.getNamedParameters())
+		            {
+		    			if(str.equalsIgnoreCase("orgLocationsId")  || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
+		    				query.setLong(str, (long) params.get( str ));
+		    			}else{
+		    				query.setParameter( str, params.get( str ) );
+		    			}
+		            	
+		            }
+		    		
+		    		List<RequirementSubmissionHistory> reqSubmsHistoryList  = query.setCacheable(true).list();
+					return reqSubmsHistoryList;
+					
+		        }else{
+		        	List<RequirementSubmissionHistory> reqSubmsHistoryList = null;
+		        	String query = "";
+		        	if(dateRange != null && "today".equals(dateRange)){
+		                query =" from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+		                reqSubmsHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setParameter("endDate",endUTCDate).setCacheable(true).list();
+		     		}else if(dateRange != null && "previous".equals(dateRange)){
+		     			query =" from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" and rsh.submissionId.status = 1  and rsh.updatedDate < :startDate";
+		     			reqSubmsHistoryList =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameter("startDate",startUTCDate).setCacheable(true).list();
+		     		}
+		        	
+					return reqSubmsHistoryList;
 	        }
-		}
+	}
 
 		@Override
 		@Transactional
