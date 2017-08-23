@@ -19,7 +19,7 @@ public interface ExpensesService {
 
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 
-	public Expenses getExpenseByExpenseId(long expenseId);
+	public Expenses getExpenseById(long id);
 
 	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId) throws Exception;
 

@@ -119,7 +119,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
-		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
 		 expenses = new Expenses();
 	 }
