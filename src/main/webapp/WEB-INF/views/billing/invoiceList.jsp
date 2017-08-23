@@ -281,6 +281,18 @@ $(document).ready(function(){
 		    </script> 
   
 <script>
+
+var finalDateFormatEduUpdate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	  finalDateFormatEduUpdate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -374,7 +386,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatEduUpdate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
