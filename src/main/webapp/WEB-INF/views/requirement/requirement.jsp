@@ -1593,7 +1593,12 @@ function validate_fileupload(fileName)
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
  		 }
-		
+ 		var maxExp = document.getElementById("maxExp").value; 
+		 if(maxExp != null && maxExp != ""){
+			 $('#minExp').removeAttr('data-validation-optional');
+			 $('#minExp').attr("data-validation","required");
+			//$('#minExp').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+		 }
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
