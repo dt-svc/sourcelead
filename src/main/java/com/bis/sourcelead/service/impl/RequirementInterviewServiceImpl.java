@@ -1597,8 +1597,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			if(null != reqnterview.getStartTime() && null != reqnterview.getEndTime()){
 			globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).append("-").append(interviewEndTime).toString());
 			}
-		} else if (null != reqnterview.getStartTime()) {
+		 else if (null != reqnterview.getStartTime()) {
 			globalVarsMap.put("InterviewTime", sb.append(interviewStartTime).toString());
+		 }
 		} else {
 			globalVarsMap.put("InterviewTime", "--");
 		}
