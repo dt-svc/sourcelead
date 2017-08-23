@@ -4316,7 +4316,10 @@ function requirementNotes(requirementId){
 	    $("#tab-1").empty();
 	    $("#tab-2").empty(); 
 	    $("#tab-3").empty();  
-	    $("#tab-4").empty();  
+	    $("#tab-4").empty();
+	    $("#status-div").empty(); 
+	    $("#actionsDiv").empty(); 
+	    $("#status-data").empty(); 
 	    $("#tab-4").append(result);  
 	    reqNotes(requirementId);    
 }
