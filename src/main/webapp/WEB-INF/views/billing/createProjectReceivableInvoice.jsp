@@ -135,17 +135,17 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             </div> -->
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Address</label>
+              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
                 <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress"
-                    name="billingAddress" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
+                    name="billingAddress" data-validation="required" field-name="Invoice Address"></textarea>
               </div>
             </div>
             <div class="form-group">
-							<label class="col-md-3">Account Details</label>
+							<label class="col-md-3">Account Details<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+									name="accountDetails" placeholder="Account Details" data-validation="required" field-name="Account Details"></textarea>
 							</div>
 			</div>
           </div>
@@ -185,10 +185,10 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               	<label><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 " >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-times' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -259,6 +259,12 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
      </div>
     </div>
   </section>
+ 
+ <script>
+ function remove(){
+	 $('#0invoicedocFile').val("");
+ }
+ </script>
     
 <!-- Diplays client contacts details when clien selected -->
 <script>
@@ -1201,11 +1207,11 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 ">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
-               		    <i class="fa fa-times" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
+               		    <i class="fa fa-times" mouseOver="Delete" title="Delete" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
                		   </span>
                 </div>
              </div>

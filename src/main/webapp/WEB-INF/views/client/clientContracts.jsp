@@ -83,7 +83,7 @@ function clientContracts(orgRelationId){
 	    result = result + '<ul>';
 	    result = result + '<li class="dropdown mt10"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
 	    result = result + '<div class="dropdown-menu bootstrap_dropdownMenu dropdown-menu_width">                                                                                                                                       ';
-	    result = result + '<ul>';
+	    result = result + '<ul class="paddingLi">';
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="DRAFT" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft">Draft <b class="badge" id="draftCount">0</b></label>';
@@ -318,7 +318,7 @@ function clientContractsList(orgRelationId){
 	                		opt = opt + '	</tbody>';
 	                		opt = opt + '</table>';
 	                    
-	                		$("#draftCount").html(expiredCount);
+	                		$("#draftCount").html(draftCount);
 	                		$("#WFACount").html(waitingForApprovalCount);
 	                		$("#WTSCount").html(waitingToBeSignedCount);
 	                		$("#finalizedCount").html(finalizedCount);

@@ -585,7 +585,63 @@ function addCertification(candidateId) {
 								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 									 e.stopPropagation();
 								 });
+					 
+								 
+								 
+								/*  $('html').click(function(){
+									$(".edit-details").removeClass("edit-details-active");
+								   });	
+								 */
+								
+								/*  $(".addUser-org").click(function(){
+									 $(".edit-details").toggleClass("edit-details-active");
+								 });  */
+								/* $(".edit-details").toggleClass("edit-details-active");
+								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+									 e.stopPropagation();
+								 }); */
+							 /* $('html').click(function(){
+								$(".edit-details").removeClass("edit-details-active");
+							   });	 */
+
+							    var proCertificateStartDate = $("#StartDateEdit").val();
+								var proCertificateEndDate = $("#EndDateEdit").val(); 
+
 								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								 var proCertificateStartDateSplit = proCertificateStartDate.split("-");
+								 var proCertificateEndDateSplit = proCertificateEndDate.split("-");
+								 
+								 var finalDateFormatEduEditOneSave = '';
+								  var proCertificateStartDateEdit = '';
+								  var proCertificateEndDateEdit = '';
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[2])+parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[0])+parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[0])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[2])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
+								  }
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[2])-parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[0])-parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[0])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
+									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[2])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
+								  }
 								  var finalDateFormatCerEdit = '';
 								  if(locationDate.match("yyyy-MM-dd")){
 									  finalDateFormatCerEdit = 'yy-mm-dd';
@@ -597,16 +653,17 @@ function addCertification(candidateId) {
 									  finalDateFormatCerEdit = 'yy-dd-mm'; 
 								  }
 								 
-								var datepickerStartDate = toDate("#StartDateEdit");
+								/* var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
 								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
 							   
 							  $('#StartDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
 							  	  changeYear: true, 
+							  	  maxDate: proCertificateEndDateEdit,
 							      onSelect: function (selected) {
 							            var dt = $(this).datepicker('getDate', '+1d');
 							            //var dt = toDate("#StartDateEdit");
@@ -618,7 +675,8 @@ function addCertification(candidateId) {
 							  $('#EndDateEdit').datepicker({
 							      dateFormat: finalDateFormatCerEdit,
 							      changeMonth: true,
-							  	  changeYear: true, 
+							  	  changeYear: true,
+							  	  minDate: proCertificateStartDateEdit,
 							      onSelect: function (selected) {
 							            var dt = $(this).datepicker('getDate', '-1d');
 							            //var dt = toDate("#EndDateEdit");

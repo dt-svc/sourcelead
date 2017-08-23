@@ -693,6 +693,19 @@ function clientInvoicePagination(){
    <!-- Add invoice Popup End -->
  
 <script>
+
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var recievePaymentPopUpDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	recievePaymentPopUpDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	recievePaymentPopUpDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	recievePaymentPopUpDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	recievePaymentPopUpDate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -786,7 +799,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
