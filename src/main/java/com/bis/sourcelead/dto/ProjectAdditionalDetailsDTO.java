@@ -17,6 +17,8 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 	
 	private String scope;
 	
+	private String otherScope;
+	
 	private String[] category;
 	
 	private Integer timeSize;
@@ -32,6 +34,8 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 	private String[] testManagement;
 	
 	private String executionModel;
+	
+	private String[] agileMethodologies;
 	
 	
 
@@ -130,6 +134,22 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 
 	public void setExecutionModel(String executionModel) {
 		this.executionModel = executionModel;
+	}
+
+	public String getOtherScope() {
+		return otherScope;
+	}
+
+	public void setOtherScope(String otherScope) {
+		this.otherScope = otherScope;
+	}
+
+	public String[] getAgileMethodologies() {
+		return agileMethodologies;
+	}
+
+	public void setAgileMethodologies(String[] agileMethodologies) {
+		this.agileMethodologies = agileMethodologies;
 	}
 	
 	

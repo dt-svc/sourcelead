@@ -15,15 +15,13 @@
 		<div class="projQueCta">
 			<h2>1. Project location</h2>
 			<div class="projQueCtaInn wid50">
-				<input type="text" placeholder="Location" name="projectLocation" id="projectLocation" class="form-control" />
-			    <!-- <i class="fa fa-refresh btn btn-primary refresh-icon mr" title="Refresh" onclick="refreshLocation();"></i> -->
-			
+				<input type="text" placeholder="Location" name="projectLocation" id="projectLocation" data-validation="required" field-name="Project Location" class="form-control" />
 			</div>
 		</div>
 		<div class="projQueCta">
 			<h2>2. Industry</h2>
 			<div class="projQueCtaInn wid50">
-			  <select class="form-control chosen-select" name="industry" id="industry">
+			  <select class="form-control chosen-select" name="industry" id="industry" onchange="getProjectIndustry()">
 				<option value=''>--Select Industry--</option>
 				<c:forEach var="industry" items="${industriesList}">
 	                     <option value="${industry.name}">${industry.name}</option>
@@ -31,20 +29,34 @@
 				<option value='Others'>Others</option>
 			  </select>
 			</div>
-		</div>		
+		</div>
+		
+		<div class="projQueCta" id="otherProjectIndustry" style="display: none;">
+			<div class="projQueCtaInn wid50">
+				<input type="text" placeholder="Other Industry" field-name="Other Industry" data-validation-optional="true" name="otherIndustry" id="otherIndustry" class="form-control" />
+			</div>
+		</div>	
+				
 		<div class="projQueCta">
 			<h2>3. What is the scope of this project</h2>
 			<div class="projQueCtaInn">
-				<div class="proRadio">
-					<input id="radio1" type="radio" name="scope" id="scope" value="One time project"><label for="radio1" class="Radi">One time project</label>
+				<div class="proRadio" id="projectScopes">
+					<input id="radio1" type="radio" name="scope" id="scope" value="One time project" ><label for="radio1" class="Radi">One time project</label>
 					<input id="radio2" type="radio" name="scope" id="scope" value="On going"><label for="radio2" class="Radi">On-going</label>
-					<input id="radio3" type="radio" name="scope" id="scope"><label for="radio3" class="Radi" value="POC">POC</label>
-					<input id="radio4" type="radio" name="scope" id="scope"><label for="radio4" class="Radi" value="Client Driven">Client Driven</label>
-					<input id="radio5" type="radio" name="scope" id="scope"><label for="radio5" class="Radi" value="Other">Other</label>
+					<input id="radio3" type="radio" name="scope" id="scope" value="POC"><label for="radio3" class="Radi">POC</label>
+					<input id="radio4" type="radio" name="scope" id="scope" value="Client Driven"><label for="radio4" class="Radi">Client Driven</label>
+					<input id="radio5" type="radio" name="scope" id="scope" value="Others"><label for="radio5" class="Radi">Others</label>
 					<div class="clearfix"></div>					
 				</div>
 			</div>
 		</div>
+		
+		<div class="projQueCta" id="otherProjectScope" style="display: none;">
+			<div class="projQueCtaInn wid50">
+				<input type="text" placeholder="Other Scope" field-name="Other Scope" data-validation-optional="true" name="otherScope" id="otherScope" class="form-control" />
+			</div>
+		</div>
+		
 		<div class="projQueCta">
 			<h2>4. Allowed employment category</h2>
 			<div class="projQueCtaInn">
@@ -118,13 +130,24 @@
 		</div>
 		<div class="projQueCta">
 			<h2>11. Project execution model(SDLC)</h2>
-			<div class="projQueCtaInn">
+			<div class="projQueCtaInn" id="projectExecuitionModel">
 				<div class="proRadio">
 					<input id="radio11" type="radio" name="executionModel" id="executionModel" value="Agile"><label for="radio11" class="Radi">Agile</label>
 					<input id="radio22" type="radio" name="executionModel" id="executionModel" value="Waterfall"><label for="radio22" class="Radi">Waterfall</label>
 					<input id="radio33" type="radio" name="executionModel" id="executionModel" value="V model"><label for="radio33" class="Radi">V model</label>
 					<div class="clearfix"></div>					
 				</div>
+			</div>
+		</div>
+		<div class="projQueCta" style="display: none;" id="agileProjectMethodologies">
+			<h2>Agile Methodologies</h2>
+			<div class="projQueCtaInn wid50">
+			  <select multiple="" class="chosen-select form-control" id="agileMethodologies" name="agileMethodologies">
+				 <option value="Scrum">Scrum</option>
+				 <option value="Scrum">Kanban</option>
+				 <option value="Scrum">Scrumban</option>
+				 <option value="Scrum">XP</option>
+			  </select>
 			</div>
 		</div>																		
 	</section>
@@ -142,6 +165,56 @@
 
 </div> 
 
+
+
+<script type="text/javascript">
+function getProjectIndustry(){
+	var industry = document.getElementById("industry").value;
+	if(industry == 'Others'){
+		document.getElementById("otherProjectIndustry").style.display="";
+		$("#otherIndustry").removeAttr("data-validation-optional");
+		$("#otherIndustry").attr("data-validation", "required validate_AlphaNumber validate_Space validate_length length1-100");
+	}else{
+		document.getElementById("otherProjectIndustry").style.display="none";
+		$("#otherIndustry").val('');
+		$("#otherIndustry").removeAttr("data-validation-optional");
+		$("#otherIndustry").attr("data-validation-optional", "true");
+	}
+}
+</script>
+
+<script>
+$('#projectScopes input').on('change', function() {
+	   var projectScope = $('input[name="scope"]:checked', '#projectScopes').val();
+	   if(projectScope == 'Others'){
+		   document.getElementById("otherProjectScope").style.display="";
+			$("#otherScope").removeAttr("data-validation-optional");
+			$("#otherScope").attr("data-validation", "required validate_AlphaNumber validate_Space validate_length length1-100");
+		   
+	   }else{
+		   document.getElementById("otherProjectScope").style.display="none";
+			$("#otherScope").val('');
+			$("#otherScope").removeAttr("data-validation-optional");
+			$("#otherScope").attr("data-validation-optional", "true");
+		}
+	});
+</script>
+
+<script>
+$('#projectExecuitionModel input').on('change', function() {
+	 var executionModel = $('input[name="executionModel"]:checked', '#projectExecuitionModel').val();
+	 if(executionModel == 'Agile'){
+		 document.getElementById("agileProjectMethodologies").style.display="";
+	 }else{
+		 document.getElementById("agileProjectMethodologies").style.display="none";
+		 $("#agileMethodologies").val('');
+		 $('#agileMethodologies').trigger("chosen:updated");
+	 }
+});
+</script>
+
+
+
 <script type="text/javascript">
 	function saveAdditionalDetails(saveType) {
 		var projectId = document.getElementById("projectId").value;
@@ -158,9 +231,6 @@
 			var frm = $('#project_additional_form').serializeFormJSON();
 			 
 			var jsonData = JSON.stringify(frm);
-		  /*   var form = $('#project_additional_form')[0];
-		    var formData = new FormData(form);
-		  	formData.append("json",jsonData) */
 
 			var sourceleadUrl = '${sourceleadUrl}';
      		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');

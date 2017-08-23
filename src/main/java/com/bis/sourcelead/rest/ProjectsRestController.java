@@ -43,6 +43,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectQuestionnaireService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -106,6 +107,9 @@ public class ProjectsRestController {
 
 	@Autowired
 	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	ProjectQuestionnaireService projectQuestionnaireService;
 
 	/**
 	 * This method for save the project by json
@@ -149,11 +153,12 @@ public class ProjectsRestController {
        
        
        @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(@RequestBody ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) String projectId,
+		public  String assignProjectMembersToProject(@RequestBody ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
 		   
 		    return "success";
 	    }
