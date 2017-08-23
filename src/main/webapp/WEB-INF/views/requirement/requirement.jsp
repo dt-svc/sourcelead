@@ -1005,7 +1005,7 @@ $(document).ready(function () {
                   <c:choose> 
 			 	<c:when test="${val == 'Y'}">
 			   		<div class="input-group-btn selp-custom-min">
-	                  <select class="chosen-select" disabled="disabled" id="clientCurrencyCode" name="clientCurrencyCode">
+	                  <select class="selectpicker" disabled="disabled" id="clientCurrencyCode" name="clientCurrencyCode">
 		                 <option  ${requirement.clientCurrencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 		                 <option  ${requirement.clientCurrencyCode  == 'USD' ? 'selected' : ''}>USD</option>
@@ -1017,7 +1017,7 @@ $(document).ready(function () {
 	                </div>
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select disabled="disabled" class="chosen-select ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -1593,12 +1593,7 @@ function validate_fileupload(fileName)
  			 $('#clientRateType').removeAttr('data-validation');
  			 $('#clientRateType').attr("data-validation-optional","true"); 
  		 }
- 		var maxExp = document.getElementById("maxExp").value; 
-		 if(maxExp != null && maxExp != ""){
-			 $('#minExp').removeAttr('data-validation-optional');
-			 $('#minExp').attr("data-validation","required");
-			//$('#minExp').attr("data-validation","required validate_Space validate_int validate_length length1-8");
-		 }
+		
 		   if ($('#requirement_form').validate(false, validationSettings)){   
 			
 			var frm = $('#requirement_form').serializeFormJSON();
@@ -1871,9 +1866,10 @@ function getCities(){
 	     //Adding Customized Skills to the list
 	       var select, chosen;
 		    select = $("#skills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Skills:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		   /*  chosen.search_field.on('keyup', function(e) */
+		    chosen.search_field.on('keyup  keydown', function(e)
 		    {
 		    	   var skillsArray = this.value.split(",");
 			    	 if(skillsArray.length > 1){
@@ -1888,6 +1884,7 @@ function getCities(){
 		    			var newSkill = this.value.replace(","," ");
 		    			if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		                {
+		    				//skills duplicate check
 							 var isNewSkill = true;
 							 $("#skills option:selected").each(function(){
 								 if(this.value.toUpperCase() === newSkill.toUpperCase()){

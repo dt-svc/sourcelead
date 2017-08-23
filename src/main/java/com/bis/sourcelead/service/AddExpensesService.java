@@ -20,4 +20,6 @@ public interface AddExpensesService {
 	public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status, String currencyCode) throws JSONException, NumberFormatException, Exception;
 
 	public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc,String currencyCode) throws Exception;
+
+	public Expenses storeAddExpensesData(Expenses expenses) throws Exception;
 }
