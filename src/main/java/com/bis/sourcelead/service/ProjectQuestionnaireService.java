@@ -11,4 +11,6 @@ public interface ProjectQuestionnaireService {
 	
 	ProjectQuestionnaire saveProjectQuestionnaire(ProjectQuestionnaire projectQuestionnaire) throws Exception;
 	
+	ProjectQuestionnaire getProjectQuestionnaireByProjectId(Long projectId) throws Exception;
+	
 }

@@ -889,11 +889,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			}
 		}
 		
-		if(!isNullOrEmpty(projectAssignedMembersDTO.getMailToTeamMembers()) && projectAssignedMembersDTO.getMailToTeamMembers().equalsIgnoreCase(Constants.YES)){
-			projects.setIsMailToTeamMembers(Status.Y);
-		}else{
-			projects.setIsMailToTeamMembers(Status.N);
-		}
 		projects.setIsProjectMembersFilled(Constants.YES);
 		projectsService.saveProject(projects);
 		

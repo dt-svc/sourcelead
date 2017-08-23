@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Collection;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectQuestionnaireDao;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -47,6 +49,21 @@ public class ProjectQuestionnaireDaoImpl implements ProjectQuestionnaireDao{
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		
+		return projectQuestionnaire;
+	}
+
+	@Override
+	@Transactional
+	public ProjectQuestionnaire getProjectQuestionnaireByProjectId(Long projectId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectQuestionnaire questionnarie left join fetch questionnarie.projectId  where questionnarie.projectId.id = :projectId ";
+		Collection<ProjectQuestionnaire> projectQuestionnaireList = session.createQuery(query.toString()).setLong("projectId", projectId).setCacheable(true).list();
+
+		ProjectQuestionnaire projectQuestionnaire = null;
+		if (projectQuestionnaireList != null && projectQuestionnaireList.size() > 0) {
+			projectQuestionnaire = (ProjectQuestionnaire) projectQuestionnaireList.iterator().next();
+		}
 		return projectQuestionnaire;
 	}
 

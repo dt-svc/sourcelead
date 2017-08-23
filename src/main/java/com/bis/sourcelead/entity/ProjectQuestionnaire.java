@@ -50,11 +50,11 @@ public class ProjectQuestionnaire implements Serializable{
 	@Column(name = "PROJECT_SCOPE")
 	private String projectScope;
 	
+	@Column(name = "PROJECT_OTHER_SCOPE")
+	private String projectOtherScope;
+	
 	@Column(name = "EMPLOYMENT_CATEGORY")
 	private String employmentCategory;
-	
-	@Column(name = "EMPLOYMENT_CATEGORY_OTHER_TYPE")
-	private String employmentCategoryOtherType;
 	
 	@Column(name = "TEAM_SIZE")
 	private Integer teamSize;
@@ -86,6 +86,9 @@ public class ProjectQuestionnaire implements Serializable{
 	@Column(name = "AGILE_METHODOLOGIES")
 	@Type(type="text")
 	private String agileMethodologies;
+	
+	@Column(name = "UUID")
+    private String uuid;
 	
 	@Column(name = "STATUS")
     private Integer status;
@@ -169,12 +172,13 @@ public class ProjectQuestionnaire implements Serializable{
 		this.employmentCategory = employmentCategory;
 	}
 
-	public String getEmploymentCategoryOtherType() {
-		return employmentCategoryOtherType;
+
+	public String getProjectOtherScope() {
+		return projectOtherScope;
 	}
 
-	public void setEmploymentCategoryOtherType(String employmentCategoryOtherType) {
-		this.employmentCategoryOtherType = employmentCategoryOtherType;
+	public void setProjectOtherScope(String projectOtherScope) {
+		this.projectOtherScope = projectOtherScope;
 	}
 
 	public Integer getTeamSize() {
@@ -279,6 +283,14 @@ public class ProjectQuestionnaire implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 }

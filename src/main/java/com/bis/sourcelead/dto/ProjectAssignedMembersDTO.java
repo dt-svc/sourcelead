@@ -12,17 +12,7 @@ public class ProjectAssignedMembersDTO implements Serializable{
 	
 	private Integer maxTsRowNum;
 	
-    private String mailToTeamMembers;
-	
 	private List<ProjectMembersDTO> projectMembers;
-
-	public String getMailToTeamMembers() {
-		return mailToTeamMembers;
-	}
-
-	public void setMailToTeamMembers(String mailToTeamMembers) {
-		this.mailToTeamMembers = mailToTeamMembers;
-	}
 
 	public List<ProjectMembersDTO> getProjectMembers() {
 		return projectMembers;

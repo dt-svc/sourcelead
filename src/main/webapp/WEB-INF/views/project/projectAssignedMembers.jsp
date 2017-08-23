@@ -19,9 +19,6 @@
 	
 <div class="form-footer clearfix miniFoot">
   <div class="col-lg-12">
-  <span class="pull-left" id="mailToMembers" style="display: none;">
-  	<input type="checkbox" id="mailToTeamMembers" onclick="checkMailToTeamMembers();" name="mailToTeamMembers" value="" checked>&nbsp; Mail to team members
-  </span>
 	<div class="pull-right">
 	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'"  class="btn btn-danger">
 	  <input type="button" value="Save & Continue" onClick="assignMembers()" class="btn btn-primary ml10">
@@ -565,7 +562,6 @@ function getAssociatesFilter(){
 			cell7.innerHTML = divTaskTd8Str;
 			
 			 $("#norecordsfound").empty();
-			 document.getElementById("mailToMembers").style.display="";
 			
 			
 		   });
@@ -856,20 +852,6 @@ function emptyRecordsList(){
 	 
 	 $("#norecordsfound").empty();
      $("#norecordsfound").append(result);
-     document.getElementById("mailToMembers").style.display="none";
-     $("#mailToTeamMembers").val("Y");
-     document.getElementById("mailToTeamMembers").checked = true;
-}
-</script>
-
-<script>
-function checkMailToTeamMembers(){
-	var checked = document.getElementById("mailToTeamMembers").checked
-	if(checked == true){
-		$("#mailToTeamMembers").val("Y");
-	}else{
-		$("#mailToTeamMembers").val("N");
-	}
 }
 </script>
 

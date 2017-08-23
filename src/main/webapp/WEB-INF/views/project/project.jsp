@@ -436,9 +436,10 @@
 						<br />
 						<!--<input type="file" name="project_files" id="project_files" multiple="multiple"/>-->
 					</div>
-					<div class="clearfix col-md-12">
+					
+					<!-- <div class="clearfix col-md-12">
 						<span><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
-					</div>
+					</div> -->
 					
 
 				</div>

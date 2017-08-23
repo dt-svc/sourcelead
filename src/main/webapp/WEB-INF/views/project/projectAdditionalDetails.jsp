@@ -10,19 +10,19 @@
 
 <div id="tab-c" class="newPrTabs_inn">
 	
-	<form:form id="project_additional_form" name="project_additional_form" method="post" enctype="multipart/form-data">
+	<form:form id="project_additional_form" name="project_additional_form" method="post" >
 	<section class="projQueWrap">
 		<div class="projQueCta">
 			<h2>1. Project location</h2>
 			<div class="projQueCtaInn wid50">
-				<input type="text" placeholder="Location" name="projectLocation" id="projectLocation" data-validation="required" field-name="Project Location" class="form-control" />
+				<input type="text" name="projectLocation" id="projectLocation" data-validation="required" field-name="Project Location" class="form-control" />
 			</div>
 		</div>
 		<div class="projQueCta">
 			<h2>2. Industry</h2>
 			<div class="projQueCtaInn wid50">
 			  <select class="form-control chosen-select" name="industry" id="industry" onchange="getProjectIndustry()">
-				<option value=''>--Select Industry--</option>
+				<option value="">--Select Industry--</option>
 				<c:forEach var="industry" items="${industriesList}">
 	                     <option value="${industry.name}">${industry.name}</option>
                 </c:forEach>
@@ -73,7 +73,7 @@
 		<div class="projQueCta">
 			<h2>5. Team Size</h2>
 			<div class="projQueCtaInn wid50">
-				<input type="text" placeholder="Team Size" id="teamSize" name="timeSize" class="form-control" />
+				<input type="text" id="teamSize" name="teamSize" class="form-control" data-validation-optional="true" data-validation="validate_int" field-name="Team Size" />
 			</div>
 		</div>	
 		<div class="projQueCta">
@@ -99,7 +99,7 @@
 		<div class="projQueCta">
 			<h2>8. Database</h2>
 			<div class="projQueCtaInn wid50">
-			  <select multiple="" class="chosen-select form-control" id="database" name="database">
+			  <select multiple="" class="chosen-select form-control" id="projectDatabase" name="projectDatabase">
 				<c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -120,7 +120,6 @@
 			<h2>10. Test management</h2>
 			<div class="projQueCtaInn wid50">
 			  <select multiple="" class="chosen-select form-control" id="testManagement" name="testManagement">
-				<option value=''>Select Option</option>
 				<option value='Manual Testing'>Manual Testing</option>
 				<option value='Automation'>Automation </option>
 				<option value='Jmetter'>Jmetter </option>
@@ -144,9 +143,9 @@
 			<div class="projQueCtaInn wid50">
 			  <select multiple="" class="chosen-select form-control" id="agileMethodologies" name="agileMethodologies">
 				 <option value="Scrum">Scrum</option>
-				 <option value="Scrum">Kanban</option>
-				 <option value="Scrum">Scrumban</option>
-				 <option value="Scrum">XP</option>
+				 <option value="Kanban">Kanban</option>
+				 <option value="Scrumban">Scrumban</option>
+				 <option value="XP">XP</option>
 			  </select>
 			</div>
 		</div>																		
@@ -154,6 +153,11 @@
 
 <div class="form-footer clearfix miniFoot">
   <div class="col-lg-12">
+	  <span class="pull-left">
+	  	<input type="checkbox"  onclick="checkMailToTeamMembers();" name="mailToTeamMembers" id="mailToTeamMembers" value="Y" checked>&nbsp; Mail to team members
+	    &nbsp;&nbsp;&nbsp;<input type="checkbox"  onclick="checkMailToManagers();" name="mailToManagers" id="mailToManagers" value="Y" checked>&nbsp; Mail to managers
+	  </span>
+	  
 	<div class="pull-right">
 	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger">
 	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save');" class="btn btn-primary ml10">
@@ -165,8 +169,28 @@
 
 </div> 
 
+<script>
+function checkMailToTeamMembers(){
+	var checked = document.getElementById("mailToTeamMembers").checked
+	if(checked == true){
+		$("#mailToTeamMembers").val("Y");
+	}else{
+		$("#mailToTeamMembers").val("N");
+	}
+}
+</script>
 
 
+<script>
+function checkMailToManagers(){
+	var checked = document.getElementById("mailToManagers").checked
+	if(checked == true){
+		$("#mailToManagers").val("Y");
+	}else{
+		$("#mailToManagers").val("N");
+	}
+}
+</script>
 <script type="text/javascript">
 function getProjectIndustry(){
 	var industry = document.getElementById("industry").value;
@@ -228,10 +252,9 @@ $('#projectExecuitionModel input').on('change', function() {
 		};
 		
 		if ($('#project_additional_form').validate(false, validationSettings)) {
-			var frm = $('#project_additional_form').serializeFormJSON();
-			 
-			var jsonData = JSON.stringify(frm);
-
+		  	
+			var formData = $($('#project_additional_form')[0]).serialize();
+	  		
 			var sourceleadUrl = '${sourceleadUrl}';
      		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
@@ -240,10 +263,10 @@ $('#projectExecuitionModel input').on('change', function() {
       		
 			$.ajax({
 						 type : "POST",
-						 data: jsonData,
-						 contentType : 'application/json',
+						 data: formData,
+		  	    	     processData: false,
 		  	    	     dataType : 'json',
-						 url : sourceleadUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId,
+						 url : sourceleadUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType,
 						 success : function() {
 								
 

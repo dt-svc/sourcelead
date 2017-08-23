@@ -153,11 +153,13 @@ public class ProjectsRestController {
        
        
        @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(@RequestBody ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
-			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		public  String assignProjectMembersToProject(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+			   @RequestParam(value="saveType", required=true) String saveType) throws Exception {
 		    
 		    User user = userService.getUserById(userId);
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		    projectAdditionalDetailsDTO.setSaveType(saveType);
 		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
 		   
 		    return "success";

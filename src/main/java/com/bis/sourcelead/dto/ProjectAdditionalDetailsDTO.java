@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -19,25 +20,29 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 	
 	private String otherScope;
 	
-	private String[] category;
+	private List<String> category;
 	
-	private Integer timeSize;
+	private String teamSize;
 	
-	private String[] frontEnd;
+	private List<String> frontEnd;
 	
-	private String[] backEnd;
+	private List<String> backEnd;
 	
-	private String[] database;
+	private List<String> projectDatabase;
 	
-	private String[] otherTechnologies;
+	private List<String> otherTechnologies;
 	
-	private String[] testManagement;
+	private List<String> testManagement;
 	
 	private String executionModel;
 	
-	private String[] agileMethodologies;
+	private List<String> agileMethodologies;
 	
+	private String saveType;
 	
+	private String mailToTeamMembers;
+	  
+	private String mailToManagers;
 
 	public String getProjectLocation() {
 		return projectLocation;
@@ -71,60 +76,67 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 		this.scope = scope;
 	}
 
+	public String getOtherScope() {
+		return otherScope;
+	}
 
-	public String[] getCategory() {
+	public void setOtherScope(String otherScope) {
+		this.otherScope = otherScope;
+	}
+
+	public List<String> getCategory() {
 		return category;
 	}
 
-	public void setCategory(String[] category) {
+	public void setCategory(List<String> category) {
 		this.category = category;
 	}
 
-	public Integer getTimeSize() {
-		return timeSize;
+	public String getTeamSize() {
+		return teamSize;
 	}
 
-	public void setTimeSize(Integer timeSize) {
-		this.timeSize = timeSize;
+	public void setTeamSize(String teamSize) {
+		this.teamSize = teamSize;
 	}
 
-	public String[] getFrontEnd() {
+	public List<String> getFrontEnd() {
 		return frontEnd;
 	}
 
-	public void setFrontEnd(String[] frontEnd) {
+	public void setFrontEnd(List<String> frontEnd) {
 		this.frontEnd = frontEnd;
 	}
 
-	public String[] getBackEnd() {
+	public List<String> getBackEnd() {
 		return backEnd;
 	}
 
-	public void setBackEnd(String[] backEnd) {
+	public void setBackEnd(List<String> backEnd) {
 		this.backEnd = backEnd;
 	}
 
-	public String[] getDatabase() {
-		return database;
+	public List<String> getProjectDatabase() {
+		return projectDatabase;
 	}
 
-	public void setDatabase(String[] database) {
-		this.database = database;
+	public void setProjectDatabase(List<String> projectDatabase) {
+		this.projectDatabase = projectDatabase;
 	}
 
-	public String[] getOtherTechnologies() {
+	public List<String> getOtherTechnologies() {
 		return otherTechnologies;
 	}
 
-	public void setOtherTechnologies(String[] otherTechnologies) {
+	public void setOtherTechnologies(List<String> otherTechnologies) {
 		this.otherTechnologies = otherTechnologies;
 	}
 
-	public String[] getTestManagement() {
+	public List<String> getTestManagement() {
 		return testManagement;
 	}
 
-	public void setTestManagement(String[] testManagement) {
+	public void setTestManagement(List<String> testManagement) {
 		this.testManagement = testManagement;
 	}
 
@@ -136,25 +148,37 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 		this.executionModel = executionModel;
 	}
 
-	public String getOtherScope() {
-		return otherScope;
-	}
-
-	public void setOtherScope(String otherScope) {
-		this.otherScope = otherScope;
-	}
-
-	public String[] getAgileMethodologies() {
+	public List<String> getAgileMethodologies() {
 		return agileMethodologies;
 	}
 
-	public void setAgileMethodologies(String[] agileMethodologies) {
+	public void setAgileMethodologies(List<String> agileMethodologies) {
 		this.agileMethodologies = agileMethodologies;
 	}
-	
-	
-	
-	
+
+	public String getSaveType() {
+		return saveType;
+	}
+
+	public void setSaveType(String saveType) {
+		this.saveType = saveType;
+	}
+
+	public String getMailToTeamMembers() {
+		return mailToTeamMembers;
+	}
+
+	public void setMailToTeamMembers(String mailToTeamMembers) {
+		this.mailToTeamMembers = mailToTeamMembers;
+	}
+
+	public String getMailToManagers() {
+		return mailToManagers;
+	}
+
+	public void setMailToManagers(String mailToManagers) {
+		this.mailToManagers = mailToManagers;
+	}
 	
 	
 }
