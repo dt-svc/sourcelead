@@ -921,7 +921,7 @@ function sideBar(requirementId,type){
 	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to client</a>';
 	           			     }
 							
-				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
+				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
 				            if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CLOSED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'  && json.requirementSubmissionStatus != 'UNFILLEDCLOSED'){
