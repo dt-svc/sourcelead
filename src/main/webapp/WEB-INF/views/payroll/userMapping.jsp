@@ -29,7 +29,7 @@ $(document).ready(function(){
                <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required" onchange="removeImportValidation();">
                 <option value="" selected>-Select User-</option>
 	            <c:forEach var="masterUsers" items="${masterUsersList}">
-					<option value="${masterUsers.id}">${masterUsers.candidateName}</option>
+					<option value="${masterUsers.id}">${masterUsers.employeeName}</option>
 				</c:forEach>
                  <!-- <option value="Select Month">---Select User---</option>
                  <option value="January">Type 1</option>

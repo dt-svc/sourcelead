@@ -30,9 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
-import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -44,7 +42,6 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -72,12 +69,6 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Autowired
 	private ExpensesApprovalDao expensesApprovalDao;
-	
-	@Autowired
-	private AddExpensesDao addExpensesDao;
-	
-	@Autowired
-	private ExpensesDao expensesDao;
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -293,7 +284,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 	for(ExpensesApproverHierarchy ex:expApperoverHierarchy){
 		String expenseArray[] = new String[headers.length];
 		if(ex.getExpenseId() !=null){
-			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
+			Expenses expenseId =expensesService.getExpenseById(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
@@ -471,7 +462,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex,OrgLocations orgLoc) {
 		if(ex.getExpenseId() !=null){
-			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
+			Expenses expenseId =expensesService.getExpenseById(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){

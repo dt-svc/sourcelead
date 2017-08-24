@@ -207,7 +207,17 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
 						result = result + '<label>EmailId :</label>';
-						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email"  readonly="readonly">';
+						if(json.spocUserId != "${SourceLeadWeb_userId}" && ownerId != "${SourceLeadWeb_userId}" && json.invitationStatus == 'Sent'){ 
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+						}else if(ownerId == "${SourceLeadWeb_userId}" && (json.invitationStatus == 'New' || json.invitationStatus == 'Sent')){
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email">';
+						}else if(json.invitationStatus == 'Accepted'){
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+						}else if(spocUserId != "${SourceLeadWeb_userId}" && ownerId != "${SourceLeadWeb_userId}" && json.invitationStatus == 'New'){
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+				   		}else if(json.invitationStatus == 'Rejected'){
+				   			result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email">';
+				   		}
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId">';
 						result = result + '</div>';
 						

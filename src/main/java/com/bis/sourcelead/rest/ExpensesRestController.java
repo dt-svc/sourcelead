@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
+import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsDTO;
 import com.bis.sourcelead.dto.ExpenseEntryDetailsUtilDTO;
 import com.bis.sourcelead.dto.ExpensesCategoryDTO;
@@ -110,6 +111,8 @@ public class ExpensesRestController {
 	private UserService userService;
 	@Autowired
 	private ExpensesEntriesDao expensesEntriesDao;
+	@Autowired
+	private ExpensesEntryDocumentsDao expensesEntryDocumentsDao;
 	@Autowired
 	private TimeZoneService timeZoneService;
 	
@@ -213,6 +216,9 @@ public class ExpensesRestController {
 			User loginUser = userService.getUserById(eesDTO.getUserId());
 			String status = eesDTO.getStatus();
 			expenses = new Expenses();
+			if(eesDTO.getId() != null){
+				expenses = expensesService.getExpenseById(eesDTO.getId());
+			}
 			if (StringUtils.isNotEmpty(eesDTO.getExpenseId())) {
 				expenses.setExpenseId(eesDTO.getExpenseId());
 			}
@@ -293,6 +299,12 @@ public class ExpensesRestController {
 					expenses.setProjectManagerUserList(managers);
 				}
 			}
+			if(eesDTO.getRemovedCategoryIds() != null && !eesDTO.getRemovedCategoryIds().isEmpty()){
+		    		expensesEntriesDao.removeAllExpenseEntries(eesDTO.getRemovedCategoryIds());
+		    }
+			
+			
+			/*removeExpensesEntryDocoumentList*/
 			expenses = addExpensesDao.storeAddExpensesData(expenses);
 			if (status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())) {
 				expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(), "APPROVED", "");
@@ -311,8 +323,9 @@ public class ExpensesRestController {
 	    if(eesDTO.getCategoryList() != null && !eesDTO.getCategoryList().isEmpty()){
 	    	for(ExpensesCategoryDTO edDTO : eesDTO.getCategoryList()){
 	    		ExpensesEntries  entries  = new ExpensesEntries();
-	    		
-	    		
+	    		if(edDTO.getId() != null){
+	    			entries.setId(edDTO.getId());
+	    		}
 	    		if(StringUtils.isNotEmpty(edDTO.getCategoryType())){
 					ExpensesCategory ec = new ExpensesCategory();
 					ec.setId(Long.parseLong(edDTO.getCategoryType()));
@@ -383,6 +396,9 @@ public class ExpensesRestController {
 				entries.setStatus(Constants.RECORD_ACTIVE.toString());
 				expensesEntriesList.add(entries);
 	    	 }
+	    		if(edDTO.getRemovedFilesIds() != null && !edDTO.getRemovedFilesIds().isEmpty()){
+		    		expensesEntryDocumentsDao.removeExpensesEntryDocoumentList(edDTO.getRemovedFilesIds());
+		        }
 	    }
 	 }
 	    return expensesEntriesList;
@@ -458,7 +474,7 @@ public class ExpensesRestController {
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Expenses ExpenseDetails = expensesService.getExpenseByExpenseId(Long.parseLong(Expid));
+		Expenses ExpenseDetails = expensesService.getExpenseById(Long.parseLong(Expid));
 		if (ExpenseDetails != null) {
 			if (type.equalsIgnoreCase("PDF")) {
 				file = expensesService.exportMyExpensesToPdf(ExpenseDetails, orgLoc, loginUser, ApproverType);
