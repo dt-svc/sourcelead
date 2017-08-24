@@ -459,6 +459,24 @@ function getAdditionalDetails(){
 			        		}
 			        		
 			        		
+			        		if(json.mailToProjectMembers == "Y"){
+			        			document.getElementById("mailToTeamMembers").checked = true;
+			        			$("#mailToTeamMembers").val("Y");
+			        		}else{
+			        			document.getElementById("mailToTeamMembers").checked = false;
+			        			$("#mailToTeamMembers").val("N");
+			        		}
+			        		
+			        		
+			        		if(json.mailToProjectManagers == "Y"){
+			        			document.getElementById("mailToManagers").checked = true;;
+			        			$("#mailToManagers").val("Y");
+			        		}else{
+			        			document.getElementById("mailToManagers").checked = false;
+			        			$("#mailToManagers").val("N");
+			        		}
+			        		
+			        		
 			        		
 			        	}
 			        }

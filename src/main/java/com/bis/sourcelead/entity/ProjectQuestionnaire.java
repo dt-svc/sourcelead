@@ -12,10 +12,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_QUESTIONNAIRE")
@@ -104,6 +109,14 @@ public class ProjectQuestionnaire implements Serializable{
     
     @Column(name = "UPDATED_BY")
     private String updatedBy;
+    
+    @Transient
+    @JsonProperty
+    private String mailToProjectMembers;
+    
+    @Transient
+    @JsonProperty
+    private String mailToProjectManagers;
     
     
     
@@ -291,6 +304,32 @@ public class ProjectQuestionnaire implements Serializable{
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getMailToProjectMembers() {
+		if(projectId.getIsMailToTeamMembers().equals(Status.Y)){
+			mailToProjectMembers = Constants.YES;
+		}else{
+			mailToProjectMembers = Constants.NO;
+		}
+		return mailToProjectMembers;
+	}
+
+	public void setMailToProjectMembers(String mailToProjectMembers) {
+		this.mailToProjectMembers = mailToProjectMembers;
+	}
+
+	public String getMailToProjectManagers() {
+		if(projectId.getIsMailToProjectManager().equals(Status.Y)){
+			mailToProjectManagers = Constants.YES;
+		}else{
+			mailToProjectManagers = Constants.NO;
+		}
+		return mailToProjectManagers;
+	}
+
+	public void setMailToProjectManagers(String mailToProjectManagers) {
+		this.mailToProjectManagers = mailToProjectManagers;
 	}
 	
 }

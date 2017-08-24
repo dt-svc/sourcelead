@@ -401,6 +401,16 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	private String endDateStr;
 	
+	
+	@Transient
+	@JsonProperty
+	private String payRateStr;
+	
+	
+	@Transient
+	@JsonProperty
+	private String billRateStr;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -1374,6 +1384,34 @@ public class ProjectMembers implements Serializable {
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public String getPayRateStr() {
+		if(payRate != null){
+			StringBuilder payRateBuilder = new StringBuilder();
+			payRateStr = payRateBuilder.append(payRateCurrency).append(" ").append(payRate).append(" / ").append(payRateType).toString();
+		}else{
+			payRateStr = "-----";
+		}
+		return payRateStr;
+	}
+
+	public void setPayRateStr(String payRateStr) {
+		this.payRateStr = payRateStr;
+	}
+
+	public String getBillRateStr() {
+		if(currentBillRate != null){
+			StringBuilder billRateBuilder = new StringBuilder();
+			billRateStr = billRateBuilder.append(billRateCurrency).append(" ").append(currentBillRate).append(" / ").append(rateType).toString();
+		}else{
+			billRateStr = "-----";
+		}
+		return billRateStr;
+	}
+
+	public void setBillRateStr(String billRateStr) {
+		this.billRateStr = billRateStr;
 	}
 	
 }

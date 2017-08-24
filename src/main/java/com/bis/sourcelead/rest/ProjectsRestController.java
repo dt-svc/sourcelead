@@ -181,31 +181,6 @@ public class ProjectsRestController {
 	    }
        
        
-       
-
-	
-	/**
-	 * @author shivayogi.
-	 * @Description : this is duplicate method, this method is not used
-	 *              anywhere.This method is same as storeProject() .
-	 */
-	@RequestMapping(value = "/saveProject", method = RequestMethod.POST)
-	public @ResponseBody String saveProject(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
-
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		projectsService.saveProjectByUserOrgLocationsJson(user, loginOrgLocation, loginOrgCode, jsonObj);
-		SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg",
-				"Successfully you have created a project");
-		return "projectDashboard";
-
-	}
 
 	@RequestMapping(value = "/validateProjectId", method = RequestMethod.POST)
 	public @ResponseBody String validateJobSequenceNumber(
