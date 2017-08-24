@@ -55,10 +55,10 @@
 					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
 					            </i>
-					            <div class='pull-right  sm text-center Expreopen'>
+					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
 					                  <label class='clearfix reopen-label'>RE-OPEN</label>
-					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
-					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
+					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
+					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
 					           </div> 
 					      </c:if>
 					     
