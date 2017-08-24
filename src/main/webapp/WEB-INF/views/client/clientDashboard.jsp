@@ -1555,7 +1555,7 @@ function listChange(sel){
 		 
 		/*  getVendorContactLists(); */
 		 getVendorContactListsELK();
-		loadVendorDataTable();
+		// loadVendorDataTable();
 	 }
 	 
 }
