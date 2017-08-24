@@ -59,9 +59,9 @@ public class CandidateResumes implements Serializable{
 	@Column(name = "DESCRIPTION ")
 	private String description ;
 	
-	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
+//	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
+//	@Lob
+//	private  byte[] docFile;
 	
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
@@ -95,6 +95,19 @@ public class CandidateResumes implements Serializable{
 	
 	@Transient
 	private String candidateResumeUpdateDateToString;
+	
+	@Column(name = "FILE_URL")
+	private String fileURL;
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
 
 	public Long getId() {
 		return id;
@@ -143,13 +156,13 @@ public class CandidateResumes implements Serializable{
 		this.description = description;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
+//	public byte[] getDocFile() {
+//		return docFile;
+//	}
+//
+//	public void setDocFile(byte[] docFile) {
+//		this.docFile = docFile;
+//	}
 
 	public String getFileContentType() {
 		return fileContentType;

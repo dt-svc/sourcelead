@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -90,6 +92,8 @@ public class CandidateRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	@Value("${static.path}")
+	private String staticPath;
 	@Autowired
 	private CandidateService candidateService;
 	@Autowired
@@ -334,8 +338,8 @@ public class CandidateRestController {
 		response.setContentType("application/octet-stream");
 		StringBuilder fileName = new StringBuilder();
 		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
-		if (candidateResume.getDocFile() != null) {
-			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+		if (candidateResume.getFileURL() != null) {
+			InputStream inputStream = new FileInputStream(new File(staticPath, candidateResume.getFileURL()));
 			try {
 				OutputStream outStream = response.getOutputStream();
 				byte[] buffer = new byte[4096];
@@ -349,31 +353,6 @@ public class CandidateRestController {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
 			}
 		}
-		/*
-		 * byte[] pdfData = candidateResume.getDocFile(); FileOutputStream
-		 * fileOuputStream =null; try { fileOuputStream = new
-		 * FileOutputStream(candidateResume.getFileName());
-		 * fileOuputStream.write(pdfData); } finally { fileOuputStream.close();
-		 * } String mimeType = "application/msword"; if (mimeType == null) {
-		 * mimeType = "application/octet-stream"; }
-		 * response.setContentType(mimeType); String headerKey =
-		 * "Content-Disposition"; String headerValue =
-		 * String.format("attachment; filename=\"%s\"",
-		 * candidateResume.getFileName()); response.setHeader(headerKey,
-		 * headerValue); InputStream inputStream = new
-		 * ByteArrayInputStream(candidateResume.getDocFile()); try {
-		 * OutputStream outStream = response.getOutputStream();
-		 * 
-		 * byte[] buffer = new byte[500]; int bytesRead = -1;
-		 * 
-		 * while ((bytesRead = inputStream.read(buffer)) != -1) {
-		 * outStream.write(buffer, 0, bytesRead); }
-		 * 
-		 * inputStream.close(); outStream.close();
-		 * 
-		 * } catch (FileNotFoundException e) { e.printStackTrace(); } catch
-		 * (IOException e) { e.printStackTrace(); }
-		 */
 	}
 	
 	@RequestMapping(value = "/getUserByRoleId", method = RequestMethod.POST)

@@ -23,13 +23,17 @@ public interface CandidateResumesService {
 	 * @param jsonObj
 	 * @param user
 	 * @param candidate
+	 * @param resumeId
 	 * @param orgLocation
-	 * @param multiFile
+	 * @param fileURL
+	 * @param fileName
+	 * @param contentType
 	 * @return
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocation, MultipartFile multiFile) throws JSONException,Exception;
+	public CandidateResumes storeCandidateResume(JSONObject jsonObj, User user, Candidate candidate, String resumeId, OrgLocations orgLocation, String fileURL, String fileName, String contentType) throws JSONException,Exception;
+	
 	
 	/**
 	 * @param orgLocations
