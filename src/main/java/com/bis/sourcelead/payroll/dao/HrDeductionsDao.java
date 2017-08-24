@@ -14,4 +14,6 @@ public interface HrDeductionsDao {
 
 	List<HrDeductionsDetails> getHrDeductionsDetailsbyId(long hrDeductionId);
 
+	List<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
 }

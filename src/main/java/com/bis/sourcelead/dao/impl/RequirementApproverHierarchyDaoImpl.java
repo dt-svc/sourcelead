@@ -53,7 +53,7 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementId(Long requirementId,Long approverUserId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementApproverHierarchy rah where rah.requirementId.id =:requirementId and rah.approverUserId.id =:approverUserId";
+		String query = "from RequirementApproverHierarchy rah left join fetch rah.requirementId left join fetch rah.requirementId where rah.requirementId.id =:requirementId and rah.approverUserId.id =:approverUserId";
 		List<RequirementApproverHierarchy> requirementApproverHierarchyList =  session.createQuery(query)
 														.setLong("requirementId", requirementId)
 														.setLong("approverUserId", approverUserId)

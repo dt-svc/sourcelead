@@ -52,6 +52,19 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		return wagesAndTaxlist;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<WageTaxSummary> wagesAndTaxlist = null;
+		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and wts.employeeId = :empId";
+		wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", orgLocations.getId())
+				.setLong("empId", empId).setCacheable(true).list();
+		if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
+			return wagesAndTaxlist;
+		}
+		return wagesAndTaxlist;
+	}
 	
 
 }
