@@ -14,15 +14,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-<!-- Amchart style sheet and script: For billing Report for demo only -->
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-<!-- Amchart style sheet and script: For billing Report for demo only -->
-
-
 <style>
 #billing_chartdiv {
   	width:100%; height:300px;
@@ -55,7 +46,7 @@
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
 					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				   <%--  <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Submitted Applicants</a></li>
 <%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
@@ -439,15 +430,26 @@ function reportpagination(){
 <!-- Filter scripts start here -->
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRepo = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatRepo = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatRepo = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatRepo = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatRepo = 'yy-dd-mm'; 
+		  }
 		$('#billingReportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#billingReportStartDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#billingReportEndDate").datepicker("option", "minDate", dt);
+				//var dt = toDate("#billingReportStartDate");
+				/* dt.setDate(dt.getDate() + 1); */
+				$("#billingReportEndDate").datepicker("option", "minDate", selected);
 				addBillingValidClass();
 			}
 		
@@ -456,16 +458,16 @@ function reportpagination(){
 		$('#billingReportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#billingReportEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#billingReportStartDate").datepicker("option", "maxDate", dt);
-				 $( "#billingReportStartDate" ).datepicker({  maxDate: new Date() });
+				//var dt = toDate("#billingReportEndDate");
+				//dt.setDate(dt.getDate() - 1);
+				$("#billingReportStartDate").datepicker("option", "maxDate", selected);
+				// $( "#billingReportStartDate" ).datepicker({  maxDate: new Date() });
 				addBillingValidClass();
 			}
 		});
@@ -489,15 +491,27 @@ function reportpagination(){
 
 <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatRepo = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatRepo = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatRepo = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatRepo = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatRepo = 'yy-dd-mm'; 
+		  }
 		$('#ReportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#ReportStartDate");
+				/* var dt = new Date(selected);
+				//var dt = toDate("#ReportStartDate");
 				dt.setDate(dt.getDate() + 1);
-				$("#ReportEndDate").datepicker("option", "minDate", dt);
+				$("#ReportEndDate").datepicker("option", "minDate", dt); */
+				$("#ReportEndDate").datepicker("option", "minDate", selected);
 				addValidClass();
 			}
 		
@@ -506,16 +520,17 @@ function reportpagination(){
 		$('#ReportEndDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatRepo,
 			beforeShow: function(){
 		           this.value='';
 		     },
 			onSelect : function(selected) {
 				var dt = new Date(selected);
-				var dt = toDate("#ReportEndDate");
+				/* //var dt = toDate("#ReportEndDate");
 				dt.setDate(dt.getDate() - 1);
 				$("#ReportStartDate").datepicker("option", "maxDate", dt);
-				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() });
+				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
+				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
 				addValidClass();
 			}
 		});

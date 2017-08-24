@@ -60,4 +60,10 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.getProjectMembeHistoryForHotlistCandidatesByUsedId(projectMemberId);
 	}
 
+	@Override
+	public ProjectMembersHistory getProjectMembersAllHistoryByProjectMemberId(Long projectMemberId) throws Exception
+	{
+		return projectMembersHistoryDao.getProjectMembersAllHistoryByProjectMemberId(projectMemberId);
+	}
+
 }

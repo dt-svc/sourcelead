@@ -3,7 +3,6 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -539,7 +538,7 @@ public class DashboardRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
 			List<RequirementInterviewHistory> requirementInterviewList = null;
-			
+			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			String currentTime = null;
 			String userType = null;
 			Timezone timezone = null;
@@ -554,7 +553,7 @@ public class DashboardRestController {
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			if(dateRange != null && !"today".equals(dateRange) && !"previous".equals(dateRange) && !"upcoming".equals(dateRange)){
 				DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-				Date startTime =  commonUtil.getDateFormat(dateRange);
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 				String startTimeTS = Constants.TZ_DF.format(startTime); 
 				String endTimeTS = END_TZ_DF.format(startTime);
 				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),"UTC", startTimeTS);
@@ -677,7 +676,6 @@ public class DashboardRestController {
 					
 				
 			// requirement created user
-			User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
 			// to get RequirementApproverHierarchy with maximum Level
 			Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
@@ -708,9 +706,9 @@ public class DashboardRestController {
 							}
 						// this is for sending email to requirement initiator
 						if (status.equalsIgnoreCase("APPROVED")) {
-							requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement,location, orgLocation);
+							requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement,location, orgLocation);
 						} else if (status.equalsIgnoreCase("REJECTED")) {
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 						}
 						
 						
@@ -742,7 +740,7 @@ public class DashboardRestController {
 							requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 							requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 							requirementApproverHierarchy.setRejectedReason(reason);
-							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+							requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 							requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							
 							// This is  to update  the level2 Approver Record For RejectedS
@@ -789,7 +787,7 @@ public class DashboardRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			
 			List<RequirementInterviewHistory> requirementInterviewList = null;
-			
+			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 			String currentTime = null;
 			String userType = null;
 			Timezone timezone = null;
@@ -803,7 +801,7 @@ public class DashboardRestController {
 			Date endUTCDate = null;
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  commonUtil.getDateFormat(dateRange);
+			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 			
 			String startTimeTS = Constants.TZ_DF.format(startTime); 
 			String endTimeTS = END_TZ_DF.format(startTime);
@@ -825,11 +823,11 @@ public class DashboardRestController {
 			
 			String status =  "myTask";
 			if(!"".equalsIgnoreCase(dateRange)){
-				Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(dateRange);
+				Date date1 = commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),dateRange);
 				taskCurrentTimeStr = Constants.TZ_DF.format(date1);
 				taskCurrentDateInTimezone= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, taskCurrentTimeStr);
 				converteDate = TZ_DF_TS.parse(taskCurrentDateInTimezone);
-				taskCurrentDateInTimezone = Constants.DMY.format(converteDate);
+				taskCurrentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),converteDate);
 			}
 			
 			List<Tasks> taklist = taskService.tasksListByIdAndOrgLocationIdAssignedUserId(loginOrgLocations.getId(),user.getId(),status,dateRange,converteDate,timezone);
@@ -926,5 +924,33 @@ public class DashboardRestController {
 				resultJson = commonUtil.toJSON(expensesCount);
 				return resultJson;
 		   }
+		 
+		 /**
+		  * @author Pavan jampana
+		  * this method is for dashboard contracts List
+		  * @param status
+		  * @param request
+		  * @return contract list
+		  * @throws Exception
+		  */
+	@RequestMapping(value = "/getDashboardContracts", method = RequestMethod.POST)
+	public List<RequirementOffers> getDashboardContracts(@RequestParam(value = "locationId", required = false) Long locationId) throws Exception
+	{
+		List<RequirementOffers> offerList = requirementOffersService.getOfferAcceptedVendorCandidatesByOrgLocationId(locationId);
+		return offerList;
+	}
+	
+	@RequestMapping(value = "/checkForOldrecords", method = RequestMethod.POST)
+	public boolean checkForOldrecords(@RequestParam(value = "orglocationId", required = false) Long orglocationId) throws Exception
+	{
+		boolean generationIdStatus  = requirementService.checkForOldrecordsUsingOrgLocationid(orglocationId);
+		return generationIdStatus;
+	}
+	
+	/*@RequestMapping(value = "/addGeneratedIdRecordsToDataBaseForOldRecords", method = RequestMethod.POST)
+	public boolean addGeneratedIdRecordsToJobsForOldRecords(@RequestParam(value = "orglocationId", required = false) Long orglocationId) throws Exception{
+		boolean generationIdStatus  = requirementService.addGeneratedIdRecordsToJobsForOldRecords(orglocationId);
+		return generationIdStatus;
+	}*/
 		
 }

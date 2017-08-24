@@ -2,9 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
@@ -14,8 +12,8 @@ color:#337ab7 !important;
 .successBtn {
 background-color: #1ab394;
 border-color: #1ab394;
-cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
-font-size: 13px; width: 75px;
+border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+font-size: 13px; width: 60px;
 }
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
     z-index: 900000 !important;
@@ -234,18 +232,18 @@ $(document).ready(function(){
   <!-- Add invoice Popup -->
 		   <div class="addcandidate-popup">
 		    <div class="row">
-		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
-		      <div class="col-md-5 mt25">
+		      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>
+		      <div class="col-md-4 mt25">
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
 		          <div class="clearfix mb10"> 
 		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
 		          </div>
-		          <strong class="clearfix">Custom</strong></a>
+		          <strong class="clearfix">Client Based</strong></a>
 		          </div>
 		      </div>
 		
-		        <div class="col-md-5 mt25">
+		        <div class="col-md-4 mt25">
 		          <div class="small-widget bg-yellow"> 
 		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
@@ -255,14 +253,15 @@ $(document).ready(function(){
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
 		          
-		          <!-- <div class="col-md-4 mt25">
+		         <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <a  href="<c:url value='/createReceivableExpensesBill'/>" title="Create custom invoice">
 		            <div class="clearfix mb10">
 		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
-		        </div> -->
+		        </div>
 		
 		      
 		          </div>
@@ -282,6 +281,18 @@ $(document).ready(function(){
 		    </script> 
   
 <script>
+
+var finalDateFormatEduUpdate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	  finalDateFormatEduUpdate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	  finalDateFormatEduUpdate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	  finalDateFormatEduUpdate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	  finalDateFormatEduUpdate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -348,7 +359,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
 	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
-	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
+	result = result +'                  <i class="fa fa-times" onClick="remove()"></i></span> </div>';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
 	result = result +'            </div>                                                                ';
@@ -375,7 +386,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatEduUpdate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
@@ -386,7 +397,12 @@ function receivePaymentPop1(invoiceId,total){
     
 }
 
-</script>  
+</script> 
+<script> 
+function remove(){
+	$('#paymentAttachment').val("");
+}
+</script>
 <script>
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
@@ -456,7 +472,16 @@ function getInvoiceList(){
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
-	
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  locationdateForList = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  locationdateForList = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  locationdateForList = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  locationdateForList = 'YYYY-DD-MM'; 
+	  } 
 	if(dayWisetype=="custom"){
 		dayWisetype = "";
 	}
@@ -507,10 +532,10 @@ function getInvoiceList(){
 			result = result +'         <th>Client Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
 			result = result +'         <th>Project Name</th>   ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Invoice Date<br>(<small class="custom-small">'+locationdateForList+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due Date</th>              ';
+			result = result +'         <th>Due Date<br>(<small class="custom-small">'+locationdateForList+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';
@@ -578,15 +603,14 @@ function getInvoiceList(){
        			
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor2"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 					'</sec:authorize>' ;
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 					'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>';				
 					'</sec:authorize>' ;
 				}
 				result = result +'         </td>  ';
@@ -640,21 +664,27 @@ function getInvoiceList(){
 				result = result +'         <td> ';
 				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+				 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.id+'"></div>';
 				} 
-				result = result +'  </div> ';                 
+				result = result +'  </div> ';
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
+						}else if(report.invoiceStatus == "DRAFT"){
+							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
 						}else{
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+							result = result +'           <span class="text-primary successBtn primary pull-left">Send</span>   ';	
 						}
 							
 					}else{
-						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+						if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+						}else{
+							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+						}
 					}
 				}else{
 					if(report.invoiceStatus == "Accepted"){
@@ -667,6 +697,8 @@ function getInvoiceList(){
 					}else{
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
+						}else if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="text-primary successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}
@@ -729,7 +761,6 @@ $('#mypop').click(function(){
 
 <script>
 function invoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -1014,7 +1045,6 @@ $(document).ready(function() {
     //search script
         function customInvoiceList() {
             var selectVal = $("#dayWiseTypeId").val();
-            alert(selectVal)
             if (selectVal == "custom") {
                 $(".custom_search").show();
                 customDate();
@@ -1058,14 +1088,29 @@ function customDate(){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatClientInvoiceDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatClientInvoiceDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+			//var dt = new Date(selected);
+			//var dt = toDate("#billingStartDate");
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -1075,14 +1120,15 @@ function customDate(){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatClientInvoiceDate,
 		beforeShow: function(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+// 			var dt = new Date(selected);
+// 			var dt = toDate("#billingEndDate");
+			   var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}
@@ -1310,7 +1356,7 @@ function linkInvoice(invoiceId,totalAmount){
 
 <script>
 function LinkInvoicePagination(){  
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+	// $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#linkInvoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
@@ -1396,7 +1442,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,masterInvoic
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount.toFixed(2)+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMerge("+checkVal+","+masterInvoiceId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
@@ -1421,6 +1467,68 @@ function proceedToMerge(checkVal,masterInvoiceId){
 	       },
 	   });  
 }
+</script>
+
+<script>
+function unLinkInvoice(invoiceId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId, 
+	            success: function(data) {
+	            	location.replace(sourceleadUrl+"/invoiceList");	
+	       },
+	   });  
+}
+</script>
+
+<script>
+function deleteInvoice(invoiceId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForInvoice' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveInvoiceRejectedReason('+invoiceId+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveInvoiceRejectedReason(invoiceId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = $("#reasonForInvoice").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForInvoiceDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&invoiceId="+invoiceId+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/invoiceList");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	
+}
+
 </script>
 
 <script type="text/javascript">

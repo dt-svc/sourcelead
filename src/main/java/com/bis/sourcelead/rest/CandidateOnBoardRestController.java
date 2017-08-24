@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,11 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
@@ -51,6 +50,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
@@ -61,6 +61,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
 public class CandidateOnBoardRestController {
@@ -112,6 +113,9 @@ public class CandidateOnBoardRestController {
 	@Autowired
 	TaskService taskService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -127,9 +131,9 @@ public class CandidateOnBoardRestController {
 		
 		List<OnBoardingTemplate> templatesList = onBoardingTemplateService.getOnBoardingTemplatesList(loginOrgLocation.getId());
 		List<OnBoardingTemplate> onboardingTemplatesList = new ArrayList<OnBoardingTemplate>();
-		
+		//SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for(OnBoardingTemplate template : templatesList){
-			template.setTemplateCreatedDate(Constants.DMY.format(template.getCreatedDate()));
+			template.setTemplateCreatedDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),template.getCreatedDate()));
 			onboardingTemplatesList.add(template);
 		}
 		
@@ -140,65 +144,23 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/createNewOnBoardingTemplate" , method = RequestMethod.POST)
-	 public @ResponseBody  String createNewOnBoardingTemplate(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  Long createNewOnBoardingTemplate(@RequestParam("json") String jsonPayload,HttpServletRequest request) throws Exception {
 		
-		 String resultJson;
-		 
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
-		 
-		 OnBoardingTemplate onBoardingTemplate = null;
-		 	
+		 JSONObject jsonObj = new JSONObject(jsonPayload);
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	 
-	 	 if(jsonObj.has("templateId") && !isNullOrEmpty(jsonObj.getString("templateId"))){
-	 		onBoardingTemplate = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-	 		onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-		 	onBoardingTemplate.setDescription(jsonObj.getString("description"));
-		 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
-		 	onBoardingTemplate.setUpdatedDate(new Date());
-	 	 
-	 	 }else{
-	 		 onBoardingTemplate = new OnBoardingTemplate();
-		 	 onBoardingTemplate.setTemplateName(jsonObj.getString("templateName"));
-		 	 onBoardingTemplate.setDescription(jsonObj.getString("description"));
-		 	 onBoardingTemplate.setOrgLocationId(orgLocations);
-		 	
-		 	 StringBuilder userName = new StringBuilder();
-			if(!isNullOrEmpty(user.getLastName())){
-				onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-			}else{
-				onBoardingTemplate.setCreatedUser(userName.append(user.getFirstName()).toString());
-			}
-			onBoardingTemplate.setTemplateStatus("Draft");
-			onBoardingTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
-			onBoardingTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		 	onBoardingTemplate.setCreatedBy(user.getUserCode());
-		 	onBoardingTemplate.setCreatedDate(new Date());
-		 	onBoardingTemplate.setUpdatedBy(user.getUserCode());
-		 	onBoardingTemplate.setUpdatedDate(new Date());
-	 	 }
-	 	 
-	 	
-	 	onBoardingTemplate = onBoardingTemplateService.saveOnBoardingTemplate(onBoardingTemplate);
-		
-	 	resultJson = commonUtil.toJSON(Long.valueOf(onBoardingTemplate.getId()));
-		return resultJson;
-	   }
+	 	 OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardTemplateDetails(jsonObj, user, orgLocations);
+		 return onBoardingTemplate.getId();
+	  
+	}
 	
 	
 	
 	@RequestMapping(value = "/getOnboardTemplateById" , method = RequestMethod.POST)
-	 public @ResponseBody  String getOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody OnBoardingTemplate getOnboardTemplateById(@RequestParam(value="templateId", required=false) Long templateId, HttpServletRequest request) throws Exception {
 		
-		String resultJson;
-	 	 
  	    OnBoardingTemplate onBoardingTemplate = onBoardingTemplateService.getOnBoardingTemplateById(templateId);
-		
-	 	resultJson = commonUtil.toJSON(onBoardingTemplate);
-		return resultJson;
+		return onBoardingTemplate;
 	   }
 	
 	
@@ -241,192 +203,23 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/getOnboardTemplateDocumentByTemplateId" , method = RequestMethod.POST)
-	 public @ResponseBody  String getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
+	 public @ResponseBody List<OnBoardingTemplateDocuments> getOnboardTemplateDocumentByTemplateId(@RequestParam(value="templateId", required=false) Long templateId,
 			 @RequestParam(value="documentType", required=false) String documentType, HttpServletRequest request) throws Exception {
 		
-		String resultJson;
-		
 		List<OnBoardingTemplateDocuments> documentsList = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsByTemplateId(templateId,documentType);
-	 	 
-	 	resultJson = commonUtil.toJSON(documentsList);
-		return resultJson;
+		return documentsList;
 	   
 	}
 	
-	
-	
-	
-	
-	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam(value="json", required=false) String json,
+	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam("json") String jsonPayload,
 			MultipartHttpServletRequest request) throws Exception {
-		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
-		json = "{"+json+"}";
-		JSONObject jsonObj = new JSONObject(json);
-		
-		
-		//save  mutliple attachment for contracts Documents.
-		if ((jsonObj.has("contractsAttcahmentMaxRowNumber"))){
-	    	String contractsAttcahmentMaxRowNumber = jsonObj.getString("contractsAttcahmentMaxRowNumber");
-			int contractsAttcahmentMaxRowNumberCount = Integer.parseInt(contractsAttcahmentMaxRowNumber);
-			
-			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-			
-	    	for (int a = 0; a < contractsAttcahmentMaxRowNumberCount; a++) {
-				   
-				   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-				   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-       		       final Map files = multiRequest.getFileMap();
-       		       
-       		       documents.setOnboardingTemplateId(template);
-                   MultipartFile  multiFile = (MultipartFile)files.get(a+"contractsdocFile");
-                   if(multiFile != null && !multiFile.isEmpty()){
-                	   documents.setDocFile(multiFile.getBytes());
-                	   documents.setFileName(multiFile.getOriginalFilename());
-                       
-                       if(multiFile.getContentType()!=null){
-                    	   documents.setFileContentType(multiFile.getContentType());
-                       }
-                       documents.setDocumentType("Contracts");
-                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-                       documents.setCreatedDate(CommonUtil.currentDate());
-                       documents.setCreatedBy(loginUser.getUserCode());
-                       documents.setUpdatedDate(CommonUtil.currentDate());
-                       documents.setUpdatedBy(loginUser.getUserCode());
-                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-					   
-                   }
-                 
-	    	}
-		}
-		
-		
-		
-		//save  mutliple attachment for forms Documents.
-				if ((jsonObj.has("formsAttcahmentMaxRowNumber"))){
-			    	String formsAttcahmentMaxRowNumber = jsonObj.getString("formsAttcahmentMaxRowNumber");
-					int formsAttcahmentMaxRowNumberCount = Integer.parseInt(formsAttcahmentMaxRowNumber);
-					
-					OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-					
-			    	for (int a = 0; a < formsAttcahmentMaxRowNumberCount; a++) {
-						   
-						   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-		       		       final Map files = multiRequest.getFileMap();
-		       		       
-		       		       documents.setOnboardingTemplateId(template);
-		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"formsdocFile");
-		                   if(multiFile != null && !multiFile.isEmpty()){
-		                	   documents.setDocFile(multiFile.getBytes());
-		                	   documents.setFileName(multiFile.getOriginalFilename());
-		                       
-		                       if(multiFile.getContentType()!=null){
-		                    	   documents.setFileContentType(multiFile.getContentType());
-		                       }
-		                       documents.setDocumentType("Forms");
-		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                       documents.setCreatedDate(CommonUtil.currentDate());
-		                       documents.setCreatedBy(loginUser.getUserCode());
-		                       documents.setUpdatedDate(CommonUtil.currentDate());
-		                       documents.setUpdatedBy(loginUser.getUserCode());
-		                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-							   
-		                   }
-		                 
-			    	}
-				}
-		
-		
-		//save  mutliple attachment for policies Documents.
-		if ((jsonObj.has("policiesAttcahmentMaxRowNumber"))){
-	    	String policiesAttcahmentMaxRowNumber = jsonObj.getString("policiesAttcahmentMaxRowNumber");
-			int policiesAttcahmentMaxRowNumberCount = Integer.parseInt(policiesAttcahmentMaxRowNumber);
-			
-			OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-			
-	    	for (int a = 0; a < policiesAttcahmentMaxRowNumberCount; a++) {
-				   
-				   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-				   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-       		       final Map files = multiRequest.getFileMap();
-       		       
-       		       documents.setOnboardingTemplateId(template);
-                   MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
-                   if(multiFile != null && !multiFile.isEmpty()){
-                	   documents.setDocFile(multiFile.getBytes());
-                	   documents.setFileName(multiFile.getOriginalFilename());
-                       
-                       if(multiFile.getContentType()!=null){
-                    	   documents.setFileContentType(multiFile.getContentType());
-                       }
-                       documents.setDocumentType("Policies");
-                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-                       documents.setCreatedDate(CommonUtil.currentDate());
-                       documents.setCreatedBy(loginUser.getUserCode());
-                       documents.setUpdatedDate(CommonUtil.currentDate());
-                       documents.setUpdatedBy(loginUser.getUserCode());
-                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-					   
-                   }
-                   
-                 
-	    	}
-		}
-		
-		
-		
-		
-		
-		
-		//save  mutliple attachment for supported Documents.
-				if ((jsonObj.has("supportingAttcahmentMaxRowNumber"))){
-			    	String supportingAttcahmentMaxRowNumber = jsonObj.getString("supportingAttcahmentMaxRowNumber");
-					int supportedAttcahmentMaxRowNumberCount = Integer.parseInt(supportingAttcahmentMaxRowNumber);
-					
-					OnBoardingTemplate template = onBoardingTemplateService.getOnBoardingTemplateById(Long.valueOf(jsonObj.getString("templateId")));
-					
-			    	for (int a = 0; a < supportedAttcahmentMaxRowNumberCount; a++) {
-						   
-						   OnBoardingTemplateDocuments documents = new OnBoardingTemplateDocuments();
-						   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-		       		       final Map files = multiRequest.getFileMap();
-		       		       
-		       		       documents.setOnboardingTemplateId(template);
-		                   MultipartFile  multiFile = (MultipartFile)files.get(a+"supportingdocFile");
-		                   if(multiFile != null && !multiFile.isEmpty()){
-		                	   documents.setDocFile(multiFile.getBytes());
-		                	   documents.setFileName(multiFile.getOriginalFilename());
-		                       
-		                       if(multiFile.getContentType()!=null){
-		                    	   documents.setFileContentType(multiFile.getContentType());
-		                       }
-		                       documents.setDocumentType("Supported");
-		                       documents.setStatus(Constants.CANDIDATE_ACTIVE);
-		                       documents.setDocumentUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		                       documents.setCreatedDate(CommonUtil.currentDate());
-		                       documents.setCreatedBy(loginUser.getUserCode());
-		                       documents.setUpdatedDate(CommonUtil.currentDate());
-		                       documents.setUpdatedBy(loginUser.getUserCode());
-		                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(documents);
-							   
-		                   }
-		                   
-		                 
-			    	}
-				}
-		
+		JSONObject jsonObj = new JSONObject(jsonPayload);
+		onBoardingTemplateDocumentsService.storeOnBoardTemplateDocuments(jsonObj, loginUser, request);
 		return "success";
 			
 	}
-	
-	
 	
 	@RequestMapping(value = "/downloadTemplateDocument", method = RequestMethod.GET)
     public void downloadTemplateDocument(@RequestParam(value="documentUUID", required=false) String documentUUID ,HttpServletResponse response) throws Exception {
@@ -506,18 +299,14 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/saveOnBoardTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveOnBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String saveOnBoardTasks(@RequestParam("json") String jsonPayload, HttpServletRequest request) throws Exception {
 		
 		 
-		 json = "{"+json+"}";
-		 
-		 JSONObject jsonObj = new JSONObject(json);
+		 JSONObject jsonObj = new JSONObject(jsonPayload);
 		 
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		
 		 
 		 OnboardTasks onboardTasks = new OnboardTasks();
-		 
 		 
 		 if(jsonObj.has("taskName") && !isNullOrEmpty(jsonObj.getString("taskName"))){
 			 onboardTasks.setTaskName(jsonObj.getString("taskName"));
@@ -706,11 +495,13 @@ public class CandidateOnBoardRestController {
 	 
 	 @RequestMapping(value = "/getOnBoardingCandidateOfferDetails")
 		public String getOnBoardingCandidateOfferDetails(@RequestParam(value = "offerId", required = false) Long offerId,
-				HttpServletRequest request) throws Exception {
-
+				@RequestParam(value = "locationCode") String locationCode) throws Exception {
+		 
+		 	OrgLocations locations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		 	//SimpleDateFormat dateFormat = locations.getLocFullFormDateFormatter();
 			RequirementOffers offer = requirementOffersService.getRequirementOfferId(offerId);
 			if(null != offer.getDateOfJoining()){
-				offer.setDateOfJoiningStr(Constants.DMY.format(offer.getDateOfJoining()));
+				offer.setDateOfJoiningStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),offer.getDateOfJoining()));
 			}
 			
 			
@@ -774,18 +565,19 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/getOnboardCandidateList")
-	 public String getOnboardCandidateList(HttpServletRequest request) throws Exception {
+	 public String getOnboardCandidateList(@RequestParam("locationCode") String locationCode) throws Exception {
 
 		String resultJson;
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		//SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
 		List<CandidateOnBoarding> candidateOnBoardingList = candidateOnBoardingService.getCandidateOnBoardingListByOrgLocationId(loginOrgLocation.getId());
 		List<CandidateOnBoarding> onBoardingList = new ArrayList<CandidateOnBoarding>();
 		
 		if(null != candidateOnBoardingList && candidateOnBoardingList.size() > 0){
 			for(CandidateOnBoarding candidateOnBoarding : candidateOnBoardingList){
 				if(null != candidateOnBoarding.getStartDate()){
-					candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+					candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidateOnBoarding.getStartDate()));
 				}
 				
 				StringBuilder candidateName = new StringBuilder();
@@ -821,11 +613,13 @@ public class CandidateOnBoardRestController {
 	 
 	 
 	 @RequestMapping(value = "/loadOnboardingCandidateDetails")
-	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,HttpServletRequest request) throws Exception {
+	 public String loadOnboardingCandidateDetails(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+			 @RequestParam(value="locationCode") String locationCode) throws Exception {
 
 		String resultJson;
 		StringBuilder candidateName = new StringBuilder();
-		
+		OrgLocations orglocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+		//SimpleDateFormat formatter = orglocations.getLocFullFormDateFormatter();
 		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
 		if(null != candidateOnBoarding){
 			candidateOnBoarding.setOnBoardCandidateId(candidateOnBoarding.getCandidateId().getId());
@@ -856,14 +650,14 @@ public class CandidateOnBoardRestController {
 				candidateOnBoarding.setOnBoardTeamId(candidateOnBoarding.getTeamId().getId());
 			}
 			
-			candidateOnBoarding.setJoiningDateStr(Constants.DMY.format(candidateOnBoarding.getStartDate()));
+			candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),candidateOnBoarding.getStartDate()));
 			
 			if(null != candidateOnBoarding.getEndDate()){
-				candidateOnBoarding.setEndDateStr(Constants.DMY.format(candidateOnBoarding.getEndDate()));
+				candidateOnBoarding.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),candidateOnBoarding.getEndDate()));
 			}
 			
 			if(null != candidateOnBoarding.getDueDate()){
-				candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
+				candidateOnBoarding.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),candidateOnBoarding.getDueDate()));
 			}
 			
 			
@@ -1847,7 +1641,7 @@ public class CandidateOnBoardRestController {
 			
 			List<RequirementSubmission> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
 			List<RequirementSubmission> requirementSubmissionList = new ArrayList<RequirementSubmission>();
-			
+			//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 			if(null != submissionList && submissionList.size() > 0){
 				
 				for(RequirementSubmission submission : submissionList){
@@ -1864,7 +1658,7 @@ public class CandidateOnBoardRestController {
 					submission.setRequirementUUID(submission.getRequirement().getRequirementUUID());
 					
 					RequirementOffers requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(submission.getId());
-					submission.setOfferJoinDate(Constants.DMY.format(requirementOffers.getDateOfJoining()));
+					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementOffers.getDateOfJoining()));
 					submission.setPositionType(requirementOffers.getPositionType());
 					submission.setRate(requirementOffers.getAmount());
 					submission.setRateType(requirementOffers.getPaymentMode());
@@ -2002,17 +1796,18 @@ public class CandidateOnBoardRestController {
 		 
 		 
 		 @RequestMapping(value = "/viewCandidateOnboardTasksByOnboardingUUID" , method = RequestMethod.GET)
-		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,@RequestParam(value="locationId", required=false) Long locationId,
 				 HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 
 			 
 			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
-			 
+			 OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 			 List<Tasks> tasksList = taskService.getTasksListOnboardingId(onboarding.getId());
 				List<Tasks> taskList = new ArrayList<Tasks>();
 				if(null != tasksList && tasksList.size() > 0){
 					for(Tasks tasks : tasksList){
-						tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+						tasks.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tasks.getTaskDate()));
 						
 						StringBuilder userName = new StringBuilder();
 						if(null != tasks.getAssignedUserId().getLastName()){

@@ -11,6 +11,7 @@
  <jsp:include page="educationSubmissionDetails.jsp" />
  <jsp:include page="certificationSubmissionDetails.jsp" />
  <jsp:include page="documentsSubmissionDetails.jsp"></jsp:include>
+ <jsp:include page="submissionReferencesDetails.jsp"/>
  <jsp:include page="submissionCandidateProfile.jsp" />
  <jsp:include page="submissionCandidateResume.jsp" />
  <jsp:include page="../candidates/candidatesCommentsList.jsp"></jsp:include>
@@ -160,7 +161,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   }
 	    	   
 	    	   if(json.requirementSubmissionTemplateFields.city != null && json.requirementSubmissionTemplateFields.city != '' && json.requirementSubmissionTemplateFields.city !='undefined'){
-	    		   city =' , ' + json.requirementSubmissionTemplateFields.city; 
+	    		   city = json.requirementSubmissionTemplateFields.city; 
 	    	   }else{
 	    		   city = " ";
 	    	   }
@@ -171,7 +172,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   lastName = "";
 	    	   }
 	    	   if(json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != null && json.requirementSubmissionTemplateFields.country != 'undefined'){
-	    		   country = json.requirementSubmissionTemplateFields.country;
+	    		   country = ' , ' +json.requirementSubmissionTemplateFields.country;
 	    	   }else{
 	    		   country = "";
 	    	   }
@@ -183,8 +184,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '<div class="profile_details clearfix">';
                result = result + '<div class="col-md-6">';
                result = result + ' <div class="media">';
-               result = result + '<div class="media-left image-parent">';
+               result = result + '<div class="media-left image-parent positionRelative">';
                result = result + '<div class="imageParent"><img onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+json.candidate.id+'"/>" alt="candidate" title="Candidate"></div>';
+               if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
+					  if(json.candidateScore >=50){ 
+					 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+					  }
+				  }
+               
                result = result + ' </div>';
                result = result + ' <div class="media-body candidate-details">';
                result = result + ' <h4 class="media-heading">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</h4>';
@@ -196,6 +203,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' </ul>';
                result = result + '</div>';
                result = result + '</div>';
+               result = result+'  <div class="UsProBar progViPro1">';                                                                                                                                        
+				 result = result+' <div class="progress nomr">  ';
+					if(json.profilePercentage>=50){ 
+						result = result+'   <div class="progress-bar  progress-bar-success  ';
+					}
+					else{
+						result = result+'   <div class="progress-bar  progress-bar-danger  ';
+					}
+				result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+				result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+				result = result+'   </div>  ';
+				result = result+' </div>                 ';                                                                                                                                                      
+				result = result+' </div> ';
                result = result + '<div class="other-detials">';
                result = result + '<div class="professinal-details">';
                result = result+'<ul class="list-inline list-unstyled">';
@@ -233,7 +253,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
-		       result = result +country +''+ state +''+ city
+		       result = result +city +''+ state +''+ country
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+expectedRatePer+'/'+expectedRateType+'</li>';
@@ -350,6 +370,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 		       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
 		       result = result + '<li><a href="#tabb-8" onclick="documentsSubmissionDetails('+candidateId+');">Documents</a></li>';
+		       result = result + '<li><a href="#tabb-9" onclick="submissionReferencesDetails('+candidateId+');">References</a></li>';
                result = result + '<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+','+submissionId+');">Comments</a></li>';
 		       result = result + '<div class="clearfix"></div>';
 		       result = result + '</ul>';
@@ -375,6 +396,9 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   
 			   result = result + '<div id="tabb-8" class="new-tabs_inn">';
 			   result = result + '</div>';
+			   
+			   result = result + '<div id="tabb-9" class="new-tabs_inn">';
+			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
@@ -394,7 +418,11 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			   			 result = result + '<div class="col-md-6">';
 			  			 result = result + '<div class="release-jobs submissionDetails">';
 					     result = result + '<div class="clearfix sub-details">';
-					     result = result + ' <h2 class="active">Submission Details</h2>';
+					     result = result + ' <h2 class="active">Submission Details ';
+					     if(json.submissionStatus == 'SUBMISSION'){
+					    	 result = result + '<i class="fa fa-pencil-square ml" title="Edit Submission" onClick="editSubmittedApplicant('+requirementId+','+submissionId+','+candidateId+','+json.resumeId+')"></i>';
+					     }
+					     result = result + '</h2>';
 					     result = result + ' <div class="content clearfix" style="display: block;">';
 					     result = result + submissionDetails;
 					     result = result + ' </div>';
@@ -1188,7 +1216,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a><a class="fa fa-eye ml10" onclick="viewOfferDocument(\''+report.offerId.id+'\',\''+report.offerId.fileName+'\')"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1236,6 +1264,14 @@ function getOfferDetails(submissionId){
 
 </script>
 
+<script>
+function viewOfferDocument(offerId,title){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(offerId != null && offerId != ""){
+		window.open(sourceleadUrl+'/viewOfferDocument/'+title+'?offerId='+offerId,title,"height=600,width=600");
+	}  
+}
+</script>
 
 
 <%-- 
@@ -1874,11 +1910,11 @@ function interviewFeedback(interviewId,templateId,id){
 	//$("#interviewtypediv"+id+"").slideToggle();
 	$("#feedbackdiv"+interviewId+"").show();
 	//$(this).next('.content').slideDown();
-	
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+	url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success: function(data) {
 			var json = JSON.parse(data);
 			var result = "";
@@ -2137,8 +2173,22 @@ $('.chosen-container').css({'width': '100%'});
 $("#rescheduleTimeZone").chosen();
 $("#rescheduleTimeZone").trigger('chosen:update');
 
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatRescheduleDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	finalDateFormatRescheduleDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	finalDateFormatRescheduleDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	finalDateFormatRescheduleDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	finalDateFormatRescheduleDate = 'yy-dd-mm'; 
+}
+
+
+
 $('#rescheduleDate').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormatRescheduleDate,
 	 changeMonth: true,
 	changeYear: true, 
 	minDate : 0,
@@ -2471,8 +2521,22 @@ function proposeTime(interviewId,submissionId){
 		'disableTextInput': true
 	})
 	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatInterviewDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatInterviewDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatInterviewDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatInterviewDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatInterviewDate = 'yy-dd-mm'; 
+	  }
+	  
+	
 $('#interviewDate0').datepicker({
-	dateFormat : 'dd-mm-yy',
+	dateFormat : finalDateFormatInterviewDate,
 	changeMonth: true,
 	changeYear: true, 
 	minDate:0,
@@ -2606,9 +2670,10 @@ function viewProposeTime(interviewId,submissionId){
 	$(".proposeTimePop").toggleClass("proposeTimePopActive");
 	$(".reSchPop").removeClass("reSchPopActive");
 	var sourceleadUrl = '${sourceleadUrl}';
+	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";

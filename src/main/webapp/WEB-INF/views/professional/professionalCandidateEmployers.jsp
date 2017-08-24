@@ -95,6 +95,18 @@ function closeCertificatePopup(){
 								} else if (data.indexOf('exception') >= 0) {
 									location.replace(sourceleadUrl  + "/errorPage");
 								} else {
+									$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+			            			 if(data<50){
+			            			   $("#perVal").removeClass('progress-bar-success');
+			            			   $("#perVal").addClass("progress-bar-danger");
+			            			 }
+			            			 if(data>=50){
+			            				 $("#perVal").removeClass("progress-bar-danger");
+			            				 $("#perVal").addClass("progress-bar-success");
+			            			 }
+			            			 $("#disVal").empty();
+			            			$("#disVal").append(data+'%');
+			            			
 									$("#popUpDivEmp").removeClass("edit-details-active");
 			            			$("#selector3").removeAttr("style");
 			            			$("#selector3").css({ display: "block" });
@@ -411,6 +423,18 @@ function closeCertificatePopup(){
 	function candidateEmployersList(candidateId) {
 		var sourceleadUrl = '${sourceleadUrl}';
 		
+		
+		  var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+		  if(locationList.match("yyyy-MM-dd")){
+			  candidateEmployersListDate = 'YYYY-MM-DD';
+		  }if(locationList.match("dd-MM-yyyy")){
+			  candidateEmployersListDate = 'DD-MM-YYYY'; 
+		  }if(locationList.match("MM-dd-yyyy")){
+			  candidateEmployersListDate = 'MM-DD-YYYY'; 
+		  }if(locationList.match("yyyy-dd-MM")){
+			  candidateEmployersListDate = 'YYYY-DD-MM'; 
+		  }
+		
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="
@@ -426,8 +450,8 @@ function closeCertificatePopup(){
 								result = result	+ '           <th>Employer</th>';
 								result = result	+ '           <th>Designation</th>';
 								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start Date</th>';
-								result = result	+ '           <th>End Date</th>';
+								result = result	+ '           <th>Start Date<br>(<small class="custom-small">'+candidateEmployersListDate+'</small>)</th>';
+								result = result	+ '           <th>End Date<br>(<small class="custom-small">'+candidateEmployersListDate+'</small>)</th>';
 								result = result + '           <th>Action</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";
@@ -550,9 +574,11 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 	function deleteSelectedEmp(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
+		var loginUserId = '${SourceLeadWeb_userId}';
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 				$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+					url : sourceleadUrl	+ "/removeCandidateEmployerBycandidateIdandCandidateEmployerID?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
 					success : function(data) {
 
 						if (data != null && data != 'undefined' && data != "") {
@@ -561,6 +587,19 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 							} else if (data.indexOf('exception') >= 0) {
 								location.replace(sourceleadUrl + "/errorPage");
 							} else {
+								$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+		            			 if(data<50){
+		            			  /* $("#perVal").removeClass("progress-bar-success"); */
+		            			   $("#perVal").removeClass('progress-bar-success');
+		            			   $("#perVal").addClass("progress-bar-danger");
+		            			 }
+		            			 if(data>=50){
+		            				 $("#perVal").removeClass('progress-bar-danger');
+		            				 $("#perVal").addClass("progress-bar-success");
+		            			 }
+		            			 $("#disVal").empty();
+		            			$("#disVal").append(data+'%');
+								
 			        			 $("#selector3").removeAttr("style");
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");

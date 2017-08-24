@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<script src="resources/js/formvalidator.js"></script>
 
 <style type="text/css">
 .chosen-container {
@@ -14,10 +13,6 @@
 background-color: #fff;
 }
 </style>
-
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -313,7 +308,7 @@ function displyContract(stage){
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
 						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
 						else{
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+'</div>';	
@@ -326,7 +321,7 @@ function displyContract(stage){
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
 						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
 						else{
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: -- </div>';	
@@ -422,6 +417,13 @@ function displyContract(stage){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && stage =="REJECTED"){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Rejected Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -613,26 +615,43 @@ function previewContractDoc(docId,fileName){
 </script>
 <script>
 function editOne(startDate,endDate){
+	 var contractEffectiveEndDate = startDate.split("-");
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEditOneSave = '';
+	  var d2 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEditOneSave = 'yy-mm-dd';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEditOneSave = 'dd-mm-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(contractEffectiveEndDate[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEditOneSave = 'mm-dd-yy'; 
+		   d2 = new Date(contractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[0])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEditOneSave = 'yy-dd-mm';
+		   d2 = new Date(contractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[2])-parseInt(1), parseInt(contractEffectiveEndDate[1])+parseInt(1));
+	  }
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateFormatEditOneSave,
         changeMonth: true,
           changeYear: true,
-          minDate: startDate,
+          minDate: d2,
           onSelect: function (selected) {
-              var dt = toDate("#endDate");
-              dt.setDate(dt.getDate() - 1);
+//               var dt = toDate("#endDate");
+//               dt.setDate(dt.getDate() - 1);
+
+        	    var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
           }
     });
 }
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
 
-function editClo(contractId){
+
+function editClo(contractId,startDate){
 	$('.editNewDat').hide();
-	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#endDate").val();
 	if(endDate != ""){
 		var sourceleadUrl ='${sourceleadUrl}';
@@ -641,7 +660,7 @@ function editClo(contractId){
 	     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
 	     success :function(data) {
 	    	 $("#endVal").empty();
-			  $("#endVal").append(": "+endDate);
+			 $("#endVal").append(": "+endDate+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+startDate+'\',\''+endDate+'\');"></i><div class="editNewDat"><input type="text" class="form-control calendar" value="'+endDate+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+contractId+',\''+startDate+'\');"></i></div>');
 	    },
 	}); 
 	}

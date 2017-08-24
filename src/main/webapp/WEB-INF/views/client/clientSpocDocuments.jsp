@@ -1,8 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
@@ -40,6 +38,16 @@ function clientSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
 <script>
 function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  docListClientSpocDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  docListClientSpocDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  docListClientSpocDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  docListClientSpocDate = 'YYYY-DD-MM'; 
+	  }
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationIdAndSpocUserId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+clientLocationId+"&userId="+userId,        
@@ -66,8 +74,8 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                 	 result  = result + '           <th>Type</th>';
 	                 	 result  = result + '           <th>Contact Person</th>';
 	                 	 result  = result + '           <th>Attachment</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
+	                 	 result  = result + '           <th>Start date<br>(<small class="custom-small">'+docListClientSpocDate+'</small>)</th>';
+	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+docListClientSpocDate+'</small>)</th>';
 	                 	 result  = result + '           <th>Owner</th>';
 	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -276,27 +284,38 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	function educationStartDate(){
 	}
 	
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatClientDocumentsSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatClientDocumentsSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatClientDocumentsSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatClientDocumentsSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatClientDocumentsSave = 'yy-dd-mm'; 
+	  }
 	$('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatClientDocumentsSave,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	      onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#startDate");
+	    	  var dt = $(this).datepicker('getDate', '+1d');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#endDate").datepicker("option", "minDate", dt);
 	        }
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormatClientDocumentsSave,
 	      changeMonth: true,
-	  	  changeYear: true, 
+	  	  changeYear: true,  
 	        onSelect: function (selected) {
 	           // var dt = new Date(selected);
-	           var dt = toDate("#endDate");
-	            dt.setDate(dt.getDate() - 1);
-	            $("#startDate").datepicker("option", "maxDate", dt);
+	        	   var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+		            $("#startDate").datepicker("option", "maxDate", dt);
 	        }
 	  });
 	
@@ -559,13 +578,13 @@ function getClientSpocDocument(clientLocationId,orgRelationId,spocName,userId,do
 
 <script>
 function manageDates(startDateStr,endDateStr) {
-	
+
 	  if($("#endDate").val() == "" ){
 		     
 			  var selected = $("#startDate").val();
-			  var dt = toDate("#startDate");
-			  dt.setDate(dt.getDate() + 1);
-			  $("#endDate").datepicker("option", "minDate", dt);
+			  var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#endDate").datepicker("option", "minDate", dt);
 			  
 		 	  /* $('#endDate').datepicker({
 		            dateFormat: 'yy-mm-dd',
@@ -578,8 +597,9 @@ function manageDates(startDateStr,endDateStr) {
 	  }
 	  else{
 		   var selected = $("#startDate").val();
-		   var dt = toDate("#startDate");
-           dt.setDate(dt.getDate());
+		   var dt = $(this).datepicker('getDate', '-1d');
+           dt.setDate(dt.getDate() - 1);
+           $("#startDate").datepicker("option", "maxDate", dt);
 		   
 		  // var actualStartDate = $("#startDate").val();
 		   var startDate = "";

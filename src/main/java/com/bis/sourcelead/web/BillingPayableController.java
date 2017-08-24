@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,11 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -56,6 +59,9 @@ public class BillingPayableController {
     
     @Autowired
     ConversionUtil conversionUtil;
+    
+    @Autowired
+    private InvoiceService invoiceService;
 	
 	
 	
@@ -107,9 +113,9 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		
+		//SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
 		Date currentDate = new Date();
-		String convertedDate = Constants.DMY.format(currentDate);
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createPayables");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -135,11 +141,23 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equals(projectId) && !projectId.equalsIgnoreCase("undefined")){
+		
+		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
+			model.setViewName("billing/createExpensesPayableBill");
+		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
+			model.setViewName("billing/createExpensesPayableBill");
+		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
+			model.setViewName("billing/createProjectPayableInvoice");
+		}else{
+			model.setViewName("billing/createPayables");
+		}
+		/*if(null != projectId && !"".equals(projectId) && !projectId.equalsIgnoreCase("undefined")){
 			model.setViewName("billing/createProjectPayableInvoice");
 		}else{
 			model.setViewName("billing/createPayables");			
-		}
+		}*/
+		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -190,7 +208,14 @@ public class BillingPayableController {
 			}else{
 			sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
+			StringBuilder clientSb = new StringBuilder();
+			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName() && !"".equalsIgnoreCase(orgSpoc.getClientUser().getLastName())){
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				}else{
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
+				}
 			
+			orgSpoc.setSpocName(clientSb.toString());
 			orgSpoc.setOwnerName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));

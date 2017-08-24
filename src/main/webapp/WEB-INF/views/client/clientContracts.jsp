@@ -6,7 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .edit-details {
@@ -84,7 +83,7 @@ function clientContracts(orgRelationId){
 	    result = result + '<ul>';
 	    result = result + '<li class="dropdown mt10"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
 	    result = result + '<div class="dropdown-menu bootstrap_dropdownMenu dropdown-menu_width">                                                                                                                                       ';
-	    result = result + '<ul>';
+	    result = result + '<ul class="paddingLi">';
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="DRAFT" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft">Draft <b class="badge" id="draftCount">0</b></label>';
@@ -167,6 +166,17 @@ function clientContractsList(orgRelationId){
     });
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
+	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  if(locationList.match("yyyy-MM-dd")){
+		  contractClientDate = 'YYYY-MM-DD';
+	  }if(locationList.match("dd-MM-yyyy")){
+		  contractClientDate = 'DD-MM-YYYY'; 
+	  }if(locationList.match("MM-dd-yyyy")){
+		  contractClientDate = 'MM-DD-YYYY'; 
+	  }if(locationList.match("yyyy-dd-MM")){
+		  contractClientDate = 'YYYY-DD-MM'; 
+	  } 
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
@@ -191,7 +201,7 @@ function clientContractsList(orgRelationId){
 	                		opt = opt + '    <th>Type</th>';
 	                		opt = opt + '    <th>Owner</th>';
 	                		opt = opt + '    <th>Client Contact</th>';
-	                		opt = opt + '    <th>Duration</th>';
+	                		opt = opt + '    <th>Duration <br>(<small class="custom-small">'+contractClientDate+'</small>)</th>';
 	                		opt = opt + '    <th>Req.Docs</th>'; 
 	                		opt = opt + '    <th>Status</th>'; 
 	                		opt = opt + '    <th>Action</th>';
@@ -308,7 +318,7 @@ function clientContractsList(orgRelationId){
 	                		opt = opt + '	</tbody>';
 	                		opt = opt + '</table>';
 	                    
-	                		$("#draftCount").html(expiredCount);
+	                		$("#draftCount").html(draftCount);
 	                		$("#WFACount").html(waitingForApprovalCount);
 	                		$("#WTSCount").html(waitingToBeSignedCount);
 	                		$("#finalizedCount").html(finalizedCount);
@@ -638,6 +648,7 @@ function PopUp(contractUUID){
 				}
 				
 			}
+			
 			if(json.contractType =="Full time offer"){
 				if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
 					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -724,6 +735,13 @@ function PopUp(contractUUID){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus == 'REJECTED' ){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Reject Reason</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -851,12 +869,45 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function editOne(startDate,endDate){
+	
+	var ClientcontractEffectiveEndDate = startDate.split("-");
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateeditOneSave = '';
+	  var d2 = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateeditOneSave = 'yy-mm-dd';
+		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[2])+parseInt(1));
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateeditOneSave = 'dd-mm-yy'; 
+		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(contractEffectiveEndDate[1])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[0])+parseInt(1));
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateeditOneSave = 'mm-dd-yy'; 
+		   d2 = new Date(ClientcontractEffectiveEndDate[2], parseInt(ClientcontractEffectiveEndDate[0])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateeditOneSave = 'yy-dd-mm';
+		   d2 = new Date(ClientcontractEffectiveEndDate[0], parseInt(ClientcontractEffectiveEndDate[2])-parseInt(1), parseInt(ClientcontractEffectiveEndDate[1])+parseInt(1));
+	  }
+	
+	
+	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatEditEndDateSave = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatEditEndDateSave = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatEditEndDateSave = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatEditEndDateSave = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatEditEndDateSave = 'yy-dd-mm'; 
+	  }
+	
 	$('.editNewDat').show();
 	$('#endDate').datepicker({
-        dateFormat: 'dd-mm-yy',
+        dateFormat: finalDateFormatEditEndDateSave,
         changeMonth: true,
           changeYear: true,
-          minDate: startDate,
+          minDate: d2 ,
           onSelect: function (selected) {
               var dt = toDate("#endDate");
               dt.setDate(dt.getDate() - 1);

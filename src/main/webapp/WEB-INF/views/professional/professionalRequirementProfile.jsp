@@ -234,22 +234,17 @@ function requirementProfile(requirementUUID){
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
 				 
-				 if(json.isJobApplied == 'N'){
-					 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+				 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+					 if(json.isJobApplied == 'N'){
 						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Apply</a>';
+					 }else{
+						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';
 					 }
-					 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Submit</a>';
-					 }
-				 }else{
-					 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';
-					 }
-					 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Submit</a>';
-	 
-					 }
-					 }
+				 }
+				 
+				 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Submit</a>';
+				 }
 				 
 			     result = result +'<a class="refer" onclick="referToJob('+json.id+');getUserContats('+json.id+');" href="javascript:void(0)">Refer</a>';
 			     result = result +'<div class="referWrap" id="refer">';
@@ -301,7 +296,6 @@ function requirementDetails(requirementUUID){
 		    	
 		    	var json = JSON.parse(data);
 		    	var result = "";
-		    
 		    	 result = result +'      <div class="project_side_wrap_inn_tabs" id="new-id">';
 				 result = result +'        <div class="timesheetHead">';
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
@@ -319,16 +313,17 @@ function requirementDetails(requirementUUID){
 				 result = result +'                <div class="require_wrap_details_cta"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
+
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a><a class="fa fa-eye ml10" onclick="viewProfessionalRequirementProfile(\''+json.id+'\',\''+json.fileName+'\')"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
 		            }
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+visaType+'">'+visaType+'</span>';
+				 
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
-				 
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="clearfix"></div>';
@@ -341,7 +336,6 @@ function requirementDetails(requirementUUID){
 				 result = result +'  </div>';
 				 $("#professionalRequirementProfileDiv").empty();
 				 $("#professionalRequirementProfileDiv").append(result); 
-		    	
 		    }
 	    });
    }
@@ -506,7 +500,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId, 	   
+	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
 		    success: function(data) {
 		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	 var json = JSON.parse(data);

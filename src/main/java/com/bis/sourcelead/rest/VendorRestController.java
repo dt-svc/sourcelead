@@ -181,15 +181,19 @@ public class VendorRestController {
 	    
 	    List<Requirement> vendorReleasedJobsList = null;
 	    if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-	    	vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+	    	if(orgRelation !=null) {
+	    		vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+	    	}
 	    }else{
 	    	List<Requirement> reqlist = requirementService.getAllReleasedJobsBasedOnUserIdAndLocationId(user,orgLocations);
 		    List<Long> parentreqIds = new ArrayList<>();
 		    for(Requirement req : reqlist){
 		    	parentreqIds.add(req.getId());
 		    }
+		    if(orgRelation !=null) {
 		    vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds,orgRelation.getId());
-	    }
+		    }
+		    }
 		
 		if(null != vendorReleasedJobsList ){
 			
@@ -1185,7 +1189,7 @@ public class VendorRestController {
 				
 				 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 				 
-				 String type= responderType;
+//				 String type= responderType;
 				 if("Vendor".equalsIgnoreCase(responderType)){
 					 responderType = "Client";
 				 }else if("Client".equalsIgnoreCase(responderType)){
@@ -1224,22 +1228,11 @@ public class VendorRestController {
 						//  This is to get the number of Contacts based  on Org Relation Id
 						 BoolQueryBuilder forNumberOfContacts= QueryBuilders.boolQuery();
 						 forNumberOfContacts.must(QueryBuilders.matchQuery("orgRelationId", clientVendor.getOrgRelationId()));
-						 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(clientVendor.getOrgRelationId(), loginUser.getId(),loginOrgLocation.getId(),type);
-						if(!orgSpocsList.isEmpty()){
-							 Long contactSize = (long) orgSpocsList.size();
-							 clientVendor.setNoContacts(contactSize);
-						}
-						else{
-							clientVendor.setNoContacts(0L);
-						}
-						/* Long numberOfContacts = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,0,0,forNumberOfContacts).getTotalHits();
-						 clientVendor.setNoContacts(numberOfContacts);*/
-						 
-						
-						List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(clientVendor.getOrgLocationId(),clientVendor.getId(),loginUser,loginOrgLocation);
-						if(vendorReleasedJobsList != null && vendorReleasedJobsList.size()>0){
-							
-						}
+						 if(clientVendor.getNoContacts() !=null) {
+							 clientVendor.setNoContacts(clientVendor.getNoContacts());
+						 }else {
+							 clientVendor.setNoContacts(0L);
+						 }
 						
 						if(null != clientVendor.getOrgLocationId() && clientVendor.getOrgLocationId().longValue() == loginOrgLocation.getId().longValue()){
 							
@@ -1506,11 +1499,12 @@ public class VendorRestController {
 					}
 				}
 			}
+			   //SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 			mainRequirement.setVendorInterviewsCount(interviewsSum);
 			mainRequirement.setVendorOfferedCount(offeredSum);
 			mainRequirement.setVendorBackoutCount(backoutSum);
 			mainRequirement.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
-			mainRequirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
+			mainRequirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirement.getCreatedDate()));
 			if (mainRequirement.getManagerUserId() != null) {
 				String managerFirstName = "";
 				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {

@@ -3,11 +3,7 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script src="resources/js/formvalidator.js"></script>
-
 
 <section class="content-wraper">
     <div id="onboardingLoading"></div>
@@ -25,8 +21,8 @@
  
 <section class="landTemp">
 	<div class="landTempCta">
-		<h2>Submission Template</h2>
-		<p>Manage your Submission Templates</p>
+		<h2>Applicant Template</h2>
+		<p>Manage your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 			<a href="<c:url value="/orgSubmissionTemplate" />">Add Template</a> | &nbsp; 

@@ -38,18 +38,7 @@ z-index: 9999999;
 }
 </style>
 
-<!-- these files for export -->
-<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<!-- <script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
-<!-- ends files of export -->
+
 
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
 <script>
@@ -252,6 +241,16 @@ result = result  +'    <div class="billingArea"> ';
 <script type="text/javascript">
 	function getInvoiceListBasedonVendor(orgRelationId,vendorLocationId) {
 		var sourceleadUrl = '${sourceleadUrl}';
+		var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  	  if(locationList.match("yyyy-MM-dd")){
+	  		  billingVendorDatePattern = 'YYYY-MM-DD';
+	  	  }if(locationList.match("dd-MM-yyyy")){
+	  		billingVendorDatePattern = 'DD-MM-YYYY'; 
+	  	  }if(locationList.match("MM-dd-yyyy")){
+	  		billingVendorDatePattern = 'MM-DD-YYYY'; 
+	  	  }if(locationList.match("yyyy-dd-MM")){
+	  		billingVendorDatePattern = 'YYYY-DD-MM'; 
+	  	  }
 		
 		var invoice = [];
 		var payment = [];
@@ -306,10 +305,10 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'       <tr>                             ';
 			result = result +'         <th>Bill ID</th>                    ';
 			result = result +'         <th>Vendor Contact</th>               ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
-			result = result +'         <th>Due date</th>              ';
+			result = result +'         <th>Due date <br>(<small class="custom-small">'+billingVendorDatePattern+'</small>)</th>              ';
 			result = result +'         <th>Status</th>                ';
 			result = result +'         <th>Payment Status</th>                ';
 			result = result +'         <th>Action</th>                ';
@@ -516,14 +515,26 @@ function customDate(orgRelationId,vendorLocationId){
 	$("#customDateDivId").empty();
 	$("#customDateDivId").append(result);
 	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatVendorBillingStartDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatVendorBillingStartDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatVendorBillingStartDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatVendorBillingStartDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatVendorBillingStartDate = 'yy-dd-mm'; 
+	  }
+	
+	
 	$('#billingStartDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat : finalDateFormatVendorBillingStartDate,
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingStartDate");
-			dt.setDate(dt.getDate() + 1);
+			 var dt = $(this).datepicker('getDate', '+1d');
+		      dt.setDate(dt.getDate() + 1);
 			$("#billingEndDate").datepicker("option", "minDate", dt);
 			removeStartdateval();
 		}
@@ -533,14 +544,13 @@ function customDate(orgRelationId,vendorLocationId){
 	$('#billingEndDate').datepicker({
 		changeMonth: true,
 		changeYear: true, 
-		dateFormat : 'dd-mm-yy',
+		dateFormat :finalDateFormatVendorBillingStartDate,
 		beforeShow: function(){
 	           this.value='';
 	     },
 		onSelect : function(selected) {
-			var dt = new Date(selected);
-			var dt = toDate("#billingEndDate");
-			dt.setDate(dt.getDate() - 1);
+			 var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
 			$("#billingStartDate").datepicker("option", "maxDate", dt);
 			removeEnddateval();
 		}

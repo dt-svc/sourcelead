@@ -126,8 +126,7 @@ function candDocumentsList(candidateId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + ' <tr>';
-	                    	 
-	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected"){
+	                    	 if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
 	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
 	                    	 }else{
 	                    		 result = result +"  <td><div>--</div></td>"; 
@@ -294,10 +293,11 @@ function deleteRequestedDoc(){
  	 $("input[name='documents[]']:checked").each( function (i) {
  		 documentsIds[i] = $(this).val();
  	});
- 	 
+ 	var userId = '${SourceLeadWeb_user.id}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/acceptRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&documentsIds="+documentsIds, 
+	    	 url: sourceleadUrl+"/acceptRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
 	        success: function(result) {
 	        	candidateDocuments(candidateId);
 	        },
@@ -603,6 +603,32 @@ function getDocumentType(documentType){
 						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
+								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
+			          			 $("#disVal").empty();
+			          			$("#disVal").append(result+'%');
+			          			
+			          		// for quick view bar update
+		            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+				          			   $("#quickPerVal").removeClass('progress-bar-success');
+				          			   $("#quickPerVal").addClass("progress-bar-danger");
+				          			 }
+				          			 if(result>=50){
+				          				 $("#quickPerVal").removeClass('progress-bar-danger');
+				          				 $("#quickPerVal").addClass("progress-bar-success");
+				          			 }
+
+		            			$("#quickDisVal").empty();
+		            			$("#quickDisVal").append(result+'%');
+			          			
 								$("#popUpDiv").removeClass("edit-details-active");
 		            			$("#selector9").removeAttr("style");
 		            			$("#selector9").css({ display: "block" });
@@ -713,12 +739,39 @@ function removeDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+         			 if(data<50){
+         			  /* $("#perVal").removeClass("progress-bar-success"); */
+         			   $("#perVal").find('progress-bar-success').remove();
+         			   $("#perVal").addClass("progress-bar-danger");
+         			 }
+         			 if(data>=50){
+         				 $("#perVal").find('progress-bar-danger').remove();
+         				 $("#perVal").addClass("progress-bar-success");
+         			 }
+         			 $("#disVal").empty();
+         			$("#disVal").append(data+'%');
+         			// for quick view bar update
+        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
+          			 if(data<50){
+	          			   $("#quickPerVal").removeClass('progress-bar-success');
+	          			   $("#quickPerVal").addClass("progress-bar-danger");
+	          			 }
+	          			 if(data>=50){
+	          				 $("#quickPerVal").removeClass('progress-bar-danger');
+	          				 $("#quickPerVal").addClass("progress-bar-success");
+	          			 }
+
+        			$("#quickDisVal").empty();
+        			$("#quickDisVal").append(data+'%');
         			 $("#selector9").removeAttr("style");
          			 $("#selector9").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");

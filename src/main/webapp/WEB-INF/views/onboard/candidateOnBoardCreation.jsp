@@ -427,7 +427,7 @@ function getEmploymentType(){
 }
 </script>
 
-
+<!-- getEmployementTye -->
 
 <script>
 function addPoliciesAttachment(){  
@@ -779,6 +779,8 @@ function validateUploadFile(id)
 			    	 $("#city").val(json['city']);
 			    	 $("#zipCode").val(json['zipCode']);
 			    	 
+			    	 /* $("#employmentType").val(json['designationType']);
+			    	 $("#employmentType").trigger("chosen:updated"); */
 			    	/*  getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
@@ -836,27 +838,20 @@ function validateUploadFile(id)
 	  
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  
+	  var locationCode ='${SourceLeadWeb_locationCode}';
+	  
 	  if(offerId != null && offerId != "" && offerId != 'undefined'){
 		  
 		  $.ajax({
 			   	type: "POST",
-			    url: sourceleadUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId,	    	   
+			    url: sourceleadUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId+"&locationCode="+locationCode,	    	   
 			    success: function(data) {
 			    	 var json = JSON.parse(data);
 		        	
 			    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
 			    		 $("#salaryRate").val(json['amount']);
 			    	 }
-			    	 
-			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
-			    		 $("#startDate").val(json['dateOfJoiningStr']);
-			    		 var dt = toDate("#startDate");
-			 			 dt.setDate(dt.getDate() + 1);
-			 			 $("#endDate").datepicker("option", "minDate", dt);
-			    	 }
-			    	 
-			    	 if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
-			    		 
+						if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
 			    		 if(json['positionType'] == 'Other'){
 			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
 			    			 $("#employmentOtherType").val(json['otherPositionType']);
@@ -874,7 +869,14 @@ function validateUploadFile(id)
 			    	 }else{
 			    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
 			    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+			    	 } 
+			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
+			    		 $("#startDate").val(json['dateOfJoiningStr']);
+			    		 var dt = $(this).datepicker("#startDate");
+			 			 dt.setDate(dt.getDate() + 1);
+			 			 $("#endDate").datepicker("option", "minDate", dt);
 			    	 }
+			    	 
 			    	 
 			    }
 		   });
@@ -1204,7 +1206,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
  
  <script>
  function loadOnboardingCandidate(onBoardingUUID){
-	 
 	 if(onBoardingUUID != null && onBoardingUUID != "" && onBoardingUUID !="undefined"){
 		 onBoardingUUID 
 	 }else{
@@ -1216,11 +1217,12 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 addCandidateDetailsForOnboarding();
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID, 
+	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
 	        success: function(data) {
 	        	
 	        	 var json = JSON.parse(data);
@@ -1363,7 +1365,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
  
  <script>
  function loadOnboardCandidateFormDashobard(candidateId,offerId){
-	 
 	 var candidateName = '${candidateName}';
 	 var jobTitle = '${jobTitle}';
 	 var candidateEmail ='${candidateEmail}';
@@ -2402,13 +2403,25 @@ function addCandidateDetailsForOnboarding(){
 <script>
   function getDatesScript(){
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
+	  
 	  $('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  
 	  	   onSelect : function(selected) {
-			var dt = toDate("#startDate");
+			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate() + 1);
 			$("#endDate").datepicker("option", "minDate", dt);
 			$("#dueDate").datepicker("option", "minDate", dt);
@@ -2417,12 +2430,12 @@ function addCandidateDetailsForOnboarding(){
 	  });
 	  
 	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  
 	  	   onSelect : function(selected) {
-	  		var dt = toDate("#endDate");
+	  		var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#startDate").datepicker("option", "maxDate", dt);
 			addValidClass();
@@ -2431,12 +2444,12 @@ function addCandidateDetailsForOnboarding(){
 	  });
 	  
 	  $('#dueDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
+	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true,
 	  	  
 	  	  onSelect : function(selected) {
-	  		var dt = toDate("#dueDate");
+	  		var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
 			$("#startDate").datepicker("option", "maxDate", dt);
 			addValidClass();

@@ -3,6 +3,8 @@ package com.bis.sourcelead.rest;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -181,9 +183,8 @@ public class UserProfileRestController {
 		User user = null;
 		try {
 			user = userService.getUserById(userId);
-
+			user.setFileContentType("image/jpeg");
 			if (user != null && user.getDocFile() != null) {
-				user.setFileContentType("image/jpeg");
 				InputStream in = new ByteArrayInputStream(user.getDocFile());
 				BufferedImage bi = ImageIO.read(in);
 				OutputStream out = response.getOutputStream();
@@ -192,14 +193,12 @@ public class UserProfileRestController {
 				}
 				out.close();
 
-				/*
-				 * try { InputStream in = new
-				 * ByteArrayInputStream(user.getDocFile()); BufferedImage img =
-				 * colorImage(ImageIO.read(in)); OutputStream out =
-				 * response.getOutputStream(); ImageIO.write(img, "png", out); }
-				 * catch (IOException ex) { ex.printStackTrace(); }
-				 */
-
+			}  else {
+				InputStream in = new FileInputStream(new File(getClass().getResource("/images/userprofile.jpg").toURI()));
+				BufferedImage bi = ImageIO.read(in);
+				OutputStream out = response.getOutputStream();
+				ImageIO.write(bi, "jpg", out);
+				out.close();
 			}
 
 		} catch (IOException e) {

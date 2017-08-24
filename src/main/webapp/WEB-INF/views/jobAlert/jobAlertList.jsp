@@ -3,10 +3,7 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script src="resources/js/formvalidator.js"></script>
 
 <style>
 .ratetype p {
@@ -20,6 +17,12 @@
 	function alertMsgFadeinFunction() {
 		$("#jobAlert1").fadeIn(200);
         $('#jobAlert1').delay(50000).fadeOut('slow');
+	}
+</script> 
+<script>
+	function editAlertMsgFadeinFunction() {
+		$("#jobAlert2").fadeIn(200);
+        $('#jobAlert2').delay(50000).fadeOut('slow');
 	}
 </script> 
 <section class="content-wraper">
@@ -321,6 +324,7 @@ function createAlert(){
 
 <script>
 function saveAlert(){
+	var jobAlertUUID = $("#jobAlertUUID").val();
 	if ($('#create_alert_form').validate(false, validationSettings)){ 
 		var sourceleadUrl = '${sourceleadUrl}';
 		var frm = $('#create_alert_form').serializeFormJSON();
@@ -333,10 +337,18 @@ function saveAlert(){
 					type : "POST",
 					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
-						$("#jobAlert1").removeAttr("style");
-            			$("#jobAlert1").css({ display: "block" });
-        				$("#jobAlertMsgDiv").html("Success!! New Alert added");
-							alertMsgFadeinFunction();
+						 if(jobAlertUUID != null && jobAlertUUID != '' && jobAlertUUID != 'undefined'){
+							$("#jobAlert2").removeAttr("style");
+	            			$("#jobAlert2").css({ display: "block" });
+	        				$("#editJobAlertMsgDiv").html("Job Alert Edit Successfully");
+								editAlertMsgFadeinFunction();
+						}else{
+							$("#jobAlert1").removeAttr("style");
+	            			$("#jobAlert1").css({ display: "block" });
+	        				$("#jobAlertMsgDiv").html("Success!! New Alert added");
+								alertMsgFadeinFunction();
+						} 
+						
 							location.replace(sourceleadUrl+"/jobAlertList");
 					},
 				});
@@ -487,8 +499,9 @@ function editAlert(jobAlertUUID){
         	  }
         	     result = "";
         		 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
-        		 result = result +' <div class="success_pop" id="jobAlert1" style="display: none;">';
-				 result = result +'  <i class="fa fa-check-circle"></i><span id="jobAlertMsgDiv"></span>';
+        		 result = result + '<input type="hidden" name="jobAlertUUID" id="jobAlertUUID" value="'+jobAlertUUID+'" >';
+        		 result = result +' <div class="success_pop" id="jobAlert2" style="display: none;">';
+				 result = result +'  <i class="fa fa-check-circle"></i><span id="editJobAlertMsgDiv"></span>';
 				 result = result +' </div> ';
         		 result = result +'	 <div class="modal-dialog modal-lg">';
         		 result = result +'     <div class="modal-content">';
@@ -865,7 +878,7 @@ function cancel(){
 
 <script>
 function offboardingPagenation(){ 
-	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+	 //$.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],

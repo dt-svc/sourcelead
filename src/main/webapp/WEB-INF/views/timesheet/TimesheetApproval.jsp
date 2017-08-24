@@ -7,21 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<!-- <link href="resources/css/jquery-ui.css" rel="stylesheet"> -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<link rel="stylesheet" href="resources/css/timesheet.css" type="text/css" > -->
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-
-<!-- <link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/chosen.jquery.min.js"></script>  -->
-
-<!-- <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  -->
 
 <script>
 // project side bar tabs
@@ -35,6 +21,7 @@ $(document).ready(function() {
 		
                var sourceleadUrl ='${sourceleadUrl}';
                var frequencyMonth = $("#frequencyMonth").val();
+               var locationCode ='${SourceLeadWeb_locationCode}'; 
                if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
             	   frequencyMonth = '';
                
@@ -59,7 +46,7 @@ $(document).ready(function() {
         	   $.ajax({
 	      	          type : "POST",
 	          	      dataType : 'json',
-        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage,		
+        	      	  url: sourceleadUrl+"/timesheetApprovalDiv?${_csrf.parameterName}=${_csrf.token}&frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&locationCode="+locationCode,		
         		      success :function(result) {
         		    	    $("#timesheetApprovalDiv").removeAttr("style");
         		    	    $("#timesheetApprovalDiv").empty();

@@ -183,7 +183,7 @@ function generateForm(sourceleadUrl,templateId) {
 
 // To Generate Org SubmissionForm
 
-function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
+function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
 
     //empty out the preview area
     $("#sjfb-fields").empty();
@@ -505,7 +505,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                              
                              '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>ZipCode'+reqSymbol+'</label>' +
-                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode"  />'+
+                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode" readonly />'+
                              '</div>';
                     		 
                     		 
@@ -527,7 +527,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
              var year = d.getFullYear() - 18;
              d.setFullYear(year);
              $(".DatePicker").datepicker({
-            	 dateFormat: 'dd-mm-yy',
+            	 dateFormat: finalDateFormatScript,
             	 yearRange: "-70Y:-18Y" ,
             	 defaultDate: d,
             	 changeMonth: true,

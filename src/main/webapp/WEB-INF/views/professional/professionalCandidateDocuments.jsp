@@ -4,8 +4,6 @@
 <!-- these files for autocomplete with tagit -->
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
@@ -50,13 +48,9 @@ function professionalCandidateDocuments(candidateId){
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType =="Candidates"){
-			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
-			'</sec:authorize>';
 		}else{
-			'<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">'; 
 			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
-			'</sec:authorize>';
 		}
 		
 	}else{
@@ -127,7 +121,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="fa fa-eye" onclick="viewProfessionalCandidateDocument(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me widAu" title="'+opt.fileName+'"><a class="fa fa-eye" onclick="viewProfessionalCandidateDocument(\''+opt.documentUUID+'\',\''+opt.fileName+'\');"></a><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -146,13 +140,9 @@ function candDocumentsList(candidateId){
 			           			var docUUID = opt.documentUUID;
 			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
 			           			if(candidateType =="Candidates"){
-				           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-				           			'</sec:authorize>';
 			           			}else{
-				           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CROWDSOURCING_PROFILE\')">';
 				           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-				           			'</sec:authorize>';
 			           			}
 			           			
 			           		}
@@ -422,6 +412,17 @@ function getDocumentType(documentType){
 						url : sourceleadUrl+"/saveCandidateDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 						success : function(result) {
 								closePopup();
+								$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
+			          			 if(result<50){
+			          			   $("#perVal").removeClass('progress-bar-success');
+			          			   $("#perVal").addClass("progress-bar-danger");
+			          			 }
+			          			 if(result>=50){
+			          				 $("#perVal").removeClass('progress-bar-danger');
+			          				 $("#perVal").addClass("progress-bar-success");
+			          			 }
+			          			 $("#disVal").empty();
+			          			$("#disVal").append(result+'%');
 								$("#popUpDiv").removeClass("edit-details-active");
 		            			$("#selector6").removeAttr("style");
 		            			$("#selector6").css({ display: "block" });
@@ -533,12 +534,26 @@ function removeDocument(candidateId, documentId){
 <script>
 function deleteDocument(candidateId, documentId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
+		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
    		    success: function(data) {
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
+        			 if(data<50){
+        			  /* $("#perVal").removeClass("progress-bar-success"); */
+        			   $("#perVal").find('progress-bar-success').remove();
+        			   $("#perVal").addClass("progress-bar-danger");
+        			 }
+        			 if(data>=50){
+        				 $("#perVal").find('progress-bar-danger').remove();
+        				 $("#perVal").addClass("progress-bar-success");
+        			 }
+        			 $("#disVal").empty();
+        			$("#disVal").append(data+'%');
         			 $("#selector6").removeAttr("style");
          			 $("#selector6").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");

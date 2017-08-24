@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -138,33 +140,48 @@ public class TimesheetController {
 		
 		    User superUser = userService.getUserById(userId);
 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMemberId);
-		    
+		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		   // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		    ModelAndView model = new ModelAndView();
-			DateFormat format = Constants.DF_DMY;
-			if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
-			 	 String[] frequency = timesheetFrequency.split("To");
-			 	 String weekStartDate = frequency[0].trim();
-			  	 String weekEndDate = frequency[1].trim();
-			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-				 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
-			  	
-				 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
-			  	 
-			  	//send mail & notification logic
-			  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
-			}else if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
-				 String[] frequency = timesheetFrequency.split("To");
-			 	 String weekStartDate = frequency[0].trim();
-			  	 String weekEndDate = frequency[1].trim();
-			  	 Date startDate = format.parse(weekStartDate.replaceAll("/", "-"));
-			  	 Date endDate = format.parse(weekEndDate.replaceAll("/", "-"));
-			  	 
-				 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
-			  	//send mail & notification logic
-			  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+		    
+		    String[] frequencyDate = timesheetFrequency.split("To");
+		 	 String weekStartDateTimeSheet = frequencyDate[0].trim();
+		  	 String weekEndDateTimeSheet = frequencyDate[1].trim();
+		  	 Date startDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDateTimeSheet.replaceAll("/", "-"));
+			 Date endDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDateTimeSheet.replaceAll("/", "-"));
+			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(userId, projectMemberId, startDateTimeSheet, endDateTimeSheet);
+			String approvalStatus = subApproverHierarchy.getSubmissionApprovalStatus().getValue();
+		    	//DateFormat format = simpleDateFormat;
+			if(approvalStatus.equalsIgnoreCase("new") || subApproverHierarchy.getReopenRejectedReason() != null){
+				type = "actionPerformed";
+			}else{
+				if(StringUtils.isNotEmpty(timesheetFrequency) && null != type && "accept".equalsIgnoreCase(type)){
+				 	 String[] frequency = timesheetFrequency.split("To");
+				 	 String weekStartDate = frequency[0].trim();
+				  	 String weekEndDate = frequency[1].trim();
+				  	 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+					 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
+					 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
+				  	//send mail & notification logic
+				  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+				}else if(!approvalStatus.equalsIgnoreCase("new") && (StringUtils.isNotEmpty(timesheetFrequency) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason))){
+					String[] frequency = timesheetFrequency.split("To");
+				 	 String weekStartDate = frequency[0].trim();
+				  	 String weekEndDate = frequency[1].trim();
+				  	 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDate.replaceAll("/", "-"));
+				  	 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
+					 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
+				  	//send mail & notification logic
+				  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+				}	
 			}
-			
+			 
+		    /*if(subApproverHierarchy.getReopenRejectedReason()!= null && !"".equalsIgnoreCase(subApproverHierarchy.getReopenRejectedReason())){
+		    	model.addObject("rejectedReason",true);
+		    }*/
 			model.setViewName("timesheet/reopenTimeSheetAcceptOrReject");
+			model.addObject("SubmissionApprovalStatus",subApproverHierarchy.getSubmissionApprovalStatus().getValue());
 			model.addObject("projectMemberId",projectMemberId);
 			model.addObject("userId",userId);
 			model.addObject("timesheetFrequency",timesheetFrequency);

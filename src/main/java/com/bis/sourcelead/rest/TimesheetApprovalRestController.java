@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
+import com.bis.sourcelead.web.LoginSessionController;
  
 
 @RestController 
@@ -109,6 +111,9 @@ public class TimesheetApprovalRestController {
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	
 	@RequestMapping(value = "/timesheetApprovalDiv", method = RequestMethod.POST )   
 	public @ResponseBody String timesheetApprovalDiv(
@@ -117,14 +122,16 @@ public class TimesheetApprovalRestController {
 			@RequestParam(value="weekFrequency", required=false) String weekFrequency,
 			@RequestParam(value="client", required=false) String client,
 			@RequestParam(value="stage", required=false) String stage,
+			@RequestParam(value="locationCode") String locationCode,
 			HttpServletRequest request) throws Exception {
-		DateFormat format = Constants.DF_DMY;
+		//DateFormat format = Constants.DF_DMY;
+		//DateFormat  format = LoginSessionController.DATEFORMAT;
 		StringBuilder timesheetApprovalDiv = new StringBuilder("");
         StringBuilder selectedDate = new StringBuilder("");
         StringBuilder selectedFrequency = new StringBuilder("");
         StringBuilder selectedClient = new StringBuilder("");
         StringBuilder selectedStage = new StringBuilder("");
-        
+        OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
         
 	    LinkedHashSet<String> datesList = timesheetApprovalFrequencyGeneratorUtil.getMonthsListFromCurrentDate(4, 2);
 		
@@ -173,7 +180,7 @@ public class TimesheetApprovalRestController {
                     		 weekStartDate = frequency[0].trim();
                 		  	 weekEndDate = frequency[1].trim();
                     	 }
-                    	 Map<StringBuilder,Map<String,Date>> weekFrequencyDropDownMap =  getWeekFrequncyDropDown(selectedDate.toString(),selectedFrequency.toString(),dateList,weekStartDate,weekEndDate);
+                    	 Map<StringBuilder,Map<String,Date>> weekFrequencyDropDownMap =  getWeekFrequncyDropDown(selectedDate.toString(),selectedFrequency.toString(),dateList,weekStartDate,weekEndDate,orgLocations);
                     	 weekFrequencyDropDownMap.forEach((weekFrequencyDiv,dates)->
                     	 { 
                     	    	   timesheetApprovalDiv.append(weekFrequencyDiv) ;
@@ -202,33 +209,34 @@ public class TimesheetApprovalRestController {
                     
                  timesheetApprovalDiv.append("	           <div class='clearfix'></div>   ");  
                  timesheetApprovalDiv.append("	</div>");
-         		 StringBuilder statusDiv = timesheetApprovalTableDiv(request,format.format(dateList.get("STARTDATE")),format.format(dateList.get("ENDDATE")),selectedFrequency.toString(),selectedClient.toString(),selectedStage.toString());
+         		 StringBuilder statusDiv = timesheetApprovalTableDiv(request,commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("STARTDATE")),commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),dateList.get("ENDDATE")),selectedFrequency.toString(),selectedClient.toString(),selectedStage.toString());
          		 timesheetApprovalDiv.append(statusDiv);
                  timesheetApprovalDiv.append("	</div>");
                  timesheetApprovalDiv.append("	</div>");
 		  return timesheetApprovalDiv.toString();
 	}
 	
-	private Map<StringBuilder,Map<String,Date>>  getWeekFrequncyDropDown(String selectedMonth,String selectedFrequency, Map<String,Date> dateList,String selectedStartDate,String selectedEndDate) throws Exception{
-		 DateFormat format = Constants.DF_DMY;
+	private Map<StringBuilder,Map<String,Date>>  getWeekFrequncyDropDown(String selectedMonth,String selectedFrequency, Map<String,Date> dateList,String selectedStartDate,String selectedEndDate,OrgLocations orgLocations) throws Exception{
+		 //DateFormat format = Constants.DF_DMY;
+		//DateFormat  format = LoginSessionController.DATEFORMAT;
 		 Date startDate = dateList.get("STARTDATE");
 	     Date endDate = dateList.get("ENDDATE");
 	     Date sDate = null;
 	     Date eDate = null;
          if(StringUtils.isNotEmpty(selectedStartDate) && StringUtils.isNotEmpty(selectedEndDate))
 		 {
-			 sDate = format.parse(selectedStartDate.replaceAll("/", "-"));
-			 eDate = format.parse(selectedEndDate.replaceAll("/", "-"));
+			 sDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),selectedStartDate.replaceAll("/", "-"));
+			 eDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),selectedEndDate.replaceAll("/", "-"));
 		 }
 		 
 	     Map<String,String> frequencyDropDown = new LinkedHashMap<>();
 	     if(selectedFrequency.equalsIgnoreCase("Semi-monthly"))      
         {
 	    	 HashMap<String,Date> tab1to15Frequency =  CalendarUtil.getMonthStartDateAnd15thDateByGivenDateAndMothPreference(startDate,0);
-	    	 frequencyDropDown.put(format.format(tab1to15Frequency.get("STARTDATE")), format.format(tab1to15Frequency.get("ENDDATE")));
+	    	 frequencyDropDown.put(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tab1to15Frequency.get("STARTDATE")), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tab1to15Frequency.get("ENDDATE")));
 			 
 	    	 HashMap<String,Date> tab16toEndFrequency = CalendarUtil.getMonth16thDateAndEndDateByGivenDateAndMothPreference(startDate,0);
-	    	 frequencyDropDown.put(format.format(tab16toEndFrequency.get("STARTDATE")), format.format(tab16toEndFrequency.get("ENDDATE")));
+	    	 frequencyDropDown.put(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tab16toEndFrequency.get("STARTDATE")), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tab16toEndFrequency.get("ENDDATE")));
         }
 	     else if(selectedFrequency.equalsIgnoreCase("Weekly") || selectedFrequency.equalsIgnoreCase("Bi-Weekly")){
 	    	 int dayOfTheDate = CalendarUtil.getDayOfTheDate(startDate);
@@ -240,20 +248,20 @@ public class TimesheetApprovalRestController {
 				 startMonday = CalendarUtil.getPreviousWeekDayByCalendar(startCal, "MON");
 			  }
 			  else{
-				  startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON");
+				  startMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON",orgLocations.getDateFormat());
 			  }
 			 Calendar endCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 			 endCal.setLenient(false);
 			 endCal.setTime(endDate);
 			 Calendar endDay = null;
 			 if(selectedFrequency.equalsIgnoreCase("Weekly")){
-				 endDay = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN");
+				 endDay = CalendarUtil.getCurrentWeekDayByCalendar(endCal, "SUN",orgLocations.getDateFormat());
 			 }
 			 else {
-				 endDay = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON");
+				 endDay = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON",orgLocations.getDateFormat());
 			 }
 			 if(selectedFrequency.equalsIgnoreCase("Weekly")){
-				 frequencyDropDown= timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startMonday.getTime()), format.format(endDay.getTime()));
+				 frequencyDropDown= timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startMonday.getTime()), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDay.getTime()),orgLocations.getDateFormat());
 			 }
 			 else {
 				  Date tsStartDate = null;
@@ -265,7 +273,7 @@ public class TimesheetApprovalRestController {
 				  for (int week = 0; week <(totalWeeks); week++) {
 					  if(tsStartDate == null){
 							tsCal.setTime(startMonday.getTime());
-							tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
+							tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON",orgLocations.getDateFormat()).getTime();
 							tsEndDate = CalendarUtil.getDateIncrementByincrement(tsCal, 13).getTime();
 						}
 						else{
@@ -273,15 +281,15 @@ public class TimesheetApprovalRestController {
 						}
 					    if(tsStartDate == null){
 							tsCal.setTime(startMonday.getTime());
-							tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON").getTime();
+							tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON",orgLocations.getDateFormat()).getTime();
 							tsEndDate = CalendarUtil.getDateIncrementByincrement(tsCal, 13).getTime();
 						}
 						else{
 							tsCal.setTime(tsStartDate);
 							tsEndDate = CalendarUtil.getDateIncrementByincrement(tsCal, 13).getTime();
 						}
-					    frequencyDropDown.put(format.format(tsStartDate), format.format(tsEndDate));
-					    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON").getTime();
+					    frequencyDropDown.put(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsStartDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsEndDate));
+					    tsStartDate = CalendarUtil.getNextWeekDayByCalendar(tsCal, "MON",orgLocations.getDateFormat()).getTime();
 				  }
 				}
 	       }
@@ -295,19 +303,19 @@ public class TimesheetApprovalRestController {
 			    	for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 			    		 String  k = entry.getKey();
 			    		 String  v = entry.getValue();
-			    		 Date frequencyStartDate = format.parse(k.replaceAll("/", "-"));
-			    		 Date frequencyEndDate = format.parse(v.replaceAll("/", "-"));
+			    		 Date frequencyStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+			    		 Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 			    		 StringBuilder isSelected = new StringBuilder("");
 			    		try {
 			    			if(sDate == null && eDate == null&& count == 1
-			    				&& !CalendarUtil.isCurrentDateBetweenDateRange(format.format(startDate), format.format(endDate))){
+			    				&& !CalendarUtil.isCurrentDateBetweenDateRange(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat())){
 			    				 dateList.clear();
                           	     dateList.put("STARTDATE", frequencyStartDate);
 							     dateList.put("ENDDATE",frequencyEndDate);
 							     isSelected.append("selected='selected'");
 			    			}
 			    			else if(sDate == null && eDate == null
-			    					 && CalendarUtil.isCurrentDateBetweenDateRange(k, v)){
+			    					 && CalendarUtil.isCurrentDateBetweenDateRange(k, v,orgLocations.getDateFormat())){
                            	     dateList.clear();
                            	     dateList.put("STARTDATE",frequencyStartDate);
 							     dateList.put("ENDDATE", frequencyEndDate);
@@ -446,17 +454,18 @@ public class TimesheetApprovalRestController {
 		    String[] frequency = timesheetFrequency.split("To");
 		    String startDate = frequency[0].trim();
 		    String endDate = frequency[1].trim();
-		    DateFormat format = Constants.DF_DMY;
+		   // DateFormat format = Constants.DF_DMY;
+		    //DateFormat  format = LoginSessionController.DATEFORMAT;
 	        DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 	        Date actualStartDate=null;
 		    Date actualEndDate=null;
 		    try {
-		   	 actualStartDate = format.parse(startDate.replaceAll("/", "-"));
-		   	 actualEndDate = format.parse(endDate.replaceAll("/", "-"));
+		   	 actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate.replaceAll("/", "-"));
+		   	 actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate.replaceAll("/", "-"));
 		    }catch (Exception e) {}
 		    int tdSpanLength = 6;
 		    StringBuilder timesheetApprovalDiv = new StringBuilder();
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate);
+			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate,orgLocations.getDateFormat());
 			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 		    		 String  k = entry.getKey();
@@ -465,8 +474,8 @@ public class TimesheetApprovalRestController {
 			        Date weekStartDate;
 			        Date weekEndDate;
 					try {
-						 weekStartDate = format.parse(k.replaceAll("/", "-"));
-						 weekEndDate = format.parse(v.replaceAll("/", "-"));
+						 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+						 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 						 displayWeeksList.put(weekStartDate, weekEndDate);
 					} catch (Exception e) {}
 				}
@@ -539,7 +548,7 @@ public class TimesheetApprovalRestController {
 			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>").append(CommonUtil.getHoursDisplayFormat(sah.getWeekTotals().get(entry.getKey()))).append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
 			  	    	 }
 			  	    	 else{
-			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>0/").append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
+			  	    		 timesheetApprovalDiv.append("<td><div class='sm'>0").append("/").append(CommonUtil.getHoursDisplayFormat(weekTotal)).append("</div></td>");
 			  	    	 }
 	    	   }
 	     }
@@ -565,11 +574,11 @@ public class TimesheetApprovalRestController {
 	     }
 	     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
      	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
-     	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
+     	                     .append(projectMember.getId()).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate)).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate)).
      	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' title='Reject' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
      	                     .append(projectMember.getId()).append("\",\"")
-     	                      .append(format.format(actualStartDate))
-     	                     .append("\",\"").append(format.format(actualEndDate))
+     	                      .append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate))
+     	                     .append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate))
      	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
         }
 	   if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
@@ -595,13 +604,14 @@ public class TimesheetApprovalRestController {
 		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		        DateFormat format = Constants.DF_DMY;
+		        //DateFormat format = Constants.DF_DMY;
+		        //DateFormat  format = LoginSessionController.DATEFORMAT;
 		        DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		        Date actualStartDate=null;
 			    Date actualEndDate=null;
 			    try {
-			    	 actualStartDate = format.parse(startDate.replaceAll("/", "-"));
-			    	 actualEndDate = format.parse(endDate.replaceAll("/", "-"));
+			    	 actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate.replaceAll("/", "-"));
+			    	 actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate.replaceAll("/", "-"));
 			    }catch (Exception e) {}
 		        StringBuilder timesheetApprovalDiv = new StringBuilder();
 		        Long clientId = null;
@@ -646,7 +656,7 @@ public class TimesheetApprovalRestController {
 					//timesheetApprovalDiv.append("	                    <th>Vendor</th>             ");
 					
 					LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-					Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate);
+					Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate,orgLocations.getDateFormat());
 					if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
 						for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
 				    		 String  k = entry.getKey();
@@ -655,8 +665,8 @@ public class TimesheetApprovalRestController {
 	 				        Date weekStartDate;
 	 				        Date weekEndDate;
 							try {
-								 weekStartDate = format.parse(k.replaceAll("/", "-"));
-								 weekEndDate = format.parse(v.replaceAll("/", "-"));
+								 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
+								 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
 								 displayWeeksList.put(weekStartDate, weekEndDate);
 								 if(weekStartDate.equals(weekEndDate)){
 									 timesheetApprovalDiv.append("	                    <th>").append(shortormat.format(weekStartDate)).append("</th>  ");
@@ -775,11 +785,11 @@ public class TimesheetApprovalRestController {
 					     }
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
 			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
-			            	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
+			            	                     .append(projectMember.getId()).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate)).append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate)).
 			            	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' title='Reject' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"")
-			            	                      .append(format.format(actualStartDate))
-			            	                     .append("\",\"").append(format.format(actualEndDate))
+			            	                      .append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualStartDate))
+			            	                     .append("\",\"").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),actualEndDate))
 			            	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
 			             }
 					      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
@@ -839,12 +849,13 @@ public class TimesheetApprovalRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		DateFormat df = Constants.DMY;
+		//DateFormat df = Constants.DMY;
+		//DateFormat df = LoginSessionController.DATEFORMAT;
 		Date stDate = null;
 		Date edDate= null;
 		if(null !=startDate && !("undefined").equalsIgnoreCase(startDate) && null !=endDate && !("undefined").equalsIgnoreCase(endDate)){
-		 stDate = df.parse(startDate);
-		 edDate = df.parse(endDate);
+		 stDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),startDate);
+		 edDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),endDate);
 		}
 		File file = null;
 		

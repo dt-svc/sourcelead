@@ -1,7 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +15,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -87,13 +91,36 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		orgLocations.setPhone(orgSettings.getPhone());
 		orgLocations.setFax(orgSettings.getFax());
 		orgLocations.setTimezone(timezone);
+		orgLocations.setDateFormat(orgSettings.getDateFormat1());
 	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
+        orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
-		orgLocationsDao.updateOrgLocations(orgLocations);
+      
+        
 		
+        orgLocationsDao.updateOrgLocations(orgLocations);
 		
 		return orgLocations;
+	}
+	
+	
+	private String convertWebsite(String website){
+		if(!website.startsWith("http") && !website.startsWith("https")){
+			 website = "http://" + website;
+	    }        
+	    URL netUrl = null;
+		try {
+			netUrl = new URL(website);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+	    String host = netUrl.getHost();
+	    if(host.startsWith("www")){
+	        host = host.substring("www".length()+1);
+	    }
+	    return host;
 	}
 	
 	/**
@@ -167,21 +194,27 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 				if("Australia".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(298l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("India".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(246l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("dd-MM-yyyy");
 				}else if("France".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(342l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("Singapore".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(272l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("United Kingdom".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(333l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				}else if("United States".equalsIgnoreCase(jsonObj.getString("country"))){
 					timezone = timeZoneService.getTimezone(87l);
 					clientOrgLocations.setTimezone(timezone);
+					clientOrgLocations.setDateFormat("MM-dd-yyyy");
 				} 
 			}
 			
@@ -232,5 +265,38 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception
 	{
 		return orgLocationsDao.getPrimaryOrgLocationByOrgId(orgId);
+	}
+
+	@Override
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation,JSONObject jsonObj) throws NumberFormatException, Exception {
+			if(jsonObj.has("generatedUserId") && !"".equalsIgnoreCase(jsonObj.getString("generatedUserId"))){
+				orgLocation.setGeneratedUserId(jsonObj.getString("generatedUserId").toUpperCase());
+			}
+			if(jsonObj.has("timeZone") && !"".equalsIgnoreCase(jsonObj.getString("timeZone"))){
+				Timezone timezone = timeZoneService.getTimezone(Long.parseLong(jsonObj.getString("timeZone")));
+				orgLocation.setTimezone(timezone);
+			}
+			if(jsonObj.has("dateFormatForOrg") && !"".equalsIgnoreCase(jsonObj.getString("dateFormatForOrg"))){
+				orgLocation.setDateFormat(jsonObj.getString("dateFormatForOrg"));
+			}
+			if(jsonObj.has("averageWorkingHours") && !"".equalsIgnoreCase(jsonObj.getString("averageWorkingHours"))){
+				orgLocation.setAverageWorkingHours(Integer.parseInt(jsonObj.getString("averageWorkingHours")));
+			}
+		return orgLocationsDao.saveOrgLocationsOrgShortCode(orgLocation);
+		
+	}
+
+	@Override
+	public String getDateFormatByOrgLocation(OrgLocations orgLocation) {
+			return orgLocation.getDateFormat();
+	}
+
+	@Override
+	public boolean validateOrgShortCode(String orgShortId) {
+		if(!orgShortId.isEmpty()){
+			return orgLocationsDao.validateOrgShortCode(orgShortId);
+		}else{
+			return false;
+		}
 	}
 }

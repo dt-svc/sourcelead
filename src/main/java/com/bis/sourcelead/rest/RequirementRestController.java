@@ -265,6 +265,8 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		User managerUser=userService.getUserById(requirement.getManagerUserId().getId());
+
 		RequirementApproverHierarchy requirementApproverHierarchy = null;
 		//rejected reason save in requirementApproverHierarchy table only who can reject the requirement
 		if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
@@ -292,7 +294,6 @@ public class RequirementRestController {
 		
 		
 		// requirement created user
-					User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
 
 					// to get RequirementApproverHierarchy with maximum Level
 					Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
@@ -353,13 +354,28 @@ public class RequirementRestController {
 									}
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
+									
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
-									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, location ,orgLocation);
+										if(!requirement.getCreatedBy().getId().equals(managerUser.getId())){
+									requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location ,orgLocation);
+									requirementService.acceptEmailScenario(loginUser, managerUser, requirement, location ,orgLocation);
+										}else{
+									requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location ,orgLocation);
+										}
 									}
 								} else if (status.equalsIgnoreCase("REJECTED")) {
+									
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
-									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+										if(!requirement.getCreatedBy().getId().equals(managerUser.getId())){
+									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
+									requirementService.rejectedEmailScenario(loginUser, managerUser, requirement, location, reason,orgLocation);
+										}
+										else{
+											
+											requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
+										}
 									}
+									
 									}
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
@@ -390,7 +406,7 @@ public class RequirementRestController {
 									requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 									requirementApproverHierarchy.setRejectedReason(reason);
 									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
-									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 									}
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 									

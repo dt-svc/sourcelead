@@ -26,6 +26,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "CANDIDATE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
@@ -213,10 +215,17 @@ public class Candidate implements Serializable{
 	private String rate;
 	
 	@Transient
+	private String userRole;
+	
+	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
 	private String candidateLocation;
+	
+	@Transient
+	private String systemGeneratedId;
 	
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
 	private String skillsName ;
@@ -234,7 +243,7 @@ public class Candidate implements Serializable{
 	private String twitterUrl;
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 	
@@ -243,12 +252,12 @@ public class Candidate implements Serializable{
 	private Set<CandidateSkills> candidateSkills = new HashSet<CandidateSkills>(0);*/
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 	
 	
-	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
@@ -266,6 +275,7 @@ public class Candidate implements Serializable{
 	private String candidateUpdateDateToString;
 	
 	 @Transient
+	 @JsonProperty
 	 private String candidateScore;
 	    
 	 @Transient
@@ -367,7 +377,45 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private List<Contracts> contractsList;
 	 
+
+	 @Transient
+	 private String reportingManager;
 	 
+	 @Transient
+	 private String resumeUUID;
+	 
+	 @Transient
+	 private String isResumeExists;
+	 
+
+	 @Column(name = "GENERATED_ID")
+	 private String generatedId;
+
+	 @Transient
+	 private int profilePercentage;
+	 
+	 @Transient
+	 @JsonProperty
+	 private String candLocation;
+	 
+	 @Transient
+	 private Long relationId;
+	 
+	 @Transient
+	 private Long venSpocId;
+ 
+		 
+	public int getProfilePercentage()
+	{
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage)
+	{
+		this.profilePercentage = profilePercentage;
+	}
+
+
 	public Long getId() {
 		return id;
 	}
@@ -1415,6 +1463,104 @@ public class Candidate implements Serializable{
 		this.candidateResumeFileType = candidateResumeFileType;
 	}
 
-	
-	
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
+	}
+
+
+	public String getIsResumeExists() {
+		return isResumeExists;
+	}
+
+
+	public void setIsResumeExists(String isResumeExists) {
+		this.isResumeExists = isResumeExists;
+	}
+
+	public String getGeneratedId()
+	{
+		return generatedId;
+	}
+
+
+	public void setGeneratedId(String generatedId)
+	{
+		this.generatedId = generatedId;
+	}
+
+
+	public String getSystemGeneratedId()
+	{
+		return systemGeneratedId;
+	}
+
+
+	public void setSystemGeneratedId(String systemGeneratedId)
+	{
+		this.systemGeneratedId = systemGeneratedId;
+	}
+
+	public String getCandLocation() {
+		StringBuilder loc = new StringBuilder();
+		if(city != null && !city.isEmpty()){
+			candLocation = loc.append(city).append(", ").append(state).append(", ").append(country).toString();
+		}else if(state != null && !state.isEmpty() && city == null){
+			candLocation = loc.append(state).append(", ").append(country).toString();
+		}else{
+			candLocation = loc.append(country).toString();
+		}
+		return candLocation;
+	}
+
+	public void setCandLocation(String candLocation) {
+		this.candLocation = candLocation;
+	}
+
+	public Long getRelationId()
+	{
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId)
+	{
+		this.relationId = relationId;
+	}
+
+	public Long getVenSpocId()
+	{
+		return venSpocId;
+	}
+
+	public void setVenSpocId(Long venSpocId)
+	{
+		this.venSpocId = venSpocId;
+	}
+
 }
+

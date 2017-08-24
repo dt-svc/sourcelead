@@ -4,11 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- these files for autocomplete with tagit -->
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
 	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
@@ -217,8 +212,18 @@
 							result = result + '</div>';
 					   }
 				     	result = result + '<div class="user_summary_edit_cta" id=" id="EmailIdDiv"">';
-						result = result + '<label>Email:</label>';
-						result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+						result = result + '<label>Email Id :</label>';
+						if(spocUserId != "${SourceLeadWeb_userId}" && ownerId != "${SourceLeadWeb_userId}" && json.invitationStatus == 'Sent'){ 
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+						}else if(ownerId == "${SourceLeadWeb_userId}" && (json.invitationStatus == 'New' || json.invitationStatus == 'Sent')){
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email">';
+						}else if(json.invitationStatus == 'Accepted'){
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+						}else if(spocUserId != "${SourceLeadWeb_userId}" && ownerId != "${SourceLeadWeb_userId}" && json.invitationStatus == 'New'){
+							result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email" readonly="readonly">';
+				   		}else if(json.invitationStatus == 'Rejected'){
+				   			result = result + '<input type="text" class="form-control" id="email" name="email" value="'+json.spocEmail+'" field-name="Email Id" data-validation="required validate_Space validate_email">';
+				   		}
 						//result = result + '<input type="text"  id="emailId" name="emailId" value="'+json.spocUser.email+'" placeholder="EmailId" field-name="EmialId" onKeyUp="validateClientEmail('+spocId+');">';
 						result = result + '</div>';
 						

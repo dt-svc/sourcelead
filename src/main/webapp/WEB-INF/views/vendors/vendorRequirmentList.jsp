@@ -5,7 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script src="resources/js/formvalidator.js"></script>
 <style type="text/css">
 .collapse-div-adduser select{
 width: 100% !important;
@@ -95,6 +94,16 @@ function vendorRequirementListInclude(orgRelationID){
 	function vendorReqListFunction(orgRelationID) {
 		// var orgRelationId =$("#orgRelationId").val();
 	        var sourceleadUrl = '${sourceleadUrl}';
+	        var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	  	  if(locationList.match("yyyy-MM-dd")){
+	  		  reqVendorDatePattern = 'YYYY-MM-DD';
+	  	  }if(locationList.match("dd-MM-yyyy")){
+	  		reqVendorDatePattern = 'DD-MM-YYYY'; 
+	  	  }if(locationList.match("MM-dd-yyyy")){
+	  		reqVendorDatePattern = 'MM-DD-YYYY'; 
+	  	  }if(locationList.match("yyyy-dd-MM")){
+	  		reqVendorDatePattern = 'YYYY-DD-MM'; 
+	  	  } 
 	        var status = [];
 	        $('input:checkbox[name=requirementStatus]:checked').each(function()
 	        {
@@ -126,7 +135,7 @@ function vendorRequirementListInclude(orgRelationID){
 		    		   result = result + '	 	<th>Title</th>';
 			            result = result + '	     <th>Type</th>';
 			            result = result + '	     <th>Location</th>';
-			            result = result + '	     <th>Posted Date</th>';
+			            result = result + '	     <th>Posted Date<br>(<small class="custom-small">'+reqVendorDatePattern+'</small>)</th>';
 			            result = result + '	     <th>Owner</th>';
 			            //result = result + '	     <th>No Of Contacts</th>';
 			            result = result + '	     <th>Applicants</th>';

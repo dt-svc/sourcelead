@@ -12,9 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -35,6 +37,8 @@ public class OpenJobsController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@RequestMapping(value = "/openRequirements")
 		 public ModelAndView openJobs() throws Exception{
@@ -76,8 +80,11 @@ public class OpenJobsController {
 		 ModelAndView model = new ModelAndView();
 		 //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Requirement requirementDetails =  requirementService.getRequirementByRequirementUUID(requirementUUID);
+		 OrgLocations orglo = orgLocationService.getOrgLocations(requirementDetails.getOrgLocationId().getId());
+		 
+		 model.addObject("requirementReleaseStatus", requirementDetails.getIsRequirementRelesedToPublic());
 		 model.addObject("requirementDetails", requirementDetails);
-		 String requirementCreatedDate = Constants.DMY.format(requirementDetails.getCreatedDate());
+		 String requirementCreatedDate = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),requirementDetails.getCreatedDate());
 		 model.addObject("requirementCreatedDate", requirementCreatedDate);
 		 model.setViewName("openJobs/openjobs");
 		 //Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());

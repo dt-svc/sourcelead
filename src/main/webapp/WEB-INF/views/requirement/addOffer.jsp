@@ -5,7 +5,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
 <script>
@@ -71,8 +70,7 @@ function addOffer(requirementId){
 				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
-					result= result + ' <label>';
-					result= result + '<input type="checkbox" value="" onclick="NotifyToVendor();" id="notifyToVendor" name="notifyToVendor">&nbsp;Notify To Vendor</label>';
+					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
 				} 
 				
 				result= result + '</div>';
@@ -135,6 +133,7 @@ function selectOfferApplicants(){
 	
 	$('.search-choice-close').click(function() {
 		var offerApplicants =  $('#1applicantId_chosen  span').size();
+		$('#1applicantId_chosen').next("p").remove();
 		if(offerApplicants <1){
 			$('#1applicantId_chosen').after('<p class="jquery_form_error_message">Applicant is Required</p>');
 		}
@@ -218,6 +217,18 @@ function selectOfferApplicants(){
 <script type="text/javascript">
 	function addOfferRow() {
 		
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatOffer = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatOffer = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatOffer = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatOffer = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatOffer = 'yy-dd-mm'; 
+		  }
+		
 		$("#isFlushCandidateRequired").val('N');
 		
 		var checkMaxTsRowNum = $("#maxOfferRowNum").val();
@@ -261,7 +272,7 @@ function selectOfferApplicants(){
 		$("#"+maxRowNum+"applicantId").chosen();
 		
 		$('.Datepicker').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatOffer,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {

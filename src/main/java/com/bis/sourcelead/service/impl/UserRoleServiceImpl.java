@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -29,6 +28,7 @@ import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
@@ -114,9 +114,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 	@Override
 	public List<UserRole> getUsersListByRoleAndNameAndLocationId(Long roleId, String userName,
-			Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset) throws Exception {
+			Long locationId,String userState,Long userId,String loginUserRole,String userCode,Integer offset,String viewType) throws Exception {
 		logger.debug("In UserRoleService class...");
-		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode,offset);
+		return userRoleDao.getUsersListByRoleAndNameAndLocationId(roleId, userName, locationId,userState,userId,loginUserRole,userCode,offset,viewType);
 	}
 
 	@Override
@@ -287,7 +287,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(0).setCellValue(empl.getEmployeeId()); 
 			 }
 			 if(empl.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
+				 String dateOfJoin = commonUtil.dateStrFromOrgDateFormatter(userRoles.getOrgLocations().getDateFormat(),empl.getHireDate());
 				 writeRow.createCell(5).setCellValue(dateOfJoin); 
 			 }
 			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){
@@ -333,8 +333,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public File getPdfFile(List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState,String orgName) throws Exception {
-		return pdfUtil.createPdfTable(activeList, inactiveList, notLoggedInList, userRolesList, userState,orgName);
+			String userState,OrgLocations orgLocations) throws Exception {
+		return pdfUtil.createPdfTable(activeList, inactiveList, notLoggedInList, userRolesList, userState,orgLocations);
 
 	}	
 
@@ -365,8 +365,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
-		return userRoleDao.getAllUserPrevoiusFridayTimeSheetSubmissionStatus(invoiceFrequency);
+	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency,String dateFormat) throws Exception {
+		return userRoleDao.getAllUserPrevoiusFridayTimeSheetSubmissionStatus(invoiceFrequency,dateFormat);
 	}
 
 	@Override

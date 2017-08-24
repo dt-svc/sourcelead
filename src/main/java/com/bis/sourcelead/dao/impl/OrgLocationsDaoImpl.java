@@ -8,6 +8,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,7 +195,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3)";
+		String query = "from OrgLocations orgLocations where orgLocations.org.orgCode <> :orgCode and orgLocations.org.orgCode != 'slead' and orgLocations.modulesId IN (2,3) and orgLocations.org.status <> 'INACTIVE' and orgLocations.status <> 'INACTIVE' ";
 		
 		List orgList = session.createQuery(query).setString("orgCode", orgCode).setCacheable(true).list();
 		return orgList;}
@@ -266,6 +267,34 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			}
 			
 			return orgLocation;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations saveOrgLocationsOrgShortCode(OrgLocations orgLocation) throws SourceLeadConstraintViolationException {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (orgLocation != null) {
+				session.update(orgLocation);
+			}
+			logger.debug("orgLocations Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORGLOCATIONS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return orgLocation;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean validateOrgShortCode(String orgShortId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgLocations orgLocations where  orgLocations.generatedUserId =:orgShortId";
+		List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("orgShortId", orgShortId).setCacheable(true).list();
+		if(orgLocations != null && !orgLocations.isEmpty()){
+			return true;
+		}
+		return false;
 	}
 
 }

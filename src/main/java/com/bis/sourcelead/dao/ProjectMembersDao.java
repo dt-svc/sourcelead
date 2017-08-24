@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
 
@@ -44,7 +45,7 @@ public interface ProjectMembersDao {
 	 */
 	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;
 	
-	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId,OrgLocations orgLocations) throws Exception;
 	
     List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
     
@@ -81,6 +82,9 @@ public interface ProjectMembersDao {
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate)throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
+
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
+
 	
 	
 	

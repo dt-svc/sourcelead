@@ -16,8 +16,6 @@
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
-<script type="text/javascript" src="resources/js/responsiveCarousel.min.js"></script>
-<script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>
 
 
 <script>
@@ -44,12 +42,6 @@ $(function(){
 </script>
 
 
-	
-<script>
-	$(document).ready(function() {
-		$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});
-	});
-</script>
 
 <script>
 		function logoutFormSubmit() {
@@ -244,6 +236,12 @@ $(function(){
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
  <script type="text/javascript" src="resources/js/jquery-1.11.0.min.js"></script>
+ <script type="text/javascript" src="resources/js/jquery.liquidcarousel.pack.js"></script>	
+<script>
+	$(document).ready(function() {
+		$('#liquid1').liquidcarousel({height:129, duration:100, hidearrows:false});
+	});
+</script>
 
 
 

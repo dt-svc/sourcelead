@@ -38,7 +38,7 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId);
 	
-	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId,OrgLocations orgLocations) throws Exception;
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
 	
@@ -88,5 +88,13 @@ public interface ProjectMembersService {
 	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception;
 
 	public List<ProjectMembers> getAllProjectsByOrgLocationId(Long orglocationId)throws Exception;
+
+	public List<ProjectMembers> getAllAssignedProjectsForUser(Long userId,Long orgLocationId)throws Exception;
+	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
+
+	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId)throws Exception;
+
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId)throws Exception;
+
 	
 }

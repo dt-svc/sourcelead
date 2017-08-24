@@ -3,8 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
 <style type="text/css">
@@ -290,6 +288,7 @@
 			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 				                
 				                <select class="selectpicker" id="billingRateType" name="billingRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+					                 <option value="">Currency</option>
 					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
@@ -399,7 +398,7 @@
           </thead>
           <tbody id="addTaxTbl">
           
-   				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
+   				<tr><td><strong>Name</strong></td><td><strong>Attachment</strong></td><td><strong>Doc Type</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
 		
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
@@ -590,30 +589,49 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 
 <script>
 	$(function() {
-
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatExistedContractSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatExistedContractSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatExistedContractSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatExistedContractSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatExistedContractSave = 'yy-dd-mm'; 
+		  }
 		$('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatExistedContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
-                  var dt = toDate("#startDate");
-                  dt.setDate(dt.getDate() + 1);
-                  $("#endDate").datepicker("option", "minDate", dt);
+            	 var dt = $(this).datepicker('getDate', '+1d');
+  	            dt.setDate(dt.getDate() + 1);
+  	            $("#endDate").datepicker("option", "minDate", dt);
                   removeValid();  
             }
         });
         
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatExistedContractSave,
             changeMonth: true,
               changeYear: true,
               onSelect: function (selected) {
-                  var dt = toDate("#endDate");
+            	  var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
-        
+        $('#joinDate').datepicker({
+            dateFormat: finalDateFormatExistedContractSave,
+            changeMonth: true,
+              changeYear: true,
+            onSelect: function (selected) {
+                  var dt = toDate("#joinDate");
+                  dt.setDate(dt.getDate() + 1);
+                  removeValid();
+              }
+        });
         document.getElementById("uploadBtn").onchange = function () {
     	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
     	    };
@@ -654,7 +672,7 @@ function toDate(selector) {
 </script> -->
 
 <script>
-function getVendorContacts(){
+function getVendorContacts(spocId){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	 var orgRelationId = $("#orgRelationId").val();
 	 if("" != orgRelationId){
@@ -671,7 +689,12 @@ function getVendorContacts(){
 		        var opt = json[i];
 		            // need to use in edit
 	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-		        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			if(spocId != null && spocId != '' && spocId != 'undefined' && spocId == opt.id){
+	       				output = output + "<option value='" +opt.tempOwnerId+ "' selected>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			}else{
+	       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+	       			}
+		        
 				}
 	       	    $("#vendorContact").empty();
 		        $("#vendorContact").append(output);
@@ -1353,22 +1376,41 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = "";
 		var sowType = $("#contractType").val();
+		var locationId ='${SourceLeadWeb_orgLocationId}';
 	if(sowType == 'Client SOW' || sowType == 'Vendor SOW' || sowType == 'Full time offer'){
 	$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
+	    var url = "";
+	    if(sowType == 'Client SOW' || sowType == 'Vendor SOW'){
+	    	url = "/getAssociatesListForSow?locationId="+locationId+"&sowType="+sowType;
+	    }else{
+	    	url = "/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType;
+	    }
 	    $.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
+	        url: sourceleadUrl+url,  
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	            	  var json = JSON.parse(data);
-	            	  var result = "";
-	            	  result = result + '<option value="">Select Applicant</option>';
-	                  for (var i = 0; i < json.length; i++) {
-	                 	 var opt = json[i]; 
-	                 	result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.requirementName+')</option>';
-	                  }
+	            	  
+	            	  if(sowType == 'Client SOW' || sowType == 'Vendor SOW'){
+	            		  var json = data;
+		            	  var result = "";
+		            	  result = result + '<option value="">Select Applicant</option>';
+		                  for (var i = 0; i < json.length; i++) {
+		                 	 var opt = json[i]; 
+		                 	result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+		                  } 
+	            	  }else{
+	            		  var json = JSON.parse(data);
+		            	  var result = "";
+		            	  result = result + '<option value="">Select Applicant</option>';
+		                  for (var i = 0; i < json.length; i++) {
+		                 	 var opt = json[i]; 
+		                 	result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+		                  }
+	            	  }
+	            	  
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
@@ -1399,47 +1441,59 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
+		var locationId ='${SourceLeadWeb_orgLocationId}';
 		if(sowType!="Full time offer"){
 			$("#flatReward").val("");
 		    $("#billingRateType").val('${currencyCode}').trigger('change');
 		    $("#billingRatePer").val("").trigger('change');
 		}
-		$.ajax({
-	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
-	         success :function(data) {
-	        	 
-		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-		            	  var json = JSON.parse(data);
-		            	  $("#offerRate").val("");
-		            	  document.getElementById("offerRateDiv").style.display="block";
-		            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
-		            	  if(sowType!="Full time offer"){
-			            	  $("#flatReward").val("");
-			            	  $("#flatReward").val(json.amount);
-			            	  
-			            	  $("#billingRateType").val("");
-			            	  $("#billingRateType").val(json.paymentType).trigger('change');
-			            	  
-			            	  $("#billingRatePer").val("");
-			            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
-		            	  }
-		            	  else{
-		            		  $("#joinDate").val(json.dateOfJoiningStr); 
-		            		  
-		            		  $("#flatReward").val("");
-			            	  $("#flatReward").val(json.amount);
-			            	  
-			            	  $("#billingRateType").val("");
-			            	  $("#billingRateType").val(json.paymentType).trigger('change');
-			            	  
-			            	  $("#billingRatePer").val("");
-			            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
-		            	  }
-		            	  
-	        	 		}
-		       },
-	    });
+		
+		 if(sowType != 'Client SOW' && sowType != 'Vendor SOW'){
+			 $.ajax({
+			        type : "GET",
+			        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
+			         success :function(data) {
+			        	 
+				              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+				            	  var json = JSON.parse(data);
+				            	  $("#offerRate").val("");
+				            	  document.getElementById("offerRateDiv").style.display="block";
+				            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
+				            	  if(sowType!="Full time offer"){
+					            	  $("#flatReward").val("");
+					            	  $("#flatReward").val(json.amount);
+					            	  
+					            	  $("#billingRateType").val("");
+					            	  $("#billingRateType").val(json.paymentType).trigger('change');
+					            	  
+					            	  $("#billingRatePer").val("");
+					            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+				            	  }
+				            	  else{
+				            		  $("#joinDate").val(json.dateOfJoiningStr); 
+				            		  
+				            		  $("#flatReward").val("");
+					            	  $("#flatReward").val(json.amount);
+					            	  
+					            	  $("#billingRateType").val("");
+					            	  $("#billingRateType").val(json.paymentType).trigger('change');
+					            	  
+					            	  $("#billingRatePer").val("");
+					            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+				            	  }
+				            	  
+			        	 		}
+				       },
+			    });
+		 }else{
+		 	$("#flatReward").val("");
+       	  
+       	    $("#billingRateType").val("");
+       	    $("#billingRateType").val("").trigger('change');
+       	  
+       	    $("#billingRatePer").val("");
+       	    $("#billingRatePer").val("").trigger('change');
+		 } 
 
 	}
 	
@@ -1488,6 +1542,36 @@ function hideCommonSOWFields(){
 	    });
 	}
 	
+	function getVendor(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var relationList = '${orgRelationsList}';
+		var associateId = $("#submissionOffersList").val();
+		var map = new Object(); // or var map = {};
+		<c:forEach var="vendor" items="${orgRelationsList}">
+		        map['${vendor.id}'] = '${vendor.orgName}';
+		</c:forEach>
+		
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getCandidateDetails?candidateId="+associateId,    
+	         success :function(data) {
+	        	 var json = JSON.parse(data);
+	           	 var result = "";
+	           	 result = result + '<option value="">Select Vendor</option>';
+	           	 $.each(map, function(key, value) {
+	                 if(json.relationId == key){
+                		 result = result +  '<option value="'+key+'" selected> '+value+'</option>';
+                	 }else{
+                		 result = result +  '<option value="'+key+'"> '+value+'</option>';
+                	 }
+	           		});
+                 $("#orgRelationId").empty();
+                 $("#orgRelationId").append(result);
+                 $('#orgRelationId').trigger("chosen:updated");
+                 getVendorContacts(json.venSpocId);
+	         }
+		});
+	}
 </script>
 
 

@@ -17,6 +17,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 @Entity
 @Table(name = "WAGE_TAX_SUMMARY", catalog = "sourcelead")
@@ -86,6 +87,10 @@ public class WageTaxSummary implements Serializable {
 	
 	@Column(name = "SSN_NUMBER")
 	private String ssnNumber;
+	
+	@ManyToOne
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User userId;
 	
 
 	@Column(name = "CREATED_DATE")
@@ -331,6 +336,14 @@ public class WageTaxSummary implements Serializable {
 
 	public void setCheckDateStr(String checkDateStr) {
 		this.checkDateStr = checkDateStr;
+	}
+
+	public User getUserId() {
+		return userId;
+	}
+
+	public void setUserId(User userId) {
+		this.userId = userId;
 	}
 	
 }

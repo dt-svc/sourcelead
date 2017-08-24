@@ -87,6 +87,24 @@ public class InvoiceLineItems {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "QUANTITY")
+	private String quantity;
+	
+	@Column(name = "EXPENSE_CATEGORY")
+	private String expenseCategory;
+	
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@Transient
 	private String candidateName;
 	
@@ -397,6 +415,14 @@ public class InvoiceLineItems {
 
 	public void setInlineDescription(String inlineDescription) {
 		this.inlineDescription = inlineDescription;
+	}
+
+	public String getExpenseCategory() {
+		return expenseCategory;
+	}
+
+	public void setExpenseCategory(String expenseCategory) {
+		this.expenseCategory = expenseCategory;
 	}
 	
 	

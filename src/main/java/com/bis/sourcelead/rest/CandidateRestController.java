@@ -16,7 +16,6 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -73,6 +72,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -521,39 +521,40 @@ public class CandidateRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getRequirementHistoryListByCandidateId")
-	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception
-	{
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson;
-		List<RequirementSubmission> requirementSubmission = requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-		for (RequirementSubmission req : requirementSubmission) {
-			req.setPositionType(req.getRequirement().getJobTitle());
-			req.setCountry(req.getRequirement().getCountry());
-			req.setState(req.getRequirement().getState());
-			req.setCity(req.getRequirement().getCity());
-			req.setRate(req.getRequirement().getRate());
-			req.setCreatedDateStr(Constants.DMY.format(req.getCreatedDate()));
-			if (req.getRequirement().getManagerUserId().getLastName() != null) {
-				req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() + " "
-						+ req.getRequirement().getManagerUserId().getLastName());
-			}
-			else {
-				req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
-			}
-			if (null != req.getRequirement().getSpocId()) {
-				if (!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName())
-						&& null != req.getRequirement().getSpocId().getClientUser().getLastName()) {
-					req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName()
-							+ "" + req.getRequirement().getSpocId().getClientUser().getLastName());
-				}
-				else {
-					req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
-				}
-			}
-		}
-		resultJson = commonUtil.toJSON(requirementSubmission);
-		return resultJson;
-	}
+
+	public String getRequirementHistoryListByCandidateId(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 String resultJson;
+		 //SimpleDateFormat format = loginOrgLocation.getLocFullFormDateFormatter();
+		 List<RequirementSubmission> requirementSubmission =requirementSubmissionService.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+		 for(RequirementSubmission req :requirementSubmission ){
+			 req.setPositionType(req.getRequirement().getJobTitle());
+			 req.setCountry(req.getRequirement().getCountry());
+			 req.setState(req.getRequirement().getState());
+			 req.setCity(req.getRequirement().getCity());
+			 req.setRate(req.getRequirement().getRate());
+			 req.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),req.getCreatedDate()));
+			 if(req.getRequirement().getManagerUserId().getLastName() != null){
+				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName() +" "+req.getRequirement().getManagerUserId().getLastName());
+			 }else{
+				 req.setOwnerName(req.getRequirement().getManagerUserId().getFirstName());
+			 }
+			
+			 if(null != req.getRequirement().getSpocId()){
+				 if(!"".equalsIgnoreCase(req.getRequirement().getSpocId().getClientUser().getLastName()) && null != req.getRequirement().getSpocId().getClientUser().getLastName() ){
+					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName() +""+req.getRequirement().getSpocId().getClientUser().getLastName());
+				 }else{
+					 req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
+				 }
+			 }
+			 
+		 }
+		 resultJson = commonUtil.toJSON(requirementSubmission);
+		 return resultJson;
+	}	
+	
+
+
 	
 	/**
 	 * @author Laxman this method is used for candidate submitte related resumes
@@ -569,6 +570,7 @@ public class CandidateRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String resultJson;
 		List<RequirementSubmissionHistory> requirementSubmissionhistory = requirementSubmissionHistoryService.getRequirementHistoryListByCandidateIdAndOrgLocationIdAndRequirementIdAndSubmissionId(candidateId, loginOrgLocation.getId(), requirementId, submissionId);
+		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory rsh : requirementSubmissionhistory) {
 			RequirementOffers ros = requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			if (null != ros) {
@@ -650,7 +652,7 @@ public class CandidateRestController {
 				rh = (RequirementInterviewHistory) object;
 				if (null != rh.getInterviewId()) {
 					if (null != rh.getInterviewId().getDateOfInterview()) {
-						rh.setDateOfInterviewStr(Constants.DMY.format(rh.getInterviewId().getDateOfInterview()));
+						rh.setDateOfInterviewStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),rh.getInterviewId().getDateOfInterview()));
 					}
 					if (null != rh.getInterviewId().getStartTime()) {
 						StringBuilder startTime = new StringBuilder();
@@ -675,7 +677,7 @@ public class CandidateRestController {
 			List<RequirementInterview> RequirementInterview = requirementInterviewService.getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId(submissionId, loginOrgLocation.getId());
 			for (RequirementInterview requirementInterview : RequirementInterview) {
 				if (null != requirementInterview.getDateOfInterview()) {
-					rsh.setInterviewDateStr(Constants.DMY.format(requirementInterview.getDateOfInterview()));
+					rsh.setInterviewDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementInterview.getDateOfInterview()));
 				}
 				if (null != requirementInterview.getStartTime()) {
 					StringBuilder startTime = new StringBuilder();

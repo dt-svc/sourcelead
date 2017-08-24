@@ -3,9 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
-
 
 <style type="text/css">
 .chosen-container {
@@ -14,13 +11,13 @@
 .fullWid {width: 100% !important;}
 </style>
 
-<!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<!-- end files for autocomplete with tagit -->
-
 <script>
  window.onload = function() {
 	 changeSaveButton();
+	 var relationId = '${orgRelationId}';
+	 if(relationId != null && relationId != ''){
+		 getVendorContacts();
+	 }
 };
 </script>
 
@@ -50,7 +47,20 @@
 				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				    <c:if test = "${!empty contractType}">
+				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option>Client MSA</option>
+		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option>Client SOW</option>
+		                    <option>Vendor SOW</option>
+		                    <option>NDA</option>
+		                    <option>NSA</option>
+		                    <option>Full time offer</option>
+		                 </select>
+				    </c:if>
+				    <c:if test = "${empty contractType}">
+				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -60,6 +70,7 @@
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
 		                 </select>
+				    </c:if>
 				    </c:otherwise>
 				 </c:choose>
             </div>
@@ -138,7 +149,7 @@
 	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();"  field-name="Job">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
-							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
+							         <option selected value="${element.id}">${element.jobTitle}${element.spocName}</option>
 							    </c:if>
 							    <c:if test = "${element.id != contract.requirementSubmission.requirement.id}">
 							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
@@ -158,7 +169,8 @@
               <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
+		              		<!-- <select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getApplicantSubmission(); getOfferRate(); getVendor();" field-name="Applicant"> -->
+							<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option selected="selected" value="${element.id}">${element.candidateName}(${element.createdUser})</option>
@@ -173,6 +185,7 @@
 					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
+					 <p id="errorAppDiv" class="ReError"></p>
               	</div>
             </div>
                      
@@ -212,19 +225,24 @@
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
+         <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
-                    <option value=''>Select Vendor</option>
-                   <c:forEach var="orgrelations" items="${orgRelationsList}">
-                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
-                  </c:forEach>
+                   <option value=''>Select Vendor</option>
+	                   <c:forEach var="orgrelations" items="${orgRelationsList}">
+	                   	<c:if test = "${!empty orgRelationId}">
+	                   		<option value="${orgrelations.id}" ${orgrelations.id  == orgRelationId ? 'selected' : ''}>${orgrelations.orgName}</option>
+	                   	</c:if>
+	                   	<c:if test = "${empty orgRelationId}">
+	                   		<option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
+	                   	</c:if>
+	                   </c:forEach>
                   </select>
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
@@ -643,12 +661,23 @@
 
 <script>
 	$(function() {
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatContractSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatContractSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatContractSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatContractSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatContractSave = 'yy-dd-mm'; 
+		  }
 		$('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
-                  var dt = toDate("#startDate");
+            	var dt = $(this).datepicker('getDate', '+1d');
                   dt.setDate(dt.getDate() + 1);
                   $("#endDate").datepicker("option", "minDate", dt);
                   removeValid();
@@ -656,17 +685,17 @@
         });
         
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatContractSave,
             changeMonth: true,
               changeYear: true,
               onSelect: function (selected) {
-                  var dt = toDate("#endDate");
+            	  var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
         $('#joinDate').datepicker({
-            dateFormat: 'dd-mm-yy',
+            dateFormat: finalDateFormatContractSave,
             changeMonth: true,
               changeYear: true,
             onSelect: function (selected) {
@@ -1496,6 +1525,7 @@ function hideCommonSOWFields(){
 
 <script>
 	function getRequirements(sowType){
+		 $('#errorAppDiv').empty();
 		$("#requirementsList").empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
@@ -1526,6 +1556,7 @@ function hideCommonSOWFields(){
 	}
 		
 	function submissionOffers(){
+		 $('#errorAppDiv').empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
@@ -1569,10 +1600,28 @@ function hideCommonSOWFields(){
 	       },
 	    });
 	}
-	
+	function getApplicantSubmission(){
+		$('#errorAppDiv').empty();
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		var contractType = $("#contractType").val();
+		
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/validateRequirementSubmission?reqSubId="+reqSubId+"&contractType="+contractType,    
+	         success :function(data) {
+	        	 if(data == true){
+	        	//	 $("#submissionOffersListDiv").after("<p class='jquery_form_error_message'>Existed applicant</p>");
+	        		 $("#errorAppDiv").empty().append("Existed applicant") ;
+	        	 }
+	         },
+	    });
+
+	}
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		var locationId = '${SourceLeadWeb_orgLocationId}';
 		var sowType = $("#contractType").val();
 		if(sowType!="Full time offer"){
 			$("#flatReward").val("");
@@ -1581,7 +1630,7 @@ function hideCommonSOWFields(){
 		}
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
 	         success :function(data) {
 		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		            	  var json = JSON.parse(data);

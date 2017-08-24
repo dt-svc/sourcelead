@@ -575,12 +575,14 @@ function removeCandidateAlertMessage(candidateId){
 function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var message = confirm("You are choosing to ReActivate the Candidate");
 	if (message == true) {
 		var reactivate = '1';
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reActivate="+reactivate,        
+	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            		 if( data.indexOf('Sign In') >= 0){
@@ -892,19 +894,22 @@ function candidateProfile(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
-              }
+            	  //candidateProfile(candidateId);
+            	  //candidateQuickViewProfile(candidateId);
+            	  clientSideBar(candidateId);
+            	  $("#loading").removeAttr('style');
        },
          
     }); 
@@ -1360,56 +1365,23 @@ function updateDesignationType(){
 	                 }
 		    	 }else{
 			    	var newSkill = this.value.replace(","," ");
-			    	
-			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-			        		 select.append(option);
-			        		 select.find(option).prop('selected', true);
-				        		$("#skillName").trigger("chosen:updated");
-				        		
-				        		
-			        }
+			    	 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				        {
+		    				 preventTabkey(e);
+							var isNewSkill = true;
+		                     $("#skillName option:selected").each(function(){
+								 if(this.value.toUpperCase() === newSkill.toUpperCase()){
+										isNewSkill = false;
+										return false;
+								 }
+		                   });
+						   if(isNewSkill){
+								select.append(option);
+						   }
+		                   $("#skillName").trigger("chosen:updated");
+		                }
 		    	 }
 		    });
-		    
-		    
-		    
-		
-       /*  var select, chosen;
-	    select = $("#skillName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#skillName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newSkill = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newSkill).text(newSkill);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#skillName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#skillName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	}); */
-	    
 	    
 	    //Adding Customized Skills to the list
 	}
@@ -1430,118 +1402,6 @@ function updateDesignationType(){
 		skillCountAfter = skillCountBefore = 0;
 	}
 </script>
-
-<!-- <script>
-	function editSkill(candidateId){
-		$("#skillName").prop('disabled', false).trigger("chosen:updated");
-		$("#editSkillBtn").remove();
-		$("#editSkillBtnSpan").hide();
-		window.skillCountBefore = $("#skillName :selected").length;
-		var result = '';
-		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
-		$("#saveSkillBtnSpan").empty();
-		$("#saveSkillBtnSpan").append(result);
-		$("#saveSkillBtnSpan").show();
-		
-		var select, chosen;
-	    select = $("#skillName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    chosen.search_field.bind(('keydown keyup'), function(e)
-	    {
-			  //Adding Customized Skills to the list	
-    	 var enterSkillsArray = this.value.split(",");
-    	 if(enterSkillsArray.length > 1){
-      		 for (var i=0; i < enterSkillsArray.length; i++) {
-      			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
-      			 select.append(option);
-      			 select.find(option).prop('selected', true);
-        		 $("#skillName").trigger("chosen:updated");
-               }
-    	 }else{
-	    	var newSkill = this.value.replace(","," ");
-	    	
-	    	 
-	        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	preventTabkey(e); 
-	        	var par = this.parent;
-	        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
-	        		 select.append(option);
-	        		 select.find(option).prop('selected', true);
-		        		$("#skillName").trigger("chosen:updated");
-		        		
-		        		
-	        }
-    	 }
-    	
-    	/* var newSkill = this.value.replace(",","");
-        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-        {
-        	var par = this.parent;
-            var option = $("<option>").val(newSkill).text(newSkill);
-            select.append(option);
-            select.find(option).prop('selected', true);
-          //to doesn't allow duplicates
-               $("#skillName option").each(function(){
-                     $(this).siblings("[value='"+ this.value+"']").remove();
-               });
-               //end
-       		$("#skillName").trigger("chosen:updated");
-       		
-        } */
-	    });
-		
-	}
-
-	function saveSkill(candidateId){
-		$("#skillName").prop('disabled', true).trigger("chosen:updated");
-		window.skillCountAfter = $("#skillName :selected").length;
-		if(skillCountBefore != skillCountAfter){
-			saveSkils(candidateId);
-		}
-		$("#saveSkillBtn").remove();
-		$("#saveSkillBtnSpan").hide();
-		var result = '';
-		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
-		$("#editSkillBtnSpan").empty();
-		$("#editSkillBtnSpan").append(result);
-		$("#editSkillBtnSpan").show();
-		skillCountAfter = skillCountBefore = 0;
-	}
-</script> -->
-
-<%-- 
-     @author : sarath kumar.
-     @author : venkat kesav (modified on 02/18/2017)
-     this script is for save Skils in Candidate.
-     1.usage     :  used in editCandidate() function  line 13
-     2.parameter : csrf token ,candidateId.
-     3.ajax url implementation in CandidateListRestController.
---%>
-<!-- <script>  
- function saveSkils(candidateId){
-	 var skillName = $("#skillName").val();
-	 var jsonData = encodeURIComponent(skillName);
-	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({  
-	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
-	          success :function(data) {
-	               if(data != null && data != 'undefined' && data != "" && data == "success"){
-	            	  //candidateProfile(candidateId);
-	               }
-	        },
-	          
-	     }); 
-	 }else{
-		 
-	 }
-	 
- }  
-</script> -->
-
 
 <!-- Candidate Email validation script starts here -->
 
@@ -1960,43 +1820,6 @@ function employementType(){
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
-		
-		//Adding Customized Visa to the list
-        var select, chosen;
-	    select = $("#visaName");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Visa:' });
-	    chosen = select.data('chosen');
-	    
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
-			    	   var visaArray = this.value.split(",");
-				    	 if(visaArray.length > 1){
-			        		 for (var i=0; i < visaArray.length; i++) {
-			        			 var option = $("<option>").val(visaArray[i].replace(",","")).text(visaArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ visaArray[i].replace(",","")+"']").remove();
-			 	        		 $("#visaName").trigger("chosen:updated");
-			                 }
-				    	 }else{
-			    			var newVisa = this.value.replace(","," ");
-			    			 if ((e.which == 13 || e.which == 188) && (newVisa != null  && newVisa != '' && newVisa != 'undefined'))
-			                {
-			    				 var option = $("<option>").val(newVisa).text(newVisa);
-			                     select.append(option);
-			                     select.find(option).prop('selected', true);
-			                     $("#visaName option").each(function(){
-			                         $(this).siblings("[value='"+ this.value+"']").remove();
-			                   });
-			                   $("#visaName").trigger("chosen:updated");
-			                }
-					       
-		    	         }
-	    	});
-	    
-	    
-	    //Adding Customized Skills to the list
 	}
 
 	function saveVisa(candidateId){
@@ -2023,20 +1846,22 @@ function employementType(){
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlyVisaBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
-	 
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data == "success"){
-           	  //candidateProfile(candidateId);
-            	  candidateQuickViewProfile(candidateId);
-              }
+           	  	 // candidateProfile(candidateId);
+            	//  candidateQuickViewProfile(candidateId);
+            	  clientSideBar(candidateId);
+            	  $("#loading").removeAttr('style');
        },
          
     }); 
