@@ -316,7 +316,7 @@ public class CrowdSourcingRequirementsRestController {
 	 		    		 if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 	 		    			 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 	 		 	    		   if(null != submission){
-	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.elkDateFormatter(submission.getCreatedDate()));
+	 		 	    			  requirementIndex.setRequirementAppliedDate(commonUtil.dateStrFromOrgDateFormatter(submission.getOrgLocations().getDateFormat(),submission.getCreatedDate()));
 	 		 	    			  requirementIndex.setSubmissionId(submission.getId());
 	 		 	    		   }
 	 		    		 }else if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){

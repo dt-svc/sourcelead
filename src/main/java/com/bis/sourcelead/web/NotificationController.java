@@ -127,11 +127,11 @@ public class NotificationController {
 			long diffDays = diff / (24 * 60 * 60 * 1000);
 			StringBuilder  time = new StringBuilder();
 			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
-				notifications.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
+				notifications.setCalDays(time.append(diffSeconds).append(" secs ago ").toString());
 			}else if(diffDays == 0 && diffHours == 0){
-				notifications.setCalDays(time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
+				notifications.setCalDays(time.append(diffMinutes).append(" mins ").append(diffSeconds).append(" secs ago ").toString());
 			}else if(diffDays == 0){
-				notifications.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
+				notifications.setCalDays(time.append(diffHours).append(" hours ").append(diffMinutes).append(" mins ago ").toString());
 			}else if(diffDays < 7){
 				notifications.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
 			}else{
