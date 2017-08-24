@@ -18,7 +18,7 @@ function getEmployeeList(){
 						result = result + '<th>COMPANY</th>';
 						result = result + '<th>BRANCH</th>';
 						result = result + '<th>Emp Id</th>';
-						result = result + '<th>Candidte Name</th>';
+						result = result + '<th>Candidate Name</th>';
 						result = result + '<th>RATE</th>';
 						result = result + '<th>FIXED RATE</th>';
 						result = result + '<th>PAY RATE</th>';
