@@ -239,7 +239,7 @@
 							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
-							 <div class="clearfix"></div>
+							 <div class="clearfix" style="position: static;"></div>
 			             </div>
 			            </td>
 			        </tr>

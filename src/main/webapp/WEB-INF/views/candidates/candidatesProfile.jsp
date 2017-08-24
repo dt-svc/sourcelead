@@ -1590,6 +1590,7 @@ function updateDesignationOtherType(){
 	 
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 $("#update_candidate").removeAttr("disabled");
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(email != null && email != ""){
 		 $.ajax({

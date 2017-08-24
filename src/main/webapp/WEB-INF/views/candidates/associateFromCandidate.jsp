@@ -449,7 +449,7 @@
         </div> 
         
         <div class="clearfix"></div>
-        <div class="form-group">
+       <!--  <div class="form-group">
             <label class="col-md-3"></label>
              <div class="col-md-9">
                <div class="checkbox checkBox">
@@ -458,10 +458,19 @@
                    Invite to SourceLead</label>
                </div>
                 </div>
-         </div>
-        
-        
-        
+         </div> -->
+         
+              <div class="clearfix"></div>
+					<div class="form-group">
+						<label class="col-md-3"></label>
+						<div class="col-md-9">
+							<div class="checkbox checkBox">
+								<label> <input type="checkbox" value="Y"
+									name="inviteEmail"> Invite to SourceLead
+								</label>
+							</div>
+						</div>
+					</div>
         <div class="clearfix"></div>
       </div> 
     </div>

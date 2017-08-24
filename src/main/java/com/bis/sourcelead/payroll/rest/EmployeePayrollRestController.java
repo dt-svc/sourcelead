@@ -276,8 +276,10 @@ public class EmployeePayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
-		BisUserMapping bisUser = bisUserMappingService.mergeUser(jsonObj,orgLocation.getId());
-		if (bisUser != null) {
+		
+		int  count = wageTaxSummaryService.mergeUser(jsonObj,orgLocation);
+//		BisUserMapping bisUser = bisUserMappingService.mergeUser(jsonObj,orgLocation.getId());
+		if (count >0) {
 			isMerged = true;
 		}
 		return isMerged;
@@ -293,15 +295,15 @@ public class EmployeePayrollRestController {
 	 */
 	@RequestMapping(value = "/getMappedUserList", method = RequestMethod.GET)
 	@ResponseBody
-	public String getMappedUserList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<WageTaxSummary> getMappedUserList(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		String resultJson = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<BisUserMapping> usersList = bisUserMappingService.getMappedUsersListByOrgLocationId(orgLocation.getId());
-		if (usersList != null) {
-			resultJson = commonUtil.toJSON(usersList);
+		List<WageTaxSummary>  wageTaxSummaryList = wageTaxSummaryService.getMappedUsersListByOrgLocationId(orgLocation.getId());
+//		List<BisUserMapping> usersList = bisUserMappingService.getMappedUsersListByOrgLocationId(orgLocation.getId());
+		if (wageTaxSummaryList != null) {
+			return wageTaxSummaryList;
 		}
-		return resultJson;
+		return null;
 	}
 	
 	@RequestMapping(value = "/updateAccountDeduction", method = RequestMethod.POST)

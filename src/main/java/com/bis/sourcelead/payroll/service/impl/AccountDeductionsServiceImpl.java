@@ -400,22 +400,21 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 
 	@Override
 	public PayrollBalance getBalance(Long empId, OrgLocations orgLocations) throws Exception {
-		DecimalFormat df = new DecimalFormat("#.00");
-		double income = 0;
-		double directDeposit = 0;
-		double manualProcessed = 0;
-		double manualDeposit = 0;
-		double advance = 0;
-		double generalExpenses = 0;
-		double vendorPayment = 0;
-		double insurance = 0;
-		double immigration = 0;
+		DecimalFormat df = new DecimalFormat("#0.00");
+		double income = 0.0;
+		double directDeposit = 0.0;
+		double manualProcessed = 0.0;
+		double manualDeposit = 0.0;
+		double advance = 0.0;
+		double generalExpenses = 0.0;
+		double vendorPayment = 0.0;
+		double insurance = 0.0;
+		double immigration = 0.0;
 		PayrollBalance payrollBalance = new PayrollBalance();
 		if(empId !=null){
 			 List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
 			 if(invoiceDataList !=null && invoiceDataList.size() >0){
 				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null)).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
-				 payrollBalance.setIncome(Double.parseDouble(df.format(income)));
 			 }
 			 
 			 
@@ -425,11 +424,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 					 if(wageTaxSummary.getCheckNo() !=null && !"".equals(wageTaxSummary.getCheckNo())){
 						if(Constants.DIR_DEP.equalsIgnoreCase(wageTaxSummary.getCheckNo())){
 							directDeposit = directDeposit + wageTaxSummary.getGross();
-							payrollBalance.setDirectDeposit(Double.parseDouble(df.format(directDeposit)));
 						}
 						if(!Constants.DIR_DEP.equalsIgnoreCase(wageTaxSummary.getCheckNo())){
 							manualProcessed = manualProcessed + wageTaxSummary.getGross();
-							payrollBalance.setManualProcessed(Double.parseDouble(df.format(manualProcessed)));
 						}
 					 }
 				 }	
@@ -442,25 +439,27 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 				 advance = checksList.stream().mapToDouble(c->c.getAdvance()).sum();
 				 generalExpenses = checksList.stream().mapToDouble(c->c.getGeneralExpenses()).sum();
 				 vendorPayment = checksList.stream().mapToDouble(c->c.getVendorPayments()).sum();
-				 payrollBalance.setManualDeposit(Double.parseDouble(df.format(manualDeposit)));
-				 payrollBalance.setAdvance(Double.parseDouble(df.format(advance)));
-				 payrollBalance.setGeneralExpenses(Double.parseDouble(df.format(generalExpenses)));
-				 payrollBalance.setVendorPayment(Double.parseDouble(df.format(vendorPayment)));
 			}
 			
 			List<BisUserMapping> masterList = bisUserMappingService.getMasterListByEmpId(empId, orgLocations);
 			if(masterList !=null && masterList.size() >0){
 				 insurance = masterList.stream().mapToDouble(m->m.getInsurance()).sum();
 				 immigration = masterList.stream().filter(m->(m.getImmigration() !=null) ).mapToDouble(m->Double.parseDouble(m.getImmigration())).sum();	
-				 payrollBalance.setInsurance(Double.parseDouble(df.format(insurance)));
-				 payrollBalance.setImmigration(Double.parseDouble(df.format(immigration)));
 			}
 			
-			double totalDebits = directDeposit + manualProcessed + manualDeposit + advance + generalExpenses + vendorPayment + insurance + immigration;
-			 double balance = income - totalDebits;
-			 payrollBalance.setBalance(Double.parseDouble(df.format(balance)));
 		}
-		
+		 payrollBalance.setIncome(df.format(income));
+		 payrollBalance.setDirectDeposit(df.format(directDeposit));
+		 payrollBalance.setManualProcessed(df.format(manualProcessed));
+		 payrollBalance.setManualDeposit(df.format(manualDeposit));
+		 payrollBalance.setAdvance(df.format(advance));
+		 payrollBalance.setGeneralExpenses(df.format(generalExpenses));
+		 payrollBalance.setVendorPayment(df.format(vendorPayment));
+		 payrollBalance.setInsurance(df.format(insurance));
+		 payrollBalance.setImmigration(df.format(immigration));
+		 double totalDebits = directDeposit + manualProcessed + manualDeposit + advance + generalExpenses + vendorPayment + insurance + immigration;
+		 double balance = income - totalDebits;
+		 payrollBalance.setBalance(df.format(balance));
 		return payrollBalance;
 	}
 }

@@ -3254,6 +3254,7 @@ function validateReason(recordId,status){
 	if(rejectReason != null && rejectReason !='undefined' && rejectReason !=''){
 		$("#rejectContractIdDiv").find('p.jquery_form_error_message').remove();
 		approveContract(recordId,status);
+		cancelTermination();
 	}else{
 		$("#rejectContractIdDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 	}
