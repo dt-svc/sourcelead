@@ -284,7 +284,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 	for(ExpensesApproverHierarchy ex:expApperoverHierarchy){
 		String expenseArray[] = new String[headers.length];
 		if(ex.getExpenseId() !=null){
-			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
+			Expenses expenseId =expensesService.getExpenseById(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
@@ -462,7 +462,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex,OrgLocations orgLoc) {
 		if(ex.getExpenseId() !=null){
-			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
+			Expenses expenseId =expensesService.getExpenseById(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
