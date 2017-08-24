@@ -996,14 +996,15 @@ function requirementsList(offset){
 			 					result = result +'<div class="openPostDate clearfix">';
 			 					
 			 					var appliedDate = requirements.requirementAppliedDate;
+			 					/* alert("appliedDate "+appliedDate);
 			 					if(appliedDate != null && appliedDate !="" && appliedDate !='undefined'){
 					             	var array = new Array();
 					             	array = appliedDate.split('-');
 					             	var dateApplied = (array[2] + "-" + array[1] + "-" + array[0]);
 					             }
-			 					
+			 					 */
 			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+dateApplied+'</b>';
+			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+appliedDate+'</b>';
 			 					}else{
 			 						result = result +'<i class="fa fa-user-circle"></i> Submissions Count : <b>'+requirements.recruiterSubmissionsCount+'</b>';
 			 					}

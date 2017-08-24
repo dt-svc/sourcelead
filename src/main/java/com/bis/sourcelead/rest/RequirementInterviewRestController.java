@@ -294,7 +294,7 @@ public class RequirementInterviewRestController {
 			 for(int i=0;i<maxTaxRowCount;i++){
 				 ProposeTime proposeTime = new ProposeTime();
 					 if(null != jsonObj.getString("interviewDate"+i) && !"".equalsIgnoreCase(jsonObj.getString("interviewDate"+i))){
-						 Date proposeDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("interviewDate"+i));
+						 Date proposeDate = commonUtil.orgLocationDateFormat(interview.getSubmissionId().getOrgLocations().getDateFormat(),jsonObj.getString("interviewDate"+i));
 						 proposeTime.setProposeDate(proposeDate);
 					 }
 					 if(null != jsonObj.getString("time"+i) && !"".equalsIgnoreCase(jsonObj.getString("time"+i))){
@@ -304,7 +304,9 @@ public class RequirementInterviewRestController {
 					 proposeTime.setInterviewId(interview);
 					 proposeTime.setStatus(Constants.RECORD_ACTIVE);
 					 proposeTime.setCreatedDate(commonUtil.currentDate());
+					 if(user != null){
 					 proposeTime.setCreatedBy(user.getUserCode());
+			 }
 					 proposeTimeService.saveProposeTime(proposeTime);
 			 }
 			 
@@ -318,9 +320,12 @@ public class RequirementInterviewRestController {
 			 
 			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
 			 //Applicant to created by interviewer send Email
+			 if(orgLocations != null){
 			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
-			
+			 }
+			 if(user != null){
 			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			 }
 			return "success";
 
   }

@@ -6,21 +6,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script>
-	function loadClientDatatable(clientSearchResult, clientKeyword,responderLocationId, orgRelationId, orgName) {
-		if (clientSearchResult == "clientSearchResult") {
-			getClientList();
-			$("#dataTableSearch").val(searchValue);
-		} else {
-			if (clientKeyword == "clientSearch") {
-				clientSideBar(responderLocationId, orgRelationId, orgName);
-				getClientList();
-			} else {
-				getClientList();
-			}
-			listChange("listbyVendor");
-			document.getElementById('listOfVendors').value = 'listbyVendor';
-		}
-
+	function loadVendorDataTable() {
+		
+	
 	}
 	
 	
