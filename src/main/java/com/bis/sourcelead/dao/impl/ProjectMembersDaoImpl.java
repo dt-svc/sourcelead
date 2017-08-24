@@ -712,7 +712,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 			}
 	        
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId  "+ subQuery2 + "");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user where pm.projects.id = :projectId  "+ subQuery2 + "");
 
 		projectsMembersList=projectsMembersListQuery.setLong("projectId", projectId).setCacheable(true).list();
 		return projectsMembersList;
