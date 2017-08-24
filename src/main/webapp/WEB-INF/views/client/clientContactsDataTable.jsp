@@ -6,20 +6,36 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script>
-	function loadVendorDataTable() {
-		
-	alert("hai");
+	function loadVendorDataTable(clientSearchResult) {
+		if (clientSearchResult == "clientSearchResult") {
+			getClientContactList();
+			$("#dataTableClientContactSearch").val(clientSearchResult);
+		 }else{
+			 getClientContactList();
+		 }
 	}
 	
 	
 
-function getClientList(){
+function getClientContactList(){
+	alert("Deleted Successfully")
 	var responderType = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
-	var values = [];
-	$('input:checkbox[name=clinetLevel]:checked').each(function() 
+	var clientIds = [];
+	$('input:checkbox[name=clientNameById]:checked').each(function() 
     {
-			values.push($(this).val());
+		clientIds.push($(this).val());
+    });
+	var status = [];
+	$('input:checkbox[name=clientStatus]:checked').each(function() 
+    {
+		status.push($(this).val());
+    });
+	
+	var invitationStatus = [];
+	$('input:checkbox[name=clientInvitationStatus]:checked').each(function() 
+    {
+		invitationStatus.push($(this).val());
     });
 	var validationSettings = {
 			errorMessagePosition : 'element',
@@ -27,7 +43,6 @@ function getClientList(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-
 	 if ($('#clientlist_form').validate(false, validationSettings)){ 
 			var frm = $('#clientlist_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -35,11 +50,11 @@ function getClientList(){
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#clientlist_form')[0];
 	  		var formData = new FormData(form); 
-	  		var searchValue = $("#dataTableSearch").val();
+	  		var searchValue = $("#dataTableClientContactSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchClientDetails?responderType="+responderType+"&searchValue="+searchValue+"&values="+values;
+	  		var url = sourceleadUrl+"/searchClientContactDetails?responderType="+responderType+"&searchValue="+searchValue+"&clientIds="+clientIds+"&status="+status+"&invitationStatus="+invitationStatus;
 	  	    url += "&"+$($('#clientlist_form')[0]).serialize();  
-	  		prepareClientList(url);
+	  		prepareClientContactList(url);
 	  		closePop();
 			return true;
 		 }else{ 
@@ -52,31 +67,33 @@ function getClientList(){
 		}); 
 }	
 
-	function prepareClientList(url) {
-		$("#clientList").removeAttr("style");
-		$("#clientList").empty();
+	function prepareClientContactList(url) {
+		$("#vendorContactList").removeAttr("style");
+		$("#vendorContactList").empty();
 		var result = "";
-		result = result + "<table id='clientListPagination' class='display' cellspacing='0' width='100%' >";
+		result = result + "<table id='clientContactListPagination' class='display' cellspacing='0' width='100%' >";
 		result = result + "<thead>";
-		result = result + "  <tr>";
-		result = result + "    <th>Client Name</th>";
-		result = result + "    <th>Website</th>";
-		result = result + "    <th>Location</th>";
-		result = result + "    <th>Tier</th>";
-		result = result + "    <th>Created By</th>";
-		result = result + "    <th>No.of Contacts</th>";
-		result = result + "  </tr>";
+		result = result +'<tr>';
+	   	result = result +'  <th>Client</th>';
+	   	result = result +'	<th>Contact Name</th>';
+	   	result = result +'  <th>Email</th>';
+	   	result = result +'  <th>Phone</th>';
+	   	result = result +' <th>Owner</th>';
+	   	result = result +' <th>Status</th>';
+	   	result = result +' <th>Invitation</th>';
+	   	result = result +'<th>Action</th>';
+	   	result = result +'</tr>';
 		result = result + "</thead>";
 		result = result + "<tbody>";
 		result = result + " </tbody>";
 		result = result + "</table>";
-		$("#clientList").append(result);
-		clientpagination(url);
+		$("#vendorContactList").append(result);
+		clientContactpagination(url);
 	}
 	
-	function clientpagination(url){
+	function clientContactpagination(url){
 		var colIndex = 0;
-		 $('#clientListPagination').DataTable( { 
+		 $('#clientContactListPagination').DataTable( { 
 	    	"processing": true,
 	        "serverSide": true,
 	        "searching": false,
@@ -87,109 +104,149 @@ function getClientList(){
 	        }),
 	        "columns": [
 	            { "data": "orgName" },
-	            { "data": "initiatorWebSite"},
-	            { "data": "initiatorCountry" },
-	            { "data": "initiatorLevel"},
-	            { "data": "createdBy" },
-	            { "data": "noContacts" }
+	            { "data": "spocName"},
+	            { "data": "spocEmail" },
+	            { "data": "spocMobilePhone"},
+	            { "data": "ownerName" },
+	            { "data": "spocStatus" },
+	            { "data": "invitationStatus" },
+	            { "data": "action" }
 	        ],
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	/*"className": "tbldata-dotdot_50",*/
 		    	  	"data": "orgName",
 		    	  	"render": function(data, type, report, meta) {
-		    	  		var result = "";
-		    	  		  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-			   			result = result +'<td>';
-			   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+report.orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
-			   			result = result +'</div>';
-			   			result = result +'</td>';
-			   		   '</sec:authorize>';
-			   		
-					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-						result = result +'<td>';
-						result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.orgName}">'+report.orgName+'</span>';
-						result = result +'</div>';
-						result = result +'</td>';
-					'</sec:authorize>';  
-			              return  result;
+		    	  		 var result = "";
+		    	  		 result = result +'<input type="hidden" value="row'+report.id+'" id="row'+report.id+'">';
+		    	  		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
+			             return  result;
 		    	  	}
 		      },{
 	            "targets": colIndex++,
-	            "data": "initiatorWebSite",
-	        	"sortable": false,
+	            "data": "spocName",
 	            "render": function ( data, type, report, meta ) {
-	            	    var result = "";
-	            		if( report.website != null && report.website != '' && report.website != 'undefined'){
-	            			result = result +'<td>';
-	    		   			result = result +'<div>';
-	    		   			result = result +'<span class="tbldata-dotdot-sm" title='+report.website+'>'+report.website+'</span>';
-	    		   			result = result +'</div>';
-	    		   			result = result +'</td>';
-	    		   		}else{
-	    		   			result = result +'<td><div>--</div></td>';
-	    		   		}
-		              return result;
+	            	     var result = "";
+	            	     '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+			   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
+			   			'</sec:authorize>';
+			   		
+			   			'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+			   				result = result +'<td><div class="proj_show" ><span title="'+report.spocName+'">'+report.spocName+'</span></div></td>';
+						'</sec:authorize>';
+		              return result; 
 	            }
 	          }, {
 	              "targets": colIndex++,
-	              "data": "initiatorCountry",
-	          	  "sortable": false,
+	              "data": "spocEmail",
 	              "render": function ( data, type, report, meta ) {
-	            	  var result = "";
-	              		var location = "";
-	    		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-	    		   			location = report.city+", "+report.state+", "+report.country;
-	    		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-	    		   			location = report.state+", "+report.country;
-	    		   		}else{
-	    		   			location = report.country;
-	    		   		}
-	    		   		
-	    		   		if(location != null && location  != '' && location  != 'undefined'){
-	    		   			result = result +'<td>';
-	    		   			result = result +'<div>';
-	    		   			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
-	    		   			result = result +'</div>';
-	    		   			result = result +'</td>';
-	    		   		}else{
-	    		   			result = result +'<td><div>--</div></td>';
-	    		   		}
-	  	              return result;
+	            	   var result = "";
+	            	   result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
+	  	              return result; 
 	              }
 	            }, {
 	                "targets": colIndex++,
-	                "data": "initiatorLevel",
-	            	"sortable": false,
+	                "data": "spocMobilePhone",
+	                "sortable": false,
 	                "render": function ( data, type, report, meta ) {
-	                	  var result = "";
-	                		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
-	    	              return result;
+	                	   var result = "";
+	                	   if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
+	       		   			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+	       		   			}else{
+	       		   			result = result +'<td><div>--</div></td>';
+	       		   		}
+	    	              return result; 
 	                }
 	          },{
 		    	  	"targets": colIndex++,
-		    	  	"data": "createdBy",
+		    	  	"data": "ownerName",
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, report, meta) {
-		    	  		var result = "";
-		    	  		if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
-		    				result = result +' <td><div>'+report.createdBy+'</div></td>';
-		    		   	}else{
-		    		   		result = result +'<td><div>---</div></td>';
-		    		   	}
-		    	  	   return result;
+		    	  	 	var result = "";
+		    	  	 	if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
+							 result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+						}
+		    	  	   return result; 
 		    	  	}
 		    	  },{
 		    	  	"targets": colIndex++,
-		    	  	"data": "noContacts",
+		    	  	"data": "spocStatus",
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, report, meta) {
-		    	  		var result = "";
-		    	  		result = result +'<td><div >'+report.noContacts+'</div></td>';
-		    	  		 return result;
+		    	  		 var result = "";
+		    	  		result = result + ' <td><div>';
+				   		if(report.invitationStatus == 'Rejected'){
+		        			result = result + '<span>'+report.spocStatus+'</span>';
+			    		}else{
+			    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
+			    			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
+							result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
+							result = result + ' </select>';
+							
+							result = result + '<span id="spocSpanState'+report.id+'"> </span>';
+			    		}
+						result = result + ' </div></td>';
+		    	  		 return result; 
 		    	  	}
+		    	  },{
+			    	  	"targets": colIndex++,
+			    	  	"data": "invitationStatus",
+			    	  	"sortable": false,
+			    	  	"render": function(data, type, report, meta) {
+			    	  		 var result = "";
+			    	  		result = result + ' <td><div id="invitationStatus'+report.id+'">';
+					   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+					   		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i>';
+					   		}
+					   		
+					   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+					            result = result +' ---';
+					      	}
+					   		
+					   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+					   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Send</a></b>';
+					   		}
+					   		
+					   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
+					   			result = result +' ---';
+					   		}
+					   		
+					   		if(report.spocUserId != "${SourceLeadWeb_userId}" && report.ownerUserId != "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){ 
+					   			result = result +' <b class="proj_process">Received</b>';
+					   		}
+					   		
+					   		if(report.ownerUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
+					   			result = result +' <b class="proj_process"><a href="javascript:void(0)" onClick="resendClientSpocInvitation('+report.spocUserId+','+report.id+','+report.orgRelationId+');">Resend</a></b>';
+					   		}
+					   		
+					   		if(report.invitationStatus == 'Accepted'){ 
+					   			result = result +' <b class="proj_active">'+report.invitationStatus+'</b>';
+					   		}
+					 		
+					 		if(report.invitationStatus == 'Rejected'){
+					 			result = result +' <b class="proj_closed">'+report.invitationStatus+'</b>';
+					 		}
+					 		result = result + ' </div></td>';
+			    	  		 return result; 
+			    	  	}
+		    	  },{
+				    	  	"targets": colIndex++,
+				    	  	"data": "action",
+				    	  	"sortable": false,
+				    	  	"render": function(data, type, report, meta) {
+				    	  		 var result = "";
+				    	  		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
+						   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove client contact"></i></div></td>';
+						   	 '</sec:authorize>';
+						   	 
+						   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
+							    result = result + '<td><div>---</div></td>';
+							 '</sec:authorize>';
+				    	  		 return result; 
+				    	  	}
 		    	  }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[4,'desc']],
+		    	"aaSorting": [[0,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
@@ -199,14 +256,15 @@ function getClientList(){
 		     		
 		     }
 	    } );
-	    $("#clientListPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	    $("#clientContactListPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#dataTableSearch").keyup(function(e) {
+	    $("#dataTableClientContactSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getClientList();
+	    		   getClientContactList();
 	    	   }
 	    	});
 }
 </script>
+
 
 

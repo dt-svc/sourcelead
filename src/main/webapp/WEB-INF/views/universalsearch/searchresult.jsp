@@ -452,10 +452,10 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 var location ="";
 				            	 var exp="";
 				            	 count++;
-				            	 
+				            	 alert(report.searchType)
 				            	 /*========== Universal Search list of Requirement ==========*/ 
-				            	 if(report.searchType=="Requirement"){	 
-						            	 if((report.searchType=="Requirement") && j == 0){
+				            	 if(report.searchType=="Jobs"){	 
+						            	 if((report.searchType=="Jobs") && j == 0){
 						            		 result = result+'  <div class="clearfix">';	 
 						            	   		result = result+'   <h4>Jobs</h4>';
 						            	   	 result = result+' </div>';

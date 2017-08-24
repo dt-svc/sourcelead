@@ -580,7 +580,7 @@ public class Constants {
 	public static final String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
 	public static final String PROJECT = "Projects";
 	public static final String USER = "User";
-	public static final String REQUIREMENT = "Requirement";
+	public static final String REQUIREMENT = "Jobs";
 	public static final String USERS = "Users";
 	public static final String CLIENTS_CONTACTS_IMPORT_XLS = "clients_contacts_Import.xls";
 	public static final String CLIENTS_CONTACTS_IMPORT_XLSX = "clients_contacts_Import.xlsx";
