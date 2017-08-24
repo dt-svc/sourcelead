@@ -45,6 +45,7 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -63,6 +64,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -165,6 +167,9 @@ public class UserRestController {
 	
 	@Autowired
 	ProjectMembersService projectMembersService;
+	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
 	
 	/**
 	 * To get All Approvers
@@ -1368,6 +1373,13 @@ private void terminatedMailToEmployee(User loginUser, ProjectMembersHistory pmh,
         			  Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
         			  if(null != employee){
         				  userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+        			  }
+        			  
+        			  
+        			  CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(Long.parseLong(userID), orgLocations.getId());
+        			  if(candidateOffBoarding != null){
+        				  candidateOffBoarding.setStatus(0);
+        				  candidateOffBoardingService.saveCandidateOffBoarding(candidateOffBoarding);
         			  }
 				}
                 return "updated";

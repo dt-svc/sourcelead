@@ -274,6 +274,8 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
+	$("#acceptReopenExpenseBySuperUserDiv").empty();
+	$("#acceptReopenExpenseBySuperUserDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
