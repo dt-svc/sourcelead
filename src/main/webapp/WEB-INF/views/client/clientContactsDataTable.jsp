@@ -8,7 +8,7 @@
 <script>
 	function loadVendorDataTable() {
 		
-	alert("hai");
+	
 	}
 	
 	
