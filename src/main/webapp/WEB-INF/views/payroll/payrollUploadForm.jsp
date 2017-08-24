@@ -36,13 +36,13 @@ window.onload = function () {
                   <a href="<c:url value='/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5" title="User Mapping" onClick="userMaping();">User Mapping </a>
                   <!-- Popup Div -->
                   	<form:form id="upload_bulk_payroll_form" name="upload_bulk_payroll_form" method="post">
-                  <div class="collapse-bulk-adduser col-md-4" id="addbulkDiv" style='width:400px; right: 20px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-bulk-adduser col-md-4 mt" id="addbulkDiv" style='width:400px; right: 110px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                         <div class="col-md-12 mt10">
                           <div class="input-group ratetype" id="uploadBulkFileGroup">
-	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	                        <label class="input-group-btn"> <div class="btn btn-primary pull-left"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBulkBtn" id="uploadBulkBtn" style="display: none;"  multiple="" class="upload">
-	                            </span> </label>
+	                            </div> </label>
 		                          <input type="text" class="form-control" readonly id="uploadBulkFile" name="docBulkFile" placeholder="Upload Bulk File." field-name="Attachment" data-validation="required validate_importFile">
 	                        </div>
                           

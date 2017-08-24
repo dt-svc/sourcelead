@@ -367,7 +367,7 @@ function dashboardAddInterview(){
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	getRequirements();
-	getTimezonesList();
+	getTimezonesListForInterview();
 	getInterviewers();
 	
 	$("#1startTime").timepicker({
@@ -685,8 +685,8 @@ function myFunction(){
 }
 </script>
 
-<script>
-function getTimezonesList(){
+<script type="text/javascript">
+function getTimezonesListForInterview(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var timezone = '${timezone}';
 	 $.ajax({

@@ -21,6 +21,7 @@
 	       		}else if("rejected" == $("#countType").val()){
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
+	       		$("#temp").val("temp");
 			}else{
 				getExpensesApprovalDataList();
 			}

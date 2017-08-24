@@ -60,7 +60,7 @@ public class PayrollController {
 	private BisUserMappingService bisUserMappingService;
 	
 	@Autowired
-	WageTaxSummaryService wageTaxSummaryService;
+	private WageTaxSummaryService wageTaxSummaryService;
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -107,9 +107,12 @@ public class PayrollController {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		   List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   usersList.sort((User report1, User report2)-> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
-		   List<BisUserMapping> masterUserList = bisUserMappingService.getBisUserListByOrgLocationId(orgLocations.getId());
+		   
+		   List<WageTaxSummary> masterUserList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocations);
+		   
+//		   List<BisUserMapping> masterUserList = bisUserMappingService.getBisUserListByOrgLocationId(orgLocations.getId());
 		 //lambda here!
-		   masterUserList.sort((BisUserMapping report1, BisUserMapping report2)-> report1.getCandidateName().compareToIgnoreCase(report2.getCandidateName()));
+		   masterUserList.sort((WageTaxSummary report1, WageTaxSummary report2)-> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
 			
 		   model.addObject("usersList", usersList);
 		   model.addObject("masterUsersList", masterUserList);
