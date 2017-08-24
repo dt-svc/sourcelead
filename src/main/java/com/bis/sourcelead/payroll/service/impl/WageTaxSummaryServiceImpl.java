@@ -37,12 +37,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
+import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -64,6 +66,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	@Autowired
 	PayrollHelper payrollHelper;
+	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
@@ -557,5 +562,38 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 		}
 		return wagesAndTaxList;
 	}
-	
+
+	@Override
+	public int mergeUser(JSONObject jsonObj, OrgLocations orgLocation) throws Exception {
+		BisUserMapping bisuser = null;
+		int count =0;
+		if(jsonObj.has("slUserId") && jsonObj.has("importedUserId")){
+			Long sluserId = Long.parseLong(jsonObj.getString("slUserId"));
+			Long importedUserId = Long.parseLong(jsonObj.getString("importedUserId"));
+			User slUser = userService.getUserById(sluserId);
+			List<WageTaxSummary> importUserList = wageTaxSummaryDao.getWagesAndTaxListByEmployeeId(orgLocation, importedUserId);
+			for(WageTaxSummary wageTaxSummary:importUserList){
+				wageTaxSummary.setUserId(slUser);
+				wageTaxSummaryDao.saveWageTaxSummary(wageTaxSummary);
+				count++;
+			}
+
+	}
+		return count;
+	}
+
+	@Override
+	public List<WageTaxSummary> getAllImportedUsers(OrgLocations orgLocations) throws Exception {
+		return wageTaxSummaryDao.getAllImportedUsers(orgLocations);
+	}
+
+	@Override
+	public List<WageTaxSummary> getMappedUsersListByOrgLocationId(Long locationId) throws Exception {
+		return wageTaxSummaryDao.getMappedUsersListByOrgLocationId(locationId);
+	}
+
+	@Override
+	public List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation) throws Exception {
+		return wageTaxSummaryDao.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+	}
 }

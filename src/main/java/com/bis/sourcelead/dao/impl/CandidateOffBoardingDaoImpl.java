@@ -118,7 +118,7 @@ public class CandidateOffBoardingDaoImpl implements CandidateOffBoardingDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateOffBoarding> candidateOffBoarding = session.createQuery("from CandidateOffBoarding offboarding left join fetch offboarding.userId left join fetch offboarding.orgLocationId   "
-				+ " where offboarding.orgLocationId.id =:orgLocationId and offboarding.userId.id = :offboardingUser" ).setLong("offboardingUser", offboardingUser).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				+ " where offboarding.orgLocationId.id =:orgLocationId and offboarding.userId.id = :offboardingUser and offboarding.status = '1' " ).setLong("offboardingUser", offboardingUser).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
 		if (candidateOffBoarding.size() > 0) {
 			return candidateOffBoarding.get(0);
 		} else {
