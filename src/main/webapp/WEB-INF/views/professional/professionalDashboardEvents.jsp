@@ -121,10 +121,21 @@ window.onload = function() {
 	
   <script>
   $(function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatProeventCalendar = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatProeventCalendar = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatProeventCalendar = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatProeventCalendar = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatProeventCalendar = 'yy-dd-mm'; 
+	  }
     $("#eventCalendar" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
-      dateFormat : 'dd-mm-yy',
+      dateFormat : finalDateFormatProeventCalendar,
       onSelect : function(selected) {
   		getInterviewsandTasks();
   		

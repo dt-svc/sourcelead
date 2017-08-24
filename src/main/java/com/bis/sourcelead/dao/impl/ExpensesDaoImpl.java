@@ -143,13 +143,13 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Expenses getExpenseByExpenseId(long expenseId) {
+	public Expenses getExpenseById(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses where expenses.id =:expenseId";
-		List<Expenses> expenses = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		String query = "from Expenses expenses where expenses.id =:id";
+		List<Expenses> expenses = session.createQuery(query).setLong("id", id).setCacheable(true).list();
 		Expenses expensesList = null;
 		if (expenses != null && expenses.size() > 0) {
-			expensesList = (Expenses) expenses.iterator().next();
+			expensesList = expenses.get(0);
 		}
 		return expensesList;
 	}
