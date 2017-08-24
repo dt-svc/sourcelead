@@ -133,6 +133,7 @@ public class DashboardController {
 		List<RequirementSubmissionHistory> toDayReqApplicantscount = getReqSubmissionListByStage(request,stage,tab);
 		
 		model.addObject("tab",tab);
+		model.addObject("reqList","appList");
 		model.addObject("toDayReqApplicantscount", toDayReqApplicantscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -170,6 +171,7 @@ public class DashboardController {
 			}
 		
 		model.addObject("tab",tab);
+		model.addObject("reqList","subList");
 		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -202,6 +204,7 @@ public class DashboardController {
 		    }
 		  }
 		model.addObject("tab",tab);
+		model.addObject("reqList","interList");
 		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -247,6 +250,7 @@ public class DashboardController {
 		
 		
 		model.addObject("tab",tab);
+		model.addObject("reqList","offerlist");
 		model.addObject("toDayReqOfferscount", toDayReqOfferscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);

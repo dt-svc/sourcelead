@@ -2,76 +2,77 @@ package com.bis.sourcelead.payroll.entity;
 
 public class PayrollBalance {
 
-	private double income;
-	private double directDeposit;
-	private double manualProcessed;
-	private double manualDeposit;
-	private double advance;
-	private double generalExpenses;
-	private double vendorPayment;
-	private double insurance;
-	private double immigration;
-	private double balance;
-	public double getIncome() {
+	private String income;
+	private String directDeposit;
+	private String manualProcessed;
+	private String manualDeposit;
+	private String advance;
+	private String generalExpenses;
+	private String vendorPayment;
+	private String insurance;
+	private String immigration;
+	private String balance;
+	public String getIncome() {
 		return income;
 	}
-	public void setIncome(double income) {
+	public void setIncome(String income) {
 		this.income = income;
 	}
-	public double getDirectDeposit() {
+	public String getDirectDeposit() {
 		return directDeposit;
 	}
-	public void setDirectDeposit(double directDeposit) {
+	public void setDirectDeposit(String directDeposit) {
 		this.directDeposit = directDeposit;
 	}
-	public double getManualProcessed() {
+	public String getManualProcessed() {
 		return manualProcessed;
 	}
-	public void setManualProcessed(double manualProcessed) {
+	public void setManualProcessed(String manualProcessed) {
 		this.manualProcessed = manualProcessed;
 	}
-	public double getManualDeposit() {
+	public String getManualDeposit() {
 		return manualDeposit;
 	}
-	public void setManualDeposit(double manualDeposit) {
+	public void setManualDeposit(String manualDeposit) {
 		this.manualDeposit = manualDeposit;
 	}
-	public double getAdvance() {
+	public String getAdvance() {
 		return advance;
 	}
-	public void setAdvance(double advance) {
+	public void setAdvance(String advance) {
 		this.advance = advance;
 	}
-	public double getGeneralExpenses() {
+	public String getGeneralExpenses() {
 		return generalExpenses;
 	}
-	public void setGeneralExpenses(double generalExpenses) {
+	public void setGeneralExpenses(String generalExpenses) {
 		this.generalExpenses = generalExpenses;
 	}
-	public double getVendorPayment() {
+	public String getVendorPayment() {
 		return vendorPayment;
 	}
-	public void setVendorPayment(double vendorPayment) {
+	public void setVendorPayment(String vendorPayment) {
 		this.vendorPayment = vendorPayment;
 	}
-	public double getInsurance() {
+	public String getInsurance() {
 		return insurance;
 	}
-	public void setInsurance(double insurance) {
+	public void setInsurance(String insurance) {
 		this.insurance = insurance;
 	}
-	public double getImmigration() {
+	public String getImmigration() {
 		return immigration;
 	}
-	public void setImmigration(double immigration) {
+	public void setImmigration(String immigration) {
 		this.immigration = immigration;
 	}
-	public double getBalance() {
+	public String getBalance() {
 		return balance;
 	}
-	public void setBalance(double balance) {
+	public void setBalance(String balance) {
 		this.balance = balance;
 	}
+	
 	
 	
 }

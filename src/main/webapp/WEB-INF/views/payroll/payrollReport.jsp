@@ -22,7 +22,7 @@ window.onload = function () {
                 Employee Name
             </label>
             <div class="col-md-4">
-                <select class="chosen-select" id="empId" name="empName">
+                <select class="chosen-select" id="empId" name="empName" onchange="getWagesTaxSummaryByEmpId(); redirect();">
                   <option value=" " selected >-Select Employee-</option>
 	            <c:forEach var="wage" items="${wageTaxSummaryList}">
 					<option value="${wage.employeeId}">${wage.employeeName}</option>
@@ -30,12 +30,12 @@ window.onload = function () {
                 </select>
             </div>
         </div>
-      <ul class="project-tabs-menu">
-        <li class="current"><a href="#tab-1" onclick="getWagesTaxSummaryByEmpId();">Wages & Tax Summary</a></li>
+      <ul class="project-tabs-menu" id="menuli">
+        <li class="current" id="wtsli"><a href="#tab-1" onclick="getWagesTaxSummaryByEmpId();">Wages & Tax Summary</a></li>
         <li><a href="#tab-2" onclick="getIncomeData();">Income</a></li>
         <li><a href="#tab-3" onclick="getChecks();">Manual checks</a></li>
-        <li><a href="#tab-4" onclick="getAccontDeductions();">Account Dudections</a></li>
-        <li><a href="#tab-5" onclick="getHRDeductions();">HR Dudections</a></li>
+        <li><a href="#tab-4" onclick="getAccontDeductions();">Account Deductions</a></li>
+        <li><a href="#tab-5" onclick="getHRDeductions();">HR Deductions</a></li>
         <li><a href="#tab-6" onclick="finalBalance();">Balance</a></li>
         <div class="clearfix"></div>
       </ul>
@@ -128,13 +128,23 @@ $(document).ready(function() {
     $("#tab-1").show();
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();
-        $(this).parent().addClass("current");
+        $("#wtsli").addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".project_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
     });
 });
+
+function redirect() {
+	 $("#tab-1").show();
+//   $(".project-tabs-menu a").click(function(event) {
+      event.preventDefault();
+      $("#menuli").removeClass("current");
+      $("#wtsli").addClass("current");
+      
+//   });
+}
     </script>
     
     <script>
@@ -1013,12 +1023,12 @@ function finalBalance(){
 			        	/* result = result + '     <dd>Line4:<span class="pay-val">2,3456.00</span></dd>'; */
 			        	result = result + '   </dl>';
 			        	result = result + '  </li>';
-			        	result = result + '  <li>Adanced:<span class="pay-val">'+data.advance+'</span></li>';
-			        	result = result + '  <li>Genral Expenses:<span class="pay-val">'+data.generalExpenses+'</span></li>';
+			        	result = result + '  <li>Advanced:<span class="pay-val">'+data.advance+'</span></li>';
+			        	result = result + '  <li>General Expenses:<span class="pay-val">'+data.generalExpenses+'</span></li>';
 			        	result = result + '  <li>Vendor Payment:<span class="pay-val">'+data.vendorPayment+'</span></li>';
 			        	result = result + '  <li>Healthcare/Insurance:<span class="pay-val">'+data.insurance+'</span></li>';
 			        	result = result + '  <li>Immigration:<span class="pay-val">'+data.immigration+'</span></li>';
-			        	result = result + '  <li>Balace:<span class="pay-val balance">'+data.balance+'</span></li>';
+			        	result = result + '  <li>Balance:<span class="pay-val balance">'+data.balance+'</span></li>';
 			        	result = result + '    </ul>';
 			        	result = result + '  </div>';
 			        	
@@ -1036,3 +1046,4 @@ function finalBalance(){
 }
 </script>
 
+<jsp:include page="../masterFooter.jsp" />

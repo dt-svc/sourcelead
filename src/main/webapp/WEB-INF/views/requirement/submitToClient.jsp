@@ -335,7 +335,6 @@ function cancelSumitToClient(){
 
 <script>
 function addEmailtemplate(requirementId){
- 	
 	var result ="";
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedShortlists = [];
@@ -496,11 +495,11 @@ function addEmailtemplate(requirementId){
 	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel123();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
-	$(".sideMask").fadeIn(200);
+	//$(".sideMask").fadeIn(200);
  }
 		 
  }else{
