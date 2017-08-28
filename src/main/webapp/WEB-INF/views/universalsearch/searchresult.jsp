@@ -9,8 +9,6 @@
 $(document).ready(function(){
    var searchType = "${searchType}";
    var searchValue = "${searchValue}";
-   alert(searchType)
-   alert(searchValue)
    if(searchType == "Associate"){
 	   var isAssociate = "Y";
 	   var searchType = "Candidate";
@@ -24,7 +22,6 @@ $(document).ready(function(){
 	   getSearchResultsForAll(searchType,searchValue);
    }
    else{
-	   alert("hi")
 	   getSearchResults(searchType,searchValue,isAssociate);
    }
 });

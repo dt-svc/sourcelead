@@ -116,6 +116,7 @@ function getClientContactList(){
 		    	  	"targets": colIndex++,
 		    	  	"data": "orgName",
 		    	  	"render": function(data, type, report, meta) {
+		    	  	   $("#clientContactLength").val(1);
 		    	  		 var result = "";
 		    	  		 result = result +'<input type="hidden" value="row'+report.id+'" id="row'+report.id+'">';
 		    	  		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
