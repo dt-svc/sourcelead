@@ -535,15 +535,15 @@ function validate_fileupload(fileName)
 		  if(validate_fileupload(selectedFile)){
 			   var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
 		       $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
-		      if(docSize > 2097152){
+		      /* if(docSize > 2097152){
 		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();
 		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 				  $('#'+id+'docFile'+entityId).attr('record-exist','yes');
 				  $('#'+id+'docFile'+entityId).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-		      }else{
+		      }else{ */
 		    	  $('input#'+id+'docFile'+entityId).removeAttr( "record-exist record-exist-errormsg");
-	   		       $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
-		      }
+	   		      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
+		      /* } */
 		  }
 		  else{
 			      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();

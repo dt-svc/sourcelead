@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
@@ -119,6 +120,17 @@ public class SourceleadNotesRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Contracts contracts = contractsTemplateService.getContractByContractUUID(contractUUID);
 		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByContractId(contracts.getId(),orgLocation.getId());
+		notesList = commonUtil.toJSON(list);
+		return notesList;
+	}
+	
+	
+	@RequestMapping(value = "/getRequirementNotes", method = RequestMethod.POST)
+	public @ResponseBody String getRequirementNotes(@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception
+	{
+		String notesList;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByRequirementId(requirementId,orgLocation.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}

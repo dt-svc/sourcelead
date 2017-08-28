@@ -42,4 +42,6 @@ public interface InvoiceDao{
 
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
+	Invoice getParentInvoiceByInvoiceId(Long invoiceId)throws Exception;
+
 }

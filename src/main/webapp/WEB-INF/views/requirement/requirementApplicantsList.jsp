@@ -10,48 +10,12 @@
     <section class="content-header clearfix">
        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Applicant List</div>
     </section>
-    
     <!-- Project -->
     <div class="timesheet_out">
       <div class="clients_wrap">
-        <div class="timesheet_head">
-        <div class="pull-left ml mt10">
-				<p><span class="select-fild">
-				    <select id="reqList">
-                  		<option value="appList" selected="selected" onclick="loadRequirementApplicants();" >Applicant List</option>
-                        <option value="subList" onclick="loadRequirementSubmissions();">Submission List</option> 
-                        <option value="interList" onclick="loadRequirementInterviews();">Interview List</option>
-                        <option value="offerlist"  onclick="loadRequirementOffers();">Offer List</option> 
-                    </select>
-				</span>
-				</p>
-			</div>
-			 <div class="pull-left ml mt10">
-				<p><span class="select-fild">
-				    <c:if test="${tab == 'today'}">
-				    <select id="tabList" onchange="tabsList(this);" >
-                  		<option value="today" selected="selected">Today</option>
-                        <option value="previous">Previous</option> 
-                    </select>
-                </c:if>
-                <c:if test="${tab == 'previous'}">
-				    <select id="tabList" onchange="tabsList(this);" >
-                  		<option value="today">Today</option>
-                        <option value="previous" selected="selected">Previous</option> 
-                    </select>
-                </c:if>
-				</span>
-				</p>
-			</div>
-
-          <div class="clearfix"></div>
-          <div class="remove_search hidden">
-            <input type="text" placeholder="search" />
-          </div>
-        </div>
+       <jsp:include page="JobCountFilter.jsp"></jsp:include>
         <div class="clients_wrap_table datatable_filter">
           <table id="appTable">
-            
             <thead>
               <tr>
                 <th>Applicant name</th>
@@ -63,7 +27,7 @@
                 <th>Primary Skill</th>
                 <th>Source</th>
                 <th>Score</th>
-                <th>Status</th>
+                <th>Current Status</th>
               </tr>
             </thead>
             <tbody>
@@ -77,7 +41,14 @@
             	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
             </sec:authorize>
              <%--  <td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td> --%>
-              <td><div><span>${reqSub.submissionId.requirement.orgLocationId.org.orgName}</span></div></td>
+              <td><div><span>
+              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
+              </c:if>
+              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
+              	--
+              </c:if>
+              </span></div></td>
               <td><div><span>${reqSub.submissionId.candidate.email}</span></div></td>
               <td><div><span>
 	              <c:if test="${not empty reqSub.submissionId.candidate.mobilePhone}">
@@ -170,52 +141,3 @@ window.onload = function () {
 	pagination1();
  };
 </script>
-
-	<script type="text/javascript">
-	function loadRequirementApplicants(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-	function loadRequirementSubmissions(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-	function loadRequirementInterviews(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-	function loadRequirementOffers(){
-		var tab = document.getElementById("tabList").value;
-		var sourceleadUrl = '${sourceleadUrl}';
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
-	}
-
-	function tabsList(sel){
-		var tab = sel.value;
-		var reqList = document.getElementById("reqList").value;
-		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		if(reqList=="appList"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId;
-		}
-		if(reqList=="subList"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementSubmissionsList?&tab="+tab+"&orgLocationId="+orgLocId;
-			 }
-		if(reqList=="interList"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementInterviewsList?&tab="+tab+"&orgLocationId="+orgLocId;
-		}
-		if(reqList=="offerlist"){
-			var sourceleadUrl = '${sourceleadUrl}';
-			window.location.href = sourceleadUrl + "/requirementOffersList?&tab="+tab+"&orgLocationId="+orgLocId;
-		}
-	}
-	</script> 

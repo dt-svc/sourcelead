@@ -14,7 +14,8 @@
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
 <jsp:include page="clientNotes.jsp" /> 
-
+<jsp:include page="clientListDatatable.jsp" />
+<jsp:include page="clientContactsDataTable.jsp" />
 <style type="text/css">
 clients_wrap {
 overflow-x: auto;
@@ -244,7 +245,7 @@ overflow-x: auto;
             </div>
             <div class="row form-footer mt">
               <div class="pull-right mr"> 
-              	<input type="button" value="Search" id="search_client" onclick="searchClient();" class="btn btn-sm btn-success"/>
+              	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
               	   <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
             </div>
           </div>
@@ -281,11 +282,11 @@ overflow-x: auto;
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
 									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getClientDetails();"><label>Tier-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getClientDetails();"><label>Tier-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getClientDetails();"><label>Tier-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getClientDetails();"><label>Tier-4</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"  onclick="getClientDetails();"><label>Tier-5</label></li>
+									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getClientList();"><label>Tier-1</label></li>
+									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getClientList();"><label>Tier-2</label></li>
+									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getClientList();"><label>Tier-3</label></li>
+		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getClientList();"><label>Tier-4</label></li>
+		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"  onclick="getClientList();"><label>Tier-5</label></li>
 		                        </ul>
 		                    </div>                	
 		                </li>
@@ -326,6 +327,9 @@ overflow-x: auto;
 						<div class="clearfix"></div>
 					</ul>
 					<div class="clearfix"></div>
+					 <div class='remove_search'>
+        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+                </div> 
 				</div>
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
@@ -357,9 +361,12 @@ overflow-x: auto;
 
 <script type="text/javascript">
 window.onload = function () {
-	clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");
+	/* clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");  */
+	 loadClientDatatable("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}"); 
  };
 </script>
+
+
 
 <script type="text/javascript">
 function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRelationId,orgName){
@@ -377,7 +384,7 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 			//getVendorContactListsELK();
 			getClientDetailsELK();
 		}
-		 listChange("listbyVendor");
+		listChange("listbyVendor");
 		document.getElementById('listOfVendors').value = 'listbyVendor';
 	}
 	
@@ -1523,13 +1530,14 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 
 		/*  getClientDetails(); */
-		 getClientDetailsELK();
+		 /* getClientDetailsELK(); */
+		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
 		 document.getElementById("vendorContactList").style.display="block";
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("clientList").style.display="none";
-		 document.getElementById("clientList_wrapper").style.display="none";
+		/*  document.getElementById("clientList_wrapper").style.display="none"; */
 // 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 // 		 document.getElementById("clientsList").style.display="block";
@@ -1547,6 +1555,7 @@ function listChange(sel){
 		 
 		/*  getVendorContactLists(); */
 		 getVendorContactListsELK();
+		// loadVendorDataTable();
 	 }
 	 
 }
@@ -1812,7 +1821,8 @@ function getEndDatePickerById(projectId,localFieldName){
 			if(vendorCont == "listbyContact"){
 				getVendorContactListsELK();
 			}if(vendorCont == "listbyVendor" ){
-				getClientDetailsELK();
+				/* getClientDetailsELK(); */
+				getClientList();
 	   		}
 		});
 	});
@@ -1975,7 +1985,6 @@ function exportClientToPdf(){
     {
 			values.push($(this).val());
     });
-	emptyClientList
 	var emptyClientList = $("#emptyClientList").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(emptyClientList > 0){
