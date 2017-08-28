@@ -1111,5 +1111,21 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return candidate.iterator().next();	
 	}
+	
+	@Override
+	@Transactional
+	public List<Candidate> getAssociatesListForSow(Long locationId,String sowType)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> associatesList = null;
+		if(Constants.Vendor_SOW.equalsIgnoreCase(sowType)){
+			String query = "from Candidate can where can.orgLocationId.id =:locationId and can.isAssociate = 'Y' and can.orgRelationId <> NULL and can.spocId <> NULL and can.designationType IN ('C2C' , 'C2C-1099')";
+		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
+		}else if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
+			String query = "from Candidate can where can.orgLocationId.id =:locationId and can.isAssociate = 'Y'";
+		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
+		}
+		return associatesList;
+	}
 }
 

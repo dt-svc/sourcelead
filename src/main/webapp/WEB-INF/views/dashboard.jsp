@@ -386,7 +386,7 @@ function validateOrgShortCode(){
 		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
 		        success: function(data) {
 		        	if(data == true){
-		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Alrady Exists !!!</span>");
+		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
 		        	}else{
 		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove(); 
 		        	}

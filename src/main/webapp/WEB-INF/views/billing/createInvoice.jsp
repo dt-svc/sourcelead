@@ -117,7 +117,7 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
@@ -149,9 +149,9 @@ function errRemoveClientContact(){
 
 				<footer class="form-footer">
 					<div class="pull-right mr">
-						<button type="button" class="btn btn-sm btn-primary"
+						<button type="button" id="saveButtonId" class="btn btn-sm btn-primary"
 							onclick="saveInvoice('DRAFT')">Save</button>
-						<button type="button" class="btn btn-sm btn-success ml"
+						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
 							onClick="javascript:window.location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
@@ -299,7 +299,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -319,13 +319,13 @@ function errRemoveClientContact(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();validateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
          result = result +'  </div>';
-         result = result +'  <div class="col-md-5 paddingLeft">';
-         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">';
+         result = result +'  <div class="col-md-5 paddingLeft" id="discountValueDiv">';
+         result = result +'  <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();"  onkeyup="validateDiscount();">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </div>';
@@ -386,8 +386,38 @@ function errRemoveClientContact(){
 	}
 	
 	</script>
+	
+<script>
+function remove(){
+	$('#0invoicedocFile').val("");
+	}
+</script>
 
-
+<script>
+function validateDiscount() {
+	$('#discountValueDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 var selectedTextInvoice = document.getElementById("disCount").value;
+	 var enteredValue = document.getElementById("discountValue").value;
+	 
+	 if(selectedTextInvoice =='percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+				$("#sendButtonId").removeAttr("disabled", "disabled");
+			   return true;
+		  }		  
+		 else{
+				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+				$("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }if(selectedTextInvoice =='flat'){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+		  }		  
+}
+</script>
 
 <script>
 	function loadInvoiceDetails(invoiceUUID){
@@ -887,7 +917,7 @@ function cancel(){
 			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			cell1.innerHTML = divTsTd7Str;
 			
-			
+
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
 			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
 			getSow(checkbox_value[0],maxRowNum); 
@@ -980,7 +1010,7 @@ function cancel(){
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();">Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();$(this).blur();">Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 $("#associatesListDiv").empty(); 
 	                     $("#associatesListDiv").append(result); 
@@ -1388,7 +1418,6 @@ function calculateDiscount(){
 		}
 		
 	}
-	
 	if(discountType == 'percentage'){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
@@ -1405,10 +1434,8 @@ function calculateDiscount(){
 		}
 		
 	}
-	 
 	 calculateTaxDiscount();
 	 conversion();
-	
 }
 </script>
 
@@ -1425,7 +1452,7 @@ function calculateDiscount(){
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
 				onchange='validateContractsUploadFile(REPLACEROWID)'> <i
-				class="fa fa-times"
+				class="fa fa-times" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
 		</div>
@@ -1909,9 +1936,7 @@ function getDueDateByFrequency(){
 
 <script>
 function saveInvoice(saveType){
-         
-         
-	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	    var selectedAssociates = '';
 		  if(maxTsRowNum > 1){
 			  for(var i=1; i<maxTsRowNum; i++){

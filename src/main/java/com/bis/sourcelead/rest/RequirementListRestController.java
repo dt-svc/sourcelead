@@ -390,6 +390,7 @@ public class RequirementListRestController {
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
 		if (requirementId != null && !requirementId.isEmpty()) {
 			List<RequirementSubmission> requirementStatusList = null;
 			List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
@@ -616,6 +617,7 @@ public class RequirementListRestController {
 						 */
 						submissionList.add(requirementSubmission);
 					}
+					requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 				}
 			}
 			resultJson = commonUtil.toJSON(submissionList);

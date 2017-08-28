@@ -380,7 +380,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
-		        invoiceDao.saveInvoce(invoice);
+//		        invoiceDao.saveInvoce(invoice);
 		        if(null != file){
 		        	file.delete();
 		        }
@@ -459,7 +459,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 	
 	private void saveParentInvoice(Invoice invoice, String loginOrgCurrencyCode, OrgLocations vendorOrgLocation) throws Exception {
-		Invoice parentInvoice = new Invoice();
+//		Invoice parentInvoice = null;
+		Invoice parentInvoice = invoiceDao.getParentInvoiceByInvoiceId(invoice.getId());
+		if(parentInvoice ==null){
+			parentInvoice = new Invoice();
+		}
 		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)){
 			parentInvoice.setInvoiceType(Constants.Receivable);
 		}else{
@@ -1450,6 +1454,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setPaymentStatus("Unpaid");
   	  						invoice.setProjectID(project);
   	  						invoice.setDiscountType(Constants.PERCENTAGE);
+  	  						invoice.setIsAutomaticGenerateInvoice(Constants.YES);
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1);
   	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
@@ -2533,7 +2538,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setProjectMemberId(pm);
 		}
 		if (jsonObj.has("expensesId") && !"".equalsIgnoreCase(jsonObj.getString("expensesId"))) {
-			Expenses expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expensesId")));
+			Expenses expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expensesId")));
 			invoice.setExpensesId(expenses);;
 		}
 		
@@ -2578,7 +2583,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		invoice.setFileName(file.getName());
 		byte[] bytesArray = getByteArray(file);
 		invoice.setDocFile(bytesArray);
-		invoiceDao.saveInvoce(invoice);
+//		invoiceDao.saveInvoce(invoice);
 		if (null != file) {
 			file.delete();
 		}

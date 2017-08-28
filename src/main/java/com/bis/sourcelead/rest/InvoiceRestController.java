@@ -1595,10 +1595,10 @@ public class InvoiceRestController {
 		for(Invoice invce : clientinvoiceList){
 			if(invce.getId().longValue() != Long.parseLong(invoiceId)){
 				if(invce.getInvoiceDate() !=null){
-					invce.setInvoiceDateStr(conversionUtil.getDateAsString(invce.getInvoiceDate()));
+					invce.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invce.getInvoiceDate()));
 				}
 				if(invce.getDueDate() != null){
-					invce.setDueDateStr(conversionUtil.getDateAsString(invce.getDueDate()));	
+					invce.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),invce.getDueDate()));	
 				}
 				
 				

@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -127,6 +129,9 @@ public class ContractRestController {
 	
 	@Autowired
 	ContractRequestDocumentsService contractRequestDocumentsService;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(
@@ -1028,4 +1033,11 @@ public class ContractRestController {
 		 return contractsTemplate;
 	 }
 
+	@RequestMapping(value = "/getAssociatesListForSow")
+	public List<Candidate> getAssociatesListForSow(@RequestParam(value = "locationId", required = true) Long locationId,@RequestParam(value = "sowType", required = true) String sowType) throws Exception
+	{
+		List<Candidate> associateList = candidateService.getAssociatesListForSow(locationId,sowType);
+		return associateList;
+	}
+	 
 }

@@ -43,7 +43,7 @@
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						        <b class='proj_closed pull-right'>${submissionStatus}</b>
 						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
-					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${expenseApproverHierarchy.rejectedReason}</div>
+					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${expenseApproverHierarchy}</div>
 						      </i>
 						  </c:if>
 						</div>

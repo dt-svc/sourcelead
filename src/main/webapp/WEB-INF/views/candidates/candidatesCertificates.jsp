@@ -418,8 +418,8 @@ function addCertification(candidateId) {
 		result  = result + '                 </div>';
 		
 		result  = result + '                 <div class="clearfix mb10">';
-		result = result  +'	                     <div class="col-md-4" positionRelative>';
-		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+		result = result  +'	                     <div class="col-md-4 dropdown-select positionRelative">';
+		result = result  +'	                     <select class=""  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 		result = result  +'	                       <option value="Percentage">Percentage</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
@@ -646,13 +646,50 @@ function addCertification(candidateId) {
 								 });
 								 
 								 
-								var datepickerStartDate = toDate("#StartDateEdit");
+								/* var datepickerStartDate = toDate("#StartDateEdit");
 								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
 								
 								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1);
+								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
+								var cerStartDate = $("#StartDateEdit").val();
+								var cerEndDate = $("#EndDateEdit").val(); 
+								
 								
 								var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								 var cerStartDateSplit = cerStartDate.split("-");
+								 var cerEndDateSplit = cerEndDate.split("-");
+								 
+								 var finalDateFormatCerEditOneSave = '';
+								  var cerStartDateEdit = '';
+								  var cerEndDateEdit = '';
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
+									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[2])+parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
+									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[1])-parseInt(1), parseInt(cerStartDateSplit[0])+parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
+									  cerStartDateEdit = new Date(cerStartDateSplit[2], parseInt(cerStartDateSplit[0])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
+									  cerStartDateEdit = new Date(cerStartDateSplit[0], parseInt(cerStartDateSplit[2])-parseInt(1), parseInt(cerStartDateSplit[1])+parseInt(1));
+								  }
+								  
+								  if(locationDate.match("yyyy-MM-dd")){
+									  finalDateFormatCerEditOneSave = 'yy-mm-dd';
+									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[2])-parseInt(1));
+								  }if(locationDate.match("dd-MM-yyyy")){
+									  finalDateFormatCerEditOneSave = 'dd-mm-yy'; 
+									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[1])-parseInt(1), parseInt(cerEndDateSplit[0])-parseInt(1));
+								  }if(locationDate.match("MM-dd-yyyy")){
+									  finalDateFormatCerEditOneSave = 'mm-dd-yy'; 
+									  cerEndDateEdit = new Date(cerEndDateSplit[2], parseInt(cerEndDateSplit[0])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
+								  }if(locationDate.match("yyyy-dd-MM")){
+									  finalDateFormatCerEditOneSave = 'yy-dd-mm';
+									  cerEndDateEdit = new Date(cerEndDateSplit[0], parseInt(cerEndDateSplit[2])-parseInt(1), parseInt(cerEndDateSplit[1])-parseInt(1));
+								  }
 								  var finalDateFormatCerUpdate = '';
 								  if(locationDate.match("yyyy-MM-dd")){
 									  finalDateFormatCerUpdate = 'yy-mm-dd';
@@ -668,7 +705,7 @@ function addCertification(candidateId) {
 							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  //maxDate: datepickerEndDate,
+							  	  maxDate: cerEndDateEdit,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
 							            var dt = $(this).datepicker('getDate', '+1d');
@@ -681,7 +718,7 @@ function addCertification(candidateId) {
 							      dateFormat: finalDateFormatCerUpdate,
 							      changeMonth: true,
 							  	  changeYear: true, 
-							  	  //minDate: datepickerStartDate,
+							  	  minDate: cerStartDateEdit,
 							      onSelect: function (selected) {
 							            //var dt = new Date(selected);
 							            var dt = $(this).datepicker('getDate', '-1d');

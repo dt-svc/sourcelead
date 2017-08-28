@@ -386,4 +386,9 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 		return bisUserMappingDao.getEmployeeList(orgLocationId);
 	}
 
+	@Override
+	public List<BisUserMapping> getMasterListByEmpId(Long empId, OrgLocations orgLocations) throws Exception {
+		return bisUserMappingDao.getMasterListByEmpId(empId,orgLocations);
+	}
+
 }
