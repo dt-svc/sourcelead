@@ -31,9 +31,9 @@ public class UniversalSearchHelper {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("priority", keywd));
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 		if (matcher.find()) {
-//			Float expYears = Float.valueOf(matcher.group());
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
+			Float expYears = Float.valueOf(matcher.group());
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
 		}
 
 		return matchQueryBuilderList;

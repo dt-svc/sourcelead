@@ -331,9 +331,6 @@ overflow-x: auto;
         		          <input type='text' placeholder='search' id='dataTableSearch'/>
                 </div> 
                 
-                 <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableClientContactSearch'/>
-                </div> 
 				</div>
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">

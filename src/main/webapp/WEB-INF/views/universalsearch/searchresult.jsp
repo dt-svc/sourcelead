@@ -9,7 +9,8 @@
 $(document).ready(function(){
    var searchType = "${searchType}";
    var searchValue = "${searchValue}";
-  
+   alert(searchType)
+   alert(searchValue)
    if(searchType == "Associate"){
 	   var isAssociate = "Y";
 	   var searchType = "Candidate";
@@ -23,6 +24,7 @@ $(document).ready(function(){
 	   getSearchResultsForAll(searchType,searchValue);
    }
    else{
+	   alert("hi")
 	   getSearchResults(searchType,searchValue,isAssociate);
    }
 });
@@ -65,7 +67,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    	/* All,Users,Requirement,Candidate,Clients,Vendors,Projects*/
 	    	
 	    	 /*========== Universal Search list of Requirement ==========*/ 
-	    	if(searchType == 'Requirement'){
+	    	if(searchType == 'Jobs'){
 	    		if(checkSize > 0){
 	    			result = result+'   <h4>Jobs</h4>';
 	   	    	 for (var i = 0; i < checkSize; i++) {
@@ -452,10 +454,9 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 var location ="";
 				            	 var exp="";
 				            	 count++;
-				            	 alert(report.searchType)
 				            	 /*========== Universal Search list of Requirement ==========*/ 
-				            	 if(report.searchType=="Jobs"){	 
-						            	 if((report.searchType=="Jobs") && j == 0){
+				            	 if(report.searchType=="Requirement"){	 
+						            	 if((report.searchType=="Requirement") && j == 0){
 						            		 result = result+'  <div class="clearfix">';	 
 						            	   		result = result+'   <h4>Jobs</h4>';
 						            	   	 result = result+' </div>';

@@ -9,7 +9,7 @@
 	function loadVendorDataTable(clientSearchResult) {
 		if (clientSearchResult == "clientSearchResult") {
 			getClientContactList();
-			$("#dataTableClientContactSearch").val(clientSearchResult);
+			$("#dataTableSearch").val(clientSearchResult);
 		 }else{
 			 getClientContactList();
 		 }
@@ -18,7 +18,6 @@
 	
 
 function getClientContactList(){
-	alert("Deleted Successfully")
 	var responderType = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
 	var clientIds = [];
@@ -50,7 +49,7 @@ function getClientContactList(){
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#clientlist_form')[0];
 	  		var formData = new FormData(form); 
-	  		var searchValue = $("#dataTableClientContactSearch").val();
+	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
 	  		var url = sourceleadUrl+"/searchClientContactDetails?responderType="+responderType+"&searchValue="+searchValue+"&clientIds="+clientIds+"&status="+status+"&invitationStatus="+invitationStatus;
 	  	    url += "&"+$($('#clientlist_form')[0]).serialize();  
@@ -87,6 +86,7 @@ function getClientContactList(){
 		result = result + "<tbody>";
 		result = result + " </tbody>";
 		result = result + "</table>";
+		$("#clientList").hide();
 		$("#vendorContactList").append(result);
 		clientContactpagination(url);
 	}
@@ -100,7 +100,7 @@ function getClientContactList(){
 	        "ajax": $.fn.dataTable.pipeline( {
 	            url: url,
 	            method: 'POST',
-	            pages: 1
+	            pages: 10
 	        }),
 	        "columns": [
 	            { "data": "orgName" },
@@ -258,7 +258,7 @@ function getClientContactList(){
 	    } );
 	    $("#clientContactListPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#dataTableClientContactSearch").keyup(function(e) {
+	    $("#dataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
 	    		   getClientContactList();
 	    	   }

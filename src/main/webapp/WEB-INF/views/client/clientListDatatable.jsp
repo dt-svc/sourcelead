@@ -82,6 +82,7 @@ function getClientList(){
 		result = result + "<tbody>";
 		result = result + " </tbody>";
 		result = result + "</table>";
+		$("#vendorContactList").hide();
 		$("#clientList").append(result);
 		clientpagination(url);
 	}
