@@ -452,7 +452,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projects.setProjectClients(projectClientsList);
 		
 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		projects.setIsClientProject(Constants.YES);
+		projects.setIsClientProject(Constants.NO);
 		projects.setProjectMode("Draft");
 		projects.setIsProjectDetailsFilled(Constants.YES);
 		projects.setIsProjectMembersFilled(Constants.NO);

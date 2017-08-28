@@ -40,6 +40,9 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -47,7 +50,9 @@ import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -57,6 +62,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -156,6 +162,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	ProjectsService projectsService;
 
 	/**
 	 * @author VenkatKesav
@@ -183,6 +192,7 @@ public class ClientServiceImpl implements ClientService {
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
+		String newlyRegistred = "N";
 		if (jsonObj.has("orgLocationId")) {
 			clientOrgLocations = orgLocationService.getOrgLocations(jsonObj.getLong("orgLocationId"));
 			if (jsonObj.has("orgCountry") && !isNullOrEmpty(jsonObj.getString("orgCountry"))) {
@@ -253,6 +263,7 @@ public class ClientServiceImpl implements ClientService {
 			orgService.addOrganization(org);
 			saveOrgRoleHierarchy(clientOrgLocations, user);
 			saveOrgBasedRoles(org, clientOrgLocations, user);
+			newlyRegistred = "Y";
 		} else {
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
@@ -435,6 +446,10 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
+		
+		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser);
+		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
 
@@ -443,6 +458,62 @@ public class ClientServiceImpl implements ClientService {
 
 		}
 	}
+	
+	
+	
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser) throws Exception {
+		 	
+	    	Projects projects = new Projects();
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName()).append(" ").append("Default Project").toString());
+	    	projects.setStartDate(new Date());
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
+	    	projects.setIsPrimary(1);
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
+	    	projects.setOrgLocationsId(orgLocations);
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setIsClientProject(Constants.NO);
+			projects.setProjectMode("Finished");
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
+			return updatedProjects;
+	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 
 	/**
 	 * populating Org data

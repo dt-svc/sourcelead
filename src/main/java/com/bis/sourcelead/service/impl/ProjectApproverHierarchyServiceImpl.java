@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -92,7 +93,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 			Projects projects,ProjectClients projectClients) throws Exception {
 		    
 		    Long[] ids = new Long[1000];
-			HashSet<ProjectApproverHierarchy> projectMemberList = new HashSet<ProjectApproverHierarchy>();
+			HashSet<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
 	    	
 			if(projectClients.getId() == null){
 				
@@ -107,9 +108,10 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 				    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 					    	pah1.setApproverUserId(approverUserId1);
 					    	pah1.setLevel(1);
+					    	pah1.setStatus("1");
 					    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
 					    	ids[0] = approverUserId1.getId();
-					    	projectMemberList.add(pah1);
+					    	projectApproverHierarchyList.add(pah1);
 				    	}
 			    	}
 		    	//send mail to assigned Project Manager
@@ -122,9 +124,10 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 						approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 						pah2.setApproverUserId(approverUserId2);
 						pah2.setLevel(2);
+						pah2.setStatus("1");
 						//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 						ids[1] = approverUserId2.getId();
-						projectMemberList.add(pah2);
+						projectApproverHierarchyList.add(pah2);
 					}
 				 }
 			}else{
@@ -140,8 +143,9 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 					    		approverHierarchy.setApproverUserId(approverUserId1);
 					    		approverHierarchy.setLevel(1);
+					    		approverHierarchy.setStatus("1");
 						    	ids[0] = approverUserId1.getId();
-						    	projectMemberList.add(approverHierarchy);
+						    	projectApproverHierarchyList.add(approverHierarchy);
 						 }
 						   
 					 }
@@ -156,8 +160,9 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 								approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 								approverHierarchy.setApproverUserId(approverUserId2);
 								approverHierarchy.setLevel(2);
+								approverHierarchy.setStatus("1");
 								ids[1] = approverUserId2.getId();
-								projectMemberList.add(approverHierarchy);
+								projectApproverHierarchyList.add(approverHierarchy);
 						 }
 					 }
 				}
@@ -171,15 +176,16 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 						approverUserId2.setId(Long.parseLong(jsonObj.getString("level2Manager")));
 						pah2.setApproverUserId(approverUserId2);
 						pah2.setLevel(2);
+						pah2.setStatus("1");
 						ids[1] = approverUserId2.getId();
-						projectMemberList.add(pah2);
+						projectApproverHierarchyList.add(pah2);
 					}
 				}
 			}
 	      
 		 
 		
-		return projectMemberList;
+		return projectApproverHierarchyList;
 	}
 
 

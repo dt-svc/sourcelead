@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RequirementRefer;
@@ -241,7 +242,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		saveOrgRoleHierarchy(orgLocations,user);
-		
 		saveOrgBasedRoles(org,orgLocations,user);
 		
 		//For saving the User Role (At registration user will have Admin Role)
@@ -290,8 +290,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
-		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		
+		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());
 	
 	}
@@ -411,46 +412,59 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	 public Projects  saveProject(Registration registration,OrgLocations orgLocations,User approverUser,Employees employee) throws Exception {
+	 public Projects  saveOrgLocationDefaultProject(Registration registration,OrgLocations orgLocations,User approverUser) throws Exception {
 		 			 	
 	    	Projects projects = new Projects();
-	    	projects.setProjectSequeneNumber("Project001");
-	    	projects.setProjectName(registration.getCompanyName());
-	    	projects.setDescription(registration.getCompanyName());
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+	    	projects.setDescription(defaultProjectNameDesc.append(registration.getCompanyName()).append(" ").append("Default Project").toString());
 	    	projects.setStartDate(new Date());
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
-	    	projects.setProjectStatus(Project_Status.STARTED);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
 	    	projects.setIsPrimary(1);
 	    	projects.setCreatedDate(new Date());
 	    	projects.setUpdatedDate(new Date());
 	    	projects.setOrgLocationsId(orgLocations);
-	    	Projects updatedProjects = null;
-	    	
-	    	updatedProjects = projectsService.saveProject(projects);
-	    	
-	    	
-			if(updatedProjects != null){
-				ProjectApproverHierarchy pah1 = new ProjectApproverHierarchy();
-		    	pah1.setProjectId(updatedProjects);
-		    	pah1.setApproverUserId(approverUser);
-		    	pah1.setLevel(2);
-		    	try {
-					 projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    /*	ProjectMembers pm = new ProjectMembers();
-				pm.setEmployee(employee);
-				pm.setProjects(projects);
-				pm.setProjectAssignedDate(projects.getStartDate());
-				pm.setCreatedDate(new Date());
-				pm.setUpdatedDate(new Date());
-				projectMembersService.saveProjectMember(pm);*/
-			}
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setIsClientProject(Constants.NO);
+			projects.setProjectMode("Finished");
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
 			return updatedProjects;
 	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 	 
 	 
 	private OrgLocations getOrgLocationsDetails(Registration registration,Org org,User user,String subModules,String modules ) throws Exception{
