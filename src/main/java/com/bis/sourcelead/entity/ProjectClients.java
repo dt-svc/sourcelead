@@ -72,6 +72,12 @@ public class ProjectClients implements Serializable{
     @Fetch(FetchMode.SELECT)
 	@JsonBackReference
     private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
+	
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ProjectMembers> projectMembersList;
 
 	
 
@@ -162,5 +168,13 @@ public class ProjectClients implements Serializable{
 
 	public void setProjectApproverHierarchyList(Set<ProjectApproverHierarchy> projectApproverHierarchyList) {
 		this.projectApproverHierarchyList = projectApproverHierarchyList;
+	}
+
+	public Set<ProjectMembers> getProjectMembersList() {
+		return projectMembersList;
+	}
+
+	public void setProjectMembersList(Set<ProjectMembers> projectMembersList) {
+		this.projectMembersList = projectMembersList;
 	}
 }
