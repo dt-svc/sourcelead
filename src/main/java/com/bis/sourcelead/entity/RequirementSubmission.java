@@ -26,6 +26,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -413,6 +414,9 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
 	 private int profilePercentage;
+    
+    @Transient
+	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
 	
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
@@ -1432,4 +1436,14 @@ public class RequirementSubmission implements Serializable{
 	public void setVendorCandidateId(Candidate vendorCandidateId) {
 		this.vendorCandidateId = vendorCandidateId;
 	}
+
+	public REQUIREMENT_SUBMISSION_STATUS getRequirementCurrentStatus() {
+		return requirementCurrentStatus;
+	}
+
+	public void setRequirementCurrentStatus(REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus) {
+		this.requirementCurrentStatus = requirementCurrentStatus;
+	}
+
+	
 }
