@@ -5,12 +5,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.enums.PaymentModes;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class ExpensesEntriesDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
+	@JsonBackReference
 	private ExpensesDTO expensesId;
 	
 	private ExpensesCategoryDTO expensesCategoryId;

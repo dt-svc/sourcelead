@@ -802,23 +802,31 @@ function sideBar(requirementId,type){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="'+isDetailsTabActive+'" id="detailsTab"><a href="#tab-1" onclick="sideBar('+requirementId+');">Details</a></li>';
 					   
-					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CLOSED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
-                            var all = 'all';
-                            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
-					    	result = result+'      <li class="'+isApplicantsTabActive+'" id="applicantsTab"><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+					    /* if(json.requirementSubmissionStatus != 'FILLEDCLOSED'){
+                        var all = 'all';
+                        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+				    	result = result+'      <li class="'+isApplicantsTabActive+'" id="applicantsTab"><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+				    	'</sec:authorize>';
+				    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
+                         result = result+'      <li id="recommendationsTab"><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                         '</sec:authorize>';
+                    } */if(json.requirementSubmissionStatus == 'CLOSED' && json.isreceivingApplicants == "Y"){
+                    	 var all = 'all'; 
+                    	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
 					    	'</sec:authorize>';
 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
-                             result = result+'      <li id="recommendationsTab"><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
-                             '</sec:authorize>';
-                        }else if(json.requirementSubmissionStatus == 'CLOSED' && json.isreceivingApplicants == "Y"){
-                        	 var all = 'all'; 
-                        	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
- 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
- 					    	'</sec:authorize>';
- 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
-                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
-                              '</sec:authorize>';
-                        }
+                          result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                          '</sec:authorize>';
+                    }else{
+                    	var all = 'all';
+                        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+				    	result = result+'      <li class="'+isApplicantsTabActive+'" id="applicantsTab"><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+				    	'</sec:authorize>';
+				    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
+                         result = result+'      <li id="recommendationsTab"><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                         '</sec:authorize>';	
+                    }
 					    result = result+'      <li><a href="#tab-4" onclick="requirementNotes('+requirementId+');">Notes</a></li>';
 
 					    result = result+'      <div class="clearfix"></div>';
@@ -913,11 +921,12 @@ function sideBar(requirementId,type){
 	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to client</a>';
 	           			     }
 							
-				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
+				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
 				            result = result +'  <ul>';
 				            result = result +'    <li class="li-vendor">';
-				            
+				            if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CLOSED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'  && json.requirementSubmissionStatus != 'UNFILLEDCLOSED'){
 				            result = result +' <li ><a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>';
+				            }
 				            result = result +'<div class="action-pop">';
 				            result = result +'	<span class="width175">';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
@@ -1105,7 +1114,7 @@ function requirementDetails(requirementId,data){
 			            var APPROVED = "APPROVED";     
 			            var REJECTED = "REJECTED";
 
-			             if((isLoginUserAsAdmin == "true" && json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementSubmissionStatus !='APPROVED' &&  json.requirementSubmissionStatus != 'REJECTED'  &&  json.requirementSubmissionStatus != 'OPEN' && json.requirementSubmissionStatus  !='NEW' )  || (json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null )){
+			             if((isLoginUserAsAdmin == "true" && json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementSubmissionStatus !='APPROVED' &&  json.requirementSubmissionStatus != 'REJECTED'  &&  json.requirementSubmissionStatus != 'OPEN' && json.requirementSubmissionStatus  !='NEW' && json.requirementSubmissionStatus  !='UNFILLEDCLOSED' && json.requirementSubmissionStatus  !='FILLEDCLOSED' )  || (json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null )){
          					 
 			            	 result = result +'<button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
          		             result = result +'<button  class="btn btn-danger btn-sm" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
@@ -1805,7 +1814,7 @@ function requirementPipeline(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-						           
+						           if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){
 							          if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' &&  report.rejectedCategoryType != null && report.rejectedCategoryType != 'Other'){
@@ -1829,7 +1838,9 @@ function requirementPipeline(requirementId,submissionType){
 							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
-							           
+						           }else{
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+						           }
 						           result = result + '</div></td>';
 							          
 						           result = result + '       </tr>';
@@ -2113,7 +2124,7 @@ function requirementPipelineDA(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     } */
-						           
+						    	     if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
@@ -2129,6 +2140,10 @@ function requirementPipelineDA(requirementId,submissionType){
 							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
+						    	     }else{
+							          result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+	 
+						    	     }
 						           result = result + '</div></td>';
 							           
 							          
@@ -2391,7 +2406,7 @@ function requirementPipelineRS(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-						        	
+						           if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
@@ -2407,7 +2422,11 @@ function requirementPipelineRS(requirementId,submissionType){
 							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
-							           
+						           }else{
+						        	result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+  
+						           }
+						           
 						           result = result + '</div></td>';
 						           result = result + '       </tr>';
 			   				}
@@ -2680,7 +2699,7 @@ function requirementPipelineSL(requirementId,submissionType){
 								       else{
 								        	result = result + '         <td><div><span>--</span></div></td>';
 							    	     }
-							           
+							           if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){
 								           if(report.submissionStatus == 'REJECTED'){
 								        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 								        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
@@ -2696,7 +2715,9 @@ function requirementPipelineSL(requirementId,submissionType){
 								        	   result = result + '</select>';
 									           result = result + '</div></td>';
 								           }
-								           
+							           }else{
+							        	result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+							           }
 							           result = result + '</div></td>';
 						           result = result + '       </tr>';
 			   				}
@@ -2943,7 +2964,7 @@ function requirementPipelineSC(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     }
-							           
+						           if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){ 
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
@@ -2959,7 +2980,9 @@ function requirementPipelineSC(requirementId,submissionType){
 							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
-							           
+						           }else{
+						        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+						           }
 						           result = result + '</div></td>';
 							           
 						           result = result + '       </tr>';
@@ -3124,7 +3147,7 @@ function requirementPipelineIN(requirementId,submissionType){
 						           }else{
 						        	   result = result + '<td><div><span>--</span></div></td>'; 
 						           }
-
+						           if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
@@ -3140,7 +3163,10 @@ function requirementPipelineIN(requirementId,submissionType){
 							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
-							           
+						           }else{
+						        	result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+   
+						           }
 						           result = result + '</div></td>';
 						           result = result + '       </tr>';
 			   				}
@@ -3324,6 +3350,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 							       else{
 							        	result = result + '         <td><div><span>--</span></div></td>';
 						    	     } 
+					        	   if(report.requirementCurrentStatus != 'SUBMITTED' && report.requirementCurrentStatus != 'CLOSED' && report.requirementCurrentStatus != 'REJECTED' &&  report.requirementCurrentStatus != 'CANCEL' && report.requirementCurrentStatus != 'DRAFT' && report.requirementCurrentStatus != 'ONHOLD' && report.requirementCurrentStatus != 'FILLEDCLOSED' && report.requirementCurrentStatus != 'UNFILLEDCLOSED'){
 
 							           if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
@@ -3340,6 +3367,10 @@ function requirementPipelineOffer(requirementId,submissionType){
 							        	   result = result + '</select>';
 								           result = result + '</div></td>';
 							           }
+					        	   }else{
+						        	result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+  
+					        	   }
 						           result = result + '</div></td>';
 							          
 						           result = result + '       </tr>';

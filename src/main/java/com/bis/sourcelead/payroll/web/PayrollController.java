@@ -108,14 +108,16 @@ public class PayrollController {
 		   List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		   usersList.sort((User report1, User report2)-> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
 		   
-		   List<WageTaxSummary> masterUserList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocations);
+		   List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getAllImportedUsers(orgLocations);
+		   
+//		   List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
 		   
 //		   List<BisUserMapping> masterUserList = bisUserMappingService.getBisUserListByOrgLocationId(orgLocations.getId());
 		 //lambda here!
-		   masterUserList.sort((WageTaxSummary report1, WageTaxSummary report2)-> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
+		   wageTaxSummaryList.sort((WageTaxSummary report1, WageTaxSummary report2)-> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
 			
 		   model.addObject("usersList", usersList);
-		   model.addObject("masterUsersList", masterUserList);
+		   model.addObject("masterUsersList", wageTaxSummaryList);
 		   model.setViewName("payroll/userMapping");
 	       return model;
 	}
@@ -144,7 +146,7 @@ public class PayrollController {
 	}
 	
 	 @RequestMapping(value = "/payrollReport")
-		public ModelAndView payrollReport(HttpServletRequest request) {
+		public ModelAndView payrollReport(HttpServletRequest request) throws Exception {
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		 ModelAndView model = new ModelAndView();	
 		 if(sessionData == null)
@@ -155,12 +157,12 @@ public class PayrollController {
 			
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
+			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
 
-			List<WageTaxSummary> av = getUniqueWageTaxSummary(wageTaxSummaryList);
+//			List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
 			
-			if(av !=null){
-				model.addObject("wageTaxSummaryList", av);
+			if(wageTaxSummaryList !=null){
+				model.addObject("wageTaxSummaryList", wageTaxSummaryList);
 			}
 			request.getSession().setAttribute("sessionData",sessionData);
 			
@@ -172,7 +174,6 @@ public class PayrollController {
 
 	
 	 private List<WageTaxSummary> getUniqueWageTaxSummary(List<WageTaxSummary> wageTaxSummaryList) {
-		
 		 
 		 int s=0;
 		    List<WageTaxSummary> users=new ArrayList();
