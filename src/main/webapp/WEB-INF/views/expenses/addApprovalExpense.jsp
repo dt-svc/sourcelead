@@ -237,7 +237,7 @@
 							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
-							 <div class="clearfix"></div>
+							 <div class="clearfix" style="position: static;"></div>
 			             </div>
 			            </td>
 			        </tr>
@@ -274,6 +274,8 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 <script>
 function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
+	$("#acceptReopenExpenseBySuperUserDiv").empty();
+	$("#acceptReopenExpenseBySuperUserDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
 	var sourceleadUrl = '${sourceleadUrl}';
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';

@@ -18,6 +18,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "CANDIDATE_ON_BOARDING", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="candidateOnBoarding")
@@ -183,6 +185,7 @@ private static final long serialVersionUID = 1L;
 	private Long onBoardManagerId;
 	
 	@Transient
+	@JsonProperty
 	private Long onBoardTeamId;
 	
 	@Transient
@@ -578,6 +581,9 @@ private static final long serialVersionUID = 1L;
 	}
 
 	public Long getOnBoardTeamId() {
+		if(teamId != null){
+			onBoardTeamId = teamId.getId();
+		}
 		return onBoardTeamId;
 	}
 

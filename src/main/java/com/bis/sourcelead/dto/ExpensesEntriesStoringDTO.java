@@ -3,10 +3,10 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class ExpensesEntriesStoringDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	private Long id;
 
 	private String expenseId;
 
@@ -27,6 +27,10 @@ public class ExpensesEntriesStoringDTO implements Serializable {
     private Long userId; 
     
     private String status;
+    
+    private List<Long> removedCategoryIds;
+    
+    
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -112,6 +116,22 @@ public class ExpensesEntriesStoringDTO implements Serializable {
 	public void setStatus(String status)
 	{
 		this.status = status;
+	}
+
+	public List<Long> getRemovedCategoryIds() {
+		return removedCategoryIds;
+	}
+
+	public void setRemovedCategoryIds(List<Long> removedCategoryIds) {
+		this.removedCategoryIds = removedCategoryIds;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 

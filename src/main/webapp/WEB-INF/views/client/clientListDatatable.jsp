@@ -96,7 +96,7 @@ function getClientList(){
 	        "ajax": $.fn.dataTable.pipeline( {
 	            url: url,
 	            method: 'POST',
-	            pages: 1
+	            pages: 10
 	        }),
 	        "columns": [
 	            { "data": "orgName" },

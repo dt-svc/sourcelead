@@ -266,6 +266,3 @@ function getClientContactList(){
 	    	});
 }
 </script>
-
-
-

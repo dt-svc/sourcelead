@@ -106,7 +106,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 					
 				/*	if (true) {*/
 						if (row.getRowNum() > 0) { // Excluding column names
-							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
+							EmployerPayrollCost  employerPayrollCost = null;
 							float grossWages =0f;
 							float fica =0f;
 							float futa =0f;
@@ -115,14 +115,21 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							float wcCost =0f;
 							float adminFee =0f; 
 							float totalErCost =0f; 
+							String empId = null;
+							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+								empId = getCellValueAsString(row.getCell(1), fileName);
+								employerPayrollCost = employerPayrollCostDao.getEmployeePayrollCostById(empId.split("\\.")[0]);
+							}
+							if(employerPayrollCost == null){
+								employerPayrollCost = new EmployerPayrollCost();
+								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
+							}
+							
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 								String empName = getCellValueAsString(row.getCell(0), fileName);
 								employerPayrollCost.setEmployeeName(empName);
 							} 
-							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
-								String empId = getCellValueAsString(row.getCell(1), fileName);
-								employerPayrollCost.setEmployeeId(empId.split("\\.")[0]);
-							} 
+							 
 							if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 								String ssn = getCellValueAsString(row.getCell(2), fileName);
 								StringBuilder sb = new StringBuilder();
