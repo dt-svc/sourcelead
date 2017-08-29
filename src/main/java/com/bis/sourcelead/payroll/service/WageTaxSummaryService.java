@@ -9,6 +9,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.util.Paginator;
 
 public interface WageTaxSummaryService {
 	

@@ -46,6 +46,7 @@ import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.Paginator;
 
 import org.apache.commons.lang3.StringUtils;
 
