@@ -146,6 +146,14 @@ public class ExpensesController {
 		    }
 		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);*/
+			StringBuffer rejectedReason = new StringBuffer();
+			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
+			for(ExpensesApproverHierarchy eah : eahList){
+				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
+					rejectedReason.append(eah.getRejectedReason()).append(""); 
+				}
+			}
+			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
 		}
 		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
