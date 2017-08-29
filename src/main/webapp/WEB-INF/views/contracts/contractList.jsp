@@ -117,6 +117,7 @@ padding: 2px 300px 2px 0px;
 						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label for="c2">SOW</label></li>
 						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label for="c3">NDA</label></li>
 						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="getTemplateList();"><label for="c4">NSA</label></li>
+						<li><input id="c5" type="checkbox" name="contractType" value="Full Time Offer" onclick="getTemplateList();"><label for="c5">Full Time Offer</label></li>
 					</ul>
 				</div>	                	
 			</li>
@@ -809,7 +810,7 @@ function preparedContractListWFA(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		              result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
