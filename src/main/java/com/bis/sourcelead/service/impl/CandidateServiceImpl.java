@@ -1221,6 +1221,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateById(candidateId);
 	}
 	
+	
+	@Override
+	public Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception {
+		return candidateDao.getCandidateByParentCandidateId(parentCandidateId);
+	}
+	
 	@Override
 	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
 			throws Exception {
@@ -1517,5 +1523,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return associateList;
 	}
+	
 
 }

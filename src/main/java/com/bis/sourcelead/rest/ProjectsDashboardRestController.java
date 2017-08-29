@@ -206,17 +206,20 @@ public class ProjectsDashboardRestController {
 	 @RequestMapping(value = "/getProjectDetailsByProjectId", method = RequestMethod.POST)
 	 public @ResponseBody Projects getProjectDetailsByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   
+		     OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     Projects projects = projectsService.getProjectById(projectId);
 		     Set<ProjectClients> projectClientsList = projects.getProjectClients();
 		     if(projectClientsList != null){
 		    	 for(ProjectClients projectClients : projectClientsList){
-		    		 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
-		    		 if(approverHierarchiesList != null){
-		    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
-		    			 for(ProjectApproverHierarchy hierarcy : approverHierarchiesList){
-		    				 hirearchySet.add(hierarcy);
+		    		 if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId())){
+		    			 Set<ProjectApproverHierarchy> approverHierarchiesList =  projectClients.getProjectApproverHierarchyList();
+			    		 if(approverHierarchiesList != null){
+			    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+			    			 for(ProjectApproverHierarchy hierarcy : approverHierarchiesList){
+			    				 hirearchySet.add(hierarcy);
+				    		 }
+			    			 projects.setApproverHierarchyList(hirearchySet);
 			    		 }
-		    			 projects.setApproverHierarchyList(hirearchySet);
 		    		 }
 		    	 }
 		     }

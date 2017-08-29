@@ -331,6 +331,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	}else{
 	 		projects =  new Projects();
 	 		projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
+	 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	 	}
     	
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
@@ -451,7 +452,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		Set<ProjectClients> projectClientsList = getProjectClientsForProject(jsonObj,projects,loginOrgLocation,user);
 		projects.setProjectClients(projectClientsList);
 		
-		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
 		projects.setIsClientProject(Constants.NO);
 		projects.setProjectMode("Draft");
 		projects.setIsProjectDetailsFilled(Constants.YES);
@@ -533,7 +534,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			Set<ProjectClients> projectClientsList = projects.getProjectClients();
 			if(projectClientsList != null){
 				for(ProjectClients projClients : projectClientsList){
-					projectClients = projClients;
+					if(projClients.getOrgLocationsId().getId().equals(orglocations.getId())){
+						projectClients = projClients;
+					}
 				}
 			}
 		}

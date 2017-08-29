@@ -51,6 +51,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
 
@@ -113,6 +115,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	 
 	 @Autowired
 	 CandidateService candidateService;
+	 
+	 @Autowired
+	 ProjectClientService projectClientService;
 	 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDaoImpl.class);
 	
@@ -883,8 +888,48 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					
 					Set<ProjectMembersHistory> memberHistoryList = saveProjectMembersHistory(projectMembers,user,orgLocations);
 					projectMembers.setMemberHistoryList(memberHistoryList);
-					projectMembersDao.saveProjectMember(projectMembers);
+				    projectMembersDao.saveProjectMember(projectMembers);
 					
+					if(candidate.getParentCandidateId() != null){
+						Long parentCandidatId = candidate.getParentCandidateId().getId();
+						while(parentCandidatId != null){
+							Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+							if(cand != null){
+								ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), cand.getOrgLocationId().getId());
+								if(pc == null){
+									Candidate clildCandidate = candidateService.getCandidateByParentCandidateId(parentCandidatId);
+									ProjectClients projectClients = new ProjectClients();
+									projectClients.setProjectId(projects);
+									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
+									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+									projectClients.setStatus(1);
+									projectClients.setCreatedDate(new Date());
+									projectClients.setCreatedBy(user);
+									projectClients.setUpdatedDate(new Date());
+									projectClients.setUpdatedBy(user);
+									
+									//prepare ProjectApproverHierarchy
+									Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+									ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+									pah.setProjectId(projects);
+									pah.setProjectClientsId(projectClients);
+									pah.setApproverUserId(cand.getOrgLocationId().getUser());
+									pah.setLevel(1);
+									pah.setStatus("1");
+									projectApproverHierarchyList.add(pah);
+									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+									
+									projectClientService.storeProjectClients(projectClients);
+								}
+								if(cand.getParentCandidateId() != null){
+									parentCandidatId = cand.getParentCandidateId().getId();
+								}else{
+									parentCandidatId = null;
+								}
+							}
+						}
+					}
 				}
 			}
 		}

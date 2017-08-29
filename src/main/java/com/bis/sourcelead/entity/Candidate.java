@@ -25,6 +25,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -40,9 +42,15 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
     private MasterCandidate masterCandidateId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PARENT_CANDIDATE_ID")        
+    private Candidate parentCandidateId;
 	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
@@ -1560,6 +1568,14 @@ public class Candidate implements Serializable{
 	public void setVenSpocId(Long venSpocId)
 	{
 		this.venSpocId = venSpocId;
+	}
+
+	public Candidate getParentCandidateId() {
+		return parentCandidateId;
+	}
+
+	public void setParentCandidateId(Candidate parentCandidateId) {
+		this.parentCandidateId = parentCandidateId;
 	}
 
 }
