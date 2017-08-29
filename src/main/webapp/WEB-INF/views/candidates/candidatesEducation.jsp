@@ -1032,7 +1032,12 @@ function selectScoreType(){
 
 <script type="text/javascript">
 function educationSelectScoreType(){
-	 var selectedText = document.getElementById("scoreEducationType").value;
+	var str = document.getElementById("candidateEducationScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateEducationScore').val(strToUpper);
+	}
+	 var selectedText = document.getElementById("candidateEducationScore").value;
 	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
 		 $("#candidateScore").removeAttr("readonly");
 	}else{
@@ -1083,6 +1088,7 @@ function educationSelectScoreType(){
 
 <script type="text/javascript">
 function educationscoreAndScoreType(){
+	
 	 var candidateScore = document.getElementById("candidateEducationScore").value;
 	 var selectedText = document.getElementById("scoreEducationType").value;
 	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/

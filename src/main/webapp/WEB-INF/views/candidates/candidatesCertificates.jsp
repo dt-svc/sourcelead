@@ -417,7 +417,7 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		
-		result  = result + '                 <div class="clearfix mb10">';
+		result  = result + '                 <div class="clearfix mb10" id="candidateScoreDiv">';
 		result = result  +'	                     <div class="col-md-6 dropdown-select positionRelative PaddingRight">';
 		result = result  +'	                     <select class=""  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
@@ -896,13 +896,13 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 --%>
 <script type="text/javascript">
 	function selectScoreType() {
-
+		
+		var str = document.getElementById("candidateScore").value;
+		if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+			var strToUpper = str.toUpperCase();
+			$('#candidateScore').val(strToUpper);
+		}
 		var selectedText = document.getElementById("scoreType").value;
-		/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
-			 $("#candidateScore").removeAttr("readonly");
-		}else{
-			 $("#candidateScore").attr("readonly", "readonly");
-		} */
 		var canScore = document.getElementById("candidateScore").value;
 		$('#candidateScoreDiv').parent().find('p.jquery_form_error_message')
 				.remove();

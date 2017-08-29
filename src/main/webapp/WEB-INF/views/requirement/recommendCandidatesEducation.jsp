@@ -795,6 +795,11 @@ function removeEducation(candidateEducationId,candidateId){
 
 <script type="text/javascript">
 function recSelectType(){
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
 	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
@@ -875,51 +880,6 @@ function scoreAndScoreType(){
 }
 </script>
 
-<!-- <script type="text/javascript">
-function selectScoreType(){
-	
-	 var selectedText = document.getElementById("scoreType").value;
-	 var canScore = document.getElementById("candidateScore").value;
-	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
-	 if(selectedText =='Percentage'){
-		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
-		  if(canScore.match(floatNum)){
-			  $("#addCandidate").removeAttr("disabled");
-			   return true;
-		  }		  
-		 else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your Percentage</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-				return false; 
-		 	 }
-	  }
-	 else if(selectedText =='CGPA'){
-		  var cgpanum = /^(([\d][\.])?([\d])|10)?$/
-			  if(canScore.match(cgpanum)){
-				  $("#addCandidate").removeAttr("disabled");
-				   return true;
-			  }		  
-			 else{
-				 $("input#candidateScore").parent().after("<p class='jquery_form_error_message'><span>Enter your CGPA value</span>");
-				 $("#addCandidate").attr("disabled", "disabled");
-			return false; 
-			 }
-	  } 
-	 else if(selectedText =='GRADE'){
-		 var grades = /^([A-E][-+]{0,2})?$/
-			 if (canScore.match(grades)) {
-				 $("#addCandidate").removeAttr("disabled");
-				 return true;
-			}else{
-				$("input#candidateScore").parent().after("<p class='jquery_form_error_message'> Enter  a Valid Grade </p>");
-				 $("#addCandidate").attr("disabled", "disabled");
-	    		return false;
-	    		
-			}
-   		}
-		 }
-	  
-</script> -->
 
 
 <%-- 

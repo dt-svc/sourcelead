@@ -740,6 +740,11 @@ function removeCertification(candidateCertificationId,candidateId){
 --%>
 <script type="text/javascript">
 function selectScoreType(){
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	
 	 var selectedText = document.getElementById("scoreType").value;
 	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
