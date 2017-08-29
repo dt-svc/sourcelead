@@ -133,8 +133,6 @@ public class ExpensesController {
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("expenseApproverHierarchy", eah);
 		 	
-		 	
-		 	
 		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 		    boolean isSahApproved = false;
 		    if(isSah != null){
@@ -142,6 +140,18 @@ public class ExpensesController {
 		    }
 		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);*/
+			
+			StringBuffer rejectedReason = new StringBuffer();
+			List<ExpensesApproverHierarchy> eahList =expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(expenseId));
+			for(ExpensesApproverHierarchy eah : eahList){
+				if(eah.getExpenseApprovalStatus().toString().equalsIgnoreCase("REJECTED")){
+					if(rejectedReason.length() <= 0){
+						rejectedReason.append(eah.getRejectedReason()).append(""); 
+					}
+				}
+			}
+			model.addObject("expenseApproverHierarchy", rejectedReason.toString());
+
 		}
 		ExpenseEntryDetailsUtilDTO eedDTO = new ExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
