@@ -53,29 +53,29 @@ public class ProjectTasks implements Serializable{
 	@Column(name = "BILLABLE_TYPE")
 	private String billableType;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="TASK_TYPE", nullable=false )	
 	private LookUpData taskType;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
 	@Column(name = "DUE_DATE")
     private Date dueDate; 
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="PRIORITY", nullable=false )	
 	private LookUpData priority;
 	
 	@Column(name = "ESTIMATE_DATE")
     private Date estimateDate;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="SEVERITY", nullable=false )	
 	private LookUpData severity;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="TASK_STATUS", nullable=false )	
 	private LookUpData taskStatus;
 	

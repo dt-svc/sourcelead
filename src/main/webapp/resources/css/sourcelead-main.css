@@ -6237,6 +6237,54 @@ background-position: center; background-size: 200px; position: relative;top:-8px
  .select-loader .faSpin {
  color:#f60; position: absolute;right: 10px; top:8px;
  }
+ .alert-custom .alert {
+ padding: 5px 0px; margin-bottom: 10px;
+ }
+  .alert-custom label{
+  margin-bottom: 0
+  }
+ .saveBtn .save-btn {
+ position: absolute; top:18px; right: 25px;
+ }
+ 
+ /* task styles */
+ .media.activities-projecttask {
+ margin-top: 5px;
+ }
+ .media.activities-projecttask h5{
+ margin-bottom: 0px;
+ }
+  .media.activities-projecttask .tbldata-dotdot-big {
+  width: 450px;
+  }
+  .media.activities-projecttask .description-task {
+  min-height: 20px; max-height: 100px; overflow-y:auto;
+  }
+  .projecttask-div {
+  min-height: 100px; max-height: 550px; overflow-y:auto;
+  }
+  .taskheaader-inlineedit {
+  padding: 5px 15px; min-height: 30px;
+  }
+  .bg-success.taskheaader-inlineedit {
+  border-radius:3px; background-color: #eee; border: 1px solid #ccc;
+  }
+  .taskheaader-inlineedit .fa {
+  font-size:1.5em; color:#909090;position: relative;top:5px; cursor: pointer;
+  }
+  .taskheaader-inlineedit input[type="text"] {
+  font-size: 17px; font-weight: 500px !important; height: 30px;
+  }
+  .taskheaader-inlineedit .formcontrol-edit {
+  float:left; width:94%; border: none; background: transparent; box-shadow: none;
+  }
+  .editicon {
+  float:right; padding-right:10px; cursor: pointer; display: none;
+  }
+  .edit-inputfield:hover .editicon{
+  display: block;
+  }
+  
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

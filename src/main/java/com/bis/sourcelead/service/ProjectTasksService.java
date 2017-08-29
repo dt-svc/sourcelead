@@ -33,15 +33,28 @@ public interface ProjectTasksService {
     
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,String TaskType)throws Exception;
     
+    public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId,String subTaskType)throws Exception;
+    
     public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,List<Long> avilableProjectTaskIds)throws Exception;
     
     public Collection	<ProjectTasks> getAllSourceleadTasks()throws Exception;
     
-    String saveProjectTasksByProjectId(Long projectId,JSONObject jsonObj,List<ProjectTaskDocumentBO> projectTaskDocuments) throws Exception ;
+    String saveProjectTasksByProjectId(Long projectId,JSONObject jsonObj,List<ProjectTaskDocumentBO> projectTaskDocuments,Long userId) throws Exception ;
     
     Set<ProjectTasks> prepareProjectTasksListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
     
     public ProjectTasks validateTaskNameByTaskId(Long taskId,String taskName,Long projectId)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId,String taskType,String taskStatus)throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId,Long parentTaskId)throws Exception;
+
+	public void updateTaskPriority(Long taskpriorityId, String taskId, Long userId)throws Exception;
+
+	public void updateTaskSeverity(Long taskSeverityId, String taskId, Long userId)throws Exception;
+
+	public void updateTaskStatus(Long taskStatusId, String taskId, Long userId)throws Exception;
+	
+	public void updateTaskName(String taskName, String taskId, Long userId)throws Exception;
+    
 }

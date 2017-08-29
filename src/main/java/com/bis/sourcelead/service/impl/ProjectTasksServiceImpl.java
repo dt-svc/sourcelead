@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.model.ProjectTaskDocumentBO;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
@@ -42,6 +43,9 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	@Autowired
 	HttpServletRequest request;
+	
+	@Autowired
+	ProjectTaskActivityService projectTaskActivityService;
 	
 	@Override
 	public ProjectTasks addTasks(ProjectTasks tasks) throws Exception {
@@ -109,6 +113,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		return taskList;
 	}
 
+	@Override
+	public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId, String subTaskType) throws Exception {
+		List<ProjectTasks> taskList = tasksDao.getAllTasksByProjectIdAndSubTaskType(projectId,subTaskType);
+		return taskList;
+	}
 	
 	@Override
 	public void saveAll(Collection<ProjectTasks> taskList) throws Exception {
@@ -129,9 +138,22 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Override
+	public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId, String taskType, String taskStatus) throws Exception {
+		List<ProjectTasks> allTaskList = tasksDao.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
+		return allTaskList;
+	}
 
 	@Override
-	public String saveProjectTasksByProjectId(Long projectId, JSONObject jsonObj, List<ProjectTaskDocumentBO> projectTaskDocumentBOList) throws Exception {
+	public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId, Long parentTaskId) throws Exception {
+		List<ProjectTasks> allparentTaskList = tasksDao.getAllTasksByProjectIdAndParentTaskId(projectId,parentTaskId);
+		return allparentTaskList;
+	}
+
+
+	@Override
+	public String saveProjectTasksByProjectId(Long projectId, JSONObject jsonObj, List<ProjectTaskDocumentBO> projectTaskDocumentBOList,Long userId) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ProjectTasks  tasks  = new ProjectTasks();
 		
@@ -153,15 +175,26 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				tasks.setParentTaskId(parentTaks);
 			}
 		}
+		if(jsonObj.has("subTask") && StringUtils.isNotEmpty(jsonObj.getString("subTask"))){
+			ProjectTasks parentSubTask = tasksDao.getTasksId(jsonObj.getString("subTask"));
+			if(parentSubTask != null) {
+				tasks.setParentTaskId(parentSubTask);
+			}
+		}
 		
-		if(jsonObj.getString("duDate") != null && jsonObj.getString("duDate") != "" && jsonObj.getString("duDate") != "undefined"){
-    		Date duDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("duDate"));
-    		tasks.setDueDate(duDate);
-    	}
-		if(jsonObj.getString("estimatedDate") != null && jsonObj.getString("estimatedDate") != "" && jsonObj.getString("estimatedDate") != "undefined"){
-    		Date estimatedDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("estimatedDate"));
-    		tasks.setEstimateDate(estimatedDate);
-    	}
+		if(jsonObj.has("duDate")){
+			if(!jsonObj.getString("duDate").isEmpty()){
+	    		Date duDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("duDate"));
+	    		tasks.setDueDate(duDate);
+	    	}
+		}
+		if(jsonObj.has("estimatedDate")){
+			if(!jsonObj.getString("estimatedDate").isEmpty()){
+	    		Date estimatedDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("estimatedDate"));
+	    		tasks.setEstimateDate(estimatedDate);
+	    	}
+		}
+		
 		
 		if(jsonObj.has("priority") && StringUtils.isNotEmpty(jsonObj.getString("priority"))){
 			LookUpData priority = lookUpDataService.getTasksById(Long.parseLong(jsonObj.getString("priority")));
@@ -198,6 +231,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         
         Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(jsonObj,tasks); 
         tasks.setProjectAssignTask(assignProjetcTasks);
+        User user = userService.getUserById(userId);
+        tasks.setCreatedBy(user.getUserCode());
         tasks.setCreatedDate(commonUtil.currentDate());
         tasksDao.addTasks(tasks);
         
@@ -260,10 +295,120 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 	}
 
+	
 	@Override
-	public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId, String taskType, String taskStatus) throws Exception {
-		List<ProjectTasks> allTaskList = tasksDao.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
-		return allTaskList;
+	public void updateTaskPriority(Long taskpriorityId, String taskId, Long userId) throws Exception {
+		 User user = userService.getUserById(userId);
+		 ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		 StringBuffer activity = new StringBuffer();
+		 StringBuffer  activitySummary = new StringBuffer();
+		 LookUpData  oldData =null;
+		 LookUpData  nullOldData =null;
+		 LookUpData data  = null;
+		 if(taskpriorityId != null) {
+			data = lookUpDataService.getTasksById(taskpriorityId);
+			if(projectTasks.getPriority() != null) {
+				oldData = lookUpDataService.getTasksById(projectTasks.getPriority().getId());
+			}
+		    activity.append("Priority");
+		    
+			 projectTasks.setPriority(data);
+		}else {
+			nullOldData = lookUpDataService.getTasksById(projectTasks.getPriority().getId());
+			activity.append("Priority");
+			projectTasks.setPriority(null);
+		}
+		 projectTasks.setUpdatedDate(commonUtil.currentDate());
+		 tasksDao.updateTasks(projectTasks);
+		 if(oldData != null) {
+			 activitySummary.append(oldData.getName()).append(" to ").append(data.getName());
+		 }else {
+			 if(data != null) {
+				 activitySummary.append("Unassigned").append(" to ").append(data.getName());
+			 }else {
+				 activitySummary.append(nullOldData.getName()).append(" to ").append("Unassigned");
+			 }
+			 
+		 }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
 	}
+
+	@Override
+	public void updateTaskSeverity(Long taskSeverityId, String taskId, Long userId)throws Exception {
+		 User user = userService.getUserById(userId);
+		 ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		 StringBuffer activity = new StringBuffer();
+		 StringBuffer activitySummary = new StringBuffer();
+		 LookUpData  oldData =null;
+		 LookUpData  nullOldData =null;
+		 LookUpData data  = null;
+		if(taskSeverityId != null) {
+            data = lookUpDataService.getTasksById(taskSeverityId);
+            if(projectTasks.getSeverity() != null) {
+            	oldData = lookUpDataService.getTasksById(projectTasks.getSeverity().getId());
+            }
+		    activity.append("Severity");
+			projectTasks.setSeverity(data);
+		}else {
+			nullOldData = lookUpDataService.getTasksById(projectTasks.getSeverity().getId());
+			activity.append("Severity");
+			projectTasks.setSeverity(null);
+		}
+		 projectTasks.setUpdatedDate(commonUtil.currentDate());
+		 tasksDao.updateTasks(projectTasks);
+		 if(oldData != null) {
+			 activitySummary.append(oldData.getName()).append(" to ").append(data.getName());
+		 }else {
+			 if(data != null) {
+				 activitySummary.append("Unassigned").append(" to ").append(data.getName());
+			 }else {
+				 activitySummary.append(nullOldData.getName()).append(" to ").append("Unassigned");
+			 }
+			 
+		 }
+		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
+	}
+
+	@Override
+	public void updateTaskStatus(Long taskStatusId, String taskId, Long userId)throws Exception {
+		    User user = userService.getUserById(userId);
+		    ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		    LookUpData  data = lookUpDataService.getTasksById(taskStatusId);
+		    
+		    LookUpData  oldData = lookUpDataService.getTasksById(projectTasks.getTaskStatus().getId());
+		    StringBuffer activity = new StringBuffer();
+		    StringBuffer activitySummary = new StringBuffer();
+		    activity.append("Status");
+		    
+			projectTasks.setTaskStatus(data);
+		    projectTasks.setUpdatedDate(commonUtil.currentDate());
+		    tasksDao.updateTasks(projectTasks);
+		   activitySummary.append(oldData.getName()).append(" to ").append(data.getName());
+		   projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
+	}
+
+	@Override
+	public void updateTaskName(String taskName, String taskId, Long userId) throws Exception {
+		    User user = userService.getUserById(userId);
+		    ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+		    //Task name activity	
+		    ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+		    StringBuffer activity = new StringBuffer();
+		    StringBuffer activitySummary = new StringBuffer();
+		    activity.append("Task Name");
+		    
+		    projectTasks.setTaskName(taskName);
+		    projectTasks.setUpdatedDate(commonUtil.currentDate());
+		    tasksDao.updateTasks(projectTasks);
+		    
+		    activitySummary.append(oldData.getTaskName()).append(" to ").append(projectTasks.getTaskName());
+			projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		
+	}
+
+	
 
 }

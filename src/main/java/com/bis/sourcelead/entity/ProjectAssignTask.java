@@ -12,11 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
@@ -55,6 +58,10 @@ public class ProjectAssignTask implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
+	@JsonProperty
+	@Transient
+	private String assignedUserName;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -117,5 +124,13 @@ public class ProjectAssignTask implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getAssignedUserName() {
+		return assignedUserName;
+	}
+
+	public void setAssignedUserName(String assignedUserName) {
+		this.assignedUserName = assignedUserName;
 	}
 }

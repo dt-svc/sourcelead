@@ -22,6 +22,8 @@ public interface ProjectTasksDao {
     
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,String TaskType)throws Exception;
     
+    public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId,String subTaskType)throws Exception;
+    
     public List<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectIdAndExistedProjectTaskIds(Long projectId,List<Long> avilableProjectTaskIds)throws Exception;
@@ -31,4 +33,6 @@ public interface ProjectTasksDao {
     public ProjectTasks validateTaskNameByTaskId(Long taskId,String taskName,Long projectId)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskTypeAndTaskStatus(Long projectId,String taskType,String taskStatus)throws Exception;
+    
+    public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId,Long parentTaskId)throws Exception;
 }

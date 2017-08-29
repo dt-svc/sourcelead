@@ -6,10 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +40,6 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectDocuments;
@@ -51,7 +48,6 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.model.ProjectTaskDocumentBO;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -59,12 +55,17 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectDocumentsService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectTaskActivityService;
+import com.bis.sourcelead.service.ProjectTaskCommentsService;
+import com.bis.sourcelead.service.ProjectTaskDocumentsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -73,7 +74,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.star.io.IOException;
 
 /**
  * 
@@ -93,7 +93,6 @@ public class ProjectsDashboardRestController {
 	 
 	 @Autowired
 	 private ProjectTasksService tasksService;
-
 	 
 	 @Autowired
 	 public UserService userService;
@@ -148,7 +147,24 @@ public class ProjectsDashboardRestController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
-	 
+	
+	@Autowired
+	private ProjectTaskDocumentsService projectTaskDocumentsService;
+	
+	@Autowired
+	ProjectAssignTasksService projectAssignTasksService;
+	
+	@Autowired
+	ProjectTaskActivityService projectTaskActivityService;
+	
+	@Autowired
+	ProjectTaskCommentsService projectTaskCommentsService;
+	
+	@Autowired
+	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 		/**
 		 * to filter the projects based on client and project status
 		 * @author David Sammeta
@@ -216,150 +232,19 @@ public class ProjectsDashboardRestController {
 		 return resultJson;
 	 }
 	 
- 
-	 /**
-	  * @author Laxman
-	  * @param taskStatusId
-	  * @param taskId
-	  * @return success
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/updateTaskStatus", method = RequestMethod.POST)
-	 public String updateTaskStatus(@RequestParam(value="taskStatusId", required=false) Long taskStatusId, @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
-		 ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		    LookUpData  data = lookUpDataService.getTasksById(taskStatusId);
-			projectTasks.setTaskStatus(data);
-		    projectTasks.setUpdatedDate(commonUtil.currentDate());
-		 tasksService.updateTasks(projectTasks);
-		 return "success";
-	  }
-	 
-	
-	 /**
-	  * @author Laxman
-	  * @param taskpriorityId
-	  * @param taskId
-	  * @return success
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/updateTaskPriority", method = RequestMethod.POST)
-	 public String updateTaskPriority(@RequestParam(value="taskpriorityId", required=false) Long taskpriorityId, @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
-		 ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		 
-		if(taskpriorityId != null) {
-			LookUpData data = lookUpDataService.getTasksById(taskpriorityId);
-			 projectTasks.setPriority(data);
-		}else {
-			projectTasks.setPriority(null);
-		}
-		 projectTasks.setUpdatedDate(commonUtil.currentDate());
-		 tasksService.updateTasks(projectTasks);
-		 return "success";
-	  }
-	 
-	 /**
-	  * @author Laxman
-	  * @param taskSeverityId
-	  * @param taskId
-	  * @return success
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/updateTaskSeverity", method = RequestMethod.POST)
-	 public String updateTaskSeverity(@RequestParam(value="taskSeverityId", required=false) Long taskSeverityId, @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
-		 ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-	 
-		if(taskSeverityId != null) {
-			LookUpData data = lookUpDataService.getTasksById(taskSeverityId);
-			 projectTasks.setSeverity(data);
-		}else {
-			projectTasks.setSeverity(null);
-		}
-		 projectTasks.setUpdatedDate(commonUtil.currentDate());
-		 tasksService.updateTasks(projectTasks);
-		 return "success";
-	  }
-	 
-	 
-	 /**
-	  * @author Laxman
-	  * @param getProjectTasksDescrption
-	  * @param taskId
-	  * @return success
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/getProjectTasksDescrption", method = RequestMethod.POST)
-	 public ProjectTasks getProjectTasksDescrption(@RequestParam(value="projectTaskId", required=false) String projectTaskId, @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
-		 ProjectTasks projectTasks = tasksService.getTasksId(projectTaskId);
-		    return projectTasks;
-	  }
-	 
-	 
-	 @RequestMapping(value = "/updateTaskDescription", method = RequestMethod.POST)
-	 public String updateTaskDescription(@RequestParam(value="description", required=false) String description, @RequestParam(value="taskId", required=false) String taskId) throws Exception{ 
-		 ProjectTasks projectTasks = tasksService.getTasksId(taskId);
-		 projectTasks.setDescription(description);
-		 projectTasks.setUpdatedDate(commonUtil.currentDate());
-		 tasksService.updateTasks(projectTasks);
-		 return "success";
-	  }
-	 
-	 
-	 
-	 /**
-	  * save the projects task
-	  * @param json
-	  * @param projectId
-	  * @return JSON
-	  * @throws Exception
-	  */
-	 @PreAuthorize("hasAnyRole('ROLE_CREATE_PROJECT_TASKS')")
-	 @RequestMapping(value = "/saveProjectTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProjectTasks(@RequestParam(value="json", required=false) String json, @RequestParam(value="projectId", required=false) Long projectId,@RequestParam("project_files") MultipartFile[] files) throws Exception {
-		 JSONObject jsonObj = new JSONObject(json);
-		 List<ProjectTaskDocumentBO> projectTaskDocument = Arrays.asList(files).stream().filter(p->!p.isEmpty()).map(file -> {
-			 try {
-				return new ProjectTaskDocumentBO(file.getOriginalFilename(), file.getContentType(), file.getBytes());
-			} catch (java.io.IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				return null;
-		 }).collect(Collectors.toList());
-		 
-		 	String saveProjectTasks = tasksService.saveProjectTasksByProjectId(projectId, jsonObj,projectTaskDocument);
-		 	
-			 return saveProjectTasks;
-	 }
-	 
-
-	 
-	/** 
-	 * get projects tasks based on project id
-	 * @param projectId
-	 * @return JSON
-	 * @throws Exception
-	 */
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
-	 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
-	 public @ResponseBody   Collection<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,@RequestParam(value="taskStatus", required=false) String taskStatus) throws Exception {
-		 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
-		 return taskList;
-	 }
-	 
-	 /**
-	  * @author Laxman
-	  * @param projectId
-	  * @param taskType
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/getProjectTasksByTaskType" , method = RequestMethod.POST)
-	 public @ResponseBody   Collection<ProjectTasks> getProjectTasksByTaskType(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType) throws Exception {
-			 Collection<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskType(projectId, taskType);
+	 /** 
+		 * get projects tasks based on project id
+		 * @param projectId
+		 * @return JSON
+		 * @throws Exception
+		 */
+		 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_TASKS', 'ROLE_VIEW_EDIT_PROJECT_TASKS')")
+		 @RequestMapping(value = "/getProjectTasks" , method = RequestMethod.POST)
+		 public @ResponseBody   List<ProjectTasks> getProjectTasks(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="taskType", required=false) String taskType,@RequestParam(value="taskStatus", required=false) String taskStatus) throws Exception {
+			 List<ProjectTasks> taskList=tasksService.getAllTasksByProjectIdAndTaskTypeAndTaskStatus(projectId,taskType,taskStatus);
 			 return taskList;
-	 }
-	 
-	 
+		 }
+				 
 	/**
 	 * Get Employees list based on project id
 	 * @param projectId

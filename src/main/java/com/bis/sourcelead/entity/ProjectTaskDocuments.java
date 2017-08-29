@@ -35,6 +35,9 @@ public class ProjectTaskDocuments implements Serializable {
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@Column(name = "DOCUMENT_NAME")
+	private String documentName;
+	
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
@@ -85,8 +88,14 @@ public class ProjectTaskDocuments implements Serializable {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
-	
+
+	public String getDocumentName() {
+		return documentName;
+	}
+
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
+	}
 
 	public String getFileType() {
 		return fileType;

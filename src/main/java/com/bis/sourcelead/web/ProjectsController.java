@@ -3,7 +3,9 @@ package com.bis.sourcelead.web;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -12,30 +14,29 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectPlanningRequest;
+import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -85,6 +86,10 @@ public class ProjectsController {
 	 
 	@Autowired
 	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	ProjectAssignTasksService projectAssignTasksService;
+	
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -194,6 +199,7 @@ public class ProjectsController {
 				 ProjectTasks projectTask = projectTasksService.getTasksId(taskId);
 				 if(projectTask.getProjectId() != null) {
 					 model.addObject("projectUUID", projectTask.getProjectId().getProjectUUID());
+					 model.addObject("projectId", projectTask.getProjectId().getId());
 				 }
 				 model.addObject("projectTask", projectTask);
 				 if(projectTask.getCreatedDate() != null) {
@@ -209,7 +215,17 @@ public class ProjectsController {
 				 if(projectTask.getTaskAssignedUsers() != null) {
 					 model.addObject("assignTask", projectTask.getTaskAssignedUsers());
 				 }
-				
+				 User user = userService.getUserByUserCode(projectTask.getCreatedBy());
+				 if(user != null) {
+					 model.addObject("createdBy", user.getFullName());
+				 }
+				 
+				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(Long.valueOf(taskId)); 
+				 for(ProjectAssignTask pat:assignedUsers) {
+					 pat.setAssignedUserName(pat.getProjectMemberId().getEmployee().getUser().getFullName());
+				 }
+				 model.addObject("assignedUsers", assignedUsers);
+				 
 				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
 				 model.addObject("taskTypeList", taskTypeList);
 				 
