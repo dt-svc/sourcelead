@@ -635,8 +635,20 @@ function flushDate(){
   $( function() {
 	  
 	  
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatRecruiterDashboard = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatRecruiterDashboard = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatRecruiterDashboard = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatRecruiterDashboard = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatRecruiterDashboard = 'yy-dd-mm'; 
+	  }
+	  
 	  $('#dpfromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -648,7 +660,7 @@ function flushDate(){
 	  });
 	  
 	  $('#dptodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	   onSelect : function(selected) {
@@ -661,7 +673,7 @@ function flushDate(){
 	  
 
 	  $('#portletfromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -673,7 +685,7 @@ function flushDate(){
 	  });
 	  
 	  $('#portlettodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
@@ -685,7 +697,7 @@ function flushDate(){
 	  });
 	  
 	  $('#serialfromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
@@ -697,7 +709,7 @@ function flushDate(){
 	  });
 	  
 	  $('#serialtodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -710,7 +722,7 @@ function flushDate(){
 	  
 	  
 	  $('#portletreferByMefromdate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 	  	  onSelect : function(selected) {
@@ -722,7 +734,7 @@ function flushDate(){
 	  });
 	  
 	  $('#portletreferByMetodate').datepicker({
-	      dateFormat: 'yy-mm-dd',
+	      dateFormat: finalDateFormatRecruiterDashboard,
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  onSelect : function(selected) {
