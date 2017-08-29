@@ -12,7 +12,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -28,6 +30,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -78,6 +81,7 @@ public class ProjectsController {
 	 @Autowired
 	 CountriesService countriesService;
 	 
+
 	@Autowired
 	CommonUtil commonUtil;
 	
@@ -90,6 +94,14 @@ public class ProjectsController {
 	@Autowired
 	ProjectAssignTasksService projectAssignTasksService;
 	
+
+	 
+	 protected boolean isNullOrEmpty(String str)
+	 {
+		return (str == null || "".equals(str.trim()));
+	 }
+ 
+
 	 /**
 	  * This method for get project by id
 	  * @param id
@@ -99,11 +111,10 @@ public class ProjectsController {
 	 
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/project")
-		public ModelAndView projects(HttpServletRequest request) throws Exception {
+		public ModelAndView projects(@RequestParam(value="projectUUID", required=false) String projectUUID,HttpServletRequest request) throws Exception {
 		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   
 				ModelAndView model = new ModelAndView();
 				
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -115,7 +126,7 @@ public class ProjectsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 				
-				Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
+				/*Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
 				for(OrgRelations ocl :orgClientList){
 					if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 						if(ocl.getResponderLocationId() != null){
@@ -133,15 +144,47 @@ public class ProjectsController {
 			    model.addObject("add_clientList", orgClientList);
 			    
 				Collection<Org> orgsList = orgService.getOrgs();
-				model.addObject("add_client", orgsList);
+				model.addObject("add_client", orgsList);*/
 				
                 Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 				model.addObject("user_List", userList);
+				
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				model.addObject("skillsList", skillsList);
+				
+				List<LookUpData> industriesList = lookUpDataService.getLookUpDataByCategory("Industries");
+				model.addObject("industriesList", industriesList);
+				
+				List<LookUpData> testManagementList = lookUpDataService.getLookUpDataByCategory("Test Management");
+				model.addObject("testManagementList", testManagementList);
+				
+				List<LookUpData> agileMethodologiesList = lookUpDataService.getLookUpDataByCategory("Agile Methodologies");
+				model.addObject("agileMethodologiesList", agileMethodologiesList);
+				
+				
+				if(!isNullOrEmpty(projectUUID)){
+					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+					if(projects != null){
+						model.addObject("projectUUID", projects.getProjectUUID());
+						model.addObject("savedProjectId", projects.getId());
+						model.addObject("isProjectDetailsFilled", projects.getIsProjectDetailsFilled());
+						model.addObject("isProjectMembersFilled", projects.getIsProjectMembersFilled());
+					}
+					
+				}
 				
 				model.setViewName("project/project");
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				return model;
 	}
+	 
+	 
+	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
+		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			return userList;
+		}
 	 
 	 
 	 @RequestMapping(value = "/projectSummary")

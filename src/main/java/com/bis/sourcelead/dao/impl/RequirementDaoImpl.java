@@ -8,12 +8,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -26,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -285,181 +290,6 @@ public class RequirementDaoImpl implements RequirementDao {
 	}
 	
 	
-	/**
-	 * @author Naresh Bolisetty
-	 * @since  August 8 2017
-	 * @version 0.0.1
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User user,String userRoleName,int start,int length) throws Exception {
-		
-		List<Requirement> reqList = null;
-		Session session = this.sessionFactory.getCurrentSession();
-		Map<String, Object> params = new HashMap<String,Object>();
-		
-		
-		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
-		String subQuery = "";
-		
-		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-			subQuery = " where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
-			params.put("orgLocationId",orgLocationId);
-		}else{
-			String subQuery1 = "requirement.createdBy.id =:userId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
-			params.put("userId",user.getId());
-			
-			String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
-			params.put("userId",user.getId());
-			params.put("level",1);
-			
-			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
-			params.put("approverUserId",user.getId());
-			params.put("userId",user.getId());
-			params.put("level1",1);
-			params.put("level2",2);
-			
-			String subQuery4 = "requirement.managerUserId.id = :managerUserId and requirement.requirementSubmissionStatus <> 'DRAFT'";
-			params.put("managerUserId",user.getId());
-			
-			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
-			params.put("userId",user.getId());
-			
-			String subQuery6 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)  and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
-			params.put("userId",user.getId());
-			
-			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (requirement.releaseJobToAllUsers = 'Y') OR ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
-				params.put("orgLocationId",orgLocationId);
-			}
-		}
-		
-		String[] client = null;
-		if(null != clients && !"".equals(clients)){	
-			client = clients.split(",");
-		}
-		List<Long> clientsList = new ArrayList<>();
-		if(client != null){
-			for(int i=0;i<client.length;i++){
-				clientsList.add(Long.parseLong(client[i]));
-			}
-		}
-		
-		String subQuery7 = "";
-		String[] subStatus = status.split(",");
-		if((null == status || "".equals(status)) && (null == clients || "".equals(clients))){
-			subQuery7 = " and (requirement.requirementSubmissionStatus ='NEW' or requirement.requirementSubmissionStatus = 'SUBMITTED' or requirement.requirementSubmissionStatus = 'DRAFT' or requirement.requirementSubmissionStatus = 'OPEN') ";
-		}
-		else{
-			if (Arrays.asList(subStatus).contains("NEW")) {
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'NEW' ";
-			}
-			if (Arrays.asList(subStatus).contains("DRAFT")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'DRAFT' ";
-			}
-			if (Arrays.asList(subStatus).contains("SUBMITTED")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'SUBMITTED' ";
-			}
-			if (Arrays.asList(subStatus).contains("APPROVED")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'APPROVED' ";
-			}
-			if (Arrays.asList(subStatus).contains("REJECTED")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'REJECTED' ";
-			}
-			if (Arrays.asList(subStatus).contains("OPEN")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'OPEN' ";
-			}
-			
-			if (Arrays.asList(subStatus).contains("FILLEDCLOSED")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'FILLEDCLOSED' ";
-			}
-			if (Arrays.asList(subStatus).contains("UNFILLEDCLOSED")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'UNFILLEDCLOSED' ";
-			}
-			if (Arrays.asList(subStatus).contains("CANCEL")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'CANCEL' ";
-			}
-			if (Arrays.asList(subStatus).contains("CLOSED")) {
-				if(StringUtils.isNotEmpty(subQuery7)){
-					subQuery7 = subQuery7 + " OR ";
-				}
-				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'CLOSED' ";
-			}
-			subQuery7 = " and ( " +subQuery7 + " ) ";
-		}
-		
-		String countFrom = " select count(*) from Requirement requirement ";
-		Query query = null;
-		Query countQuery = null;
-		if(clientsList.isEmpty()){
-			query = session.createQuery(from+" "+subQuery+" "+subQuery7+" ORDER BY requirement.id DESC");
-			countQuery = session.createQuery(countFrom+" "+subQuery+" "+subQuery7+" ORDER BY requirement.id DESC");
-		}
-		else{
-			query = session.createQuery(from+" "+subQuery+" "+subQuery7+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
-			countQuery = session.createQuery(countFrom+" "+subQuery+" "+subQuery7+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
-			params.put("clientsList",clientsList);
-		}
-		
-		for (String str : query.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
-				query.setLong(str, (long) params.get( str ));
-				countQuery.setLong(str, (long) params.get( str ));
-			}
-			if(str.equalsIgnoreCase("level") || str.equalsIgnoreCase("level1") || str.equalsIgnoreCase("level2")){
-				query.setInteger(str, (int) params.get( str ));
-				countQuery.setInteger(str, (int) params.get( str ));
-			}
-			if(!clientsList.isEmpty()){
-				query.setParameterList("clientList", clientsList);
-				countQuery.setParameterList("clientList", clientsList);
-			}
-			else{
-				query.setParameter( str, params.get( str ) );
-				countQuery.setParameter( str, params.get( str ) );
-			}
-        	
-        }
-		reqList = query.setFirstResult(start).setMaxResults(length).setCacheable(true).list();	
-		
-		List<Long> countList = countQuery.setCacheable(true).list();
-		Long count = 0l;
-		if(countList != null && !countList.isEmpty()){
-			count = countList.get(0);
-		}
-		Map<Long,List<Requirement>> result = new HashMap<>();
-		result.put(count, reqList);
-		return result;
-		
-	}
-
 	/**
 	 * @author sarath kumar
 	 * @since  sep 13 2016
@@ -1702,6 +1532,87 @@ public class RequirementDaoImpl implements RequirementDao {
 			return null;
 		}
 		return requirement.iterator().next();	
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId,String tableName) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Boolean data  = true;
+		if(StringUtils.isNotEmpty(tableName)){
+			String query = "select table.generatedId from "+tableName+" table where table.orgLocationId.id =:orglocationId"; 
+			List<String> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+			 data  = requirement.contains(null);
+		}
+		else{
+			LinkedList<String> tableNames = new LinkedList<String>();
+			tableNames.add("Requirement");
+			tableNames.add("Projects");
+			tableNames.add("Candidate");
+			l1:{
+				for(String tabName : tableNames){
+					if(tabName != "Projects"){
+						String query = "select table.generatedId from "+tabName+" table where table.orgLocationId.id =:orglocationId";
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						data  = result.contains(null);
+					}else{
+						String query = "select table.generatedId from "+tabName+" table where table.orgLocationsId.id =:orglocationId";
+						List<String> result  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+						data  = result.contains(null);
+					}
+					
+					if(!data){
+						break l1;
+					}
+				}
+			}
+		}
+		
+		return data;
+	}
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Requirement> addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		List<Requirement> requirement  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!requirement.isEmpty()){
+			return requirement;
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Projects> addGeneratedIdRecordsToProjectsForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select projects from Projects projects left join fetch projects.orgLocationsId orgLocation where orgLocation.id =:orglocationId";
+		List<Projects> projects  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!projects.isEmpty()){
+			return projects;
+		}else{
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	@SuppressWarnings("unchecked")
+	public List<Candidate> addGeneratedIdRecordsToCandidatesForOldRecords(Long orglocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select candidate from Candidate candidate left join fetch candidate.orgLocationId orgLocation where orgLocation.id =:orglocationId";
+		List<Candidate> candidate  =  session.createQuery(query).setLong("orglocationId",orglocationId).setCacheable(true).list();
+		if(!candidate.isEmpty()){
+			return candidate;
+		}else{
+			return null;
+		}
 	}
 
 	

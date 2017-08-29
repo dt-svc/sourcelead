@@ -21,11 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -57,6 +59,9 @@ public class BillingPayableController {
     
     @Autowired
     ConversionUtil conversionUtil;
+    
+    @Autowired
+    private InvoiceService invoiceService;
 	
 	
 	
@@ -136,11 +141,23 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equals(projectId) && !projectId.equalsIgnoreCase("undefined")){
+		
+		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		if(invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) {
+			model.setViewName("billing/createExpensesPayableBill");
+		}else if((invoice.getInvoiceCategory() !=null && Constants.EXPENSES.equalsIgnoreCase(invoice.getInvoiceCategory())) && invoice.getProjectID() !=null) {
+			model.setViewName("billing/createExpensesPayableBill");
+		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
+			model.setViewName("billing/createProjectPayableInvoice");
+		}else{
+			model.setViewName("billing/createPayables");
+		}
+		/*if(null != projectId && !"".equals(projectId) && !projectId.equalsIgnoreCase("undefined")){
 			model.setViewName("billing/createProjectPayableInvoice");
 		}else{
 			model.setViewName("billing/createPayables");			
-		}
+		}*/
+		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);

@@ -1718,9 +1718,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
         }
 		
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
-			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
-			contracts.setRequirementSubmission(rs);
-			contracts.setCandidate(rs.getCandidate());	
+			if(Constants.Vendor_SOW.equalsIgnoreCase(jsonObj.getString("contractType")) ||  Constants.Client_SOW.equalsIgnoreCase(jsonObj.getString("contractType"))){
+				Candidate can = candidateService.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("submissionOffersList")));
+				contracts.setCandidate(can);
+			}else{
+				RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
+				contracts.setRequirementSubmission(rs);
+				contracts.setCandidate(rs.getCandidate());	
+			}
 		}
 		
 		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
@@ -2499,7 +2504,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String contractPreviousEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), previousEndTimeStr);
 			Date contractConvertPreviousEndDate = TZ_DF_TS.parse(contractPreviousEndDate);
-			String contractConvertDateInTimezone = Constants.DMY.format(contractConvertPreviousEndDate);
+			String contractConvertDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertPreviousEndDate);
 			globalVarsMap.put("previousEndDate", contractConvertDateInTimezone);
 		}
 		if (contracts.getStartDate() != null) {
@@ -2507,7 +2512,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String contractStartDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), startDate);
 			Date contractConvertStartDate = TZ_DF_TS.parse(contractStartDate);
-			String contractConvertDateInTimezone = Constants.DMY.format(contractConvertStartDate);
+			String contractConvertDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertStartDate);
 			globalVarsMap.put("startDate", contractConvertDateInTimezone);
 		}
 		if (contracts.getEndDate() != null) {
@@ -2515,7 +2520,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String contractEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), presentEndDate);
 			Date contractConvertEndDate = TZ_DF_TS.parse(contractEndDate);
-			String contractConvertDateInTimezone = Constants.DMY.format(contractConvertEndDate);
+			String contractConvertDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertEndDate);
 			globalVarsMap.put("presentEndDate", contractConvertDateInTimezone);
 		}
 		globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrgLocationName());
@@ -2631,14 +2636,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String contractStartDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), startTimeStr);
 		Date contractConverteDate = TZ_DF_TS.parse(contractStartDate);
-		String contractDateInTimezone = Constants.DMY.format(contractConverteDate);
+		String contractDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConverteDate);
 		globalVarsMap.put("StartDate", contractDateInTimezone);
 		if (contracts.getEndDate() != null) {
 			String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
 			DateFormat TZ_DF_ETS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String contractEndDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
 			Date contractConvertedDate = TZ_DF_ETS.parse(contractEndDate);
-			String contractEndDateInTimezone = Constants.DMY.format(contractConvertedDate);
+			String contractEndDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contractConvertedDate);
 			globalVarsMap.put("EndDate", contractEndDateInTimezone);
 		}
 		else {

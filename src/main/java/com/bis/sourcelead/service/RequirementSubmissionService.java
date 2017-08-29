@@ -267,4 +267,9 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmissionHistory> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long id, String string, String tab, String userType, User user, Date startUTCDate, Date endUTCDate);
 	
 	RequirementSubmission editRequirementSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues) throws Exception;
+	
+	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer) throws Exception;
+	
+	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
+
 }

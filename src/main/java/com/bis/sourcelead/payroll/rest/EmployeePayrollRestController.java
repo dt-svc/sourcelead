@@ -34,14 +34,18 @@ import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
+import com.bis.sourcelead.payroll.entity.InvoiceData;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
+import com.bis.sourcelead.payroll.service.InvoiceDataService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -75,6 +79,12 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	UserPayrollService userPayrollService;
+	
+	@Autowired
+	InvoiceDataService invoiceDataService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -115,6 +125,8 @@ public class EmployeePayrollRestController {
 				isInserted = bisUserMappingService.saveBisUserData(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.BIS_CHECKS.equalsIgnoreCase(payrollType)){
 				isInserted = bisUserMappingService.saveChecksData(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.INVOICE_DATA.equalsIgnoreCase(payrollType)) {
+				isInserted = invoiceDataService.saveInvoiceData(multipartFile,orgLocation,user,jsonObj);
 			}
 		}else{
 			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
@@ -264,8 +276,10 @@ public class EmployeePayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
-		BisUserMapping bisUser = bisUserMappingService.mergeUser(jsonObj,orgLocation.getId());
-		if (bisUser != null) {
+		
+		int  count = wageTaxSummaryService.mergeUser(jsonObj,orgLocation);
+//		BisUserMapping bisUser = bisUserMappingService.mergeUser(jsonObj,orgLocation.getId());
+		if (count >0) {
 			isMerged = true;
 		}
 		return isMerged;
@@ -281,15 +295,15 @@ public class EmployeePayrollRestController {
 	 */
 	@RequestMapping(value = "/getMappedUserList", method = RequestMethod.GET)
 	@ResponseBody
-	public String getMappedUserList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<WageTaxSummary> getMappedUserList(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		String resultJson = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<BisUserMapping> usersList = bisUserMappingService.getMappedUsersListByOrgLocationId(orgLocation.getId());
-		if (usersList != null) {
-			resultJson = commonUtil.toJSON(usersList);
+		List<WageTaxSummary>  wageTaxSummaryList = wageTaxSummaryService.getMappedUsersListByOrgLocationId(orgLocation.getId());
+//		List<BisUserMapping> usersList = bisUserMappingService.getMappedUsersListByOrgLocationId(orgLocation.getId());
+		if (wageTaxSummaryList != null) {
+			return wageTaxSummaryList;
 		}
-		return resultJson;
+		return null;
 	}
 	
 	@RequestMapping(value = "/updateAccountDeduction", method = RequestMethod.POST)
@@ -365,4 +379,157 @@ public class EmployeePayrollRestController {
 			List<BisUserMapping> bisUsersList = bisUserMappingService.getEmployeeList(orgLocationId);
 			return bisUsersList;
 		}
+	 
+	 /**
+	  * Get Invoice Data Details
+	  * @param userId
+	  * @param orgLocationId
+	  * @return 
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = { "/getInvoiceDetails"}, method = RequestMethod.GET)
+		public List<InvoiceData> getInvoiceDetails(@RequestParam(value = "userId", required = false) Long userId,
+				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId)throws Exception {
+			List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetails(userId, orgLocationId);
+			return invoiceDataList;
+		}
+		
+	 
+	/**
+	 * Get Invoice Data Details
+	 * 
+	 * @param userId
+	 * @param orgLocationId
+	 * @return List<InvoiceData>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getInvoiceDetailsByEmpId"}, method = RequestMethod.GET)
+	public List<InvoiceData> getInvoiceDetailsByEmpId(@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<InvoiceData> invoiceDataList = null;
+		if(empId !=null){
+			 invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
+		}else{
+			return invoiceDataList;
+		}
+		if(invoiceDataList !=null && invoiceDataList.size() >0){
+			return invoiceDataList;
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * checks list by employeeid
+	 * 
+	 * @param empId
+	 * @param orgLocationId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getChecksListByEmployeeId"}, method = RequestMethod.GET)
+	public List<Checks> getChecksListByEmployeeId(@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<Checks> checksList = null;
+		if(empId !=null){
+			checksList =userPayrollService.getChecksListByEmployeeId(empId, orgLocations);
+		}else{
+			return checksList;
+		}
+		if(checksList !=null && checksList.size() >0){
+			return checksList;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * wages and tax summary by employeeid
+	 * 
+	 * @param empId
+	 * @param orgLocationId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getWagesTaxSummaryByEmpId"}, method = RequestMethod.GET)
+	public List<WageTaxSummary> getWagesTaxSummaryByEmpId(@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<WageTaxSummary>  wagesAndTaxList = null;
+		if(empId !=null){
+			 wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
+		}else{
+			return wagesAndTaxList;
+		}
+		if(wagesAndTaxList !=null && wagesAndTaxList.size() >0){
+			return wagesAndTaxList;
+		}
+		return null;
+	}
+	
+	/**
+	 * Get Account Deductions By Employee id
+	 * 
+	 * @param empId
+	 * @param orgLocationId
+	 * @return List<AccountDeductions>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getAccontDeductionsByEmpId" }, method = RequestMethod.GET)
+	public List<AccountDeductions> getAccontDeductionsByEmpId(
+			@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<AccountDeductions> accountDeductionsList = null;
+		if (empId != null) {
+			accountDeductionsList = accountDeductionsService.getAccountDeductionsByEmployeeId(orgLocations, empId);
+		} else {
+			return accountDeductionsList;
+		}
+
+		if (accountDeductionsList != null && accountDeductionsList.size() > 0) {
+			return accountDeductionsList;
+		}
+		return null;
+
+	}
+	
+	/**
+	 * get Hr deductions By Employee id
+	 * 
+	 * @param empId
+	 * @param orgLocationId
+	 * @return List<HrDeductions>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getHRDeductionsByEmployeeId" }, method = RequestMethod.GET)
+	public List<HrDeductions> getHRDeductionsByEmployeeId(
+			@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		List<HrDeductions> hrDeductionsList = null;
+		if (empId != null) {
+			hrDeductionsList = hrDeductionsService.getHrDeductionsByEmployeeId(orgLocations, empId);
+		} else {
+			return hrDeductionsList;
+		}
+
+		if (hrDeductionsList != null && hrDeductionsList.size() > 0) {
+			return hrDeductionsList;
+		}
+		return null;
+	}
+	
+	
+	@RequestMapping(value = { "/getfinalBalanceByEmpId" }, method = RequestMethod.GET)
+	public PayrollBalance getfinalBalanceByEmpId(
+			@RequestParam(value = "empId", required = false) Long empId,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		
+		PayrollBalance payrollBalance = accountDeductionsService.getBalance(empId, orgLocations);
+		return payrollBalance;
+	}
 }

@@ -22,6 +22,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectApproverHierarchy")
@@ -41,6 +44,10 @@ public class ProjectApproverHierarchy implements Serializable{
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
+	
+    @ManyToOne
+    @JoinColumn(name = "PROJECT_CLIENTS_ID")
+    private ProjectClients projectClientsId;
  	
     @Column(name = "LEVEL")
     private Integer level;
@@ -63,6 +70,11 @@ public class ProjectApproverHierarchy implements Serializable{
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
+    
+    @Transient
+    @JsonProperty
+    private Long  projectApproverUserId;
+    
     
     @Transient
     private String fullName;
@@ -92,6 +104,14 @@ public class ProjectApproverHierarchy implements Serializable{
 		this.approverUserId = approverUserId;
 	}
 
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
 
 	public Integer getLevel() {
 		return level;
@@ -155,6 +175,17 @@ public class ProjectApproverHierarchy implements Serializable{
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public Long getProjectApproverUserId() {
+		if(approverUserId != null){
+			projectApproverUserId = approverUserId.getId();
+		}
+		return projectApproverUserId;
+	}
+
+	public void setProjectApproverUserId(Long projectApproverUserId) {
+		this.projectApproverUserId = projectApproverUserId;
 	}
 	
 	

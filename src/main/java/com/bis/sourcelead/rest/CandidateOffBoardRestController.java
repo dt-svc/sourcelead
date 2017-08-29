@@ -782,7 +782,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 
-		 @RequestMapping(value = "/loadOffboardingCandidateDetails")
+		 @RequestMapping(value = "/loadOffboardingCandidateDetails", method = RequestMethod.POST)
 		 public String loadOffboardingCandidateDetails(@RequestParam(value="offBoardingUUID", required=false) String offBoardingUUID,
 				 @RequestParam(value="locationCode") String locationCode) throws Exception {
 
@@ -1483,16 +1483,16 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 @RequestMapping(value = "/getEndDateByEffectiveDateAndNoticePeriod", method = RequestMethod.GET)
 			public @ResponseBody String getEndDateByEffectiveDateAndNoticePeriod(@RequestParam(value = "noticePeriod", required = false) String noticePeriod,
-					@RequestParam(value = "effectiveDate", required = false) String effectiveDate,HttpServletRequest request) throws Exception {
+					@RequestParam(value = "effectiveDate", required = false) String effectiveDate,
+					@RequestParam(value = "dateFormat", required = false) String dateFormat,HttpServletRequest request) throws Exception {
 				
 				
 				String[] notice = noticePeriod.split(" ");
-				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 				String endDateStr = null;
 				
 				try {
 
-					Date date =  formatter.parse(effectiveDate);
+					Date date =  commonUtil.orgLocationDateFormat(dateFormat,effectiveDate);
 					Calendar c = Calendar.getInstance();
 					c.setTime(date);
 					
@@ -1502,9 +1502,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 						c.add(Calendar.MONTH, Integer.parseInt(notice[0]));
 					}
 					
-					endDateStr =  formatter.format(c.getTime());
+					endDateStr =  commonUtil.dateStrFromOrgDateFormatter(dateFormat,c.getTime());
 
-		        } catch (ParseException e) {
+		        } catch (Exception e) {
 		            e.printStackTrace();
 		        }
 				

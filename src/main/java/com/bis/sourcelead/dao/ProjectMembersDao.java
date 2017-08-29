@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.enums.Primary;
 
 public interface ProjectMembersDao {
@@ -17,6 +17,8 @@ public interface ProjectMembersDao {
     List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId)throws Exception;
     
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception;
+	
+	void deleteProjectMember(ProjectMembers projectMembers) throws Exception;
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
@@ -28,7 +30,9 @@ public interface ProjectMembersDao {
 	
 	Collection<ProjectMembers> getAllProjectMembers() throws Exception;
 	
-	Collection<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
+	
+	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
 	List<Long> getAllProjectMembersIdsByemployeeId(Long userId) throws Exception;
 	
@@ -45,7 +49,7 @@ public interface ProjectMembersDao {
 	 */
 	public ProjectMembers getProjectMemberByEmpIdAndProjectId(Long empId,Long projectId) throws Exception;
 	
-	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
+	List<ProjectMembers> getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId,OrgLocations orgLocations) throws Exception;
 	
     List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(Long userId) throws Exception;
     

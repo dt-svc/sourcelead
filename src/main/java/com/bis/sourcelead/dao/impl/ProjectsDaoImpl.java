@@ -62,7 +62,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		logger.debug("In Projects Save method");
 		Session session = this.sessionFactory.getCurrentSession();
 		try{
-			session.save(projects);
+			session.saveOrUpdate(projects);
 		}catch(Exception exception){
 			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PROJECTS"));
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());

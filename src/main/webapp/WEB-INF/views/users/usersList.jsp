@@ -429,7 +429,7 @@ function exportToPdf(){
 		    offset = $("#usersOffset").val();
 		    var UsersCount = $("#totalUsersCount").val(); 
 		    // calculate the percentage the user has scrolled down the page
-		    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+		    if($(window).scrollTop()+1 >= $(document).height() - $(window).height()) {
 		    	var avilableCount = $("#usersOffset").val();
 		    	
 		    	avilableCount = parseInt(avilableCount) + parseInt(10); 

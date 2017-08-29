@@ -1,11 +1,9 @@
 package com.bis.sourcelead.rest;
 
 import java.io.IOException;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,15 +24,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
+import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectQuestionnaire;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
-
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.model.ProjectDocumentBO;
@@ -44,6 +44,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectQuestionnaireService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -107,6 +108,9 @@ public class ProjectsRestController {
 
 	@Autowired
 	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	ProjectQuestionnaireService projectQuestionnaireService;
 
 	/**
 	 * This method for save the project by json
@@ -118,7 +122,7 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
-	public @ResponseBody String storeProject(@RequestParam("project_files") MultipartFile[] files,
+	public @ResponseBody Projects storeProject(@RequestParam("project_files") MultipartFile[] files,
 			@RequestParam("json") String jsonPayload) throws Exception {
 		JSONObject jsonObj = new JSONObject(jsonPayload);
 		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().filter(p->!p.isEmpty()).map(file -> {
@@ -130,33 +134,53 @@ public class ProjectsRestController {
 			return null;
 		}).collect(Collectors.toList());
 
-		String outPut = projectsService.storeProject(jsonObj, projectDocuments);
-		return outPut;
+		Projects projects = projectsService.storeProject(jsonObj, projectDocuments);
+		return projects;
 
 	}
-
-	/**
-	 * @author shivayogi.
-	 * @Description : this is duplicate method, this method is not used
-	 *              anywhere.This method is same as storeProject() .
-	 */
-	@RequestMapping(value = "/saveProject", method = RequestMethod.POST)
-	public @ResponseBody String saveProject(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
-
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
-
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		projectsService.saveProjectByUserOrgLocationsJson(user, loginOrgLocation, loginOrgCode, jsonObj);
-		SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg",
-				"Successfully you have created a project");
-		return "projectDashboard";
-
-	}
+	
+	
+	
+       @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
+		public  String assignProjectMembersToProject(@RequestBody ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+		    
+		    User user = userService.getUserById(userId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
+		   
+		    return "success";
+	    }
+       
+       
+       @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
+		public  String assignProjectMembersToProject(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+			   @RequestParam(value="saveType", required=true) String saveType) throws Exception {
+		    
+		    User user = userService.getUserById(userId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		    projectAdditionalDetailsDTO.setSaveType(saveType);
+		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
+		   
+		    return "success";
+	    }
+      
+       
+       @RequestMapping(value = "/getProjectAssignedMembesListByProjectId", method = RequestMethod.GET)
+		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId) throws Exception {
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectId(projectId);
+		   return projectMembersList;
+	    }
+       
+       
+       @RequestMapping(value = "/getProjectQuestionnaireDetails", method = RequestMethod.GET)
+		public  ProjectQuestionnaire getProjectQuestionnaireDetails(@RequestParam(value="projectId", required=true) Long projectId) throws Exception {
+    	   ProjectQuestionnaire projectQuestionnaire = projectQuestionnaireService.getProjectQuestionnaireByProjectId(projectId);
+		   return projectQuestionnaire;
+	    }
+       
+       
 
 	@RequestMapping(value = "/validateProjectId", method = RequestMethod.POST)
 	public @ResponseBody String validateJobSequenceNumber(

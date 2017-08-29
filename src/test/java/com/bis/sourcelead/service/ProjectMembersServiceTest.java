@@ -64,7 +64,7 @@ public class ProjectMembersServiceTest {
 		pmh.setUpdatedBy("Raj");
 		pmhList.add(pmh);
 		
-		projectMembers.setCurrentBillRate(100.0F);
+		projectMembers.setCurrentBillRate(100.0);
 		projectMembers.setRateType("Monthly");
 		projectMembers.setStatus("1");
 		projectMembers.setCreatedDate(new Date());
@@ -103,7 +103,7 @@ public class ProjectMembersServiceTest {
 		
 		
 		//projectMembers.setTimesheetFrequency("weekly");
-		projectMembers.setCurrentBillRate(500.0F);
+		projectMembers.setCurrentBillRate(500.0);
 		projectMembers.setRateType("Monthly");
 		projectMembers.setStatus("1");
 		projectMembers.setCreatedDate(new Date());
@@ -158,7 +158,7 @@ public class ProjectMembersServiceTest {
 	}
 	@Test
 	public void getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId() throws Exception{
-		List<ProjectMembers> getAllProjectMembersIdsByTimesheet = projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(1l);
+		List<ProjectMembers> getAllProjectMembersIdsByTimesheet = projectMembersService.getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId(1l,null);
 		logger.info("getAllProjectMembersIdsByTimesheetApproverUserIdOrMemberUserId added successfully"+getAllProjectMembersIdsByTimesheet.size());
 	}
 	@Test

@@ -21,6 +21,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -182,9 +184,13 @@ public class Invoice {
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
 	private Expenses expensesId;
 	
+	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PROJECT_MEMBER_ID", nullable=true) 
 	private ProjectMembers projectMemberId;
+	
+	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
+	private String isAutomaticGenerateInvoice;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
@@ -1038,6 +1044,14 @@ public class Invoice {
 
 	public void setExpId(String expId) {
 		this.expId = expId;
+	}
+
+	public String getIsAutomaticGenerateInvoice() {
+		return isAutomaticGenerateInvoice;
+	}
+
+	public void setIsAutomaticGenerateInvoice(String isAutomaticGenerateInvoice) {
+		this.isAutomaticGenerateInvoice = isAutomaticGenerateInvoice;
 	}
 
 	

@@ -29,6 +29,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
+import com.mchange.v2.cfg.PropertiesConfigSource.Parse;
 
 /**
  * @author Ajith Matta
@@ -72,6 +73,11 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		if (jsonObj.has("invoiceUUID") && jsonObj.getString("invoiceUUID") != null) {
 			Invoice invoice=invoiceService.getInvoicetByInvoiceUUID(jsonObj.getString("invoiceUUID"));
 			sourceleadNotes.setInvoicdeId(invoice);
+		}
+		
+		if (jsonObj.has("requirementId") && jsonObj.getString("requirementId") != null) {
+			Requirement req=requirementService.getRequirementByRequirementId(jsonObj.getLong("requirementId"));
+			sourceleadNotes.setRequirementId(req);
 		}
 		
 		if(jsonObj.has("contractUUID")&& jsonObj.getString("contractUUID") != null){

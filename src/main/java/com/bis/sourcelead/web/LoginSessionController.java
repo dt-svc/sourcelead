@@ -214,10 +214,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
-            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
-            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+			
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
@@ -533,6 +530,12 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
 			if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
 				candidate = candidateService.getCandidateByConsultantUserId(orgLocations.getUser().getId(), orgLocations.getId());
@@ -774,7 +777,7 @@ public class LoginSessionController {
 		try {
 			orgLocations = userRole.getOrgLocations();
 			setSessionOrgLocationAttributes(orgLocations,request);
-			setSessionOrgLocationAttributesDateFormat(orgLocations);
+			//setSessionOrgLocationAttributesDateFormat(orgLocations);
 			Org org = orgLocations.getOrg();
 			setSessionOrgAttributes(org,orgLocations,request);
 			
@@ -958,11 +961,11 @@ public class LoginSessionController {
 		}
 	}
 	
-	public static DateFormat DATEFORMAT;
+	/*public static DateFormat DATEFORMAT;
 	private void setSessionOrgLocationAttributesDateFormat(OrgLocations orgLocations){
 	
 		DATEFORMAT = new SimpleDateFormat(orgLocations.getDateFormat());	
-	}
+	}*/
 	
 	private void setSessionOrgAttributes(Org org,OrgLocations orgLocations, HttpServletRequest request)
 	{

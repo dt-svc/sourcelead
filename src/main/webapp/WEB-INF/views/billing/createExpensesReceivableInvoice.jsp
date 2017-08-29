@@ -195,10 +195,10 @@ function checkBox(){
               	<label><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 " >
+	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
 	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
 	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
+	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-times mt5' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
 	                 </span> </div>
 	              </div>
             	</td>
@@ -245,7 +245,7 @@ function checkBox(){
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
               </div>
               
-                <div id="conversionId"></div>
+                <div id="conversionId"  style="display: none"></div>
               
               </div>
           </div>
@@ -267,6 +267,12 @@ function checkBox(){
      </div>
     </div>
   </section>
+
+<script>
+function remove(){
+	$('#0invoicedocFile').val("");
+}
+</script>
     
 <!-- Diplays client contacts details when clien selected -->
 <script>
@@ -293,11 +299,8 @@ function getClientContacts(){
 	$('#clientContact').trigger("chosen:updated");
 	},
 	});
-	
-	/* document.getElementById("bottomGrid").style.display="none";
-	document.getElementById("lineItemAddRows").style.display="none"; */
-	/* document.getElementById("tableBody").style.display="none"; */
-	getProjectsList();
+	addConversionDiv();
+	getProjectsList(); 
 	}
 </script>
 
@@ -705,7 +708,7 @@ function populateInlineItemsGrid(){
          $("#addbutton").show();
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
-        addConversionDiv();
+       /*  addConversionDiv(); */
 }
 </script>
 
@@ -862,8 +865,11 @@ function addConversionDiv(){
 		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 		result = result +'  </div>';
 		result = result +'  </div>';
+		document.getElementById("conversionId").style.display="block";
 		$("#conversionId").empty();
 		$("#conversionId").append(result);
+	}else{
+		document.getElementById("conversionId").style.display="none";
 	}
 }
 </script>
@@ -1161,11 +1167,11 @@ function calculateTaxDiscount(){
 <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 ">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
-               		    <i class="fa fa-times" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
+               		    <i class="fa fa-times mt5" mouseOver="Delete" title="Delete" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
                		   </span>
                 </div>
              </div>
@@ -1410,8 +1416,8 @@ function toDate(selector) {
     		});
 	}
 	</script>
-	
-	 <script type="text/javascript">
+
+ <script type="text/javascript">
 $(document).ready(function(){
 	var invoiceUUID = '${invoiceUUID}';
 	if(invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
@@ -1583,7 +1589,7 @@ function editExpensesInlineItems(invoiceLineItemsList){
 			$('#'+maxRowNum+'total').val(opt.amount);
 			
 	 }
-
+	 addConversionDiv();
 	
 }
 </script>

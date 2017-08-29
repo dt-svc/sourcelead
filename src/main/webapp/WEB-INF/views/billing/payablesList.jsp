@@ -317,6 +317,19 @@ $(document).ready(function(){
 		    </script>
 
 <script>
+
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var recievePaymentDate = '';
+if(locationDate.match("yyyy-MM-dd")){
+	recievePaymentDate = 'yy-mm-dd';
+}if(locationDate.match("dd-MM-yyyy")){
+	recievePaymentDate = 'dd-mm-yy'; 
+}if(locationDate.match("MM-dd-yyyy")){
+	recievePaymentDate = 'mm-dd-yy'; 
+}if(locationDate.match("yyyy-dd-MM")){
+	recievePaymentDate = 'yy-dd-mm'; 
+}
+
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
@@ -408,7 +421,7 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : 'dd-mm-yy',
+		dateFormat : recievePaymentDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
@@ -748,7 +761,7 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else if(report.invoiceStatus == "DRAFT"){

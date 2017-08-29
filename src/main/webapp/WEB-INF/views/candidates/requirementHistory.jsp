@@ -9,12 +9,20 @@
 <script>
 function requirementHistory(candidateId){
 	var result = "";
+	if(window.candidateStatusGlobal == '0'){
+		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
+	}else{
+		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+	}
 	result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
+	
+	/* result  = result + '<div class="success_pop" id="selector8" style="display: none;">'; */
 		result = result  +'<span class="pad-sea"></span>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div class="reqPop" id="requirementHistoryPopDiv" ></div>';
 		result  = result + '   <div id="requirementHistoryDiv" class="datatable_filter"></div>';
-		result  = result + '   </div>';
+   /* result  = result + '   </div>'; */
+   
 	result = result+'	    </div>';
 	$("#tab-1").empty();
 	$("#tab-2").empty();
@@ -23,6 +31,8 @@ function requirementHistory(candidateId){
 	$("#tab-5").empty();
 	$("#tab-6").empty();
 	$("#tab-7").empty();
+	$("#tab-9").empty();
+	$("#tab-10").empty();
 	$("#tab-8").empty();
     $("#tab-8").append(result);  
 	
@@ -50,9 +60,8 @@ function requirementHistoryList(candidateId){
          url: sourceleadUrl+"/getRequirementHistoryListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
          success :function(data) {
         	 var json = JSON.parse(data);
+        	 $("#requirementHistoryDiv").empty();
         	 var result = "";
-     		result = result  +'	    <div class="project_tabs_inn_head">';
-     	    result = result  +'	    <div class="project_tabs_inn_table">';
      	    result = result  +'	      <table id="requirementHistoryPagination" class="display" cellspacing="0" width="100%">';
      		result = result  +'	        <thead>';
      		result = result  +'	          <tr>';
@@ -98,10 +107,7 @@ function requirementHistoryList(candidateId){
      		}
      		result = result  +'	        </tbody>';
     		result = result  +'	      </table>';
-    		result = result  +'	    </div>';
-    		result = result  +'	    </div>';
     	 
-    	 $("#requirementHistoryDiv").empty();
     	 $("#requirementHistoryDiv").append(result);
     	 requirementHistoryPagination();
      		
@@ -110,7 +116,7 @@ function requirementHistoryList(candidateId){
 }
 </script>
 
-
+<!-- requirementHistoryPagination pagination script -->
 <script>
 function requirementHistoryPagination(){  
     $('#requirementHistoryPagination').DataTable( { 
@@ -126,6 +132,7 @@ function requirementHistoryPagination(){
     } );
 }
 </script>
+
 <script>
 	function predefineProfileImage(imageId){   
 		$(imageId).attr('src','resources/images/userprofile-img.png');

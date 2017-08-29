@@ -839,7 +839,7 @@ public class InvoicePdfHelper {
 	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName, InvoiceAmount totalStagesAmount,
 			String exportStartDate, String exportEndDate, String invoiceType,OrgLocations locations) throws Exception {
 		
-		 OrgLocations orglo = orgLocationService.getOrgLocations(locations.getId());
+//		 OrgLocations orglo = orgLocationService.getOrgLocations(locations.getId());
 
 		String[] headers = null;
 		if (Constants.Payables.equalsIgnoreCase(invoiceType)) {
@@ -851,11 +851,11 @@ public class InvoicePdfHelper {
 		//DateFormat dateFormat = LoginSessionController.DATEFORMAT;
 
 		StringBuilder sbReq = new StringBuilder();
-		sbReq.append(orgName).append(Constants.BILLING).append(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),new Date()));
+		sbReq.append(orgName).append(Constants.BILLING).append(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),new Date()));
 
 		StringBuilder fileSB = new StringBuilder();
 		File file = File.createTempFile(
-				fileSB.append(orgName).append(Constants.BILLING).append(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),new Date())).toString(),
+				fileSB.append(orgName).append(Constants.BILLING).append(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),new Date())).toString(),
 				".pdf");
 
 		file.setReadable(true);
@@ -880,8 +880,10 @@ public class InvoicePdfHelper {
 			Paragraph p = new Paragraph("Company Name :" + orgName);
 			p.add(new Chunk(glue));
 			p.setIndentationLeft(0);
+
 			p.add("Duration  :" + exportStartDate + " - " + exportEndDate);
-			p.setIndentationRight(223);
+			p.setIndentationRight(3);
+
 			document.add(p);
 
 			Chunk glue1 = new Chunk(new VerticalPositionMark());
@@ -889,15 +891,15 @@ public class InvoicePdfHelper {
 			p1.add(new Chunk(glue1));
 			p1.setIndentationLeft(0);
 			p1.add("Total Unpaid Amount(OverDue) :" + totalStagesAmount.getTotalOverDueUnpaidAmount());
-			p1.setIndentationRight(220);
+			p1.setIndentationRight(0);
 			document.add(p1);
-
+			
 			Chunk glue2 = new Chunk(new VerticalPositionMark());
 			Paragraph p2 = new Paragraph("Total Paid Amount :" + totalStagesAmount.getTotalPaidAmount());
 			p2.add(new Chunk(glue2));
 			p2.setIndentationLeft(0);
 			p2.add("Total Unbilled Amount  :" + totalStagesAmount.getTotalUnbilledAmount());
-			p2.setIndentationRight(227);
+			p2.setIndentationRight(20);
 			document.add(p2);
 
 			PdfPTable table = new PdfPTable(headers.length);
@@ -925,7 +927,7 @@ public class InvoicePdfHelper {
 			table.completeRow();
 			java.util.List<String[]> invoices = new ArrayList<>();
 			for (Invoice invoice : invoiceList) {
-				invoices.add(prepareBillingToArray(invoice));
+				invoices.add(prepareBillingToArray(invoice,locations));
 			}
 
 			for (String[] invoiceArray : invoices) {
@@ -961,7 +963,7 @@ public class InvoicePdfHelper {
 		cell.setBorderWidthBottom(2f);
 	}
 
-	private String[] prepareBillingToArray(Invoice invoice) throws Exception {
+	private String[] prepareBillingToArray(Invoice invoice, OrgLocations locations) throws Exception {
 
 		String billingArray[] = new String[Constants.BILLING_HEADERS.length];
 
@@ -973,7 +975,7 @@ public class InvoicePdfHelper {
 
 		OrgLocations orgLocations = null;
 		
-		 OrgLocations orglo = orgLocationService.getOrgLocations(invoice.getOrgLocation().getId());
+//		 OrgLocations orglo = orgLocationService.getOrgLocations(invoice.getOrgLocation().getId());
 		if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId()
 				.longValue()) {
 			orgLocations = invoice.getOrgRelationID().getLocationId();
@@ -1025,14 +1027,14 @@ public class InvoicePdfHelper {
 		}
 
 		if (null != invoice.getInvoiceDate()) {
-			String invoiceDate = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),invoice.getInvoiceDate());
+			String invoiceDate = commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),invoice.getInvoiceDate());
 			billingArray[5] = invoiceDate;
 		} else {
 			billingArray[5] = "--";
 		}
 
 		if (null != invoice.getDueDate()) {
-			String dueDate = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),invoice.getDueDate());
+			String dueDate = commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),invoice.getDueDate());
 			billingArray[6] = dueDate;
 		} else {
 			billingArray[6] = "--";
@@ -1070,9 +1072,9 @@ public class InvoicePdfHelper {
 			billingArray[11] = "--";
 		}
 
-		if (null != invoice.getLinkInvoiceReferenceId()
-				&& !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))) {
-			billingArray[12] = String.valueOf(invoice.getLinkInvoiceReferenceId());
+		if (null != invoice.getLinkInvoiceRefInvoiceId()
+				&& !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()))) {
+			billingArray[12] = String.valueOf(invoice.getLinkInvoiceRefInvoiceId());
 		} else {
 			billingArray[12] = "--";
 		}

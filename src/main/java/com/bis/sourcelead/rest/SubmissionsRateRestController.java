@@ -290,7 +290,7 @@ public class SubmissionsRateRestController {
 		String expectedRateRN = "";
 		String expectedRateTypeRN = "";
 		String expectedRatePerRN = "";
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		OrgLocations orgLocations = requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getOrgLocationId();
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		if(null != requirementSubmissionTemplateFields){
 				if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
@@ -360,8 +360,8 @@ public class SubmissionsRateRestController {
 					requirementRateSubmissionNegotiation.setProposeByName(candidate.getFirstName());
 				}
 			}*/
-			DateFormat standardFormat = new SimpleDateFormat( "dd-MM-yyyy");
-			String commonDateFormat = standardFormat.format(requirementRateSubmissionNegotiation.getCreatedDate());
+			//DateFormat standardFormat = new SimpleDateFormat( "dd-MM-yyyy");
+			String commonDateFormat = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementRateSubmissionNegotiation.getCreatedDate());
 			requirementRateSubmissionNegotiation.setCreatedDateStr(commonDateFormat.toString());
 			
 			if(requirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE){

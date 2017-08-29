@@ -79,8 +79,8 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   <li id="vendorSelected" style="display:none"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="export-popp"></i>
                     <div class="approved_pop">
                       <ul>
-                      	  <c:forEach var="report" items="${vendor_list}">  
-	                      	<li><input id="vendorName${report.id}" name="vendorSelected" value ="${report.id}" onclick="getContactsLists();" type="checkbox"><label title="${report.clientName}">&nbsp;&nbsp; ${report.clientName}</label></li>
+                      	  <c:forEach var="venReport" items="${vendor_list}">  
+	                      	<li><input id="vendorName${venReport.id}" name="vendorSelected" value ="${venReport.id}" onclick="getContactsLists();" type="checkbox"><label title="${venReport.vendorName}">&nbsp;&nbsp; ${venReport.vendorName}</label></li>
 						  </c:forEach>
                       </ul>
                     </div>
@@ -271,6 +271,7 @@ function getPercentageValue(){
 	}else{
 		 $("#releaseToCWBtn").removeAttr("disabled");
 		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#percentageRewardValue').find('p.jquery_form_error_message').remove(); 
 		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
 		 $( "#releaseToCWBtn" ).removeAttr("style");
 		 $( "#releaseToCWBtn" ).click(function() {
@@ -426,12 +427,10 @@ function releaseToOneVendor(vendorcheckboxId){
 
 <script type="text/javascript">
  function releaseToCrowdSourcing() {
-	 
 	   if ($('#releaseToCrowdSourcing_form').validate(false, validationSettings)){ 
 		    var frm = $('#releaseToCrowdSourcing_form').serializeFormJSON();
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
-	        
 	        //It will escape all the special characters
 	        var jsonData = encodeURIComponent(con);
 	        
@@ -991,6 +990,10 @@ function isCrowd(){
 	        
 	        document.getElementById("crowd_rate").style.display="";
 	        
+	        
+	        $('#percentageRewardValue').removeAttr("data-validation-optional"); 
+		    $('#percentageRewardValue').attr("data-validation","required");
+		       
 	        var rewardType = '${rewardType}';
 	        if('${rewardType}' != null && '${rewardType}' != '' && '${rewardType}' != 'undefined'){
 	        	 getRewardType('${rewardType}')
@@ -999,9 +1002,16 @@ function isCrowd(){
 	        }
 	       
 	    }else{
-	        $("#isCrowdScourcingId").val('N');
+	       
+	    	$("#isCrowdScourcingId").val('N');
 	        $("#isCrowdScourcingGlobel").val('N');
+	        // here validation remove and data-validation-optional equal to true.
+	        $('#percentageRewardValue').find('jquery_form_error_message').remove();
+	        $('#percentageRewardValue').attr("data-validation-optional","true"); 
+	        $('#percentageRewardValue').removeAttr('data-validation');
+	        
 	        document.getElementById("crowd_rate").style.display="none";
+	        
 	    }
 }
 </script>

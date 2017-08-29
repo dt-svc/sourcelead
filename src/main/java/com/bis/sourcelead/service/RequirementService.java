@@ -3,13 +3,11 @@ package com.bis.sourcelead.service;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
@@ -30,8 +28,6 @@ public interface RequirementService {
 	public Requirement addRequirement(Requirement requirement) throws Exception;
 	
 	public List<Requirement> getRequirementListByOrgLocationID(Long orgLocationId,String status,String clients,User  user, String userRoleName) throws Exception;
-	
-	public Map<Long,List<Requirement>> getRequirementListByOrgLocationIDWithMaxResults(Long orgLocationId,String status,String clients,User  user, String userRoleName,int start,int length) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
 	
@@ -111,11 +107,8 @@ public interface RequirementService {
 	
 	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
 
-	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
-
 	public Long getRequirementsListById(Long requirementId) throws Exception;
 	
-	public List<Object> getAllUniversalSearchRequirementList(OrgLocations orgLocations, String serachValue,String userRole, User user) throws Exception;
 
 	public Requirement updateRequirement(Requirement requirement) throws Exception;
 
@@ -166,5 +159,9 @@ public interface RequirementService {
 	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
 
 	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
+
+	public boolean checkForOldrecordsUsingOrgLocationid(Long orglocationId) throws Exception;
+
+	/*public boolean addGeneratedIdRecordsToJobsForOldRecords(Long orglocationId) throws Exception;*/
 	
 }

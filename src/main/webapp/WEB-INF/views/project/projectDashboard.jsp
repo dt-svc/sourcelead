@@ -72,9 +72,20 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
-				<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
-	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Add Project</a></li>		
-	             </sec:authorize>	
+	             
+	             <li><sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')">
+							<a onclick="getActions();" class="action"
+								href="javascript:void(0)">Add Project <i
+								class="fa fa-caret-down"></i>
+							</a>
+							<div class="action-pop">
+								<span> 
+								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
+								<a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Client Project</a>
+								</span>
+							</div>
+						</sec:authorize></li>
+	             
                 <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
@@ -273,7 +284,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#filter1ApprovePop").click(function(){
 		$("#filter1ApprovedPop").slideToggle(200);
-		 $("#filter2ApprovedPop").slideUp(200);
+		 $("#filter2ApprovedPop,.action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter1ApprovedPop").slideUp(200);
@@ -285,7 +296,7 @@ $(document).ready(function() {
     
     $("#filter2ApprovePop").click(function(){
 		$("#filter2ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop").slideUp(200);
+		$("#filter1ApprovedPop,.action-pop").slideUp(200);
 	});
     $("html").click(function() {
         $("#filter2ApprovedPop").slideUp(200);
@@ -390,7 +401,14 @@ function filter(){
 
    		    		
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
-   		    		  result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a><i class="fa fa-binoculars"></i></div></td>';
+   		    		  
+   		    		if(report.projectMode != null && report.projectMode == 'Draft'){
+   		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/project?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a><i class="fa fa-binoculars"></i></div></td>';
+   		    		}else{
+   		    			result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+report.projectUUID+'"><span title="'+report.projectName+'">'+report.projectName+'</span></a><i class="fa fa-binoculars"></i></div></td>';
+   		    		}
+   		    		
+
    		    		'</sec:authorize>';
    		    		
    		    		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
@@ -994,5 +1012,20 @@ $(document).ready(function() {
   }
 </script>
 </html>
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(" #filter2ApprovedPop, #filter1ApprovedPop").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />	

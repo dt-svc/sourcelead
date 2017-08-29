@@ -90,6 +90,7 @@ function generatrPayroll(data,payrollCycle){
 				$("#wagesAndTaxListDiv").empty();
 				$("#checksListDiv").empty();
 				$("#employeeListDiv").empty();
+				$("#invoiceDataDiv").empty();
 				$("#finalPayrollReportDiv").empty();
 				$("#finalPayrollReportDiv").append(result);
 				/*  document.getElementById("applicantsContractsList").style.display="block"; 

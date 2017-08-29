@@ -152,7 +152,7 @@ public class AddExpensesRestController {
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
-				Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
 				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
@@ -161,7 +161,7 @@ public class AddExpensesRestController {
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
 			    //send mail & notification logic
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
-				Expenses expense = expensesService.getExpenseByExpenseId(expenseId);
+				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
 				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
@@ -177,7 +177,7 @@ public class AddExpensesRestController {
 	@RequestMapping(value = "/notifyReopenExpense", method = RequestMethod.POST)
 	public @ResponseBody void notifyReopenExpense(@RequestParam(value="expenseId", required=false) Long expenseId,
 			@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
-			
+		    String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    
@@ -191,7 +191,7 @@ public class AddExpensesRestController {
 			if(expenseId != null){
 			 	
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
-				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason);
+				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
 			    //send mail & notification logic
 			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){
 			  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
@@ -237,8 +237,9 @@ public class AddExpensesRestController {
 	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status);
+		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status,currencyCode);
 		return "DataSaved";
 }
 	
@@ -301,7 +302,7 @@ public class AddExpensesRestController {
 	 
 	
 	 
-	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long expenseId, User loginUser, OrgLocations orgLoc, String reason) throws Exception {
+	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long expenseId, User loginUser, OrgLocations orgLoc, String reason, String currencyCode) throws Exception {
 			
 			ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
 			
@@ -309,9 +310,9 @@ public class AddExpensesRestController {
 		     	 emailMessage.setFirstName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());
 			 	 emailMessage.setLastName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			 	 
-			 	OrgLocations ol = orgLocationsDao.getOrgLocations(orgLoc.getId());
+			// 	OrgLocations ol = orgLocationsDao.getOrgLocations(orgLoc.getId());
 			 	 
-			 	 emailMessage.setToEmail(ol.getUser().getEmail());
+			 	 emailMessage.setToEmail(orgLoc.getUser().getEmail());
 			 	 emailMessage.setFromEmail(loginUser.getEmail());
 			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 	 
@@ -334,9 +335,9 @@ public class AddExpensesRestController {
 				 
 				 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
 //					 StringBuilder manager =new StringBuilder();
-					 globalVarsMap.put("superUser", ol.getUser().getFullName());
+					 globalVarsMap.put("superUser", orgLoc.getUser().getFullName());
 				 }else{
-					 globalVarsMap.put("superUser",ol.getUser().getFullName());
+					 globalVarsMap.put("superUser",orgLoc.getUser().getFullName());
 				 }
 				 
 				 if(null != sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName())){
@@ -371,7 +372,11 @@ public class AddExpensesRestController {
 				 globalVarsMap.put("endDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),sah.getExpenseId().getEndDate()));
 					 }
 				 }
-				 globalVarsMap.put("amount",Float.toString(sah.getExpenseId().getTotalAmount()));
+				 
+				 StringBuilder amopuntRate = new StringBuilder();
+				 amopuntRate.append(Float.toString(sah.getExpenseId().getTotalAmount())).append(" ").append(currencyCode);
+				 
+				 globalVarsMap.put("amount",amopuntRate.toString());
 				 
 //				Date todayDate = new Date();
 //				 globalVarsMap.put("submitForApprovalDate",LoginSessionController.DATEFORMAT.format(todayDate));
@@ -435,7 +440,7 @@ public class AddExpensesRestController {
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink,loginUser,ol.getUser(), orgLoc, notificationScenario) ;
+				emailScenerioUtil.sendNotification(actionLink,loginUser,orgLoc.getUser(), orgLoc, notificationScenario) ;
 		 	   
 			
 		}

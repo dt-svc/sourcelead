@@ -76,7 +76,7 @@ public class ProjectMockServiceTest {
 		projectMembers.setId(1L);
 		//projectMembers.setTimesheetFrequency("weekly");
 		projectMembers.setProjectAssignedDate(date);
-		projectMembers.setCurrentBillRate(100.0F);
+		projectMembers.setCurrentBillRate(100.0);
 		projectMembers.setRateType("Monthly");
 		projectMembers.setStatus("1");
 		projectMembers.setStatus("ACTIVE");
@@ -102,7 +102,7 @@ public class ProjectMockServiceTest {
 		projectMembers1.setId(1L);
 		//projectMembers1.setTimesheetFrequency("weekly");
 		projectMembers1.setProjectAssignedDate(date);
-		projectMembers1.setCurrentBillRate(100.0F);
+		projectMembers1.setCurrentBillRate(100.0);
 		projectMembers1.setRateType("Monthly");
 		projectMembers1.setStatus("1");
 		projectMembers1.setStatus("IN-ACTIVE");

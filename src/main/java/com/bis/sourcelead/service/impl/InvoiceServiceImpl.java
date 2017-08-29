@@ -380,7 +380,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
-		        invoiceDao.saveInvoce(invoice);
+//		        invoiceDao.saveInvoce(invoice);
 		        if(null != file){
 		        	file.delete();
 		        }
@@ -459,7 +459,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 	
 	private void saveParentInvoice(Invoice invoice, String loginOrgCurrencyCode, OrgLocations vendorOrgLocation) throws Exception {
-		Invoice parentInvoice = new Invoice();
+//		Invoice parentInvoice = null;
+		Invoice parentInvoice = invoiceDao.getParentInvoiceByInvoiceId(invoice.getId());
+		if(parentInvoice ==null){
+			parentInvoice = new Invoice();
+		}
 		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)){
 			parentInvoice.setInvoiceType(Constants.Receivable);
 		}else{
@@ -1298,8 +1302,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
 	}
 	
-	if(null != invoice.getLinkInvoiceReferenceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))){
-		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceReferenceId()));
+	if(null != invoice.getLinkInvoiceRefInvoiceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()))){
+		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceRefInvoiceId()));
 	}
 		
 	return createExcelsheet;
@@ -1329,7 +1333,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell3.setCellStyle(style);
 
 	Cell cell4 = writeRow.createCell(1);
-	cell4.setCellValue(exportStartDate +" - "+exportEndDate);
+	cell4.setCellValue(exportStartDate+ " - " +exportEndDate);
 	cell4.setCellStyle(style);
 
 	writeRow = createExcelsheet.createRow(3);
@@ -1450,6 +1454,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setPaymentStatus("Unpaid");
   	  						invoice.setProjectID(project);
   	  						invoice.setDiscountType(Constants.PERCENTAGE);
+  	  						invoice.setIsAutomaticGenerateInvoice(Constants.YES);
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1);
   	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
@@ -2387,8 +2392,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			List<MultipartFile> attachedfileList, String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory)
 					throws Exception {
 
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		
 
 		Invoice invoice = null;
 
@@ -2473,11 +2477,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 
 		if (jsonObj.has("invoiceDate") && !"".equalsIgnoreCase(jsonObj.getString("invoiceDate"))) {
-			Date invoiceDate = format.parse(jsonObj.getString("invoiceDate"));
+			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("invoiceDate"));
 			invoice.setInvoiceDate(invoiceDate);
 		}
 		if (jsonObj.has("dueDate") && !"".equalsIgnoreCase(jsonObj.getString("dueDate"))) {
-			Date dueDate = format.parse(jsonObj.getString("dueDate"));
+			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString("dueDate"));
 			invoice.setDueDate(dueDate);
 		}
 
@@ -2534,7 +2538,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setProjectMemberId(pm);
 		}
 		if (jsonObj.has("expensesId") && !"".equalsIgnoreCase(jsonObj.getString("expensesId"))) {
-			Expenses expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expensesId")));
+			Expenses expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expensesId")));
 			invoice.setExpensesId(expenses);;
 		}
 		
@@ -2579,7 +2583,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		invoice.setFileName(file.getName());
 		byte[] bytesArray = getByteArray(file);
 		invoice.setDocFile(bytesArray);
-		invoiceDao.saveInvoce(invoice);
+//		invoiceDao.saveInvoce(invoice);
 		if (null != file) {
 			file.delete();
 		}
@@ -2639,8 +2643,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					throws NumberFormatException, Exception {
 		Set<InvoiceLineItems> expensesinvoicelineitemsSet = new HashSet<>();
 
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		/*String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);*/
 
 		List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 
@@ -2666,7 +2670,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					if(jsonObj.has(i + "edate")){
 						if (null != jsonObj.getString(i + "edate")
 								&& !"".equalsIgnoreCase(jsonObj.getString(i + "edate"))) {
-							Date expenseDate = format.parse(jsonObj.getString(i + "edate"));
+							Date expenseDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),jsonObj.getString(i + "edate"));
 							invoiceLineItems.setStartDate(expenseDate);
 						}	
 					}

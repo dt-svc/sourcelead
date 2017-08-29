@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.web.LoginSessionController;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -49,6 +51,9 @@ public class Projects implements Serializable{
  	
 	@Column(name = "PROJECT_SEQUENCE_NUMBER")
 	private String projectSequeneNumber;
+	
+    @Column(name = "IS_CLIENT_PROJECT")
+    private String isClientProject;
 	
     @Column(name = "PROJECT_NAME")
     private String projectName;
@@ -150,22 +155,43 @@ public class Projects implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
+    
+    @Column(name = "PROJECT_MODE")
+    private String projectMode;
+    
+    @Column(name = "IS_PROJECT_DETAILS_FILLED")
+    private String isProjectDetailsFilled;
+    
+    @Column(name = "IS_PROJECT_MEMBERS_FILLED")
+    private String isProjectMembersFilled;
+    
+    @Column(name = "IS_PROJECT_ADDITIONAL_DETAILS_FILLED")
+    private String isProjectAdditionalDetailsFilled;
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectMembers> projectMembers;
     
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectApproverHierarchy> projectApprovers;
     
     @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @JsonBackReference
     private Set<ProjectTasks> projectTasks;
     
+    @OneToMany(mappedBy="projectId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<ProjectClients> projectClients;
   
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
-    private Set<ProjectDocuments> projectDocuments = new HashSet<>();
+    @JsonBackReference
+    private Set<ProjectDocuments> projectDocuments;
     
     
     public Set<ProjectDocuments> getProjectDocuments() {
@@ -238,6 +264,10 @@ public class Projects implements Serializable{
     Collection<User> managersListwithoutManager1;
     
     @Transient
+    @JsonProperty
+    Set<ProjectApproverHierarchy>  approverHierarchyList;
+    
+    @Transient
     private String employeeStartDateStr;
     
     @Transient
@@ -251,6 +281,10 @@ public class Projects implements Serializable{
 
     @Transient
     private String expensesClientName;
+    
+    @Transient
+    @JsonProperty
+    Set<ProjectDocuments>  projectDocumentsList;
     
     @Column(name = "GENERATED_ID")
 	private String generatedId;
@@ -752,6 +786,84 @@ public class Projects implements Serializable{
 	public void setGeneratedId(String generatedId)
 	{
 		this.generatedId = generatedId;
+	}
+
+	public String getIsClientProject() {
+		return isClientProject;
+	}
+
+	public void setIsClientProject(String isClientProject) {
+		this.isClientProject = isClientProject;
+	}
+
+	public String getProjectMode() {
+		return projectMode;
+	}
+
+	public void setProjectMode(String projectMode) {
+		this.projectMode = projectMode;
+	}
+
+	public String getIsProjectDetailsFilled() {
+		return isProjectDetailsFilled;
+	}
+
+	public void setIsProjectDetailsFilled(String isProjectDetailsFilled) {
+		this.isProjectDetailsFilled = isProjectDetailsFilled;
+	}
+
+	public String getIsProjectMembersFilled() {
+		return isProjectMembersFilled;
+	}
+
+	public void setIsProjectMembersFilled(String isProjectMembersFilled) {
+		this.isProjectMembersFilled = isProjectMembersFilled;
+	}
+
+	public String getIsProjectAdditionalDetailsFilled() {
+		return isProjectAdditionalDetailsFilled;
+	}
+
+	public void setIsProjectAdditionalDetailsFilled(String isProjectAdditionalDetailsFilled) {
+		this.isProjectAdditionalDetailsFilled = isProjectAdditionalDetailsFilled;
+	}
+
+	public Set<ProjectClients> getProjectClients() {
+		return projectClients;
+	}
+
+	public void setProjectClients(Set<ProjectClients> projectClients) {
+		this.projectClients = projectClients;
+	}
+
+	public Set<ProjectApproverHierarchy> getApproverHierarchyList() {
+	   /*  if(projectClients != null){
+	    	 for(ProjectClients projectClients : projectClients){
+	    		 if(projectClients.getProjectApproverHierarchyList() != null && 
+	    				 !projectClients.getProjectApproverHierarchyList().isEmpty()){
+	    			 Set<ProjectApproverHierarchy> hirearchySet = new LinkedHashSet<ProjectApproverHierarchy>();
+	    			 for(ProjectApproverHierarchy hierarcy : projectClients.getProjectApproverHierarchyList()){
+	    				 hirearchySet.add(hierarcy);
+		    		 }
+	    			 if(hirearchySet != null && !hirearchySet.isEmpty()){
+	    				 approverHierarchyList = hirearchySet;
+	    			 }
+	    		 }
+	    	 }
+	     }*/
+		return approverHierarchyList;
+	}
+
+	public void setApproverHierarchyList(Set<ProjectApproverHierarchy> approverHierarchyList) {
+		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Set<ProjectDocuments> getProjectDocumentsList() {
+		return projectDocumentsList;
+	}
+
+	public void setProjectDocumentsList(Set<ProjectDocuments> projectDocumentsList) {
+		this.projectDocumentsList = projectDocumentsList;
 	}
 	
 }

@@ -427,7 +427,7 @@ function getEmploymentType(){
 }
 </script>
 
-
+<!-- getEmployementTye -->
 
 <script>
 function addPoliciesAttachment(){  
@@ -779,6 +779,8 @@ function validateUploadFile(id)
 			    	 $("#city").val(json['city']);
 			    	 $("#zipCode").val(json['zipCode']);
 			    	 
+			    	 /* $("#employmentType").val(json['designationType']);
+			    	 $("#employmentType").trigger("chosen:updated"); */
 			    	/*  getOnBoardCandidateCountry(json['country'])
 			    	 getOnBoardCandidateStates(json['country'],json['state']);
 			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
@@ -849,16 +851,7 @@ function validateUploadFile(id)
 			    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
 			    		 $("#salaryRate").val(json['amount']);
 			    	 }
-			    	 
-			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
-			    		 $("#startDate").val(json['dateOfJoiningStr']);
-			    		 var dt = $(this).datepicker("#startDate");
-			 			 dt.setDate(dt.getDate() + 1);
-			 			 $("#endDate").datepicker("option", "minDate", dt);
-			    	 }
-			    	 
-			    	 if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
-			    		 
+						if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
 			    		 if(json['positionType'] == 'Other'){
 			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
 			    			 $("#employmentOtherType").val(json['otherPositionType']);
@@ -876,7 +869,14 @@ function validateUploadFile(id)
 			    	 }else{
 			    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
 			    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+			    	 } 
+			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
+			    		 $("#startDate").val(json['dateOfJoiningStr']);
+			    		 var dt = $(this).datepicker("#startDate");
+			 			 dt.setDate(dt.getDate() + 1);
+			 			 $("#endDate").datepicker("option", "minDate", dt);
 			    	 }
+			    	 
 			    	 
 			    }
 		   });

@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -29,6 +30,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -48,8 +50,8 @@ public class AddClientVendorELK {
 			return (str == null || "".equals(str.trim()));
 		}
 	 
-	public void addCampaignELK() throws IOException, SQLException,Exception{
-		ArrayList<ClientVendorIndex> elkclientVendorIndexList = getElkCampaigns();
+	public void addClientVendorELK() throws IOException, SQLException,Exception{
+		ArrayList<ClientVendorIndex> elkclientVendorIndexList = getElkClientVendors();
 		if(elkclientVendorIndexList != null && !elkclientVendorIndexList.isEmpty()){
 			for (ClientVendorIndex clientVendorIndex :elkclientVendorIndexList) {
 				
@@ -59,7 +61,7 @@ public class AddClientVendorELK {
 		  logger.info("ORG_RELATIONS Successfully Added To Elk");
 	}
 	
-	private ArrayList<ClientVendorIndex> getElkCampaigns() throws Exception{
+	private ArrayList<ClientVendorIndex> getElkClientVendors() throws Exception{
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<ClientVendorIndex> clientVendorList = new ArrayList<ClientVendorIndex>();
 		Connection conn = dataSource.getConnection();
@@ -84,7 +86,7 @@ public class AddClientVendorELK {
 			    	clientVendorIndex.setOrgLocationId(rs.getLong("LOCATION_ID"));
 			    	clientVendorIndex.setOrgRelationId(rs.getLong("ID"));
 			    	clientVendorIndex.setStatus(rs.getString("STATUS"));
-			    	
+			    	clientVendorIndex.setNoContacts(getNumberOfContactsPerClient(rs.getLong("ID"), conn));
 			    	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			    	clientVendorIndex.setCreatedDate(dateFormat.format(rs.getDate("CREATED_DATE")));
 			    	if(null != rs.getDate("UPDATED_DATE")){
@@ -200,6 +202,33 @@ public class AddClientVendorELK {
 	}
 	
 	
+	private long getNumberOfContactsPerClient(long orgRelationId, Connection conn11) {
+		String numberOfContacts = "0";
+		 /*DataSource dataSource1 = comboPooledDataSource();
+		 Connection conn11 = null;*/
+		 Statement stmt11 = null;
+		 try {
+			  //conn11 = dataSource1.getConnection();
+				String sql = "SELECT  count(*) FROM sourcelead.ORG_SPOC where ORG_RELATION_ID = "+orgRelationId;
+				stmt11 = conn11.createStatement();
+				ResultSet rs = stmt11.executeQuery(sql);
+				while(rs.next()) {
+					numberOfContacts = rs.getString(1);	
+				}
+		 }catch (Exception e) {
+			 e.printStackTrace();
+		}finally {
+			try {
+				stmt11.close();
+				//conn11.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return Long.parseLong(numberOfContacts);
+	}
+
 	public void saveOrUpdateElkDocument(ClientVendorIndex clientVendorIndex,String index,String type,String id) {
 		String entityInJson = null;
 		try {
@@ -261,8 +290,8 @@ public class AddClientVendorELK {
 	public static void main(String[] args) throws IOException {
 			
 		try {
-			   AddClientVendorELK addCampaignELK = new AddClientVendorELK();
-			   addCampaignELK.addCampaignELK();
+			   AddClientVendorELK addClientVendorELK = new AddClientVendorELK();
+			   addClientVendorELK.addClientVendorELK();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

@@ -839,7 +839,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Candidate> candidate = new ArrayList<Candidate>();
 		logger.debug("getCandidateById start");
-		candidate = session.createQuery("from Candidate where id=:candidateId" ).setCacheable(true).setLong( "candidateId", candidateId ).setCacheable(true).list();
+		candidate = session.createQuery("from Candidate candidate left join fetch candidate.consultantUser where candidate.id =:candidateId" ).setCacheable(true).setLong( "candidateId", candidateId ).setCacheable(true).list();
 		logger.debug("getCandidateById end");
 		if (candidate.size() > 0) {
 			return candidate.get(0);
@@ -1110,6 +1110,22 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
 		return candidate.iterator().next();	
+	}
+	
+	@Override
+	@Transactional
+	public List<Candidate> getAssociatesListForSow(Long locationId,String sowType)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> associatesList = null;
+		if(Constants.Vendor_SOW.equalsIgnoreCase(sowType)){
+			String query = "from Candidate can where can.orgLocationId.id =:locationId and can.isAssociate = 'Y' and can.orgRelationId <> NULL and can.spocId <> NULL and can.designationType IN ('C2C' , 'C2C-1099')";
+		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
+		}else if(Constants.Client_SOW.equalsIgnoreCase(sowType)){
+			String query = "from Candidate can where can.orgLocationId.id =:locationId and can.isAssociate = 'Y'";
+		    associatesList = session.createQuery(query).setLong( "locationId", locationId).setCacheable(true).list();
+		}
+		return associatesList;
 	}
 }
 

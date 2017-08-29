@@ -109,7 +109,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		
 		String query =null;
-		 query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.employee emp left join fetch emp.user "
+		 query = "from Invoice invoice  left join fetch invoice.projectMemberId pm left join fetch pm.projects left join fetch pm.employee emp left join fetch emp.user "
 		 		+ "left join fetch invoice.expensesId where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
 		 List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return invoiceList;
@@ -122,15 +122,21 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Transactional
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception
 	{
-		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts> contractsList = null;
-		String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
-				+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
-	     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
-	  if(null != contractsList){
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
+					+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
+		     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
+		  if(null != contractsList){
+			  return contractsList;
+		  }
 		  return contractsList;
-	  }
-	  return contractsList;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contractsList;
+		
 		 
 	}
 
@@ -399,6 +405,20 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	public Invoice getInvoicetByParentId(Long parentInvoiceId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId.id =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		if (parentInvoice.size() > 0) {
+			return parentInvoice.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Invoice getParentInvoiceByInvoiceId(Long invoiceId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId =:invoiceId" ).setLong( "invoiceId", invoiceId ).setCacheable(true).list();
 		if (parentInvoice.size() > 0) {
 			return parentInvoice.get(0);
 		} else {

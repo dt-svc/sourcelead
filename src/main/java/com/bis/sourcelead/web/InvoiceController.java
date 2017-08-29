@@ -1,10 +1,9 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,26 +11,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Invoice;
-import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
-import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -54,11 +54,14 @@ public class InvoiceController {
 	CommonUtil commonUtil;
 	 
 	@Autowired
-	private ProjectsService projectsService;
+	private PdfConversionUtil pdfConversionUtil;
 	
 	@Autowired
 	private InvoiceService invoiceService;
 	 
+	@Autowired
+	private InvoiceDocumentsService invoiceDocumentsService;
+	
 /**
  * @author Laxman
  * @param type
@@ -131,6 +134,7 @@ public class InvoiceController {
 		}else{
 			model.setViewName("billing/createInvoice");
 		}
+		model.addObject("isGenerateAutomaticInvoice",invoice.getIsAutomaticGenerateInvoice());
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -303,6 +307,7 @@ public class InvoiceController {
 	 */
 	@RequestMapping(value = "/createReceivableExpensesBill")
 	public ModelAndView createReceivableExpenseBill(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -310,6 +315,7 @@ public class InvoiceController {
 			sessionData = new SessionMaintainanceData();
 		}
 		model.setViewName("billing/createExpensesReceivableInvoice");
+		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -325,6 +331,7 @@ public class InvoiceController {
 	 */
 	@RequestMapping(value = "/createExpensesPayableBill")
 	public ModelAndView createExpensesPayableBill(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -333,8 +340,38 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/createExpensesPayableBill");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
+	
+	
+	
+	 @RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
+	    public void viewInvoiceDocView(@RequestParam(value="documentId", required=false) String documentId,
+	    		@PathVariable(value="title") String title
+	    		,HttpServletResponse response) throws Exception {
+		 
+		  InvoiceDocument invoiceDocument = invoiceDocumentsService.getInvoiceDocumentById(Long.parseLong(documentId));
+		  
+		  byte[] pdfBytes = null;
+			if("application/pdf".equalsIgnoreCase(invoiceDocument.getFileContentType())){
+				pdfBytes = invoiceDocument.getDocFile();
+			}
+			else{
+				 pdfBytes = pdfConversionUtil.convertDocToPdf(invoiceDocument.getDocFile());
+			}
+			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+		  	    response.setContentType("application/pdf");
+		  	    ServletOutputStream sos = response.getOutputStream();
+		  	    if(null != pdfBytes){
+		  	    	response.setContentLength(pdfBytes.length);
+		  	    	sos.write(pdfBytes);
+		  	    }
+		          sos.flush();
+		          sos.close();
+
+		} 
+	
 }

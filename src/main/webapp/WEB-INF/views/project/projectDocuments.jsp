@@ -101,6 +101,7 @@ function addProjectDocument(projectId) {
 	result = result  +'<div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	
+// 	result = result + '<div class="col-md-6 mb10 clearfix"><lable class="paddingRight">Is Confidential ?</label> <input type="checkbox" name="isclient" value="N" class="pull-right" /></div>';
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';

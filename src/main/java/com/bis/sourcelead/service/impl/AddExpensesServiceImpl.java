@@ -107,14 +107,19 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 	}
 
 @Override
-public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status) throws NumberFormatException, Exception {
+public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
+	return addExpensesDao.storeAddExpensesData(expenses);
+}
+
+@Override
+public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
 	
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
 	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
-		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		expenses = expensesService.getExpenseById(Long.parseLong(jsonObj.getString("expenseId")));
 	 }else{
 		 expenses = new Expenses();
 	 }
@@ -237,12 +242,12 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
 	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
+		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
 	 }
 }
 
 @Override
-public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
+public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc,String currencyCode) throws Exception {
 	
 	 
 	
@@ -298,7 +303,8 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
-		 globalVarsMap.put("totalAmount",Float.toString(expenses.getTotalAmount()));
+		 StringBuilder currencyType = new StringBuilder();
+		 globalVarsMap.put("totalAmount",currencyType.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode).toString());
 		 
 		 
 

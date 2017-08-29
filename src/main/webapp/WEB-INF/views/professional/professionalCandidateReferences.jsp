@@ -3,10 +3,7 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
 
 <style>
 .addUser-org {
@@ -266,12 +263,6 @@
 		});
 	});
 
-	/* $(function() {
-	 $('#relation').change(function(){
-	 alert("X");
-	 $('#row_dim')[ ($("option[value='Work Related']").is(":checked"))? "show" : "hide" ]();  
-	 });
-	 }); */
 </script>
 <%-- 
      @author : prasad K.
@@ -319,6 +310,11 @@
 				+ ' <option id="workRelated" valeu="Work Related">Work Related</option>';
 		result = result
 				+ '<option  id="familyRelated" value="Family Related">Family Related</option>';
+		result = result
+				+ '<option  id="friend" value="Friend">Friend</option>';
+		result = result
+				+ '<option  id="neighbour" value="Neighbour">Neighbour</option>';
+				
 		result = result + ' </select>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -684,6 +680,17 @@
 												+ (json.relation == "Family Related" ? "selected"
 														: '')
 												+ '>Family Related</option>';
+									   result = result
+												+ '<option  '
+												+ (json.relation == "Friend" ? "selected"
+														: '')
+												+ '>Friend</option>';
+												
+										result = result
+												+ '<option  '
+												+ (json.relation == "Neighbour" ? "selected"
+														: '')
+												+ '>Neighbour</option>';		
 										result = result + ' </select>';
 										result = result + '</div>';
 										result = result + '</div>';
@@ -749,14 +756,6 @@
 												.click(function(e) {
 													e.stopPropagation();
 												});
-
-										/* if(json.relation == "Family Related"){
-										    $("#dvDesignationEdit").remove();
-											$("#dvDesignationEdit").css("display", "none");
-											$("#designationValEdit").removeAttr("data-validation");
-											$("#designationValEdit").attr("data-validation-optional", "true");
-										} */
-
 									}
 
 								}

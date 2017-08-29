@@ -21,6 +21,7 @@
 	       		}else if("rejected" == $("#countType").val()){
 	       			$(":checkbox[value=REJECTED]").prop("checked",true);
 	       		}
+	       		$("#temp").val("temp");
 			}else{
 				getExpensesApprovalDataList();
 			}
@@ -58,6 +59,8 @@ margin-top: 3px;
  z-index: 99999;
 }
 </style>
+
+<div id='emptyPopup'></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>
@@ -174,6 +177,9 @@ if(locationList.match("yyyy-MM-dd")){
 }
 
 
+
+
+
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
@@ -186,6 +192,7 @@ $.ajax({
 	result = result+' <th>Employee</th>';
 	result = result+' <th>EmploymentType</th>';
 	result = result+' <th>Project</th>';
+	result = result+' <th>Purpose</th>';
 	result = result+' <th>Start Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
 	result = result+' <th>End Date<br>(<small class="custom-small">'+expensesApprvListDate+'</small>)</th>';
 	result = result+' <th>No of Items</th>';
@@ -218,6 +225,13 @@ $.ajax({
 	}else{
 		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span></div></td>';	
 	}
+	
+	if(data.expensesApproverHierarchyPurpose != null && data.expensesApproverHierarchyPurpose != '' && data.expensesApproverHierarchyPurpose !='undefined'){
+		result = result+' <td><div><span title="'+data.expensesApproverHierarchyPurpose+'">'+data.expensesApproverHierarchyPurpose+'</span></div></td>';	
+	}else{
+		result = result+' <td><div class="sm" title="--">--</div></td>';	
+	}
+	
 	result = result+' <td><div class="sm" title="'+data.expenseStartDateString+'">'+data.expenseStartDateString+'</div></td>';
 	
 	if(data.expenseEndDateString != null && data.expenseEndDateString != '' && data.expenseEndDateString !='undefined'){
@@ -229,12 +243,12 @@ $.ajax({
 
 	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
 
-	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount+'">';
+	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount.toFixed(2)+'">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
 	'</sec:authorize>';
-	
-	result = result+ data.expenseId.totalAmount;
+	 var  numb = data.expenseId.totalAmount.toFixed(2);
+	result = result+numb;
 	
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'</a>';
@@ -280,7 +294,7 @@ $.ajax({
 	result = result+' </tbody>';
 	result = result+' </table>';
 	}else{ 
-		$('#hideExportIfDataEmptyId').hide();
+		/* $('#hideExportIfDataEmptyId').hide(); */
 	}
 	$("#approverDataExpensesDiv").empty();
 	$("#approverDataExpensesDiv").append(result);
@@ -584,20 +598,43 @@ function exportToPdf(type){
 		{
 			expenseStatus.push($(this).val());
 		});
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
+		var startDate = $("#filterStartDate").val();
+		var endDate = $("#filterEndDate").val();
+		window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	}else{
+		
+		/* var sourceleadUrl = '${sourceleadUrl}';
+		var expenseStatus = [];
+		$('input:checkbox[name=expenseStatus]:checked').each(function() 
+		{
+			expenseStatus.push($(this).val());
+		});
+		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus; */
+		
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Expenses List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#expensesListDiv").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	
 	}
-	var sourceleadUrl = '${sourceleadUrl}';
-	var expenseStatus = [];
-	$('input:checkbox[name=expenseStatus]:checked').each(function() 
-	{
-		expenseStatus.push($(this).val());
-	});
-	var startDate = $("#filterStartDate").val();
-	var endDate = $("#filterEndDate").val();
-	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
+	
 }
 </script>
+
+
+<script type="text/javascript">
+function expensesCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');

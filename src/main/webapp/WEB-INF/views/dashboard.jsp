@@ -55,7 +55,12 @@ width: 11.5%;
    right: 10px;
    top: 4px;
 } */
-
+.pdleft{
+padding-left:0;
+}
+.pdRight{
+padding-right:0;
+}
 </style>
 
  <style type="text/css">
@@ -201,7 +206,6 @@ overflow-x: auto;
 		     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 	    </div>
 	 </sec:authorize>  	
-	 
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -212,9 +216,10 @@ overflow-x: auto;
 					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
 					
-					<jsp:include page="resourceRequest.jsp"></jsp:include> 
+					<!-- Don't delete this commented code. Functionality is in progress -->
+					<%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
 					
-			    <div class="clearfix row mb"> 
+			    <div class="col-md-6 mb pdleft"> 
 			    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
 			   	 	 </sec:authorize>
@@ -223,11 +228,13 @@ overflow-x: auto;
 			    	 </sec:authorize> --%>
 			    </div>
 		    </c:if>
-		     <div class="clearfix row mb"> 
+		     <div class="col-md-6 mb pdRight"> 
 		     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 		     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
 		     		</sec:authorize>
 		     </div>
+		     
+		     <div class="clearfix"></div>
 	    
 	    
 	   
@@ -344,6 +351,30 @@ $('#dasboardTaskDatpicker').datepicker({
 	getTimezonesList(); 
 }
 </script>
+<script>
+function checkForOldrecords(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orglocationId ='${SourceLeadWeb_orgLocationId}';
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/checkForOldrecords?${_csrf.parameterName}=${_csrf.token}&orglocationId="+orglocationId,
+	        success: function(data) {
+	        	if(data == true){
+	        		  var result = '';
+	               	  result=result+'<div class="sideMask" style="display:none"></div>';
+	               	  $("#configurePopUpDiv").empty();
+	               	  $("#configurePopUpDiv").append(result);
+	        	}else{
+	        		  var result = '';
+	               	  result=result+'<div class="sideMask" style="display:none"></div>';
+	               	  $("#configurePopUpDiv").empty();
+	               	  $("#configurePopUpDiv").append(result);
+	        	}
+	        }
+	 }); 
+}
+</script>
 
 <script>
 function validateOrgShortCode(){
@@ -355,7 +386,7 @@ function validateOrgShortCode(){
 		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgShortId, 
 		        success: function(data) {
 		        	if(data == true){
-		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Alrady Exists !!!</span>");
+		        		$("input#generatedUserId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
 		        	}else{
 		        		 $('#generatedUserIdDiv').parent().find('p.jquery_form_error_message').remove(); 
 		        	}
@@ -411,10 +442,7 @@ function storeOrgShortCode(){
        	      dataType : 'json',
             	  url: sourceleadUrl+"/saveOrgShortCodeform?${_csrf.parameterName}=${_csrf.token}&locationCode="+locationCode,
                   success: function(data) {
-                	  var result = '';
-                	  result=result+'<div class="sideMask" style="display:none"></div>';
-                	  $("#configurePopUpDiv").empty();
-                	  $("#configurePopUpDiv").append(result);
+                	  checkForOldrecords();
       			},  
              });
     	    return true;

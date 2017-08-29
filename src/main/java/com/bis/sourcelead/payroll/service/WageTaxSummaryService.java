@@ -19,4 +19,15 @@ public interface WageTaxSummaryService {
 	List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation);
 
 	Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user) throws Exception;
+
+	List<WageTaxSummary> getWagesAndTaxListByEmployeeId(OrgLocations orgLocations, Long empId)throws Exception;
+
+	int mergeUser(JSONObject jsonObj, OrgLocations orgLocation) throws Exception;
+
+	List<WageTaxSummary> getAllImportedUsers(OrgLocations orgLocations)throws Exception;
+
+	List<WageTaxSummary> getMappedUsersListByOrgLocationId(Long locationId)throws Exception;
+
+	List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)throws Exception;
+
 }
