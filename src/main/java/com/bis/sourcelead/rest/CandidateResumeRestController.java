@@ -254,15 +254,15 @@ public class CandidateResumeRestController {
 			response.setContentType("application/octet-stream");
 			StringBuilder fileName = new StringBuilder();
 			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
-			InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+			//InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
 			try {
 				OutputStream outStream = response.getOutputStream();
 				byte[] buffer = new byte[4096];
 				int bytesRead = -1;
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
+				/*while ((bytesRead = inputStream.read(buffer)) != -1) {
 					outStream.write(buffer, 0, bytesRead);
 				}
-				inputStream.close();
+				inputStream.close();*/
 				outStream.close();
 			} catch (FileNotFoundException e) {
 				logger.error(ExceptionUtils.getFullStackTrace(e));
@@ -270,7 +270,7 @@ public class CandidateResumeRestController {
 		}
 	}
 	
-	@RequestMapping(value = "/viewDocument/{title}", method = RequestMethod.GET)
+	@RequestMapping(value = "/viewDocumentsForCan/{title}", method = RequestMethod.GET)
 	public void viewResume(@PathVariable("title") String title, @RequestParam(value = "file", required = false) String docFile, HttpServletResponse response) throws Exception
 	{
 		docFile = URLDecoder.decode(docFile, "utf-8");

@@ -482,7 +482,7 @@ function addResume(candidateId) {
 function getCandiResume(fileURL,title){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(fileURL != null && fileURL != ""){
-		window.open(sourceleadUrl+'/viewDocument/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
+		window.open(sourceleadUrl+'/viewDocumentsForCan/'+title+'?docFile='+encodeURI(fileURL),title,"height=600,width=600");
 	}  
 }
 function getIframeDocument(element)

@@ -83,8 +83,8 @@ public class CandidateServiceTest {
 						
 			MultipartFile multipartFile = getMultiPartFile();
 						
-			candidate = candidateService.storeCandidate(jsonObj,orgLocationId,user,multipartFile);
-			logger.info("success fully store " +candidate.getCity());
+//			candidate = candidateService.storeCandidate(jsonObj,orgLocationId,user,multipartFile);
+//			logger.info("success fully store " +candidate.getCity());
 			
 		}
 		private MultipartFile getMultiPartFile() throws IOException {

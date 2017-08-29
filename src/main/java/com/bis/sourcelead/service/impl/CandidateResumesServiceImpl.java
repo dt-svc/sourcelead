@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -182,16 +184,16 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations, String userCode, Candidate candidate, MultipartFile multiFile) throws JSONException, IOException
+	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations, String userCode, Candidate candidate, FileInfo fileInfo) throws Exception
 	{
 		HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
-		if (multiFile != null && multiFile.getOriginalFilename() != null
-				&& !multiFile.getOriginalFilename().isEmpty()) {
+		if (StringUtils.isNotBlank(fileInfo.getFileURL())) {
 			CandidateResumes candidateResumes = new CandidateResumes();
 			candidateResumes.setCandidateId(candidate);
-			candidateResumes.setDocFile(multiFile.getBytes());
-			candidateResumes.setFileName(multiFile.getOriginalFilename());
-			candidateResumes.setFileContentType(multiFile.getContentType());
+			//candidateResumes.setDocFile(multiFile.getBytes());
+			candidateResumes.setFileName(fileInfo.getFileName());
+			candidateResumes.setFileContentType(fileInfo.getContentType());
+			candidateResumes.setFileURL(fileInfo.getFileURL());
 			candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidateResumes.setCreatedDate(new Date());

@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -38,7 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -71,10 +72,10 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -165,31 +166,17 @@ public class CandidateRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_VIEW_CANDIDATE','ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/storeCandidate", method = RequestMethod.POST)
-	public @ResponseBody String storeCandidate(@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request) throws Exception
+	public @ResponseBody String storeCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception
 	{
-		MultipartFile multiFile = null;
-		Iterator<String> itrator = request.getFileNames();
-		if (itrator.hasNext()) {
-			multiFile = request.getFile(itrator.next());
-		}
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = candidateService.storeCandidate(jsonObj, orgLocation, user, multiFile);
-		/*
-		 * if(candidate.getCandidateType().equalsIgnoreCase("Candidate")){
-		 * StringBuilder candidateCreateMsg = new StringBuilder();
-		 * SourceLeadSessionManager.setSessionAttribute(request,
-		 * "candidateCreateMsg",
-		 * candidateCreateMsg.append("Success !! ").append(candidate.
-		 * getFirstName()).append(" Candidate Added").toString()); } else{
-		 * StringBuilder consultantCreateMsg = new StringBuilder();
-		 * SourceLeadSessionManager.setSessionAttribute(request,
-		 * "consultantCreateMsg",
-		 * consultantCreateMsg.append("Success !! ").append(candidate.
-		 * getFirstName()).append(" Consultant Added").toString()); }
-		 */
+		if(Validator.validate(candidateDto)) {
+			candidateDto.setStaticPath(staticPath);
+			FileUploadUtil.fillUploadedFileInfo(candidateDto, candidateDto.getFileInfo());
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
+		} else
+			return "DataMissing";
+		
 		return "success";
 	}
 	

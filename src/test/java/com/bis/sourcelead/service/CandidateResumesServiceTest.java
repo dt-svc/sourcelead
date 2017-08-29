@@ -90,8 +90,8 @@ public class CandidateResumesServiceTest {
 		candidate.setId(10l);
 		orglocations.setId(1l);
 		MultipartFile multipartFile = getMultiPartFile();
-		candidateResumes = candidateResumesService.getCandidateResumesDetails(orglocations, "3hxku7yG", candidate, multipartFile);
-		logger.info("getCandidateResumesDetails" + candidateResumes.size());
+//		candidateResumes = candidateResumesService.getCandidateResumesDetails(orglocations, "3hxku7yG", candidate, multipartFile);
+//		logger.info("getCandidateResumesDetails" + candidateResumes.size());
 	}
 	
 	private MultipartFile getMultiPartFile1() throws IOException
