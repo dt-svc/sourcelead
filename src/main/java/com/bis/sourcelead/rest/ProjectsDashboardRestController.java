@@ -337,9 +337,11 @@ public class ProjectsDashboardRestController {
 	 */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_PROJECT_EMPLOYEES', 'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES', 'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES')")
 	 @RequestMapping(value = "/getProjectEmployeeListById", method = RequestMethod.POST)
-	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId) throws Exception{ 
+	 public @ResponseBody String  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
+			 HttpServletRequest request) throws Exception{ 
 		 String resultJson;
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status);
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation);
 		
 		 resultJson = commonUtil.toJSON(employeeList);
 		 return resultJson;

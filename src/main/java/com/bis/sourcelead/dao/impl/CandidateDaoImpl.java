@@ -284,6 +284,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ "left join fetch cnadidate.teamId "
 				+ "left join fetch cnadidate.recruiterUserId "
 				+ "left join fetch cnadidate.masterCandidateId "
+				+ "left join fetch cnadidate.parentCandidateId "
 				+ "left join fetch cnadidate.orgRelationId left "
 				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId left join fetch cnadidate.orgLocationId.user where cnadidate.id =:candidateId";
 		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();

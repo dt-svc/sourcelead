@@ -670,10 +670,36 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation)
 			throws Exception {
 		Collection<ProjectMembers> projectMembersList = projectMembersDao.getAllProjectMembersByProjectIdAndStatus(projectId,status);
-		return projectMembersList;
+		List<ProjectMembers> pmList = new ArrayList<>();
+		for(ProjectMembers pm : projectMembersList){
+			 if(pm.getCandidateId() != null){
+				 Candidate candidate = candidateService.getCandidateByCandidateId(pm.getCandidateId());
+				 if(candidate != null && candidate.getOrgLocationId().getId().equals(loginOrgLocation.getId())){
+					 pmList.add(pm);
+				 }else{
+					 if(candidate.getParentCandidateId() != null){
+							Long parentCandidatId = candidate.getParentCandidateId().getId();
+							while(parentCandidatId != null){
+								Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+								if(cand != null){
+									 if(cand != null && cand.getOrgLocationId().getId().equals(loginOrgLocation.getId())){
+										 pmList.add(pm);
+									 }
+									if(cand.getParentCandidateId() != null){
+										parentCandidatId = cand.getParentCandidateId().getId();
+									}else{
+										parentCandidatId = null;
+									}
+								}
+							}
+						}
+				 }
+			 }
+		}
+		return pmList;
 	}
 
 	@Override

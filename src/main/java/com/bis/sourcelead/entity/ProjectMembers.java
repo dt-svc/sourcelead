@@ -56,11 +56,6 @@ public class ProjectMembers implements Serializable {
 	private Employees employee;
 
 	@ManyToOne
-	@JoinColumn(name = "PROJECT_CLIENTS_ID")
-	@JsonBackReference
-    private ProjectClients projectClientsId;
-	
-	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	@JsonBackReference
 	private Candidate projectMemberCandidteId;
@@ -1419,12 +1414,6 @@ public class ProjectMembers implements Serializable {
 		this.billRateStr = billRateStr;
 	}
 
-	public ProjectClients getProjectClientsId() {
-		return projectClientsId;
-	}
-
-	public void setProjectClientsId(ProjectClients projectClientsId) {
-		this.projectClientsId = projectClientsId;
-	}
+	
 	
 }

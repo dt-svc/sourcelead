@@ -1354,7 +1354,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		
     		candidate.setCreatedDate(new Date());
     		candidate.setUpdatedDate(new Date());
-    		
+    		candidate.setStatus(1);
     		
     		Candidate vendorCandidate = null;
     		vendorCandidate = candidateService.findByCandidateEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getOrgLocations().getId());

@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "PROJECT_MEMBERS_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembersHistory")
@@ -31,6 +33,11 @@ public class ProjectMembersHistory implements Serializable{
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="PROJECT_MEMBERS_ID", nullable=false )	
 	private ProjectMembers projectMemberId;
+	
+	@ManyToOne
+	@JoinColumn(name = "PROJECT_CLIENTS_ID")
+	@JsonBackReference
+    private ProjectClients projectClientsId;
 	
 	
 	@Column(name = "PROJECT_ASSIGNED_DATE")
@@ -124,6 +131,14 @@ public class ProjectMembersHistory implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
 	}
 
 
