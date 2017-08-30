@@ -1366,6 +1366,8 @@ public class ProjectMembers implements Serializable {
 		if(projectAssignedDate != null){
 			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
 				startDateStr = dateFormat.format(projectAssignedDate);	
+		}else{
+			startDateStr = "";
 		}
 		return startDateStr;
 	}
@@ -1378,6 +1380,8 @@ public class ProjectMembers implements Serializable {
 		if(projectEndDate != null){
 			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
 			endDateStr = dateFormat.format(projectEndDate);	
+		}else{
+			endDateStr = "";
 		}
 		return endDateStr;
 	}

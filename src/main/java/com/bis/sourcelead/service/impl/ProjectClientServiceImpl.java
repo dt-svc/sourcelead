@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,11 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 	public ProjectClients getProjectClientsByProjectIdAndOrgLocationId(Long projectId, Long orgLocationsId)
 			throws Exception {
 		return projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projectId, orgLocationsId);
+	}
+
+	@Override
+	public List<ProjectClients> getProjectClientsListByProjectId(Long projectId) throws Exception {
+		return projectClientDao.getProjectClientsListByProjectId(projectId);
 	}
 
 }

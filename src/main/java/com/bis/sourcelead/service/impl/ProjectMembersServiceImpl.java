@@ -912,10 +912,6 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					projectMembers.setCreatedDate(new Date());
 					projectMembers.setUpdatedDate(new Date());
 					
-					Set<ProjectMembersHistory> memberHistoryList = saveProjectMembersHistory(projectMembers,user,orgLocations);
-					projectMembers.setMemberHistoryList(memberHistoryList);
-				    projectMembersDao.saveProjectMember(projectMembers);
-					
 					if(candidate.getParentCandidateId() != null){
 						Long parentCandidatId = candidate.getParentCandidateId().getId();
 						while(parentCandidatId != null){
@@ -956,6 +952,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 							}
 						}
 					}
+					
+					Set<ProjectMembersHistory> memberHistoryList = saveProjectMembersHistory(projectMembers,user,orgLocations,projects.getId());
+					projectMembers.setMemberHistoryList(memberHistoryList);
+				    projectMembersDao.saveProjectMember(projectMembers);
 				}
 			}
 		}
@@ -975,43 +975,48 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			}
 		}
 		
-		
 	}
 	
-	private Set<ProjectMembersHistory> saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations) throws Exception{
-		
-		ProjectMembersHistory memberHistory = null;
-		if(projectMembers.getId() != null){
-		  memberHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
-		}
+	private Set<ProjectMembersHistory> saveProjectMembersHistory(ProjectMembers projectMembers,User user,OrgLocations orgLocations,Long projectId) throws Exception{
 		
 		Set<ProjectMembersHistory> projectMembersHistoryList = new HashSet<>();
-		
-		ProjectMembersHistory projectMembersHistory = new ProjectMembersHistory();
-		if(memberHistory != null){
-			projectMembersHistory.setId(memberHistory.getId());
+		List<ProjectClients> projectClientsList = projectClientService.getProjectClientsListByProjectId(projectId);
+		if(projectClientsList != null && projectClientsList.size() > 0){
+			
+			for(ProjectClients projectClients : projectClientsList){
+				ProjectMembersHistory projectMembersHistory = null;
+				if(projectMembers.getId() != null){
+					projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectClientsId(projectClients.getId(),projectMembers.getId());
+				}
+				
+				if(projectMembersHistory == null){
+					projectMembersHistory = new ProjectMembersHistory();
+				}
+				
+				projectMembersHistory.setProjectMemberId(projectMembers);
+				projectMembersHistory.setProjectClientsId(projectClients);
+				
+				if(projectMembers.getProjectAssignedDate() != null){
+					projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
+				}else{
+					projectMembersHistory.setProjectAssignedDate(null);
+				}
+				
+				if(projectMembers.getProjectEndDate() != null){
+					projectMembersHistory.setProjectTerminationDate(projectMembers.getProjectEndDate());
+				}else{
+					projectMembersHistory.setProjectTerminationDate(null);
+				}
+				
+				projectMembersHistory.setStatus("OPEN");
+				projectMembersHistory.setCreatedBy(user.getUserCode());
+				projectMembersHistory.setUpdatedBy(user.getUserCode());
+				projectMembersHistory.setCreatedDate(new Date());
+				projectMembersHistory.setUpdatedDate(new Date());
+				projectMembersHistoryList.add(projectMembersHistory);
+			}
+			
 		}
-		
-		projectMembersHistory.setProjectMemberId(projectMembers);
-		
-		if(projectMembers.getProjectAssignedDate() != null){
-			projectMembersHistory.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
-		}else{
-			projectMembersHistory.setProjectAssignedDate(null);
-		}
-		
-		if(projectMembers.getProjectEndDate() != null){
-			projectMembersHistory.setProjectTerminationDate(projectMembers.getProjectEndDate());
-		}else{
-			projectMembersHistory.setProjectTerminationDate(null);
-		}
-		
-		projectMembersHistory.setStatus("OPEN");
-		projectMembersHistory.setCreatedBy(user.getUserCode());
-		projectMembersHistory.setUpdatedBy(user.getUserCode());
-		projectMembersHistory.setCreatedDate(new Date());
-		projectMembersHistory.setUpdatedDate(new Date());
-		projectMembersHistoryList.add(projectMembersHistory);
 		
 		return projectMembersHistoryList;
 		

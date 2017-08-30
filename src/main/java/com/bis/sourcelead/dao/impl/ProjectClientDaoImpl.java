@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ProjectClientDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -75,6 +77,19 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		}
 		return pc;  
 		
+	}
+
+	@Override
+	@Transactional
+	public List<ProjectClients> getProjectClientsListByProjectId(Long projectId) throws Exception {
+		
+		logger.debug("In getProjectClientsListByProjectId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectClients> projectClientsList = null;
+		Query candidateListQuery= session.createQuery("from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
+				+ " left join fetch pc.orgRelationId  where pc.projectId.id = :projectId and pc.status = '1' ");
+		projectClientsList = candidateListQuery.setLong("projectId", projectId).setCacheable(true).list();
+		return projectClientsList;
 	}
 	
 }
