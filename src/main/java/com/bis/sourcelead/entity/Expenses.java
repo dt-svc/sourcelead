@@ -25,12 +25,10 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Submission_Status;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ibm.icu.math.BigDecimal;
@@ -46,11 +44,13 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
@@ -109,11 +109,13 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "BILLING_PAYABLE_STATUS")
 	private String billingPayableStatus;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
 	 @JsonBackReference
 //    @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
 	 @JsonBackReference
    // @Fetch(FetchMode.SELECT)
