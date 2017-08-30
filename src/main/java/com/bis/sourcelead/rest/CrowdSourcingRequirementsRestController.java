@@ -1102,10 +1102,13 @@ public class CrowdSourcingRequirementsRestController {
   				}
 				
 			}
+			
+			
+			
 			   DateFormat week_Day = new SimpleDateFormat ("EEEE");
   			   String dayOfweek = week_Day.format(startTime);
-				//SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
-				String selectedDate  = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),startTime);
+				SimpleDateFormat formatterRec = new SimpleDateFormat("MMM dd yyyy");
+				String selectedDate  = formatterRec.format(startTime);
 				RequirementInterviewHistory reqInterviewHistory =  new RequirementInterviewHistory();
 				
 				reqInterviewHistory.setInterviewerList(requirementInterviewList);
