@@ -15,6 +15,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 	@Entity
 	@Table(name = "INTERVIEW_REMAINDER", catalog = "sourcelead")
@@ -28,10 +30,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="NOTIFIED_TO", nullable=false )        
     private User user;
