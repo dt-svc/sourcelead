@@ -45,8 +45,7 @@
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="loading"></div>
-		<form:form id="addcandidate_form" name="addcandidate_form"
-			enctype='multipart/form-data'>
+		<form:form id="addcandidate_form" name="addcandidate_form">
 			<div class="row form-horizontal mt myForm">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
@@ -421,10 +420,10 @@
 									style="margin: 0 auto">
 									<label class="input-group-btn"> <span
 										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
-											File <input type="file" style="display: none;" multiple
-											name="uploadBtn" id="uploadBtn" class="upload"> </span>
+											File <input type="file" style="display: none;"
+											 id="uploadBtn" class="upload"> </span>
 									</label> <input type="text" class="form-control" readonly
-										id="uploadFile" name="docFile" type="file" name=""
+										id="uploadFile" name="docFile"
 										placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
 								</div>
@@ -587,27 +586,31 @@
 		 if ($('#addcandidate_form').validate(false, validationSettings)){ 
 			
 			var sourceleadUrl = '${sourceleadUrl}';
-			var frm = $('#addcandidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
 			var form = $('#addcandidate_form')[0];
       		var formData = new FormData(form); 
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
-
+			
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeCandidate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
+							if(result && result === "DataMissing") {
+								$("#store_candidate").removeAttr("disabled");
+								$("#store_candidate").addClass('button').val('Save');	
+								showError("Invalid data");
+							} else if(result && result === "success")
 								location.replace(sourceleadUrl+"/candidatesList");
+							else {
+								$("#store_candidate").removeAttr("disabled");
+								$("#store_candidate").addClass('button').val('Save');
+								showError("Operation failed, please try again");
+							}
 						},
 					});
 			return true;
@@ -1028,9 +1031,9 @@ function  removeValiationVendorContact() {
 </script>
 
 <script>
+var sourceleadUrl ='${sourceleadUrl}';
  function getVendorContactList(){
 	var orgRelationID = $('#vendors').val();
-	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
@@ -1046,5 +1049,11 @@ function  removeValiationVendorContact() {
 		        }
 		 }); 
  }
+ 
+ $(function() {
+	$("#uploadBtn").change(function() {
+		fileUpload(sourceleadUrl, "uploadBtn", "resumes", "addcandidate_form");
+	});
+ });
  </script>
 
