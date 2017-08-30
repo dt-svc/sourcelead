@@ -24,10 +24,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.PaymentModes;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
@@ -40,10 +40,12 @@ public class ExpensesEntries implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "EXPENSESID", nullable = false)
 	private Expenses expensesId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
 	private ExpensesCategory expensesCategoryId;
@@ -55,6 +57,7 @@ public class ExpensesEntries implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private PaymentModes paymentMode;
 
+	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "expensesEntriesId", cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<ExpensesEntryDocuments> expensesEntryDocuments;
