@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "TASKS")
@@ -28,27 +30,32 @@ public class Tasks implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "OWNER_ORGLOCATION_ID")
    	private OrgLocations ownerOrglocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ASSIGNED_ORGLOCATION_ID")
    	private OrgLocations assignedOrglocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "TASK_OWNER_ID")
    	private User taskOwnerId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ASSIGNED_USER_ID")
    	private User assignedUserId;
 	
-	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID")
    	private CandidateOnBoarding onboardingId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID")
    	private CandidateOffBoarding offboardingId;

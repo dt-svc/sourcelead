@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -55,6 +57,7 @@ public class BoJmpcTrans implements Serializable{
 	@Column(name = "CHECK_OR_SLIP_NO")
 	private String checkOrSlipNo;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PAYMENT_TYPE_ID")
 	private BoPaymentTypes paymentTypeId;

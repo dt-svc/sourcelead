@@ -19,6 +19,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.OnboardStatus;
@@ -35,10 +37,12 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ON_BOARDING_TEMPLATE_ID", nullable = false)
 	private OnBoardingTemplate onboardingTemplateId;
     
+	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID", nullable = false)
 	private CandidateOnBoarding candidateOnBoardingId;
