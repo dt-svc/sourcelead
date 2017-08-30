@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -39,6 +41,7 @@ public class SourceleadActions implements Serializable{
 	@Column(name = "ACTION_ROLE")
 	private String actionRole;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "TAB_ID")
 	private Tabs tabs;

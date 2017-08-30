@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -31,10 +33,12 @@ public class SubmissionTemplate implements Serializable{
 	@Column(name = "TEMPLATE_NAME")
 	private String templateName;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CLIENT_LOCATION_ID")
     private OrgLocations clientLocationId;
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationId;
