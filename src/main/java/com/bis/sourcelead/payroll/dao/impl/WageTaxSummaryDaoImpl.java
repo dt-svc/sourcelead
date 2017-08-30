@@ -58,23 +58,23 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId";
 		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId";
 		
-		String query1 = "";
+		StringBuilder query1 = new StringBuilder("");
 			if(wagesTaxSummaryDTO.getSearchValue() !=null && !"".equalsIgnoreCase(wagesTaxSummaryDTO.getSearchValue())) {
 //				query1 = " and wts.employeeId like %%";
-				query1 = " and wts.employeeId like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.employeeName like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.ssnNumber like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.checkNo like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.gross like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.fwt like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.ssec like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.batchNumber like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.fromDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' "
-						+ "OR wts.toDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ";
+			query1.append(" and wts.employeeId like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.employeeName like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.ssnNumber like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.checkNo like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.gross like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.fwt like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.ssec like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.batchNumber like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.fromDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+					.append("OR wts.toDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ");
 						/*+ "OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%'";*/
 			}
-		Query queryObj = session.createQuery(query + query1);
+		Query queryObj = session.createQuery(query + query1.toString());
 		if (wagesTaxSummaryDTO != null && wagesTaxSummaryDTO.getLength() > 0) {
 			queryObj.setFirstResult(wagesTaxSummaryDTO.getStart());
 			queryObj.setMaxResults(wagesTaxSummaryDTO.getLength());
@@ -89,7 +89,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		}
 		response.setRecordsTotal(count);
 		if (wagesTaxSummaryDTO != null) {
-			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1).setLong("orgLocationId", orgLocation.getId()).list();
+			List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
 			if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}
