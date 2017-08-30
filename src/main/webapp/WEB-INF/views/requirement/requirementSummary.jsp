@@ -5478,7 +5478,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + ' </div>';
 		                     
 		                     result = result + '  <div class="form-group col-md-12">';
-		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
+		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
 		                     result = result + '  </div>';
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
@@ -5588,6 +5588,8 @@ function getRateListDiv(submissionId, candidateId){
 
 <script type="text/javascript">
 	function acceptRejectRate(submissionId,status) {
+		$("#loading").empty();
+		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({

@@ -550,7 +550,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '  <label class="col-md-12">Comment</label>';
 	                    result = result + '  <div class="col-md-12">';
-	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" field-name="Reason"></textarea>';
+	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
 	                    result = result + '  </div>';
 	                    result = result + '  </div>';
 	                    
@@ -630,7 +630,7 @@ function getRateNegotiationDetails(submissionId, candidateId){
 		                     else{
 		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
 		                     }
-		                     result = result + '    <td><div class="tblminwidth-75">';
+		                     result = result + '    <td><div class="tblminwidth-75" id="rateActionDiv">';
 		                     
 		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
 		                    	 var Accepted = 'Accepted';
@@ -733,6 +733,8 @@ function proposeNewRate(submissionId, candidateId) {
 
 <script type="text/javascript">
 	function acceptRejectRate(submissionId, status, candidateId) {
+		$("#rateActionDiv").empty();
+		$("#rateActionDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
