@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
@@ -169,12 +171,34 @@ public class EmployeePayrollRestController {
 	 * @return json
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getWagesAndTaxList", method = RequestMethod.GET)
-	public @ResponseBody String getWagesAndTaxList(HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/getWagesAndTaxList", method = RequestMethod.POST)
+	@ResponseBody
+	public  ResponseList<WageTaxSummary> getWagesAndTaxList(WagesTaxSummaryDTO wagesTaxSummaryDTO ,HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
-		return commonUtil.toJSON(wagesAndTaxList);
+		
+//		String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
+//	     int sortColumnIndex = 4; //by default sorting using updated date
+//		boolean sortColumnOrder = false; //by default descending order
+//		if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
+//			sortColumnIndex = Integer.parseInt(clientVendorDTO.getOrder().get(0).get("column"));
+//			sortColumnOrder = !clientVendorDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+//		}
+		
+		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
+	     int sortColumnIndex = 3; //by default sorting using updated date
+		String sortColumnOrder = "desc"; //by default descending order
+		if(wagesTaxSummaryDTO.getOrder() != null && !wagesTaxSummaryDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(wagesTaxSummaryDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = wagesTaxSummaryDTO.getOrder().get(0).get("dir");
+		}
+		wagesTaxSummaryDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
+		
+		
+//		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
+		return wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
+//		return wagesAndTaxList1;
 	}
 	
 	/**

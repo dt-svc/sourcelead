@@ -16,6 +16,8 @@ public class PayrollBalance {
 	private String directDepositAdvanceNegetive;
 	private String directDepositDeductionPositive;
 	private String balance;
+	private String due;
+	private String billed;
 
 	public String getBalance() {
 		return balance;
@@ -127,6 +129,22 @@ public class PayrollBalance {
 
 	public void setDirectDepositDeductionPositive(String directDepositDeductionPositive) {
 		this.directDepositDeductionPositive = directDepositDeductionPositive;
+	}
+
+	public String getDue() {
+		return due;
+	}
+
+	public void setDue(String due) {
+		this.due = due;
+	}
+
+	public String getBilled() {
+		return billed;
+	}
+
+	public void setBilled(String billed) {
+		this.billed = billed;
 	}
 	
 

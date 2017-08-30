@@ -404,6 +404,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		
 		
 		double income = 0; 
+		double due = 0; 
 		double directDepositGross = 0; // A
 		double directDepositNet = 0; // B 
 		double processedWithCheckOptionGross = 0; // C
@@ -421,9 +422,9 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		if(empId !=null){
 			 List<InvoiceData> invoiceDataList = invoiceDataService.getInvoiceDetailsByEmpId(empId, orgLocations);
 			 if(invoiceDataList !=null && invoiceDataList.size() >0){
-				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null)).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 income = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+				 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
 			 }
-			 
 			 
 			 List<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByEmployeeId(orgLocations,empId);
 			if(wagesAndTaxList !=null && wagesAndTaxList.size() >0){
@@ -475,11 +476,13 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		payrollBalance.setImmigration(df.format(immigration));
 		payrollBalance.setDirectDepositAdvanceNegetive(df.format(directDepositAdvanceNegetive));
 		payrollBalance.setDirectDepositDeductionPositive(df.format(directDepositDeductionPositive));
-
+		payrollBalance.setDue(df.format(due));
 		double deductionTotal = directDepositGross + actualChecksDepositedNet + manualAdvance + generalExpenses + vendorPayment + healthcareInsurance + immigration + directDepositAdvanceNegetive;
 		double total = income + directDepositDeductionPositive;
 		double balance = total - deductionTotal;
-		payrollBalance.setBalance(String.valueOf(balance));
+		double billed = income + due;
+		payrollBalance.setBalance(String.valueOf(Math.round(balance * 100D) / 100D));
+		payrollBalance.setBilled(String.valueOf(Math.round(billed * 100D) / 100D));
 		return payrollBalance;
 	}
 }
