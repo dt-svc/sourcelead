@@ -177,14 +177,6 @@ public class EmployeePayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-//		String[] tableColumns = {"orgName", "", "", "", "createdBy", "noContacts"};
-//	     int sortColumnIndex = 4; //by default sorting using updated date
-//		boolean sortColumnOrder = false; //by default descending order
-//		if(clientVendorDTO.getOrder() != null && !clientVendorDTO.getOrder().isEmpty()) {
-//			sortColumnIndex = Integer.parseInt(clientVendorDTO.getOrder().get(0).get("column"));
-//			sortColumnOrder = !clientVendorDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
-//		}
-		
 		String[] tableColumns = {"fromDate", "toDate", "employeeId", "employeeName", "ssnNumber", "checkDate","checkNo","gross","fwt","ssec","med","swt","sdiSui","local","deds","net","batchNumber"};
 	     int sortColumnIndex = 3; //by default sorting using updated date
 		String sortColumnOrder = "desc"; //by default descending order
@@ -195,10 +187,7 @@ public class EmployeePayrollRestController {
 		wagesTaxSummaryDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		wagesTaxSummaryDTO.setSortOrder(sortColumnOrder);
 		
-		
-//		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
 		return wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
-//		return wagesAndTaxList1;
 	}
 	
 	/**

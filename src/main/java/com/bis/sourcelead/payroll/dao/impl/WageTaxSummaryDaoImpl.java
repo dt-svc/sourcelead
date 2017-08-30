@@ -99,22 +99,16 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		}
 
 		if (wagesAndTaxlist != null && wagesAndTaxlist.size() > 0) {
-//			getSortWageTaxList(wagesAndTaxlist);
 			response.setData(getSortWageTaxList(wagesAndTaxlist));
 		}
 		return response;
-		
-//		Session session = this.sessionFactory.getCurrentSession();
-//		List<WageTaxSummary> wagesAndTaxlist = null;
-//		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId";
-//	    wagesAndTaxlist = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
-//		if(wagesAndTaxlist != null && wagesAndTaxlist.size() >0)
-//		{
-//			return wagesAndTaxlist;
-//		}
-//		return wagesAndTaxlist;
 	}
 
+	/**
+	 * Hiding ssn number into unreadable format
+	 * @param wagesAndTaxList
+	 * @return List<WageTaxSummary>
+	 */
 	private List<WageTaxSummary> getSortWageTaxList(List<WageTaxSummary> wagesAndTaxList) {
 		if(wagesAndTaxList != null){
 			for(WageTaxSummary wts : wagesAndTaxList){

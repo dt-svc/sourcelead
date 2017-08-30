@@ -276,7 +276,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	public ResponseList<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation,WagesTaxSummaryDTO wagesTaxSummaryDTO)
 	{
 		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation,wagesTaxSummaryDTO);
-		
+	//TODO 	please do not remove
 //		if(wagesAndTaxList != null){
 //			for(WageTaxSummary wts : wagesAndTaxList){
 //				StringBuilder sb = new StringBuilder();
