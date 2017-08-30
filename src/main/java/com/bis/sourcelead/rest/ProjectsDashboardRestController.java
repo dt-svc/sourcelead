@@ -171,15 +171,17 @@ public class ProjectsDashboardRestController {
 
 			    String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				String resultJson;
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			    List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
-			    for(Projects ps : projectsList){
+			    //List<Projects> projectsList = projectsService.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, values,loginOrgLocations.getId());
+				List<Projects> projectsList = projectsService.getProjectsListByClientsAndStatus(user.getId(), clients, values,loginOrgLocations.getId(),userRole);
+			    /*for(Projects ps : projectsList){
 			    	ps.setManagerLevel1(ps.getManagerLevel1());
 			    	if(ps.getManagerLevel2() != null){
 			    		ps.setManagerLevel2(ps.getManagerLevel2());	
 			    	}
-			    }
+			    }*/
 				 resultJson = commonUtil.toJSON(projectsList);
 				 return resultJson;
 			}

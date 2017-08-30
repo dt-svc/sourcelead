@@ -431,6 +431,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projects.setIsClientProject(Constants.NO);
 			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
 			Projects updatedProjects = projectsService.saveProject(projects);
 			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
 			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);

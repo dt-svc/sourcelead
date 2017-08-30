@@ -45,6 +45,8 @@ public interface ProjectsDao {
 
 	List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId,String clients,String status,Long orgLocationId) throws Exception;
 	
+	List<Projects> getProjectsListByClientsAndStatus(Long userId,String clients,String status,Long orgLocationId,String userRole) throws Exception;
+	
 	public List<Projects> getProjectByOrgLocationsIdAndUserId(Long id, Long userId);
 	
 	public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long id, Long userId);

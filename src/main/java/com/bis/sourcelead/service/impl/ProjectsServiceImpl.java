@@ -66,6 +66,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -162,7 +163,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 
 	 @Autowired
 	 private UniversalSearchHelper universalSearchHelper;
-    
+	 
+	 @Autowired
+	 private ProjectClientService projectClientService;
+     
 	 
 	 
 /*	 @Override
@@ -594,6 +598,61 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }
 		return projectList;
 		
+	}
+	
+	
+	
+	@Override
+	public List<Projects> getProjectsListByClientsAndStatus(Long userId, String clients, String status,
+			Long orgLocationsId,String userRole) throws Exception {
+		
+		List<Projects> projectList = projectsDao.getProjectsListByClientsAndStatus(userId,clients,status,orgLocationsId,userRole);
+		OrgLocations orglo = orgLocationService.getOrgLocations(orgLocationsId);
+		for (Projects projects :projectList ){
+			 projects.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
+	    	    projects.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
+			    if(projects.getEndDate() != null){
+			    	 projects.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
+			    	 projects.setEmployeeEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getEndDate()));
+			    }
+			    	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+			    	 
+			    	 if(projectClients != null){
+			    		 
+			    		 if(projectClients.getOrgRelationId() != null){
+				    		 
+				    			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
+									projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+								}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
+									projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+								}
+				    	  }
+				    	 
+			    	    Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyDao.getApproverUsersByProjectClientId(projectClients.getId());
+					    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+					    	if(approverHierarchy.getLevel()==1){
+					    		StringBuilder manager1 = new StringBuilder();
+					    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+					    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+					    		}else{
+					    			projects.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+					    		}
+					    		
+					    	}else if(approverHierarchy.getLevel()==2){
+					    		StringBuilder manager2 = new StringBuilder();
+					    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+					    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+					    		}else{
+					    			projects.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+					    		}
+					    		
+					    	}
+					    }
+			    	 }
+			    	
+			   
+		}
+		return projectList;
 	}
 
 

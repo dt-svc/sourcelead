@@ -50,6 +50,7 @@ overflow-x: auto;
 		
         <div class="timesheet_head topfilters">
         	<ul>
+				<c:if test="${clientListSize > 0}">
 				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
                     	<ul>
@@ -59,16 +60,16 @@ overflow-x: auto;
                         </ul>
                     </div>                	
                 </li>
+                </c:if>
                 <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
-                        	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
-<!-- 							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li> -->
-							<li><input id="c9" type="checkbox" name="projectStatus" value ="NOTSTARTED"  onclick="filter();"><label for="c8">Not Started</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">Completed</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">On-Hold</label></li>
-               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="DROPPED"  onclick="filter();"><label for="c8">Dropped</label></li>
+                        	<!-- <li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li> -->
+                        	<li><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  onclick="filter();"><label for="c7">In-Progress</label></li>
+							<li><input id="c9" type="checkbox" name="projectStatus" value ="Not Started"  onclick="filter();"><label for="c8">Not Started</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="Completed"  onclick="filter();"><label for="c8">Completed</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="On-Hold"  onclick="filter();"><label for="c8">On-Hold</label></li>
+               				<li><input id="c10" type="checkbox"  name="projectStatus"  type="checkbox" value ="Dropped"  onclick="filter();"><label for="c8">Dropped</label></li>
                         </ul>
                     </div>                	
                 </li>

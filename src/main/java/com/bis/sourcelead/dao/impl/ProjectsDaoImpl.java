@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 
@@ -484,6 +485,66 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		return projectssList;
 
 	}
+	
+	
+	
+	@Override
+	@Transactional
+	public List<Projects> getProjectsListByClientsAndStatus(Long userId, String clients, String status,
+			Long orgLocationsId,String userRole) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String approverQuery = "";
+		String projectModeQuery = "";
+		
+		List<Projects> plist = null;
+		ArrayList<Projects> projectsList = new ArrayList<Projects>();
+		List<Project_Status> projectStatusList = new ArrayList<>();
+		if(status != null && !status.isEmpty()){
+			String[] statusFilter = status.split(",");
+			if(statusFilter.length > 0){
+				for(int i=0; i<statusFilter.length; i++){
+					projectStatusList.add(Project_Status.getNameByValue(statusFilter[i]));
+				}
+			}
+		}
+		
+		List<Long> clientIdsList = new ArrayList<>();
+		if(clients != null && !clients.isEmpty()){
+			String[] client = clients.split(",");
+			for(int i=0; i<client.length; i++){
+				clientIdsList.add(Long.valueOf(client[i]));
+			}
+		}
+		
+		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+			approverQuery = " and pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+")";
+		}
+		
+		projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished')";
+		
+		if(projectStatusList.size() > 0 && clientIdsList.size() == 0){
+			String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") and ps.projectStatus IN (:projectStatusList) "+projectModeQuery+" ORDER BY ps.createdDate DESC";
+			plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			projectsList.addAll(plist);
+		}
+		else if(clientIdsList.size() > 0 && projectStatusList.size() == 0){
+			String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" ORDER BY ps.createdDate DESC";
+			plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setCacheable(true).list();
+			projectsList.addAll(plist);
+		}
+		else if(projectStatusList.size() > 0 && clientIdsList.size() > 0){
+			String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId and pc.orgRelationId.id IN (:clientIdsList) "+approverQuery+") "+projectModeQuery+" and ps.projectStatus IN (:projectStatusList) ORDER BY ps.createdDate DESC";
+			plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("projectStatusList", projectStatusList).setCacheable(true).list();
+			projectsList.addAll(plist);
+		}else{
+			String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+approverQuery+") "+projectModeQuery+" ORDER BY ps.createdDate DESC";
+			plist = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+			projectsList.addAll(plist);
+		}
+		
+		return projectsList;
+	}
 
 
 
@@ -791,6 +852,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return project.iterator().next();	
 	}
+
 
 }
 

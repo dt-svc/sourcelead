@@ -108,6 +108,7 @@ public class ProjectsDashboardController {
 			}
         }
         model.addObject("add_client", orgClientList);
+        model.addObject("clientListSize", orgClientList.size());
         model.addObject(orgClientList);
         
         if(null != searchResult && null != searchValue){
